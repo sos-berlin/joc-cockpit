@@ -77,7 +77,7 @@
                         <div class="form-group row m-t" ng-class="{ 'has-error' : form.scheduleName.$invalid && form.scheduleName.$dirty }">
                             <label class="col-sm-3 form-control-label" translate>label.enterScheduleName</label>
                             <div class="col-sm-9">
-                                <select class="form-control" name="scheduleName" ng-model="substituteObj.name" style="border: none" ng-change="saveScheduleDetail('check')"
+                                <select class="form-control" name="scheduleName" ng-model="substituteObj.name" style="border: none" ng-change="saveScheduleDetail('check','path')"
                                         ng-options="schedul.path as schedul.path for schedul in _schedules | orderBy:'path'">
                                 </select>
                                 <div class="input-dropdown" style="margin-bottom: -25px">

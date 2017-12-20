@@ -4667,6 +4667,18 @@
                     vm.dashboardLayout[i].visible = false;
                 } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && !vm.permission.DailyPlan.view.status) {
                     vm.dashboardLayout[i].visible = false;
+                } else if (vm.dashboardLayout[i].name == 'ordersOverview' && !vm.permission.Order.view.status) {
+                    vm.dashboardLayout[i].visible = false;
+                } else if (vm.dashboardLayout[i].name == 'ordersSummary' && !vm.permission.Order.view.status) {
+                    vm.dashboardLayout[i].visible = false;
+                } else if (vm.dashboardLayout[i].name == 'tasksOverview' && !vm.permission.Job.view.status) {
+                    vm.dashboardLayout[i].visible = false;
+                } else if (vm.dashboardLayout[i].name == 'tasksSummary' && !vm.permission.Job.view.status) {
+                    vm.dashboardLayout[i].visible = false;
+                }else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && !vm.permission.YADE.view.transfers) {
+                    vm.dashboardLayout[i].visible = false;
+                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && !vm.permission.YADE.view.transfers) {
+                    vm.dashboardLayout[i].visible = false;
                 }
                 if (vm.dashboardLayout[i].visible) {
                     vm.dashboard.widgets.push(vm.dashboardLayout[i]);

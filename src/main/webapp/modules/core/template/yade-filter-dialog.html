@@ -17,7 +17,6 @@
                     <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
                            class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
                            ng-maxlength="25" ng-model="yadeFilter.name" ng-blur="checkFilterName()">
-
                     <div class="help-block text-danger" ng-if="form.filterName.$dirty"
                          ng-messages="form.filterName.$error">
                         <div ng-message="required" translate>message.requiredError</div>
@@ -28,9 +27,7 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.profileId</label>
 
                 <div class=" col-sm-6">
@@ -38,8 +35,7 @@
                            ng-model="yadeFilter.profileId">
                 </div>
             </div>
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.mandator</label>
 
                 <div class=" col-sm-6">
@@ -49,7 +45,6 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 " translate>label.status</label>
-
                 <div class="col-sm-8">
                     <label class="md-check w">
                         <input type="checkbox" data-checklist-model="yadeFilter.states"
@@ -68,8 +63,6 @@
                     </label>
                 </div>
             </div>
-
-
             <div class="form-group row">
                 <label class="col-sm-4 " translate>label.operations</label>
 
@@ -96,16 +89,6 @@
                     </label>
                 </div>
             </div>
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                <label class="col-sm-4 form-control-label" translate>label.protocol</label>
-
-                <div class=" col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.protocol' | translate}}" name="protocol"
-                           ng-model="yadeFilter.protocol">
-                </div>
-            </div>
-
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
 
@@ -118,9 +101,7 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.sourceFileName</label>
 
                 <div class=" col-sm-6">
@@ -128,17 +109,14 @@
                            ng-model="yadeFilter.sourceFileName">
                 </div>
             </div>
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.targetFileName</label>
-
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}" name="targetFileName"
                            ng-model="yadeFilter.targetFileName">
                 </div>
             </div>
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.sourceHost</label>
 
                 <div class=" col-sm-6">
@@ -146,8 +124,14 @@
                            ng-model="yadeFilter.sourceHost">
                 </div>
             </div>
-
-            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.sourceProtocol</label>
+                <div class=" col-sm-6">
+                    <input class="form-control" placeholder="{{'placeholder.sourceProtocol' | translate}}"
+                           name="sourceProtocol" ng-model="yadeFilter.sourceProtocol">
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.targetHost</label>
 
                 <div class=" col-sm-6">
@@ -155,8 +139,13 @@
                            ng-model="yadeFilter.targetHost">
                 </div>
             </div>
-
-
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.targetProtocol</label>
+                <div class=" col-sm-6">
+                    <input class="form-control" placeholder="{{'placeholder.targetProtocol' | translate}}"
+                           name="targetProtocol" ng-model="yadeFilter.targetProtocol">
+                </div>
+            </div>
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                 <label class="col-sm-4" translate>label.sharedFilter</label>
 

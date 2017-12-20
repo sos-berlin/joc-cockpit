@@ -788,19 +788,6 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.protocol</label>
-
-                            <div class=" col-sm-6">
-                                <input type="text" class="form-control"
-                                       placeholder="{{'placeholder.protocol' | translate}}" name="protocol"
-                                       ng-model="yadeSearch.protocol">
-                            </div>
-                        </div>
-
-
                         <div class="form-group row"
                              ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
@@ -822,9 +809,7 @@
                                        ng-model="yadeSearch.targetFileName">
                             </div>
                         </div>
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                        <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
 
                             <div class=" col-sm-6">
@@ -833,9 +818,16 @@
                                        ng-model="yadeSearch.sourceHost">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceProtocol</label>
 
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.sourceProtocol' | translate}}"
+                                       name="sourceProtocol"
+                                       ng-model="yadeSearch.sourceProtocol">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetHost</label>
 
                             <div class=" col-sm-6">
@@ -844,7 +836,15 @@
                                        ng-model="yadeSearch.targetHost">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetProtocol</label>
 
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.targetProtocol' | translate}}"
+                                       name="targetProtocol"
+                                       ng-model="yadeSearch.targetProtocol">
+                            </div>
+                        </div>
 
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>

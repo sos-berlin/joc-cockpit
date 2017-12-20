@@ -1274,5 +1274,8 @@
   "label.selectJobScheduler": "Choose JobScheduler",
   "label.dashboardWidgetLayout": "Dashboard Widget Layout",
   "label.defaultLayout": "Default Layout",
-  "label.customLayout": "Custom Layout"
+  "label.customLayout": "Custom Layout",
+  "label.sourceProtocol": "Source Protocol",
+  "placeholder.sourceProtocol": "Source Protocol",
+  "placeholder.targetProtocol": "Target Protocol"
 }

@@ -10112,8 +10112,12 @@
             vm.substituteObj.fromTime = '00:00';
             vm.substituteObj.toTime = '00:00';
         }
-        vm.saveScheduleDetail = function (param) {
-
+        vm.saveScheduleDetail = function (param,path) {
+            if(path){
+                var name =  angular.copy(vm.substituteObj.name);
+                vm.substituteObj.name = name.substring(name.lastIndexOf('/')+1);
+                vm.substituteObj.folder = name.substring(0, name.lastIndexOf('/'));
+            }
             vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
             if (!vm.substituteObj.fromTime) {

@@ -4617,9 +4617,9 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                job.date.setHours(job.time.getHours());
-                job.date.setMinutes(job.time.getMinutes());
-                job.date.setSeconds(job.time.getSeconds());
+                job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
             }
 
             if (job.date && job.at == 'later') {
@@ -6094,9 +6094,9 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                job.date.setHours(job.time.getHours());
-                job.date.setMinutes(job.time.getMinutes());
-                job.date.setSeconds(job.time.getSeconds());
+                job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
             }
 
             if (job.date && job.at == 'later') {
