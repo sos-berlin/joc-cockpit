@@ -964,7 +964,7 @@
   "placeholder.enterComment": "コメント入力",
   "placeholder.enterJobChainPath": "ジョブチェーンのパスを入力",
   "placeholder.enterJobPath": "ジョブファイルパス",
-  "placeholder.enterJobs": "カンマ区切りで複数ジョブを入力 ",
+  "placeholder.enterJobs": "カンマ区切りで複数ジョブを入力",
   "placeholder.enterKeywords": "キーワード検索",
   "placeholder.enterOrSelectPermission": "選択パーミッション入力",
   "placeholder.enterOrderId": "オーダーID",
@@ -1277,5 +1277,6 @@
   "label.customLayout": "カスタムレイアウト",
   "label.sourceProtocol": "ソースプロトコル",
   "placeholder.sourceProtocol": "ソースプロトコル",
-  "placeholder.targetProtocol": "ターゲットプロトコル"
+  "placeholder.targetProtocol": "ターゲットプロトコル",
+  "placeholder.enterCalendars": "複数のカレンダーをコンマで区切って入力する"
 }

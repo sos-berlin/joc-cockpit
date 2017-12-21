@@ -163,6 +163,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.calendar</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.enterCalendars' | translate}}" ng-model="auditSearch.calendars">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-sm-2 form-control-label" translate>label.account</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterAccount' | translate}}" ng-model="auditSearch.account">
@@ -181,38 +187,38 @@
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="auditLogTableId" >
                         <thead>
-                        <tr>
-                            <th ng-if="!adtLog.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy('created')"><a><span translate>label.created</span>
-                                <i ng-show="adtLog.filter.sortBy == 'created' && !adtLog.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="adtLog.filter.sortBy == 'created' && adtLog.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy('account')"><a><span translate>label.account</span>
-                                <i ng-show="adtLog.filter.sortBy == 'account' && !adtLog.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="adtLog.filter.sortBy == 'account' && adtLog.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy('request')"><a><span translate>label.request</span>
-                                <i ng-show="adtLog.filter.sortBy == 'request' && !adtLog.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="adtLog.filter.sortBy == 'request' && adtLog.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                <i ng-show="adtLog.filter.sortBy == 'jobChain' && !adtLog.sortReverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="adtLog.filter.sortBy == 'jobChain' && adtLog.sortReverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortBy('orderId')">
+                            <tr>
+                                <th ng-if="!adtLog.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('created')"><a><span translate>label.created</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'created' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'created' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('account')"><a><span translate>label.account</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'account' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'account' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('request')"><a><span translate>label.request</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'request' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'request' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobChain' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobChain' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('orderId')">
                                 <a><span translate>label.orderId</span>
                                     <i ng-show="adtLog.filter.sortBy == 'orderId' && !adtLog.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -223,6 +229,12 @@
                                     <i ng-show="adtLog.filter.sortBy == 'job' && !adtLog.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="adtLog.filter.sortBy == 'job' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('calendar')"><a><span translate>label.calendar</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'calendar' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'calendar' && adtLog.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('comment')"><a><span translate>label.comment</span>
@@ -266,6 +278,7 @@
                             <td><span ng-click="showJobChain(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.jobChain"></span></td>
                             <td><span ng-click="showOrderLink(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.orderId"></span></td>
                             <td><span ng-click="showJob(auditLog.job);" class="text-hover-primary" ng-bind="auditLog.job"></span></td>
+                            <td><span ng-click="showCalendarLink(auditLog.calendar);" class="text-hover-primary" ng-bind="auditLog.calendar"></span></td>
                             <td><span ng-bind="auditLog.comment"></span></td>
                             <td>
                                 <span ng-if="auditLog.timeSpent">

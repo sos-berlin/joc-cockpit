@@ -4568,7 +4568,7 @@
         vm.isDailPlanVisible = true;
 
         vm.dashboard = {widgets: []};
-        vm.dashboardLayout = [];
+        vm.widgetWithPermission = [];
         function initWidgets() {
             if (vm.userPreferences.dashboard && vm.userPreferences.dashboardLayout == 'custom') {
                 vm.dashboardLayout = vm.userPreferences.dashboard;
@@ -4656,66 +4656,65 @@
                 }];
             }
 
-            vm.dashboard.widgets.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
-            vm.dashboardLayout.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
             for (var i = 0; i < vm.dashboardLayout.length; i++) {
-                if (vm.dashboardLayout[i].name == 'agentClusterStatus' && !vm.permission.JobschedulerUniversalAgent.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'agentClusterRunningTasks' && !vm.permission.ProcessClass.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus' && !vm.permission.JobschedulerMasterCluster.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && !vm.permission.DailyPlan.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'ordersOverview' && !vm.permission.Order.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'ordersSummary' && !vm.permission.Order.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'tasksOverview' && !vm.permission.Job.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'tasksSummary' && !vm.permission.Job.view.status) {
-                    vm.dashboardLayout[i].visible = false;
-                }else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && !vm.permission.YADE.view.transfers) {
-                    vm.dashboardLayout[i].visible = false;
-                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && !vm.permission.YADE.view.transfers) {
-                    vm.dashboardLayout[i].visible = false;
+                if (vm.dashboardLayout[i].name == 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus' && vm.permission.JobschedulerMasterCluster.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'ordersOverview' && vm.permission.Order.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'ordersSummary' && vm.permission.Order.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'tasksOverview' && vm.permission.Job.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'tasksSummary' && vm.permission.Job.view.status) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && vm.permission.YADE.view.transfers) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && vm.permission.YADE.view.transfers) {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 }
-                if (vm.dashboardLayout[i].visible) {
-                    vm.dashboard.widgets.push(vm.dashboardLayout[i]);
-                    if (i > 0 && vm.dashboardLayout[i].row == vm.dashboardLayout[i - 1].row && vm.dashboardLayout[i].col == vm.dashboardLayout[i - 1].col) {
-                        if (vm.dashboardLayout[i - 1].sizeX == 4 && vm.dashboardLayout[i].sizeX == 2 && vm.dashboardLayout[i - 1].sizeY == vm.dashboardLayout[i].sizeY) {
-                            vm.dashboardLayout[i - 1].col = 0;
-                            vm.dashboardLayout[i].col = 4;
-                        } else if (vm.dashboardLayout[i - 1].sizeX == 2 && vm.dashboardLayout[i].sizeX == 4 && vm.dashboardLayout[i - 1].sizeY == vm.dashboardLayout[i].sizeY) {
-                            vm.dashboardLayout[i].col = 0;
-                            vm.dashboardLayout[i - 1].col = 4;
+            }
+
+            vm.widgetWithPermission.sort(function (a, b) {
+                if (parseInt(a.row) == parseInt(b.row)) {
+                    return parseInt(a.col) - parseInt(b.col);
+                }
+                return parseInt(a.row) - parseInt(b.row);
+            });
+            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
+                if (vm.widgetWithPermission[i].visible) {
+                    vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
+                    if (i > 0 && vm.widgetWithPermission[i].row == vm.widgetWithPermission[i - 1].row && vm.widgetWithPermission[i].col == vm.widgetWithPermission[i - 1].col) {
+                        if (vm.widgetWithPermission[i - 1].sizeX == 4 && vm.widgetWithPermission[i].sizeX == 2 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
+                            vm.widgetWithPermission[i - 1].col = 0;
+                            vm.widgetWithPermission[i].col = 4;
+                        } else if (vm.widgetWithPermission[i - 1].sizeX == 2 && vm.widgetWithPermission[i].sizeX == 4 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
+                            vm.widgetWithPermission[i].col = 0;
+                            vm.widgetWithPermission[i - 1].col = 4;
                         } else {
-                            vm.dashboardLayout[i].row = vm.dashboardLayout[i].row + 1;
+                            vm.widgetWithPermission[i].row = vm.widgetWithPermission[i].row + 1;
                         }
                     }
                 }
 
-                restrictRestCall(vm.dashboardLayout[i].name, vm.dashboardLayout[i].visible);
-                if (i == vm.dashboardLayout.length - 1)
+                restrictRestCall(vm.widgetWithPermission[i].name, vm.widgetWithPermission[i].visible);
+                if (i == vm.widgetWithPermission.length - 1)
                     vm.loadingImg = false;
             }
+
+
         }
 
         function setWidgetPreference() {
             if (!vm.userPreferences.theme) {
                 return;
             }
-            vm.userPreferences.dashboard = vm.dashboardLayout;
+            vm.userPreferences.dashboard = vm.widgetWithPermission;
             $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
             var configObj = {};
             configObj.jobschedulerId = $scope.schedulerIds.selected;
@@ -4752,19 +4751,19 @@
                 return parseInt(a.row) - parseInt(b.row);
             });
 
-            for (var i = 0; i < vm.dashboardLayout.length; i++) {
-                if (vm.dashboardLayout[i].name == widget.name) {
-                    vm.dashboardLayout[i].visible = true;
+            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
+                if (vm.widgetWithPermission[i].name == widget.name) {
+                    vm.widgetWithPermission[i].visible = true;
                     if (vm.dashboard.widgets.length - 1 >= 0) {
                         if (vm.dashboard.widgets[vm.dashboard.widgets.length - 1].sizeY == 2) {
-                            vm.dashboardLayout[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 2;
+                            vm.widgetWithPermission[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 2;
                         }
                         else {
-                            vm.dashboardLayout[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 1;
+                            vm.widgetWithPermission[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 1;
                         }
-                        vm.dashboardLayout[i].col = 0;
+                        vm.widgetWithPermission[i].col = 0;
                     }
-                    vm.dashboard.widgets.push(vm.dashboardLayout[i]);
+                    vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
                     break;
                 }
             }
@@ -4801,8 +4800,8 @@
                 }
                 return parseInt(a.row) - parseInt(b.row);
             });
-            for (var i = 0; i < vm.dashboard.widgets.length; i++) {
 
+            for (var i = 0; i < vm.dashboard.widgets.length; i++) {
                 if (i > 0) {
                     if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
                         if (vm.dashboard.widgets[i].sizeY == vm.dashboard.widgets[i - 1].sizeY) {
@@ -5714,6 +5713,7 @@
                 vm.yadeSummary = res;
                 isLoadedFileSummary = true;
             }, function (err) {
+                if (err.data)
                 vm.notPermissionForFileSummary = !err.data.isPermitted;
                 isLoadedFileSummary = true;
             })
@@ -5923,7 +5923,7 @@
 
         if (!vm.isEmpty(vm.userPreferences)) {
             initWidgets();
-            if (!vm.userPreferences.dashboard)
+            if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();
         }
 
@@ -5932,7 +5932,7 @@
             initConfig();
             if (vm.loadingImg)
                 initWidgets();
-            if (!vm.userPreferences.dashboard) {
+            if (vm.userPreferences && !vm.userPreferences.dashboard) {
                 setWidgetPreference();
             }
         });

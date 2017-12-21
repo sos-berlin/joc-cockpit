@@ -972,7 +972,7 @@
   "placeholder.enterComment": "Enter a Reason",
   "placeholder.enterJobChainPath": "Enter Job Chain Path",
   "placeholder.enterJobPath": "Enter Job Path",
-  "placeholder.enterJobs": "Enter multiple Jobs separated by comma ",
+  "placeholder.enterJobs": "Enter multiple Jobs separated by comma",
   "placeholder.enterKeywords": "Enter keywords to view matching scrolling logs",
   "placeholder.enterOrSelectPermission": "Enter or Select Permission",
   "placeholder.enterOrderId": "Enter Order ID",
@@ -1277,5 +1277,6 @@
   "label.customLayout": "Custom Layout",
   "label.sourceProtocol": "Source Protocol",
   "placeholder.sourceProtocol": "Source Protocol",
-  "placeholder.targetProtocol": "Target Protocol"
+  "placeholder.targetProtocol": "Target Protocol",
+  "placeholder.enterCalendars": "Enter multiple Calendars separated by comma"
 }

@@ -405,7 +405,7 @@
                                            ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}"
                                            data-autoclose="1"
                                            placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
+                                           data-max-date="{{currentTime}}"
                                            bs-datepicker type="text">
                                     <input valid-time maxlength="8" ng-disabled="!jobChainSearch.to"
                                            class="form-control input-time m-l" ng-model="jobChainSearch.toTime"
@@ -558,7 +558,7 @@
                                            ng-model="jobSearch.to" data-date-format="{{dataFormat}}"
                                            data-autoclose="1"
                                            placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
+                                           data-max-date="{{currentTime}}"
                                            bs-datepicker type="text">
                                     <input valid-time maxlength="8" ng-disabled="!jobSearch.to"
                                            class="form-control input-time m-l" ng-model="jobSearch.toTime"
@@ -720,7 +720,7 @@
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
-                                       ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{yadeSearch.from}}" data-max-date="{{currentTime}}"
+                                       ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input valid-time maxlength="8" ng-disabled="!yadeSearch.to"
                                        class="form-control input-time m-l" ng-model="jobSearch.toTime"

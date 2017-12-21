@@ -391,8 +391,8 @@
                         <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
-                        <div class="table-responsive">
-                            <table style="width: 100%" ng-if="!notPermissionForFileOverview">
+                        <div class="table-responsive" ng-if="!notPermissionForFileOverview">
+                            <table style="width: 100%" >
                                 <tr class="text-center">
                                     <td width="25%">
                                         <div translate>label.running</div>
@@ -422,6 +422,14 @@
                                     </td>
                                 </tr>
                             </table>
+                        </div>
+                        <div ng-if="notPermissionForFileOverview">
+                            <div class="text-u-c text-center text m-t-md m-b">
+                                {{'message.noInformationAvailable' | translate}}
+                            </div>
+                        </div>
+                        <div ng-hide="notPermissionForFileOverview" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !yadeOverview}">
+                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                         </div>
                     </div>
                 </div>
@@ -472,7 +480,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table style="width: 100%">
+                        <table style="width: 100%" ng-if="!notPermissionForFileSummary">
                             <tr class="text-center">
                                 <td width="50%">
                                     <div translate>label.successful</div>
@@ -489,9 +497,15 @@
                                     <a class="text-lg _600 " ng-click="showYadeSummary('FAILED')" ng-class="{'crimson':yadeSummary.failed  >0}" ng-bind="yadeSummary.failed || 0"></a>
                                 </td>
                             </tr>
-
-
                         </table>
+                        <div ng-if="notPermissionForFileSummary">
+                            <div class="text-u-c text-center text m-t-md m-b">
+                                {{'message.noInformationAvailable' | translate}}
+                            </div>
+                        </div>
+                        <div ng-hide="notPermissionForFileSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !yadeSummary}">
+                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        </div>
                     </div>
                 </div>
                 <div id="dailyPlanOverview1" ng-if="widget.name == 'dailyPlanOverview'" style="min-height: 110px;max-height: 130px" class="box">

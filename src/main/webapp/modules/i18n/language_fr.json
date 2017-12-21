@@ -972,7 +972,7 @@
   "placeholder.enterComment": "Saisir une Justification",
   "placeholder.enterJobChainPath": "Saisir le chemin d'accès des Chaînes des Tâches",
   "placeholder.enterJobPath": "Saisir le Chemin d'Accès de la Tâche",
-  "placeholder.enterJobs": "Saisir plusieurs Tâches séparés par des virgules ",
+  "placeholder.enterJobs": "Saisir plusieurs Tâches séparés par des virgules",
   "placeholder.enterKeywords": "Saisir les mots clés pour visualiser les Logs",
   "placeholder.enterOrSelectPermission": "Saisir ou sélectionner la Permission",
   "placeholder.enterOrderId": "Saisir ID Ordre",
@@ -1277,5 +1277,6 @@
   "label.customLayout": "Schéma personnalisé",
   "label.sourceProtocol": "Protocole source",
   "placeholder.sourceProtocol": "Protocole source",
-  "placeholder.targetProtocol": "Protocole cible"
+  "placeholder.targetProtocol": "Protocole cible",
+  "placeholder.enterCalendars": "Saisir plusieurs Calendriers séparés par des virgules"
 }

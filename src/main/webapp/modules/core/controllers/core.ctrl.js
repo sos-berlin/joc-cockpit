@@ -667,8 +667,12 @@
             vm.showHistoryImmeditaly = true;
             $location.path('/job_chain').search({path: path,scheduler_id:vm.schedulerIds.selected});
         };
-        vm.showOrderLink1 = function (order) {
-            $location.path('/order').search({path: order,scheduler_id:vm.schedulerIds.selected});
+        vm.showOrderLink1 = function (jobChain, orderId) {
+            var path = jobChain;
+            if(orderId){
+                path = jobChain+','+orderId;
+            }
+            $location.path('/order').search({path: path,scheduler_id:vm.schedulerIds.selected});
         };
         vm.showAgentCluster = function (agentCluster) {
              $location.path('/agent_cluster').search({path: agentCluster,scheduler_id:vm.schedulerIds.selected});
@@ -1191,11 +1195,8 @@
         vm.logout = function (timeout) {
             logout = true;
             UserService.logout().then(function () {
-
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-
-                vm.userPreferences = {};
                 if (timeout) {
                     $window.localStorage.setItem('clientLogs', {});
                     $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
@@ -1206,13 +1207,12 @@
                         $window.sessionStorage.removeItem(key);
                     });
                 }
-                $rootScope.$broadcast('reloadUser');
 
-
-                if(!timeout)
+                if (!timeout) {
                     window.location.reload();
-                else{
-                     $location.path('/login').search({});
+                } else {
+                    $rootScope.$broadcast('reloadUser');
+                    $location.path('/login').search({});
                 }
             });
         };

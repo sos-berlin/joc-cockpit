@@ -972,7 +972,7 @@
   "placeholder.enterComment": "Begründung eingeben",
   "placeholder.enterJobChainPath": "Angabe des Pfads der Job-Kette",
   "placeholder.enterJobPath": "Job-Pfad angeben",
-  "placeholder.enterJobs": "Angabe mehrerer Jobs durch Komma getrennt ",
+  "placeholder.enterJobs": "Angabe mehrerer Jobs durch Komma getrennt",
   "placeholder.enterKeywords": "Zur Anzeige des laufenden Protokolls Suchbegriffe eingeben",
   "placeholder.enterOrSelectPermission": "Berechtigung angeben oder auswählen",
   "placeholder.enterOrderId": "Auftragskennung angeben",
@@ -1277,5 +1277,6 @@
   "label.customLayout": "Angepasstes Layout",
   "label.sourceProtocol": "Protokoll Quellsystem",
   "placeholder.sourceProtocol": "Protokoll Quellsystem",
-  "placeholder.targetProtocol": "Protokoll Zielsystem"
+  "placeholder.targetProtocol": "Protokoll Zielsystem",
+  "placeholder.enterCalendars": "Angabe mehrerer Kalender durch Komma getrennt"
 }
