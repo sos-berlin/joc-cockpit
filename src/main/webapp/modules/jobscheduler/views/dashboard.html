@@ -6,10 +6,34 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline m-l-sm">
-                        <button ng-if="userPreferences.dashboardLayout == 'custom'" class="btn btn-grey btn-sm m-l-sm" ng-click="addWidgetDialog()" >
+                    <div class="inline" ng-if="!editLayoutObj">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="editLayout()" >
+                            <i class="fa fa-pencil"></i>&nbsp;
+                            <span translate>button.editLayout</span>
+                        </button>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" >
+                                <i class="fa fa-cog"></i>&nbsp;
+                                <span translate>button.tools</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item " ng-click="resetLayout()" translate>button.resetLayout</a>
+                                <a class="dropdown-item " ng-click="refreshLayout()" translate>button.refreshLayout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline" ng-if="editLayoutObj">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="addWidgetDialog()" >
                             <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.widget</span>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="saveWidget()" >
+                            <i class="fa fa-save"></i>&nbsp;
+                            <span translate>button.save</span>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="cancelWidget()" >
+                            <i class="fa fa-times"></i>&nbsp;
+                            <span translate>button.cancel</span>
                         </button>
                     </div>
                 </div>
@@ -19,6 +43,7 @@
 </div>
 
 <div class="scroll-y max-ht">
+    
     <div class="m-a hide" ng-class="{'show':dashboard.widgets.length == 0  && !loadingImg}" >
         <div class="m-a-sm emtpy-text" >
             <a href="" ng-click="addWidgetDialog()" translate>message.addNewWidget</a>
@@ -26,11 +51,11 @@
     </div>
     <div gridster="gridsterOpts">
         <ul>
-            <li gridster-item="widget" ng-repeat="widget in dashboard.widgets" id="{{widget.name}}">
+            <li gridster-item="widget" ng-repeat="widget in dashboard.widgets track by $index" id="{{widget.name}}">
                 <div id="agentClusterStatus1" ng-if="widget.name == 'agentClusterStatus'" style="min-height: 183px;max-height: 247px" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterStatus</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}" ng-hide="!isLoadedAgentCluster">
                         <div class="col-xs-offset-1 col-xs-4"
@@ -51,13 +76,13 @@
                         </div>
                     </div>
                     <div ng-hide="agentClusterData.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedAgentCluster}">
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
                     </div>
                 </div>
                 <div id="agentClusterRunningTasks1" ng-if="widget.name == 'agentClusterRunningTasks'" style="min-height: 188px;max-height: 247px" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterRunningTasks</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool" >
                         <ul class="nav" >
@@ -76,13 +101,17 @@
                         {{'message.noDataAvailable' | translate}}
                     </div>
                     <div ng-hide="agentStatusChart[0].values.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                     </div>
                 </div>
                 <div id="masterClusterStatus1" ng-if="widget.name == 'masterClusterStatus'" style="min-height: 300px;max-height: 468px;" class="box">
                     <div class="box-header b-b remove">
-                        <h3 translate>label.masterClusterStatus</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <h3 >
+                            <span ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'" translate>label.masterClusterStatus</span>
+                            <span ng-if="selectedJobScheduler.clusterType._type == 'STANDALONE'"  translate>label.standaloneJobSchedulerMaster</span>
+                        </h3>
+
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool hide"
                          ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
@@ -112,13 +141,13 @@
                                              on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port,id)"></cluster-status-view>
                     </div>
                     <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}" style="padding: 140px 0 155px 0">
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                     </div>
                 </div>
                 <div id="ordersOverview1" ng-if="widget.name == 'ordersOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.ordersOverview</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
@@ -171,14 +200,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForSnapshot" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !snapshot}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>
                 <div id="ordersSummary1" ng-if="widget.name == 'ordersSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.ordersSummary</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -250,14 +279,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !orderSummary}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
                         </div>
                     </div>
                 </div>
                 <div id="tasksOverview1" ng-if="widget.name == 'tasksOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.tasksOverview</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
@@ -304,14 +333,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForTaskSnapshot" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !jobSnapshot}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>
                 <div id="tasksSummary1" ng-if="widget.name == 'tasksSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.tasksSummary</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -381,14 +410,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForTaskSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !taskSummary}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>
                 <div id="fileTransferOverview1" ng-if="widget.name == 'fileTransferOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.fileTransferOverview</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive" ng-if="!notPermissionForFileOverview">
@@ -429,14 +458,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForFileOverview" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !yadeOverview}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>
                 <div id="fileTransferSummary1" ng-if="widget.name == 'fileTransferSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.fileTransferSummary</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -504,14 +533,14 @@
                             </div>
                         </div>
                         <div ng-hide="notPermissionForFileSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !yadeSummary}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>
                 <div id="dailyPlanOverview1" ng-if="widget.name == 'dailyPlanOverview'" style="min-height: 110px;max-height: 130px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
-                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool">
                         <div class="btn-group m-l-sm">
@@ -534,7 +563,7 @@
                              ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable
                         </div>
                         <div class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': totalPlanData == undefined}">
-                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                         </div>
                     </div>
                 </div>

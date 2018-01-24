@@ -16,7 +16,7 @@
         <div class="col-md-6 ">
             <h5 class=" _300 m-t-sm">
                 <span ng-if="orderId">{{jobChain}} - <i class="text-muted">{{orderId}}</i></span>
-                <span ng-if="taskId">{{job}} - <i class="text-muted">{{taskId}}</i></span>
+                <span ng-if="taskId"><span ng-if="job">{{job}} </span> <span ng-if="!job" translate>label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
             </h5>
         </div>
         <div class="col-md-6 ">

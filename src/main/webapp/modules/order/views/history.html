@@ -1218,28 +1218,28 @@
                         </thead>
                         <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
-                            <td ng-click="showLogWindow(null, transfer)" ng-if="!historyView.current" >
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td ng-click="showLogWindow(null, transfer)" class="nowrap" >
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                 <span class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.profile"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.mandator"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer._operation"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.source.host"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.target.host"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.target.protocol"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.numOfFiles"></td>
-                            <td ng-click="showLogWindow(null, transfer)" class="text-danger" ng-bind="transfer.error.message"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.start | stringToDate"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.end | stringToDate"></td>
-                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.start | duration:transfer.end"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.profile"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.mandator"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer._operation"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.source.host"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.target.host"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.target.protocol"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.numOfFiles"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" class="text-danger" ng-bind="transfer.error.message"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.end | stringToDate"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>

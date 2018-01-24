@@ -136,7 +136,7 @@
             restrict: "E",
             templateUrl: "modules/core/template/toggle-view.html",
             controller: ["$window", "$scope", "$location", function (e, t, l) {
-                var view = 'grid';
+                var view = 'list';
                 if(e.sessionStorage.preferences) {
                    if(JSON.parse(e.sessionStorage.preferences).pageView){
                        view = JSON.parse(e.sessionStorage.preferences).pageView;
@@ -185,7 +185,7 @@
                 } else if (l.path().match('/orders_overview')) {
                     t.pageView = views.orderOverView;
                 }else if (l.path().match('/tasks_overview')) {
-                    t.pageView = views.jobOverView || 'grid';
+                    t.pageView = views.jobOverView || 'list';
                 }else if (l.path().match('/users/')) {
                     t.pageView = views.permission;
                 }else{

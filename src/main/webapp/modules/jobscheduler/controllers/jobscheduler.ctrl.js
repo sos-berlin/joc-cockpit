@@ -4524,33 +4524,46 @@
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService) {
         var vm = $scope;
         vm.loadingImg = true;
-        var isDragging = false;
 
-        function initConfig() {
+        function initConfig(flag) {
             vm.gridsterOpts = {
                 resizable: {
-                    enabled: vm.userPreferences.dashboardLayout == 'custom',
-                    resize: function () {
-                        isDragging = true;
-                    },
+                    enabled: flag,
                     stop: function () {
-                        setWidgetPreference();
-                        isDragging = false;
+                       vm.loadingImg = true;
+                        var count = 0;
+                        var interval = $interval(function () {
+                            setClusterWidgetHeight();
+                            count = count + 1;
+                            if (count > 2) {
+                                vm.loadingImg = false;
+                                $interval.cancel(interval)
+                            }
+                        }, 250);
                     }
                 },
                 draggable: {
-                    enabled: vm.userPreferences.dashboardLayout == 'custom',
-                    drag: function () {
-                        isDragging = true;
-                    },
+                    enabled: flag,
                     stop: function () {
-                        setWidgetPreference();
-                        isDragging = false;
+                       vm.loadingImg = true;
+                        var count = 0;
+                        if(vm.isMasterClusterVisible){
+                            prepareClusterStatusData();
+                        }
+                        var interval = $interval(function () {
+                            setClusterWidgetHeight();
+                            count = count + 1;
+                            if (count > 2) {
+                                vm.loadingImg = false;
+                                $interval.cancel(interval);
+
+                            }
+                        }, 250);
                     }
                 }
             };
         }
-        initConfig();
+        initConfig(false);
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
@@ -4566,11 +4579,14 @@
         vm.isFileOverviewVisible = true;
         vm.isFileSummaryVisible = true;
         vm.isDailPlanVisible = true;
+        vm.editLayoutObj  = false;
 
         vm.dashboard = {widgets: []};
         vm.widgetWithPermission = [];
         function initWidgets() {
-            if (vm.userPreferences.dashboard && vm.userPreferences.dashboardLayout == 'custom') {
+            vm.dashboard = {widgets: []};
+            vm.widgetWithPermission = [];
+            if (vm.userPreferences.dashboard) {
                 vm.dashboardLayout = vm.userPreferences.dashboard;
             } else {
                 vm.dashboardLayout = [{
@@ -4661,7 +4677,7 @@
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 } else if (vm.dashboardLayout[i].name == 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus' && vm.permission.JobschedulerMasterCluster.view.status) {
+                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus') {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
@@ -4686,28 +4702,85 @@
                 }
                 return parseInt(a.row) - parseInt(b.row);
             });
+
             for (var i = 0; i < vm.widgetWithPermission.length; i++) {
                 if (vm.widgetWithPermission[i].visible) {
                     vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
-                    if (i > 0 && vm.widgetWithPermission[i].row == vm.widgetWithPermission[i - 1].row && vm.widgetWithPermission[i].col == vm.widgetWithPermission[i - 1].col) {
-                        if (vm.widgetWithPermission[i - 1].sizeX == 4 && vm.widgetWithPermission[i].sizeX == 2 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
-                            vm.widgetWithPermission[i - 1].col = 0;
-                            vm.widgetWithPermission[i].col = 4;
-                        } else if (vm.widgetWithPermission[i - 1].sizeX == 2 && vm.widgetWithPermission[i].sizeX == 4 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
-                            vm.widgetWithPermission[i].col = 0;
-                            vm.widgetWithPermission[i - 1].col = 4;
-                        } else {
-                            vm.widgetWithPermission[i].row = vm.widgetWithPermission[i].row + 1;
+                    if (i > 0) {
+                        if (vm.widgetWithPermission[i].row == vm.widgetWithPermission[i - 1].row && vm.widgetWithPermission[i].col == vm.widgetWithPermission[i - 1].col) {
+                            if (vm.widgetWithPermission[i - 1].sizeX == 4 && vm.widgetWithPermission[i].sizeX == 2 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
+                                vm.widgetWithPermission[i - 1].col = 0;
+                                vm.widgetWithPermission[i].col = 4;
+                            } else if (vm.widgetWithPermission[i - 1].sizeX == 2 && vm.widgetWithPermission[i].sizeX == 4 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
+                                vm.widgetWithPermission[i].col = 0;
+                                vm.widgetWithPermission[i - 1].col = 4;
+                            } else {
+                                vm.widgetWithPermission[i].row = vm.widgetWithPermission[i].row + 1;
+                            }
+                        } else if (vm.widgetWithPermission[i].row > vm.widgetWithPermission[i - 1].row + 1) {
+
+                            if (vm.widgetWithPermission[i - 1].name != 'masterClusterStatus')
+                                vm.widgetWithPermission[i].row = vm.widgetWithPermission[i - 1].row + 1;
                         }
                     }
                 }
-
                 restrictRestCall(vm.widgetWithPermission[i].name, vm.widgetWithPermission[i].visible);
-                if (i == vm.widgetWithPermission.length - 1)
-                    vm.loadingImg = false;
             }
+            setWidgetHeight();
 
+        }
+        vm.editLayout = function(){
 
+            vm._tempDashboard = angular.copy(vm.dashboard);
+            vm.editLayoutObj  = true;
+             initConfig(true);
+            if (t2) {
+                $timeout.cancel(t2);
+            }
+            t2 = $timeout(function () {
+                setClusterWidgetHeight();
+            }, 50);
+        };
+        vm.resetLayout = function(){
+            vm.userPreferences.dashboard = undefined;
+            initWidgets();
+            setWidgetPreference();
+        };
+
+        vm.saveWidget = function(){
+            vm.editLayoutObj  = false;
+             initConfig(false);
+            if (t2) {
+                $timeout.cancel(t2);
+            }
+            t2 = $timeout(function () {
+                setClusterWidgetHeight();
+            }, 50);
+            setWidgetPreference();
+        };
+
+        vm.cancelWidget = function(){
+            vm.editLayoutObj  = false;
+             vm.dashboard = angular.copy(vm._tempDashboard);
+             initConfig(false);
+            if (t2) {
+                $timeout.cancel(t2);
+            }
+            t2 = $timeout(function () {
+                setClusterWidgetHeight();
+            }, 50);
+        };
+
+        function setWidgetHeight(){
+            var count =0;
+            var interval = $interval(function () {
+                setClusterWidgetHeight();
+                count = count+1;
+                if(count >2){
+                    vm.loadingImg = false;
+                    $interval.cancel(interval)
+                }
+            }, 850);
         }
 
         function setWidgetPreference() {
@@ -4728,7 +4801,6 @@
         }
 
         vm.addWidgetDialog = function () {
-            isDragging = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-widget-dialog.html',
                 controller: 'DialogCtrl',
@@ -4737,9 +4809,9 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                isDragging = false;
+
             }, function () {
-                isDragging = false;
+
             });
         };
 
@@ -4754,46 +4826,50 @@
             for (var i = 0; i < vm.widgetWithPermission.length; i++) {
                 if (vm.widgetWithPermission[i].name == widget.name) {
                     vm.widgetWithPermission[i].visible = true;
-                    if (vm.dashboard.widgets.length - 1 >= 0) {
-                        if (vm.dashboard.widgets[vm.dashboard.widgets.length - 1].sizeY == 2) {
-                            vm.widgetWithPermission[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 2;
-                        }
-                        else {
-                            vm.widgetWithPermission[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 1;
-                        }
-                        vm.widgetWithPermission[i].col = 0;
+                    if (vm.dashboard.widgets.length == 0) {
+                        vm.widgetWithPermission[i].row = 0;
+
+                    } else {
+                        vm.widgetWithPermission[i].row = vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row + 1
                     }
+                    vm.widgetWithPermission[i].col = 0;
                     vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
                     break;
                 }
             }
 
             restrictRestCall(widget.name, true);
-            if (t2) {
-                $timeout.cancel(t2);
-            }
-            t2 = $timeout(function () {
-                setClusterWidgetHeight();
-                setWidgetPreference();
-            }, 100);
+            setWidgetHeight();
+            setWidgetPreference();
         };
 
         vm.removeWidget = function (widget) {
-            isDragging = true;
+            vm.loadingImg = true;
             widget.visible = false;
-            restrictRestCall(widget.name, widget.visible);
-            vm.dashboard.widgets.splice(vm.dashboard.widgets.indexOf(widget), 1);
-            if (t2) {
-                $timeout.cancel(t2);
+            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
+                if (vm.widgetWithPermission[i].name == widget.name) {
+                    vm.widgetWithPermission[i].visible = false;
+                    break;
+                }
             }
-            t2 = $timeout(function () {
-                setClusterWidgetHeight();
-                setWidgetPreference();
-                isDragging = false;
-            }, 100);
-        };
+            for (var j = 0; j < vm.dashboard.widgets.length; j++) {
+                if (vm.dashboard.widgets[j].name == widget.name) {
+                    vm.dashboard.widgets.splice(j, 1);
+                    break;
+                }
+            }
 
-        function setClusterWidgetHeight() {
+            var count = 0;
+            var interval = $interval(function () {
+                setClusterWidgetHeight();
+                count = count + 1;
+                if (count > 2) {
+                    vm.loadingImg = false;
+                    $interval.cancel(interval)
+                }
+            }, 250);
+        };
+        vm.refreshLayout = function(){
             vm.dashboard.widgets.sort(function (a, b) {
                 if (parseInt(a.row) == parseInt(b.row)) {
                     return parseInt(a.col) - parseInt(b.col);
@@ -4803,263 +4879,92 @@
 
             for (var i = 0; i < vm.dashboard.widgets.length; i++) {
                 if (i > 0) {
-                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
-                        if (vm.dashboard.widgets[i].sizeY == vm.dashboard.widgets[i - 1].sizeY) {
-                            ht3 = $('#' + vm.dashboard.widgets[i].name + '1').innerHeight();
-                            ht4 = $('#' + vm.dashboard.widgets[i - 1].name + '1').innerHeight();
-                            if (ht3 > $('#' + vm.dashboard.widgets[i].name + '1').css('max-height')) {
-                                ht3 = $('#' + vm.dashboard.widgets[i].name + '1').css('max-height');
+                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row && vm.dashboard.widgets[i].col == vm.dashboard.widgets[i - 1].col) {
+                        if (vm.dashboard.widgets[i - 1].sizeX == 4 && vm.dashboard.widgets[i].sizeX == 2 && vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY) {
+                            vm.dashboard.widgets[i - 1].col = 0;
+                            vm.dashboard.widgets[i].col = 4;
+                        } else if (vm.dashboard.widgets[i - 1].sizeX == 2 && vm.dashboard.widgets[i].sizeX == 4 && vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY) {
+                            vm.dashboard.widgets[i].col = 0;
+                            vm.dashboard.widgets[i - 1].col = 4;
+                        } else {
+                            vm.dashboard.widgets[i].row = vm.dashboard.widgets[i].row + 1;
+                        }
+                    } else if (vm.dashboard.widgets[i].row > vm.dashboard.widgets[i - 1].row + 1) {
+
+                        if (vm.dashboard.widgets[i - 1].name != 'masterClusterStatus')
+                            vm.dashboard.widgets[i].row = vm.dashboard.widgets[i - 1].row + 1;
+                    }
+                }
+
+                restrictRestCall(vm.dashboard.widgets[i].name, vm.dashboard.widgets[i].visible);
+            }
+            setWidgetHeight();
+        };
+
+        function setClusterWidgetHeight() {
+            vm.dashboard.widgets.sort(function (a, b) {
+                if (parseInt(a.row) == parseInt(b.row)) {
+                    return parseInt(a.col) - parseInt(b.col);
+                }
+                return parseInt(a.row) - parseInt(b.row);
+            });
+            for (var i = 0; i < vm.dashboard.widgets.length; i++) {
+
+                if (vm.dashboard.widgets[i].row > 0) {
+                    if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
+                        $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).css('top'))
+                    } else {
+                        var ht = 0,ht2= 0, top = 0,top2= 0, widgt = '',widgt2='';
+                        if (i - 2 > 0 && (vm.dashboard.widgets[i - 3].row == vm.dashboard.widgets[i].row - 1) ) {
+                            widgt = $('#' + vm.dashboard.widgets[i - 3].name);
+                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+                            if ((vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 2].sizeY == vm.dashboard.widgets[i].sizeY)) {
+                                 widgt2 = $('#' + vm.dashboard.widgets[i - 2].name);
+                                 ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                 top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                if ((ht + top) < (ht2 + top2)) {
+                                    widgt = widgt2;
+                                }
+                            }else if((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)){
+                                 widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
+                                 ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                 top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                if ((ht + top) < (ht2 + top2)) {
+                                    widgt = widgt2;
+                                }
                             }
-                            if (ht4 > $('#' + vm.dashboard.widgets[i - 1].name + '1').css('max-height')) {
-                                ht4 = $('#' + vm.dashboard.widgets[i - 1].name + '1').css('max-height');
-                            }
-                            if (ht3 > ht4) {
-                                $('#' + vm.dashboard.widgets[i - 1].name + '1').css('height', ht3 + 'px');
-                            } else if (ht4 > ht3) {
-                                $('#' + vm.dashboard.widgets[i].name + '1').css('height', ht4 + 'px');
+
+                        } else if (i - 1 > 0 && (vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) ) {
+                            widgt = $('#' + vm.dashboard.widgets[i - 2].name);
+                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+
+                            if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
+                                 widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
+                                 ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                 top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                if ((ht + top) < (ht2 + top2)) {
+
+                                    widgt = widgt2;
+                                }
                             }
 
                         } else {
-                            if (vm.dashboard.widgets[i].sizeY > 1) {
-                                if (i < vm.dashboard.widgets.length && vm.dashboard.widgets[i + 1] && (vm.dashboard.widgets[i - 1].col == vm.dashboard.widgets[i + 1].col) && (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i + 1].row - 1)) {
-                                    ht3 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht4 = $('#' + vm.dashboard.widgets[i + 1].name).innerHeight();
-                                    if (ht3 > $('#' + vm.dashboard.widgets[i].name + '1').css('max-height')) {
-                                        ht3 = $('#' + vm.dashboard.widgets[i].name + '1').css('max-height');
-                                    }
-                                    if (ht4 > $('#' + vm.dashboard.widgets[i + 1].name + '1').css('max-height')) {
-                                        ht4 = $('#' + vm.dashboard.widgets[i + 1].name + '1').css('max-height');
-                                    }
-                                    var clustHt = $('#clusterStatusContainer').innerHeight() || 0;
-                                    if ((ht3 + ht4 - 22) > clustHt) {
-                                        $('#' + vm.dashboard.widgets[i].name + '1').css({
-                                            'height': (ht3 + ht4 - 22) + 'px',
-                                            overflow: ''
-                                        });
-                                    } else {
-                                        $('#' + vm.dashboard.widgets[i].name + '1').css({
-                                            'height': (ht3 + ht4 - 22) + 'px',
-                                            overflow: 'auto'
-                                        });
-                                    }
-                                }
-                            }
+                            widgt = $('#' + vm.dashboard.widgets[i - 1].name);
                         }
+
+                        ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                        top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+
+                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                     }
-                }
-                if (vm.dashboard.widgets[i].row == 0) {
+                } else {
                     $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
-                }
-                else if (vm.dashboard.widgets[i].row > 0) {
-                    if(vm.dashboard.widgets[i - 1]) {
-                        if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
-                            $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                            continue;
-                        }
-                        var ht = 0, ht1 = 0, ht2 = 0, ht3 = 0, ht4 = 0;
-                        var top = 0;
-                        if (i == 1) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
-                                $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                            }
-                        }
-                        if (i == 2) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                    if (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i - 2].sizeY) {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht = ht1 > ht2 ? ht1 : ht2;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                                    }
-                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht2 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                        ht = ht1 > ht2 ? ht2 : ht1;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                                    }
-                                    else {
-                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                            ht4 = ht1 + ht3;
-                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
-                                            ht = ht1 > ht2 ? ht2 : ht1;
-                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                                        }
-
-                                    }
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                            }
-                            else {
-                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 : ht2;
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                            }
-
-                        }
-                        if (i == 3) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
-                                        ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                    }
-                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht2 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                        ht = ht1 > ht2 ? ht2 : ht1;
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                    }
-                                    else {
-                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                            ht4 = ht1 + ht3;
-                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
-                                            ht = ht1 > ht2 ? ht2 : ht1;
-                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                        }
-                                        else {
-                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                            ht = ht1 > ht2 ? ht1 : ht2;
-                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                        }
-
-                                    }
-
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-
-                            } else {
-                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 : ht2;
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                            }
-
-                        }
-
-                        if (i > 3) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
-                                        ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                    }
-                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht2 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                        ht = ht1 > ht2 ? ht2 : ht1;
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                    }
-                                    else {
-                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                            ht4 = ht1 + ht3;
-                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
-                                            ht = ht1 > ht2 ? ht2 : ht1;
-                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                        }
-                                        else {
-                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                            ht = ht1 > ht2 ? ht1 : ht2;
-                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                        }
-
-                                    }
-
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-
-                            } else {
-                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 : ht2;
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                                else {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                                }
-                            }
-
-                        }
-                    }
                 }
             }
         }
 
-        var interval2 = $interval(function () {
-            if (!isDragging)
-                setClusterWidgetHeight();
-        }, 1000);
 
         vm.agentClusters = {};
         if (SOSAuth.jobChain) {
@@ -5324,13 +5229,20 @@
         vm.isLoadedMasterCluster = false;
         function prepareClusterStatusData() {
             if (!vm.isMasterClusterVisible) {
+                $rootScope.$broadcast('reloadScheduleDetail', true);
                 return;
             }
             clusterStatusData = {};
             getDatabase().then(function (res) {
                 clusterStatusData.database = res;
                 getClusterMembersP().then(function (res) {
-                    clusterStatusData.members = res;
+                    clusterStatusData.members  = res;
+                    if(clusterStatusData.members.masters && clusterStatusData.members.masters.length>1) {
+                      
+                        clusterStatusData.members.masters.sort(function (a, b) {
+                            return a.clusterType.precedence - b.clusterType.precedence;
+                        });
+                    }
                     vm.clusterStatusData = clusterStatusData;
                     t2 = $timeout(function () {
                         vm.clusterStatusData = clusterStatusData;
@@ -5357,9 +5269,13 @@
                             $(this).find('.dropdown-menu').css("top", "auto");
                             $(this).find('.dropdown-menu').css("left", "auto");
                         });
+
+
                     }, 60);
+
                 }, function () {
                     vm.isLoadedMasterCluster = true;
+
                 });
             }, function () {
                 vm.isLoadedMasterCluster = true;
@@ -5614,10 +5530,12 @@
                 vm.snapshot = res.orders;
                 vm.notPermissionForSnapshot = '';
                 isLoadedSnapshot = true;
+
             }, function (err) {
                 if (err.data)
                     vm.notPermissionForSnapshot = !err.data.isPermitted;
                 isLoadedSnapshot = true;
+
             });
         };
 
@@ -5636,9 +5554,11 @@
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
                 isLoadedSummary = true;
+
             }, function (err) {
                 vm.notPermissionForSummary = !err.data.isPermitted;
                 isLoadedSummary = true;
+
             })
         };
 
@@ -5656,10 +5576,12 @@
                 vm.jobSnapshot = res.jobs;
                 vm.notPermissionForTaskSnapshot = '';
                 isLoadedTaskSnapshot = true;
+
             }, function (err) {
                 if (err.data)
                     vm.notPermissionForTaskSnapshot = !err.data.isPermitted;
                 isLoadedTaskSnapshot = true;
+
             });
         };
 

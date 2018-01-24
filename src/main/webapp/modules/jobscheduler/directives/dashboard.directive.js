@@ -19,7 +19,7 @@
                 var top = 0;
                 var supervisedMasters = [];
                 var lastId;
-
+                var template = '';
                 function init() {
                     rWidth = 200;
                     rHeight = 130;
@@ -29,11 +29,11 @@
                     top = 0;
                     scope.vMargin = vMargin;
                     supervisedMasters = [];
+                    lastId ='';
+                    template = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 337px;width: 100%;overflow: auto;"> ';
                 }
 
                 init();
-
-                var template = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 337px;width: 100%;overflow: auto;"> ';
 
                 var tWidth = 0;
 
@@ -42,6 +42,7 @@
                     if (scope.clusterStatusData) {
                         init();
                         prepareData();
+
                     } else {
                         $("#clusterStatusContainer").remove();
                         template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
@@ -53,8 +54,8 @@
                 }
 
                 scope.$on("clusterStatusDataChanged", function () {
-                    refresh();
 
+                    refresh();
                 });
 
 
@@ -75,7 +76,6 @@
                             return;
                         }
                         if (!master.supervisor) {
-
                             return;
                         }
 
@@ -97,25 +97,31 @@
                             //scope.clusterStatusData.supervisors[1]=angular.copy(scope.clusterStatusData.supervisors[0],cSupervisor);
                             removeSupervised();
                         }
+
                     });
 
 
                     function removeSupervised() {
 
                         if (scope.clusterStatusData.supervisors.length <= 0) {
+
                             getTemporaryData();
 
                         }
+
                         angular.forEach(supervisedMasters, function (master, index) {
                             scope.clusterStatusData.members.masters.splice(master - index, 1);
                             if (index == supervisedMasters.length - 1) {
+
                                 getSupervisor();
                             }
                         })
+
                     }
 
                     scope.getSupervisor = getSupervisor;
                     function getSupervisor(refresh) {
+
 
                         if (scope.clusterStatusData.supervisors.length <= 0) {
                             getTemporaryData(refresh);
@@ -130,8 +136,6 @@
                                 }
                                 if (index == scope.clusterStatusData.supervisors.length - 1) {
                                     getTemporaryData(refresh);
-
-
                                 }
 
                             }, function (err) {
@@ -307,7 +311,7 @@
                             '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop text-warn success-node" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" ></span>' +
                             '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
                             '</span> <span class="pull-right"><div class="btn-group dropdown" >' +
-                            '<a href class="hide more-option" data-toggle="dropdown" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate || permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog}"><i class="text fa fa-ellipsis-h"></i></a>' +
+                            '<a href class="hide more-option" data-toggle="dropdown" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate || permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog || permission.JobschedulerMaster.administration.removeOldInstances}"><i class="text fa fa-ellipsis-h"></i></a>' +
                             '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                             '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminate\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
                             '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'' + sIndex + '\',\'undefined\',\'terminateWithin\')" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__supervisor,terminateWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateWithin</a>' +
@@ -392,7 +396,7 @@
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                 '<span class="m-t-n-xxs fa fa-stop text-warn success-node" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\' \'}" id="' + 'sp' + master.host + master.port + '"  ></span>' +
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
-                                '<a href class="hide more-option" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate ||permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog}" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                '<a href class="hide more-option" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate ||permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog || permission.JobschedulerMaster.administration.removeOldInstances}" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'' + index + '\',\'terminate\')" bg-hover-color" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                 '<a class="hide dropdown-item" ng-click="action1(\'' + sIndex + '\',\'' + index + '\',\'terminateWithin\')" bg-hover-color" ng-class="{\'show\':permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'PAUSED\' && clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__master,terminateWithin,' + master.host + ':' + master.port + '" translate>button.terminateWithin</a>' +
@@ -499,7 +503,7 @@
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span class="m-t-n-xxs fa fa-stop text-warn success-node" ng-class="{\'text-success\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-danger\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\' \'}" id="' + 'sp' + master.host + master.port + '"  ></span>' +
                                     '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
-                                    '<a href class="hide more-option" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate ||permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog}" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<a href class="hide more-option" ng-class="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate ||permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog || permission.JobschedulerMaster.administration.removeOldInstances}" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'undefined\',\'' + index + '\',\'terminate\')"  ng-class="{show:permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'PAUSED\' && clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="hide dropdown-item bg-hover-color" ng-click="action1(\'undefined\',\'' + index + '\',\'terminateWithin\')"  ng-class="{show:permission.JobschedulerMaster.execute.terminate,\'disable-link\':clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'PAUSED\' && clusterStatusData.members.masters[\'' + index + '\'].state._text!=\'WAITING_FOR_ACTIVATION\'}" id="' + '__master,terminateWithin,' + master.host + ':' + master.port + '" translate>button.terminateWithin</a>' +
@@ -700,6 +704,10 @@
                     var dLeft = 0;
                     var sWidth = 0;
                     var clusterStatusContainer = document.getElementById('masterContainer');
+                    if(!vm.clusterStatusData.supervisors){
+                        return;
+                    }
+
                     if (vm.clusterStatusData.supervisors.length <= 0) {
                         drawForRemainings();
                     }

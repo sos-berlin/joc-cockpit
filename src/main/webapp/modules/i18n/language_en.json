@@ -1278,5 +1278,11 @@
   "label.sourceProtocol": "Source Protocol",
   "placeholder.sourceProtocol": "Source Protocol",
   "placeholder.targetProtocol": "Target Protocol",
-  "placeholder.enterCalendars": "Enter multiple Calendars separated by comma"
+  "placeholder.enterCalendars": "Enter multiple Calendars separated by comma",
+  "button.editLayout": "Edit Layout",
+  "button.resetLayout": "Reset Layout",
+  "button.refreshLayout": "Refresh Layout",
+  "button.tools": "Tools",
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master",
+  "breadcrumb.fileTransferLogs":"File Transfer Logs"
 }

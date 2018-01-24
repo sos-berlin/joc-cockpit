@@ -1278,5 +1278,11 @@
   "label.sourceProtocol": "Protocole source",
   "placeholder.sourceProtocol": "Protocole source",
   "placeholder.targetProtocol": "Protocole cible",
-  "placeholder.enterCalendars": "Saisir plusieurs Calendriers séparés par des virgules"
+  "placeholder.enterCalendars": "Saisir plusieurs Calendriers séparés par des virgules",
+  "button.editLayout": "Edit Layout",
+  "button.resetLayout": "Reset Layout",
+  "button.refreshLayout": "Refresh Layout",
+  "button.tools": "Tools",
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master",
+  "breadcrumb.fileTransferLogs": "File Transfer Logs"
 }

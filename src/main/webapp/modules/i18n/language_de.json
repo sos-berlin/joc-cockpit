@@ -1278,5 +1278,11 @@
   "label.sourceProtocol": "Protokoll Quellsystem",
   "placeholder.sourceProtocol": "Protokoll Quellsystem",
   "placeholder.targetProtocol": "Protokoll Zielsystem",
-  "placeholder.enterCalendars": "Angabe mehrerer Kalender durch Komma getrennt"
+  "placeholder.enterCalendars": "Angabe mehrerer Kalender durch Komma getrennt",
+  "button.editLayout": "Edit Layout",
+  "button.resetLayout": "Reset Layout",
+  "button.refreshLayout": "Refresh Layout",
+  "button.tools": "Tools",
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master",
+  "breadcrumb.fileTransferLogs": "File Transfer Logs"
 }

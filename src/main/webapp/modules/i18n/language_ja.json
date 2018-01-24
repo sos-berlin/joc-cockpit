@@ -1278,5 +1278,11 @@
   "label.sourceProtocol": "ソースプロトコル",
   "placeholder.sourceProtocol": "ソースプロトコル",
   "placeholder.targetProtocol": "ターゲットプロトコル",
-  "placeholder.enterCalendars": "複数のカレンダーをコンマで区切って入力する"
+  "placeholder.enterCalendars": "複数のカレンダーをコンマで区切って入力する",
+  "button.editLayout": "Edit Layout",
+  "button.resetLayout": "Reset Layout",
+  "button.refreshLayout": "Refresh Layout",
+  "button.tools": "Tools",
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master",
+  "breadcrumb.fileTransferLogs": "File Transfer Logs"
 }

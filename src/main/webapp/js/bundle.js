@@ -14801,6 +14801,44 @@ module.exports={
         }
       }
     },
+	"IN": {
+      "names": {
+        "en": "India"
+      },
+      "dayoff": "sunday",
+      "zones": [
+        "Asia/Kolkata"
+      ],
+      "langs": [
+        "en"
+      ],
+      "days": {
+        "01-01": {
+          "_name": "01-01"
+        },
+        "01-26": {
+          "name": {
+            "en": "Republic day"
+          }
+        },
+		"05-01": {
+          "_name": "05-01"
+        },
+		"08-18": {
+          "name": {
+            "en": "Independence day"
+          }
+        },
+		"12-02": {
+          "name": {
+            "en": "Mahatma Gandhi Birthday"
+          }
+        },
+        "12-25": {
+          "_name": "12-25"
+        }
+      }
+    },
     "IS": {
       "names": {
         "is": "Ísland",

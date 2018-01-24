@@ -216,13 +216,12 @@
                 preferences.maxEntryPerPage = '1000';
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
-                preferences.pageView = 'grid';
+                preferences.pageView = 'list';
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
                 preferences.adtLog = 'current';
                 preferences.agentTask = 'current';
                 preferences.fileTransfer = 'current';
-                preferences.dashboardLayout = 'default';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -280,9 +279,6 @@
                             }
                             if (preferences && !preferences.fileTransfer) {
                                 preferences.fileTransfer = 'current';
-                            }
-                            if(preferences && !preferences.dashboardLayout){
-                                preferences.dashboardLayout = 'default';
                             }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
@@ -423,7 +419,7 @@
         }
 
         var t1;
-        vm.showLogWindow = function (order, task, job, id) {
+        vm.showLogWindow = function (order, task, job, id, transfer) {
             if (!order && !task) {
                 return;
             }
@@ -472,14 +468,24 @@
                 }
             } else {
                 if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
                 } else if (task && task.taskId) {
-                    if (task.job)
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
-                    else if(job)
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
-                    else
-                        url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+
+                    if (transfer) {
+                        if (task.job)
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else if (job)
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                    } else {
+                        if (task.job)
+                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else if (job)
+                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else
+                            url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                    }
 
                 } else {
                     return;
@@ -1217,7 +1223,8 @@
             });
         };
 
-        if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
+        if ($window.sessionStorage.$SOS$JOBSCHEDULE && $window.sessionStorage.$SOS$JOBSCHEDULE != 'null') {
+           
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
             if (vm.selectedJobScheduler && vm.selectedJobScheduler.state)
                 vm.scheduleState = vm.selectedJobScheduler.state._text;
@@ -1263,11 +1270,14 @@
             });
         }
 
-        $scope.$on('reloadScheduleDetail', function () {
-            getScheduleDetail();
+        $scope.$on('reloadScheduleDetail', function (evn,data) {
+            if(data==true || data=='true')
+                getScheduleDetail(true);
+            else
+                getScheduleDetail(false);
         });
-        function loadScheduleDetail() {
-            if ($state.current.name != 'app.dashboard' && vm.schedulerIds.selected) {
+        function loadScheduleDetail(flag) {
+            if (($state.current.name != 'app.dashboard' || flag) && vm.schedulerIds.selected) {
                 getScheduleDetail();
             }
         }
@@ -2339,43 +2349,6 @@
             vm.holidayDays.checked = false;
             vm.holidayList = [];
             var holidays = [];
-            if (vm.frequency.country == 'IN' && vm.frequency.year) {
-                holidays = [
-                    {
-                        "date": vm.frequency.year + "-01-01",
-                        "name": "New Years day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.frequency.year + "-01-26",
-                        "name": "Republic day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.frequency.year + "-05-01",
-                        "name": "Labours day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.frequency.year + "-08-15",
-                        "name": "Independence day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.frequency.year + "-10-02",
-                        "name": "Mahatma Gandhi Birthday",
-                        "type": "public"
-                    },
-
-                    {
-                        "date": vm.frequency.year + "-12-25",
-                        "name": "Christmas day",
-                        "type": "public"
-                    }
-                ];
-                vm.holidayList = holidays;
-                return;
-            }
             if (vm.frequency.country && vm.frequency.year) {
                 hd.init(vm.frequency.country);
                 holidays = hd.getHolidays(vm.frequency.year);
@@ -3950,42 +3923,6 @@
 
         vm.loadHolidayList = function () {
             vm.holidayList = [];
-            if (vm.runTime.country == 'IN' && vm.runTime.year) {
-                var holidays = [
-                    {
-                        "date": vm.runTime.year + "-01-01",
-                        "name": "New Years day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.runTime.year + "-01-26",
-                        "name": "Republic day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.runTime.year + "-05-01",
-                        "name": "Labours day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.runTime.year + "-08-15",
-                        "name": "Independence day",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.runTime.year + "-10-02",
-                        "name": "Mahatma Gandhi Birthday",
-                        "type": "public"
-                    },
-                    {
-                        "date": vm.runTime.year + "-12-25",
-                        "name": "Christmas day",
-                        "type": "public"
-                    }
-                ];
-                vm.holidayList = holidays;
-                return;
-            }
             if (vm.runTime.country && vm.runTime.year) {
                 hd.init(vm.runTime.country);
                 var holidays = hd.getHolidays(vm.runTime.year);
@@ -11676,11 +11613,19 @@
             for (var propName in obj) {
                 if (typeof propName == 'string') {
                     if (angular.isArray(obj[propName])) {
-                        deleteEmptyValueFromArr(obj[propName]);
-                    } else if (obj[propName] === null || obj[propName] === undefined) {
+                        if(obj[propName].length==0){
+                            delete obj[propName];
+                        }else {
+                            deleteEmptyValueFromArr(obj[propName]);
+                        }
+                    } else if (obj[propName] === null || obj[propName] === undefined || obj[propName] === "") {
                         delete obj[propName];
                     } else if (typeof  obj[propName] === 'object') {
-                        deleteEmptyValue(obj[propName]);
+                        if(vm.isEmpty(obj[propName])){
+                            delete obj[propName];
+                        }else {
+                            deleteEmptyValue(obj[propName]);
+                        }
                     }
                 }
             }

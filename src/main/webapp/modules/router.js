@@ -204,6 +204,11 @@
             templateUrl: "modules/order/views/log.html",
             controller: "LogCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.taskLogs' | translate}}"}
+        }).state("app.transferLog", {
+            url: "/file_transfer/log",
+            templateUrl: "modules/order/views/log.html",
+            controller: "LogCtrl",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransferLogs' | translate}}"}
         }).state("app.yade", {
             url: "/file_transfers",
             templateUrl: "modules/yade/views/file-transfers.html",
