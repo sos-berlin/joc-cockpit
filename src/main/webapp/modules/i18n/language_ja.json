@@ -359,8 +359,8 @@
   "label.begin": "開始",
   "label.blacklist": "ブラックリスト",
   "label.blue": "Blue",
-  "label.calendarViewForPlannedOrders": "オーダー実行計画カレンダー",
-  "label.calendarViewPlannedOrders": "オーダー実行計画カレンダー",
+  "label.calendarViewForPlannedOrders": "オーダー実行計画カレンダ",
+  "label.calendarViewPlannedOrders": "オーダー実行計画カレンダ",
   "label.cause": "理由",
   "label.changeParameters": "パラメータ編集",
   "label.changeStartAndEndNode": "開始・終了ノードの編集",
@@ -483,7 +483,7 @@
   "label.history": "履歴",
   "label.historyFound": "履歴があります",
   "label.historyId": "履歴ID",
-  "label.holidayCalendar": "休日カレンダー",
+  "label.holidayCalendar": "休日カレンダ",
   "label.hourAgo": "時間前",
   "label.id": "ID",
   "label.ignoreList": "無視リスト",
@@ -963,7 +963,7 @@
   "placeholder.enterComment": "コメント入力",
   "placeholder.enterJobChainPath": "ジョブチェーンのパスを入力",
   "placeholder.enterJobPath": "ジョブファイルパス",
-  "placeholder.enterJobs": "カンマ区切りで複数ジョブを入力 ",
+  "placeholder.enterJobs": "カンマ区切りで複数ジョブを入力",
   "placeholder.enterKeywords": "キーワード検索",
   "placeholder.enterOrSelectPermission": "選択パーミッション入力",
   "placeholder.enterOrderId": "オーダーID",
@@ -1063,5 +1063,6 @@
   "label.showAgentJobExecutionForJobScheduler": "実行エージェントジョブ表示",
   "label.regularExpression": "正規表現",
   "label.totalNumberOfExecutions": "実行合計数",
-  "placeholder.enterAgentUrl": "エージェントURL入力"
+  "placeholder.enterAgentUrl": "エージェントURL入力",
+"label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
 }

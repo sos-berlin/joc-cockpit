@@ -212,7 +212,7 @@
                 preferences.maxEntryPerPage = '1000';
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
-                preferences.pageView = 'grid';
+                preferences.pageView = 'list';
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
                 preferences.adtLog = 'current';
@@ -459,12 +459,12 @@
                 }
             } else {
                 if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
                 } else if (task && task.taskId) {
                     if (task.job)
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
                     else
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
 
                 } else {
                     return;

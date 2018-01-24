@@ -1115,7 +1115,8 @@
             var x2js = new X2JS();
 
             var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = vm.sch._substitute;
+            x.schedule._substitute = schedule.path;
+
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
 
             schedules.auditLog = {};
@@ -1148,27 +1149,19 @@
             vm.scheduleAction = undefined;
 
 
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.tempXML = vm.runTimes.content;
-                }
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/add-substitute-dialog.html',
-                    controller: 'RuntimeEditorDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    createSchedule(schedule);
-                }, function () {
-
-                });
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+                createSchedule(schedule);
+            }, function () {
+                vm.substituteCalendars = [];
+                vm.runTimes = {};
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -1178,7 +1171,6 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
         };
 
         vm.substituteAll = function () {
@@ -1255,10 +1247,13 @@
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
+                    vm.xml = undefined;
+                   
                 }, function () {
                     vm.object.schedules = [];
                 });
@@ -1270,7 +1265,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
 
@@ -1952,7 +1947,9 @@
         }
 
 
-        /** -----------------End Schedules------------------- */
+        /** <<<<<<<<<<<<< End Schedules >>>>>>>>>>>>>>>>>>> */
+
+        /** -----------------Begin of Agent Job Execution------------------- */
         vm.agentJobExecutionFilters.current = vm.userPreferences.agentTask == 'current';
         /**
          * Function to initialized Agent tasks
@@ -2048,8 +2045,10 @@
             }else{
                 obj.jobschedulerId = vm.agentJobExecutionFilters.current == true ? vm.schedulerIds.selected : '';
             }
-            if(vm.agentJobSearch.url)
+            if (vm.agentJobSearch.url) {
+                vm.agentJobSearch.url = vm.agentJobSearch.url.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.agents = vm.agentJobSearch.url.split(',');
+            }
             if (vm.agentJobSearch.from) {
                 var fromDate = new Date(vm.agentJobSearch.from);
                 if (vm.agentJobSearch.fromTime) {
@@ -2444,13 +2443,16 @@
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
-
                     setRunTime(schedule);
+                    vm.xml = undefined;
+                   
                 }, function () {
-
+                    vm.xml = undefined;
+                    
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -2460,7 +2462,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+            
         };
 
         function terminateTaskWithTimeout(task, path) {
@@ -2730,7 +2732,7 @@
                     if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
-setClusterWidgetHeigth();
+		setClusterWidgetHeigth();
                }, 0);
                 }
                 

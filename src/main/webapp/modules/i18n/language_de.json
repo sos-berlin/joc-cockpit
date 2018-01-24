@@ -764,8 +764,8 @@
   "label.showLogs": "Protokoll anzeigen",
   "label.showMore": "Mehr anzeigen",
   "label.showMoreOrders": "weitere Aufträge anzeigen",
-  "label.showOrders": "Aufträge in Sichten sofort anzeigen",
-  "label.showTasks": "Prozesse in Sichten sofort anzeigen",
+  "label.showOrders": "Aufträge in Ansichten sofort anzeigen",
+  "label.showTasks": "Prozesse in Ansichten sofort anzeigen",
   "label.showView": "Ansicht anzeigen",
   "label.since": "seit",
   "label.singleStart": "Einzelner Start",
@@ -1063,5 +1063,6 @@
   "label.showAgentJobExecutionForJobScheduler": "Job-Ausführungen mit Agenten anzeigen für JobScheduler",
   "label.regularExpression": "Regulärer Ausdruck",
   "label.totalNumberOfExecutions": "Summe der Job-Ausführungen",
-  "placeholder.enterAgentUrl": "URL des Agenten angeben"
+  "placeholder.enterAgentUrl": "URL des Agenten angeben",
+"label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
 }

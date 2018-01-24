@@ -54,7 +54,7 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
+                    <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()" tooltip-placement="left"><i>.</i></button>
                 </div>
             </div>
         </div>
@@ -139,6 +139,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="auditSearch.jobschedulerId">
+                                    <option value="" translate="">label.selectJobScheduler</option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>

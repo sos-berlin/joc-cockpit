@@ -1554,11 +1554,13 @@
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
             obj.params = order.params;
+            obj.state = vm.order.state;
+            obj.endState = vm.order.endState;
 
             if (order.date && order.time) {
-                order.date.setHours(order.time.getHours());
-                order.date.setMinutes(order.time.getMinutes());
-                order.date.setSeconds(order.time.getSeconds());
+                order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
+                order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
+                order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
             }
 
             if (order.date && order.at == 'later') {
@@ -1670,9 +1672,20 @@
             }
 
             if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    params: order.params,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             } else {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             }
             delete orders['params'];
             OrderService.resumeOrder(orders);
@@ -1836,6 +1849,15 @@
                     startAt(vm.order, vm.paramObject);
                 }, function () {
 
+                });
+                JobChainService.getJobChainP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobChain: order.jobChain
+                }).then(function (res) {
+                    vm._jobChain = res.jobChain;
+                    angular.forEach(res.jobChain.endNodes, function (value) {
+                        vm._jobChain.nodes.push(value);
+                    });
                 });
             }
 
@@ -2010,6 +2032,15 @@
                 }, function () {
 
                 });
+                JobChainService.getJobChainP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobChain: order.jobChain
+                }).then(function (res) {
+                    vm._jobChain = res.jobChain;
+                    angular.forEach(res.jobChain.endNodes, function (value) {
+                        vm._jobChain.nodes.push(value);
+                    });
+                });
             }
 
             if (action == 'resume order next state') {
@@ -2114,7 +2145,7 @@
                 vm._jobChain = order;
                 vm._jobChain.name = order.orderId;
                 vm.planItems = [];
-                firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+                firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
                 DailyPlanService.getPlans({
                     jobschedulerId: $scope.schedulerIds.selected,
@@ -2170,10 +2201,30 @@
             }
         };
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -2385,10 +2436,30 @@
 
 
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -2423,7 +2494,7 @@
             vm.selectedChain = nestedJobChain;
             vm._jobChain = nestedJobChain ? nestedJobChain : vm.jobChain;
             vm.planItems = [];
-            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -5391,11 +5462,12 @@
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
             obj.params = order.params;
-
+            obj.state = vm.order.state;
+            obj.endState = vm.order.endState;
             if (order.date && order.time) {
-                order.date.setHours(order.time.getHours());
-                order.date.setMinutes(order.time.getMinutes());
-                order.date.setSeconds(order.time.getSeconds());
+                order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
+                order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
+                order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
             }
 
             if (order.date && order.at == 'later') {
@@ -5466,6 +5538,15 @@
                 startAt(vm.order, vm.paramObject);
             }, function () {
                 vm.reset();
+            });
+            JobChainService.getJobChainP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain
+            }).then(function (res) {
+                vm._jobChain = res.jobChain;
+                angular.forEach(res.jobChain.endNodes, function (value) {
+                    vm._jobChain.nodes.push(value);
+                });
             });
         };
 
@@ -5879,9 +5960,20 @@
             }
 
             if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    params: order.params,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             } else {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             }
             delete orders['params'];
 
@@ -5914,6 +6006,15 @@
                 resumeOrderWithParam(order, vm.paramObject);
             }, function () {
                 vm.reset();
+            });
+            JobChainService.getJobChainP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain
+            }).then(function (res) {
+                vm._jobChain = res.jobChain;
+                angular.forEach(res.jobChain.endNodes, function (value) {
+                    vm._jobChain.nodes.push(value);
+                });
             });
         };
 
@@ -6062,10 +6163,30 @@
 
 
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -6100,7 +6221,7 @@
             vm._jobChain = order;
             vm._jobChain.name = order.orderId;
             vm.planItems = [];
-            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
 
             DailyPlanService.getPlans({
@@ -6272,12 +6393,11 @@
 
 
         function parseProcessExecuted(regex, obj) {
-            var fromDate;
-            var toDate;
+            var fromDate, toDate, date, arr;
 
             if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-              
+
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
@@ -6286,37 +6406,37 @@
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
                 toDate = '0d';
-            }else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
                 fromDate = '-1d';
                 toDate = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-               var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
                 fromDate = new Date();
                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
@@ -6343,7 +6463,6 @@
             }
             return obj;
         }
-
 
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {

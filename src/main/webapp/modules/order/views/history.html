@@ -300,7 +300,7 @@
                                            ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}"
                                            data-autoclose="1"
                                            placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
+                                           data-max-date="{{currentTime}}"
                                            bs-datepicker type="text">
                                     <input valid-time maxlength="8" ng-disabled="!jobChainSearch.to"
                                            class="form-control input-time m-l" ng-model="jobChainSearch.toTime"
@@ -315,6 +315,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobChainSearch.jobschedulerId">
+                                   <option value="" translate="">label.selectJobScheduler</option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>
@@ -452,7 +453,7 @@
                                            ng-model="jobSearch.to" data-date-format="{{dataFormat}}"
                                            data-autoclose="1"
                                            placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
+                                           data-max-date="{{currentTime}}"
                                            bs-datepicker type="text">
                                     <input valid-time maxlength="8" ng-disabled="!jobSearch.to"
                                            class="form-control input-time m-l" ng-model="jobSearch.toTime"
@@ -467,6 +468,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobSearch.jobschedulerId">
+                                   <option value="" translate="">label.selectJobScheduler</option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>
@@ -507,10 +509,6 @@
 
                             <div class="col-sm-9">
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
-                                    <i class="primary"></i><span translate>label.incomplete</span>
-                                </label>
-                                <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'SUCCESSFUL'">
                                     <i class="primary"></i><span translate>label.successful</span>
                                 </label>
@@ -518,6 +516,12 @@
                                     <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'FAILED'">
                                     <i class="primary"></i><span translate>label.failed</span>
                                 </label>
+                                <label class="md-check w">
+
+                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
+                                </label>
+
                             </div>
                         </div>
                         <div class="form-group m-t m-b-xs">

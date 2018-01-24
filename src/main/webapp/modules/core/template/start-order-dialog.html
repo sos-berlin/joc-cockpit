@@ -40,9 +40,8 @@
                     <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.date" data-min-date="{{minDate}}"
                            data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
                            bs-datepicker type="text">
-                    <input ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.time" data-min-date="{{minDate}}"
-                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS"
-                           bs-timepicker type="text">
+                    <input valid-time maxlength="8" ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.time"
+                           placeholder="HH:MM:SS" type="text">
                 </div>
             </div>
             <div class="form-group row" ng-hide="order.at =='now'">
@@ -102,6 +101,24 @@
                 <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
                 <div class="col-sm-6">
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4" translate>label.newOrderState</div>
+                <div class="col-sm-6">
+                     <select class="form-control" ng-model="order.state"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseStartingStep</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4" translate>label.newOrderEndState</div>
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.endState"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseEndStep</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group row m-b-sm" ng-repeat="param in order.params">

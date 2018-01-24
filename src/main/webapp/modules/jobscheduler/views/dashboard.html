@@ -79,7 +79,10 @@
                      <div class="col-md-12" >
                         <div class=" box" id="master-cluster-status">
                             <div class="box-header b-b">
-                                <h3 translate>label.masterClusterStatus</h3>
+                                <h3>
+                         <span ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'" translate>label.masterClusterStatus</span>
+                            <span ng-if="selectedJobScheduler.clusterType._type == 'STANDALONE'"  translate>label.standaloneJobSchedulerMaster</span>
+			</h3>
                             </div>
                             <div class="box-tool hide" ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
                                 <div class="btn-group dropdown pull-right">

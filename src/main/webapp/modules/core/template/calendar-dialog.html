@@ -1,3 +1,8 @@
+<style>
+    .cal-day-outmonth {
+        background: transparent !important;
+    }
+</style>
 <div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
@@ -43,7 +48,8 @@
             </div>
         </div>
 
-        <div class="hide calendar-body" ng-class="{show:planItems.length>0}">
+        <div class="text-center" ng-show="isCaledarLoading" > <div class="loading-img1 m-t-lg"></div></div>
+        <div class="calendar-body">
             <mwl-calendar
                     events="events"
                     plan-items="planItems"
@@ -53,6 +59,5 @@
                     cell-is-open="true">
             </mwl-calendar>
         </div>
-        <div ng-if="!isCaledarLoading && planItems.length==0" class="text-center m-t m-b h6 text-uppercase" translate>message.noDataFound</div>
     </div>
 </div>

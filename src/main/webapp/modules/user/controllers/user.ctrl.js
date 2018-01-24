@@ -650,7 +650,7 @@
             if (vm.auditSearch.jobChain) {
                 filter.orders = [];
                 if (vm.auditSearch.orderIds) {
-                    var s = vm.auditSearch.orderIds.replace(/,\s+/g, ',');
+                    var s = vm.auditSearch.orderIds.replace(/\s*(,|^|$)\s*/g, "$1");
                     var orderIds = s.split(',');
                     angular.forEach(orderIds, function (value) {
                         filter.orders.push({jobChain: vm.auditSearch.jobChain, orderId: value})
@@ -661,7 +661,7 @@
             }
             if (vm.auditSearch.job) {
                 filter.jobs = [];
-                var s = vm.auditSearch.job.replace(/,\s+/g, ',');
+                var s = vm.auditSearch.job.replace(/\s*(,|^|$)\s*/g, "$1");
                 var jobs = s.split(',');
                 angular.forEach(jobs, function (value) {
                     filter.jobs.push({job: value})
@@ -767,6 +767,11 @@
             }
             $('#exportToExcelBtn').attr("disabled", false);
         };
+
+        vm.$on('resetViewDate', function () {
+           if (vm.adtLog.filter.date == 'today')
+            vm.load();
+        });
 
         $scope.$on('event-started', function () {
             for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
