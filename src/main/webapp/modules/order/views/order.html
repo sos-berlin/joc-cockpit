@@ -398,7 +398,7 @@
                                 </div>
                                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                                      ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse track by $index">
-                                    <div class="box card">
+                                    <div class="box card" ng-class="colorBorderFunction(order.processingState.severity)">
                                         <div class="box-body">
                                             <div>
                                                 <label class="md-check pos-abt"

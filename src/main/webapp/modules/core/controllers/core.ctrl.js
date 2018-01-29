@@ -115,6 +115,27 @@
                 return 'chocolate';
             }
         };
+        vm.colorBorderFunction = function (d) {
+            if (d == 0) {
+                return 'green-box';
+            } else if (d == 1) {
+                return 'gold-box';
+            } else if (d == 2) {
+                return 'crimson-box';
+            } else if (d == 3) {
+                return 'dimgrey-box';
+            } else if (d == 4) {
+                return 'text-dark-box';
+            } else if (d == 5) {
+                return 'dark-orange-box';
+            } else if (d == 6) {
+                return 'corn-flower-blue-box';
+            } else if (d == 7) {
+                return 'dark-magenta-box';
+            } else if (d == 8) {
+                return 'chocolate-box';
+            }
+        };
 
         vm.bgColorFunction = function (d) {
             if (d == 0) {
@@ -1207,19 +1228,20 @@
                     $window.localStorage.setItem('clientLogs', {});
                     $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
                     $window.sessionStorage.setItem('$SOS$ALLEVENT', null);
+                    $rootScope.$broadcast('reloadUser');
+                    $location.path('/login').search({});
                 } else {
+
                     CoreService.setDefaultTab();
+                    $window.localStorage.removeItem('$SOS$URL');
+                    $window.localStorage.removeItem('$SOS$URLPARAMS');
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);
                     });
+                    window.location.reload();
                 }
 
-                if (!timeout) {
-                    window.location.reload();
-                } else {
-                    $rootScope.$broadcast('reloadUser');
-                    $location.path('/login').search({});
-                }
+
             });
         };
 
@@ -3931,7 +3953,6 @@
                         vm.holidayList.push(holiday);
                 });
             }
-
         };
         //-------------------End ----------------------
 

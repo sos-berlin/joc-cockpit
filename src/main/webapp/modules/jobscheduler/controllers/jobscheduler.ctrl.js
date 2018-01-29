@@ -5847,17 +5847,18 @@
             initWidgets();
             if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();
+        }else {
+
+            $scope.$on('reloadPreferences', function () {
+                if (vm.loadingImg)
+                    initWidgets();
+                if (vm.userPreferences && !vm.userPreferences.dashboard) {
+                    setWidgetPreference();
+                }
+            })
         }
 
-        $scope.$on('reloadPreferences', function () {
 
-            initConfig();
-            if (vm.loadingImg)
-                initWidgets();
-            if (vm.userPreferences && !vm.userPreferences.dashboard) {
-                setWidgetPreference();
-            }
-        });
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
@@ -5910,7 +5911,7 @@
                 $timeout.cancel(t2);
             if (interval1)
                 $interval.cancel(interval1);
-            $interval.cancel(interval2);
+
 
         });
     }

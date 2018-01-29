@@ -65,8 +65,8 @@
                 SOSAuth.save();
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
-                    $window.localStorage.setItem('$SOS$URL', '');
-                    $window.localStorage.setItem('$SOS$URLPARAMS', {});
+                    $window.localStorage.removeItem('$SOS$URL');
+                    $window.localStorage.removeItem('$SOS$URLPARAMS');
                 } else {
                     $location.path('/');
                 }
@@ -797,11 +797,14 @@
         vm.editor = {};
         vm.editor.edit = false;
         vm.view = {};
+        vm.filterString = {};
+        vm.filterString.q = '';
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {
                 vm.users = res.users;
                 vm.masters = res.masters;
+                vm.main = res.main;
                 getRoles();
                 $rootScope.$broadcast('reloadPermission');
             });
@@ -818,6 +821,7 @@
             var obj = {};
             obj.users = vm.users;
             obj.masters = vm.masters;
+            obj.main = vm.main;
             UserService.securityConfigurationWrite(obj);
 
         }
@@ -838,6 +842,15 @@
                     vm.isUnique = false;
             });
         };
+
+        vm.checkMainSection = function () {
+            vm.isUnique = true;
+            angular.forEach(vm.main, function (mast, index) {
+                if ((angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName == vm.entry.entryName))
+                    vm.isUnique = false;
+            });
+        };
+
         vm.checkRole = function () {
             vm.isUnique = true;
             for (var j = 0; j < vm.roles.length; j++) {
@@ -1229,6 +1242,178 @@
                 return true;
             }
         };
+
+        /* ------------- Begin Main Section -------------------*/
+
+        vm.addMainSection = function () {
+            vm.mainSection = [];
+            vm.mainSection.push({
+                name:'',
+                values:[{value:''}],
+                comments:[{value:''}]
+            });
+
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-main-section-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                angular.forEach(vm.mainSection, function(val){
+                   if(val.name && val.name !='') {
+                       var obj = {};
+                       obj.entryName = val.name;
+                       obj.entryValue =[];
+                       obj.entryComment =[];
+                       angular.forEach(val.values, function(val1) {
+                           if(val1.value && val1.value !='')
+                           obj.entryValue.push(val.value);
+                       });
+                       angular.forEach(val.comments, function(val1) {
+                           if(val1.value && val1.value !='')
+                           obj.entryComment.push(val1.value);
+                       });
+
+                       vm.main.push(obj);
+                   }
+                });
+
+                saveInfo();
+                vm.mainSection = [];
+            }, function () {
+               vm.mainSection = [];
+            });
+        };
+
+        vm.editMainSection = function (entry) {
+            vm.entry = angular.copy(entry);
+            vm.temp_name = angular.copy(entry.entryName);
+            vm.entryValue = [];
+            vm.entryComment = [];
+            if (vm.entry.entryValue.length > 0) {
+                angular.forEach(vm.entry.entryValue, function (val) {
+                    vm.entryValue.push({value: angular.copy(val)});
+                });
+            } else {
+                vm.entryValue.push({value: ''});
+            }
+            if (vm.entry.entryComment.length > 0) {
+                angular.forEach(vm.entry.entryComment, function (val) {
+                    vm.entryComment.push({value: angular.copy(val)});
+                });
+            } else {
+                vm.entryComment.push({value: ''});
+            }
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/main-section-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.entry.entryValue = [];
+                vm.entry.entryComment = [];
+                if (vm.entryValue.length > 0) {
+                    angular.forEach(vm.entryValue, function (val) {
+                        vm.entry.entryValue.push(val.value);
+                    });
+                }
+                if (vm.entryComment.length > 0) {
+                    angular.forEach(vm.entryComment, function (val) {
+                        vm.entry.entryComment.push(val.value);
+                    });
+                }
+
+                angular.forEach(vm.main, function (usr, index) {
+                    if (angular.equals(entry, usr))
+                        vm.main[index] = vm.entry;
+                });
+
+                saveInfo();
+                vm.entry = {};
+            }, function () {
+                vm.entry = {};
+            });
+        };
+
+        vm.deleteMainSection = function (entry) {
+            vm.entry = angular.copy(entry);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                vm.main.splice(vm.main.indexOf(entry), 1);
+                saveInfo();
+                vm.entry = {};
+            }, function () {
+                vm.entry = {};
+            });
+        };
+
+        vm.addMainEntry = function () {
+            var param = {
+                name:'',
+                values:[{value:''}],
+                comments:[{value:''}]
+            };
+            if (vm.mainSection)
+                vm.mainSection.push(param);
+        };
+
+        vm.addEntryValueField = function () {
+            var param = {
+                value: ''
+            };
+            if (vm.entryValue)
+                vm.entryValue.push(param);
+        };
+
+        vm.removeEntryValueField = function (index) {
+            vm.entryValue.splice(index, 1);
+        };
+
+        vm.addEntryCommentField = function (index) {
+            if (vm.mainSection[index].comments)
+                vm.mainSection[index].comments.push({value: ''});
+        };
+
+        vm.removeEntryCommentField = function (parentIindex, index) {
+            vm.mainSection[parentIindex].comments.splice(index, 1);
+        };
+
+        vm.addValueField = function () {
+            var param = {
+                value: ''
+            };
+            if (vm.entryValue)
+                vm.entryValue.push(param);
+        };
+
+        vm.removeValueField = function (index) {
+            vm.entryValue.splice(index, 1);
+        };
+
+        vm.addCommentField = function () {
+            var param = {
+                value: ''
+            };
+            if (vm.entryComment)
+                vm.entryComment.push(param);
+        };
+
+        vm.removeCommentField = function (index) {
+            vm.entryComment.splice(index, 1);
+        };
+
+        /* ------------- End Main Section -------------------*/
         vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
             if (toState.name == 'app.users.user') {
                 vm.state = 'user';
@@ -1238,6 +1423,8 @@
                 vm.state = 'permission';
                 vm.roleName = toParams.role;
                 vm.masterName = toParams.master;
+            } else if (toState.name == 'app.users.main') {
+                vm.state = 'main';
             }
         });
 

@@ -1,0 +1,50 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span translate>label.addMainSection</span>
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok(form)" novalidate>
+        <div class="modal-body p-a">
+            <div ng-repeat="(PIndex, entry) in mainSection" ng-class="{'b-t p-t': $index>0}" class="p-l">
+                <div class="form-group row m-b-0" >
+                    <!--<div class="col-sm-1 p-r-0" style="width: 40px"></div>-->
+                    <div class="col-sm-4 m-b-sm col-sm-offset-1" ng-if="$index==0" translate>label.name</div>
+                    <div class="col-sm-7 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                    <div class="col-sm-1 p-r-0" style="width: 40px">
+                        <a ng-if="$index==mainSection.length-1"><i ng-click="addMainEntry()" class="fa fa-plus m-t-sm text-muted"></i></a>
+                    </div>
+                    <div class="col-sm-4 m-b-sm">
+                        <input type="text" class="form-control" ng-model="entry.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                    </div>
+
+                    <div class="col-sm-6 m-b-sm" ng-repeat="value in entry.values track by $index">
+                        <input type="text" class="form-control" ng-model="value.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                    </div>
+   <!--                 <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>-->
+                </div>
+                <div class="form-group row m-l-md" ng-repeat="comment in entry.comments track by $index">
+                    <div class="col-sm-1" style="width: 35px;padding-left: 17px">
+                        <a ng-if="$index==entry.comments.length-1"><i ng-click="addEntryCommentField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
+                    </div>
+                   <div class="col-sm-10">
+                       <input class="form-control" placeholder="{{'placeholder.writeComment' | translate}} {{$index +1}}" name="comment" ng-model="comment.value">
+                   </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeEntryCommentField(PIndex,$index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid || !isUnique" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

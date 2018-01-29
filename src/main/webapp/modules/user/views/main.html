@@ -1,38 +1,40 @@
+
 <div class="box p-a p-b-lg">
     <div class="table-responsive">
         <table class="table table-hover table-bordered ">
             <thead>
             <tr>
                 <th width="55"><span translate>label.action</span></th>
-                <th><span translate>label.user</span></th>
-                <th><span translate>label.password</span></th>
-                <th><span translate>label.roles</span></th>
+                <th><span translate>label.entryName</span></th>
+                <th><span translate>label.entryValue</span></th>
+                <th><span translate>label.entryComment</span></th>
             </tr>
             </thead>
-            <tbody ng-repeat="user in filtered = (users | filter: filterString.q:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+            <tbody ng-repeat="mainSection in filtered = (main | filter: filterString.q:strict)  | orderBy:'entryName' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
                 <td>
                     <div class="btn-group dropdown pull-left m-r-sm">
                       <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
                       <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                          <a class="dropdown-item" ng-click="editUser(user)" translate>button.edit</a>
-                          <a class="dropdown-item" ng-click="copyUser(user)" translate>button.copy</a>
-                          <a class="dropdown-item" ng-class="{'disable-link' :username==user.user}" ng-click="deleteUser(user)" translate="">button.delete</a>
+                          <a class="dropdown-item" ng-click="editMainSection(mainSection)" translate>button.edit</a>
+                          <a class="dropdown-item" ng-class="{'disable-link' :mainSection.entryName =='securityManager.sessionManager.globalSessionTimeout'}" ng-click="deleteMainSection(mainSection)" translate="">button.delete</a>
                       </div>
                   </div>
                 </td>
-                <td><a ng-click="showMaster(user.user)" class="text-hover-primary" ng-bind-html="user.user  | decodeSpace"></a></td>
-                <td><span>********</span></td>
+                <td>{{mainSection.entryName}}</td>
                 <td>
-                    <div ng-repeat="role in user.roles"><span ng-bind="role"></span></div>
+                    <div ng-repeat="value in mainSection.entryValue"><span ng-bind="value"></span></div>
+                </td>
+                <td>
+                    <div ng-repeat="comment in mainSection.entryComment"><span ng-bind="comment"></span></div>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}"
              ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
-            <span translate ng-if="filtered.length >1">label.usersFound</span>
-            <span translate ng-if="filtered.length ==1">label.userFound</span>
+            <span translate ng-if="filtered.length >1">label.mainEntriesFound</span>
+            <span translate ng-if="filtered.length ==1">label.mainEntryFound</span>
         </div>
         <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length"
             ng-model="usr.currentPage" items-per-page='userPreferences.entryPerPage'
@@ -63,10 +65,16 @@
             </div>
         </div>
         <div class="text-center m-t text-uppercase hide text-orange"
-             ng-class="{'show': (filtered.length===0 && users.length !==0)}" translate>message.noDataMatched</div>
+             ng-class="{'show': (filtered.length===0 && main.length !==0)}" translate>message.noDataMatched</div>
+    </div>
+    <div class="box-body p-b-0 hide" ng-class="{show : main.length==0}">
+        <div class="row">
+            <div class="col-md-12 text-center" >
+                <span translate>message.noConfigurationAvailable</span>
+            </div>
+        </div>
     </div>
 </div>
-
 
 
 <script>

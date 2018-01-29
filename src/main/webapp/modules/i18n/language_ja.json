@@ -1281,8 +1281,24 @@
   "placeholder.enterCalendars": "複数のカレンダーをコンマで区切って入力する",
   "button.editLayout": "Edit Layout",
   "button.resetLayout": "Reset Layout",
-  "button.refreshLayout": "Refresh Layout",
+
   "button.tools": "Tools",
   "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master",
-  "breadcrumb.fileTransferLogs": "File Transfer Logs"
+  "breadcrumb.fileTransferLogs":"File Transfer Logs",
+  "breadcrumb.main":"Main Section",
+  "label.mainSetting":"Main Section",
+  "label.entryName":"Name",
+  "label.entryValue":"Value",
+  "label.entryComment":"Comment",
+  "label.mainEntriesFound":"Main entries found",
+  "label.mainEntryFound":"Main entry found",
+  "button.addEntry": "Add Entry",
+  "button.addAnotherValue": "Add another value",
+  "button.addValue": "Add value",
+  "button.addAnotherComment": "Add another comment",
+  "button.addComment": "Add another comment",
+  "label.addMainSection": "Add New Entries",
+  "label.editEntry": "Update Main Section",
+  "placeholder.writeComment":"Write your comment",
+  "message.noConfigurationAvailable":"no main configuration is available"
 }

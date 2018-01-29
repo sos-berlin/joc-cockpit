@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                      ng-repeat="schedule in value | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse">
-                    <div class="box card">
+                    <div class="box card" ng-class="colorBorderFunction(schedule.state.severity)">
                         <div class="box-body">
 
                             <div>

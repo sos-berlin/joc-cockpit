@@ -25,7 +25,7 @@
                     s.reject("error");
                 else
                     s.resolve()
-            } else t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search()), s.reject("login");
+            } else s.reject("login");
             return s.promise
         };
         l.$inject = ["$q", "$location", "SOSAuth", "$window", "$rootScope"];
@@ -353,6 +353,10 @@
             url: "/master",
             templateUrl: "modules/user/views/role.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.masters' | translate}}", parent: "app.users.user"}
+        }).state("app.users.main", {
+            url: "/main-section",
+            templateUrl: "modules/user/views/main.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.main' | translate}}", parent: "app.users.user"}
         })
 
     }

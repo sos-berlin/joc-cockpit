@@ -1,0 +1,66 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span>
+                <span translate>label.editEntry</span>:
+                <span ng-bind-html="temp_name"></span>
+            </span>
+
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok(form)" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
+                <label class="col-sm-4 form-control-label" translate>label.entryName</label>
+                <div class=" col-sm-6" >
+                    <input type="text" class="form-control" name="name" placeholder="{{'placeholder.name' | translate}}" ng-model="entry.entryName" required ng-blur="checkMainSection()">
+                    <div class="help-block text-danger" ng-if="form.name.$dirty"
+                         ng-messages="form.name.$error">
+                        <div ng-message="required" translate>message.requiredError</div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-4 form-control-label" translate>label.entryValue</label>
+               <div class="col-sm-6" ng-repeat="value in entryValue track by $index" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-model="value.value" >
+               </div>
+                <div class="col-sm-1 p-l-0" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
+                    <a><i ng-click="removeValueField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
+                <div class="col-sm-12">
+                    <a href class="text-u-l" ng-if="entry.entryComment.length>0" ng-click="addValueField()" translate>button.addAnotherValue</a>
+                    <a href class="text-u-l" ng-if="entry.entryComment.length==0" ng-click="addValueField()" translate>button.addValue</a>
+                </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-4 form-control-label" translate>label.entryComment</label>
+               <div class="col-sm-6" ng-repeat="comment in entryComment track by $index" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
+                   <input class="form-control" placeholder="{{'placeholder.writeComment' | translate}} {{$index +1}}" name="comment" ng-model="comment.value">
+               </div>
+                <div class="col-sm-1 p-l-0">
+                    <a><i ng-click="removeCommentField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+            </div>
+             <div class="form-group row">
+                <div class="col-sm-12">
+                    <a href class="text-u-l" ng-if="entry.entryComment.length>0" ng-click="addCommentField()" translate>button.addAnotherComment</a>
+                    <a href class="text-u-l" ng-if="entry.entryComment.length==0" ng-click="addCommentField()" translate>button.addComment</a>
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid || !isUnique" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
