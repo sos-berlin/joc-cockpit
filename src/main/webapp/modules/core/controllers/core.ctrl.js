@@ -1271,7 +1271,7 @@
                     if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType)
                         vm.permission.precedence = vm.selectedJobScheduler.clusterType.precedence;
                 }, function () {
-                    vm.selectedJobScheduler = res.jobscheduler;
+                    vm.selectedJobScheduler = result.jobscheduler;
                     vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                         document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;

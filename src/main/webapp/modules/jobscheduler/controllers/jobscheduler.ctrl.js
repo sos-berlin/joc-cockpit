@@ -4729,8 +4729,13 @@
             setWidgetHeight();
 
         }
-        vm.editLayout = function(){
 
+        $(window).resize(function () {
+            setWidgetHeight();
+        });
+
+
+        vm.editLayout = function(){
             vm._tempDashboard = angular.copy(vm.dashboard);
             vm.editLayoutObj  = true;
              initConfig(true);
@@ -4917,6 +4922,9 @@
                         var ht = 0,ht2= 0, top = 0,top2= 0, widgt = '',widgt2='';
                         if (i - 2 > 0 && (vm.dashboard.widgets[i - 3].row == vm.dashboard.widgets[i].row - 1) ) {
                             widgt = $('#' + vm.dashboard.widgets[i - 3].name);
+                            if(!widgt){
+                                break;
+                            }
                             ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
                             top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
                             if ((vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 2].sizeY == vm.dashboard.widgets[i].sizeY)) {
@@ -4937,6 +4945,9 @@
 
                         } else if (i - 1 > 0 && (vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) ) {
                             widgt = $('#' + vm.dashboard.widgets[i - 2].name);
+                            if(!widgt){
+                                break;
+                            }
                             ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
                             top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
 
@@ -4952,6 +4963,9 @@
 
                         } else {
                             widgt = $('#' + vm.dashboard.widgets[i - 1].name);
+                            if(!widgt){
+                                break;
+                            }
                         }
 
                         ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));

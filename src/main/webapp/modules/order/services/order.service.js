@@ -177,7 +177,6 @@
                 return deferred.promise;
             },
             removeOrder: function (orders) {
-
                 var deferred = $q.defer();
                 var Order = $resource('orders/remove_setback');
                 Order.save(orders, function (res) {

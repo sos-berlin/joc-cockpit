@@ -698,10 +698,7 @@
                                                                            ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                                                            ng-click="resumeOrderNextstate(order)"
                                                                            translate>button.resumeOrderFromState</a>
-                                                                        <a href class="dropdown-item"
-                                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
-                                                                           ng-click="resetOrder(order)"
-                                                                           translate>button.resetOrder</a>
+
                                                                         <a href
                                                                            class="dropdown-item bg-hover-color"
                                                                            ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
@@ -712,6 +709,10 @@
                                                                            ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                                                            ng-click="deleteOrder(order,jobChain)"
                                                                            translate>button.deleteOrder</a>
+                                                                         <a href class="dropdown-item"
+                                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                                                           ng-click="resetOrder(order)"
+                                                                           translate>button.resetOrder</a>
                                                                         <div class="dropdown-divider"></div>
                                                                         <a href class="dropdown-item"
                                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"

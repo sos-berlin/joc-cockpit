@@ -153,7 +153,7 @@
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
-                            <table style="width: 100%" ng-if="!notPermissionForSnapshot">
+                            <table style="width: 100%" ng-if="!notPermissionForSnapshot && snapshot">
                                 <tr class="text-center">
                                     <td width="16.6%">
                                         <div translate>label.pending</div>
@@ -174,7 +174,7 @@
                                         <div translate>label.blacklist</div>
                                     </td>
                                 </tr>
-                                <tr class="text-center" ng-if="snapshot">
+                                <tr class="text-center">
                                     <td width="16.6%">
                                         <a href="#!/orders_overview/PENDING" class="text-lg _600 " ng-bind="snapshot.pending || 0"></a>
                                     </td>
@@ -254,7 +254,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table style="width: 100%" ng-if="!notPermissionForSummary">
+                        <table style="width: 100%" ng-if="!notPermissionForSummary && orderSummary">
                             <tr class="text-center">
                                 <td width="50%">
                                     <div translate>label.successful</div>
@@ -263,7 +263,7 @@
                                     <div translate>label.failed</div>
                                 </td>
                             </tr>
-                            <tr class="text-center" ng-if="orderSummary">
+                            <tr class="text-center">
                                 <td width="50%">
                                     <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 " ng-class="{'text-success':orderSummary.successful >0}" ng-bind="orderSummary.successful || 0"></a>
                                 </td>
@@ -292,7 +292,7 @@
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
-                            <table style="width: 100%" ng-if="!notPermissionForTaskSnapshot">
+                            <table style="width: 100%" ng-if="!notPermissionForTaskSnapshot && jobSnapshot">
                                 <tr class="text-center">
                                     <td width="19.9%">
                                         <div translate>label.pending</div>
@@ -310,7 +310,7 @@
                                         <div translate>label.tasks</div>
                                     </td>
                                 </tr>
-                                <tr class="text-center" ng-if="jobSnapshot">
+                                <tr class="text-center" >
                                     <td width="19.9%">
                                         <a href="#!/tasks_overview/PENDING" class="text-lg _600 " ng-bind="jobSnapshot.pending || 0"></a>
                                     </td>
@@ -387,7 +387,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table style="width: 100%" ng-if="!notPermissionForTaskSummary">
+                        <table style="width: 100%" ng-if="!notPermissionForTaskSummary && taskSummary">
                             <tr class="text-center">
                                 <td width="50%">
                                     <div translate>label.successful</div>
@@ -396,7 +396,7 @@
                                     <div translate>label.failed</div>
                                 </td>
                             </tr>
-                            <tr class="text-center" ng-if="taskSummary">
+                            <tr class="text-center" >
                                 <td width="50%">
                                     <a ng-click="showTaskSummary('SUCCESSFUL')" class="text-lg _600 " ng-class="{'text-success':taskSummary.successful >0}" ng-bind="taskSummary.successful || 0"></a>
                                 </td>

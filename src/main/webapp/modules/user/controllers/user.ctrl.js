@@ -846,7 +846,7 @@
         vm.checkMainSection = function () {
             vm.isUnique = true;
             angular.forEach(vm.main, function (mast, index) {
-                if ((angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName == vm.entry.entryName))
+                if (mast.entryName != vm.temp_name && (angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName == vm.entry.entryName))
                     vm.isUnique = false;
             });
         };
@@ -1270,7 +1270,7 @@
                        obj.entryComment =[];
                        angular.forEach(val.values, function(val1) {
                            if(val1.value && val1.value !='')
-                           obj.entryValue.push(val.value);
+                           obj.entryValue.push(val1.value);
                        });
                        angular.forEach(val.comments, function(val1) {
                            if(val1.value && val1.value !='')
@@ -1368,16 +1368,13 @@
                 vm.mainSection.push(param);
         };
 
-        vm.addEntryValueField = function () {
-            var param = {
-                value: ''
-            };
-            if (vm.entryValue)
-                vm.entryValue.push(param);
+        vm.addEntryValueField = function (index) {
+            if (vm.mainSection[index].values)
+                vm.mainSection[index].values.push({value: ''});
         };
 
-        vm.removeEntryValueField = function (index) {
-            vm.entryValue.splice(index, 1);
+        vm.removeEntryValueField = function (parentIindex,index) {
+             vm.mainSection[parentIindex].values.splice(index, 1);
         };
 
         vm.addEntryCommentField = function (index) {

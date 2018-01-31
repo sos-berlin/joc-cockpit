@@ -24,34 +24,38 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row">
-               <label class="col-sm-4 form-control-label" translate>label.entryValue</label>
-               <div class="col-sm-6" ng-repeat="value in entryValue track by $index" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
-                   <input type="text" class="form-control" placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-model="value.value" >
-               </div>
-                <div class="col-sm-1 p-l-0" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
-                    <a><i ng-click="removeValueField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+            <div class="form-group row" ng-class="{'m-b-sm': entry.entryName.indexOf('groupRolesMapping') > -1}">
+                <div ng-repeat="value in entryValue track by $index">
+                   <label class="col-sm-4 form-control-label" ng-if="$index ==0" translate>label.entryValue</label>
+                   <div class="col-sm-6" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
+                       <input type="text" class="form-control" placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-model="value.value" >
+                   </div>
+                   <div class="col-sm-1 p-l-0" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
+                       <a><i ng-click="removeValueField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                   </div>
                 </div>
             </div>
             <div class="form-group row" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
                 <div class="col-sm-12">
-                    <a href class="text-u-l" ng-if="entry.entryComment.length>0" ng-click="addValueField()" translate>button.addAnotherValue</a>
-                    <a href class="text-u-l" ng-if="entry.entryComment.length==0" ng-click="addValueField()" translate>button.addValue</a>
+                    <a href class="text-u-l" ng-if="entryValue.length>0" ng-click="addValueField()" translate>button.addAnotherValue</a>
+                    <a href class="text-u-l" ng-if="entryValue.length==0" ng-click="addValueField()" translate>button.addValue</a>
                 </div>
             </div>
-            <div class="form-group row">
-               <label class="col-sm-4 form-control-label" translate>label.entryComment</label>
-               <div class="col-sm-6" ng-repeat="comment in entryComment track by $index" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
-                   <input class="form-control" placeholder="{{'placeholder.writeComment' | translate}} {{$index +1}}" name="comment" ng-model="comment.value">
-               </div>
-                <div class="col-sm-1 p-l-0">
-                    <a><i ng-click="removeCommentField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+            <div class="form-group row m-b-sm">
+               <div ng-repeat="comment in entryComment track by $index">
+                   <label class="col-sm-4 form-control-label" ng-if="$index ==0" translate>label.entryComment</label>
+                   <div class="col-sm-6" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
+                       <input class="form-control" placeholder="{{'placeholder.writeComment' | translate}} {{$index +1}}" name="comment" ng-model="comment.value">
+                   </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeCommentField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
                 </div>
             </div>
              <div class="form-group row">
                 <div class="col-sm-12">
-                    <a href class="text-u-l" ng-if="entry.entryComment.length>0" ng-click="addCommentField()" translate>button.addAnotherComment</a>
-                    <a href class="text-u-l" ng-if="entry.entryComment.length==0" ng-click="addCommentField()" translate>button.addComment</a>
+                    <a href class="text-u-l" ng-if="entryComment.length>0" ng-click="addCommentField()" translate>button.addAnotherComment</a>
+                    <a href class="text-u-l" ng-if="entryComment.length==0" ng-click="addCommentField()" translate>button.addComment</a>
                 </div>
             </div>
             <div class="row m-t-md">

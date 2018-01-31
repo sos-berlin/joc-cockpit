@@ -150,8 +150,6 @@
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                                                                            <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
-                                               ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                             <a ng-click="showConfiguration('job',job.path,job.name)"
                                                class="hide dropdown-item"
                                                ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"

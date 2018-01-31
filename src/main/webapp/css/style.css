@@ -1294,7 +1294,9 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
     padding-left: 12px;
     padding-right: 12px
 }
-
+.p-r-26{
+    padding-right: 26px !important
+}
 .p-r-0, .p-x-0 {
     padding-right: 0 !important
 }
@@ -4509,4 +4511,37 @@ svg text {
     width: 135px;
     height: 100px;
 }
+.green-box{
+    border: 1px solid #228b22 !important;
+}
 
+.gold-box{
+    border: 1px solid #ffc300 !important;
+}
+
+.crimson-box{
+    border: 1px solid #dc143c !important;
+}
+
+.dimgrey-box{
+    border: 1px solid #696969 !important;
+}
+
+.dark-orange-box{
+    border: 1px solid #ffa366 !important;
+}
+.corn-flower-blue-box{
+    border: 1px solid #557fc9 !important;
+}
+.dark-magenta-box{
+    border: 1px solid #8b008b !important;
+}
+.chocolate-box{
+    border: 1px solid #d2691e !important;
+}
+.text-dark-box{
+    border: 1px solid #bbb !important;
+}
+.m-m-p-7{
+    margin-top: 7px; padding-left: 0;margin-left: -26px
+}
