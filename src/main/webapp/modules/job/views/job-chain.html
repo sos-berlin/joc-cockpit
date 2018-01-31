@@ -487,7 +487,7 @@
                                             <a class="hide dropdown-item" ng-if="jobChain.state._text == 'STOPPED'"
                                                ng-class="{show:permission.JobChain.execute.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
-<a ng-click="viewOrders(jobChain)"
+				      <a ng-click="viewOrders(jobChain)"
                                                ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}"
                                                class="dropdown-item" translate>button.showOrders</a>
                                              <a class="hide dropdown-item"
@@ -499,7 +499,7 @@
                                             <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="showCalendar(jobChain);" translate>button.showCalendar</a>
-  <div class="dropdown-divider"></div>
+  				      <div class="dropdown-divider"></div>
 
                                             <a class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.history, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -610,7 +610,7 @@
                                                                        ng-class="{'disable-link':(!nestedJobChain.numOfOrders || nestedJobChain.numOfOrders == 0)}"
                                                                        class="dropdown-item"
                                                                        translate>button.showOrders</a>
-   <a class="hide dropdown-item"
+   							    <a class="hide dropdown-item"
                                                                        ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                                        ng-click="addOrder(nestedJobChain);" translate>button.addOrder</a>
 
@@ -657,10 +657,11 @@
                                                                   ng-bind="nestedJobChain.state._text  | translate"></span>
                                                         </td>
                                                         <td ng-bind="nestedJobChain.numOfNodes || 0"></td>
-                                                        <td><a class="text-hover-primary"
-                                                               ui-sref="app.resources.agentClusters"
-                                                               ng-bind="nestedJobChain.processClass"></a><i
-                                                                ng-if="!nestedJobChain.processClass">-</i></td>
+                                                        <td>
+                                                            <a class="text-hover-primary" ui-sref="app.resources.agentClusters"
+                                                               ng-bind="nestedJobChain.processClass"></a>
+                                                            <i ng-if="!nestedJobChain.processClass">-</i>
+                                                        </td>
                                                         <td><a class="text-hover-primary"
                                                                ng-click="viewOrders(nestedJobChain,'PENDING')"
                                                                ng-bind="nestedJobChain.ordersSummary.pending || 0"></a>
@@ -822,7 +823,7 @@
                                                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                                                                            ng-click="resetOrder(order)"
                                                                                            translate>button.resetOrder</a>
- <div class="dropdown-divider"></div>
+ 									    <div class="dropdown-divider"></div>
                                                                                           <a href class="dropdown-item"
                                                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                                                            ng-click="setRunTime(order)"
@@ -955,7 +956,8 @@
                                                                     <td>
                                                                         <a class="text-hover-primary"
                                                                               ng-click="showProcessClass(nestedNode.job.processClass)">
-                                                                        {{nestedNode.job.processClass || '-'}}</a>
+                                                                        {{nestedNode.job.processClass}}</a>
+                                                                        <span ng-if="!nestedNode.job.processClass">-</span>
                                                                     </td>
                                                                     <td>{{nestedNode.numOfOrders || 0}}</td>
                                                                     <td>
@@ -1218,7 +1220,8 @@
                                             <td>
                                                 <a class="text-hover-primary"
                                                           ng-click="showProcessClass(node.job.processClass)">
-                                                    {{node.job.processClass || '-'}}</a>
+                                                    {{node.job.processClass}}</a>
+                                                <span ng-if="!node.job.processClass">-</span>
                                             </td>
                                             <td>{{node.numOfOrders || 0}}</td>
                                             <td>

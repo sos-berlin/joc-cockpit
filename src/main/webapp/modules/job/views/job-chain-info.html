@@ -355,7 +355,7 @@
                                                                                            ng-if="(order._type =='AD_HOC' || order._type == 'FILE_ORDER') && permission.Order.delete.permanent"
                                                                                            ng-click="deleteOrder(order,jobChain)"
                                                                                            translate>button.deleteOrder</a>
-<a href class="dropdown-item"
+									     <a href class="dropdown-item"
                                                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                                                                            ng-click="resetOrder(order)"
                                                                                            translate>button.resetOrder</a>
@@ -370,12 +370,12 @@
                                                                                             <span translate>button.resetRunTime</span>
                                                                                         </a>
 
-<a href class="dropdown-item"
+									     <a href class="dropdown-item"
                                                                                            ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                                                            ng-click="viewCalendar(order)"
                                                                                            translate>button.showCalendar</a>
-<div class="dropdown-divider"></div>
-<a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
+									    <div class="dropdown-divider"></div>
+									    <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                                                            class="hide dropdown-item"
                                                                                            ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                                                            translate>button.showConfiguration</a>
@@ -492,7 +492,9 @@
                                                                     </td>
                                                                     <td> <a class="text-hover-primary"
                                                                               ng-click="showProcessClass(nestedNode.job.processClass)">
-                                                                        {{nestedNode.job.processClass || '-'}}</a></td>
+                                                                        {{nestedNode.job.processClass}}</a>
+                                                                       <span ng-if="!nestedNode.job.processClass">-</span>
+                                                                    </td>
                                                                     <td>{{nestedNode.numOfOrders || 0}}</td>
                                                                     <td>
                                                                         <span class="label" ng-if="nestedNode.job.state"
@@ -625,13 +627,7 @@
                                                                    ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
                                                                    ng-click="setOrderState(order)"
                                                                    translate>button.setOrderState</a>
-                                                                <a href class="dropdown-item"
-                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                                   ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
-                                                                <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                                   ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
-                                                                    <span translate>button.resetRunTime</span>
-                                                                </a>
+                                                                
                                                                 <a href class="dropdown-item bg-hover-color"
                                                                    ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                                    ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
@@ -644,19 +640,30 @@
                                                                 <a href class="dropdown-item"
                                                                    ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                                                    ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
-                                                                <a href class="dropdown-item"
-                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
-                                                                   ng-click="resetOrder(order)" translate>button.resetOrder</a>
+                                                                
                                                                 <a href class="dropdown-item bg-hover-color"
                                                                    ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
                                                                    ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                                <a href class="dropdown-item"
-                                                                   ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
-                                                                   ng-click="viewCalendar(order)" translate>button.showCalendar</a>
+                                                                
                                                                 <a href class="dropdown-item bg-hover-color"
                                                                    ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                                                    ng-click="deleteOrder(order,jobChain)" translate>button.deleteOrder</a>
-<a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
+							<a href class="dropdown-item"
+                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                                                   ng-click="resetOrder(order)" translate>button.resetOrder</a>
+ 							<div class="dropdown-divider"></div>
+							<a href class="dropdown-item"
+                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                                   ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
+                                                                <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                                   ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                                    <span translate>button.resetRunTime</span>
+                                                                </a>
+							<a href class="dropdown-item"
+                                                                   ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                                                   ng-click="viewCalendar(order)" translate>button.showCalendar</a>
+ 							<div class="dropdown-divider"></div>
+						  	      <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                                    class="hide dropdown-item"
                                                                    ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                                    translate>button.showConfiguration</a>
@@ -751,7 +758,9 @@
                                             <td>
                                                 <a class="text-hover-primary"
                                                       ng-click="showProcessClass(node.job.processClass)">
-                                                {{node.job.processClass || '-'}}</a>
+                                                {{node.job.processClass}}
+                                                </a>
+                                                 <span ng-if="!node.job.processClass">-</span>
                                             </td>
                                             <td>{{node.numOfOrders || 0}}</td>
                                             <td>

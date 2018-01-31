@@ -497,7 +497,7 @@
                                                        class="dropdown-item"
                                                        ng-class="{'disable-link':(!nestedJobChain.numOfNodes || nestedJobChain.numOfNodes == 0)}"
                                                        translate>button.showDetailView</a>
-<a class="hide dropdown-item bg-hover-color"
+					     <a class="hide dropdown-item bg-hover-color"
                                                        ng-if="nestedJobChain.state._text != 'STOPPED'"
                                                        ng-class="{show:permission.JobChain.execute.stop, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="stopJobChain(nestedJobChain.path)"
@@ -520,7 +520,7 @@
                                                        ng-class="{'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="showCalendar(nestedJobChain);"
                                                        translate>button.showCalendar</a>
-<div class="dropdown-divider"></div>
+					     <div class="dropdown-divider"></div>
                                                     
                                                     <a class="hide dropdown-item"
                                                        ng-class="{show:permission.JobChain.view.history, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
@@ -732,11 +732,12 @@
                                                                            ng-click="resetRunTime(order)">
                                                                             <span translate>button.resetRunTime</span>
                                                                         </a>
-                                                                         <div class="dropdown-divider"></div>
+                                                                         
                                                                         <a href class="dropdown-item"
                                                                            ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                                            ng-click="viewCalendar(order)"
                                                                            translate>button.showCalendar</a>
+							      <div class="dropdown-divider"></div>
                                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                                            class="hide dropdown-item"
                                                                            ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
@@ -915,7 +916,7 @@
         </div>
         <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 m-t-sm">
                     <div class="box white" id="scrollToTask">
                         <div class="box-header">
                             <span class="text">{{showHistoryPanel.name}} <i ng-if="showHistoryPanel.title">-</i> <i

@@ -15,7 +15,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-t-sm">
-            <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" ng-class="{'col-xxl-12 col-lg-12': !permission.JobschedulerMasterCluster.view.status}">
+            <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12">
                 <div class="row">
                     <div class="col-md-12" id="agent-cluster-status" ng-show="permission.JobschedulerUniversalAgent.view.status" >
                         <div class="box" style="max-height: 186px; min-height: 180px">
@@ -97,7 +97,7 @@
                             </div>
                             <div id="divClusterStatusWidget" class="box-body">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
-                                                   on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port,id)" ></cluster-status-view>
+                                  on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port,id)" ></cluster-status-view>
                             </div>
                             <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}" style="padding: 140px 0 155px 0">
                                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
@@ -158,9 +158,9 @@
                             </tr>
                             </table>
                             <div ng-if="notPermissionForSnapshot">
-                                     <div class="text-u-c text-center text m-t-md m-b">
-                                                {{'message.noInformationAvailable' | translate}}
-                                    </div>
+                                 <div class="text-u-c text-center text m-t-md m-b">
+                                      {{'message.noInformationAvailable' | translate}}
+                                  </div>
                              </div>
                             <div ng-hide="notPermissionForSnapshot" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !snapshot}">
                                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>

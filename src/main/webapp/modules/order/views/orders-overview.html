@@ -387,9 +387,8 @@
                                                            ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(order)"
                                                            translate>button.showCalendar</a>
-
                                                         <div class="dropdown-divider"></div>
-						                                <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
+						         <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                                         ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                            class="hide dropdown-item"
