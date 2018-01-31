@@ -1,3 +1,11 @@
+<style>
+    .cal-row-head{
+        color: #222;
+    }
+    .cal-day-outmonth {
+        background: transparent !important;
+    }
+</style>
 <div ng-click="refreshSession()">
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
@@ -140,14 +148,14 @@
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequencies</th>
-<th translate>label.period</th>
+                                        <th translate>label.period</th>
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
                                         <tr>
                                             <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
-  <a class="text-xs text-hover-primary m-l-sm"
+                                                <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
                                                 <a class="text-xs text-hover-color m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
@@ -155,7 +163,7 @@
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-<a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
                                                             class="fa fa-pencil"></i></a>
                                                     <a class="text-xs text-hover-color m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>

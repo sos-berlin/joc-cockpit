@@ -1139,6 +1139,8 @@
                     $window.sessionStorage.setItem('$SOS$ALLEVENT', null);
                 } else {
                     CoreService.setDefaultTab();
+                    $window.localStorage.removeItem('$SOS$URL');
+                    $window.localStorage.removeItem('$SOS$URLPARAMS');
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);
                     });
@@ -1148,7 +1150,8 @@
             });
         };
 
-        if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
+        if ($window.sessionStorage.$SOS$JOBSCHEDULE && $window.sessionStorage.$SOS$JOBSCHEDULE != 'null') {
+           
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
             if(vm.selectedJobScheduler && vm.selectedJobScheduler.state)
             vm.scheduleState = vm.selectedJobScheduler.state._text;
@@ -1173,7 +1176,7 @@
                     if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType)
                         vm.permission.precedence = vm.selectedJobScheduler.clusterType.precedence;
                 }, function () {
-                    vm.selectedJobScheduler = res.jobscheduler;
+                    vm.selectedJobScheduler = result.jobscheduler;
                     vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                         document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
@@ -2073,8 +2076,8 @@
         };
     }
 
-    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window'];
-    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window) {
+    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window','ScheduleService'];
+    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window,ScheduleService) {
         var vm = $scope;
         var dom_parser = new DOMParser();
         vm.minDate = new Date();
@@ -2143,7 +2146,26 @@
         run_time.ultimos.day = [];
         var x2js = new X2JS();
 
- vm.editor.when_holiday_options = {
+
+        vm.selectSchedule = function () {
+            if (!vm.schedules)
+                ScheduleService.getSchedulesP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    compact: true
+                }).then(function (res) {
+                    vm.schedules = [];
+                    angular.forEach(res.schedules, function (value) {
+                        if (value && !value.substitute)
+                            vm.schedules.push(value)
+                    });
+                });
+        };
+
+        vm.selectSchedule();
+
+        vm.zones = moment.tz.names();
+
+        vm.editor.when_holiday_options = {
             'previous_non_holiday': gettextCatalog.getString('previous non holiday'),
             'next_non_holiday': gettextCatalog.getString('next non holiday'),
             'suppress': gettextCatalog.getString('suppress execution (default)'),
@@ -2485,6 +2507,7 @@
                 vm._sch._schedule = run_time._schedule;
                 if (load && vm.order)
                     vm.order.at = 'later';
+
             }
 
             vm.runTime1.timeZone = run_time._time_zone;

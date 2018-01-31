@@ -29,8 +29,13 @@
                         <i class="fa fa-plus"></i>
                         {{'button.addRole'| translate}}
                     </button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="pageView=='grid'" ng-click="addPermission();"  translate="">button.addPermission</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" >
+ <i class="fa fa-plus"></i>
+ {{'button.addFolder' | translate}}</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="pageView=='grid'" ng-click="addPermission();">
+
+ <i class="fa fa-plus"></i>
+                        {{'button.addPermission' | translate}}</button>
                     <div class="hide" ng-class="{'show-block':state == 'permission'}">
                         <toggle-view></toggle-view>
                     </div>
@@ -60,7 +65,7 @@
                 </ul>
             </div>
             <div ng-if="state == 'user'" class="col-md-6 col-sm-8">
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString.q" style="width: 180px">
             </div>
         </div>
         <div class="row m-t-sm">

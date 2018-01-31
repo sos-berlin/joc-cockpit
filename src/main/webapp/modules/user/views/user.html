@@ -9,7 +9,7 @@
                 <th><span translate>label.roles</span></th>
             </tr>
             </thead>
-            <tbody ng-repeat="user in filtered = (users | filter: filterString:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+            <tbody ng-repeat="user in filtered = (users | filter: filterString.q:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
                 <td>
                     <div class="btn-group dropdown pull-left m-r-sm">

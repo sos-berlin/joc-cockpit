@@ -2327,11 +2327,15 @@
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
-            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
+            if (vm.substituteObj.name.substring(0, 1) == '/') {
+                schedules.schedule = vm.substituteObj.name;
+            } else {
+                schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
+            }
             var x2js = new X2JS();
 
             var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = vm.sch._substitute;
+            x.schedule._substitute = schedule.path;
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
 
             schedules.auditLog = {};
@@ -2364,28 +2368,18 @@
             vm.scheduleAction = undefined;
 
 
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.tempXML = vm.runTimes.content;
-                }
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+                createSchedule(schedule);
+            }, function () {
 
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/add-substitute-dialog.html',
-                    controller: 'RuntimeEditorDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    createSchedule(schedule);
-                }, function () {
-
-                });
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -2395,7 +2389,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
 
@@ -2805,7 +2799,12 @@
                 clusterStatusData.database = res;
                 getClusterMembersP().then(function (res) {
                     clusterStatusData.members = res;
+                    if(clusterStatusData.members.masters && clusterStatusData.members.masters.length>1) {
 
+                        clusterStatusData.members.masters.sort(function (a, b) {
+                            return a.clusterType.precedence - b.clusterType.precedence;
+                        });
+                    }
                     vm.clusterStatusData = clusterStatusData;
 
                     t2 = $timeout(function () {
@@ -3280,7 +3279,7 @@
             vm.taskHistoryTab.type = 'jobChain';
             vm.taskHistoryTab.order.filter.historyStates = state;
             vm.taskHistoryTab.order.selectedView = false;
-            vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'today';
+            vm.taskHistoryTab.order.filter.date = vm.dashboardFilters.filter.orderSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.orderSummaryfrom;
             $state.go('app.history');
         };
         vm.showTaskSummary = function (state) {
@@ -3288,7 +3287,7 @@
             vm.taskHistoryTab.type = 'job';
             vm.taskHistoryTab.task.filter.historyStates = state;
             vm.taskHistoryTab.task.selectedView = false;
-            vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
+            vm.taskHistoryTab.task.filter.date = vm.dashboardFilters.filter.taskSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.taskSummaryfrom;
             $state.go('app.history');
         };
 

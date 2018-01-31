@@ -65,8 +65,8 @@
                 SOSAuth.save();
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
-                    $window.localStorage.setItem('$SOS$URL', '');
-                    $window.localStorage.setItem('$SOS$URLPARAMS', {});
+                    $window.localStorage.removeItem('$SOS$URL');
+                    $window.localStorage.removeItem('$SOS$URLPARAMS');
                 } else {
                     $location.path('/');
                 }
@@ -794,6 +794,8 @@
         vm.editor = {};
         vm.editor.edit = false;
         vm.view = {};
+        vm.filterString = {};
+        vm.filterString.q = '';
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {

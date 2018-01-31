@@ -25,7 +25,7 @@
                     s.reject("error");
                 else
                     s.resolve()
-            } else t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search()), s.reject("login");
+            } else s.reject("login");
             return s.promise
         };
         l.$inject = ["$q", "$location", "SOSAuth", "$window", "$rootScope"];

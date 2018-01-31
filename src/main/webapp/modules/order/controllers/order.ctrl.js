@@ -5727,18 +5727,6 @@
 
         vm.setRunTime = function (order) {
             loadRuntime(order);
-            ScheduleService.getSchedulesP({
-                jobschedulerId: $scope.schedulerIds.selected,
-                compact: true
-            }).then(function (res) {
-                vm.schedules = [];
-                angular.forEach(res.schedules, function (value) {
-                    if (value && !value.substitute)
-                        vm.schedules.push(value)
-                });
-            });
-
-            vm.zones = moment.tz.names();
         };
         function resetRunTime(order) {
 
@@ -6201,7 +6189,7 @@
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                orderId: vm.selectedOrder.orderId,
+                orderId: vm._jobChain.orderId,
                 dateFrom: firstDay,
                 dateTo: lastDay
             }).then(function (res) {
@@ -6216,9 +6204,8 @@
 
         vm.viewCalendar = function (order) {
             vm.maxPlannedTime = undefined;
-            vm.selectedOrder = order;
+            vm._jobChain = angular.copy(order);
             vm.isCaledarLoading = true;
-            vm._jobChain = order;
             vm._jobChain.name = order.orderId;
             vm.planItems = [];
             firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
@@ -6256,12 +6243,17 @@
         }
 
         function openCalendar() {
-            $uibModal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._jobChain = null;
+            }, function () {
+                vm._jobChain = null;
             });
         }
 
