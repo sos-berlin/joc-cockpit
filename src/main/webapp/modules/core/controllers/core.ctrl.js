@@ -966,7 +966,7 @@
         };
 
         
- var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
+        var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
             if (newNames != oldValues && vm.schedulerIds.selected && vm.permission.user) {
                 vm.saveSettingConf();
             }
@@ -1082,7 +1082,7 @@
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                 vm.logout('timeout');
             }
-            if ($rootScope.clientLogFilter.isEnable) {
+            if ($rootScope.clientLogFilter && $rootScope.clientLogFilter.isEnable) {
                 try {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
                     if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0) {
@@ -1145,10 +1145,20 @@
                         $window.sessionStorage.removeItem(key);
                     });
                 }
+
+
+                delete $rootScope['expand_to'];
+                delete $rootScope['order_expand_to'];
+                delete $rootScope['job_expand_to'];
+                delete $rootScope['agent_cluster_expand_to'];
+                delete $rootScope['process_class_expand_to'];
+                delete $rootScope['schedule_expand_to'];
                 $rootScope.$broadcast('reloadUser');
                 $location.path('/login').search({});
+
             });
         };
+
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE && $window.sessionStorage.$SOS$JOBSCHEDULE != 'null') {
            

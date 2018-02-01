@@ -883,6 +883,7 @@
 
 
             JobChainService.getJobChainsP(obj1).then(function (result) {
+                vm.allJobChains = [];
                 if (vm.scheduleState == 'UNREACHABLE') {
                     angular.forEach(vm.tree, function (node) {
                         insertData(node, result.jobChains);
@@ -891,7 +892,7 @@
                     return;
                 }
                 JobChainService.get(obj).then(function (res) {
-                    vm.allJobChains = [];
+
                     if (result.jobChains && result.jobChains.length > 0) {
                         var x = [];
                         angular.forEach(result.jobChains, function (jobChain, index) {
@@ -3086,6 +3087,7 @@
 
             vm.allJobs = [];
             function recursive(data) {
+
                 data.expanded = !0;
                 data.folders = orderBy(data.folders, 'name');
 
@@ -3095,7 +3097,7 @@
                         data.jobs.push(value);
                         value.path1 = data.path;
 
-                        if (value.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                        if (value.state && value.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: value.path}]
@@ -3114,6 +3116,7 @@
                 });
             }
             recursive(data);
+
         }
 
         function expandFolderData(data) {
@@ -3260,7 +3263,7 @@
                         if (value.path == value1.path) {
                             flag = false;
                         }
-                        if (flag && value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                        if (flag && value1.state && value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                             vm.allJobs[index1].showJobChains = true;
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -3378,7 +3381,7 @@
                 }
                 vm.allJobs = angular.copy(temp);
                 angular.forEach(vm.allJobs, function (value1, index1) {
-                    if (value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                    if (value1.state && value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                         vm.allJobs[index1].showJobChains = true;
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
@@ -3443,6 +3446,7 @@
         var count = 1, splitPath = [];
 
         function checkExpand(data) {
+
             if (data.selected1) {
                 data.jobs = [];
                 expandFolderData(data);
@@ -3649,12 +3653,12 @@
                     startTraverseNode(expandNode);
                 }
                 vm.loading = false;
-            }, function () {
-
+            }, function (err) {
+                 vm.loading = false;
                 if (expandNode) {
                     startTraverseNode(expandNode);
                 }
-                vm.loading = false;
+
             });
         }
 
@@ -3709,8 +3713,9 @@
                     });
                     vm.loading = false;
                 }
+                vm.allJobs = [];
                 JobService.get(obj).then(function (res) {
-                    vm.allJobs = [];
+
                     if (result.jobs && result.jobs.length > 0) {
 
                         var x = [];
@@ -3718,7 +3723,7 @@
                             for (var i = 0; i < res.jobs.length; i++) {
                                 if (job.path == res.jobs[i].path) {
                                     job = mergePermanentAndVolatile(res.jobs[i], job);
-                                    if (job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                                    if (job.state && job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                                         job.showJobChains = true;
                                     }
                                     x.push(job);
@@ -3744,6 +3749,7 @@
                     vm.loading = false;
                 });
             }, function () {
+
                 JobService.get(obj).then(function (res) {
                     if (res.jobs) {
                         vm.allJobs = [];

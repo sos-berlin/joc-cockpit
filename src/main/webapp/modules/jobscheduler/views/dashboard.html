@@ -57,17 +57,16 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div style="overflow: auto;width: 100%" ng-class="{'hide':agentStatusChart[0].values.length==0}">
-                                <nvd3 options="barOptions"
-                                        data="agentStatusChart"
-                                        on-ready="barChartReadyCallback">
-                                </nvd3>
-                            </div>
-                            <div ng-if="agentStatusChart[0].values.length==0 && isLoadedRunningTask" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
-                                        {{'message.noDataAvailable' | translate}}
-                            </div>
-                            <div ng-hide="agentStatusChart[0].values.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
-                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            <div class="box-body p-a-xs p-t-0" style="min-height: 150px">
+                                <div style="overflow: auto;width: 100%" ng-class="{'hide':agentStatusChart[0].values.length==0}">
+                                    <nvd3 options="barOptions" data="agentStatusChart" on-ready="barChartReadyCallback"></nvd3>
+                                </div>
+                                <div ng-if="agentStatusChart[0].values.length==0 && isLoadedRunningTask" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
+                                            {{'message.noDataAvailable' | translate}}
+                                </div>
+                                <div ng-hide="agentStatusChart[0].values.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
+                                    <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -77,14 +76,14 @@
                  ng-class="{'col-xxl-12 col-lg-12': (!permission.ProcessClass.view.status && !permission.JobschedulerUniversalAgent.view.status)}">
                  <div class="row" >
                      <div class="col-md-12" >
-                        <div class=" box" id="master-cluster-status">
+                        <div class=" box" id="master-cluster-status" style="max-height: 433px">
                             <div class="box-header b-b">
-                            <h3>
-                                <span ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'" translate>label.masterClusterStatus</span>
-                                <span ng-if="selectedJobScheduler.clusterType._type == 'STANDALONE'"  translate>label.standaloneJobSchedulerMaster</span>
-			                </h3>
+                                <h3>
+                                    <span ng-if="selectedJobScheduler.clusterType && selectedJobScheduler.clusterType._type != 'STANDALONE'" translate>label.masterClusterStatus</span>
+                                    <span ng-if="!selectedJobScheduler.clusterType || selectedJobScheduler.clusterType._type == 'STANDALONE'"  translate>label.standaloneJobSchedulerMaster</span>
+                                </h3>
                             </div>
-                            <div class="box-tool hide" ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
+                            <div class="box-tool hide" ng-class="{'show': selectedJobScheduler.clusterType && selectedJobScheduler.clusterType._type != 'STANDALONE'}">
                                 <div class="btn-group dropdown pull-right">
                                     <button class="btn btn-sm btn-grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
@@ -98,10 +97,14 @@
                             <div id="divClusterStatusWidget" class="box-body">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
                                   on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port,id)" ></cluster-status-view>
+                                <div ng-if="!clusterStatusData && isLoadedMasterCluster" class="text-u-c text-center" style="padding-top: 100px; font-size: 17px;">
+                                        {{'message.noDataAvailable' | translate}}
+                                </div>
                             </div>
                             <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}" style="padding: 140px 0 155px 0">
                                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                             </div>
+
                         </div>
                     </div>
                 </div>
