@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7fdcebdb-4304-4229-b854-90d5910cd44b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/directives/core.directive.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/directives/core.directive.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/dashboard.html" afterPath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/dashboard.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="7fdcebdb-4304-4229-b854-90d5910cd44b" name="Default" comment="" />
     <ignored path="joc-cockpit.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
