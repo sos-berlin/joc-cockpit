@@ -366,7 +366,7 @@
         function expandFolderData1(data) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
+            //obj.compact = true;
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
             }
@@ -850,7 +850,6 @@
             obj = {};
             obj1 = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
             obj.folders = [];
 
             if (vm.selectedFiltered && vm.selectedFiltered.state) {
@@ -868,7 +867,7 @@
             obj.compact = false;
 
             obj1.jobschedulerId = vm.schedulerIds.selected;
-            obj1.compact = true;
+            //obj1.compact = true;
             obj1.folders = [];
 
             if (vm.selectedFiltered) {
@@ -2624,7 +2623,7 @@
                     if (vm.events[0].eventSnapshots[j].eventType == 'JobChainStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                         arr.push({jobChain: vm.events[0].eventSnapshots[j].path});
                     }
-                    if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "ORDER") && loadFileBasedObj && !callTree) {
+                    if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "JOB" || vm.events[0].eventSnapshots[j].objectType == "ORDER") && loadFileBasedObj && !callTree) {
                         callTree = vm.events[0].eventSnapshots[j].path;
                     }
                 }
@@ -2676,8 +2675,9 @@
                                     //vm.allJobChains[index].show = true;
                                 for (var i = 0; i < res.jobChains.length; i++) {
                                     if (vm.allJobChains[index].path == res.jobChains[i].path) {
-                                        vm.allJobChains[index].nodes = [];
-                                        vm.allJobChains[index] = angular.merge(vm.allJobChains[index], res.jobChains[i]);
+                                   vm.allJobChains[index] = mergePermanentAndVolatile(res.jobChains[i],vm.allJobChains[index]);
+                                   //vm.allJobChains[index].nodes = [];
+                                   // vm.allJobChains[index] = angular.merge(vm.allJobChains[index], res.jobChains[i]);
                                         vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
                                         if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
                                             angular.forEach(vm.allJobChains[index].nodes, function (val, index2) {
