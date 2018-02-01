@@ -1052,7 +1052,6 @@
             return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
         };
 
-
         var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
             if (newNames != oldValues && vm.schedulerIds.selected && vm.permission.user) {
                 vm.saveSettingConf();
@@ -1173,7 +1172,7 @@
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                 vm.logout('timeout');
             }
-            if ($rootScope.clientLogFilter.isEnable) {
+            if ($rootScope.clientLogFilter && $rootScope.clientLogFilter.isEnable) {
                 try {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
                     if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0) {
@@ -1240,10 +1239,9 @@
                     });
                     window.location.reload();
                 }
-
-
             });
         };
+
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE && $window.sessionStorage.$SOS$JOBSCHEDULE != 'null') {
            

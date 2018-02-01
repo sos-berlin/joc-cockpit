@@ -3806,6 +3806,7 @@
             });
 
             OrderService.getOrdersP(obj1).then(function (result) {
+                 vm.allOrders = [];
                 if (vm.scheduleState == 'UNREACHABLE') {
                     angular.forEach(vm.tree, function (node, index) {
                         insertData(node, result.orders);
@@ -3814,7 +3815,7 @@
                     return;
                 }
                 OrderService.get(obj).then(function (res) {
-                    vm.allOrders = [];
+
                     if (result.orders && result.orders.length > 0) {
                         var x = [];
                         angular.forEach(result.orders, function (orders) {

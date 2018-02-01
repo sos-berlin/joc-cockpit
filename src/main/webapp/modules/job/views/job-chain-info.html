@@ -482,7 +482,9 @@
                                                                     </td>
                                                                     <td> <a class="text-hover-primary"
                                                                               ng-click="showProcessClass(nestedNode.job.processClass)">
-                                                                        {{nestedNode.job.processClass || '-'}}</a></td>
+                                                                        {{nestedNode.job.processClass}}</a>
+                                                                       <span ng-if="!nestedNode.job.processClass">-</span>
+                                                                    </td>
                                                                     <td>{{nestedNode.numOfOrders || 0}}</td>
                                                                     <td>
                                                                         <span class="label" ng-if="nestedNode.job.state"
@@ -749,7 +751,9 @@
                                             <td>
                                                 <a class="text-hover-primary"
                                                       ng-click="showProcessClass(node.job.processClass)">
-                                                {{node.job.processClass || '-'}}</a>
+                                                {{node.job.processClass}}
+                                                </a>
+                                                 <span ng-if="!node.job.processClass">-</span>
                                             </td>
                                             <td>{{node.numOfOrders || 0}}</td>
                                             <td>

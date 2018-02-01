@@ -20,12 +20,12 @@
                     if ("/resources" === r.url && "app.resources.agentClusters" != l.name)return t.go("app.resources.agentClusters"), void i.preventDefault();
                     if ("/users" === r.url && "app.users.user" != l.name)return t.go("app.users.user"), void i.preventDefault();
                     if ("/resources" === r.url && "app.resources.agentClusters" == l.name)return n.addClass("hide"), void i.preventDefault();
-                    if (e.clientLogFilter.isEnable) {
+                    if (e.clientLogFilter && e.clientLogFilter.isEnable) {
                         var s = {message: "START LOADING " + r.url, logTime: a, level: "debug2"};
                         e.clientLogs.push(s)
                     }
                 }), e.$on("$stateChangeSuccess", function (t, i) {
-                    if (n.addClass("hide"), $("body, html").animate({scrollTop: 0}, 1e3), n.addClass("hide"), e.clientLogFilter.isEnable && a) {
+                    if (n.addClass("hide"), $("body, html").animate({scrollTop: 0}, 1e3), n.addClass("hide"), e.clientLogFilter && e.clientLogFilter.isEnable && a) {
                         r = new Date;
                         var o = {
                             message: "ELAPSED TIME FOR UPDATE " + i.url + " " + (r.getTime() - a.getTime()) / 1e3 + "s",
@@ -38,7 +38,7 @@
                     n.addClass("hide")
                 }), e.$on("$viewContentLoading", function () {
                     var t = new Date;
-                    if (r && r.getTime() < t.getTime()) {
+                    if (r && r.getTime() < t.getTime() && e.clientLogFilter) {
                         var i = {
                             message: "ELAPSED TIME FOR UPDATE CONTENT " + (t.getTime() - r.getTime()) / 1e3 + "s",
                             logTime: t,
@@ -47,7 +47,7 @@
                         e.clientLogs.push(i)
                     }
                 }), e.$on("$stateChangeError", function (i, a, r, o, l, s) {
-                    if (n.addClass("hide"), "login" === s)t.go("login"); else if("error"==s) t.go("error"); else {if (e.clientLogFilter.isEnable) {
+                    if (n.addClass("hide"), "login" === s)t.go("login"); else if("error"==s) t.go("error"); else {if (e.clientLogFilter && e.clientLogFilter.isEnable) {
                         var s = {message: "ERROR ON LOADING : " + a.url, logTime: new Date, level: "error"};
                         e.clientLogs.push(s)
                     }
