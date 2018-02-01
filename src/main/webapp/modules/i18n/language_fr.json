@@ -1064,5 +1064,5 @@
   "label.regularExpression": "Expression Régulière",
   "label.totalNumberOfExecutions": "Nombre total d'exécutions des Tâches",
   "placeholder.enterAgentUrl": "Saisir la URL de l'Agent",
-"label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
 }

@@ -1064,5 +1064,5 @@
   "label.regularExpression": "正規表現",
   "label.totalNumberOfExecutions": "実行合計数",
   "placeholder.enterAgentUrl": "エージェントURL入力",
-"label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
+  "label.standaloneJobSchedulerMaster": "Standalone JobScheduler Master"
 }
