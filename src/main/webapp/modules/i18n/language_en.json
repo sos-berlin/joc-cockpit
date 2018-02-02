@@ -1298,7 +1298,7 @@
   "button.addComment": "Add another comment",
   "label.addMainSection": "Add New Entries",
   "label.editEntry": "Update Main Section",
-  "placeholder.writeComment":"Write your comment",
-  "message.noConfigurationAvailable":"no main configuration is available",
-  "message.deleteMainSection":"Are you sure you want to delete the selected section?"
+  "placeholder.writeComment": "Write your comment",
+  "message.noConfigurationAvailable": "no main configuration is available",
+  "message.deleteMainSection": "Are you sure you want to delete the selected section?"
 }
