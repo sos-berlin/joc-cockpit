@@ -4545,3 +4545,36 @@ svg text {
 .m-m-p-7{
     margin-top: 7px; padding-left: 0;margin-left: -26px
 }
+.status-table{
+  overflow: visible;
+}
+.status-table .dropdown-more{
+  top:20px;
+}
+.status-table .dropdown-menu.dropdown-more ::after, .status-table .dropdown-menu.dropdown-more ::before, [flex]{
+  left: 8px;
+}
+.status-table .arrows {
+  visibility: hidden;
+}
+.status-table th.active .arrows {
+    visibility: visible;
+}
+.status-table table tr {
+    background: #f1f7fa;
+    border-bottom: 6px solid #ffffff;
+    width: 100%
+}
+.status-table table tr td {
+  padding: 3px 6px;
+}
+
+.cluster-dropdown{
+  top:20px;
+}
+.cluster-dropdown ::after, .cluster-dropdown ::before, [flex]{
+  right: 8px;
+}
+.cluster-dropdown .arrows {
+  visibility: hidden;
+}

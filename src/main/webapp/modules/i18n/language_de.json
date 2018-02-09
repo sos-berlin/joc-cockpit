@@ -1300,5 +1300,11 @@
   "label.editEntry": "Update Main Section",
   "placeholder.writeComment": "Write your comment",
   "message.noConfigurationAvailable": "no main configuration is available",
-  "message.deleteMainSection": "Are you sure you want to delete the selected section?"
+  "message.deleteMainSection": "Are you sure you want to delete the selected section?",
+  "label.jobSchedulerStatus": "JobScheduler Status",
+  "label.enableJOCCluster": "Enable JOC Cluster",
+  "label.addLdapRealm": "Add ldap realm",
+  "button.enableJOCCluster": "Enable JOC Cluster",
+  "button.addLdapRealm": "Add ldap realm",
+  "message.jobSchedulerStatus": "This widget displays the status of all JobSchedules"
 }

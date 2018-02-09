@@ -4571,6 +4571,7 @@
 
         vm.isAgentClusterVisible = true;
         vm.isRunningAgentVisible = true;
+        vm.isJobscheduleStatusVisible = true;
         vm.isMasterClusterVisible = true;
         vm.isOrderOverviewVisible = true;
         vm.isOrderSummaryVisible = true;
@@ -4616,13 +4617,21 @@
                 }, {
                     row: 2,
                     col: 0,
+                    sizeX: 6,
+                    sizeY: 1,
+                    name: "jobSchedulerStatus",
+                    visible: true,
+                    message: gettextCatalog.getString('message.jobSchedulerStatus')
+                }, {
+                    row: 3,
+                    col: 0,
                     sizeX: 4,
                     sizeY: 1,
                     name: "ordersOverview",
                     visible: true,
                     message: gettextCatalog.getString('message.ordersOverview')
                 }, {
-                    row: 2,
+                    row: 3,
                     col: 4,
                     sizeX: 2,
                     sizeY: 1,
@@ -4630,7 +4639,7 @@
                     visible: true,
                     message: gettextCatalog.getString('message.ordersSummary')
                 }, {
-                    row: 3,
+                    row: 4,
                     col: 0,
                     sizeX: 4,
                     sizeY: 1,
@@ -4638,7 +4647,7 @@
                     visible: true,
                     message: gettextCatalog.getString('message.tasksOverview')
                 }, {
-                    row: 3,
+                    row: 4,
                     col: 4,
                     sizeX: 2,
                     sizeY: 1,
@@ -4646,7 +4655,7 @@
                     visible: true,
                     message: gettextCatalog.getString('message.tasksSummary')
                 }, {
-                    row: 4,
+                    row: 5,
                     col: 0,
                     sizeX: 4,
                     sizeY: 1,
@@ -4654,7 +4663,7 @@
                     visible: true,
                     message: gettextCatalog.getString('message.fileTransferOverview')
                 }, {
-                    row: 4,
+                    row: 5,
                     col: 4,
                     sizeX: 2,
                     sizeY: 1,
@@ -4662,7 +4671,7 @@
                     visible: true,
                     message: gettextCatalog.getString('message.fileTransferSummary')
                 }, {
-                    row: 5,
+                    row: 6,
                     col: 0,
                     sizeX: 6,
                     sizeY: 1,
@@ -4677,7 +4686,9 @@
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 } else if (vm.dashboardLayout[i].name == 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus') {
+                } else if (vm.dashboardLayout[i].name == 'jobSchedulerStatus') {
+                    vm.widgetWithPermission.push(vm.dashboardLayout[i]);
+                }else if (vm.dashboardLayout[i].name == 'masterClusterStatus') {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
@@ -5618,11 +5629,15 @@
             })
         };
 
-        vm.getFileOverview = function () {
+        vm.getFileOverview = function (flag) {
             if (!vm.isFileOverviewVisible) {
                 return;
             }
-
+            if (vm.scheduleState == 'UNREACHABLE' && !flag) {
+                isLoadedFileOverview = true;
+                vm.yadeOverview = {};
+                return;
+            }
             isLoadedFileOverview = false;
             YadeService.getOverview({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.yadeOverview = res.transfers;
@@ -5652,6 +5667,25 @@
                 if (err.data)
                 vm.notPermissionForFileSummary = !err.data.isPermitted;
                 isLoadedFileSummary = true;
+
+            })
+        };
+
+
+        vm.loadScheduleStatus = function () {
+            if (!vm.isJobscheduleStatusVisible) {
+                return;
+            }
+            JobSchedulerService.getClusterMembersP({jobschedulerId:''}).then(function (res) {
+                 vm.mastersList = res.masters;
+                JobSchedulerService.getClusterMembers({jobschedulerId:''}).then(function (result) {
+                     vm.mastersList = angular.merge(res.masters, result.masters);
+                }, function(err){
+
+                })
+
+            }, function (err) {
+
             })
         };
 
@@ -5830,7 +5864,11 @@
             } else if (id == 'agentClusterRunningTasks') {
                 vm.isRunningAgentVisible = flag;
                 vm.getAgentClusterRunningTask();
-            } else if (id == 'masterClusterStatus') {
+            }
+            else if(id == 'jobSchedulerStatus') {
+                vm.isJobscheduleStatusVisible = flag;
+                vm.loadScheduleStatus();
+            }else if (id == 'masterClusterStatus') {
                 vm.isMasterClusterVisible = flag;
                 prepareClusterStatusData();
             } else if (id == 'ordersOverview') {
@@ -5882,6 +5920,8 @@
                         isLoadedTaskSnapshot = false;
                         vm.loadOrderSnapshot(true);
                         vm.loadTaskSnapshot(true);
+                        vm.getFileOverview(true);
+                        vm.loadScheduleStatus();
                     }
                     if ((vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;

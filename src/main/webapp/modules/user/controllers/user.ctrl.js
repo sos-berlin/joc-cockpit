@@ -805,6 +805,23 @@
                 vm.users = res.users;
                 vm.masters = res.masters;
                 vm.main = res.main;
+                if(vm.main && vm.main.length>0){
+                    if(vm.main.length>1){
+                        for(var i =0; i< vm.main.length;i++){
+                            if((vm.main[i].entryName == 'sessionDAO' && vm.main[i].entryValue =='com.sos.auth.shiro.SOSDistributedSessionDAO') ||
+                                (vm.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue =='$sessionDAO')){
+                                vm.isJOCClusterEnable = false;
+                            }
+                            if((vm.main[i].entryName == 'ldapRealm' && vm.main[i].entryValue =='com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
+                                (vm.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue =='$sessionDAO')){
+                                vm.isLdapRealmEnable = false;
+                            }
+                        }
+                    }else{
+                        vm.isJOCClusterEnable = true;
+                        vm.isLdapRealmEnable = true;
+                    }
+                }
                 getRoles();
                 $rootScope.$broadcast('reloadPermission');
             });
@@ -1285,6 +1302,104 @@
                 vm.mainSection = [];
             }, function () {
                vm.mainSection = [];
+            });
+        };
+
+        vm.enableJOCCluster = function() {
+            vm.isldap = false;
+            var mainSection = [
+                {
+                    entryName: 'sessionDAO',
+                    entryValue: ['com.sos.auth.shiro.SOSDistributedSessionDAO'],
+                    entryComment: []
+                }, {
+                    entryName: 'securityManager.sessionManager.sessionDAO',
+                    entryValue: ['$sessionDAO'],
+                    entryComment: []
+                }];
+
+            vm.mainSection = angular.copy(mainSection);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/ldap-section-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.main = vm.main.concat(vm.mainSection);
+                saveInfo();
+                vm.isJOCClusterEnable = false;
+                vm.mainSection = [];
+            }, function () {
+                vm.mainSection = [];
+            });
+        };
+
+        vm.addLdapRealm = function() {
+            vm.isldap = true;
+            var mainSection = [
+                {
+                    entryName: 'ldapRealm',
+                    entryValue: ['com.sos.auth.shiro.SOSLdapAuthorizingRealm'],
+                    entryComment: []
+                }, {
+                    entryName: 'ldapRealm.contextFactory.url',
+                    entryValue: ['ldap://myHost:389'],
+                    entryComment: []
+                }, {
+                    entryName: 'rolePermissionResolver',
+                    entryValue: ['com.sos.auth.shiro.SOSPermissionResolverAdapter'],
+                    entryComment: []
+                }, {
+                    entryName: 'rolePermissionResolver.ini',
+                    entryValue: ['$iniRealm'],
+                    entryComment: []
+                }, {
+                    entryName: 'ldapRealm.rolePermissionResolver',
+                    entryValue: ['$rolePermissionResolver'],
+                    entryComment: []
+                }, {
+                    entryName: 'securityManager.realms',
+                    entryValue: ['$ldapRealm'],
+                    entryComment: []
+                }, {
+                    entryName: 'cacheManager',
+                    entryValue: ['org.apache.shiro.cache.MemoryConstrainedCacheManager'],
+                    entryComment: []
+                }, {
+                    entryName: 'securityManager.cacheManager',
+                    entryValue: ['$cacheManager'],
+                    entryComment: []
+                }];
+
+            vm.mainSection = angular.copy(mainSection);
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/ldap-section-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                for(var i =0; i<vm.mainSection.length;i++){
+                    if(vm.mainSection[i].entryName == 'ldapRealm.contextFactory.url'){
+                        if(!angular.isArray(vm.mainSection[i].entryValue)){
+                            var value = angular.copy(vm.mainSection[i].entryValue);
+                            vm.mainSection[i].entryValue =[value];
+
+                        }
+                        break;
+                    }
+                }
+                vm.main = vm.main.concat(vm.mainSection);
+                saveInfo();
+                vm.isLdapRealmEnable = false;
+                console.log(vm.mainSection)
+                //vm.mainSection = [];
+            }, function () {
+                vm.mainSection = [];
             });
         };
 

@@ -29,6 +29,12 @@
                         <i class="fa fa-plus"></i>
                         {{'button.addRole'| translate}}
                     </button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main'" ng-disabled="!isLdapRealmEnable" ng-click="addLdapRealm()">
+                        {{'button.addLdapRealm' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main'" ng-disabled="!isJOCClusterEnable" ng-click="enableJOCCluster()">
+                        {{'button.enableJOCCluster' | translate}}
+                    </button>
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main'" ng-click="addMainSection()">
                         <i class="fa fa-plus"></i>
                         {{'button.addEntry' | translate}}

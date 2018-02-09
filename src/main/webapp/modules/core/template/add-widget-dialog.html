@@ -10,7 +10,7 @@
             <img class="pull-left m-l" ng-src="images/{{widget.name}}.png" width="120px" height="60px">
             <div class="col-sm-6">
                 <label class="font14 text-dark m-b-0" ng-bind="'label.'+widget.name | translate"></label>
-                <p class="text-sm text-muted">{{widget.message}}</p>
+                <p class="text-sm text-muted" >{{widget.message | translate}}</p>
             </div>
             <button type="button" class="btn btn-grey btn-sm pull-right m-r" ng-click="addWidget(widget)" translate>
                 button.widget

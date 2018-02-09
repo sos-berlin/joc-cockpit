@@ -3646,12 +3646,12 @@
                     startTraverseNode(expandNode);
                 }
                 vm.loading = false;
-            }, function (err) {
-                 vm.loading = false;
+            }, function () {
+
                 if (expandNode) {
                     startTraverseNode(expandNode);
                 }
-
+                vm.loading = false;
             });
         }
 

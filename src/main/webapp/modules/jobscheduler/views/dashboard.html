@@ -18,9 +18,6 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item " ng-click="resetLayout()" translate>button.resetLayout</a>
-<!--
-                                <a class="dropdown-item " ng-click="refreshLayout()" translate>button.refreshLayout</a>
--->
                             </div>
                         </div>
                     </div>
@@ -45,7 +42,6 @@
 </div>
 
 <div class="scroll-y max-ht">
-    
     <div class="m-a hide" ng-class="{'show':dashboard.widgets.length == 0  && !loadingImg}" >
         <div class="m-a-sm emtpy-text" >
             <a href="" ng-click="addWidgetDialog()" translate>message.addNewWidget</a>
@@ -144,6 +140,72 @@
                     </div>
                     <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}" style="padding: 140px 0 155px 0">
                         <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+                    </div>
+                </div>
+                <div id="jobSchedulerStatus1" ng-if="widget.name == 'jobSchedulerStatus'"  class="box">
+                    <div class="box-header b-b remove">
+                        <h3 translate>label.jobSchedulerStatus</h3>
+                        <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                    </div>
+                    <div class="box-body">
+                        <div class="table-responsive status-table" >
+                            <table style="width: 100%;max-height: 350px; overflow-y: auto">
+                                <tr ng-repeat="master in mastersList">
+                                    <td>
+                                        <div class="btn-group dropdown"  >
+                                            <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                    class="fa fa-ellipsis-h"></i></button>
+                                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.terminate" ng-click="clusterAction('master', 'terminate', master.host, master.port, master.jobschedulerId)" translate>button.terminate</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.terminate"  ng-click="clusterAction('master', 'terminateWithin', master.host, master.port, master.jobschedulerId)" translate>button.terminateWithin</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.abort" ng-click="clusterAction('master', 'abort', master.host, master.port, master.jobschedulerId)"  translate>button.abort</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.restart.abort" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)"  translate>button.abortAndRestart</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.restart.terminate"  ng-click="clusterAction('master', 'terminateAndRestartWithTimeout', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestart</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.terminate" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestartWithin</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-if="permission.JobschedulerMaster.execute.pause && master.state._text!='PAUSED'" ng-click="clusterAction('master', 'pause', master.host, master.port, master.jobschedulerId)" translate>button.pause</a>
+                                                <a class="dropdown-item" ng-if="permission.JobschedulerMaster.execute.continue && master.state._text=='PAUSED'"
+                                                   ng-click="clusterAction('master', 'continue', master.host, master.port, master.jobschedulerId)" translate>button.continue</a>
+                                                <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.removeOldInstances"
+                                                   ng-click="clusterAction('master', 'remove', master.host, master.port, master.jobschedulerId)" translate>button.removeInstance</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)" translate>button.downloadLog</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><a class="text-hover-primary" ng-click="changeScheduler(master.jobschedulerId);$event.stopPropagation()">{{master.jobschedulerId}}</a></td>
+                                    <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
+                                    <td><span ng-class="bgColorFunction(master.state.severity)" class="label">{{master.state._text | translate}}</span></td>
+                                    <td>
+                                        <span class="label label-default">{{master.clusterType._type | translate}}</span>
+                                        <i ng-if="master.clusterType.precedence>0" class="text-xs" translate>- BACKUP</i>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-{{master.os.name | lowercase}}"></i>
+                                        <span>{{master.os.architecture}}</span> -
+                                        <span>{{master.os.distribution}}</span>
+                                    </td>
+                                    <td><span>{{master.version}}</span></td>
+                                    <td>
+                                        <span ng-if="master.state._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
+                                        <span ng-if="master.state._text!='RUNNING' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span> -
+                                        <span ng-if="master.state._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt | stringToDate}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div ng-if="mastersList && mastersList.length==0" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
+                            {{'message.noDataAvailable' | translate}}
+                        </div>
+                        <div class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !mastersList}">
+                            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+                        </div>
                     </div>
                 </div>
                 <div id="ordersOverview1" ng-if="widget.name == 'ordersOverview'" style="min-height: 130px;max-height: 156px" class="box">
@@ -573,7 +635,6 @@
         </ul>
     </div>
 </div>
-
 <div ng-if="loadingImg" class="loading-img1"></div>
 <script>
     $(document).ready(function(){

@@ -1,0 +1,34 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span>
+                <span ng-if="isldap" translate>label.addLdapRealm</span>
+                <span ng-if="!isldap" translate>label.enableJOCCluster</span>
+            </span>
+
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok(form)" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row m-b-0" ng-repeat="param in mainSection track by $index">
+                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                <div class="col-sm-6 m-b-sm">
+                    <input type="text" class="form-control" disabled ng-model="param.entryName" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+                </div>
+
+                <div class="col-sm-6 m-b-sm">
+                    <input type="text" class="form-control" ng-disabled="param.entryName != 'ldapRealm.contextFactory.url'" ng-model="param.entryValue" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
