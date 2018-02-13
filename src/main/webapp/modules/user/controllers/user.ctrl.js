@@ -100,9 +100,9 @@
                                 $window.localStorage.$SOS$BOO = pwd;
                                 $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                             } else {
-                                $window.localStorage.setItem('$SOS$FOO', null);
-                                $window.localStorage.setItem('$SOS$BOO', null);
-                                $window.localStorage.setItem('$SOS$REMEMBER', null);
+                                $window.localStorage.removeItem('$SOS$FOO');
+                                $window.localStorage.removeItem('$SOS$BOO');
+                                $window.localStorage.removeItem('$SOS$REMEMBER');
                             }
 
                             SOSAuth.setUser(response);
@@ -1264,6 +1264,7 @@
 
         vm.addMainSection = function () {
             vm.mainSection = [];
+            vm.isUpdate = false;
             vm.mainSection.push({
                 name:'',
                 values:[{value:''}],
@@ -1396,8 +1397,76 @@
                 vm.main = vm.main.concat(vm.mainSection);
                 saveInfo();
                 vm.isLdapRealmEnable = false;
-                console.log(vm.mainSection)
-                //vm.mainSection = [];
+                vm.mainSection = [];
+            }, function () {
+                vm.mainSection = [];
+            });
+        };
+
+        vm.editAll  = function(){
+            vm.mainSection = [];
+            vm.isUpdate = true;
+
+            angular.forEach(vm.main, function(entry) {
+                console.log(entry);
+                var values = [];
+                var comments = [];
+
+                if (entry.entryValue && entry.entryValue.length > 0) {
+                    angular.forEach(entry.entryValue, function (value) {
+                        values.push({value: value});
+                    });
+                }
+                else {
+                    values.push({value: ''});
+                }
+                if (entry.entryComment && entry.entryComment.length > 0) {
+                    angular.forEach(entry.entryComment, function (comment) {
+                        comments.push({value: comment});
+                    });
+                }
+                else {
+                    comments.push({value: ''});
+                }
+                vm.mainSection.push({
+                    name: entry.entryName,
+                    values: values,
+                    comments: comments
+                });
+            });
+
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-main-section-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var main =[];
+                angular.forEach(vm.mainSection, function(val){
+                   if(val.name && val.name !='') {
+                       var obj = {};
+                       obj.entryName = val.name;
+                       obj.entryValue =[];
+                       obj.entryComment =[];
+                       angular.forEach(val.values, function(val1) {
+                           if(val1.value && val1.value !='')
+                           obj.entryValue.push(val1.value);
+                       });
+                       angular.forEach(val.comments, function(val1) {
+                           if(val1.value && val1.value !='')
+                           obj.entryComment.push(val1.value);
+                       });
+
+                       main.push(obj);
+                   }
+
+                });
+                vm.main =  main;
+                saveInfo();
+                vm.mainSection = [];
             }, function () {
                 vm.mainSection = [];
             });

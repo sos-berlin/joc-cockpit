@@ -1232,11 +1232,10 @@
                 } else {
 
                     CoreService.setDefaultTab();
-                    $window.localStorage.removeItem('$SOS$URL');
-                    $window.localStorage.removeItem('$SOS$URLPARAMS');
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);
                     });
+                    $window.localStorage.setItem('$SOS$URLRESET', true);
                     window.location.reload();
                 }
             });

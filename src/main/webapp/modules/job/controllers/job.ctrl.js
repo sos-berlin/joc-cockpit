@@ -41,7 +41,16 @@
             if(!dest.nodes && sour.nodes){
                 dest.nodes = sour.nodes;
             }else if(dest.nodes && sour.nodes){
-                dest.nodes = angular.merge(dest.nodes, sour.nodes);
+                for(var i = 0; i< dest.nodes.length;i++){
+                    for(var j = 0; j< sour.nodes.length;j++){
+                        if((dest.nodes[i].name == sour.nodes[j].name) && (dest.nodes[i].job.path == sour.nodes[j].job.path) ){
+                            sour.nodes[j].job.processClass = dest.nodes[i].job.processClass;
+                            dest.nodes[i] = sour.nodes[j];
+                            sour.splice(j,1);
+                            break;
+                        }
+                    }
+                }
             }
 
             dest.configurationStatus = sour.configurationStatus;
@@ -3786,7 +3795,7 @@
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || job.configurationStatus.severity==2) {
+                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || (value.configurationStatus && value.configurationStatus.severity==2)) {
                         vm.isStart = true;
                     }
                     if(value.isShellJob == true){
@@ -5799,7 +5808,7 @@
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || job.configurationStatus.severity==2) {
+                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || (value.configurationStatus && value.configurationStatus.severity==2)) {
                         vm.isStart = true;
                     }
                     if(value.isShellJob == true){

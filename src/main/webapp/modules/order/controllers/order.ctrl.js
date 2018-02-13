@@ -1236,6 +1236,14 @@
             var w = canvas.width;
             var h = canvas.height;
             var context = canvas.getContext("2d");
+
+            context.font='22px Arial';
+            if(vm.jobChain.title) {
+                context.fillText('JobChain : '+vm.jobChain.path + ' - ' + vm.jobChain.title, 10,50);
+            }else{
+                context.fillText('JobChain : '+vm.jobChain.path, 10,50);
+            }
+
             context.globalCompositeOperation = "destination-over";
             context.fillStyle = getBackground();
             context.fillRect(0, 0, w, h);
@@ -1298,24 +1306,31 @@
                     var data = canvas.toDataURL('image/png');
 
                     if (type == 'pdf') {
-                        var docDefinition = {
+                        if(vm.jobChain.title) {
+                            var text = "Job Chain -" + vm.jobChain.path + " - " +vm.jobChain.title;
+                        }else {
+                            var text = "Job Chain -" + vm.jobChain.path;
+                        }
 
+                        var docDefinition = {
                             content: [{
                                 image: data,
-                                width: (bound.maxLeft + 100)
+                                fit: [bound.maxTop + 100, bound.maxTop + 100]
+                            },{
+                                text:text
                             }],
                             pageOrientation: 'landscape'
                         };
                         if ((bound.maxLeft + 100) > 750) {
-                            docDefinition.pageSize = {width: (bound.maxLeft + 100), height: 1200};
+                            docDefinition.pageSize = {width: (bound.maxLeft + 120), height: 1200};
                         }
-
                         pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
+
                     } else {
                         setCanvasBackground(canvas, getBackground());
                         canvas.toBlob(function (blob) {
                             FileSaver.saveAs(blob, vm.jobChain.name + '.png');
-                        })
+                        },'image/png', 1.0)
                     }
                     if (els && els.length > 0) {
                         $.each(els, function (i, e) {
@@ -1340,7 +1355,7 @@
                     vm.loading = false;
                 }
             });
-        }
+        };
 
         vm.isLoading = true;
         /**--------------- Checkbox functions -------------*/

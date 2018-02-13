@@ -1306,5 +1306,7 @@
   "label.addLdapRealm": "Add ldap realm",
   "button.enableJOCCluster": "Enable JOC Cluster",
   "button.addLdapRealm": "Add ldap realm",
-  "message.jobSchedulerStatus": "This widget displays the status of all JobSchedules"
+  "message.jobSchedulerStatus": "This widget displays the status of all JobSchedules",
+  "label.updateMainSection": "Update Main Section",
+  "button.updateSection": "Update Main Section"
 }

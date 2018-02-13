@@ -2,11 +2,12 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span translate>label.addMainSection</span>
+            <span ng-if="!isUpdate" translate>label.addMainSection</span>
+            <span ng-if="isUpdate" translate>label.updateMainSection</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok(form)" novalidate>
-        <div class="modal-body p-a">
+        <div class="modal-body p-a" style="max-height: 640px;overflow: auto">
             <div ng-repeat="(PIndex, entry) in mainSection" ng-class="{'b-t p-t': $index>0}" class="p-l-sm">
                 <div class="form-group row m-b-0" >
                     <div class="row col-sm-12" ng-if="$index==0">

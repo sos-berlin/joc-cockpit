@@ -19,13 +19,24 @@
                 } catch (c) {
                     console.log(c)
                 }
+                if(t.localStorage.$SOS$URLRESET){
+                    t.localStorage.removeItem('$SOS$URLRESET');
+                }
 
                 var schedulerIds = JSON.parse(l.scheduleIds);
                 if(!(schedulerIds && schedulerIds.selected))
                     s.reject("error");
                 else
                     s.resolve()
-            } else s.reject("login");
+            } else {
+                if(t.localStorage.$SOS$URLRESET){
+                    t.localStorage.removeItem('$SOS$URL');
+                    t.localStorage.removeItem('$SOS$URLPARAMS');
+                }else{
+                    t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search());
+                }
+                s.reject("login");
+            }
             return s.promise
         };
         l.$inject = ["$q", "$location", "SOSAuth", "$window", "$rootScope"];
