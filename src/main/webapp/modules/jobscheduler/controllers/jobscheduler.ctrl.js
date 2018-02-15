@@ -2045,7 +2045,7 @@
                 }, function () {
                     angular.forEach(vm.treeProcess, function (node) {
                         insertDataP(node, result.processClasses);
-                    })
+                    });
 
                     vm.loading = false;
                 });
@@ -2054,7 +2054,7 @@
                 ResourceService.getProcessClass(obj).then(function (res) {
                     angular.forEach(vm.treeProcess, function (node) {
                         insertDataP(node, res.processClasses);
-                    })
+                    });
 
                     vm.loading = false;
                 }, function () {
@@ -4045,15 +4045,13 @@
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1 .parent .child').removeClass('col-lg-4').addClass('col-lg-3');
-            $('#rightPanel1 .parent .child').removeClass('col-xxl-3').addClass('col-xxl-2');
+            $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
         vm.showLeftPanel = function () {
             $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1 .parent .child').addClass('col-lg-4').removeClass('col-lg-3');
-            $('#rightPanel1 .parent .child').addClass('col-xxl-3').removeClass('col-xxl-2');
+            $('#rightPanel1 .parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 
@@ -4672,8 +4670,8 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService','PermissionService'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService,PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
 
@@ -5837,12 +5835,18 @@
                 vm.mastersList = res.masters;
                 JobSchedulerService.getClusterMembers({jobschedulerId: ''}).then(function (result) {
                     vm.mastersList = angular.merge(res.masters, result.masters);
-                }, function (err) {
-
+                    angular.forEach(vm.mastersList, function(data){
+                        data.permission =  PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
+                    });
                 })
 
-            }, function (err) {
-
+            }, function () {
+                JobSchedulerService.getClusterMembers({jobschedulerId: ''}).then(function (result) {
+                    vm.mastersList = result.masters;
+                    angular.forEach(vm.mastersList, function(data){
+                        data.permission =  PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
+                    });
+                })
             })
         };
 

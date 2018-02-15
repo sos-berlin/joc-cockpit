@@ -199,9 +199,6 @@
         var promise1, promise2;
         var object = $location.search();
 
-        var splitRegex = new RegExp('(.+):(.+)');
-        var parentRegex = '';
-
         vm.totalNodes = 0;
         vm.uniqueNode = 0;
         vm.totalSubNodes = 0;
@@ -4679,14 +4676,14 @@
         };
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
 
         vm.showLeftPanel = function () {
             $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1 .parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
         };
@@ -4768,7 +4765,7 @@
         }
 
         var t1 = '';
-        var mapObj = new Object();
+        var mapObj = {};
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {

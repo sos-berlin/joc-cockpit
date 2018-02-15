@@ -11,7 +11,11 @@
                             <i class="fa fa-pencil"></i>&nbsp;
                             <span translate>button.editLayout</span>
                         </button>
-                        <div class="btn-group dropdown">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="resetLayout()" >
+                            <i class="fa fa-refresh"></i>&nbsp;
+                            <span translate>button.resetLayout</span>
+                        </button>
+<!--                        <div class="btn-group dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" >
                                 <i class="fa fa-cog"></i>&nbsp;
                                 <span translate>button.tools</span>
@@ -19,7 +23,7 @@
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item " ng-click="resetLayout()" translate>button.resetLayout</a>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="inline" ng-if="editLayoutObj">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="addWidgetDialog()" >
@@ -50,7 +54,7 @@
     <div gridster="gridsterOpts">
         <ul>
             <li gridster-item="widget" ng-repeat="widget in dashboard.widgets track by $index" id="{{widget.name}}">
-                <div id="agentClusterStatus1" ng-if="widget.name == 'agentClusterStatus'" style="min-height: 183px;max-height: 247px" class="box">
+                <div id="agentClusterStatus1" ng-if="widget.name == 'agentClusterStatus'" class="box" ng-class="{'min-ht-widget-agent': agentClusterData.length==0 }">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterStatus</h3>
                         <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
@@ -77,19 +81,19 @@
                         <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
                     </div>
                 </div>
-                <div id="agentClusterRunningTasks1" ng-if="widget.name == 'agentClusterRunningTasks'" style="min-height: 188px;max-height: 247px" class="box">
+                <div id="agentClusterRunningTasks1" ng-if="widget.name == 'agentClusterRunningTasks'" class="box" ng-class="{'min-ht-widget': agentStatusChart[0].values.length==0}">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterRunningTasks</h3>
                         <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
-                    <div class="box-tool" >
+                    <div class="box-tool" ng-if="agentStatusChart[0].values.length>0">
                         <ul class="nav" >
                             <li class="nav-item inline">
                                 <a href="" class="text-primary pull-right" ng-click="viewAllAgents()" translate>button.viewAllAgentsDetails</a>
                             </li>
                         </ul>
                     </div>
-                    <div style="overflow: auto;width: 100%" ng-class="{'hide':agentStatusChart[0].values.length==0}">
+                    <div style="overflow: auto;width: 100%;" ng-class="{'hide':agentStatusChart[0].values.length==0}">
                         <nvd3 options="barOptions"
                               data="agentStatusChart"
                               on-ready="barChartReadyCallback">
@@ -102,7 +106,7 @@
                         <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                     </div>
                 </div>
-                <div id="masterClusterStatus1" ng-if="widget.name == 'masterClusterStatus'" style="min-height: 300px;max-height: 468px;" class="box">
+                <div id="masterClusterStatus1" ng-if="widget.name == 'masterClusterStatus'" class="box" ng-class="{'min-ht-widget-master-status' : !clusterStatusData.members }">
                     <div class="box-header b-b remove">
                         <h3 >
                             <span ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'" translate>label.masterClusterStatus</span>
@@ -157,22 +161,22 @@
                                                     class="fa fa-ellipsis-h"></i></button>
                                             <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                                 <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.terminate" ng-click="clusterAction('master', 'terminate', master.host, master.port, master.jobschedulerId)" translate>button.terminate</a>
+                                                   ng-if="master.permission.execute.terminate" ng-click="clusterAction('master', 'terminate', master.host, master.port, master.jobschedulerId)" translate>button.terminate</a>
                                                 <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.terminate"  ng-click="clusterAction('master', 'terminateWithin', master.host, master.port, master.jobschedulerId)" translate>button.terminateWithin</a>
+                                                   ng-if="master.permission.execute.terminate"  ng-click="clusterAction('master', 'terminateWithin', master.host, master.port, master.jobschedulerId)" translate>button.terminateWithin</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.abort" ng-click="clusterAction('master', 'abort', master.host, master.port, master.jobschedulerId)"  translate>button.abort</a>
+                                                   ng-if="master.permission.execute.abort" ng-click="clusterAction('master', 'abort', master.host, master.port, master.jobschedulerId)"  translate>button.abort</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.restart.abort" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)"  translate>button.abortAndRestart</a>
+                                                   ng-if="master.permission.execute.restart.abort" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)"  translate>button.abortAndRestart</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.restart.terminate"  ng-click="clusterAction('master', 'terminateAndRestartWithTimeout', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestart</a>
+                                                   ng-if="master.permission.execute.restart.terminate"  ng-click="clusterAction('master', 'terminateAndRestartWithTimeout', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestart</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.terminate" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestartWithin</a>
+                                                   ng-if="master.permission.execute.terminate" ng-click="clusterAction('master', 'abortAndRestart', master.host, master.port, master.jobschedulerId)" translate>button.terminateAndRestartWithin</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION'}"
-                                                   ng-if="permission.JobschedulerMaster.execute.pause && master.state._text!='PAUSED'" ng-click="clusterAction('master', 'pause', master.host, master.port, master.jobschedulerId)" translate>button.pause</a>
-                                                <a class="dropdown-item" ng-if="permission.JobschedulerMaster.execute.continue && master.state._text=='PAUSED'"
+                                                   ng-if="master.permission.execute.pause && master.state._text!='PAUSED'" ng-click="clusterAction('master', 'pause', master.host, master.port, master.jobschedulerId)" translate>button.pause</a>
+                                                <a class="dropdown-item" ng-if="master.permission.execute.continue && master.state._text=='PAUSED'"
                                                    ng-click="clusterAction('master', 'continue', master.host, master.port, master.jobschedulerId)" translate>button.continue</a>
-                                                <a class="dropdown-item" ng-if="permission.JobschedulerMaster.administration.removeOldInstances"
+                                                <a class="dropdown-item" ng-if="master.permission.administration.removeOldInstances"
                                                    ng-click="clusterAction('master', 'remove', master.host, master.port, master.jobschedulerId)" translate>button.removeInstance</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                    ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)" translate>button.downloadLog</a>
@@ -333,8 +337,6 @@
                                     <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 " ng-class="{'crimson':orderSummary.failed  >0}" ng-bind="orderSummary.failed || 0"></a>
                                 </td>
                             </tr>
-
-
                         </table>
 
                         <div ng-if="notPermissionForSummary">

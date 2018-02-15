@@ -8,8 +8,8 @@
         .controller('YadeCtrl', YadeCtrl)
         .controller('YadeOverviewCtrl', YadeOverviewCtrl);
 
-    YadeCtrl.$inject = ["$scope", "CoreService", "YadeService", "UserService", "SavedFilter", "$uibModal", "$location", "OrderService"];
-    function YadeCtrl($scope, CoreService, YadeService, UserService, SavedFilter, $uibModal, $location, OrderService) {
+    YadeCtrl.$inject = ["$scope", "CoreService", "YadeService", "UserService", "SavedFilter", "$uibModal", "$location", "OrderService","PermissionService", "$filter"];
+    function YadeCtrl($scope, CoreService, YadeService, UserService, SavedFilter, $uibModal, $location, OrderService,PermissionService, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.yadeView = {};
@@ -58,6 +58,8 @@
         vm.checkAllFileTransfersFnc = function () {
             if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
                 vm.object.fileTransfers = [];
+
+                vm.fileTransfers = $filter('orderBy')($scope.fileTransfers, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
                 var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
                 angular.forEach(data, function (value) {
                     if (value.state._text != 'SUCCESSFUL') {
@@ -73,8 +75,8 @@
             } else {
                 vm.reset();
             }
-
         };
+
         var watcher1 = $scope.$watchCollection('object.fileTransfers', function (newNames) {
             if (newNames && newNames.length > 0) {
 
@@ -333,12 +335,16 @@
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
                 vm.fileTransfers = res.transfers;
-                if (vm.showFiles) {
-                    angular.forEach(vm.fileTransfers, function (transfer) {
+
+                angular.forEach(vm.fileTransfers, function (transfer) {
+                    transfer.permission  =  PermissionService.getPermission(transfer.jobschedulerId || vm.schedulerIds.selected).YADE;
+                    console.log(transfer.permission)
+                    if (vm.showFiles) {
                         transfer.show = true;
                         getFiles(transfer);
-                    });
-                }
+                    }
+                });
+
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -372,6 +378,7 @@
             obj.transferIds.push(transferId);
             YadeService.getTransfers(obj).then(function (res) {
                 vm.fileTransfers = res.transfers;
+                vm.fileTransfers[0].permission  =  PermissionService.getPermission(vm.schedulerIds.selected).YADE;
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;

@@ -13,11 +13,12 @@
         .controller('PermissionCtrl', PermissionCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', 'AuditLogService'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog, AuditLogService) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', 'AuditLogService', 'PermissionService'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog, AuditLogService, PermissionService) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
+
         if (!$window.sessionStorage.errorMsg)
             $rootScope.error = '';
         else
@@ -60,10 +61,13 @@
 
         function getPermissions() {
             vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-            UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
-                SOSAuth.setPermission(permission);
+            UserService.getPermissions(vm.schedulerIds.selected).then(function (permissions) {
+                SOSAuth.setPermissions(permissions);
                 SOSAuth.save();
+                PermissionService.savePermission(vm.schedulerIds.selected);
+
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
+
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
                     $window.localStorage.removeItem('$SOS$URL');
                     $window.localStorage.removeItem('$SOS$URLPARAMS');
@@ -1650,6 +1654,7 @@
             var obj = {};
             obj.users = vm.users;
             obj.masters = vm.masters;
+            obj.main = vm.main;
             UserService.securityConfigurationWrite(obj);
         }
 

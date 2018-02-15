@@ -18,20 +18,22 @@
             return e.localStorage[t] || e.sessionStorage[t] || null
         }
 
-        var r = ["accessTokenId", "currentUserData", "sessionTimeout", "jobChain", "permission", "scheduleIds"], i = "$SOS$";
+        var r = ["accessTokenId", "currentUserData", "sessionTimeout", "jobChain", "permissions","permission", "scheduleIds"], i = "$SOS$";
         return n.prototype.save = function () {
             var n = this, o = e.sessionStorage;
             r.forEach(function (e) {
                 t(o, e, n[e])
             })
-        }, n.prototype.setUser = function (e, n) {
-            this.accessTokenId = e.accessToken, this.currentUserData = e.user, this.sessionTimeout = e.sessionTimeout, n && (this.permission = JSON.stringify(n))
-        }, n.prototype.setPermission = function (e) {
+        }, n.prototype.setUser = function (e) {
+            this.accessTokenId = e.accessToken, this.currentUserData = e.user, this.sessionTimeout = e.sessionTimeout
+        }, n.prototype.setPermissions = function (e) {
+            this.permissions = JSON.stringify(e)
+        },n.prototype.setPermission = function (e) {
             this.permission = JSON.stringify(e)
         }, n.prototype.setIds = function (e) {
             this.scheduleIds = JSON.stringify(e)
         }, n.prototype.clearUser = function () {
-            this.accessTokenId = null, this.currentUserData = null, this.sessionTimeout = null, this.permission = null, this.scheduleIds = null, e.sessionStorage.$SOS$URL = null, e.sessionStorage.$SOS$URLPARAMS = {}
+            this.accessTokenId = null, this.currentUserData = null, this.sessionTimeout = null, this.permissions = null, this.permission = null, this.scheduleIds = null, e.sessionStorage.$SOS$URL = null, e.sessionStorage.$SOS$URLPARAMS = {}
         }, n.prototype.setJobChain = function (n) {
             this.jobChain = n;
             var o = this, r = "jobChain";
@@ -81,7 +83,7 @@
                 }), i.promise
             }, getPermissions: function (t) {
                 var o = n.defer(), r = e("security/joc_cockpit_permissions");
-                return r.save({jobschedulerId: t}, function (e) {
+                return r.save({}, function (e) {
                     o.resolve(e)
                 }, function (e) {
                     o.reject(e)
@@ -180,7 +182,7 @@
         }
     }
 
-    function authorizationService(UserService, $q, $rootScope, $location,SOSAuth) {
+    function y(UserService, $q, $rootScope, $location,SOSAuth) {
         return {
 
             permissionModel: {
@@ -270,5 +272,28 @@
             }
         };
     }
-    angular.module("app").service("SOSAuth", e).service("Base64", n).service("UserService", t).service("AuditLogService", o).factory('authorizationService',authorizationService), e.$inject = ["$window"], t.$inject = ["$resource", "$q", "$http", "Base64"], o.$inject = ["$resource", "$q"],authorizationService.$inject = ["UserService", "$q", "$rootScope", "$location","SOSAuth"];
+
+    function z(SOSAuth) {
+        return {
+            getPermission: function (id) {
+                var p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                for (var i = 0; i < p.length; i++) {
+                    if (p[i].JobSchedulerMaster == id) {
+                        return p[i].SOSPermissionJocCockpit;
+                    }
+                }
+            },
+            savePermission: function (id) {
+                var p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                for (var i = 0; i < p.length; i++) {
+                    if (p[i].JobSchedulerMaster == id) {
+                        SOSAuth.setPermission(p[i].SOSPermissionJocCockpit);
+                        SOSAuth.save();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    angular.module("app").service("SOSAuth", e).service("Base64", n).service("UserService", t).service("AuditLogService", o).factory('authorizationService',y).service("PermissionService", z), e.$inject = ["$window"], t.$inject = ["$resource", "$q", "$http", "Base64"], o.$inject = ["$resource", "$q"],y.$inject = ["UserService", "$q", "$rootScope", "$location","SOSAuth"],z.$inject = ["SOSAuth"];
 }();

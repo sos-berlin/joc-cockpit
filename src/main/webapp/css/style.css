@@ -4578,3 +4578,24 @@ svg text {
 .cluster-dropdown .arrows {
   visibility: hidden;
 }
+#agentClusterStatus1{
+    min-height: 223px;
+    max-height: 247px
+}
+div.min-ht-widget-agent{
+    min-height: 192px !important;
+}
+#agentClusterRunningTasks1{
+    min-height: 228px;
+    max-height: 247px;
+}
+div.min-ht-widget{
+    min-height: 192px !important;
+}
+#masterClusterStatus1{
+    min-height: 410px;
+    max-height: 468px;
+}
+div.min-ht-widget-master-status{
+    min-height: 300px !important;
+}

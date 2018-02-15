@@ -1087,8 +1087,8 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window', '$state', '$uibModalStack', 'CoreService', '$timeout'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window', '$state', '$uibModalStack', 'CoreService', '$timeout','PermissionService'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout, PermissionService) {
         var vm = $scope;
         toasty.clear();
 
@@ -1307,14 +1307,13 @@
         vm.changeScheduler = function (jobScheduler) {
             vm.switchScheduler = true;
             vm.schedulerIds.selected = jobScheduler;
-            JobSchedulerService.switchSchedulerId(jobScheduler).then(function (permission) {
+            JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
 
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res) {
                         CoreService.setDefaultTab();
                         SOSAuth.setIds(res);
-                        SOSAuth.setPermission(permission);
-                        SOSAuth.save();
+                        PermissionService.savePermission(jobScheduler);
 
                         $rootScope.$broadcast('reloadUser');
                         if ($location.path().match('job_chain_detail/')) {

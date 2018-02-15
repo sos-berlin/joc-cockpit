@@ -352,7 +352,7 @@
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th width="30" ng-if="permission.Order.execute.start">
+                                <th width="30" ng-if="permission.YADE.execute.transferStart">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-click="checkAllFileTransfersFnc()"><i class="primary"></i>
                                     </label>
@@ -452,7 +452,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
-                                        <a ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
+                                        <a ng-if="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
                                          <a class="dropdown-item"
@@ -528,7 +528,7 @@
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
-                                         <th width="30" ng-if="permission.YADE.execute.transferStart">
+                                         <th width="30" ng-if="transfer.permission.execute.transferStart">
                                             #
                                         </th>
                                          <th translate>label.sourceFileName</th>
@@ -543,7 +543,7 @@
                                      </thead>
                                      <tbody>
                                      <tr ng-repeat="file in transfer.files">
-                                         <td ng-if="permission.YADE.execute.transferStart" >
+                                         <td ng-if="transfer.permission.execute.transferStart" >
                                             <label class="md-check">
                                                 <input type="checkbox" data-checklist-model="object.files" ng-disabled="transfer.state._text=='SUCCESSFUL'"
                                                        data-checklist-value="file"><i class="primary"></i>
