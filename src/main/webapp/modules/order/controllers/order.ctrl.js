@@ -181,7 +181,7 @@
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
         "CoreService", "$uibModal", "AuditLogService", "FileSaver", "$filter"];
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService,  FileSaver, $filter) {
+                                  CoreService, $uibModal, AuditLogService, FileSaver, $filter) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -192,8 +192,7 @@
         vm.orderFilters.overview = true;
 
         vm.selectedNodes = [];
-        vm.allOrdersCheck = {};
-        vm.allOrdersCheck.orders = [];
+
         vm.obj = {};
         vm.obj.orders = [];
         var promise1, promise2;
@@ -1422,14 +1421,6 @@
         vm.compareFn = function (obj1, obj2) {
             return obj1.name === obj2.name;
         };
-        vm.checkAllOrders = function () {
-            if (vm.allOrdersCheck.orders) {
-                vm.obj.orders = angular.copy(vm.orders, vm.obj.orders);
-            } else {
-                vm.obj.orders = [];
-            }
-        };
-
 
         $('#dDorders').on('click', function (event) {
             event.stopPropagation();

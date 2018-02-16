@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService","$filter"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService,$filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -23,7 +23,7 @@
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
 
-        vm.selectedFiltered;
+        vm.selectedFiltered='';
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
         vm.eventFilterList = [];
 
@@ -123,15 +123,15 @@
 
         vm.expandDetails = function () {
             if (vm.resourceFilters.state == 'schedules') {
-                angular.forEach(vm.allSchedules, function (value, index) {
+                angular.forEach(vm.allSchedules, function (value) {
                     value.show = true;
                 });
             } else if (vm.resourceFilters.state == 'agent') {
-                angular.forEach(vm.allAgentClusters, function (value, index) {
+                angular.forEach(vm.allAgentClusters, function (value) {
                     value.show = true;
                 });
             } else if (vm.resourceFilters.state == 'processClass') {
-                angular.forEach(vm.allProcessClasses, function (value, index) {
+                angular.forEach(vm.allProcessClasses, function (value) {
                     value.show = true;
                 });
             }
@@ -139,15 +139,15 @@
 
         vm.collapseDetails = function () {
             if (vm.resourceFilters.state == 'schedules') {
-                angular.forEach(vm.allSchedules, function (value, index) {
+                angular.forEach(vm.allSchedules, function (value) {
                     value.show = false;
                 });
             } else if (vm.resourceFilters.state == 'agent') {
-                angular.forEach(vm.allAgentClusters, function (value, index) {
+                angular.forEach(vm.allAgentClusters, function (value) {
                     value.show = false;
                 });
             } else if (vm.resourceFilters.state == 'processClass') {
-                angular.forEach(vm.allProcessClasses, function (value, index) {
+                angular.forEach(vm.allProcessClasses, function (value) {
                     value.show = false;
                 });
             }
@@ -837,7 +837,7 @@
                 }).then(function (res) {
                     vm.tree1 = res.folders;
 
-                }, function (err) {
+                }, function () {
                     $('#singleObjectModal').modal('hide');
                 });
             } else if (type == 'job') {
@@ -863,7 +863,7 @@
                 }).then(function (res) {
                     vm.tree1 = res.folders;
 
-                }, function (err) {
+                }, function () {
                     $('#objectModal').modal('hide');
                 });
             } else if (type == 'job') {
@@ -1281,8 +1281,7 @@
             UserService.deleteConfiguration({
                 jobschedulerId: filter.jobschedulerId,
                 id: filter.id
-            }).then(function (res) {
-
+            }).then(function () {
                 angular.forEach(vm.eventFilterList, function (value, index) {
                     if (value.id == filter.id) {
                         vm.eventFilterList.splice(index, 1);
@@ -2838,7 +2837,8 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                vm.object.schedules = vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
+                var _schedule = $filter('orderBy')(vm.allSchedules, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
+                vm.object.schedules = _schedule.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
             }
@@ -3056,7 +3056,8 @@
         };
         vm.checkAllCalendar = function () {
             if (vm.allCheckCalendar.checkbox && vm.allCalendars.length > 0) {
-                vm.object.calendars = vm.allCalendars.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage));
+                var _calendar = $filter('orderBy')(vm.allCalendars, vm.calendarFilters.filter.sortBy, vm.calendarFilters.reverse);
+                vm.object.calendars = _calendar.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage));
             } else {
                 vm.object.calendars = [];
             }
@@ -3936,7 +3937,7 @@
                             }];
                             ResourceService.getProcessClass(obj).then(function (res) {
                                 if (res.processClasses) {
-                                    angular.forEach(res.processClasses, function (value1, index1) {
+                                    angular.forEach(res.processClasses, function (value1) {
                                         angular.forEach(vm.allProcessClasses, function (value2, index2) {
                                             if (value1.path == value2.path) {
                                                 vm.allProcessClasses[index2].processes = value1.processes;
@@ -4045,13 +4046,13 @@
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
         vm.showLeftPanel = function () {
             $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1 .parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 
@@ -6146,7 +6147,7 @@
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
-        vm.selectedFiltered;
+        vm.selectedFiltered='';
         vm.isUnique = true;
         var promise1;
         vm.object = {};
@@ -6388,10 +6389,7 @@
         });
 
         vm.canAutoWidth = function (scale) {
-            if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
-                return false;
-            } else
-                return true;
+            return !(scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/));
         };
 
         vm.getColumnWidth = function (widthEnabled, scale, zoom) {
@@ -6460,7 +6458,7 @@
                 vm.isLoading = true;
                 isLoaded = true;
                 vm.showSpinner = false;
-            }, function (err) {
+            }, function () {
                 vm.isLoading = true;
                 isLoaded = true;
                 vm.showSpinner = false;
@@ -6898,7 +6896,6 @@
         };
 
         var reA = /[^a-zA-Z]/g;
-        var reN = /[^0-9]/g;
 
         function sortByKey(array, key, order) {
             if (key == 'processedPlanned' || key == 'orderId') {
@@ -7145,7 +7142,7 @@
             vm.filters.list = vm.dailyPlanFilterList;
             vm.filters.favorite = vm.savedDailyPlanFilter.favorite;
 
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
@@ -7251,7 +7248,7 @@
             UserService.deleteConfiguration({
                 jobschedulerId: filter.jobschedulerId,
                 id: filter.id
-            }).then(function (res) {
+            }).then(function () {
                 angular.forEach(vm.dailyPlanFilterList, function (value, index) {
                     if (value.id == filter.id) {
                         vm.dailyPlanFilterList.splice(index, 1);
@@ -7283,7 +7280,7 @@
             UserService.privateConfiguration({
                 jobschedulerId: configObj.jobschedulerId,
                 id: configObj.id
-            }).then(function (conf) {
+            }).then(function () {
                 configObj.shared = false;
                 if (vm.permission.user != configObj.account) {
                     angular.forEach(vm.dailyPlanFilterList, function (value, index) {
@@ -7298,7 +7295,7 @@
             UserService.shareConfiguration({
                 jobschedulerId: configObj.jobschedulerId,
                 id: configObj.id
-            }).then(function (conf) {
+            }).then(function () {
                 configObj.shared = true;
             });
         };
