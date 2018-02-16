@@ -10,9 +10,9 @@
         .controller('JobOverviewCtrl', JobOverviewCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
-        "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService"];
+        "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
-                          DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
+                          DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService,$filter) {
         var vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -970,7 +970,7 @@
 
         var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.jobChainCheckAll.checkbox = newNames.length == vm.allJobChains.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
+                vm.jobChainCheckAll.checkbox = newNames.length == vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -993,9 +993,11 @@
             vm.reset();
         });
 
-        vm.jobChainCheckAll = function () {
+        vm.jobChainCheckAllFnc = function () {
             if (vm.jobChainCheckAll.checkbox && vm.allJobChains && vm.allJobChains.length > 0) {
-                vm.object.jobChains = vm.allJobChains.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
+                var _jobChain = $filter('orderBy')($scope.filtered, vm.jobChainFilters.filter.sortBy, vm.jobChainFilters.reverse);
+                vm.object.jobChains = _jobChain.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
+
             } else {
                 vm.reset();
             }
@@ -2773,9 +2775,9 @@
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService",
-        "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location","OrderService"];
+        "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location","OrderService","$filter"];
     function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService,
-                     $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService) {
+                     $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService,$filter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -3774,7 +3776,7 @@
 
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allJobs.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage)).length;
 
                 vm.isTasks = false;
                 vm.isStopped = false;
@@ -3825,7 +3827,8 @@
         });
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
-                vm.object.jobs = vm.allJobs.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
+                var _job = $filter('orderBy')($scope.filtered, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
+                vm.object.jobs = _job.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();
             }
@@ -5662,7 +5665,7 @@
 
         var watcher6 = $scope.$watchCollection('filtered', function (newNames) {
             if (newNames)
-                vm.object = {};
+                vm.object.jobs = [];
         });
         $scope.$on('$destroy', function () {
             watcher1();
@@ -5677,8 +5680,8 @@
         });
     }
 
-    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams"];
-    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal,  TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams) {
+    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams","$filter"];
+    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal,  TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams,$filter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -5838,7 +5841,8 @@
         });
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
-                vm.object.jobs = vm.allJobs.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
+                var _job = $filter('orderBy')($scope.allJobs, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
+                vm.object.jobs = _job.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();
             }

@@ -5195,6 +5195,7 @@
                 }
                 vm.isLoadedAgentCluster = true;
             }, function () {
+                vm.agentClusterData =[];
                 vm.isLoadedAgentCluster = true;
             });
         };
@@ -5449,6 +5450,7 @@
                     }, 60);
 
                 }, function () {
+                    vm.clusterStatusData=[];
                     vm.isLoadedMasterCluster = true;
 
                 });
@@ -5846,6 +5848,8 @@
                     angular.forEach(vm.mastersList, function(data){
                         data.permission =  PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
                     });
+                },function(){
+                    vm.mastersList =[];
                 })
             })
         };

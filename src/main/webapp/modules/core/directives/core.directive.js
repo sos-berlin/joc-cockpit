@@ -82,53 +82,166 @@
         return t
     }
 
-    function a(e, t) {
-        function i(e, t, i) {
-            if (angular.isArray(e))for (var n = e.length; n--;)if (i(e[n], t))return !0;
-            return !1
-        }
-
-        function n(e, t, n) {
-            return e = angular.isArray(e) ? e : [], i(e, t, n) || e.push(t), e
-        }
-
-        function a(e, t, i) {
-            if (angular.isArray(e))for (var n = e.length; n--;)if (i(e[n], t)) {
-                e.splice(n, 1);
-                break
-            }
-            return e
-        }
-
-        function r(r, o, l) {
-            function s(e, t) {
-                r[l.ngModel] = i(e, h, g)
-            }
-
-            var c = l.checklistModel;
-            l.$set("checklistModel", null), t(o)(r), l.$set("checklistModel", c);
-            var u = e(c), d = u.assign, f = e(l.checklistChange), h = l.checklistValue ? e(l.checklistValue)(r.$parent) : l.value, g = angular.equals;
-            if (l.hasOwnProperty("checklistComparator"))if ("." == l.checklistComparator[0]) {
-                var m = l.checklistComparator.substring(1);
-                g = function (e, t) {
-                    return e[m] === t[m]
+    function a($parse, $compile) {
+        // contains
+        function contains(arr, item, comparator) {
+            if (angular.isArray(arr)) {
+                for (var i = arr.length; i--;) {
+                    if (comparator(arr[i], item)) {
+                        return true;
+                    }
                 }
-            } else g = e(l.checklistComparator)(r.$parent);
-            r.$watch(l.ngModel, function (e, t) {
-                if (e !== t) {
-                    var i = u(r.$parent);
-                    angular.isFunction(d) && (e === !0 ? d(r.$parent, n(i, h, g)) : d(r.$parent, a(i, h, g))), f && f(r)
+            }
+            return false;
+        }
+
+        // add
+        function add(arr, item, comparator) {
+            arr = angular.isArray(arr) ? arr : [];
+            if (!contains(arr, item, comparator)) {
+                arr.push(item);
+            }
+            return arr;
+        }
+
+        // remove
+        function remove(arr, item, comparator) {
+            if (angular.isArray(arr)) {
+                for (var i = arr.length; i--;) {
+                    if (comparator(arr[i], item)) {
+                        arr.splice(i, 1);
+                        break;
+                    }
                 }
-            }), angular.isFunction(r.$parent.$watchCollection) ? r.$parent.$watchCollection(c, s) : r.$parent.$watch(c, s, !0)
+            }
+            return arr;
+        }
+
+        // http://stackoverflow.com/a/19228302/1458162
+        function postLinkFn(scope, elem, attrs) {
+            // exclude recursion, but still keep the model
+            var checklistModel = attrs.checklistModel;
+            attrs.$set("checklistModel", null);
+            // compile with `ng-model` pointing to `checked`
+            $compile(elem)(scope);
+            attrs.$set("checklistModel", checklistModel);
+
+            // getter for original model
+            var checklistModelGetter = $parse(checklistModel);
+            var checklistChange = $parse(attrs.checklistChange);
+            var checklistBeforeChange = $parse(attrs.checklistBeforeChange);
+            var ngModelGetter = $parse(attrs.ngModel);
+
+
+            var comparator = function (a, b) {
+                if (!isNaN(a) && !isNaN(b)) {
+                    return String(a) === String(b);
+                } else {
+                    return angular.equals(a, b);
+                }
+            };
+
+            if (attrs.hasOwnProperty('checklistComparator')) {
+                if (attrs.checklistComparator[0] == '.') {
+                    var comparatorExpression = attrs.checklistComparator.substring(1);
+                    comparator = function (a, b) {
+                        return a[comparatorExpression] === b[comparatorExpression];
+                    };
+
+                } else {
+                    comparator = $parse(attrs.checklistComparator)(scope.$parent);
+                }
+            }
+
+            // watch UI checked change
+            var unbindModel = scope.$watch(attrs.ngModel, function (newValue, oldValue) {
+                if (newValue === oldValue) {
+                    return;
+                }
+
+                if (checklistBeforeChange && (checklistBeforeChange(scope) === false)) {
+                    ngModelGetter.assign(scope, contains(checklistModelGetter(scope.$parent), getChecklistValue(), comparator));
+                    return;
+                }
+
+                setValueInChecklistModel(getChecklistValue(), newValue);
+
+                if (checklistChange) {
+                    checklistChange(scope);
+                }
+            });
+
+            // watches for value change of checklistValue
+            var unbindCheckListValue = scope.$watch(getChecklistValue, function (newValue, oldValue) {
+                if (newValue != oldValue && angular.isDefined(oldValue) && scope[attrs.ngModel] === true) {
+                    var current = checklistModelGetter(scope.$parent);
+                    checklistModelGetter.assign(scope.$parent, remove(current, oldValue, comparator));
+                    checklistModelGetter.assign(scope.$parent, add(current, newValue, comparator));
+                }
+            }, true);
+
+            var unbindDestroy = scope.$on('$destroy', destroy);
+
+            function destroy() {
+                unbindModel();
+                unbindCheckListValue();
+                unbindDestroy();
+            }
+
+            function getChecklistValue() {
+                return attrs.checklistValue ? $parse(attrs.checklistValue)(scope.$parent) : attrs.value;
+            }
+
+            function setValueInChecklistModel(value, checked) {
+                var current = checklistModelGetter(scope.$parent);
+                if (angular.isFunction(checklistModelGetter.assign)) {
+                    if (checked === true) {
+                        checklistModelGetter.assign(scope.$parent, add(current, value, comparator));
+                    } else {
+                        checklistModelGetter.assign(scope.$parent, remove(current, value, comparator));
+                    }
+                }
+
+            }
+
+            // declare one function to be used for both $watch functions
+            function setChecked(newArr, oldArr) {
+                if (checklistBeforeChange && (checklistBeforeChange(scope) === false)) {
+                    setValueInChecklistModel(getChecklistValue(), ngModelGetter(scope));
+                    return;
+                }
+                ngModelGetter.assign(scope, contains(newArr, getChecklistValue(), comparator));
+            }
+
+            // watch original model change
+            // use the faster $watchCollection method if it's available
+            if (angular.isFunction(scope.$parent.$watchCollection)) {
+                scope.$parent.$watchCollection(checklistModel, setChecked);
+            } else {
+                scope.$parent.$watch(checklistModel, setChecked, true);
+            }
         }
 
         return {
-            restrict: "A", priority: 1e3, terminal: !0, scope: !0, compile: function (e, t) {
-                if (("INPUT" !== e[0].tagName || "checkbox" !== t.type) && "MD-CHECKBOX" !== e[0].tagName && !t.btnCheckbox)throw'checklist-model should be applied to `input[type="checkbox"]` or `md-checkbox`.';
-                if (!t.checklistValue && !t.value)throw"You should provide `value` or `checklist-value`.";
-                return t.ngModel || t.$set("ngModel", "checked"), r
+            restrict: 'A',
+            priority: 1000,
+            terminal: true,
+            scope: true,
+            compile: function (tElement, tAttrs) {
+
+                if (!tAttrs.checklistValue && !tAttrs.value) {
+                    throw 'You should provide `value` or `checklist-value`.';
+                }
+
+                // by default ngModel is 'checked', so we set it if not specified
+                if (!tAttrs.ngModel) {
+                    // local scope var storing individual checkbox model
+                    tAttrs.$set("ngModel", "checked");
+                }
+
+                return postLinkFn;
             }
-        }
+        };
     }
 
     function r() {

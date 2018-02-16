@@ -61,7 +61,7 @@
 
         function getPermissions() {
             vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-            UserService.getPermissions(vm.schedulerIds.selected).then(function (permissions) {
+            UserService.getPermissions().then(function (permissions) {
                 SOSAuth.setPermissions(permissions);
                 SOSAuth.save();
                 PermissionService.savePermission(vm.schedulerIds.selected);
@@ -803,6 +803,8 @@
         vm.view = {};
         vm.filterString = {};
         vm.filterString.q = '';
+        vm.isJOCClusterEnable = true;
+        vm.isLdapRealmEnable = true;
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {
@@ -821,9 +823,6 @@
                                 vm.isLdapRealmEnable = false;
                             }
                         }
-                    }else{
-                        vm.isJOCClusterEnable = true;
-                        vm.isLdapRealmEnable = true;
                     }
                 }
                 getRoles();
@@ -1561,6 +1560,10 @@
                 vm.mainSection[index].values.push({value: ''});
         };
 
+        vm.removeEntry = function(index){
+            vm.mainSection.splice(index, 1);
+        };
+
         vm.removeEntryValueField = function (parentIindex,index) {
              vm.mainSection[parentIindex].values.splice(index, 1);
         };
@@ -1571,6 +1574,10 @@
         };
 
         vm.removeEntryCommentField = function (parentIindex, index) {
+
+            if(vm.mainSection[parentIindex].comments.length==1){
+                vm.mainSection[parentIindex].comments[0].value = '';
+            }else
             vm.mainSection[parentIindex].comments.splice(index, 1);
         };
 

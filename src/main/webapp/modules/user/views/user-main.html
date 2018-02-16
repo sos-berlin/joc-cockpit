@@ -35,7 +35,7 @@
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main'" ng-disabled="!isJOCClusterEnable" ng-click="enableJOCCluster()">
                         {{'button.enableJOCCluster' | translate}}
                     </button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main' && main.length>1" ng-click="editAll()">
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'main'" ng-click="editAll()">
                         <i class="fa fa-pencil"></i>
                         {{'button.updateSection' | translate}}
                     </button>

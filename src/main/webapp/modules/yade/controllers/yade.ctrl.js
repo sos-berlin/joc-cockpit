@@ -59,8 +59,9 @@
             if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
                 vm.object.fileTransfers = [];
 
-                vm.fileTransfers = $filter('orderBy')($scope.fileTransfers, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
-                var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                var data  = $filter('orderBy')($scope.filtered, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
+                data = data.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+
                 angular.forEach(data, function (value) {
                     if (value.state._text != 'SUCCESSFUL') {
                         vm.object.fileTransfers.push(value);
@@ -89,7 +90,6 @@
 
         vm.checkALLFilesFnc = function(transfer){
             if($("#" + transfer.id) && $("#" + transfer.id).prop('checked')) {
-         
                 if (transfer && transfer.files) {
                     angular.forEach(transfer.files, function (file) {
                         var flag = false;
@@ -99,7 +99,7 @@
                                 break;
                             }
                         }
-                        if(!flag){
+                        if (!flag) {
                             vm.object.files.push(file)
                         }
                     });

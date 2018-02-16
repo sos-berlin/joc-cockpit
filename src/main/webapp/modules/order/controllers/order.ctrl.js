@@ -69,7 +69,7 @@
 
         function loadJobChain() {
             var obj = {};
-            obj.jobschedulerId = $scope.schedulerIds.selected;
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.orders = [];
             if ($location.search().path) {
@@ -98,7 +98,7 @@
             vm.status = state;
             if (state) {
                 var obj = {};
-                obj.jobschedulerId = $scope.schedulerIds.selected;
+                obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
@@ -115,7 +115,7 @@
             vm.isAuditLog = false;
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
             OrderService.histories(orders).then(function (res) {
@@ -240,7 +240,7 @@
 
         vm.getJobInfo = getJobInfo;
         function getJobInfo(jobInfo) {
-            jobInfo.jobschedulerId = $scope.schedulerIds.selected;
+            jobInfo.jobschedulerId = vm.schedulerIds.selected;
             jobInfo.compact = false;
             return JobService.getJobP(jobInfo);
         }
@@ -261,7 +261,7 @@
         function onAction(path, node, action) {
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: path, node: node});
 
             var jobs = {};
@@ -273,7 +273,7 @@
                 jobs.jobs.push({job: path});
             }
 
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = vm.schedulerIds.selected;
 
             var modalInstance = '';
             vm.comments = {};
@@ -481,7 +481,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -519,7 +519,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
 
             if (vm.userPreferences.auditLog) {
@@ -558,7 +558,7 @@
         vm.skipNode = function (data, jobChain) {
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -597,7 +597,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
 
             if (vm.userPreferences.auditLog) {
@@ -636,7 +636,7 @@
         vm.stopJob = function (data) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: data.job.path});
 
             if (vm.userPreferences.auditLog) {
@@ -675,7 +675,7 @@
 
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: data.job.path});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -774,7 +774,7 @@
         vm.stopJobs = function () {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 jobs.jobs.push({job: value.job.path});
@@ -831,7 +831,7 @@
         vm.unstopJobs = function () {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 jobs.jobs.push({job: value.job.path});
@@ -883,7 +883,7 @@
         vm.skipNodes = function () {
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 nodes.nodes.push({jobChain: vm.jobChain.path, node: value.name});
@@ -938,7 +938,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 nodes.nodes.push({jobChain: vm.jobChain.path, node: value.name});
@@ -993,7 +993,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 nodes.nodes.push({jobChain: vm.jobChain.path, node: value.name});
@@ -1048,7 +1048,7 @@
 
             var nodes = {};
             nodes.nodes = [];
-            nodes.jobschedulerId = $scope.schedulerIds.selected;
+            nodes.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 nodes.nodes.push({jobChain: vm.jobChain.path, node: value.name});
@@ -1100,7 +1100,7 @@
         vm.stopJobChains = function () {
             var jobChains = {};
             jobChains.jobChains = [];
-            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+            jobChains.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 jobChains.jobChains.push({jobChain: value.jobChain.path});
@@ -1157,7 +1157,7 @@
         vm.unstopJobChains = function () {
             var jobChains = {};
             jobChains.jobChains = [];
-            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+            jobChains.jobschedulerId = vm.schedulerIds.selected;
 
             angular.forEach(vm.selectedNodes, function (value) {
                 jobChains.jobChains.push({jobChain: value.jobChain.path});
@@ -1229,16 +1229,16 @@
             }
         });
 
-        function setCanvasBackground(canvas, background) {
+        function setCanvasBackground(canvas) {
             var w = canvas.width;
             var h = canvas.height;
             var context = canvas.getContext("2d");
 
-            context.font='22px Arial';
-            if(vm.jobChain.title) {
-                context.fillText('JobChain : '+vm.jobChain.path + ' - ' + vm.jobChain.title, 10,50);
-            }else{
-                context.fillText('JobChain : '+vm.jobChain.path, 10,50);
+            context.font = '22px Arial';
+            if (vm.jobChain.title) {
+                context.fillText('JobChain : ' + vm.jobChain.path + ' - ' + vm.jobChain.title, 10, 50);
+            } else {
+                context.fillText('JobChain : ' + vm.jobChain.path, 10, 50);
             }
 
             context.globalCompositeOperation = "destination-over";
@@ -1295,6 +1295,7 @@
 
             html2canvas($('#exportId'), {
                 useCORS: true,
+
                 width: (bound.maxLeft + 100),
                 height: (bound.maxTop + 600),
                 background: getBackground(),
@@ -1324,7 +1325,7 @@
                         pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
 
                     } else {
-                        setCanvasBackground(canvas, getBackground());
+                        setCanvasBackground(canvas);
                         canvas.toBlob(function (blob) {
                             FileSaver.saveAs(blob, vm.jobChain.name + '.png');
                         },'image/png', 1.0)
@@ -1418,7 +1419,7 @@
             }
             vm.selectedNodes = angular.copy(vm.object1.nodes);
         };
-        $scope.compareFn = function (obj1, obj2) {
+        vm.compareFn = function (obj1, obj2) {
             return obj1.name === obj2.name;
         };
         vm.checkAllOrders = function () {
@@ -1453,7 +1454,7 @@
             if (vm.jobChain) {
                 var filter = {};
                 filter.jobChain = nestedJobChain ? nestedJobChain.path : vm.jobChain.path;
-                filter.jobschedulerId = $scope.schedulerIds.selected;
+                filter.jobschedulerId = vm.schedulerIds.selected;
 
                 JobChainService.histories(filter).then(function (res) {
                     vm.orderHistory = res.history;
@@ -1560,7 +1561,7 @@
             var orders = {};
             orders.orders = [];
 
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             var obj = {};
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
@@ -1606,7 +1607,7 @@
 
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
@@ -1634,7 +1635,7 @@
         function setRunTime(order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
@@ -1662,7 +1663,7 @@
         function resumeOrderWithParam(order, paramObject) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
@@ -1706,7 +1707,7 @@
         function resumeOrderState(order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
@@ -1747,12 +1748,13 @@
         var lastDay;
         vm.onOrderAction = function (order, action) {
             var modalInstance = '';
+            var orders = {};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             if (action == 'start order now') {
-                var orders = {};
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, at: 'now'});
                 if (vm.userPreferences.auditLog) {
                     vm.comments.name = order.path;
@@ -1781,15 +1783,15 @@
                     OrderService.startOrder(orders);
                 }
             }
-            if (action == 'view log') {
+            else if (action == 'view log') {
                 vm.showLogWindow(order);
             }
 
-            if (action == 'start order at') {
-                var orders = {};
+            else if (action == 'start order at') {
+
                 orders.orders = [];
 
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(orders).then(function (res) {
                     order = angular.merge(order, res.orders[0]);
@@ -1815,7 +1817,7 @@
 
                 });
                 JobChainService.getJobChainP({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: order.jobChain
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
@@ -1825,11 +1827,11 @@
                 });
             }
 
-            if (action == 'set order state') {
+            else if (action == 'set order state') {
                 vm.order = angular.copy(order);
 
                 JobChainService.getJobChainP({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: order.jobChain
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
@@ -1856,10 +1858,10 @@
                 });
             }
 
-            if (action == 'set run time') {
+            else if (action == 'set run time') {
                 vm.order = order;
                 OrderService.getRunTime({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: order.jobChain,
                     orderId: order.orderId
                 }).then(function (res) {
@@ -1884,10 +1886,10 @@
                 });
             }
 
-            if (action == 'suspend order') {
-                var orders = {};
+            else if (action == 'suspend order') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 if (vm.userPreferences.auditLog) {
 
@@ -1918,10 +1920,10 @@
                 }
             }
 
-            if (action == 'resume order') {
-                var orders = {};
+           else if (action == 'resume order') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 if (vm.userPreferences.auditLog) {
 
@@ -1952,10 +1954,10 @@
                 }
             }
 
-            if (action == 'resume order with param') {
-                var orders = {};
+            else if (action == 'resume order with param') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(orders).then(function (res) {
                     order = angular.merge(order, res.orders[0]);
@@ -1978,7 +1980,7 @@
 
                 });
                 JobChainService.getJobChainP({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: order.jobChain
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
@@ -1988,11 +1990,11 @@
                 });
             }
 
-            if (action == 'resume order next state') {
+            else if (action == 'resume order next state') {
                 vm.order = angular.copy(order);
 
                 JobChainService.getJobChainP({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: order.jobChain
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
@@ -2015,10 +2017,10 @@
                 });
             }
 
-            if (action == 'reset order') {
-                var orders = {};
+           else if (action == 'reset order') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 if (vm.userPreferences.auditLog) {
 
@@ -2049,10 +2051,10 @@
                 }
             }
 
-            if (action == 'remove order') {
-                var orders = {};
+            else if (action == 'remove order') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 if (vm.userPreferences.auditLog) {
 
@@ -2083,7 +2085,7 @@
                 }
             }
 
-            if (action == 'view calendar') {
+            else if (action == 'view calendar') {
 
                 vm.maxPlannedTime = undefined;
                 vm.isCaledarLoading = true;
@@ -2093,7 +2095,7 @@
                 firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
                 lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
                 DailyPlanService.getPlans({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     states: ['PLANNED'],
                     orderId: order.orderId,
                     dateFrom: firstDay,
@@ -2106,9 +2108,9 @@
                 });
                 openCalendar();
             }
-            if (action == 'show assigned calendar') {
-                var orders = {};
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+            else if (action == 'show assigned calendar') {
+
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.jobChain = order.jobChain;
                 orders.orderId = order.orderId;
                 orders.compact = true;
@@ -2116,7 +2118,7 @@
                     vm.obj = angular.copy(order);
                     vm.obj.calendars = res.calendars;
                 });
-                var modalInstance = $uibModal.open({
+                 modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -2130,10 +2132,10 @@
             }
 
 
-            if (action == 'delete order') {
-                var orders = {};
+            else if (action == 'delete order') {
+
                 orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 if (vm.userPreferences.auditLog) {
 
@@ -2205,7 +2207,7 @@
             vm.planItems = [];
             vm.isCaledarLoading = true;
             DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: vm._jobChain.orderId,
                 dateFrom: firstDay,
@@ -2253,14 +2255,14 @@
         var object = $location.search();
 
         vm.reset = function () {
-            vm.object = {};
+           vm.object.orders = [];
         };
         var firstDay;
         var lastDay;
 
         function volatileInfo(draw) {
             JobChainService.getJobChain({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: vm.path,
                 maxOrders: vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
@@ -2343,7 +2345,7 @@
                     vm.jobChain = JSON.parse(SOSAuth.jobChain);
                 }
                 JobChainService.getJobChainP({
-                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: vm.schedulerIds.selected,
                     jobChain: vm.path
                 }).then(function (result) {
                     vm.jobChain = result.jobChain;
@@ -2373,6 +2375,7 @@
         var t1 = '';
         $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
             vm.object = {};
+            vm.object.orders =[];
             vm.orderFilters.isOverview = toState.url == '/overview';
             if (vm.orderFilters.isOverview && fromState.name == 'app.jobChainDetails.orders') {
                 t1 = $timeout(function () {
@@ -2442,7 +2445,7 @@
             vm.planItems = [];
             vm.isCaledarLoading = true;
             DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
                 dateFrom: firstDay,
@@ -2467,7 +2470,7 @@
             firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
                 dateFrom: firstDay,
@@ -2511,7 +2514,7 @@
 
         function addOrder(order, paramObject) {
             var orders = {};
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders = [];
             var obj = {};
             obj.jobChain = vm._jobChain.path;
@@ -2558,7 +2561,7 @@
 
         vm.addOrder = function (path) {
             ScheduleService.get({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 compact: true
             }).then(function (res) {
                 vm.schedules = res.schedules;
@@ -2599,7 +2602,7 @@
         vm.stopJob = function (path) {
             var jobChains = {};
             jobChains.jobChains = [];
-            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+            jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: path ? path : vm.jobChain.path});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -2655,7 +2658,7 @@
         vm.unstopJob = function (path) {
             var jobChains = {};
             jobChains.jobChains = [];
-            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+            jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: path ? path : vm.jobChain.path});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -2697,7 +2700,7 @@
         vm.deleteAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -2768,7 +2771,7 @@
         vm.suspendAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -2815,7 +2818,7 @@
         vm.resumeAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -2861,7 +2864,7 @@
         vm.resetAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -2907,7 +2910,7 @@
         vm.startAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
@@ -2997,8 +3000,8 @@
         });
     }
 
-    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location"];
-    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location) {
+    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "$filter"];
+    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, $filter) {
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab();
@@ -3010,6 +3013,8 @@
         vm.isUnique = true;
 
         vm.object = {};
+        vm.object.orders = [];
+
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
@@ -3018,7 +3023,7 @@
         vm.temp_filter = {};
 
         vm.reset = function () {
-            vm.object = {};
+            vm.object.orders = [];
         };
         $rootScope.$on('event-order', function (event, values) {
             $rootScope.order_expand_to = values;
@@ -3670,6 +3675,8 @@
         function parseDate(obj) {
             var fromDate;
             var toDate;
+            var date;
+            var arr;
             if (vm.selectedFiltered.type) {
                 obj.types = vm.selectedFiltered.type;
             }
@@ -3691,23 +3698,23 @@
                     fromDate = new Date();
                     toDate = new Date();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    var arr = date[0].split('to');
+                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                     arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    var arr = date[0].split('to');
+                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                     arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    var arr = date[0].split('to');
+                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                     arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    var arr = date[0].split('to');
+                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                     arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
@@ -3884,7 +3891,7 @@
             vm.isAuditLog = false;
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
@@ -4417,7 +4424,7 @@
         vm.deleteAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4488,7 +4495,7 @@
         vm.suspendAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4535,7 +4542,7 @@
         vm.resumeAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4581,7 +4588,7 @@
         vm.resetAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4629,7 +4636,7 @@
         vm.startAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
@@ -4780,7 +4787,7 @@
                                     if (vm.allOrders[index].path == event.path && !vm.loading && (!mapObj[vm.allOrders[index].path])) {
                                         mapObj[event.path] = event.path;
                                         var obj = {};
-                                        obj.jobschedulerId = $scope.schedulerIds.selected;
+                                        obj.jobschedulerId = vm.schedulerIds.selected;
                                         obj.orderId = vm.allOrders[index].orderId;
                                         obj.jobChain = vm.allOrders[index].path.split(',')[0];
                                         obj.compact = true;
@@ -4819,7 +4826,7 @@
                             orderId: vm.showLogPanel.orderId,
                             jobChain: vm.showLogPanel.path.split(',')[0]
                         });
-                        orders.jobschedulerId = $scope.schedulerIds.selected;
+                        orders.jobschedulerId = vm.schedulerIds.selected;
                         orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
                         OrderService.histories(orders).then(function (res) {
                             vm.historys = res.history;
@@ -4890,13 +4897,9 @@
                 }
         }
 
-        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
-            if (newNames)
-                vm.object = {};
-        });
+
         $scope.$on('$destroy', function () {
             watcher1();
-            watcher2();
             if (t1) {
                 $timeout.cancel(t1);
             }
@@ -4914,9 +4917,10 @@
 
         vm.allOrders = [];
         vm.object = {};
+        vm.object.orders = [];
 
         vm.reset = function () {
-            vm.object = {};
+            vm.object.orders = [];
         };
 
         vm.exportToExcel = function () {
@@ -4949,7 +4953,7 @@
             vm.isAuditLog = false;
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
@@ -4996,7 +5000,7 @@
             if (state) {
                 vm.orderFilters.filter.state = state;
                 var obj = {};
-                obj.jobschedulerId = $scope.schedulerIds.selected;
+                obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.compact = true;
                 obj.processingStates = [];
                 obj.processingStates.push(vm.orderFilters.filter.state);
@@ -5021,7 +5025,7 @@
         vm.deleteAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5091,7 +5095,7 @@
         vm.suspendAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5138,7 +5142,7 @@
         vm.resumeAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5184,7 +5188,7 @@
         vm.resetAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5230,7 +5234,7 @@
         vm.startAllOrder = function () {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
@@ -5288,7 +5292,7 @@
                     if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
                         waitForResponse = false;
                         var obj = {};
-                        obj.jobschedulerId = $scope.schedulerIds.selected;
+                        obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.compact = true;
                         obj.processingStates = [];
                         obj.processingStates.push(vm.orderFilters.filter.state);
@@ -5326,8 +5330,8 @@
         });
     }
 
-    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location"];
-    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location) {
+    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];
+    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
@@ -5342,11 +5346,15 @@
 
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
-
-                if (vm.allOrders && vm.allOrders.length > 0)
-                    vm.allCheck.checkbox = newNames.length == vm.allOrders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
-                else if (vm.orders && vm.orders.length > 0)
-                    vm.allCheck.checkbox = newNames.length == vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                if (vm.filtered) {
+                    vm.allCheck.checkbox = newNames.length == vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                }
+                else {
+                    if (vm.allOrders && vm.allOrders.length > 0)
+                        vm.allCheck.checkbox = newNames.length == vm.allOrders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                    else if (vm.orders && vm.orders.length > 0)
+                        vm.allCheck.checkbox = newNames.length == vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
+                }
                 $rootScope.suspendSelected = false;
                 $rootScope.deletedSelected = false;
                 $rootScope.runningSelected = false;
@@ -5374,10 +5382,19 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox) {
-                if (vm.allOrders && vm.allOrders.length > 0)
-                    vm.object.orders = vm.allOrders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
-                else if (vm.orders && vm.orders.length > 0)
-                    vm.object.orders = vm.orders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
+                var _order = [];
+                if (vm.filtered) {
+                    _order = $filter('orderBy')(vm.filtered, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
+                    vm.object.orders = _order.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
+                }
+                else {
+                    if (vm.allOrders && vm.allOrders.length > 0)
+                        _order = $filter('orderBy')(vm.allOrders, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
+                    else if (vm.orders && vm.orders.length > 0)
+                        _order = $filter('orderBy')(vm.orders, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
+
+                    vm.object.orders = _order.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
+                }
 
             } else {
                 vm.reset();
@@ -5387,6 +5404,11 @@
         var watcher3 = vm.$watch('userPreferences.entryPerPage', function (newNames) {
             if (newNames)
                 vm.reset();
+        });
+
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+            if (newNames)
+                vm.object.orders = [];
         });
 
         $scope.$on('exportData', function () {
@@ -5424,7 +5446,7 @@
             var orders = {};
             orders.orders = [];
 
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             var obj = {};
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
@@ -5478,7 +5500,7 @@
             var orders = {};
             orders.orders = [];
 
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
                 order = angular.merge(order, res.orders[0]);
@@ -5506,7 +5528,7 @@
                 vm.reset();
             });
             JobChainService.getJobChainP({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: order.jobChain
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
@@ -5519,7 +5541,7 @@
         vm.start = function (order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, at: 'now'});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -5560,7 +5582,7 @@
 
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.auditLog = {};
 
             if (vm.comments.comment) {
@@ -5602,7 +5624,7 @@
             });
 
             JobChainService.getJobChainP({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: order.jobChain
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
@@ -5620,7 +5642,7 @@
         function setRunTime(order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.auditLog = {};
             if (vm.comments.comment) {
                 orders.auditLog.comment = vm.comments.comment;
@@ -5650,7 +5672,7 @@
             vm.comments.radio = 'predefined';
             vm.scheduleAction = undefined;
             OrderService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: order.jobChain,
                 orderId: order.orderId
             }).then(function (res) {
@@ -5687,7 +5709,7 @@
         vm.suspendOrder = function (order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -5726,7 +5748,7 @@
         vm.resumeOrder = function (order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -5785,7 +5807,7 @@
             });
 
             JobChainService.getJobChainP({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: order.jobChain
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
@@ -5798,7 +5820,7 @@
         function resumeOrderState(order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
@@ -5827,7 +5849,7 @@
         function resumeOrderWithParam(order, paramObject) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.auditLog = {};
             if (vm.comments.comment) {
                 orders.auditLog.comment = vm.comments.comment;
@@ -5871,7 +5893,7 @@
 
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
                 order = angular.merge(order, res.orders[0]);
@@ -5894,7 +5916,7 @@
                 vm.reset();
             });
             JobChainService.getJobChainP({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 jobChain: order.jobChain
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
@@ -5907,7 +5929,7 @@
         vm.resetOrder = function (order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -5946,7 +5968,7 @@
         vm.removeOrder = function (order) {
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -6014,7 +6036,7 @@
 
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -6085,7 +6107,7 @@
             vm.planItems = [];
             vm.isCaledarLoading = true;
             DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: vm._jobChain.orderId,
                 dateFrom: firstDay,
@@ -6100,7 +6122,7 @@
         };
         vm.showAssignedCalendar = function (order) {
             var orders = {};
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.jobChain = order.jobChain;
             orders.orderId = order.orderId;
             orders.compact = true;
@@ -6132,7 +6154,7 @@
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
 
             DailyPlanService.getPlans({
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: order.orderId,
                 dateFrom: firstDay,
@@ -6182,7 +6204,7 @@
             order.show = true;
             var orders = {};
             orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
                 order = angular.merge(order, res.orders[0]);
@@ -6208,7 +6230,7 @@
                                 orderId: vm.showLogPanel.orderId,
                                 jobChain: vm.showLogPanel.path.split(',')[0]
                             });
-                            orders.jobschedulerId = $scope.schedulerIds.selected;
+                            orders.jobschedulerId = vm.schedulerIds.selected;
                             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
                             OrderService.histories(orders).then(function (res) {
@@ -6221,6 +6243,7 @@
 
         $scope.$on('$destroy', function () {
             watcher1();
+            watcher2();
             watcher3();
             if (promise1)
                 $timeout.cancel(promise1);
@@ -6668,9 +6691,7 @@
                     }).then(function (res) {
 
                         if (res.configuration && res.configuration.configurationItem) {
-                            var data = JSON.parse(res.configuration.configurationItem) || {};
-                            vm.savedIgnoreList = data;
-
+                            vm.savedIgnoreList = JSON.parse(res.configuration.configurationItem) || {};
                         }
                         loadIgnoreList = true;
                         vm.init();

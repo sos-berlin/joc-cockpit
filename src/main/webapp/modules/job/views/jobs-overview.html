@@ -83,7 +83,7 @@
             <div id="rightPanel">
                 <div class="hide " ng-class="{'show': isLoading}">
                     <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                        <div ng-repeat="(key, value) in filtered = (allJobs | filter: filterString:strict) | orderBy:'path1' | groupBy: 'path1' track by $index">
+                        <div ng-repeat="(key, value) in allJobs | orderBy:'path1' | groupBy: 'path1' track by $index">
                             <div class="col-sm-12" style="margin-bottom: 10px">
                                 <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                             </div>
@@ -313,7 +313,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
+                            <tbody ng-repeat="job in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
                                    ng-class="{'light-bg':showTaskPanel == job}">
                             <tr title="{{job.configurationStatus._text | translate}}">
                                 <td class="tableexport-ignore"
@@ -549,18 +549,18 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}"
-                             ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
-                            <span translate ng-if="filtered.length >1">label.jobsFound</span>
-                            <span translate ng-if="filtered.length ==1">label.jobFound</span>
+                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}"
+                             ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}}
+                            <span translate ng-if="allJobs.length >1">label.jobsFound</span>
+                            <span translate ng-if="allJobs.length ==1">label.jobFound</span>
                         </div>
-                        <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination
-                            total-items="filtered.length" ng-model="jobFilters.currentPage"
+                        <ul ng-show="allJobs.length > userPreferences.entryPerPage" uib-pagination
+                            total-items="allJobs.length" ng-model="jobFilters.currentPage"
                             items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
                             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true"
                             rotate="false" previous-text="{{'button.prev' | translate}}"
                             next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-left" ng-show="filtered.length > 10">
+                        <div class="pull-left" ng-show="allJobs.length > 10">
                             <div class="btn-group  m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="'10'"
@@ -585,9 +585,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="text-center m-t text-uppercase hide text-orange"
-                             ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}"
-                             translate>message.noDataMatched</div>
+
                     </div>
                 </div>
 

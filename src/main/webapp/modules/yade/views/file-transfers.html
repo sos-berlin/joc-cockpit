@@ -439,7 +439,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="transfer in filtered2 = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tbody ng-repeat="transfer in filtered = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr>
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
@@ -566,12 +566,12 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered2.length > 10}" ng-if="filtered2.length >0"><span translate>label.total</span> {{filtered2.length}}
-                        <span translate ng-if="filtered2.length >1">label.fileTransfersFound</span>
-                        <span translate ng-if="filtered2.length ==1">label.fileTransferFound</span>
+                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                        <span translate ng-if="filtered.length >1">label.fileTransfersFound</span>
+                        <span translate ng-if="filtered.length ==1">label.fileTransferFound</span>
                     </div>
-                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-left" ng-show="filtered2.length > 10">
+                    <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -591,7 +591,7 @@
                             </div>
                     </div>
                     <div ng-if="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
         <div ng-if="!isLoading" class="text-center m-t-lg" >
