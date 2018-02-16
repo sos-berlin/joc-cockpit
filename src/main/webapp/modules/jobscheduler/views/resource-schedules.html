@@ -1,21 +1,21 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="tree.length>0">
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeSchedule.length>0">
     <div>
-        <a class="text" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+        <a class="text" ng-click="my_tree_schedule.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
             <i class="fa fa-angle-double-down fa-lg"></i>
         </a>
-        <a class="text m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+        <a class="text m-l-xs" ng-click="my_tree_schedule.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
             <i class="fa fa-angle-double-up fa-lg"></i>
         </a>
         <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
-        <tree tree-data="tree"
-              tree-control="my_tree"
-              expand-on="expanding_property1"
-              on-select="treeHandler1(branch)"
-              on-click="treeHandler(branch)"
-              expand-node="expandNode(branch)"
+        <tree tree-data="treeSchedule"
+              tree-control="my_tree_schedule"
+              expand-on="expanding_propertyS"
+              on-select="treeHandler1S(branch)"
+              on-click="treeHandlerS(branch)"
+              expand-node="expandNodeS(branch)"
               collapse-node="collapseNode(branch)"
               template-url="modules/core/template/tree.html">
         </tree>
@@ -29,8 +29,8 @@
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     ng-repeat="schedule in value | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse">
-                    <div class="box card">
+                     ng-repeat="schedule in value | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse">
+                    <div class="box card" >
                         <div class="box-body">
 
                             <div>
@@ -99,57 +99,57 @@
                         </th>
                         <th class="noExl" width="45"><span translate>label.action</span></th>
                         <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'name' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'name' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'name' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'name' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('path')"><a><span translate>label.path</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'path' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'path' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'path' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'path' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('state._text')"><a><span translate>label.status</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'state._text' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'state._text' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'state._text' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'state._text' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'usedByOrders.length' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'usedByOrders.length' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'usedByOrders.length' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'usedByOrders.length' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'usedByJobs.length' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'usedByJobs.length' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'usedByJobs.length' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'usedByJobs.length' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('validityFrom')"><a><span translate>label.validityFrom</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'validityFrom' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'validityFrom' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'validityFrom' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'validityFrom' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('validityTo')"><a><span translate>label.validityTo</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'validityTo' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'validityTo' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'validityTo' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'validityTo' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByS('substitute')"><a><span translate>label.substitute</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitute' && !schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'substitute' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitute' && schdeuleFilters.reverse"
+                            <i ng-show="scheduleFilters.filter.sortBy == 'substitute' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
 
                     </tr>
                     </thead>
-                    <tbody  ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
+                    <tbody  ng-repeat="schedule in allSchedules | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse | startFrom:(scheduleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
                     <tr>
                         <td ng-if="permission.Schedule.change.addSubstitute" >
                             <label class="md-check">
@@ -183,11 +183,9 @@
                         <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
                                   ng-bind="schedule.state._text  | translate"></span></td>
                         <td>
-                            <!--<a class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=order" ng-bind="schedule.usedByOrders.length || 0"></a>-->
                             <span ng-bind="schedule.usedByOrders.length || 0"></span>
                         </td>
                         <td>
-                            <!--<a class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=job" ng-bind="schedule.usedByJobs.length || 0"></a>-->
                             <span ng-bind="schedule.usedByJobs.length || 0"></span>
                         </td>
                         <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
@@ -253,7 +251,7 @@
                     <span translate ng-if="allSchedules.length ==1">label.scheduleFound</span>
                 </div>
                 <ul ng-show="allSchedules.length > userPreferences.entryPerPage" uib-pagination total-items="allSchedules.length"
-                    ng-model="schdeuleFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
+                    ng-model="scheduleFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
                     ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
                     previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                 <div class="pull-left" ng-show="allSchedules.length > 10">
@@ -278,7 +276,7 @@
 
             </div>
         </div>
-        <div ng-if="isLoading && !loading && folderPathS && allSchedules.length==0 && tree.length>0" class="text-center m-t h6">
+        <div ng-if="isLoading && !loading && folderPathS && allSchedules.length==0 && treeSchedule.length>0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathS}}"</span>
             <span translate>message.emptyFolder</span>
         </div>
@@ -292,7 +290,7 @@
     </div>
 </div>
 
-<div ng-if="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+<div ng-if="isLoading && treeSchedule.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
     $('.table-responsive').on('show.bs.dropdown', function (e) {
         var $table = $(this),
