@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService","$filter"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -108,15 +108,15 @@
 
         vm.expandDetails = function () {
             if (vm.resourceFilters.state == 'schedules') {
-                angular.forEach(vm.allSchedules, function (value, index) {
+                angular.forEach(vm.allSchedules, function (value) {
                     value.show = true;
                 });
             } else if (vm.resourceFilters.state == 'agent') {
-                angular.forEach(vm.allAgentClusters, function (value, index) {
+                angular.forEach(vm.allAgentClusters, function (value) {
                     value.show = true;
                 });
             } else if (vm.resourceFilters.state == 'processClass') {
-                angular.forEach(vm.allProcessClasses, function (value, index) {
+                angular.forEach(vm.allProcessClasses, function (value) {
                     value.show = true;
                 });
             }
@@ -124,15 +124,15 @@
 
         vm.collapseDetails = function () {
             if (vm.resourceFilters.state == 'schedules') {
-                angular.forEach(vm.allSchedules, function (value, index) {
+                angular.forEach(vm.allSchedules, function (value) {
                     value.show = false;
                 });
             } else if (vm.resourceFilters.state == 'agent') {
-                angular.forEach(vm.allAgentClusters, function (value, index) {
+                angular.forEach(vm.allAgentClusters, function (value) {
                     value.show = false;
                 });
             } else if (vm.resourceFilters.state == 'processClass') {
-                angular.forEach(vm.allProcessClasses, function (value, index) {
+                angular.forEach(vm.allProcessClasses, function (value) {
                     value.show = false;
                 });
             }
@@ -355,7 +355,7 @@
             JobSchedulerService.getAgentCluster(obj1).then(function (result) {
                 vm.allAgentClusters = [];
                 angular.forEach(vm.treeAgent, function (node, index) {
-                    insertData(node, result.agentClusters);
+                    insertDataA(node, result.agentClusters);
                 })
             });
         };
@@ -1908,7 +1908,8 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                vm.object.schedules = vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
+                var _schedule = $filter('orderBy')(vm.allSchedules, vm.scheduleFilters.filter.sortBy, vm.scheduleFilters.reverse);
+                vm.object.schedules = _schedule.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
             }
@@ -2249,7 +2250,7 @@
                             }];
                             ResourceService.getProcessClass(obj).then(function (res) {
                                 if (res.processClasses) {
-                                    angular.forEach(res.processClasses, function (value1, index1) {
+                                    angular.forEach(res.processClasses, function (value1) {
                                         angular.forEach(vm.allProcessClasses, function (value2, index2) {
                                             if (value1.path == value2.path) {
                                                 vm.allProcessClasses[index2].processes = value1.processes;
@@ -2310,13 +2311,13 @@
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
         vm.showLeftPanel = function () {
             $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1 .parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 

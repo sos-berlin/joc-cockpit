@@ -211,7 +211,7 @@
                                    firstIndex = index;
                              }else if(firstIndex<index){
                                 jobChainData2.nodes[index].secondParent = true;
-                                 console.log("second parent here -- "+JSON.stringify(jobChainData2.nodes[index])+" firstIndex "+firstIndex+" index "+index);
+                                // console.log("second parent here -- "+JSON.stringify(jobChainData2.nodes[index])+" firstIndex "+firstIndex+" index "+index);
                              }
 
 

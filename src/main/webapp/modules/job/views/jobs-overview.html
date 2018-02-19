@@ -83,7 +83,7 @@
             <div id="rightPanel">
                 <div class="hide " ng-class="{'show': isLoading}">
                     <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                        <div ng-repeat="(key, value) in filtered = (allJobs | filter: filterString:strict) | orderBy:'path1' | groupBy: 'path1' track by $index">
+                        <div ng-repeat="(key, value) in allJobs | orderBy:'path1' | groupBy: 'path1' track by $index">
                             <div class="col-sm-12" style="margin-bottom: 10px">
                                 <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                             </div>

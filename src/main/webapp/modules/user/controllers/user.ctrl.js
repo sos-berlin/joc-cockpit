@@ -100,9 +100,9 @@
                                 $window.localStorage.$SOS$BOO = pwd;
                                 $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                             } else {
-                                $window.localStorage.setItem('$SOS$FOO', null);
-                                $window.localStorage.setItem('$SOS$BOO', null);
-                                $window.localStorage.setItem('$SOS$REMEMBER', null);
+                                $window.localStorage.removeItem('$SOS$FOO');
+                                $window.localStorage.removeItem('$SOS$BOO');
+                                $window.localStorage.removeItem('$SOS$REMEMBER');
                             }
 
                             SOSAuth.setUser(response);

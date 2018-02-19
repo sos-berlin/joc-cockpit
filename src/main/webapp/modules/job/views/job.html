@@ -730,7 +730,7 @@
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
             <div class="hide " ng-class="{'show': isLoading}" >
-                <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
+                <div class="row" ng-if="showTaskPanel && pageView=='list'">
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
