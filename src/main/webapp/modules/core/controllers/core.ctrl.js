@@ -1388,17 +1388,12 @@
                             if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
                                 vm.events = [];
                                 vm.events.push(res.events[i]);
-                                if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
-                                    $rootScope.$broadcast('event-started', {
-                                        events: vm.events,
-                                        otherEvents: res.events
-                                    });
-                                } else {
-                                    $rootScope.$broadcast('event-started', {
-                                        events: vm.events,
-                                        otherEvents: vm.events
-                                    });
-                                }
+
+                                $rootScope.$broadcast('event-started', {
+                                    events: vm.events,
+                                    otherEvents: res.events
+                                });
+
                                 vm.eventsRequest.push({
                                     jobschedulerId: res.events[i].jobschedulerId,
                                     eventId: res.events[i].eventId
@@ -1416,12 +1411,11 @@
                                 break;
                             }
                         }
-
-                        for (var i = 0; i < res.events.length; i++) {
-                            if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
+                        for (var j = 0; j < res.events.length; j++) {
+                            if (res.events[j].jobschedulerId != vm.schedulerIds.selected) {
                                 vm.eventsRequest.push({
-                                    jobschedulerId: res.events[i].jobschedulerId,
-                                    eventId: res.events[i].eventId
+                                    jobschedulerId: res.events[j].jobschedulerId,
+                                    eventId: res.events[j].eventId
                                 });
                             }
                         }

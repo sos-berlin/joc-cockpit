@@ -337,8 +337,8 @@
                 vm.fileTransfers = res.transfers;
 
                 angular.forEach(vm.fileTransfers, function (transfer) {
-                    transfer.permission  =  PermissionService.getPermission(transfer.jobschedulerId || vm.schedulerIds.selected).YADE;
-                    console.log(transfer.permission)
+                    var id  = transfer.jobschedulerId || vm.schedulerIds.selected;
+                    transfer.permission  =  PermissionService.getPermission(id).YADE;
                     if (vm.showFiles) {
                         transfer.show = true;
                         getFiles(transfer);

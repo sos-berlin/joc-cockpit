@@ -29,7 +29,7 @@
         vm.temp_filter = {};
 
         var modalInstance;
-        vm.selectedFiltered;
+        vm.selectedFiltered = '';
 
         var firstDay;
         var lastDay;

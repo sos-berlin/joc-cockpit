@@ -3389,7 +3389,7 @@
 
                 vm.calendar.create = false;
 
-                var modalInstance = $uibModal.open({
+                $uibModal.open({
                     templateUrl: 'modules/core/template/set-calendar-dialog.html',
                     controller: 'CalendarEditorDialogCtrl',
                     scope: vm,
@@ -6080,10 +6080,10 @@
         }
 
 
-        $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
+        $scope.$on('event-started', function (event, args) {
+            if (args.events && args.events[0] && args.events[0].eventSnapshots) {
+                for (var i = 0; i < args.events[0].eventSnapshots.length; i++) {
+                    if (args.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
                         isLoadedSnapshot = false;
                         isLoadedTaskSnapshot = false;
                         vm.loadOrderSnapshot(true);
@@ -6091,39 +6091,64 @@
                         vm.getFileOverview(true);
                         vm.loadScheduleStatus();
                     }
-                    if ((vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
+                    if ((args.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;
                         if (!vm.notPermissionForSnapshot)
                             vm.loadOrderSnapshot();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && isLoadedSummary) {
+                    } else if (args.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && isLoadedSummary) {
                         isLoadedSummary = false;
                         if (!vm.notPermissionForSummary)
                             vm.getOrderSummary();
                     }
-                    else if ((vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
+                    else if ((args.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
                         isLoadedTaskSnapshot = false;
                         if (!vm.notPermissionForTaskSnapshot)
                             vm.loadTaskSnapshot();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && isLoadedTaskSummary) {
+                    } else if (args.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && isLoadedTaskSummary) {
                         isLoadedTaskSummary = false;
                         if (!vm.notPermissionForTaskSummary)
                             vm.getTaskSummary();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
+                    } else if (args.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                         isLoadedDailyPlan = false;
                         vm.getDailyPlans();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (vm.isLoadedAgentCluster || vm.isLoadedRunningTask)) {
+                    } else if (args.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && args.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (vm.isLoadedAgentCluster || vm.isLoadedRunningTask)) {
                         vm.isLoadedAgentCluster = false;
                         if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
                             vm.getAgentCluster();
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
+                    }else if(args.events[0].eventSnapshots[i].objectType === "OTHER") {
+                        if (args.events[0].eventSnapshots[i].eventType === "YADEFileStateChanged" && isLoadedFileOverview) {
+                            vm.getFileOverview();
+                        } else if (args.events[0].eventSnapshots[i].eventType === "YADETransferStarted" && isLoadedFileSummary) {
+                            vm.getFileSummary();
+                        }
                     }
-                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
+                    if (args.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
                         vm.isLoadedRunningTask = false;
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
                     }
                 }
+            }
+            if(args.otherEvents && args.otherEvents.length>0) {
+                for (var j = 0; j < args.otherEvents.length; j++) {
+                    if (args.otherEvents[j].jobschedulerId != vm.schedulerIds.selected) {
+                        var flag = false;
+                        if (args.otherEvents[j].eventSnapshots && args.otherEvents[j].eventSnapshots.length > 0)
+                            for (var x = 0; x < args.otherEvents[j].eventSnapshots.length; x++) {
+                                if (args.otherEvents[j].eventSnapshots[x].eventType === "SchedulerStateChanged") {
+                                    vm.loadScheduleStatus();
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                        if (flag) {
+                            break;
+                        }
+                    }
+                }
+            }
         });
 
         $scope.$on('$destroy', function () {

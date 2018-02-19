@@ -909,16 +909,23 @@
                 }
 
                 vm.$on('event-started', function (event, args) {
-                    if (args.events && args.events.length > 0) {
-                        angular.forEach(args.otherEvents, function (event) {
-                            angular.forEach(event.eventSnapshots, function (value1) {
-                                if (value1.eventType === "SchedulerStateChanged") {
-                                    vm.getSupervisor(value1);
+                    if (args.otherEvents && args.otherEvents.length > 0) {
+                        for (var j = 0; j < args.otherEvents.length; j++) {
+                            var flag = false;
+                            if (args.otherEvents[j].eventSnapshots && args.otherEvents[j].eventSnapshots.length > 0)
+                                for (var x = 0; x < args.otherEvents[j].eventSnapshots.length; x++) {
+                                    if (args.otherEvents[j].eventSnapshots[x].eventType === "SchedulerStateChanged") {
+                                        vm.getSupervisor();
+                                        flag = true;
+                                        break;
+                                    }
                                 }
-                            });
-                        });
-
+                            if (flag) {
+                                break;
+                            }
+                        }
                     }
+
                 });
             }]
         }
