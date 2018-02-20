@@ -5568,7 +5568,7 @@
                             if (res) {
                                 CoreService.setDefaultTab();
                                 SOSAuth.setIds(res);
-                                SOSAuth.setPermission(permission);
+                               
                                 SOSAuth.save();
                                 if (res.selected != vm.schedulerIds.selected)
                                     $state.reload(vm.currentState);
@@ -5612,10 +5612,7 @@
                 }
             }
 
-            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithTimeout') {
-                vm.getTimeout(host, port, id, action);
-            }
-            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateWithin') {
+            if ((objectType == 'supervisor' || objectType == 'master') && (action == 'terminateAndRestartWithTimeout' || action == 'terminateWithin')) {
                 vm.getTimeout(host, port, id, action);
             } else {
                 if (vm.userPreferences.auditLog && action !== 'downloadLog') {
