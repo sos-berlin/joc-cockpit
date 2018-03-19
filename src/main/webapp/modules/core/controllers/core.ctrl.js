@@ -659,8 +659,12 @@
                 }
             }
         }
-
+        vm.$on('order-list', function (event,path) {
+            
+            vm.showOrderLink(path)
+        });
         vm.showJobChain = function (jobChain) {
+            vm.showHistoryImmeditaly = false;
             $location.path('/job_chain').search({path: jobChain,scheduler_id:vm.schedulerIds.selected});
         };
 

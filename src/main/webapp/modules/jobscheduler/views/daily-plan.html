@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
+                    <div class="inline m-l-sm">
 
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
@@ -466,7 +466,11 @@
                             </tbody>
                         </table>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
-                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="plans.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
+                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="filtered.length >0">
+                            <span translate>label.total</span> {{filtered.length}}
+                            <span ng-if="filtered.length>1" translate>label.plansFound</span>
+                            <span ng-if="filtered.length==1" translate>label.planFound</span>
+                        </div>
                         <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length"
                             ng-model="dailyPlanFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
                             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"

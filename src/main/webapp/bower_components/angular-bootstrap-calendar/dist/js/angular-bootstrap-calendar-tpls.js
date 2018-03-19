@@ -342,8 +342,9 @@
                         return;
                     }
                     i.loadingDone = !1, i.view = [], i.weekDays = t.getWeekDayNames(), i.view = t.getYearView(i.events, i.viewDate, i.cellModifier), i.yearCount = 0;
-                    var e = i.viewDate, a = (l("date")(new Date, "dd-MM-yyyy"), l("date")(i.viewDate, "dd-MM-yyyy"), i.viewDate.getMonth());
+                    var e = i.viewDate, a = (l("date")(new Date, "yyyy-MM-dd"), l("date")(i.viewDate, "yyyy-MM-dd"), i.viewDate.getMonth());
                     i.view.forEach(function (n) {
+
                         e.setMonth(i.yearCount), i.monthView = t.getMonthView(i.events, e, i.cellModifier, i.planItems, "year");
                         var a = Math.floor(i.monthView.length / 7);
                         i.monthOffsets = [];
@@ -628,8 +629,8 @@
             function h(e, n, t, l, d) {
 
                 for (var s = a(n).startOf("month"), o = s.clone().startOf("week"), v = a(n).endOf("month").endOf("week"), r = [], c = a().startOf("day"); o.isBefore(v);) {
-                    var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "dd-MM-yyyy"), h = [], cl = '', z = 1;
-                    for (var g in l)i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
+                    var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "yyyy-MM-dd"), h = [], cl = '', z = 1;
+                    for (var g in l)l[g].plannedStartTime == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
 
                     var f = {
                         label: o.date(),

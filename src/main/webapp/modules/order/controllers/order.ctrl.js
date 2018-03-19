@@ -3016,9 +3016,6 @@
         vm.reset = function () {
             vm.object.orders = [];
         };
-        $rootScope.$on('event-order', function (event, values) {
-            $rootScope.order_expand_to = values;
-        });
 
         vm.savedOrderFilter = JSON.parse(SavedFilter.orderFilters) || {};
         vm.orderFilterList = [];
@@ -7306,6 +7303,7 @@
         vm.cancel = function (form) {
             if (form)
                 form.$setPristine();
+            vm.showSearchPanel = false;
             vm.loadHistory();
         };
 

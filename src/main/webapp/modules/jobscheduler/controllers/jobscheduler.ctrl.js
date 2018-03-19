@@ -6689,7 +6689,7 @@
             var minNextStartTime;
             var maxEndTime;
             var orders = [];
-            vm.ordersNoDuplicate = [];
+           // vm.ordersNoDuplicate = [];
 
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {

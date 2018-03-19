@@ -698,9 +698,9 @@
                if (vm.auditSearch.date == 'date' && vm.auditSearch.to) {
                    var toDate = new Date(vm.auditSearch.to);
                    if (vm.auditSearch.toTime) {
-                       toDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
-                       toDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
-                       toDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
+                       toDate.setHours(moment(vm.auditSearch.toTime, 'HH:mm:ss').hours());
+                       toDate.setMinutes(moment(vm.auditSearch.toTime, 'HH:mm:ss').minutes());
+                       toDate.setSeconds(moment(vm.auditSearch.toTime, 'HH:mm:ss').seconds());
 
                    } else {
                        toDate.setHours(0);
@@ -1410,8 +1410,7 @@
             vm.mainSection = [];
             vm.isUpdate = true;
 
-            angular.forEach(vm.main, function(entry) {
-                console.log(entry);
+            angular.forEach(vm.main, function (entry) {
                 var values = [];
                 var comments = [];
 
@@ -2561,7 +2560,7 @@
 
             var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
 
-            function calculateTopMost(permission_node) {
+            function calculateTopMost() {
                 endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
                 var topMost = 0;
                 nodes = tree.nodes(root);
@@ -2583,7 +2582,7 @@
                         endNodes2.lowerMost.y = node.x;
                     }
 
-                })
+                });
 
                 var diff = 0;
                 if (endNodes2.topMost.y < -225) {
@@ -2591,8 +2590,6 @@
                 }
                 checkWindowSize();
                 return diff;
-
-
             }
 
             /**
@@ -2609,7 +2606,6 @@
 
                 draw(permission_node, calculateTopMost());
             }
-
 
             var _temp = [];
 
@@ -2799,5 +2795,4 @@
                 $timeout.cancel(t1);
         });
     }
-})
-();
+})();

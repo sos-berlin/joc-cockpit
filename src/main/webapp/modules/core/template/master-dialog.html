@@ -8,9 +8,9 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
-            <div class="form-group row">
+            <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
                 <label class="col-sm-4 form-control-label" translate>label.master</label>
-                <div class=" col-sm-6" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
+                <div class=" col-sm-6" >
                     <input type="text" class="form-control" name="name" placeholder="{{'placeholder.master' | translate}}" ng-model="master.master" required ng-blur="checkMaster()">
                     <div class="help-block text-danger" ng-if="form.name.$dirty"
                          ng-messages="form.name.$error">

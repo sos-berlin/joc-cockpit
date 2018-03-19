@@ -70,9 +70,6 @@
             vm.savedJobChainFilter.selected = undefined;
         }
 
-        $rootScope.$on('event-jobChains', function (event, values) {
-            $rootScope.expand_to = values;
-        });
 
         vm.expanding_property = {
             field: "name"
@@ -2784,9 +2781,6 @@
 
         vm.showTask = vm.userPreferences.showTasks;
         vm.isUnique = true;
-        $rootScope.$on('event-jobs', function (event, values) {
-            $rootScope.job_expand_to = values;
-        });
 
         vm.object = {};
 
