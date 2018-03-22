@@ -630,7 +630,7 @@
 
                 for (var s = a(n).startOf("month"), o = s.clone().startOf("week"), v = a(n).endOf("month").endOf("week"), r = [], c = a().startOf("day"); o.isBefore(v);) {
                     var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "yyyy-MM-dd"), h = [], cl = '', z = 1;
-                    for (var g in l)l[g].plannedStartTime == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
+                    for (var g in l)moment(l[g].plannedStartTime).format("YYYY-MM-DD") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
 
                     var f = {
                         label: o.date(),

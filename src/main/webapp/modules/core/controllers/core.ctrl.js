@@ -648,7 +648,7 @@
                         $window.localStorage.log_window_y = newWindow.screenY;
                         return;
                     };
-                    $(newWindow).resize(function () {
+                    newWindow.addEventListener("resize",function () {
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
