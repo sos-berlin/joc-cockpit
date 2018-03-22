@@ -8878,16 +8878,25 @@
             var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
             FileSaver.saveAs(data, 'history.log');
         };
+        function getParam(name) {
+            var url = window.location.href;
+            var regex = new RegExp("[?&}" + name + "(=([^&]*)|&)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ""));
+        }
+
         var object = $location.search();
         var t1;
         vm.loadOrderLog = function () {
 
-            vm.jobChain = object.jobChain;
+            vm.jobChain = getParam("jobChain");
             var orders = {};
-            orders.jobschedulerId = object.schedulerId;
+            orders.jobschedulerId = getParam("schedulerId");
             orders.jobChain = vm.jobChain;
-            orders.orderId = object.orderId;
-            orders.historyId = object.historyId;
+            orders.orderId = vm.orderId;
+            orders.historyId = getParam("historyId");
             orders.mime = ['HTML'];
             OrderService.log(orders).then(function (res) {
                 if (res.log)
@@ -8904,10 +8913,10 @@
         };
         vm.loadJobLog = function () {
 
-            vm.job = object.job;
+            vm.job = getParam("job");
             var jobs = {};
-            jobs.jobschedulerId = object.schedulerId;
-            jobs.taskId = object.taskId;
+            jobs.jobschedulerId = getParam("schedulerId");
+            jobs.taskId = vm.taskId;
             jobs.mime = ['HTML'];
             TaskService.log(jobs).then(function (res) {
                 if (res.log)
@@ -8921,13 +8930,15 @@
                 vm.isLoading = true;
             });
         };
-        if (object.historyId) {
-            vm.orderId = object.orderId;
+        if (object && getParam("historyId")) {
+            vm.orderId = getParam("orderId");
             vm.loadOrderLog();
         }
-        else {
-            vm.taskId = object.taskId;
+        else if(object && getParam("taskId")){
+            vm.taskId = getParam("taskId");
             vm.loadJobLog();
+        }else{
+            alert('Invalid URL');
         }
 
         $scope.$on('$destroy', function () {

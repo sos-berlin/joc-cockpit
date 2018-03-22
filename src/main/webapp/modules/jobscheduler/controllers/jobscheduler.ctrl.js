@@ -290,7 +290,7 @@
                 if (!data.agentClusters)
                     data.agentClusters = [];
 
-                loadAgentsV(data);
+                loadAgentsV(data, type);
                 vm.folderPathA = data.name || '/';
                 angular.forEach(data.agentClusters, function (value) {
                     value.path1 = data.path;
@@ -400,7 +400,7 @@
             });
         }
 
-        function loadAgentsV(data) {
+        function loadAgentsV(data, type) {
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
@@ -409,7 +409,7 @@
             }
 
             obj.folders = [
-                {folder: data.path, recursive: false}
+                {folder: data.path, recursive: type ? true : false}
             ];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
                 data.agentClusters = result.agentClusters;
