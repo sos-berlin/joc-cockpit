@@ -23,16 +23,29 @@
             return "";
         }
 
+        function getParam(name) {
+            var url = window.location.href;
+            var regex = new RegExp("[?&}" + name + "(=([^&]*)|&)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ""));
+        }
+
         var id = getCookie('$SOS$scheduleId');
         var token = getCookie('$SOS$accessTokenId');
         $scope.loading = true;
         $scope.shareData = $location.search();
-        if ($scope.shareData && $scope.shareData.orderId) {
+
+
+
+
+        if ($scope.shareData && getParam("orderId")) {
             var orders = {};
             orders.jobschedulerId = id;
-            orders.jobChain = $scope.shareData.jobChain;
-            orders.orderId = $scope.shareData.orderId;
-            orders.historyId = $scope.shareData.historyId;
+            orders.jobChain = getParam("jobChain");
+            orders.orderId = getParam("orderId");
+            orders.historyId = getParam("historyId");
             orders.mime = ['HTML'];
 
             $http.post('./api/order/log', orders, {
@@ -56,10 +69,10 @@
                  $scope.loading = false;
             });
         }
-        else if ($scope.shareData && $scope.shareData.taskId) {
+        else if ($scope.shareData && getParam("taskId")) {
             var tasks = {};
             tasks.jobschedulerId = id;
-            tasks.taskId = $scope.shareData.taskId;
+            tasks.taskId = getParam("taskId");
             tasks.mime = ['HTML'];
 
             $http.post('./api/task/log', tasks, {
