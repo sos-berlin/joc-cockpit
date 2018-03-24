@@ -631,8 +631,12 @@
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
             obj = setDateRange(obj);
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
+
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom.toISOString();
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo.toISOString();
             }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -719,8 +723,11 @@
                 filter.jobschedulerId = vm.auditSearch.jobschedulerId;
             }
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                delete filter['timeZone']
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom.toISOString();
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo.toISOString();
             }
 
             AuditLogService.getLogs(filter).then(function (result) {

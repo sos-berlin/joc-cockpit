@@ -6465,8 +6465,12 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof  obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
+
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom.toISOString();
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
@@ -6895,8 +6899,12 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
+
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom.toISOString();
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
@@ -7494,8 +7502,11 @@
                 obj.dateTo.setMilliseconds(0);
             }
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom.toISOString();
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
