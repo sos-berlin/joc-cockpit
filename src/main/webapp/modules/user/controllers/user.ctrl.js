@@ -628,8 +628,12 @@
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
             obj = setDateRange(obj);
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
+
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom.toISOString();
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo.toISOString();
             }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -691,9 +695,9 @@
                if (vm.auditSearch.date == 'date' && vm.auditSearch.to) {
                    var toDate = new Date(vm.auditSearch.to);
                    if (vm.auditSearch.toTime) {
-                       toDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
-                       toDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
-                       toDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
+                       toDate.setHours(moment(vm.auditSearch.toTime, 'HH:mm:ss').hours());
+                       toDate.setMinutes(moment(vm.auditSearch.toTime, 'HH:mm:ss').minutes());
+                       toDate.setSeconds(moment(vm.auditSearch.toTime, 'HH:mm:ss').seconds());
 
                    } else {
                        toDate.setHours(0);
@@ -712,8 +716,11 @@
                 filter.jobschedulerId = vm.auditSearch.jobschedulerId;
             }
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                delete filter['timeZone']
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom.toISOString();
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo.toISOString();
             }
 
             AuditLogService.getLogs(filter).then(function (result) {
