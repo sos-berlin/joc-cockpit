@@ -11,7 +11,7 @@
     <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
     <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
     <url>https://github.com/sos-berlin/joc-cockpit.git</url>
-    <tag>HEAD</tag>
+    <tag>v1.12.2</tag>
   </scm>
   
     <properties>
