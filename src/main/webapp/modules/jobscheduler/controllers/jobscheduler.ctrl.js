@@ -485,6 +485,16 @@
                 filter.dateFrom = vm.agentJobExecutionFilters.filter.date;
                 filter.timeZone = vm.userPreferences.zone;
             }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter["timeZone"];
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+            }
+
             return filter;
         }
 
@@ -570,6 +580,14 @@
                 }
                 toDate.setMilliseconds(0);
                 obj.dateTo = toDate;
+            }
+
+
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             ResourceService.getAgentTask(obj).then(function (res) {
                 vm.agentTasks = res.agents;
@@ -4259,9 +4277,15 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
-            }
+                if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                   delete obj["timeZone"];
+                }
+                    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                }
+                if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
@@ -4856,11 +4880,14 @@
                 obj.dateTo.setMilliseconds(0);
             }
             obj.timeZone = vm.userPreferences.zone;
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = obj.dateFrom.toISOString();
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = obj.dateTo.toISOString();
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
