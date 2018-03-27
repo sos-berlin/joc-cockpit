@@ -6467,10 +6467,10 @@
             obj.timeZone = vm.userPreferences.zone;
 
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+                obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo = obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
@@ -6901,10 +6901,10 @@
             obj.timeZone = vm.userPreferences.zone;
 
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+                obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo= obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
@@ -7503,10 +7503,10 @@
             }
             obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+                obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo = obj.dateTo.toISOString();
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;

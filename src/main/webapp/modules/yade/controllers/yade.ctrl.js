@@ -330,10 +330,10 @@
 
             obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+                obj.dateFrom  = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo = obj.dateTo.toISOString();
             }
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
@@ -579,10 +579,10 @@
 
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                 filter.dateTo = filter.dateTo.toISOString();
             }
             YadeService.getTransfers(filter).then(function (res) {
                 vm.fileTransfers = res.transfers;

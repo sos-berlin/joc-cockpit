@@ -2431,7 +2431,8 @@
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
                 dateFrom: date,
-                dateTo: date
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -2447,7 +2448,7 @@
             vm.isCaledarLoading = true;
             
             vm.planItems = [];
-            firstDay = moment({hour: 0, minute: 0, seconds: 0, milliseconds: 0}).tz(vm.userPreferences.zone);
+            
             DailyPlanService.getPlans({
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
@@ -3720,10 +3721,10 @@
                 obj.dateTo = toDate;
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-               obj.dateFrom.toISOString();
+               obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo = obj.dateTo.toISOString();
             }
             return obj;
         }
@@ -6106,7 +6107,8 @@
                 orderId: vm._jobChain.orderId,
                 jobChain: vm._jobChain.jobChain,
                 dateFrom: date,
-                dateTo: date
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -6121,14 +6123,14 @@
             vm.isCaledarLoading = true;
             vm._jobChain.name = order.orderId;
             vm.planItems = [];
-            firstDay = moment({hour: 0, minute: 0, seconds: 0, milliseconds: 0}).tz(vm.userPreferences.zone);
+
             DailyPlanService.getPlans({
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: order.orderId,
                 jobChain:order.jobChain,
                 dateFrom: "+0M",
-	        dateTo: "+0M",
+	            dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -6680,7 +6682,6 @@
                 vm.init();
             });
         }
-
         getIgnoreList();
 
         /**--------------- sorting and pagination -------------------*/
@@ -6696,9 +6697,9 @@
             vm.yade.sortReverse = !vm.yade.sortReverse;
             vm.yade.filter.sortBy = propertyName;
         };
+
         function setTaskDateRange(filter) {
             if ((vm.savedIgnoreList.isEnable == true || vm.savedIgnoreList.isEnable == 'true') && (vm.savedIgnoreList.jobs && vm.savedIgnoreList.jobs.length > 0)) {
-
                 filter.excludeJobs = [];
                 angular.forEach(vm.savedIgnoreList.jobs, function (job) {
                     filter.excludeJobs.push({job: job});
@@ -6773,10 +6774,10 @@
             filter.timeZone = vm.userPreferences.zone;
 
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
@@ -6796,7 +6797,6 @@
                 return;
             }
             if (!filter) {
-
                 filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
             }
             vm.isLoading = false;
@@ -6813,10 +6813,10 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
@@ -6852,10 +6852,10 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
             filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
@@ -6918,7 +6918,6 @@
                                     break;
                                 }
                             }
-
                         }
                     } else {
                         arr.push({protocol: value})
@@ -7013,10 +7012,10 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom.toISOString();
+                    filter.dateFrom = filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
@@ -7122,10 +7121,10 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom.toISOString();
+                    filter.dateFrom = filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
@@ -7225,13 +7224,12 @@
                 if (vm.yadeSearch.jobschedulerId) {
                     filter.jobschedulerId = vm.yadeSearch.jobschedulerId;
                 }
-
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom.toISOString();
+                    filter.dateFrom = filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 filter.compact = true;
                 YadeService.getTransfers(filter).then(function (res) {
@@ -8708,10 +8706,10 @@
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom.toISOString();
+                        filter.dateFrom = filter.dateFrom.toISOString();
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo.toISOString();
+                        filter.dateTo = filter.dateTo.toISOString();
                     }
                     OrderService.histories(filter).then(function (res) {
                         vm.historys = res.history;
@@ -8739,10 +8737,10 @@
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom.toISOString();
+                        filter.dateFrom = filter.dateFrom.toISOString();
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo.toISOString();
+                        filter.dateTo = filter.dateTo.toISOString();
                     }
                     TaskService.histories(filter).then(function (res) {
                         vm.jobHistorys = res.history;
@@ -8769,10 +8767,10 @@
                 filter.limit = parseInt(vm.userPreferences.maxRecords);
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                     filter.dateFrom.toISOString();
+                    filter.dateFrom =  filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 filter.compact = true;
                 if(yadeSearch) {
@@ -8859,13 +8857,15 @@
             var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
             FileSaver.saveAs(data, 'history.log');
         };
-        function getParam(name) {
+
+        function getParam( name ) {
             var url = window.location.href;
-            var regex = new RegExp("[?&}" + name + "(=([^&]*)|&)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ""));
+            if (!url) url = location.href;
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(url);
+            return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ""));
         }
 
         var object = $location.search();

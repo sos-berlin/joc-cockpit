@@ -633,10 +633,10 @@
             obj.timeZone = vm.userPreferences.zone;
 
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+                obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo  = obj.dateTo.toISOString();
             }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -724,10 +724,10 @@
             }
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+               filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
 
             AuditLogService.getLogs(filter).then(function (result) {
