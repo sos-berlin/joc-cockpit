@@ -3712,10 +3712,10 @@
                 delete obj["timeZone"];
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -3729,6 +3729,7 @@
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
             }
+
             OrderService.get(obj).then(function (res) {
 
                 var data = [];
@@ -3952,10 +3953,10 @@
             }
 
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -6773,10 +6774,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
@@ -6815,10 +6816,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
@@ -6857,10 +6858,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
             filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
@@ -7020,10 +7021,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
@@ -7132,10 +7133,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
@@ -7240,10 +7241,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
                 filter.compact = true;
                 YadeService.getTransfers(filter).then(function (res) {
@@ -8723,10 +8724,10 @@
                        delete filter["timeZone"];
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                     }
                     OrderService.histories(filter).then(function (res) {
                         vm.historys = res.history;
@@ -8757,10 +8758,10 @@
                        delete filter["timeZone"];
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                     }
                     TaskService.histories(filter).then(function (res) {
                         vm.jobHistorys = res.history;
@@ -8790,10 +8791,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
                 filter.compact = true;
                 if(yadeSearch) {

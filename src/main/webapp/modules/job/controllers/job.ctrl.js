@@ -3618,10 +3618,10 @@
                 delete obj["timeZone"];
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -3930,10 +3930,10 @@
                 obj.dateTo = toDate;
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -5451,8 +5451,7 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
-                   
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone)
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -5599,7 +5598,7 @@
                         if (vm.permission.AuditLog.view.status)
                             vm.loadAuditLogs(vm.showTaskPanel);
                     }
-                    if ((value1.eventType == "FileBasedActivated" || value1.eventType == "FileBasedRemoved" ) && value1.objectType == "JOB") {
+                    if ((value1.eventType == "FileBasedActivated" || value1.eventType == "FileBasedRemoved") && value1.objectType == "JOB") {
 
                         if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                             var folders = [];
@@ -5636,8 +5635,8 @@
                             navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
                         }
                     }
-                    if (value1.eventType == "JobTaskQueueChanged"  && vm.showTaskPanel) {
-                 
+                    if (value1.eventType == "JobTaskQueueChanged" && vm.showTaskPanel) {
+
                         getHistoryPanelData(vm.showTaskPanel);
                     }
                 });
