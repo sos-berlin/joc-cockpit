@@ -11369,20 +11369,17 @@
                 var planData = {};
                 if (value.begin) {
                     planData = {
-                        plannedStartTime: value.begin,
-                        format: vm.getCalendarTimeFormat()
+                        plannedStartTime: moment(value.begin).tz(vm.userPreferences.zone)
                     };
                 }
                 else if (value.end) {
                     planData = {
-                        plannedStartTime: value.end,
-                        format: vm.getCalendarTimeFormat()
+                        plannedStartTime: moment(value.end).tz(vm.userPreferences.zone)
                     };
                 }
                 else if (value.singleStart) {
                     planData = {
-                        plannedStartTime: value.singleStart,
-                        format: vm.getCalendarTimeFormat()
+                        plannedStartTime: moment(value.singleStart).tz(vm.userPreferences.zone)
                     };
                 }
                 vm.planItems.push(planData);

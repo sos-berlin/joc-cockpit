@@ -1734,9 +1734,6 @@
             });
         }
 
-
-        var firstDay;
-        var lastDay;
         vm.onOrderAction = function (order, action) {
             var modalInstance = '';
             var orders = {};
@@ -2083,14 +2080,13 @@
                 vm._jobChain = order;
                 vm._jobChain.name = order.orderId;
                 vm.planItems = [];
-                firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-                lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
                 DailyPlanService.getPlans({
                     jobschedulerId: vm.schedulerIds.selected,
                     states: ['PLANNED'],
                     orderId: order.orderId,
-                    dateFrom: firstDay,
-                    dateTo: lastDay
+                    dateFrom: "+0M",
+                    dateTo: "+0M",
+                    timeZone: vm.userPreferences.zone
                 }).then(function (res) {
                     populatePlanItems(res);
                     vm.isCaledarLoading = false;
@@ -2162,17 +2158,16 @@
             }
         };
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+             var date ='';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+0y";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    date = "+"+  viewDate.getFullYear() - new Date().getFullYear() +"y";
                 }
             }
             if (calendarView == 'month') {
@@ -2180,20 +2175,14 @@
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
-
+                else if (viewDate.getFullYear() >= new Date().getFullYear()){
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                }else{
+                    return;
                 }
-                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
-
-            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
-                return;
-            }
-            firstDay = firstDay2;
-            lastDay = lastDay2;
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
@@ -2201,8 +2190,9 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: vm._jobChain.orderId,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: date,
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -2217,9 +2207,8 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    orderId: data.orderId,
-                    format: vm.getCalendarTimeFormat()
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                    orderId: data.orderId
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -2248,8 +2237,6 @@
         vm.reset = function () {
            vm.object.orders = [];
         };
-        var firstDay;
-        var lastDay;
 
         function volatileInfo(draw) {
             JobChainService.getJobChain({
@@ -2419,8 +2406,10 @@
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else {
+                else if (viewDate.getFullYear() >= new Date().getFullYear()){
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                }else{
+                    return;
                 }
             }
 
@@ -2446,7 +2435,6 @@
             vm.selectedChain = nestedJobChain;
             vm._jobChain = nestedJobChain ? angular.copy(nestedJobChain) : vm.jobChain;
             vm.isCaledarLoading = true;
-            
             vm.planItems = [];
             
             DailyPlanService.getPlans({
@@ -2472,9 +2460,8 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    orderId: data.orderId,
-                    format: vm.getCalendarTimeFormat()
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                    orderId: data.orderId
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -3720,11 +3707,15 @@
                 obj.dateFrom = fromDate;
                 obj.dateTo = toDate;
             }
+            obj.timeZone = vm.userPreferences.zone;
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-               obj.dateFrom = obj.dateFrom.toISOString();
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = obj.dateTo.toISOString();
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             return obj;
         }
@@ -3960,6 +3951,12 @@
                 obj.dateTo = toDate;
             }
 
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+            }
             return obj;
         }
 
@@ -5324,8 +5321,6 @@
         vm.allCheck = {
             checkbox: false
         };
-        var firstDay;
-        var lastDay;
 
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
@@ -6094,8 +6089,10 @@
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else {
+                else if (viewDate.getFullYear() >= new Date().getFullYear()){
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                }else{
+                    return;
                 }
             }
 
@@ -6147,9 +6144,8 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    orderId: data.orderId,
-                    format: vm.getCalendarTimeFormat()
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                    orderId: data.orderId
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6773,12 +6769,15 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
 
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = filter.dateFrom.toISOString();
-            }
-            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = filter.dateTo.toISOString();
-            }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
                 setDuration(vm.jobHistorys);
@@ -6812,12 +6811,15 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = filter.dateFrom.toISOString();
-            }
-            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = filter.dateTo.toISOString();
-            }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
                 setDuration(vm.historys);
@@ -6851,12 +6853,15 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = filter.dateFrom.toISOString();
-            }
-            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = filter.dateTo.toISOString();
-            }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                }
             filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
                 vm.yadeHistorys = res.transfers;
@@ -7011,11 +7016,14 @@
 
                 }
                 filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = filter.dateFrom.toISOString();
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = filter.dateTo.toISOString();
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
@@ -7120,11 +7128,14 @@
 
                 }
                 filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = filter.dateFrom.toISOString();
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = filter.dateTo.toISOString();
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
@@ -7151,7 +7162,7 @@
                     filter.mandator = vm.yadeSearch.mandator;
                 }
                 if (vm.yadeSearch.operations && vm.yadeSearch.operations.length > 0) {
-                    obj.operations = vm.yadeSearch.operations;
+                    filter.operations = vm.yadeSearch.operations;
                 }
                 if (vm.yadeSearch.sourceFileName) {
                     vm.yadeSearch.sourceFileName = vm.yadeSearch.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
@@ -7225,11 +7236,14 @@
                     filter.jobschedulerId = vm.yadeSearch.jobschedulerId;
                 }
                 filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = filter.dateFrom.toISOString();
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = filter.dateTo.toISOString();
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                 }
                 filter.compact = true;
                 YadeService.getTransfers(filter).then(function (res) {
@@ -8705,11 +8719,14 @@
                     vm.search(true);
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
+                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                       delete filter["timeZone"];
+                    }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = filter.dateFrom.toISOString();
+                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = filter.dateTo.toISOString();
+                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                     }
                     OrderService.histories(filter).then(function (res) {
                         vm.historys = res.history;
@@ -8736,11 +8753,14 @@
                     vm.search(true);
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
+                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                       delete filter["timeZone"];
+                    }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                        filter.dateFrom = filter.dateFrom.toISOString();
+                        filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                     }
                     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        filter.dateTo = filter.dateTo.toISOString();
+                        filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                     }
                     TaskService.histories(filter).then(function (res) {
                         vm.jobHistorys = res.history;
@@ -8766,11 +8786,14 @@
                 }
                 filter.limit = parseInt(vm.userPreferences.maxRecords);
                 filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom =  filter.dateFrom.toISOString();
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = filter.dateTo.toISOString();
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
                 }
                 filter.compact = true;
                 if(yadeSearch) {

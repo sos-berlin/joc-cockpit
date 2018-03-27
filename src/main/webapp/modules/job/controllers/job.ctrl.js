@@ -31,9 +31,6 @@
         var modalInstance;
         vm.selectedFiltered = '';
 
-        var firstDay;
-        var lastDay;
-
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;
             dest.numOfNodes = sour.numOfNodes;
@@ -926,8 +923,8 @@
                             for (var i = 0; i < res.jobChains.length; i++) {
                                 var flag1 = true;
                                 if (result.jobChains[index].path == res.jobChains[i].path) {
-                                    result.jobChains[index] = mergePermanentAndVolatile(res.jobChains[i], result.jobChains[index],res.nestedJobChains);
-                                    //result.jobChains[index] = angular.merge(result.jobChains[index], res.jobChains[i]);
+                                    result.jobChains[index] = mergePermanentAndVolatile(res.jobChains[i], result.jobChains[index], res.nestedJobChains);
+                                    
                                     if (vm.selectedFiltered && vm.selectedFiltered.agentName && result.jobChains[index].processClass) {
                                         if (!result.jobChains[index].processClass.match(vm.selectedFiltered.agentName)) {
                                             flag1 = false;
@@ -1116,8 +1113,7 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    format:vm.getCalendarTimeFormat(),
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
                     orderId: data.orderId
                 };
                 vm.planItems.push(planData);
@@ -3618,11 +3614,14 @@
                 obj.dateTo = toDate;
             }
             obj.timeZone = vm.userPreferences.zone;
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-               obj.dateFrom = obj.dateFrom.toISOString();
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo =obj.dateTo.toISOString();
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             return obj;
         }
@@ -3929,6 +3928,12 @@
             if (fromDate && toDate) {
                 obj.dateFrom = fromDate;
                 obj.dateTo = toDate;
+            }
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             return obj;
         }
@@ -5376,8 +5381,6 @@
             }
         };
 
-
-        var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
             var date = '';
             if (calendarView == 'year') {
@@ -5448,8 +5451,8 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    format:vm.getCalendarTimeFormat()
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
+                   
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6846,7 +6849,6 @@
             }
         };
 
-        var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
             var date = '';
             if (calendarView == 'year') {
@@ -6900,7 +6902,7 @@
                 states: ['PLANNED'],
                 job: vm._job.path,
                 dateFrom: "+0M",
-	            dateTo: "+0M",
+                dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
@@ -6915,8 +6917,7 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: data.plannedStartTime,
-                    format: vm.getCalendarTimeFormat()
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone)
                 };
                 vm.planItems.push(planData);
                 if (res.created) {

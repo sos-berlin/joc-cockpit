@@ -632,11 +632,14 @@
             obj = setDateRange(obj);
             obj.timeZone = vm.userPreferences.zone;
 
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = obj.dateFrom.toISOString();
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo  = obj.dateTo.toISOString();
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
             }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -722,13 +725,15 @@
             if (vm.auditSearch.jobschedulerId) {
                 filter.jobschedulerId = vm.auditSearch.jobschedulerId;
             }
-            filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-               filter.dateFrom = filter.dateFrom.toISOString();
-            }
-            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = filter.dateTo.toISOString();
-            }
+               if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                   delete filter["timeZone"];
+                }
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                }
+                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                }
 
             AuditLogService.getLogs(filter).then(function (result) {
                 vm.auditLogs = result.auditLog;
