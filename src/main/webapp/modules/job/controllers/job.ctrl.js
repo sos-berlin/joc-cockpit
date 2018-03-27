@@ -3634,10 +3634,10 @@
                 delete obj["timeZone"];
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -3798,8 +3798,8 @@
         vm.allCheck = {
             checkbox: false
         };
-        vm.allTaskCheck ={checkbox: false};
-        vm.allOrderCheck ={checkbox: false};
+        vm.allTaskCheck = {checkbox: false};
+        vm.allOrderCheck = {checkbox: false};
 
 
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
@@ -3945,10 +3945,10 @@
                 obj.dateTo = toDate;
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -5449,8 +5449,6 @@
             }
         };
 
-
-        var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
             var date = '';
             if (calendarView == 'year') {
@@ -5521,8 +5519,7 @@
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
-                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone),
-                   
+                    plannedStartTime: moment(data.plannedStartTime).tz(vm.userPreferences.zone)
                 };
                 vm.planItems.push(planData);
                 if (res.created) {

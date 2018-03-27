@@ -489,10 +489,10 @@
                 delete filter["timeZone"];
             }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
             }
 
             return filter;
@@ -584,10 +584,10 @@
 
 
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             ResourceService.getAgentTask(obj).then(function (res) {
                 vm.agentTasks = res.agents;
@@ -3847,22 +3847,29 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof  obj.dateTo.getMonth === 'function')) {
-                delete obj['timeZone']
-            }
+
+                if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                   delete obj["timeZone"];
+                }
+                    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
+                }
+                if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
+                }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if(res.created){
                     vm.maxPlannedTime = new Date(res.deliveryDate);
-                }else{
+                } else {
                     vm.maxPlannedTime = undefined;
                 }
                 vm.isLoading = true;
                 isLoaded = true;
                 vm.showSpinner = false;
-            }, function (err) {
+            }, function () {
                 vm.isLoading = true;
                 isLoaded = true;
                 vm.showSpinner = false;
@@ -4281,10 +4288,10 @@
                    delete obj["timeZone"];
                 }
                     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
                 }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
@@ -4884,10 +4891,10 @@
                 delete obj["timeZone"];
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;

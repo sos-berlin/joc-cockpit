@@ -633,10 +633,10 @@
                 delete obj["timeZone"];
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone);
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone);
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -722,10 +722,10 @@
                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone);
+                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone);
+                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
 
             AuditLogService.getLogs(filter).then(function (result) {
