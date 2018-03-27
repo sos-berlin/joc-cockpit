@@ -34,30 +34,40 @@
         var firstDay;
         var lastDay;
 
-        function mergePermanentAndVolatile(sour, dest) {
+        function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;
             dest.numOfNodes = sour.numOfNodes;
             dest.state = sour.state;
-            if(!dest.nodes && sour.nodes){
+            if (!dest.nodes && sour.nodes) {
                 dest.nodes = sour.nodes;
-            }else if(dest.nodes && sour.nodes){
-
-                for(var i = 0; i< dest.nodes.length;i++){
-                    for(var j = 0; j< sour.nodes.length;j++){
-                        if((dest.nodes[i].name == sour.nodes[j].name) && (dest.nodes[i].job.path == sour.nodes[j].job.path) ){
+                if(nestedJobChain && dest.nodes) {
+                    for (var i = 0; i < dest.nodes.length; i++) {
+                        if (dest.nodes[i].jobChain)
+                            dest.nestedJobChains = nestedJobChain;
+                    }
+                }
+            } else if (dest.nodes && sour.nodes) {
+                for (var i = 0; i < dest.nodes.length; i++) {
+                    for (var j = 0; j < sour.nodes.length; j++) {
+                        if (sour.nodes[j].job && (dest.nodes[i].name == sour.nodes[j].name) && (dest.nodes[i].job.path == sour.nodes[j].job.path)) {
                             sour.nodes[j].job.processClass = dest.nodes[i].job.processClass;
                             dest.nodes[i] = sour.nodes[j];
-                            sour.nodes.splice(j,1);
+                            sour.nodes.splice(j, 1);
+                            break;
+                        }else if(dest.nodes.jobChain && (dest.nodes[i].name == sour.nodes[j].name)){
+                            dest.nodes[i] = sour.nodes[j];
+                            sour.nodes.splice(j, 1);
                             break;
                         }
                     }
+                    if (dest.nodes[i].jobChain && nestedJobChain)
+                        dest.nestedJobChains = nestedJobChain;
                 }
             }
-          
+
             dest.configurationStatus = sour.configurationStatus;
             dest.ordersSummary = sour.ordersSummary;
             dest.fileOrderSources = sour.fileOrderSources;
-            dest.nestedJobChains = sour.nestedJobChains;
             return dest;
         }
 
@@ -104,9 +114,11 @@
             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
                 if (vm.jobChains) {
-                    vm.jobChains[0] = mergePermanentAndVolatile(res.jobChains[0], vm.jobChains[0]);
+                    vm.jobChains[0] = mergePermanentAndVolatile(res.jobChains[0], vm.jobChains[0], res.nestedJobChains);
                 } else {
                     vm.jobChains = res.jobChains;
+                    if(vm.jobChains && vm.jobChains.length && res.nestedJobChains)
+                        vm.jobChains[0].nestedJobChains = res.nestedJobChains;
                 }
                 if(vm.showHistoryImmeditaly){
 
@@ -448,13 +460,10 @@
                     angular.forEach(data.jobChains, function (jobChain) {
                         if (vm.userPreferences.showOrders)
                             jobChain.show = true;
-                        if (res.nestedJobChains)
-                            jobChain.nestedJobChains = res.nestedJobChains;
-
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
                             if (jobChain.path == res.jobChains[i].path) {
-                                jobChain = mergePermanentAndVolatile(res.jobChains[i], jobChain);
+                                jobChain = mergePermanentAndVolatile(res.jobChains[i], jobChain, res.nestedJobChains);
 
                                 if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChain.processClass) {
                                     if (!jobChain.processClass.match(vm.selectedFiltered.agentName)) {
@@ -473,7 +482,13 @@
                     angular.forEach(res.jobChains, function (jobChainData) {
                         if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
-                        jobChainData.nestedJobChains = res.nestedJobChains;
+                        if (res.nestedJobChains && jobChainData.nodes) {
+                            for (var i = 0; i < jobChainData.nodes.length; i++) {
+                                if (jobChainData.nodes[i].jobChain)
+                                    jobChainData.nestedJobChains = res.nestedJobChains;
+                            }
+                        }
+
                         var flag1 = true;
                         if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                             if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
@@ -568,12 +583,12 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChain) {
-                        jobChain.nestedJobChains = res.nestedJobChains;
+
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
                             if (jobChain.path == res.jobChains[i].path) {
 
-                                jobChain = mergePermanentAndVolatile(res.jobChains[i], jobChain);
+                                jobChain = mergePermanentAndVolatile(res.jobChains[i], jobChain,res.nestedJobChains);
                                 if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChain.processClass) {
                                     if (!jobChain.processClass.match(vm.selectedFiltered.agentName)) {
                                         flag1 = false;
@@ -591,7 +606,13 @@
                         var flag1 = true;
                         if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
-                        jobChainData.nestedJobChains = res.nestedJobChains;
+                          if (res.nestedJobChains && jobChainData.nodes) {
+                            for (var i = 0; i < jobChainData.nodes.length; i++) {
+                                if (jobChainData.nodes[i].jobChain)
+                                    jobChainData.nestedJobChains = res.nestedJobChains;
+                            }
+                        }
+
                         if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                             if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
                                 flag1 = false;
@@ -809,7 +830,7 @@
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
                             if (jobChains.path == res.jobChains[i].path) {
-                                jobChains = mergePermanentAndVolatile(res.jobChains[i], jobChains);
+                                jobChains = mergePermanentAndVolatile(res.jobChains[i], jobChains,res.nestedJobChains);
                                 if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                                     if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
                                         flag1 = false;
@@ -827,6 +848,12 @@
                     angular.forEach(res.jobChains, function (jobChainData) {
                         if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
+                        if (res.nestedJobChains && jobChainData.nodes) {
+                            for (var i = 0; i < jobChainData.nodes.length; i++) {
+                                if (jobChainData.nodes[i].jobChain)
+                                    jobChainData.nestedJobChains = res.nestedJobChains;
+                            }
+                        }
                         var flag1 = true;
                         if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                             if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
@@ -908,7 +935,8 @@
                             for (var i = 0; i < res.jobChains.length; i++) {
                                 var flag1 = true;
                                 if (result.jobChains[index].path == res.jobChains[i].path) {
-                                    result.jobChains[index] = angular.merge(result.jobChains[index], res.jobChains[i]);
+                                    result.jobChains[index] = mergePermanentAndVolatile(res.jobChains[i], result.jobChains[index],res.nestedJobChains);
+                                    //result.jobChains[index] = angular.merge(result.jobChains[index], res.jobChains[i]);
                                     if (vm.selectedFiltered && vm.selectedFiltered.agentName && result.jobChains[index].processClass) {
                                         if (!result.jobChains[index].processClass.match(vm.selectedFiltered.agentName)) {
                                             flag1 = false;
@@ -1030,17 +1058,16 @@
 
 
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            var date = "";
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+0y";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -1048,20 +1075,12 @@
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
-
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
-
-            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
-                return;
-            }
-            firstDay = firstDay2;
-            lastDay = lastDay2;
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
@@ -1069,8 +1088,9 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: date,
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -1084,14 +1104,14 @@
             vm._jobChain = angular.copy(jobChain);
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
-            lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: jobChain.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: "+0M",
+                dateTo: "+0M",
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -2442,9 +2462,7 @@
                     jobChain: jobChain.path,
                     maxOrders: vm.userPreferences.maxOrderPerJobchain
                 }).then(function (res) {
-                   // jobChain.nodes = [];
-                    jobChain = angular.merge(jobChain, res.jobChain);
-                    jobChain.nestedJobChains = res.nestedJobChains;
+                    jobChain  = mergePermanentAndVolatile(res.jobChain, jobChain,res.nestedJobChains);
                     if (vm.userPreferences.showTasks)
                         angular.forEach(jobChain.nodes, function (val, index) {
                             if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
@@ -2489,7 +2507,7 @@
                 for (var i = 0; i < vm.allJobChains.length; i++) {
                     for (var j = 0; j < result.jobChains.length; j++) {
                         if (result.jobChains[j].path == vm.allJobChains[i].path) {
-                            vm.allJobChains[i] = mergePermanentAndVolatile(result.jobChains[j], vm.allJobChains[i]);
+                            vm.allJobChains[i] = mergePermanentAndVolatile(result.jobChains[j], vm.allJobChains[i],null);
                             vm.allJobChains[i].show = true;
                             result.jobChains.splice(j, 1);
                             break;
@@ -2501,8 +2519,9 @@
                     for (var i = 0; i < vm.allJobChains.length; i++) {
                         for (var j = 0; j < res.jobChains.length; j++) {
                             if (res.jobChains[j].path == vm.allJobChains[i].path) {
-                                vm.allJobChains[i] = mergePermanentAndVolatile(res.jobChains[j], vm.allJobChains[i]);
-                                vm.allJobChains[i].show = true;
+                                vm.allJobChains[i] = mergePermanentAndVolatile(res.jobChains[j], vm.allJobChains[i], res.nestedJobChains);
+
+                                 vm.allJobChains[i].show = true;
                                 if (vm.userPreferences.showTasks)
                                     angular.forEach(vm.allJobChains[i].nodes, function (val, index) {
                                         if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
@@ -2681,14 +2700,10 @@
                     JobChainService.get(obj).then(function (res) {
                         if (res.jobChains) {
                             angular.forEach(vm.allJobChains, function (jobChain, index) {
-                                //if (vm.userPreferences.showOrders)
-                                    //vm.allJobChains[index].show = true;
+
                                 for (var i = 0; i < res.jobChains.length; i++) {
                                     if (vm.allJobChains[index].path == res.jobChains[i].path) {
-                                   vm.allJobChains[index] = mergePermanentAndVolatile(res.jobChains[i],vm.allJobChains[index]);
-                                   //vm.allJobChains[index].nodes = [];
-                                   // vm.allJobChains[index] = angular.merge(vm.allJobChains[index], res.jobChains[i]);
-                                        vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
+                                        vm.allJobChains[index] = mergePermanentAndVolatile(res.jobChains[i],vm.allJobChains[index], res.nestedJobChains);
                                         if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
                                             angular.forEach(vm.allJobChains[index].nodes, function (val, index2) {
                                                 if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
@@ -3620,10 +3635,10 @@
             }
             obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom.toISOString();
+               obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo =obj.dateTo.toISOString();
             }
             return obj;
         }
@@ -5432,17 +5447,16 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+0y";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -5450,20 +5464,12 @@
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
-
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
-
-            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
-                return;
-            }
-            firstDay = firstDay2;
-            lastDay = lastDay2;
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
@@ -5471,8 +5477,9 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 job: vm._job.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: date,
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -5488,14 +5495,14 @@
             vm._job = angular.copy(job);
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
-            lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 job: vm._job.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: "+0M",
+                dateTo: "+0M",
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -6901,7 +6908,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
 
-                    OrderService.deleteOrder(orders).then(function (res) {
+                    OrderService.deleteOrder(orders).then(function () {
                         vm.allOrderCheck.checkbox = false;
                         vm.object.orders = [];
                     });
@@ -6965,17 +6972,16 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
-            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+0y";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -6983,20 +6989,12 @@
                     return;
                 }
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
-                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
-
+                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
-
-            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
-                return;
-            }
-            firstDay = firstDay2;
-            lastDay = lastDay2;
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
@@ -7004,8 +7002,9 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 job: vm._job.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: date,
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -7019,14 +7018,14 @@
             vm._job = angular.copy(job);
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
-            lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
+
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 job: vm._job.path,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom: "+0M",
+	            dateTo: "+0M",
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;

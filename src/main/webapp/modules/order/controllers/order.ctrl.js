@@ -2471,7 +2471,8 @@
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
                 dateFrom: date,
-                dateTo: date
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -3763,10 +3764,10 @@
                 obj.dateTo = toDate;
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-               obj.dateFrom.toISOString();
+               obj.dateFrom = obj.dateFrom.toISOString();
             }
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo.toISOString();
+                obj.dateTo = obj.dateTo.toISOString();
             }
             return obj;
         }
@@ -6196,7 +6197,8 @@
                 orderId: vm._jobChain.orderId,
                 jobChain: vm._jobChain.jobChain,
                 dateFrom: date,
-                dateTo: date
+                dateTo: date,
+                timeZone: vm.userPreferences.zone
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -6748,10 +6750,10 @@
             filter.timeZone = vm.userPreferences.zone;
 
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
@@ -6787,10 +6789,10 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                filter.dateFrom.toISOString();
+                filter.dateFrom = filter.dateFrom.toISOString();
             }
             if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                filter.dateTo.toISOString();
+                filter.dateTo = filter.dateTo.toISOString();
             }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
@@ -6893,10 +6895,10 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom.toISOString();
+                    filter.dateFrom = filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
@@ -7002,10 +7004,10 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom.toISOString();
+                    filter.dateFrom = filter.dateFrom.toISOString();
                 }
                 if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo.toISOString();
+                    filter.dateTo = filter.dateTo.toISOString();
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
