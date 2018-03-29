@@ -10,8 +10,7 @@
   <scm>
     <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
     <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
-    <url>https://github.com/sos-berlin/joc-cockpit.git</url>
-    <tag>HEAD</tag>
+    <url>https://github.com/sos-berlin/joc-cockpit</url>
   </scm>
   
     <properties>
