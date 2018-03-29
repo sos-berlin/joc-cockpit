@@ -3782,8 +3782,8 @@
         vm.allCheck = {
             checkbox: false
         };
-        vm.allTaskCheck ={checkbox: false};
-        vm.allOrderCheck ={checkbox: false};
+        vm.allTaskCheck = {checkbox: false};
+        vm.allOrderCheck = {checkbox: false};
 
 
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
