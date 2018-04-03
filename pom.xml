@@ -23,6 +23,7 @@
 			<!-- configuration of the release properties -->
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
 				<configuration>
 					<!-- for release:prepare -->
 					<tagNameFormat>v@{project.version}</tagNameFormat>
