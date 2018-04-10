@@ -1,0 +1,53 @@
+<div id="clusterStatusContainer">
+  <div id="masterContainer">
+  <div style="left:35px;top:20px" id="admin40444" class="cluster-rect" >
+
+  <span class="m-t-n-xxs fa fa-stop text-warn success-node" [ngClass]="{'text-success':clusterStatusData.members.masters['0'].state._text=='RUNNING','text-danger':clusterStatusData.members.masters['0'].state._text=='STOPPED','text-danger1':clusterStatusData.members.masters['0'].state._text=='STOPPING'||clusterStatusData.members.masters['0'].state._text=='STARTING'||clusterStatusData.members.masters['0'].state._text=='TERMINATING'||clusterStatusData.members.masters['0'].state._text=='UNREACHABLE'||clusterStatusData.members.masters['0'].state._text==' '}" id="spadmin40444" >
+  </span>
+  <div class="text-left p-t-sm p-l-sm ">
+    <span></span>
+    <span class="pull-right">
+      <div class="btn-group dropdown " >
+        <a href class="hide more-option" [ngClass]="{show:permission.JobschedulerMaster.execute.restart.terminate || permission.JobschedulerMaster.execute.restart.abort ||permission.JobschedulerMaster.execute.abort || permission.JobschedulerMaster.execute.terminate ||permission.JobschedulerMaster.execute.pause || permission.JobschedulerMaster.execute.continue || permission.JobschedulerMaster.view.mainlog || permission.JobschedulerMaster.administration.removeOldInstances}" data-toggle="dropdown" >
+          <i class="text fa fa-ellipsis-h"></i>
+        </a>
+        <div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">
+          <a class="hide dropdown-item bg-hover-color" (click)="action1('undefined','0','terminate')" [ngClass]="{show:permission.JobschedulerMaster.execute.terminate,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,terminate,admin:40444" translate>button.terminate</a>
+          <a class="hide dropdown-item bg-hover-color" (click)="action1('undefined','0','terminateWithin')" [ngClass]="{show:permission.JobschedulerMaster.execute.terminate,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,terminateWithin,admin:40444" translate>button.terminateWithin</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','abort')" [ngClass]="{show:permission.JobschedulerMaster.execute.abort,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,abort,admin:40444" translate>button.abort</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','abortAndRestart')" [ngClass]="{show:permission.JobschedulerMaster.execute.restart.abort,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,abortAndRestart,admin:40444" translate>button.abortAndRestart</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','terminateAndRestart')" [ngClass]="{show:permission.JobschedulerMaster.execute.restart.terminate,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,terminateAndRestart,admin:40444" translate>button.terminateAndRestart</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','terminateAndRestartWithTimeout')" [ngClass]="{show:permission.JobschedulerMaster.execute.restart.terminate,'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION'}" id="__master,terminateAndRestartWithin,admin:40444" translate>button.terminateAndRestartWithin</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','pause')" [ngClass]="{'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION',show:permission.JobschedulerMaster.execute.pause && clusterStatusData.members.masters['0'].state._text!='PAUSED' }" id="__master,pause,admin:40444" translate>button.pause</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','continue')" [ngClass]="{'show':permission.JobschedulerMaster.execute.continue && clusterStatusData.members.masters['0'].state._text=='PAUSED'}" id="__master,continue,admin:40444" translate>button.continue</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','remove')" [ngClass]="{'show':permission.JobschedulerMaster.administration.removeOldInstances}" id="__master,remove,admin:40444" translate>button.removeInstance</a>
+          <a class="hide dropdown-item" (click)="action1('undefined','0','downloadLog')" [ngClass]="{'disable-link':clusterStatusData.members.masters['0'].state._text!='RUNNING' && clusterStatusData.members.masters['0'].state._text!='PAUSED' && clusterStatusData.members.masters['0'].state._text!='WAITING_FOR_ACTIVATION',show:permission.JobschedulerMaster.view.mainlog }" id="__master,download_log,admin:40444" translate>button.downloadLog</a>
+        </div>
+      </div>
+    </span>
+  </div>
+  <div class="text-left p-t-xs p-l-sm block-ellipsis-cluster">
+    <i class="fa fa-windows"></i>
+    <span class="p-l-sm text-sm" title="admin_4444">admin_4444</span>
+  </div>
+  <div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">admin:40444</div>
+  <div class="text-left text-xs p-t-xs p-b-xs p-l-sm">
+    <span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="stateadmin40444" [ngClass]="{'text-success':clusterStatusData.members.masters['0'].state._text=='RUNNING','text-danger':clusterStatusData.members.masters['0'].state._text=='STOPPED','text-danger1':clusterStatusData.members.masters['0'].state._text=='STOPPING'||clusterStatusData.members.masters['0'].state._text=='STARTING'||clusterStatusData.members.masters['0'].state._text=='TERMINATING'||clusterStatusData.members.masters['0'].state._text=='UNREACHABLE'||clusterStatusData.members.masters['0'].state._text==' '}">{{clusterStatusData.members.masters['0'].state._text | translate}}</span>
+  </div>
+  </div>
+  <div id="masterContainer">
+  <div style="left:270px;top:-5px" id="database" class="cluster-rect" >
+    <span class="m-t-n-xxs fa fa-stop text-success success-node"></span>
+    <div class="text-left p-t-sm p-l-sm ">
+    <i class="fa fa-database"></i>
+    <span class="p-l-sm">
+      <span translate>label.database</span> MySQL
+    </span>
+    </div>
+    <div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">
+      <span [innerHtml]="clusterStatusData.database.database.version"></span>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>

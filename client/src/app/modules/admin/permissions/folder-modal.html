@@ -1,0 +1,53 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span *ngIf="!newFolder">
+            <span translate>label.editFolder</span>:
+            <span>{{currentFolder.folderName}}</span>
+        </span>
+        <span *ngIf="newFolder" translate>label.addFolder</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
+    <div class="modal-body container">
+        <div class="form-group row" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
+            <label class="col-sm-4 form-control-label" translate>label.folders</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="name" placeholder="{{'placeholder.folderPath' | translate}}"  [(ngModel)]="currentFolder.folder" [required]="folderObj.paths.length===0" #folder="ngModel"/>
+                <div *ngIf="folder.invalid && (folder.dirty || folder.touched) " class="text-danger help-block">
+                    <div *ngIf="folder.errors.required">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1 p-l-0 p-t-sm" *ngIf="newFolder"><a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" *ngIf="folderObj.paths.length>0 && newFolder">
+            <div class="col-md-offset-4 col-sm-6" style="max-height: 140px; overflow: auto">
+                <div *ngFor="let path of folderObj.paths; let i = index">
+                    <span class="">{{path}}</span><i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(i)"></i>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.recursive</label>
+            <div class=" col-sm-6">
+                <label class="md-check">
+                    <input type="checkbox" [(ngModel)]="currentFolder.recursive" name="recursive">
+                    <i class="primary"></i><span class="m-l-xs" translate> </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+            button.cancel
+        </button>
+    </div>
+</form>

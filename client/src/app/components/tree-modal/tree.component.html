@@ -1,0 +1,53 @@
+<div id="tree-modal" class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+  <a class="text" (click)="expandAll();"
+     title="{{'tooltip.expandAll' | translate}}">
+    <i class="fa fa-angle-double-down fa-sm"></i>
+  </a>
+  <a class="text m-l-xs" (click)="collapseAll();"
+     title="{{'tooltip.collapseAll' | translate}}">
+    <i class="fa fa-angle-double-up fa-sm"></i>
+  </a>
+  <div class="tree-content">
+    <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)">
+      <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+
+        <div class="node-wrapper">
+          <label class="md-check" *ngIf="showCheckBox" style="margin-right: 6px">
+            <input type="checkbox" [(checklist)]="paths" [checklistValue]="node.data.path" />
+            <i class="primary"></i>
+          </label>
+          <span *ngIf="node.hasChildren" [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                (click)="node.mouseAction('expanderClick', $event)" class="w-16 cursor">
+            <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+            <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+          </span>
+          <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
+          <div class="node-content-wrapper"
+               (click)="node.mouseAction('click', $event)">
+            <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-16"></i>
+            <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-16"></i>
+            <tree-node-content [node]="node" [index]="index"></tree-node-content>
+          </div>
+        </div>
+      </ng-template>
+    </tree-root>
+  </div>
+</div>
+<div class="modal-footer ">
+  <div *ngIf="showCheckBox">
+    <button type="button" class="btn btn-primary btn-sm"  (click)="activeModal.close(paths)"
+            translate>button.done
+    </button>
+    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
+            translate>
+      button.cancel
+    </button>
+  </div>
+  <div *ngIf="!showCheckBox">
+    <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.dismiss('Cross click')"
+            translate>
+      button.close
+    </button>
+  </div>
+</div>

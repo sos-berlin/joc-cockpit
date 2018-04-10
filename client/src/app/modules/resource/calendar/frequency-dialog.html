@@ -1,0 +1,686 @@
+<form id="freq-modal" #myForm="ngForm" (ngSubmit)="save()">
+<div  class="modal-body p-a" style="min-height: 515px;">
+    <div [hidden]="editor.showYearView">
+        <div>
+            <div class="row m-b-sm">
+                <label class="col-sm-12" [hidden]="!editor.create">
+                    <span class="text-primary " translate>label.addFrequencies</span>
+                    : <span class="text-muted" translate>{{str}}</span>
+                </label>
+                <label class="col-sm-12" [hidden]="editor.create">
+                    <span class="text-primary " translate>label.editFrequencies</span>
+                    : <span class="text-muted">{{_temp.str}}</span>
+                </label>
+            </div>
+
+            <div>
+                <div class="m-b">
+                    <div class="form-group row">
+                        <label class="col-sm-2 _600" translate>label.frequencyType</label>
+                        <div class="col-sm-3">
+                            <select class="form-control" [(ngModel)]="frequency.tab"
+                                    (change)="changeFrequency(frequency.tab)" name="tab">
+                                <option value="weekDays" translate>tab.weekDays</option>
+                                <option value="specificWeekDays" translate>tab.specificWeekDays
+                                </option>
+                                <option value="specificDays" translate>tab.specificDays</option>
+                                <option value="monthDays" translate>tab.monthDays</option>
+                                <option value="every" translate>tab.every</option>
+                                <option value="nationalHoliday" translate>tab.nationalHoliday
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content b-l b-r b-b p-a p-b-0 m-b b-t"
+                     [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }" >
+                    <div class="tab-pane animated fadeIn" id="tab1"
+                         [ngClass]="{'active':frequency.tab == 'weekDays'}">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.weekDays</label>
+
+                            <div class="col-sm-9">
+                                <label class="md-check w">
+                                    <input type="checkbox" [(ngModel)]="frequency.all" name="week" (change)="selectAllWeek()">
+                                    <i class="primary"></i> <span translate>label.everyDay</span>
+                                </label><br>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="sun" (change)="onChangeDays()"
+                                           checklistValue="0">
+                                    <i class="primary"></i> <span translate>label.sunday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="mon" (change)="onChangeDays()"
+                                           checklistValue="1">
+                                    <i class="primary"></i> <span translate>label.monday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="tue" (change)="onChangeDays()"
+                                           checklistValue="2">
+                                    <i class="primary"></i> <span translate>label.tuesday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="wed" (change)="onChangeDays()"
+                                           checklistValue="3">
+                                    <i class="primary"></i> <span translate>label.wednesday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="thu" (change)="onChangeDays()"
+                                           checklistValue="4">
+                                    <i class="primary"></i> <span translate>label.thursday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="fri" (change)="onChangeDays()"
+                                           checklistValue="5">
+                                    <i class="primary"></i> <span translate>label.friday</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="frequency.days" name="sat" (change)="onChangeDays()"
+                                           checklistValue="6">
+                                    <i class="primary"></i> <span translate>label.saturday</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithW" name="startingWithW" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validTo</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnW" name="endOnW" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane animated fadeIn" id="tab2"
+                         [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.dayNumber</label>
+
+                            <div class="col-sm-5">
+                                <select class="form-control" [(ngModel)]="frequency.which" name="which" (change)="onFrequencyChange()">
+                                    <option value="1" translate>label.first</option>
+                                    <option value="2" translate>label.second</option>
+                                    <option value="3" translate>label.third</option>
+                                    <option value="4" translate>label.fourth</option>
+                                    <option value="-1" translate>label.last</option>
+                                    <option value="-2" translate>label.secondLast</option>
+                                    <option value="-3" translate>label.thirdLast</option>
+                                    <option value="-4" translate>label.fourthLast</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
+
+                            <div class="col-sm-5">
+                                <select class="form-control" [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (change)="onFrequencyChange()">
+                                    <option value="monday">{{'label.monday' | translate}}</option>
+                                    <option value="tuesday">{{'label.tuesday' | translate}}</option>
+                                    <option value="wednesday">{{'label.wednesday' | translate}}</option>
+                                    <option value="thursday">{{'label.thursday' | translate}}</option>
+                                    <option value="friday">{{'label.friday' | translate}}</option>
+                                    <option value="saturday">{{'label.saturday' | translate}}</option>
+                                    <option value="sunday">{{'label.sunday' | translate}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithS" name="startingWithS" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validTo</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnS" name="endOnS" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane animated fadeIn" id="tab3"
+                         [ngClass]="{'active':frequency.tab == 'specificDays'}">
+                        <div>
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane animated fadeIn" id="tab4"
+                         [ngClass]="{'active':frequency.tab == 'monthDays'}">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.monthDays</label>
+
+                            <div class="col-sm-9">
+                                <label class="md-check ">
+                                    <input type="radio" [(ngModel)]="frequency.isUltimos" name="radio" (change)="onFrequencyChange()"
+                                           value="months">
+                                    <i class="primary"></i>
+                                    <span translate>label.countFromFirstDay</span>
+                                </label>
+                                <label class="md-check m-l-md">
+                                    <input type="radio" [(ngModel)]="frequency.isUltimos" name="radio" (change)="onFrequencyChange()"
+                                           value="ultimos">
+                                    <i class="primary"></i>
+                                    <span translate>label.countFromTheLastDay</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
+                                <table class="table table-bordered table-striped text-center m-b-xs w "
+                                       [hidden]="frequency.isUltimos!=='months'">
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('1')}"><a
+                                                (click)="selectMonthDaysFunc('1')">1</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('2')}"><a
+                                                (click)="selectMonthDaysFunc('2')">2</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('3')}"><a
+                                                (click)="selectMonthDaysFunc('3')">3</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('4')}"><a
+                                                (click)="selectMonthDaysFunc('4')">4</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('5')}"><a
+                                                (click)="selectMonthDaysFunc('5')">5</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('6')}"><a
+                                                (click)="selectMonthDaysFunc('6')">6</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('7')}"><a
+                                                (click)="selectMonthDaysFunc('7')">7</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('8')}"><a
+                                                (click)="selectMonthDaysFunc('8')">8</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('9')}"><a
+                                                (click)="selectMonthDaysFunc('9')">9</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('10')}"><a
+                                                (click)="selectMonthDaysFunc('10')">10</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('11')}"><a
+                                                (click)="selectMonthDaysFunc('11')">11</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('12')}"><a
+                                                (click)="selectMonthDaysFunc('12')">12</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('13')}"><a
+                                                (click)="selectMonthDaysFunc('13')">13</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('14')}"><a
+                                                (click)="selectMonthDaysFunc('14')">14</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('15')}"><a
+                                                (click)="selectMonthDaysFunc('15')">15</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('16')}"><a
+                                                (click)="selectMonthDaysFunc('16')">16</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('17')}"><a
+                                                (click)="selectMonthDaysFunc('17')">17</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('18')}"><a
+                                                (click)="selectMonthDaysFunc('18')">18</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('19')}"><a
+                                                (click)="selectMonthDaysFunc('19')">19</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('20')}"><a
+                                                (click)="selectMonthDaysFunc('20')">20</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('21')}"><a
+                                                (click)="selectMonthDaysFunc('21')">21</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('22')}"><a
+                                                (click)="selectMonthDaysFunc('22')">22</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('23')}"><a
+                                                (click)="selectMonthDaysFunc('23')">23</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('24')}"><a
+                                                (click)="selectMonthDaysFunc('24')">24</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('25')}"><a
+                                                (click)="selectMonthDaysFunc('25')">25</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('26')}"><a
+                                                (click)="selectMonthDaysFunc('26')">26</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('27')}"><a
+                                                (click)="selectMonthDaysFunc('27')">27</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('28')}"><a
+                                                (click)="selectMonthDaysFunc('28')">28</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('29')}"><a
+                                                (click)="selectMonthDaysFunc('29')">29</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('30')}"><a
+                                                (click)="selectMonthDaysFunc('30')">30</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDays('31')}"><a
+                                                (click)="selectMonthDaysFunc('31')">31</a></td>
+                                    </tr>
+                                </table>
+                                <table class="table table-bordered table-striped text-center m-b-xs w "
+                                       [hidden]="frequency.isUltimos=='months'">
+                                    <tr>
+                                        <td colspan="2" style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
+                                                (click)="selectMonthDaysUFunc('1')" translate>label.lastDay</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
+                                                (click)="selectMonthDaysUFunc('2')">-1</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
+                                                (click)="selectMonthDaysUFunc('3')">-2</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
+                                                (click)="selectMonthDaysUFunc('4')">-3</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
+                                                (click)="selectMonthDaysUFunc('5')">-4</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
+                                                (click)="selectMonthDaysUFunc('6')">-5</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('7')}"><a
+                                                (click)="selectMonthDaysUFunc('7')">-6</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('8')}"><a
+                                                (click)="selectMonthDaysUFunc('8')">-7</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('9')}"><a
+                                                (click)="selectMonthDaysUFunc('9')">-8</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('10')}"><a
+                                                (click)="selectMonthDaysUFunc('10')">-9</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('11')}"><a
+                                                (click)="selectMonthDaysUFunc('11')">-10</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('12')}"><a
+                                                (click)="selectMonthDaysUFunc('12')">-11</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('13')}"><a
+                                                (click)="selectMonthDaysUFunc('13')">-12</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('14')}"><a
+                                                (click)="selectMonthDaysUFunc('14')">-13</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('15')}"><a
+                                                (click)="selectMonthDaysUFunc('15')">-14</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('16')}"><a
+                                                (click)="selectMonthDaysUFunc('16')">-15</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('17')}"><a
+                                                (click)="selectMonthDaysUFunc('17')">-16</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('18')}"><a
+                                                (click)="selectMonthDaysUFunc('18')">-17</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('19')}"><a
+                                                (click)="selectMonthDaysUFunc('19')">-18</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('20')}"><a
+                                                (click)="selectMonthDaysUFunc('20')">-19</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('21')}"><a
+                                                (click)="selectMonthDaysUFunc('21')">-20</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('22')}"><a
+                                                (click)="selectMonthDaysUFunc('22')">-21</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('23')}"><a
+                                                (click)="selectMonthDaysUFunc('23')">-22</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('24')}"><a
+                                                (click)="selectMonthDaysUFunc('24')">-23</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('25')}"><a
+                                                (click)="selectMonthDaysUFunc('25')">-24</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('26')}"><a
+                                                (click)="selectMonthDaysUFunc('26')">-25</a></td>
+
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('27')}"><a
+                                                (click)="selectMonthDaysUFunc('27')">-26</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('28')}"><a
+                                                (click)="selectMonthDaysUFunc('28')">-27</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('29')}"><a
+                                                (click)="selectMonthDaysUFunc('29')">-28</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('30')}"><a
+                                                (click)="selectMonthDaysUFunc('30')">-29</a></td>
+                                        <td style="border: 1px solid #fff"
+                                            [ngClass]="{'primary': getSelectedMonthDaysU('31')}"><a
+                                                (click)="selectMonthDaysUFunc('31')">-30</a></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWithM" name="startingWithM" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validTo</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOnM" name="endOnM" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane animated fadeIn" id="tab5"
+                         [ngClass]="{'active':frequency.tab == 'every'}">
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.every</label>
+
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" min="1" max="31" name="interval"
+                                       [(ngModel)]="frequency.interval" (change)="onFrequencyChange()">
+                            </div>
+                            <div class="col-sm-3">
+                                <select class="form-control" [(ngModel)]="frequency.dateEntity" name="dateEntity" (change)="onFrequencyChange()">
+                                    <option value="DAILY" translate>label.days</option>
+                                    <option value="WEEKLY" translate>label.weeks</option>
+                                    <option value="MONTHLY" translate>label.months</option>
+                                    <option value="YEARLY" translate>label.years</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.startDate' | translate}}" [(ngModel)]="frequency.startingWith" name="startingWith" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.validTo</label>
+
+                            <div class="col-sm-5">
+                                <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.endDate' | translate}}" [(ngModel)]="frequency.endOn" name="endOn" [config]="config"> </dp-date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane animated fadeIn" id="tab6"
+                         [ngClass]="{'active':frequency.tab == 'nationalHoliday'}">
+                        <div class="form-group row" *ngIf="countryField">
+                            <label class="col-sm-12">
+                                <span translate>label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
+                            </label>
+                        </div>
+                        <div class="form-group row" *ngIf="!countryField">
+                            <label class="col-sm-3" translate>label.country</label>
+
+                            <div class="col-sm-6">
+                                <select class="form-control" [(ngModel)]="frequency.country" name="country"
+                                        (change)="loadHolidayList()">
+                                    <option *ngFor="let country of countryListArr | orderBy:'name':false"
+                                            value="{{country.code}}">{{country.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" *ngIf="!countryField">
+                            <label class="col-sm-3 form-control-label" translate>label.year</label>
+
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" min="{{calendarTitle}}" name="year"
+                                       [(ngModel)]="frequency.year"
+                                       (change)="loadHolidayList()">
+                            </div>
+                        </div>
+                        <div class="row" [hidden]="!holidayList.length">
+                            <label class="col-sm-3" translate>label.selectAll</label>
+
+                            <div class="col-sm-6">
+                                <label class="md-check">
+                                    <input type="checkbox" [(ngModel)]="holidayDays.checked" name="holiday"
+                                           (change)="selectAllHolidays()"><i class="primary"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0"
+                                         *ngFor="let holiday of holidayList.slice(0,Math.floor(holidayList.length/2));let i=index">
+                                        <label class="md-check">
+                                            <input type="checkbox" name="nationalHoliday{{i+1}}"
+                                                   [(checklist)]="frequency.nationalHoliday"
+                                                   [checklistValue]="holiday.date" (change)="onChangeHolidays()"><i class="primary"></i>
+
+                                            {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
+                                            {{holiday.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0"
+                                         *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length);let i=index">
+                                        <label class="md-check">
+                                            <input type="checkbox" name="nationalHoliday{{i+100}}"
+                                                   [(checklist)]="frequency.nationalHoliday"
+                                                   [checklistValue]="holiday.date" (change)="onChangeHolidays()"><i class="primary"></i>
+
+                                            {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
+                                            {{holiday.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="form-group row"
+                     [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='every'">
+                    <label class="col-sm-3">{{'label.monthRange' | translate}}
+                        <a class="cursor">
+                            <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
+                               (click)="showMonthRange=true"></i>
+                            <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
+                               (click)="showMonthRange=false"></i>
+                        </a>
+                    </label>
+
+                    <div class="col-sm-9" [hidden]="!showMonthRange">
+                        <label class="md-check w">
+                            <input type="checkbox" [(ngModel)]="frequency.allMonth" name="month" (change)="selectAllMonth()">
+                            <i class="primary"></i> <span translate>label.everyMonth</span>
+                        </label><br>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="jan" (change)="onChangeMonths()"
+                                   checklistValue="1">
+                            <i class="primary"></i> <span translate>label.january</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="feb" (change)="onChangeMonths()"
+                                   checklistValue="2">
+                            <i class="primary"></i> <span translate>label.february</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="mar" (change)="onChangeMonths()"
+                                   checklistValue="3">
+                            <i class="primary"></i> <span translate>label.march</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="apr" (change)="onChangeMonths()"
+                                   checklistValue="4">
+                            <i class="primary"></i> <span translate>label.april</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="may" (change)="onChangeMonths()"
+                                   checklistValue="5">
+                            <i class="primary"></i> <span translate>label.may</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="jun" (change)="onChangeMonths()"
+                                   checklistValue="6">
+                            <i class="primary"></i> <span translate>label.june</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="jul" (change)="onChangeMonths()"
+                                   checklistValue="7">
+                            <i class="primary"></i> <span translate>label.july</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="aug" (change)="onChangeMonths()"
+                                   checklistValue="8">
+                            <i class="primary"></i> <span translate>label.august</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="sep" (change)="onChangeMonths()"
+                                   checklistValue="9">
+                            <i class="primary"></i> <span translate>label.september</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="oct" (change)="onChangeMonths()"
+                                   checklistValue="10">
+                            <i class="primary"></i> <span translate>label.october</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="nov" (change)="onChangeMonths()"
+                                   checklistValue="11">
+                            <i class="primary"></i> <span translate>label.november</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" [(checklist)]="frequency.months" name="dec" (change)="onChangeMonths()"
+                                   checklistValue="12">
+                            <i class="primary"></i> <span translate>label.december</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:27px;">
+            <div class="col-sm-12" style="max-height: 260px; overflow: auto">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th translate>label.srNo</th>
+                            <th translate>label.frequency</th>
+                            <th translate>label.validFrom</th>
+                            <th translate>label.validTo</th>
+                            <th width="80" translate>label.action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let data of frequencyList; let i = index" class="cursor"
+                            [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.months ==data.months && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
+                            <td (click)="editFrequency(data)">{{i+1}}</td>
+                            <td (click)="editFrequency(data)">
+                                <i *ngIf="data.exclude" class="fa fa-minus"> </i>
+                                <span>{{data.str}}</span>
+                            </td>
+                            <td>
+                                <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1}}</span>
+                            </td>
+                            <td>
+                                <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                                <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
+                            </td>
+                            <td>
+                                <a class="text-hover-primary">
+                                    <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                                </a>
+                                <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                                <a class="text-hover-color">
+                                    <i (click)="deleteFrequency(data, i)" class="fa fa-times "></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="col-md-12 text-center" *ngIf="frequencyList.length==0" translate>
+                message.noFrequencyFound
+            </div>
+        </div>
+    </div>
+    <div class="hide" [ngClass]="{'show':editor.showYearView}">
+        <div class="row">
+            <div class="col-sm-7">
+                <label class="form-control-label">
+                    <span class="text _600" translate>label.previewCalendar</span>
+                </label>
+            </div>
+            <div class="col-sm-5">
+                <select class="form-control" [(ngModel)]="calObj.frequency" name="freq"
+                        (change)="changeFrequencyObj(calObj.frequency)">
+                    <option translate value="all">label.allFrequency</option>
+                    <option *ngFor="let data of frequencyList1" [ngValue]="data">{{data.str}} - {{data.type | translate}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" [hidden]="!isCalendarDisplay">
+            <div id="full-calendar"></div>
+        </div>
+        <div class="text-center m-t-lg" [hidden]="!isCalendarLoading">
+            <div class="loading-img1 m-t-lg"></div>
+        </div>
+    </div>
+    <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
+            style="position:absolute; bottom: 10px;" [disabled]="!editor.isEnable"
+            (click)="addFrequency()">
+        <span *ngIf="editor.create" translate>button.addNewFrequency</span>
+        <span *ngIf="!editor.create" translate>button.updateFrequency</span>
+    </button>
+</div>
+<div class="modal-footer">
+    <button *ngIf="!editor.showYearView" type="submit" class="btn orange btn-sm"
+            [disabled]="!myForm.form.valid ||frequencyList.length==0">
+        <span translate>button.close</span>
+    </button>
+    <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()"
+            translate>button.cancel
+    </button>
+    <button *ngIf="editor.showYearView" type="button" class="btn orange btn-sm" (click)="addCalendarDates()">
+        <span translate>button.close</span>
+        </button>
+    <button *ngIf="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="back()"
+            translate>button.cancel
+    </button>
+</div>
+</form>

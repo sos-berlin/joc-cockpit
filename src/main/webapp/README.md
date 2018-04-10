@@ -1,2 +1,0 @@
-# joc-cockpit
-JOC GUI

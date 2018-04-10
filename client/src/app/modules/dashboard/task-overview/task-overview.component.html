@@ -1,0 +1,58 @@
+<div id="tasksOverview1">
+    <div class="box-header b-b remove">
+        <h3 class="m-t-xs" translate>label.tasksOverview</h3>
+    </div>
+    <div class="box-body">
+        <div class="table-responsive">
+            <table style="width: 100%" *ngIf="!notAuthenticate && isLoaded">
+                <tr class="text-center">
+                    <td width="19.9%">
+                        <div translate>label.pending</div>
+                    </td>
+                    <td width="19.9%">
+                        <div translate>label.running</div>
+                    </td>
+                    <td width="19.9%">
+                        <div translate>label.stopped</div>
+                    </td>
+                    <td width="19.9%">
+                        <div translate>label.waitingForResource</div>
+                    </td>
+                    <td width="19.9%">
+                        <div translate>label.tasks</div>
+                    </td>
+                </tr>
+                <tr class="text-center">
+                    <td width="19.9%">
+                        <a href="#/tasks_overview/PENDING" class="text-lg _600 "
+                           [innerHtml]="jobSnapshot.jobs.pending || 0"></a>
+                    </td>
+                    <td width="19.9%">
+                        <a href="#/tasks_overview/RUNNING" class="text-lg _600 "
+                           [innerHtml]="jobSnapshot.jobs.running || 0"></a>
+                    </td>
+                    <td width="19.9%">
+                        <a href="#/tasks_overview/STOPPED" class="text-lg _600 "
+                           [innerHtml]="jobSnapshot.jobs.stopped || 0"></a>
+                    </td>
+                    <td width="19.9%">
+                        <a href="#/tasks_overview/WAITINGFORRESOURCE" class="text-lg _600 "
+                           [innerHtml]="jobSnapshot.jobs.waitingForResource || 0"></a>
+                    </td>
+                    <td width="19.9%">
+                        <span class="text-lg _600 " [innerHtml]="jobSnapshot.jobs.tasks || 0"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="notAuthenticate">
+            <div class="text-u-c text-center text m-t-md m-b">
+                {{'message.noInformationAvailable' | translate}}
+            </div>
+        </div>
+        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+             [ngClass]="{'show': !isLoaded}">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+        </div>
+    </div>
+</div>

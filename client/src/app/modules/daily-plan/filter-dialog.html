@@ -1,0 +1,127 @@
+<div class="modal-header">
+    <h4 class="modal-title" translate>label.createFilter</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
+    <div class="modal-body p-a">
+        <div class="form-group row" [ngClass]="{ 'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique }">
+            <label class="col-sm-4 form-control-label" translate>label.filterName</label>
+
+            <div class=" col-sm-6">
+                <input ngbTooltip="Max: 25 characters" triggers="click:blur" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                       name="filterName" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+                       (blur)="checkFilterName()">
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+                    <div *ngIf="user.errors.required">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+                <div class="help-block text-danger" *ngIf="!isUnique">
+                    <div translate>message.uniqueError</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.regex</label>
+
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="regex"
+                       placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
+                       [(ngModel)]="filter.regex">
+            </div>
+            <div class="col-sm-1 p-l-0 p-t-sm"><a (click)="getFolderTree()"><i
+                    class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" *ngIf="filter.paths.length>0">
+            <label class="col-sm-4" translate>label.folders</label>
+
+            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                <div *ngFor="let path of filter.paths">
+                    <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                      (click)="remove(path)"></i>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.jobChain</label>
+
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="jobChain"
+                       placeholder="{{'placeholder.enterJobChainPath' | translate}}"
+                       [(ngModel)]="filter.jobChain">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.orderId</label>
+
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="orderId"
+                       placeholder="{{'placeholder.enterOrderId' | translate}}" [(ngModel)]="filter.orderId">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.job</label>
+
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="job"
+                       placeholder="{{'placeholder.enterJobPath' | translate}}" [(ngModel)]="filter.job">
+            </div>
+        </div>
+        <div class="form-group row m-t-sm">
+            <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
+
+            <div class=" col-sm-6">
+                <input type="text" name="from" class="form-control" placeholder="{{'placeholder.timeRangeFrom' | translate}}" [(ngModel)]="filter.from">
+            </div>
+        </div>
+        <div class="form-group row m-t-sm">
+            <label class="col-sm-4 form-control-label" translate>label.timeRangeTo</label>
+            <div class=" col-sm-6">
+                <input type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" [(ngModel)]="filter.to">
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-sm-4 " translate>label.status</label>
+
+            <div class=" col-sm-8">
+                <label class="md-check w">
+                    <input type="checkbox" [(checklist)]="filter.state" checklistValue="WAITING" name="waiting" />
+                    <i class="primary"></i><span translate>label.waiting</span>
+                </label>
+                <label class="md-check w">
+                    <input type="checkbox" [(checklist)]="filter.state" checklistValue="LATE" name="late"/>
+                    <i class="primary"></i><span translate>label.late</span>
+                </label>
+                <label class="md-check w">
+                    <input type="checkbox" [(checklist)]="filter.state" checklistValue="SUCCESSFUL" name="success"/>
+                    <i class="primary"></i><span translate>label.successful</span>
+                </label>
+                <label class="md-check w m-t-sm">
+                    <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
+                    <i class="primary"></i><span translate>label.failed</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+            <label class="col-sm-4" translate>label.sharedFilter</label>
+
+            <div class="col-sm-6">
+                <label class="md-check">
+                    <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
+                    <i class="primary"></i>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>
+            button.cancel
+        </button>
+    </div>
+</form>

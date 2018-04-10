@@ -1,0 +1,40 @@
+<div id="agentClusterRunningTasks1">
+    <div class="box-header b-b remove">
+        <h3 translate>label.agentClusterRunningTasks</h3>
+    </div>
+    <div class="box-tool">
+        <ul class="nav">
+            <li class="nav-item inline">
+                <a href="" class="text-primary pull-right" (click)="viewAllAgents()" translate>button.viewAllAgentsDetails</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row "  [hidden]="!isLoaded" >
+        <div class="m-l m-r m-t" style="overflow: auto;width: 100%" *ngIf="data.length>0">
+            <ngx-charts-bar-vertical
+              [view]="view"
+              [scheme]="colorScheme"
+              [results]="data"
+              [gradient]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [xAxisLabel]="true"
+              [yAxisLabel]="true"
+              [showGridLines]="true"
+              [roundDomains]="true"
+              [barPadding]="16"
+              [yScaleMax]="10"
+              (select)="onSelect($event)">
+            </ngx-charts-bar-vertical>
+        </div>
+        <div *ngIf="data.length==0" class="col-md-12 text-center">
+            <div class="text-u-c" style="padding-top: 60px; font-size: 17px;">
+                {{'message.noDataAvailable' | translate}}
+            </div>
+        </div>
+    </div>
+    <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
+         [ngClass]="{'show': !isLoaded}">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+</div>

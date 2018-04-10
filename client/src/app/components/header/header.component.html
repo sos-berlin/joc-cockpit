@@ -1,0 +1,266 @@
+<div class="app-header white box-shadow bg-blue-color">
+    <div class="navbar box-shadow-z0 p-l-0 p-r-20">
+        <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hide-menubar m-a-0 m-l">
+            <i class="fa fa-navicon text-white"></i>
+        </a>
+        <!-- brand -->
+        <a class="navbar-brand white fa-fa-color b-b-transparent p-l-3">
+            <img class="cursor" (click)="about()" src="../assets/images/jobscheduler-logo.png" alt="JobScheduler">
+        </a>
+        <!-- / brand -->
+
+        <!-- nabar right -->
+        <ul class="nav navbar-nav pull-right ">
+            <li class="nav-item dropdown">
+                <a class="nav-link text-white" data-toggle="dropdown">
+                  <span class="text-left p-l-xs">
+                        <i class="fa fa-lg fa-question-circle-o" style="font-size: 20px;padding-top: 22px"></i>
+                  </span>
+                </a>
+                <ul class="dropdown-menu pull-right dropdown-ac1">
+                    <li><a class="dropdown-item first" (click)="about()">{{'button.aboutJobScheduler' | translate}}</a></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" class="dropdown-item" href="">{{'button.featuresAndDownload' | translate}}</a>
+                        <div class="dropdown-menu dropdown-ac1">
+                            <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/jobscheduler" class="dropdown-item" >{{'button.jobSchedulerHome' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/jobscheduler-downloads" class="dropdown-item" >{{'button.jobSchedulerDownload' | translate}}</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" class="dropdown-item" href="">{{'button.announcements' | translate}}</a>
+                        <div class="dropdown-menu dropdown-ac1">
+                            <a tabindex="-1" target="_blank" href="https://twitter.com/job_scheduler" class="dropdown-item" >{{'button.followOnTwitter' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/news" class="dropdown-item" >{{'button.jobSchedulerNews' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/s4BB" class="dropdown-item" >{{'button.jobSchedulerReleaseNotes' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://change.sos-berlin.com/" class="dropdown-item" >{{'button.changeManagementSystem' | translate}}</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" class="dropdown-item" href="">{{'button.documentation' | translate}}</a>
+                        <div class="dropdown-menu dropdown-ac1">
+                            <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml" class="dropdown-item" >{{'button.jobSchedulerReferenceDocumentation' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/fgKX" class="dropdown-item" >{{'button.jobSchedulerTutorials' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/lo74" class="dropdown-item" >{{'button.jocCockpitDocumentation' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://www.youtube.com/channel/UCBL98BrVLzJxk8t8TXRFjhA" class="dropdown-item" >{{'button.videosOnYouTube' | translate}}</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" class="dropdown-item" href="">{{'button.discussion' | translate}}</a>
+                        <div class="dropdown-menu dropdown-ac1">
+                            <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/LYBB" class="dropdown-item" >{{'button.jobSchedulerFAQ' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/discussion/" class="dropdown-item" >{{'button.jobSchedulerForum' | translate}}</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" class="dropdown-item" href="">{{'button.supportRequests' | translate}}</a>
+                        <div class="dropdown-menu dropdown-ac1">
+                            <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/_list/tickets" class="dropdown-item" >{{'button.openSourceUserTicketSystem' | translate}}</a>
+                            <a tabindex="-1" target="_blank" href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en" class="dropdown-item" >{{'button.customerTicketSystem' | translate}}</a>
+                        </div>
+                    </li>
+                    <li><a class="dropdown-item" href="mailto:sales@sos-berlin.com" target="_top">{{'button.feedback' | translate}}</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link text-white" id ="shownotification" data-toggle="dropdown" (click)="updateAllEvent(allSessionEvent)">
+                    <span class="text-left p-l-xs p-r-xs">
+                       <span class="label label-sm up notification" *ngIf="allSessionEvent.eventUnReadCount>0">
+                           {{allSessionEvent.eventUnReadCount}}
+                       </span>
+                        <i class="fa fa-lg fa-bell-o"></i>
+                  </span>
+                </a>
+                <div class="dropdown-menu pull-right dropdown-ac" id="notification">
+                <div class="scrollable" style="max-height: 300px;width: 680px ;margin-left: 0;padding-top:10px">
+                    <div>
+                        <div class="col-sm-6" *ngIf="!showEvent">
+                            <h5 style="padding-top: 7px; margin-bottom: 0"><span translate>label.notifications </span></h5>
+                        </div>
+                        <div class="col-sm-6 cursor" (click)="collapseNotification()" *ngIf="showEvent">
+                            <h5 style="padding-top: 7px; margin-bottom: 0"><i class=" fa fa-angle-left "></i>
+                                <span translate>label.backToNotifications </span></h5>
+                        </div>
+                        <div class="col-sm-6 ">
+                            <div class="btn-group m-l-sm pull-right" *ngIf="!showEvent">
+                                <button class="btn btn-grey btn-sm btn-primary active"  (click)="makeAllGroupEventRead(allSessionEvent)"
+                                          translate>button.markAllAsRead
+                                </button>
+                            </div>
+                            <div class="btn-group m-l-sm pull-right" *ngIf="showEvent">
+                                <button class="btn btn-grey btn-sm btn-primary active"  (click)="makeAllEventRead(allSessionEvent,showGroupEvent)" translate>button.markAllAsRead</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div style="max-height: 300px; overflow: auto">
+                    <table class="table-hover" style="margin-left: 16px; margin-bottom: 12px; width: 94%">
+                        <tbody>
+                        <tr *ngFor="let group of allSessionEvent.group">
+                            <td (click)="expandNotification(group)" class="cursor" [hidden]="showEvent">
+                                <span>
+                                    <span class="_600" *ngIf="group.readCount>9">{{group.readCount}}</span>
+                                    <span class="_600" *ngIf="group.readCount<9">0{{group.readCount}}</span>
+                                    <span translate>label.newEventsOn</span> <span class="text-black-dk">{{group.jobschedulerId}}</span>
+                                    <span >{{group.objectType | translate}}:</span>
+                                    <span class="text-primary">{{group.path}}</span>
+                                    <span class="text-muted">{{group.eventId/1000}}</span>
+                                </span>
+                                <i class="cursor  fa fa-angle-right"></i>
+
+                            </td>
+                        </tr>
+                        <tr class="_600" *ngIf="showEvent">
+                            <td style="font-size: 14px;padding-bottom: 6px">
+                                <span>{{showGroupEvent.objectType | translate}}</span>
+                                {{showGroupEvent.path}}
+                                <span class="_600">{{showGroupEvent.readCount}}</span>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let value of showGroupEvent.events" style="margin-top: 10px">
+                            <td>
+                                <span class="cursor p-l p-r _600" *ngIf="value.read==false" (click)="readEvent(showGroupEvent,value,allSessionEvent)">
+                                    <span>{{value.objectType | translate}}:</span>
+                                    <span class="text-primary">{{value.path}}</span>
+                                    {{value.eventType | translate}}
+                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
+
+                                </span>
+                                <span class="p-l p-r" *ngIf="value.read==true">
+                                    <span>{{value.objectType | translate}}:</span>
+                                    <span class="text-primary">{{value.path}}</span>
+                                    {{value.eventType | translate}}
+                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="p-r-sm">
+                                    <i class="cursor fa fa-file-o" (click)="viewObject(showGroupEvent,value,allSessionEvent)" title="{{'tooltip.viewObject' | translate}}"></i>
+
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center text m-t m-b h6 text-uppercase" *ngIf="!allSessionEvent.group || allSessionEvent.group.length==0" translate>
+                    message.noNotificationFound
+                </div>
+            </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link text-white" data-toggle="dropdown">
+                 <span class="avatar w-32">
+                    <ngx-avatar name="{{username}}" size="33" textSizeRatio="2"></ngx-avatar>
+                  </span>
+                  <span class="text-left p-l-xs">
+                        <span class="_500 text-md" >{{username | decodeSpace}}</span>
+                        <i class="fa fa-caret-down p-l-xs"></i>
+                  </span>
+                </a>
+                <div class="dropdown-menu pull-right dropdown-ac">
+                    <a class="dropdown-item" [ngClass]="{'disable-link':!schedulerIds.selected}" routerLink="/user" >
+                        <s class="fa fa-user"></s>
+                        {{'button.profile' | translate}}
+                    </a>
+                    <a class="dropdown-item" >
+                        <i class="fa fa-file text-xs"></i>
+                        {{'button.logging' | translate}}
+                    </a>
+                    <a class="dropdown-item" *ngIf="permission.JobschedulerMaster.administration.editPermissions" routerLink="/users/">
+                        <s class="fa fa-users"></s>
+                        {{'button.manageUser' | translate}}
+                    </a>
+                    <a class="dropdown-item" (click)="logout()">
+                        <i class="fa fa-sign-out"></i>
+                        {{'button.logOut' | translate}}
+                    </a>
+                </div>
+            </li>
+        </ul>
+
+        <!-- navbar collapse -->
+        <div class="collapse navbar-toggleable-custom" id="navbar1">
+            <!-- link -->
+            <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
+                <li class="nav-item" [ngClass]="{'disable-link':!schedulerIds.selected}">
+                    <a class="nav-link" [routerLink]="['/dashboard']" [routerLinkActive]="['active']">
+                        <span class="nav-text" id="dashboard_id">
+                             <i class="fa fa-dashboard text-white dashboard-icon" ></i>
+                            <span  class="font11 text-white text-u-c _600" translate>label.dashboard</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.DailyPlan.view.status">
+                    <a class="nav-link" [routerLink]="['/daily_plan']" [routerLinkActive]="['active']">
+                        <span class="nav-text" id="dailyPlan_id">
+                             <img src="../assets/images/daily_plan.png" width="15" height="16">
+                            <span  class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.JobChain.view.status">
+                    <a class="nav-link" [routerLink]="['/job_chain']" [routerLinkActive]="['active']">
+                        <span class="nav-text " id="jobChain_id">
+                            <i class="fa fa-chain text-white jobchain-icon"></i>
+                            <span class="font11 text-white text-u-c _600" translate>label.jobChains</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.Order.view.status">
+                    <a class="nav-link" [routerLink]="['/order']" [routerLinkActive]="['active']">
+                        <span class="nav-text " id="orders_id" >
+                            <img src="../assets/images/order1.png" width="18" height="22" class="order-icon">
+                            <span class="font11 text-white text-u-c _600" translate>label.orders</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.Job.view.status">
+                    <a class="nav-link" [routerLink]="['/job']" [routerLinkActive]="['active']">
+                        <span class="nav-text " id="jobs_id">
+                            <img src="../assets/images/job1.png" width="22" height="21" class="job-icon">
+                            <span class="font11 text-white text-u-c _600" translate>label.jobs</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.YADE.view.transfers">
+                    <a class="nav-link" [routerLink]="['/file_transfer']" [routerLinkActive]="['active']">
+                        <span class="nav-text ">
+                            <i class="fa fa-exchange text-white fa-lg"></i>
+                            <span  class="font11 text-white text-u-c _600" translate>label.fileTransfers</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/resource']" [routerLinkActive]="['active']"  *ngIf="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
+                    permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status || permission.Event.view.status">
+                        <span class="nav-text" id="resources_id">
+                            <img src="../assets/images/resources.png">
+                            <span class="font11 text-white text-u-c _600" translate>label.resources</span>
+                        </span>
+
+                    </a>
+
+                </li>
+                <li class="nav-item" *ngIf="permission.History.view.status || permission.YADE.view.transfers">
+                    <a class="nav-link" [routerLink]="['/history']" [routerLinkActive]="['active']">
+                        <span class="nav-text">
+                            <i class="fa fa-history text-white history-icon"></i>
+                            <span class="font11 text-white text-u-c _600" translate>label.history</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="permission.AuditLog.view.status">
+                    <a class="nav-link" [routerLink]="['/audit_log']" [routerLinkActive]="['active']">
+                        <span class="nav-text">
+                            <i class="fa fa-file-text-o text-white history-icon"></i>
+                            <span class="font11 text-white text-u-c _600" translate>label.auditLog</span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+            <!-- end link -->
+        </div>
+        <!-- / navbar collapse -->
+    </div>
+</div>

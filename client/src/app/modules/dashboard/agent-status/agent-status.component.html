@@ -1,0 +1,39 @@
+<div id="agentClusterStatus1">
+    <div class="box-header b-b remove">
+        <h3 translate>label.agentClusterStatus</h3>
+    </div>
+    <div class="row"  [hidden]="!isLoaded">
+        <div class="col-md-12">
+
+            <div class="col-xs-offset-1 col-xs-4"
+                 [ngClass]="{'col-xs-11': data.length==0}">
+                <div [ngClass]="{'hide': data.length==0}">
+                    <ngx-charts-pie-chart
+                      [view]="view"
+                      [scheme]="colorScheme"
+                      [results]="data"
+                      [legend]="showLegend"
+                      [explodeSlices]="explodeSlices"
+                      [labels]="showLabels"
+                      [doughnut]="doughnut"
+                      (select)="onSelect($event)"> </ngx-charts-pie-chart>
+                </div>
+                <div *ngIf="data.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 40px">
+                    {{'message.noDataAvailable' | translate}}
+                </div>
+            </div>
+            <div class="col-xs-7" *ngIf="data.length>0">
+                <ul class="status-list p-l" [ngClass]="{'m-top-132': data.length==1, 'm-top-122': data.length==2 }">
+                    <li id="{{d.name}}" *ngFor="let d of data" class="p-a-xs ">
+                        <i class="fa fa-stop" [ngStyle]="{color: d.color}"></i>
+                        <a (click)="setLabel(d.name)" > {{d.name | translate}}</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div [hidden]="data.length>0" class="hide text-center m-t-lg p-b-lg text-primary text"
+         [ngClass]="{'show': !isLoaded}">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+</div>

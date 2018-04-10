@@ -1,0 +1,65 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="text-capitalize" translate>label.delete</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body container">
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-hover table-bordered ">
+        <thead>
+        <tr>
+          <th translate>label.srNo</th>
+          <th translate>label.filterName</th>
+          <th translate>label.account</th>
+          <th translate>label.action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="start-on-hover" *ngFor="let filter of filters.list | orderBy:'name'; let i = index">
+          <td>{{i+1}}</td>
+          <td>
+            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="filters.favorite == filter.id" href=""
+               (click)="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="filters.favorite !=filter.id" href=""
+               (click)="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
+            {{filter.name}} <label *ngIf="filter.shared" class="label label-info" translate>label.share</label>
+          </td>
+          <td>{{filter.account}}</td>
+          <td>
+            <div class="btn-group dropdown">
+              <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                class="fa fa-ellipsis-h"></i></button>
+              <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                <a class="dropdown-item"
+                   *ngIf="permission.JOCConfigurations.share.change.editContent || filter.account==username"
+                   (click)="editFilter(filter)" translate>button.edit</a>
+                <a class="dropdown-item" (click)="copyFilter(filter)" translate>button.copy</a>
+                <a class="dropdown-item"
+                   *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makePrivate && filter.shared"
+                   (click)="makePrivate(filter)" translate>button.makePrivate</a>
+                <a class="dropdown-item"
+                   *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && filter.account==username && !filter.shared"
+                   (click)="makeShare(filter)" translate>button.share</a>
+                <a class="dropdown-item bg-hover-color"
+                   *ngIf="filters.list.length==1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
+                   (click)="deleteFilter(filter)">
+                  <span translate>button.delete</span>
+                </a>
+                <a class="dropdown-item bg-hover-color"
+                   *ngIf="filters.list.length>1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
+                   (click)="deleteFilter(filter)">
+                  <span translate>button.delete</span>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

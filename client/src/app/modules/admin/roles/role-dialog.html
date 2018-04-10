@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span *ngIf="!newRole">
+            <span *ngIf="copy" translate>label.copyRole</span>
+            <span *ngIf="!copy" translate>label.editRole</span> :
+            <span>{{currentRole.roleName}}</span>
+        </span>
+        <span *ngIf="newRole" translate>label.addRole</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(currentRole)">
+    <div class="modal-body container">
+        <div class="form-group row" *ngIf="!copy">
+            <label class="col-sm-4 form-control-label" translate>label.master</label>
+            <div class=" col-sm-6">
+                <select class="form-control" name="master" [(ngModel)]="mstr.name" *ngIf="newRole">
+                    <option *ngFor="let master of masters" value="{{master.master}}">{{master.master || 'default'}}</option>
+                </select>
+                <input type="text" class="form-control" name="master" readonly [(ngModel)]="mstr.name" *ngIf="!newRole">
+            </div>
+        </div>
+        <div class="form-group row"  [ngClass]="{'has-error' : ((roleName.dirty || roleName.touched) && roleName.invalid) || !isUnique}">
+            <label class="col-sm-4 form-control-label" translate>label.role</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="role" placeholder="{{'placeholder.role' | translate}}" [(ngModel)]="currentRole.role" required #roleName="ngModel"
+                       (blur)="checkRole(currentRole.role)"/>
+                <div *ngIf="roleName.invalid && (roleName.dirty || roleName.touched)" class= "text-danger help-block">
+                    <div *ngIf="roleName.errors.required" translate>
+                        message.requiredError
+                    </div>
+                </div>
+                <div *ngIf="!isUnique" class="text-danger help-block" translate>
+                    message.uniqueError
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="!isUnique || !myForm.form.valid || submitted" class="btn btn-primary btn-sm">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+            button.cancel
+        </button>
+    </div>
+</form>

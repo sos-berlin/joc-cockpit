@@ -1,0 +1,53 @@
+<div id="fileTransferOverview1">
+    <div class="box-header b-b remove">
+        <h3 class="m-t-xs" translate>label.fileTransferOverview</h3>
+    </div>
+    <div class="box-body">
+        <div class="table-responsive" *ngIf="!notAuthenticate && isLoaded">
+            <table style="width: 100%">
+                <tr class="text-center">
+                    <td width="25%">
+                        <div translate>label.running</div>
+                    </td>
+                    <td width="25%">
+                        <div translate>label.suspended</div>
+                    </td>
+                    <td width="25%">
+                        <div translate>label.setBack</div>
+                    </td>
+                    <td width="25%">
+                        <div translate>label.waitingForResource</div>
+                    </td>
+                </tr>
+                <tr class="text-center">
+                    <td width="25%">
+                        <a href="#/file_transfer_overview/PENDING" class="text-lg _600 "
+                           [innerHtml]="yadeOverview.transfers.running || 0"></a>
+                    </td>
+                    <td width="25%">
+                        <a href="#/file_transfer_overview/SUSPENDED"
+                           [ngClass]="{'dark-orange':yadeOverview.transfers.suspended >0}" class="text-lg _600 "
+                           [innerHtml]="yadeOverview.transfers.suspended || 0"></a>
+                    </td>
+                    <td width="25%">
+                        <a href="#/file_transfer_overview/SETBACK" class="text-lg _600 "
+                           [innerHtml]="yadeOverview.transfers.setback || 0"></a>
+                    </td>
+                    <td width="25%">
+                        <a href="#/file_transfer_overview/WAITINGFORRESOURCE" class="text-lg _600 "
+                           [innerHtml]="yadeOverview.transfers.waitingForResource || 0"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="notAuthenticate">
+            <div class="text-u-c text-center text m-t-md m-b">
+                {{'message.noInformationAvailable' | translate}}
+            </div>
+        </div>
+        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+             [ngClass]="{'show': !isLoaded}">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+        </div>
+    </div>
+</div>

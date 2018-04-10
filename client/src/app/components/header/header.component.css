@@ -1,0 +1,6 @@
+.page-header.navbar .top-menu .navbar-nav > li.dropdown .dropdown-toggle:hover{
+    background-color: inherit !important;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown.open .dropdown-toggle{
+    background-color: inherit !important;
+}

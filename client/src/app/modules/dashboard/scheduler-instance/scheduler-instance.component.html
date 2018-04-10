@@ -1,0 +1,45 @@
+<div id="jobSchedulerStatus1">
+    <div class="box-header b-b remove">
+        <h3 translate>label.jobSchedulerStatus</h3>
+    </div>
+    <div class="box-body">
+        <div class="table-responsive status-table">
+            <table style="width: 100%;max-height: 350px; overflow-y: auto">
+                <tr *ngFor="let master of mastersList">
+                    <td>
+                        <app-action [master]="master"></app-action>
+                    </td>
+                    <td><a class="text-hover-primary"
+                           (click)="changeScheduler(master.jobschedulerId);">{{master.jobschedulerId}}</a>
+                    </td>
+                    <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
+                    <td><span [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text | translate}}</span>
+                    </td>
+                    <td>
+                        <span class="label label-default">{{master.clusterType._type | translate}}</span>
+                        <i *ngIf="master.clusterType.precedence>0" class="text-xs" translate>- BACKUP</i>
+                    </td>
+                    <td>
+                        <i class="fa fa-{{master.os.name | lowercase}}"></i>
+                        <span>{{master.os.architecture}}</span> -
+                        <span>{{master.os.distribution}}</span>
+                    </td>
+                    <td><span>{{master.version}}</span></td>
+                    <td>
+                        <span *ngIf="master.state._text=='RUNNING'">{{'label.runningSince' | translate}}</span>
+                        <span *ngIf="master.state._text!='RUNNING' && master.state._text!='UNREACHABLE'">{{'label.startedAt' | translate}}</span>
+                        -
+                        <span *ngIf="master.state._text!='UNREACHABLE'" class="text-primary text-sm">{{master.startedAt}}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="mastersList && mastersList.length==0" class="text-u-c text-center"
+             style="padding: 60px; font-size: 17px;">
+            {{'message.noDataAvailable' | translate}}
+        </div>
+        <div class="hide text-center m-t-lg p-b-lg text-primary text" [ngClass]="{'show': !isLoaded}">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+        </div>
+    </div>
+</div>

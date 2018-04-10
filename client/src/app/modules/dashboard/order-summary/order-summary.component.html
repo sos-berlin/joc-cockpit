@@ -1,0 +1,78 @@
+<div id="ordersSummary1">
+    <div class="box-header b-b remove">
+        <h3 class="m-t-xs" translate>label.ordersSummary</h3>
+
+    </div>
+    <div class="row m-b-sm box-tool ">
+        <div class="col-md-12 container-fluid">
+            <div class="pull-right" *ngIf="!notAuthenticate">
+                <div class="btn-group m-l-sm" style="padding-right:5px">
+                    <div class="btn-group dropdown ">
+                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                                data-toggle="dropdown">
+                            <span>  {{filters.label | translate}}</span>
+                        </button>
+                       <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+
+                            <a class="dropdown-item"
+                               (click)="getSummaryByDate('0d');filters.label='button.today'"
+                               [ngClass]="{'btn-primary': filters.date=='0d'}" translate>button.today
+                            </a>
+                            <a class="dropdown-item"
+                               (click)="getSummaryByDate('-1h');filters.label='button.last1'"
+                               [ngClass]="{'btn-primary': filters.date=='-1h'}" translate>button.last1
+                            </a>
+                            <a class="dropdown-item"
+                               (click)="getSummaryByDate('-12h');filters.label='button.last12'"
+                               [ngClass]="{'btn-primary': filters.date=='-12h'}" translate>button.last12
+                            </a>
+                            <a class="dropdown-item"
+                               (click)="getSummaryByDate('-1d');filters.label='button.last24'"
+                               [ngClass]="{'btn-primary': filters.date=='-1d'}" translate>button.last24
+                            </a>
+                            <a class="dropdown-item"
+                               (click)="getSummaryByDate('-1w');filters.label='button.lastWeak'"
+                               [ngClass]="{'btn-primary': filters.date=='-1w'}" translate>button.lastWeak
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <table style="width: 100%" *ngIf="!notAuthenticate && isLoaded">
+            <tr class="text-center">
+                <td width="50%">
+                    <div translate>label.successful</div>
+                </td>
+                <td width="50%">
+                    <div translate>label.failed</div>
+                </td>
+            </tr>
+            <tr class="text-center">
+                <td width="50%">
+                    <a (click)="showOrderSummary('SUCCESSFUL')" class="text-lg _600 "
+                       [ngClass]="{'text-success':orderSummary.orders.successful >0}"
+                       [innerHtml]="orderSummary.orders.successful || 0"></a>
+                </td>
+                <td width="50%">
+                    <a (click)="showOrderSummary('FAILED')" class="text-lg _600 "
+                       [ngClass]="{'crimson':orderSummary.orders.failed  >0}" [innerHtml]="orderSummary.orders.failed || 0"></a>
+                </td>
+            </tr>
+
+
+        </table>
+
+        <div *ngIf="notAuthenticate">
+            <div class="text-u-c text-center text m-t-md m-b">
+                {{'message.noInformationAvailable' | translate}}
+            </div>
+        </div>
+        <div [hidden]="notAuthenticate" class="hide text-center text-primary text m-t-md m-b"
+             [ngClass]="{'show': !isLoaded}">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span *ngIf="!newUser && !copy">
+            <span translate>label.editUser</span>:
+            <span [innerHtml]="currentUser.userName  | decodeSpace"></span>
+        </span>
+        <span *ngIf="!newUser && copy">
+            <span translate>label.copyUser</span> :
+            <span [innerHtml]="currentUser.userName  | decodeSpace"></span>
+        </span>
+        <span *ngIf="newUser && !copy" translate>label.addUser</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(currentUser)">
+    <div class="modal-body container">
+        <div class="form-group row" [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid) || !isUnique}">
+            <label class="col-sm-4 form-control-label" translate>label.user</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="name" [(ngModel)]="currentUser.user" required #user="ngModel"
+                       (blur)="checkUser(user.value, currentUser.userName)"/>
+
+                <div *ngIf="user.invalid && (user.dirty || user.touched)" class="text-danger help-block">
+                    <div *ngIf="user.errors.required">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+                <div class="help-block text-danger" *ngIf="!isUnique">
+                    <div translate>message.uniqueError</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" *ngIf="!copy">
+            <label class="col-sm-4 form-control-label" translate>label.password</label>
+            <div class="col-sm-6">
+                <input type="password" class="form-control" placeholder="{{'placeholder.password' | translate}}" [(ngModel)]="currentUser.fakePassword" name="password"/>
+            </div>
+        </div>
+        <div class="form-group row" *ngIf="!copy">
+            <label class="col-sm-4 form-control-label" translate>label.roles</label>
+            <div class="col-sm-6">
+                <ng-select [multiple]="true" [items]="allRoles" [active]="roles" [disabled]="disabled" (selected)="selected($event)" required="copy"
+                           (removed)="removed($event)" placeholder="{{'placeholder.selectRoles' | translate}}"></ng-select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>button.cancel</button>
+    </div>
+</form>

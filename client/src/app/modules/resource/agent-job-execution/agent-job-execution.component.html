@@ -1,0 +1,254 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600">
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a>
+                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
+                                    </a>
+                                </li>
+                                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
+                                    <span>{{'breadcrumb.resources' | translate }}</span>
+                                </li>
+                                <li class="active">
+                                    <span>{{'breadcrumb.agentJobExecution' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                    <div class="inline">
+                        <div class="show-block">
+                            <label class="md-check m-r-sm">
+                                <input type="checkbox" [(ngModel)]="agentJobExecutionFilters.current" (change)="changeJobScheduler()">
+                                <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                            </label>
+                            <div class="inline">
+                                <div class="btn-group m-r-sm hidden-btn-group">
+                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('all')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
+                                    </button>
+                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('today')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
+                                    </button>
+                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1h')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
+                                    </button>
+                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-12h')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
+                                    </button>
+                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1d')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
+                                    </button>
+                                     <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1w')"
+                                            [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown hidden-dropdown">
+                                    <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" (click)="loadAgentTasks('all')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
+                                        </a>
+                                        <a class="dropdown-item" (click)="loadAgentTasks('today')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
+                                        </a>
+                                        <a class="dropdown-item" (click)="loadAgentTasks('-1h')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
+                                        </a>
+                                        <a class="dropdown-item" (click)="loadAgentTasks('-12h')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
+                                        </a>
+                                        <a class="dropdown-item" (click)="loadAgentTasks('-1d')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
+                                        </a>
+                                        <a class="dropdown-item" (click)="loadAgentTasks('-1w')"
+                                                [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
+                                        </a>
+                                    </div>
+                                </div>
+                                <button class="btn btn-default btn-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
+                                        id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sub-link">
+    <div class="row">
+            <div class="col-md-8">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+                        <a class="nav-link" [routerLink]="['/resource/agent_cluster']">
+                            <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+                        <a class="nav-link active">
+                            <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.Lock.view.status && ( permission.ProcessClass.view.status || permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.Lock.view.status">
+                        <a class="nav-link" [routerLink]="['/resource/lock']">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.ProcessClass.view.status && (permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
+                        <a class="nav-link" [routerLink]="['/resource/process_class']">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.Calendar.view.status">
+                        <a class="nav-link" [routerLink]="['/resource/calendar']">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-right">
+               <button class="btn btn-sm btn-default" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+                   <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+               </button>
+                <button class="btn btn-sm btn-default" (click)="cancel()" *ngIf="showSearchPanel">
+                    <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+            </div>
+        </div>
+</div>
+<div class="scroll-y max-ht2">
+    <div class="padding p-b-0">
+        <div class="row">
+            <div class="col-sm-12">
+               <div>
+                  <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
+                      <div class="col-md-12">
+                          <div class="box p-a m-b-xs m-t-xs">
+                              <form #myForm="ngForm" (ngSubmit)="search()">
+                                  <div class="form-group row m-t-sm" >
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+                                      <div class="col-sm-6">
+
+                                        <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" [(ngModel)]="agentJobSearch.from" name="from" [config]="config"></dp-date-picker>
+                                          <input valid-time maxlength="8" [disabled]="!agentJobSearch.from" class="form-control input-time m-l" [(ngModel)]="agentJobSearch.fromTime"
+                                                 placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" name="startTime" type="text" style="width: 175px;background-position: 150px">
+                                          <a class="text-sm text-primary" *ngIf="agentJobSearch.from || agentJobSearch.fromTime" (click)="agentJobSearch.from='';agentJobSearch.fromTime=''; " translate>button.clear</a>
+                                      </div>
+                                  </div>
+                                  <div class="form-group row">
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+
+                                      <div class="col-sm-6">
+
+                                        <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" [(ngModel)]="agentJobSearch.to" name="from" [config]="config"></dp-date-picker>
+                                          <input valid-time maxlength="8" [disabled]="!agentJobSearch.to"
+                                                 class="form-control input-time m-l" [(ngModel)]="agentJobSearch.toTime"
+                                                 placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" name="endTime" type="text"
+                                                 style="width: 175px;background-position: 150px">
+                                          <a class="text-sm text-primary" *ngIf="agentJobSearch.to || agentJobSearch.toTime"
+                                             (click)="agentJobSearch.to='';agentJobSearch.toTime=''; "
+                                             translate>button.clear</a>
+                                      </div>
+                                  </div>
+                                  <div class="form-group row" >
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                                      <div class=" col-sm-6">
+                                          <select class="form-control" [(ngModel)]="agentJobSearch.jobschedulerId" name="jobschedulerId">
+                                              <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                  <div class="form-group row" >
+                                      <label class="col-md-2 col-sm-4 form-control-label" translate>label.agentUrl</label>
+                                      <div class=" col-sm-6">
+                                          <input type="text" class="form-control" name="url" placeholder="{{'placeholder.enterAgentUrl' | translate}}" [(ngModel)]="agentJobSearch.url">
+                                      </div>
+                                  </div>
+                                  <div class="form-group m-t m-b-xs">
+                                      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
+                                          button.search
+                                      </button>
+                                      <button type="button" class="btn btn-default btn-sm m-l-sm" (click)="cancel()" translate>
+                                          button.cancel
+                                      </button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="hide" [ngClass]="{'show': isLoading}">
+                      <div class="m-t-xs box p-a" >
+                          <div class="table-responsive">
+                              <table class="table table-hover table-bordered" id="agentJobExecution">
+                                  <thead>
+                                  <tr>
+                                      <th *ngIf="!agentJobExecutionFilters.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && !agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-up "></i>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-down "></i></a>
+                                      </th>
+                                      <th (click)="sortBy('agent')"><a><span translate>label.agentUrl</span>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && !agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-up "></i>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-down "></i></a>
+                                      </th>
+                                      <th (click)="sortBy('cause')"><a><span translate>label.causeOfTheTaskStart</span>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && !agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-up "></i>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-down "></i></a>
+                                      </th>
+                                      <th (click)="sortBy('numOfSuccessfulTasks')"><a><span translate>label.numberOfSuccessfullyExecutedTask</span>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-up "></i>
+                                          <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentJobExecutionFilters.reverse"
+                                             class="fa fa-caret-down "></i></a>
+                                      </th>
+                                  </tr>
+                                  </thead>
+                                  <tbody >
+                                  <tr *ngFor="let agentTask of agentTasks | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.sortReverse">
+                                      <td *ngIf="!agentJobExecutionFilters.current"><span [innerHtml]="agentTask.jobschedulerId"></span></td>
+                                      <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" [innerHtml]="agentTask.agent"></a></td>
+                                      <td><span [innerHtml]="agentTask.cause"></span></td>
+                                      <td><span [innerHtml]="agentTask.numOfSuccessfulTasks"></span></td>
+                                  </tr>
+                                  </tbody>
+                              </table>
+                              <div class="inline text-sm m-l-xs m-b-sm" [ngClass]="{'m-t-xs m-l-sm': agentTasks.length > 10}"
+                                   *ngIf="agentTasks.length >0"> {{agentTasks.length}}
+                                  <span translate *ngIf="agentTasks.length >1">label.agentTasksFound</span>
+                                  <span translate *ngIf="agentTasks.length ==1">label.agentTaskFound</span>.
+                                  <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}
+                              </div>
+                              <div *ngIf="isLoading && agentTasks.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAgentTaskFound</div>
+                          </div>
+                      </div>
+                  </div>
+                  <div *ngIf="!isLoading" class="text-center m-t-lg">
+                      <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>

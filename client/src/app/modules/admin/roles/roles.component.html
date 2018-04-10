@@ -1,0 +1,44 @@
+<div class="box p-a">
+    <div class="box-body p-b-0" *ngFor="let master of masters; let id = index" [hidden]="showMsg && !getSelectedMaster(master)">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="btn-group dropdown pull-left m-r-sm">
+                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                            class="fa fa-ellipsis-h"></i></button>
+                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                        <a class="dropdown-item" (click)="copyMaster(master)" translate>button.copy</a>
+                        <a class="dropdown-item" (click)="deleteMaster(master)" translate="">button.delete</a>
+                    </div>
+                </div>
+                <h5 class="text-dark">{{master.master || 'default'}}
+                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showPanel[id]" (click)="showPanel[id] = true"></i>
+                    <i class="cursor fa fa-caret-down m-l-xs" *ngIf="showPanel[id]"
+                       (click)="showPanel[id]  = false"></i>
+                </h5>
+            </div>
+        </div>
+        <div *ngIf="showPanel[id]" class="row">
+            <div class="col-md-1 col-sm-2 col-xs-4"><span class="p-l-lg" translate>label.roles</span></div>
+            <div class="col-md-10 col-sm-9 col-xs-6">
+                <div class="role" *ngFor="let role of master.roles" [hidden]="!getSelectedRole(role)">
+                    <span class="fa fa-circle" style="font-size: 9px"></span>
+                    <a [routerLink]="['/users/permissions',master.master || 'default', role.role]" class="text-primary">
+                        {{role.role}}
+                    </a>
+                    <i (click)="editRole(role, master.master)" class="fa fa-pencil"></i>
+                    <i (click)="copyRole(role,master)" class="fa fa-copy m-l-xs"></i>
+                    <i (click)="deleteRole(role,master.master)" class="fa fa-times m-l-xs"></i>
+                </div>
+            </div>
+        </div>
+        <hr *ngIf="showPanel[id]">
+
+    </div>
+    <div class="box-body p-b-0 hide" [ngClass]="{show : showMsg}">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <span translate>message.noRoleAssign</span>
+            </div>
+        </div>
+    </div>
+</div> 

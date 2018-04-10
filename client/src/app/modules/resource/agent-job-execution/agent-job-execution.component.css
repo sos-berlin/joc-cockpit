@@ -1,0 +1,22 @@
+.table-responsive{
+  overflow: visible;
+}
+.dropdown-more{
+  top:20px;
+}
+.dropdown-menu.dropdown-more.dropdown-more ::after, .dropdown-menu.dropdown-more.dropdown-more ::before, [flex]{
+  left: 8px !important;
+} 
+.arrows {
+  visibility: hidden;
+}
+
+thead th {
+  cursor: pointer;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+th.active .arrows {
+    visibility: visible;
+}

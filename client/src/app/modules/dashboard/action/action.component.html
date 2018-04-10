@@ -1,0 +1,53 @@
+<div class="btn-group dropdown">
+    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+            class="fa fa-ellipsis-h"></i></button>
+    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+        <a class="dropdown-item bg-hover-color"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.terminate"
+           (click)="clusterAction('terminate', master)"
+           translate>button.terminate</a>
+        <a class="dropdown-item bg-hover-color"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.terminate"
+           (click)="clusterAction('terminateWithin', master)"
+           translate>button.terminateWithin</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.abort"
+           (click)="clusterAction('abort', master)"
+           translate>button.abort</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.restart.abort"
+           (click)="clusterAction('abortAndRestart', master)"
+           translate>button.abortAndRestart</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.restart.terminate"
+           (click)="clusterAction('terminateAndRestart', master)"
+           translate>button.terminateAndRestart</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.restart.terminate"
+           (click)="clusterAction('terminateAndRestartWithin', master)"
+           translate>button.terminateAndRestartWithin</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           *ngIf="master.permission.execute.pause && master.state._text!='PAUSED'"
+           (click)="clusterAction('pause', master)"
+           translate>button.pause</a>
+        <a class="dropdown-item"
+           *ngIf="master.permission.execute.continue && master.state._text=='PAUSED'"
+           (click)="clusterAction('continue', master)"
+           translate>button.continue</a>
+        <a class="dropdown-item"
+           *ngIf="master.permission.administration.removeOldInstances"
+           (click)="clusterAction('remove', master)"
+           translate>button.removeInstance</a>
+        <a class="dropdown-item"
+           [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+           (click)="clusterAction('downloadLog', master)"
+           translate>button.downloadLog</a>
+    </div>
+</div>

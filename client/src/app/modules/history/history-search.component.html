@@ -1,0 +1,545 @@
+<div class="row">
+  <div class="col-md-12" *ngIf="historyFilters.type == 'ORDER'">
+    <div class="box p-a m-b-xs">
+      <form #myForm="ngForm" (ngSubmit)="saveAsFilter()">
+        <div class="form-group row"
+             [ngClass]="{'has-error' : ((name1.dirty || name1.touched) && name1.invalid) || !isUnique}">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
+          <div class=" col-sm-6">
+            <input ngbTooltip="Max: 25 characters" triggers="focus" type="text" class="form-control"
+                   placeholder="{{'placeholder.name' | translate}}" name="name1" #name1="ngModel" maxlength="25"
+                   [(ngModel)]="jobChainSearch.name" (blur)="checkFilterName()">
+            <div class="help-block text-danger" *ngIf="(name1.dirty || name1.touched) && name1.invalid">
+              <div translate>message.tooLongError</div>
+            </div>
+            <div class="help-block text-danger hide" [ngClass]="{'show-block':!isUnique}">
+              <div translate>message.uniqueError</div>
+            </div>
+          </div>
+        </div>
+        <div class="m-b-sm row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+          <div class="col-md-6">
+            <label class="md-check w-sm">
+              <input type="radio" name="radio" [(ngModel)]="jobChainSearch.date" value="date">
+              <i class="primary"></i> <span translate>label.specificDate</span>
+            </label>
+            <label class="md-check">
+              <input type="radio" name="radio" [(ngModel)]="jobChainSearch.date" value="process">
+              <i class="primary"></i> <span translate>label.manualDate</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobChainSearch.date == 'process'">
+          <label class="col-md-2 col-sm-4 form-control-label"
+                 translate>label.processExecuted</label>
+
+          <div class=" col-sm-6">
+            <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                   placeholder="{{'placeholder.processExecuted' | translate}}"
+                   [(ngModel)]="jobChainSearch.planned">
+
+            <div class="help-block text-danger">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobChainSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+          <div class="col-sm-6">
+            <dp-date-picker [theme]="'dp-material dp-main calendar'"
+                            placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
+                            [(ngModel)]="jobChainSearch.from" name="Orderfrom" [config]="config"></dp-date-picker>
+            <input valid-time maxlength="8" (disabled)="!jobChainSearch.from" class="form-control input-time m-l"
+                   [(ngModel)]="jobChainSearch.fromTime"
+                   placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px" name="OrderfromTime">
+            <a class="text-sm text-primary" *ngIf="jobChainSearch.from || jobChainSearch.fromTime"
+               (click)="jobChainSearch.from='';jobChainSearch.fromTime=''; " translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobChainSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+          <div class="col-sm-6">
+            <dp-date-picker [theme]="'dp-material dp-main calendar'"
+                            placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                            [(ngModel)]="jobChainSearch.to" name="OrderTo" [config]="config"></dp-date-picker>
+            <input valid-time maxlength="8" (disabled)="!jobChainSearch.to" name="jobChainToTime"
+                   class="form-control input-time m-l" [(ngModel)]="jobChainSearch.toTime"
+                   placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px">
+            <a class="text-sm text-primary" *ngIf="jobChainSearch.to || jobChainSearch.toTime"
+               (click)="jobChainSearch.to='';jobChainSearch.toTime=''; "
+               translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+          <div class=" col-sm-6">
+            <select class="form-control" [(ngModel)]="jobChainSearch.jobschedulerId" name="jobChainSchedulerId">
+              <option value="" translate="">label.selectJobScheduler</option>
+              <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [value]="jobScheduler">
+                {{jobScheduler}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" [ngClass]="{'has-error' : ((regex.dirty || regex.touched) && regex.invalid)}">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
+          <div class=" col-sm-6">
+            <input valid-regex type="text" class="form-control" name="regex" #regex="ngModel"
+                   placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="jobChainSearch.regex">
+            <div class="help-block text-danger" *ngIf="(regex.dirty || regex.touched) && regex.invalid">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+          <div class="col-sm-1 p-l-0 p-t-sm"><a href="" (click)="getTreeStructure()"><i
+            class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" *ngIf="jobChainSearch.paths.length>0">
+          <label class="col-md-2 col-sm-4" translate>label.folders</label>
+          <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+            <div *ngFor="let path of jobChainSearch.paths">
+              <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                (click)="remove(path,'path')"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-b-sm" [ngClass]="{'m-t-sm': jobChainSearch.paths.length>0}">
+          <label class="col-md-2 col-sm-4">
+            <span translate>label.jobChains</span>
+            <span>/</span>
+            <span translate>label.orders</span>
+          </label>
+          <div class="col-sm-6" *ngIf="jobChainSearch.jobChains.length>0 || jobChainSearch.orders.length>0">
+            <div style="max-height: 140px; overflow: auto" *ngIf="jobChainSearch.jobChains.length>0">
+              <div *ngFor="let jobChain of jobChainSearch.jobChains">
+                <span class="text-muted" translate>label.jobChain</span>: <span class="">{{jobChain}}</span> <i
+                class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(jobChain,'jobChain')"></i>
+              </div>
+            </div>
+            <div style="max-height: 140px; overflow: auto" *ngIf="jobChainSearch.orders.length>0">
+              <div *ngFor="let order of jobChainSearch.orders">
+                <span class="text-muted" translate>label.order</span>: <span class="">{{order.orderId}}</span> <i
+                class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(order,'order')"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-1"
+               [ngClass]="{'p-l-0': jobChainSearch.jobChains.length>0 || jobChainSearch.orders.length>0}"><a href=""
+                                                                                                             (click)="getTreeStructureForObjects()"><i
+            class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 " translate>label.status</label>
+          <div class="col-sm-9">
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobChainSearch.states" checklistValue="SUCCESSFUL">
+              <i class="primary"></i><span translate>label.successful</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobChainSearch.states" checklistValue="FAILED">
+              <i class="primary"></i><span translate>label.failed</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobChainSearch.states" checklistValue="INCOMPLETE">
+              <i class="primary"></i><span translate>label.incomplete</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+          <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>
+            button.search
+          </button>
+          <button type="submit" class="btn orange btn-sm m-l-sm"
+                  (disabled)="!isUnique || !jobChainSearch.name" translate>button.saveAsFilter
+          </button>
+          <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+            button.cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="historyFilters.type == 'TASK'">
+    <div class="box p-a m-b-xs">
+      <form #myForm="ngForm" (ngSubmit)="saveAsFilter()">
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
+          <div class=" col-sm-6">
+            <input ngbTooltip="Max: 25 characters" triggers="focus" type="text" class="form-control"
+                   placeholder="{{'placeholder.name' | translate}}" name="filterName" maxlength="25"
+                   [(ngModel)]="jobSearch.name" (blur)="checkFilterName()">
+            <div class="help-block text-danger">
+              <div translate>message.tooLongError</div>
+            </div>
+            <div class="help-block text-danger hide" [ngClass]="{'show-block':!isUnique}">
+              <div translate>message.uniqueError</div>
+            </div>
+          </div>
+        </div>
+        <div class="m-b-sm row ">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+
+          <div class="col-md-6">
+            <label class="md-check w-sm">
+              <input type="radio" name="radio" [(ngModel)]="jobSearch.date" value="date">
+              <i class="primary"></i> <span translate>label.specificDate</span>
+            </label>
+            <label class="md-check">
+              <input type="radio" name="radio" [(ngModel)]="jobSearch.date" value="process">
+              <i class="primary"></i> <span translate>label.manualDate</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobSearch.date == 'process'">
+          <label class="col-md-2 col-sm-4 form-control-label"
+                 translate>label.processExecuted</label>
+
+          <div class=" col-sm-6">
+            <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                   placeholder="{{'placeholder.processExecuted' | translate}}"
+                   [(ngModel)]="jobSearch.planned">
+
+            <div class="help-block text-danger">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+          <div class="col-sm-6">
+            <input class="form-control input-date" [(ngModel)]="jobSearch.from" name="jobFrom"
+                   placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
+                   type="text">
+            <input valid-time maxlength="8" (disabled)="!jobSearch.from" class="form-control input-time m-l"
+                   [(ngModel)]="jobSearch.fromTime"
+                   placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px">
+            <a class="text-sm text-primary" *ngIf="jobSearch.from || jobSearch.fromTime"
+               (click)="jobSearch.from='';jobSearch.fromTime=''; " translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="jobSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+
+          <div class="col-sm-6">
+            <input class="form-control input-date"
+                   [(ngModel)]="jobSearch.to"
+                   placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                   type="text">
+            <input valid-time maxlength="8" (disabled)="!jobSearch.to"
+                   class="form-control input-time m-l" [(ngModel)]="jobSearch.toTime"
+                   placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px">
+            <a class="text-sm text-primary" *ngIf="jobSearch.to || jobSearch.toTime"
+               (click)="jobSearch.to='';jobSearch.toTime=''; "
+               translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+          <div class=" col-sm-6">
+            <select class="form-control" [(ngModel)]="jobSearch.jobschedulerId">
+              <option value="" translate="">label.selectJobScheduler</option>
+              <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [value]="jobScheduler">
+                {{jobScheduler}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
+          <div class=" col-sm-6" [ngClass]="{ 'has-error' : (regex.dirty || regex.touched) && regex.invalid}">
+            <input valid-regex type="text" class="form-control" name="regex" #regex="ngModel"
+                   placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="jobSearch.regex">
+            <div class="help-block text-danger">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+          <div class="col-sm-1 p-l-0 p-t-sm"><a href="" (click)="getTreeStructure()"><i
+            class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" *ngIf="jobSearch.paths.length>0">
+          <label class="col-md-2 col-sm-4" translate>label.folders</label>
+          <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+            <div *ngFor="let path of jobSearch.paths">
+              <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                (click)="remove(path,'path')"></i>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-b-sm" [ngClass]="{'m-t-sm': jobSearch.paths.length>0}">
+          <label class="col-md-2 col-sm-4">
+            <span translate>label.jobs</span>
+          </label>
+          <div class="col-sm-6" *ngIf="jobSearch.jobs.length>0">
+            <div style="max-height: 140px; overflow: auto" *ngIf="jobSearch.jobs.length>0">
+              <div *ngFor="let job of jobSearch.jobs">
+                <span class="">{{job}}</span><i class="pull-right fa fa-remove m-l text-hover-primary"
+                                                (click)="remove(job,'job')"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-1" [ngClass]="{'p-l-0': jobSearch.jobs.length>0}"><a href=""
+                                                                                  (click)="getTreeStructureForObjects()"><i
+            class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 " translate>label.status</label>
+
+          <div class="col-sm-9">
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobSearch.states" checklistValue="SUCCESSFUL">
+              <i class="primary"></i><span translate>label.successful</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobSearch.states" checklistValue="FAILED">
+              <i class="primary"></i><span translate>label.failed</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="jobSearch.states" checklistValue="INCOMPLETE">
+              <i class="primary"></i><span translate>label.incomplete</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+          <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>
+            button.search
+          </button>
+          <button type="submit" class="btn orange btn-sm m-l-sm"
+                  (disabled)="!isUnique || !jobSearch.name" translate>button.saveAsFilter
+          </button>
+          <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+            button.cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="historyFilters.type == 'YADE'">
+    <div class="box p-a m-b-xs">
+      <form #myForm="ngForm" (ngSubmit)="saveAsFilter()">
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
+          <div class=" col-sm-6">
+            <input ngbTooltip="Max: 25 characters" triggers="focus" type="text" class="form-control"
+                   placeholder="{{'placeholder.name' | translate}}" name="filterName" maxlength="25"
+                   [(ngModel)]="yadeSearch.name" (blur)="checkFilterName()">
+            <div class="help-block text-danger">
+              <div translate>message.tooLongError</div>
+            </div>
+            <div class="help-block text-danger hide" [ngClass]="{'show-block':!isUnique}">
+              <div translate>message.uniqueError</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
+                   name="profileId"
+                   [(ngModel)]="yadeSearch.profileId">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.mandator</label>
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}"
+                   name="mandator"
+                   [(ngModel)]="yadeSearch.mandator">
+          </div>
+        </div>
+        <div class="m-b-sm row ">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+
+          <div class="col-md-6">
+            <label class="md-check w-sm">
+              <input type="radio" name="radio" [(ngModel)]="yadeSearch.date" value="date">
+              <i class="primary"></i> <span translate>label.specificDate</span>
+            </label>
+            <label class="md-check">
+              <input type="radio" name="radio" [(ngModel)]="yadeSearch.date" value="process">
+              <i class="primary"></i> <span translate>label.manualDate</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="yadeSearch.date == 'process'">
+          <label class="col-md-2 col-sm-4 form-control-label"
+                 translate>label.processExecuted</label>
+
+          <div class=" col-sm-6">
+            <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                   placeholder="{{'placeholder.processExecuted' | translate}}"
+                   [(ngModel)]="yadeSearch.planned">
+
+            <div class="help-block text-danger">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="yadeSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+          <div class="col-sm-6">
+            <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                   [(ngModel)]="yadeSearch.from"
+                   data-autoclose="1"
+                   placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
+                   type="text">
+            <input valid-time maxlength="8" (disabled)="!yadeSearch.from" class="form-control input-time m-l"
+                   [(ngModel)]="yadeSearch.fromTime"
+                   placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px">
+            <a class="text-sm text-primary" *ngIf="yadeSearch.from || yadeSearch.fromTime"
+               (click)="yadeSearch.from='';yadeSearch.fromTime=''; " translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="yadeSearch.date == 'date'">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+          <div class="col-sm-6">
+            <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                   [(ngModel)]="yadeSearch.to" data-autoclose="1"
+                   placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                   type="text">
+            <input valid-time maxlength="8" (disabled)="!yadeSearch.to"
+                   class="form-control input-time m-l" [(ngModel)]="jobSearch.toTime"
+                   placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                   style="width: 175px;background-position: 150px">
+            <a class="text-sm text-primary" *ngIf="yadeSearch.to || yadeSearch.toTime"
+               (click)="yadeSearch.to='';yadeSearch.toTime=''; "
+               translate>button.clear</a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+
+          <div class=" col-sm-6">
+            <select class="form-control" [(ngModel)]="yadeSearch.jobschedulerId">
+              <option value="" translate="">label.selectJobScheduler</option>
+              <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds" [value]="jobScheduler">
+                {{jobScheduler}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 " translate>label.status</label>
+
+          <div class="col-sm-9">
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.states" checklistValue="SUCCESSFUL">
+              <i class="primary"></i><span translate>label.successful</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.states" checklistValue="FAILED">
+              <i class="primary"></i><span translate>label.failed</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.states" checklistValue="INCOMPLETE">
+              <i class="primary"></i><span translate>label.incomplete</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 " translate>label.operations</label>
+
+          <div class="col-sm-8">
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.operations"
+                     checklistValue="COPY">
+              <i class="primary"></i><span translate>label.copy</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.operations"
+                     checklistValue="MOVE">
+              <i class="primary"></i><span translate>label.move</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.operations"
+                     checklistValue="GETLIST">
+              <i class="primary"></i><span translate>label.getList</span>
+            </label>
+            <label class="md-check w">
+              <input type="checkbox" [(checklist)]="yadeSearch.operations"
+                     checklistValue="RENAME">
+              <i class="primary"></i><span translate>label.rename</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}"
+                   name="sourceFileName"
+                   [(ngModel)]="yadeSearch.sourceFileName">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
+                   name="targetFileName"
+                   [(ngModel)]="yadeSearch.targetFileName">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}"
+                   name="sourceHost"
+                   [(ngModel)]="yadeSearch.sourceHost">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceProtocol</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.sourceProtocol' | translate}}"
+                   name="sourceProtocol"
+                   [(ngModel)]="yadeSearch.sourceProtocol">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetHost</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.targetHost' | translate}}"
+                   name="targetHost"
+                   [(ngModel)]="yadeSearch.targetHost">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetProtocol</label>
+
+          <div class=" col-sm-6">
+            <input class="form-control" placeholder="{{'placeholder.targetProtocol' | translate}}"
+                   name="targetProtocol"
+                   [(ngModel)]="yadeSearch.targetProtocol">
+          </div>
+        </div>
+
+        <div class="form-group m-t m-b-xs">
+          <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>
+            button.search
+          </button>
+          <button type="submit" class="btn orange btn-sm m-l-sm"
+                  (disabled)="!isUnique || !yadeSearch.name" translate>button.saveAsFilter
+          </button>
+          <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+            button.cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+

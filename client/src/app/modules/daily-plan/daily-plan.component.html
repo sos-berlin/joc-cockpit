@@ -1,0 +1,454 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                       <span class="text-md text-orange _600 " >
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
+                                </li>
+                                <li class="active">
+                                    <span>{{'label.dailyPlan' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                    <div class="inline m-l-sm">
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button [disabled]="savedDailyPlanFilter.selected" class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}" (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)" translate>button.allStatus
+                            </button>
+                            <button [disabled]="savedDailyPlanFilter.selected" class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='WAITING'}" (click)="getPlans('WAITING',null)" translate>button.waiting
+                            </button>
+                            <button [disabled]="savedDailyPlanFilter.selected" class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL'}" (click)="getPlans('SUCCESSFUL',null);" translate>button.successful
+                            </button>
+                            <button [disabled]="savedDailyPlanFilter.selected" class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED'}" (click)="getPlans('FAILED',null)" translate>button.failed
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item"
+                                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL', 'disable-link':savedDailyPlanFilter.selected}" (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)" translate>button.allStatus
+                                </a>
+                                <a class="dropdown-item"
+                                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='WAITING', 'disable-link':savedDailyPlanFilter.selected}" (click)="getPlans('WAITING',null)" translate>button.waiting
+                                </a>
+                                <a class="dropdown-item"
+                                        [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='SUCCESSFUL', 'disable-link':savedDailyPlanFilter.selected}" (click)="getPlans('SUCCESSFUL',null);" translate>button.successful
+                                </a>
+                                <a class="dropdown-item"
+                                        [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='FAILED', 'disable-link':savedDailyPlanFilter.selected}" (click)="getPlans('FAILED',null)" translate>button.failed
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group btn-group-toggle m-l-sm" ngbRadioGroup name="late" [(ngModel)]="dailyPlanFilters.filter.state">
+                            <label ngbButtonLabel class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.state==='LATE'}"  >
+                                 <input ngbButton type="radio" [value]="'LATE'"> <span translate>button.late</span>
+                            </label>
+                        </div>
+                        <div class="btn-group btn-group-toggle m-l-sm hidden-btn-group" ngbRadioGroup name="range" [(ngModel)]="dailyPlanFilters.filter.range" >
+                            <label ngbButtonLabel class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='today'}" >
+                                 <input ngbButton type="radio" [value]="'today'" (click)="getPlans(null,'today')"> <span translate>button.today</span>
+                            </label>
+                            <label ngbButtonLabel  class="btn btn-default btn-sm button-group-ellipsis"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='next-24-hours'}" >
+                                 <input ngbButton type="radio" [value]="'next-24-hours'" (click)="getPlans(null,'next-24-hours')"> <span translate>button.next24</span>
+                            </label>
+                        </div>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm" data-toggle="dropdown">
+                                <span translate>label.sortBy</span>
+                                <span class="text-primary">
+                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='processedPlanned'">
+                                    {{'label.path' | translate}}
+                                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                                </span>
+                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='orderId'">
+                                    {{'label.orderId' | translate}}
+                                  <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                                </span>
+                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='plannedStartTime'">
+                                    {{'label.planned' | translate}}
+                                <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                                </span>
+                                <span *ngIf="dailyPlanFilters.filter.sortBy ==='state._text'">
+                                   {{'label.status' | translate}}
+                                    <i *ngIf="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i *ngIf="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
+                                </span>
+                                </span>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="sortBy('processedPlanned')" translate>label.path</a>
+                                <a class="dropdown-item" (click)="sortBy('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" (click)="sortBy('plannedStartTime')" translate>label.plannedStart</a>
+                                <a class="dropdown-item" (click)="sortBy('state._text')" translate>label.status</a>
+                            </div>
+                        </div>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
+                                {{'label.filters' | translate}}
+                                <span class="text-primary"  [innerHtml]="selectedFiltered.name"></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
+                                <a class="dropdown-item" (click)="editFilters()"
+                                   *ngIf="dailyPlanFilterList.length>0" translate>label.editExistingFilters</a>
+
+                                <div class="dropdown-divider" *ngIf="dailyPlanFilterList.length>0"></div>
+                                <a class="dropdown-item"
+                                   [ngClass]="{orange: (savedDailyPlanFilter.selected === filter.id)}"
+                                   (click)="changeFilter(filter)"
+                                   *ngFor="let filter of dailyPlanFilterList | orderBy: 'name'">
+                                   <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedDailyPlanFilter.selected === filter.id"
+                                       class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <button class="btn btn-default btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="pageView==='grid' || (plans | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
+                        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+      <div class="row m-b-sm m-t-xs">
+            <div class="col-lg-12">
+                <button class="btn btn-sm inline pull-right m-l btn-default" (click)="advancedSearch()" [hidden]="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-default" (click)="cancel()" *ngIf="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <input type="search" class="pull-right hide" [ngClass]="{'show-block': pageView==='list'}"  placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
+            </div>
+        </div>
+        <div class="row hide" [ngClass]="{'show':showSearchPanel}">
+                <div class="col-md-12">
+                <div class="box p-a m-b-sm m-t-sm">
+                    <form #myForm="ngForm" (ngSubmit)="saveAsFilter()">
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
+
+                            <div class=" col-sm-6">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                                       name="filterName" maxlength="25" [(ngModel)]="searchDailyPlanFilter.name"
+                                       (blur)="checkFilterName()">
+                            </div>
+                        </div>
+                        <div class="form-group row m-b-sm">
+                            <label class="col-md-2 col-sm-4" translate>label.dateRange</label>
+                            <div class=" col-sm-8">
+                                <div>
+                                    <label class="md-check w">
+                                        <input type="radio" name="date" [(ngModel)]="searchDailyPlanFilter.radio" value="current">
+                                        <i class="primary"></i> <span translate>label.specificDate</span>
+                                    </label>
+                                    <label class="md-check w">
+                                        <input type="radio" name="date" [(ngModel)]="searchDailyPlanFilter.radio" value="planned">
+                                        <i class="primary"></i> <span translate>label.manualDate</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                       <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'current'">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date date-picker" name="fromDate" ngbDatepicker #from="ngbDatepicker" [(ngModel)]="searchDailyPlanFilter.from"
+                                       placeholder="{{'placeholder.setStartDate' | translate}}"
+                                        type="text" (click)="from.toggle()">
+                                <input  maxlength="8" [disabled]="!searchDailyPlanFilter.from" class="form-control input-time m-l" [(ngModel)]="searchDailyPlanFilter.fromTime"
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" name="startTime" type="text" style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" *ngIf="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" (click)="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
+                            </div>
+                        </div>
+                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'current'">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date date-picker" name="toDate" ngbDatepicker #to="ngbDatepicker"
+                                       [(ngModel)]="searchDailyPlanFilter.to" placeholder="{{'placeholder.setEndDate' | translate}}"
+                                        type="text" (click)="to.toggle()">
+                                <input  maxlength="8" [disabled]="!searchDailyPlanFilter.to" class="form-control input-time m-l" name="toTime" [(ngModel)]="searchDailyPlanFilter.toTime"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
+                                 <a class="text-sm text-primary" *ngIf="searchDailyPlanFilter.to || searchDailyPlanFilter.toTime" (click)="searchDailyPlanFilter.to='';searchDailyPlanFilter.toTime=''; " translate>button.clear</a>
+                            </div>
+                        </div>
+                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'planned'">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+
+                            <div class=" col-sm-6" >
+                                <input type="text" name="from" class="form-control"
+                                       placeholder="{{'placeholder.timeRangeFrom' | translate}}" [(ngModel)]="searchDailyPlanFilter.from1">
+
+                            </div>
+                        </div>
+                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'planned'">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+                           <div class=" col-sm-6">
+                            <input type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" [(ngModel)]="searchDailyPlanFilter.to1">
+
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="regex"
+                                       placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
+                                       [(ngModel)]="searchDailyPlanFilter.regex">
+
+                            </div>
+                            <div class="col-sm-1 p-l-0 p-t-sm"><a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                        </div>
+                        <div class="form-group row" *ngIf="searchDailyPlanFilter.paths && searchDailyPlanFilter.paths.length>0">
+                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
+                            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                                <div *ngFor="let path of searchDailyPlanFilter.paths">
+                                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path,'path')"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobChain</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="jobChain"
+                                       placeholder="{{'placeholder.enterJobChainPath' | translate}}"
+                                       [(ngModel)]="searchDailyPlanFilter.jobChain">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.orderId</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="orderId"
+                                       placeholder="{{'placeholder.enterOrderId' | translate}}"
+                                       [(ngModel)]="searchDailyPlanFilter.orderId">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.job</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="job"
+                                       placeholder="{{'placeholder.enterJobPath' | translate}}"
+                                       [(ngModel)]="searchDailyPlanFilter.job">
+                            </div>
+                        </div>
+                         <div class="form-group row ">
+                             <label class="col-md-2 col-sm-4 " translate>label.status</label>
+                            <div class=" col-sm-8">
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="WAITING" name="waiting" />
+                                    <i class="primary"></i><span translate>label.waiting</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="LATE" name="late"/>
+                                    <i class="primary"></i><span translate>label.late</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="SUCCESSFUL" name="success"/>
+                                    <i class="primary"></i><span translate>label.successful</span>
+                                </label>
+                                <label class="md-check w m-t-sm">
+                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="FAILED" name="failed"/>
+                                    <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="form-group m-t m-b-xs">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>
+                                button.search
+                            </button>
+                            <button type="submit" class="btn orange btn-sm m-l-sm"
+                                    [disabled]="!isUnique || !searchDailyPlanFilter.name" translate>button.saveAsFilter
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm m-l-sm" (click)="cancel()" translate>
+                                button.cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+        <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
+            <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
+                <div class="box p-a">
+                    <div id="embedded-Gantt"></div>
+                </div>
+            </div>
+            <div class="hide box p-a " [ngClass]="{'show': pageView==='list' && plans.length>0}">
+                <div class="table-responsive" *ngIf="plans.length>0">
+                    <table class="table table-hover table-bordered " id="dailyPlanTableId">
+                        <thead>
+                        <tr>
+                            <th (click)="sortBy('processedPlanned')"><a><span
+                                    translate>label.jobChain</span><span>/</span><span translate>label.job</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'processedPlanned' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'processedPlanned' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('orderId')"><a><span translate>label.orderId</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('state._text')"><a><span translate>label.status</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'state._text' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'state._text' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('late')"><a><span translate>label.late</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('startMode')"><a><span translate>label.repeatType</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startMode' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startMode' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('period.repeat')"><a><span translate>label.repeatInterval</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'plannedStartTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'plannedStartTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'expectedEndTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'expectedEndTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('duration')"><a><span translate>label.expectedDuration</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('startTime')"><a><span translate>label.startTime</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('endTime')"><a><span translate>label.endTime</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'endTime' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'endTime' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('duration1')"><a><span translate>label.duration</span>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration1' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration1' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let plan of plans | filter: searchKey | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }"
+                            (click)="coreService.showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)"
+                            [ngClass]="{'cursor':plan.historyId}">
+                            <td>
+                                <span class="hide text-hover-primary" (click)="showJobChain(plan.jobChain);$event.stopPropagation()"
+                                      [ngClass]="{show:plan.jobChain!=undefined}" [innerHtml]="plan.jobChain"></span>
+                                <span class="hide text-hover-primary" (click)="showJob(plan.job);$event.stopPropagation()"
+                                      [ngClass]="{show:plan.job!=undefined}" [innerHtml]="plan.job"></span>
+                            </td>
+                            <td><span class="text-hover-primary" (click)="showOrderLink(plan.jobChain,plan.orderId);$event.stopPropagation()"
+                                      [innerHtml]="plan.orderId"></span></td>
+                            <td>
+                                <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"
+                                      [innerHtml]="plan.state._text | translate"> </span>
+                            </td>
+                            <td><span *ngIf="plan.late==true" translate>label.late</span></td>
+                            <td>
+                                <span *ngIf="plan.startMode ==0" translate>label.singleStartMode</span>
+                                <span *ngIf="plan.startMode ==1" translate>label.startStartRepeatMode</span>
+                                <span *ngIf="plan.startMode ==2" translate>label.startEndRepeatMode</span>
+                            </td>
+                            <td><span *ngIf="plan.period.repeat">{{plan.period.repeat}}</span></td>
+                            <td><span [innerHtml]="plan.plannedStartTime | stringToDate"></span></td>
+                            <td><span [innerHtml]="plan.expectedEndTime | stringToDate"></span></td>
+                            <td><span [innerHtml]="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
+                            <td><span [innerHtml]="plan.startTime | stringToDate "></span></td>
+                            <td><span [innerHtml]="plan.endTime | stringToDate"></span></td>
+                            <td><span [innerHtml]="plan.startTime | duration:plan.endTime"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls class="pagination" (pageChange)="dailyPlanFilters.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-l-xs m-b" *ngIf="(plans | filter: searchKey).length > 10">
+                        <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+                             [(ngModel)]="preferences.entryPerPage">
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                                <input ngbButton type="radio" [value]="10"> 10
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                                <input ngbButton type="radio" [value]="25"> 25
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                                <input ngbButton type="radio" [value]="50"> 50
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                                <input ngbButton type="radio" [value]="100"> 100
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                                <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(plans | filter: searchKey).length >0">
+                        <span translate>label.total</span> {{(plans | filter: searchKey).length}}
+                        <span *ngIf="(plans | filter: searchKey).length >1" translate>label.plansFound</span>
+                        <span *ngIf="(plans | filter: searchKey).length === 1" translate>label.planFound</span>
+                    </div>
+                </div>
+                <!-- if no matches found -->
+              <div class="text-center m-t text-uppercase text-orange" *ngIf="(plans | filter: searchKey).length === 0 && plans.length >0">
+                  <span translate>message.noDataMatched</span>
+              </div>
+            </div>
+        </div>
+      <div class=" text-center m-t text-uppercase" *ngIf="plans.length==0 && isLoaded" translate>message.noDataFound
+        </div>
+        <div class="hide text-center m-t-lg" [ngClass]="{'show': !isLoaded}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
+    </div>
+</div>

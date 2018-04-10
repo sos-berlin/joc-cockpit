@@ -1,0 +1,128 @@
+<!-- Admin Sub Header Starts -->
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 ">
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a>
+                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
+                                    </a>
+                                </li>
+                                <li  routerLink = "account" routerLinkActive = "active" [ngClass] = "{'cursor' : route != '/users/account'}" >
+                                    <span>{{'breadcrumb.manageUser' | translate }}</span>
+                                </li>
+                                 <li *ngIf = "route.match('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
+                                    <span>{{'breadcrumb.masters' | translate }}</span>
+                                </li>
+                                <li *ngIf = "route == '/users/main_section'"  routerLink = "main_section" routerLinkActive = "active">
+                                    <span>{{'breadcrumb.main' | translate }}</span>
+                                </li>
+                                <li *ngIf = "route.match('/users/permissions')"  class = "active" >
+                                    <span>{{'breadcrumb.permissions' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                    <div class="inline">
+                        <!-- Sorting via Account Name Starts -->
+                        <div class="btn-group dropdown" *ngIf="route.match('/users/master')">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
+                                <span class="text-primary" >{{selectedUser | decodeSpace}} </span></button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" [ngClass]="{orange: selectedUser === user.user}"
+                                   *ngFor="let user of users | orderBy: 'name'" (click)="selectUser(user.user)">
+                                    <span>{{user.user | decodeSpace}}</span>
+                                    <i (click)="selectUser(null);$event.stopPropagation();" *ngIf="selectedUser === user.user" class="fa fa-times-circle-o remove"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Sorting via Account Name Ends -->
+                        <button *ngIf="route === '/users/account'" class="btn btn-default btn-sm m-l-sm" (click) = "addAccount()">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            <span translate>button.addUser</span>
+                        </button>
+                        <button *ngIf="route.match('/users/master')" class="btn btn-default btn-sm m-l-sm" (click) = "addMaster()" >
+                            <i class="fa fa-plus"></i>
+                            <span translate>button.addMaster</span>
+                        </button>
+                        <button *ngIf="route.match('/users/master')" class="btn btn-default btn-sm m-l-sm" (click) = "addRole()" >
+                            <i class="fa fa-plus"></i>
+                            <span translate>button.addRole</span>
+                        </button>
+                        <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable" (click)="addLdapRealm()"
+                                class="btn btn-sm btn-default m-l-sm" >
+                            <span translate>button.addLdapRealm</span>
+                        </button>
+                        <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable" (click)="enableJOCCluster()"
+                                class="btn btn-sm btn-default m-l-sm" >
+                            <span translate>button.enableJOCCluster</span>
+                        </button>
+                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-default m-l-sm" (click)="editMainSection()">
+                            <i class="fa fa-pencil"></i>
+                            <span translate>button.updateSection</span>
+                        </button>
+                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-default m-l-sm" (click)="addMainSection()">
+                            <i class="fa fa-plus"></i>
+                            <span translate>button.addEntry</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
+                            <i class="fa fa-plus"></i>
+                            {{'button.addFolder' | translate}}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-default m-l-sm" *ngIf="route.match('/users/permissions')" [hidden]="pageView=='grid'" (click)="addPermission();" >
+                            <i class="fa fa-plus"></i>
+                            {{'button.addPermission' | translate}}
+                        </button>
+                        <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
+                            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Admin Sub Header Ends -->
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div *ngIf = "showTabs" class="row m-b m-t-xs">
+            <div class="col-md-6 col-sm-4">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink = "account" routerLinkActive="active" >
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.users</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink = "master" routerLinkActive="active" >
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.masters</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+                        <a class="nav-link" routerLink = "main_section" routerLinkActive="active">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf = "route === '/users/account'" class="col-md-6 col-sm-8">
+                <input type="search" #input (keyup) = "searchBar(input.value)" id="searchBar"  class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
+            </div>
+        </div>
+        <div class="row m-t-sm">
+            <div class="col-sm-12">
+                <router-outlet></router-outlet>
+            </div>
+         </div>
+    </div>
+</div>

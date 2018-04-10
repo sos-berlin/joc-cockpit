@@ -1,8 +1,0 @@
-<div class="p-a">
-  <span ng-repeat="log in clientLogs | filter:logFilter track by $index">
-    <span style="font-family:'Courier New';color: #009933;white-space:nowrap;" ng-class="{'log_error':log.level=='error'}" >{{log.logTime | stringToDateFormat}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
-    <span>
-      <span style='display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
-    </span><br>
-  </span>
-</div>

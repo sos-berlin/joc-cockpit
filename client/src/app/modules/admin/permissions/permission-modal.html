@@ -1,0 +1,51 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span *ngIf="add" translate>label.addPermission</span>
+        <span *ngIf="!add"><span translate>label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(currentPermission)">
+    <div class="modal-body container">
+        <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>label.permission</label>
+            <div class="col-sm-6">
+                <select class="form-control" [(ngModel)]="currentPermission.path" style="border: none" name="path1" required
+                        (change)="checkCovered(currentPermission)">
+                    <option *ngFor="let per of permissionOptions" value="{{ per }}"
+                            [disabled]="per.indexOf('-----')!=-1">{{ per }}
+                    </option>
+                </select>
+                <div class="input-dropdown" style="margin-bottom: -15px">
+                    <input type="text" class="form-control" [(ngModel)]="currentPermission.path" name="path" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}" required
+                           (blur)="checkCovered(currentPermission)"/>
+                </div>
+                <div class="help-block text-danger" [ngClass]="{'m-b-sm':isCovered}" *ngIf="isCovered" style="margin-top: -25px;margin-bottom: 8px">
+                    <div translate>message.permissionIsAlreadyCovered</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" style="margin-top: -12px">
+            <label class="col-sm-4 form-control-label" translate>label.excluded</label>
+            <div class=" col-sm-6">
+                <label class="md-check">
+                    <input type="checkbox" [(ngModel)]="currentPermission.excluded" name="excluded"
+                           (change)="checkCovered(currentPermission)">
+                    <i class="primary"></i><span class="m-l-xs" translate> </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="!myForm.form.valid || isCovered || submitted" class="btn btn-primary btn-sm">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+            button.cancel
+        </button>
+    </div>
+</form>
+

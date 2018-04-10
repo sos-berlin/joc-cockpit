@@ -1,0 +1,104 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 " >
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
+                                </li>
+                                <li class="active">
+                                    <span>{{'label.dashboard' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                    <div class="inline" *ngIf="!editLayoutObj">
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="editLayout()" >
+                            <i class="fa fa-pencil"></i>&nbsp;
+                            <span translate>button.editLayout</span>
+                        </button>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" >
+                                <i class="fa fa-cog"></i>&nbsp;
+                                <span translate>button.tools</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item " (click)="resetLayout()" translate>button.resetLayout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline" *ngIf="editLayoutObj">
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="addWidgetDialog()" >
+                            <i class="fa fa-plus"></i>&nbsp;
+                            <span translate>button.widget</span>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="saveWidget()" >
+                            <i class="fa fa-save"></i>&nbsp;
+                            <span translate>button.save</span>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="cancelWidget()" >
+                            <i class="fa fa-times"></i>&nbsp;
+                            <span translate>button.cancel</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="m-a hide" >
+        <div class="m-a-sm emtpy-text" >
+            <a class="cursor" (click)="addWidgetDialog()" translate>message.addNewWidget</a>
+        </div>
+    </div>
+
+    <div class="gridster">
+        <gridster [options]="options" >
+            <gridster-item [item]="item" *ngFor="let item of dashboard">
+                <div class="destroy-button">
+                    <i *ngIf="editLayoutObj" class="fa fa-times-circle" (click)="removeWidget($event, item)"></i>
+                </div>
+                <div *ngIf="item.name === 'agentClusterStatus'">
+                    <app-agent-status></app-agent-status>
+                </div>
+                <div *ngIf="item.name === 'masterClusterStatus'">
+                    <app-master-cluster [permission]="permission"></app-master-cluster>
+                </div>
+                <div *ngIf="item.name === 'agentClusterRunningTasks'">
+                    <app-agent-running-task></app-agent-running-task>
+                </div>
+                <div *ngIf="item.name === 'jobSchedulerStatus'">
+                    <app-scheduler-instance></app-scheduler-instance>
+                </div>
+                <div *ngIf="item.name === 'ordersOverview'">
+                    <app-order-overview></app-order-overview>
+                </div>
+                <div *ngIf="item.name === 'ordersSummary'">
+                    <app-order-summary></app-order-summary>
+                </div>
+                <div *ngIf="item.name === 'tasksOverview'">
+                    <app-task-overview></app-task-overview>
+                </div>
+                <div *ngIf="item.name === 'tasksSummary'">
+                     <app-task-summary></app-task-summary>
+                </div>
+                <div *ngIf="item.name === 'fileTransferOverview'">
+                     <app-file-overview></app-file-overview>
+                </div>
+                <div *ngIf="item.name === 'fileTransferSummary'">
+                   <app-file-summary></app-file-summary>
+                </div>
+                <div *ngIf="item.name === 'dailyPlanOverview'">
+                    <app-daily-plan></app-daily-plan>
+                </div>
+            </gridster-item>
+        </gridster>
+    </div>
+</div>
+
+
+

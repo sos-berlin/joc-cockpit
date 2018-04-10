@@ -1,0 +1,358 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600">
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a>
+                                        <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
+                                    </a>
+                                </li>
+                                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
+                                    <span>{{'breadcrumb.resources' | translate }}</span>
+                                </li>
+                                <li class="active">
+                                    <span>{{'breadcrumb.agentCluster' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                    <div class="inline">
+                        <div class="show-block">
+                            <div class="btn-group hidden-btn-group">
+                              <button class="btn btn-default btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='all'}"
+                                      (click)="loadAgents('all')" translate>button.allAgentCluster
+                              </button>
+                              <button class="btn btn-default btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}"
+                                      (click)="loadAgents('0')" translate>button.healthyAgentCluster
+                              </button>
+                              <button class="btn btn-default btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}"
+                                      (click)="loadAgents('1')" translate>button.unhealthyAgentCluster
+                              </button>
+                              <button class="btn btn-default btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}"
+                                      (click)="loadAgents('2')" translate>button.unreachableAgentCluster
+                              </button>
+                            </div>
+                            <div class="btn-group dropdown hidden-dropdown">
+                              <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown"
+                                      translate>label.status
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='all'}" (click)="loadAgents('all')"
+                                   translate>button.allAgentCluster
+                                </a>
+                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}" (click)="loadAgents('0')"
+                                   translate>button.healthyAgentCluster
+                                </a>
+                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='1'}" (click)="loadAgents('1')"
+                                   translate>button.unhealthyAgentCluster
+                                </a>
+                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='2'}" (click)="loadAgents('2')"
+                                   translate>button.unreachableAgentCluster
+                                </a>
+                              </div>
+                          </div>
+                            <div class="btn-group dropdown">
+                              <button class="btn btn-default btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                  <span class="text-primary">
+                                      <span *ngIf="agentsFilters.filter.sortBy =='path'">
+                                      {{'label.path' | translate}}
+                                      <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                      <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                      </span>
+                                      <span *ngIf="agentsFilters.filter.sortBy =='status'">
+                                           {{'label.status' | translate}}
+                                          <i *ngIf="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                          <i *ngIf="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                      </span>
+                                  </span>
+                              </button>
+                              <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                  <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
+                                  <a class="dropdown-item" (click)="sortBy('status')" translate>label.status</a>
+                              </div>
+                          </div>
+                           <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sub-link">
+  <div class="row">
+    <div class="col-md-12">
+      <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+        <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+          <a class="nav-link active" >
+            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
+          <a class="nav-link" [routerLink]="['/resource/agent_job_execution']">
+            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator" *ngIf="permission.Lock.view.status && ( permission.ProcessClass.view.status || permission.Calendar.view.status)">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item" *ngIf="permission.Lock.view.status">
+          <a class="nav-link" [routerLink]="['/resource/lock']">
+            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator" *ngIf="permission.ProcessClass.view.status && (permission.Calendar.view.status)">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
+          <a class="nav-link" [routerLink]="['/resource/process_class']">
+            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
+          </a>
+        </li>
+        <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status">
+          <span class="separator"></span>
+        </li>
+        <li class="nav-item" *ngIf="permission.Calendar.view.status">
+          <a class="nav-link" [routerLink]="['/resource/calendar']">
+            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht2">
+    <div class="padding p-b-0">
+        <div class="row">
+            <div class="col-sm-12">
+               <div class="hide-block sidebar-btn resize-cursor">
+                    <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
+                </div>
+                <div id="leftPanel" class="leftPanel" >
+                  <div *ngIf="tree.length>0">
+                     <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+                  </div>
+                </div>
+                <div id="rightPanel">
+                    <div class="hide m-t-xs" [ngClass]="{'show': isLoading}" [hidden]="loading">
+                        <div class="hide row " [ngClass]="{'show': pageView=='grid'}">
+                            <div *ngFor="let item of agentClusters | groupBy: 'path1'">
+                                <div class="col-sm-12" style="margin-bottom: 10px">
+                                    <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                                     *ngFor="let cluster of item.value | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
+                                    <div class="box card" [ngClass]="coreService.getColor(cluster.state.severity,'border')">
+                                        <div class="box-body">
+                                            <div>
+                                                <span class="text-left ">
+                                                    <span class="fa fa-stop pos-abt m-t-xs text-xs" [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>
+                                                    <i class="fa fa-server m-l m-r-xs"></i>
+                                                    <span ngbTooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
+                                                          [innerHtml]="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
+                                                    <span class="text-sm _600 pull-right" ngbTooltip="{{cluster._type | translate}}"></span>
+
+                                                </span>
+                                            </div>
+                                            <div class="btn-group dropdown pull-right abt-dropdown">
+                                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                                        class="text fa fa-ellipsis-h"></i></a>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more">
+                                                    <a (click)="coreService.copyLink('agentCluster',cluster.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
+                                                </div>
+                                            </div>
+                                            <div class="text-sm  text-left text-muted p-t-sm">
+                                                <span class="text-black _600" [innerHtml]="cluster.numOfAgents.any"></span>
+                                                {{'label.totalAgents' | translate}}
+                                            </div>
+                                            <div class="text-sm  text-left text-muted p-t-xs p-l">
+                                                <span class="text-black _600" [innerHtml]="cluster.numOfAgents.running"></span> {{'label.running' | translate}}
+                                            </div>
+                                            <div class="text-sm  text-left text-muted p-t-xs">
+                                                <a (click)="showProcesses(cluster)" *ngIf="cluster.numOfProcesses>0" class="text-hover-primary" [innerHtml]="cluster.numOfProcesses"></a>
+                                                <span class="text-black _600"  *ngIf="cluster.numOfProcesses==0" >0</span>
+                                                {{'label.runningProcesses' | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box p-a" *ngIf="pageView=='list' && agentClusters.length >0">
+                             <div class="table-responsive" >
+                                    <table class="table table-hover table-bordered  ">
+                                        <thead>
+                                        <tr>
+                                            <th width="45"><span translate>label.action</span></th>
+                                            <th (click)="sortBy('path')"><a><span translate>label.agentCluster</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('state._text')"><a><span translate>label.status</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
+                                                           class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('numOfAgents.any')"><a><span translate>label.totalAgents</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('numOfAgents.running')"><a><span translate>label.runningAgents</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('_type')"><a><span translate>label.schedulingType</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('surveyDate')"><a><span translate>label.lastUpdateTime</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'surveyDate' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'surveyDate' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('maxProcesses')"><a><span translate>label.maxProcesses</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                            <th (click)="sortBy('numOfProcesses')"><a><span translate>label.runningProcesses</span>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && !agentsFilters.reverse"
+                                                   class="fa fa-caret-up "></i>
+                                                <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
+                                                   class="fa fa-caret-down "></i></a>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: agentsFilters.currentPage }" [ngClass]="{'light-bg':cluster.show}">
+                                        <tr>
+                                            <td>
+                                                <div class="btn-group dropdown">
+                                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-h"></i></button>
+                                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                    <a (click)="coreService.copyLink('agentCluster',cluster.path)"
+                                                       class="dropdown-item" translate>button.copyLinkToObject</a>
+                                                  </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <i class="cursor fa fa-caret-down noExl" *ngIf="!cluster.show" (click)="showAgents(cluster)"></i>
+                                                <i class="cursor fa fa-caret-up noExl" *ngIf="cluster.show" (click)="hideAgents(cluster)"></i>
+                                                <a class="text-hover-primary" [innerHtml]="cluster.path" (click)="showProcessClass(cluster.path)"></a>
+                                            </td>
+                                            <td><span class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">
+                                                <span *ngIf="cluster.state._text =='ALL_AGENTS_ARE_RUNNING'">{{'healthy' | translate}}</span>
+                                                <span *ngIf="cluster.state._text =='ONLY_SOME_AGENTS_ARE_RUNNING'">{{'unhealthy' | translate}}</span>
+                                                <span *ngIf="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
+                                            </span></td>
+                                            <td>{{cluster.numOfAgents.any}}</td>
+                                            <td>{{cluster.numOfAgents.running}}</td>
+                                            <td>{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
+                                            <td>{{cluster._type | translate}}</td>
+                                            <td>{{cluster.surveyDate | stringToDate}}</td>
+                                            <td>{{cluster.maxProcesses}}</td>
+                                            <td>
+                                                <a (click)="showProcesses(cluster)" *ngIf="cluster.numOfProcesses>0" class="text-hover-primary" [innerHtml]="cluster.numOfProcesses"></a>
+                                                <span *ngIf="!cluster.numOfProcesses" [innerHtml]="cluster.numOfProcesses || 0"></span>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="cluster.show">
+                                            <td></td>
+                                            <td colspan="9" style="padding: 1px !important;">
+                                                <table class="table m-a-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.agent</th>
+                                                        <th translate>label.state</th>
+                                                        <th translate>label.url</th>
+                                                        <th translate>label.startedAt</th>
+                                                        <th translate>label.runningTasks</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody *ngFor="let agent of cluster.agents">
+                                                    <tr>
+                                                        <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
+                                                        <td><span class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">{{agent.state._text | translate}}</span></td>
+                                                        <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
+                                                        <td>{{agent.startedAt | stringToDate}}</td>
+                                                        <td>{{agent.runningTasks || 0}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                               <pagination-controls class="pagination" (pageChange)="agentsFilters.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+                               <div class="pull-left m-l-xs m-b" *ngIf="agentClusters.length > 10">
+                                 <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+                                      [(ngModel)]="preferences.entryPerPage">
+                                   <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                          [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                                     <input ngbButton type="radio" [value]="10"> 10
+                                   </label>
+                                   <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                          [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                                     <input ngbButton type="radio" [value]="25"> 25
+                                   </label>
+                                   <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                          [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                                     <input ngbButton type="radio" [value]="50"> 50
+                                   </label>
+                                   <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                          [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                                     <input ngbButton type="radio" [value]="100"> 100
+                                   </label>
+                                   <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                          [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                                     <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+                                   </label>
+                                 </div>
+                               </div>
+                               <div class="inline text-sm m-l-xs" [ngClass]="{'m-t-xs m-l-sm': agentClusters.length > 10}" *ngIf="agentClusters.length >0"><span translate>label.total</span> {{agentClusters.length}}
+                                     <span translate *ngIf="agentClusters.length >1">label.agentClustersFound</span>
+                                     <span translate *ngIf="agentClusters.length ==1">label.agentClusterFound</span>
+                               </div>
+                             </div>
+                        </div>
+                        <div *ngIf="isLoading && !loading && agentClusters.length==0 && tree.length>0" class="text-center m-t h6">
+                            <span translate>message.emptyFolder</span>
+                        </div>
+                    </div>
+                    <div class="hide text-center m-t text-primary text" [ngClass]="{'show': loading}">
+                        <div class="backdrop" ></div>
+                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                    </div>
+                    <div *ngIf="!isLoading" class="text-center m-t-lg">
+                        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+                    </div>
+                </div>
+                <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
+            </div>
+        </div>
+    </div>
+</div>

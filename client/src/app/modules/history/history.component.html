@@ -1,0 +1,863 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600">
+                          <ol class="breadcrumb p-t-xs">
+                                <li (click)="coreService.backClicked()">
+                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
+                                </li>
+                                <li class="active">
+                                    <span>{{'label.history' | translate }}</span>
+                                </li>
+                          </ol>
+                        </span>
+                    </div>
+                    <label class="md-check" >
+                        <input type="checkbox" [(ngModel)]="historyView.current" (change)="changeJobScheduler()">
+                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                    </label>
+                    <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'ORDER'}">
+                       <div class="btn-group m-l-sm hidden-btn-group">
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','ALL')"
+                                    [ngClass]="{'btn-primary': order.filter.historyStates=='ALL'}" translate>button.allStatus
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                    [ngClass]="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','FAILED')"
+                                    [ngClass]="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','INCOMPLETE')"
+                                    [ngClass]="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item " (click)="loadHistory('STATE','ALL')"
+                                   [ngClass]="{'btn-primary': order.filter.historyStates=='ALL', 'disable-link':savedHistoryFilter.selected}" translate>button.allStatus
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                   [ngClass]="{'btn-primary': order.filter.historyStates=='SUCCESSFUL', 'disable-link':savedHistoryFilter.selected}" translate>button.successful
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','FAILED')"
+                                   [ngClass]="{'btn-primary': order.filter.historyStates=='FAILED', 'disable-link':savedHistoryFilter.selected}" translate>button.failed
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','INCOMPLETE')"
+                                   [ngClass]="{'btn-primary': order.filter.historyStates=='INCOMPLETE', 'disable-link':savedHistoryFilter.selected}" translate>button.incomplete
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','all')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='all'}" translate>button.all
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','today')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='today'}" translate>button.today
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1h')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='-1h'}" translate>button.last1
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-12h')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='-12h'}" translate>button.last12
+                            </button>
+                            <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='-1d'}" translate>button.last24
+                            </button>
+                             <button (disabled)="savedHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='-1w'}" translate>button.lastWeak
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="loadHistory('DATE','all')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','today')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='today', 'disable-link':savedHistoryFilter.selected}" translate>button.today
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1h')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group dropdown m-r-sm">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered1.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span></button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="advanceFilter()" translate>label.createFilter</a>
+                                <a class="dropdown-item" (click)="editFilters()" *ngIf="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" *ngIf="orderHistoryFilterList.length>0"></div>
+                                <a class="dropdown-item" [ngClass]="{orange: (savedHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'">
+                                    <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'TASK'}">
+                        <div class="btn-group m-l-sm hidden-btn-group" >
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','ALL')"
+                                    [ngClass]="{'btn-primary': task.filter.historyStates=='ALL'}" translate>button.allStatus
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                    [ngClass]="{'btn-primary': task.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','FAILED')"
+                                    [ngClass]="{'btn-primary': task.filter.historyStates=='FAILED'}" translate>button.failed
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','INCOMPLETE')"
+                                    [ngClass]="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="loadHistory('STATE','ALL')"
+                                   [ngClass]="{'btn-primary': task.filter.historyStates=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                   [ngClass]="{'btn-primary': task.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','FAILED')"
+                                   [ngClass]="{'btn-primary': task.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','INCOMPLETE')"
+                                   [ngClass]="{'btn-primary': task.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','all')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='all'}" translate>button.all
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','today')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='today'}" translate>button.today
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1h')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-12h')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-12h'}" translate>button.last12
+                            </button>
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-1d'}" translate>button.last24
+                            </button>
+                             <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-1w'}" translate>button.lastWeak
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="loadHistory('DATE','all')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','today')"
+                                   [ngClass]="{'btn-primary': task.filter.date=='today', 'disable-link':savedJobHistoryFilter.selected}" translate>button.today
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1h')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-1h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last1
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-12h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last12
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-1d', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last24
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-1w', 'disable-link':savedJobHistoryFilter.selected}" translate>button.lastWeak
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group dropdown m-r-sm">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered2.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered2.name"></span></button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href (click)="advanceFilter()" translate>label.createFilter</a>
+                                <a class="dropdown-item" href (click)="editFilters()" *ngIf="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" *ngIf="jobHistoryFilterList.length>0"></div>
+                                <a class="dropdown-item" [ngClass]="{orange: (savedJobHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'">
+                                    <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i (click)="changeFilter();$event.stopPropagation();" *ngIf="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hide" [ngClass]="{'show-block':historyFilters.type == 'YADE'}">
+                        <div class="btn-group m-l-sm hidden-btn-group" >
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','ALL')"
+                                    [ngClass]="{'btn-primary': yade.filter.historyStates=='ALL'}" translate>button.allStatus
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                    [ngClass]="{'btn-primary': yade.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','FAILED')"
+                                    [ngClass]="{'btn-primary': yade.filter.historyStates=='FAILED'}" translate>button.failed
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('STATE','INCOMPLETE')"
+                                    [ngClass]="{'btn-primary': yade.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item " (click)="loadHistory('STATE','ALL')"
+                                   [ngClass]="{'btn-primary': yade.filter.historyStates=='ALL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','SUCCESSFUL')"
+                                   [ngClass]="{'btn-primary':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','FAILED')"
+                                   [ngClass]="{'btn-primary': yade.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('STATE','INCOMPLETE')"
+                                   [ngClass]="{'btn-primary': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','all')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='all'}" translate>button.all
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','today')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='today'}" translate>button.today
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1h')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-1h'}" translate>button.last1
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-12h')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-12h'}" translate>button.last12
+                            </button>
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-1d'}" translate>button.last24
+                            </button>
+                             <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-default btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-1w'}" translate>button.lastWeak
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" (click)="loadHistory('DATE','all')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='all', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','today')"
+                                   [ngClass]="{'btn-primary': yade.filter.date=='today', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.today
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1h')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-1h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last1
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-12h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last12
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-1d', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last24
+                                </a>
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-1w', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.lastWeak
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group dropdown m-r-sm">
+                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered3.name"></span></button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href (click)="advanceFilter()" translate>label.createFilter</a>
+                                <a class="dropdown-item" href (click)="editFilters()" *ngIf="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" *ngIf="yadeHistoryFilterList.length>0"></div>
+                                <a class="dropdown-item" [ngClass]="{orange: (savedYadeHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'">
+                                    <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i (click)="changeFilter(null);$event.stopPropagation();" *ngIf="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" ngbTooltip="{{'tooltip.deactivateCustomization' | translate}}"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="btn-group dropdown m-r-sm" *ngIf="historyFilters.type != 'YADE'">
+                        <button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" *ngIf="savedIgnoreList.isEnable" [innerHtml]="'label.active' | translate"></span></button>
+                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item"
+                               *ngIf="(savedIgnoreList.jobChains.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'ORDER'"
+                               href (click)="editIgnoreList()" translate>button.editIgnoreList</a>
+                            <a class="dropdown-item"
+                               *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'" href
+                               (click)="editIgnoreList()" translate>button.editIgnoreList</a>
+                            <a class="dropdown-item" href (click)="enableDisableIgnoreList()"
+                               *ngIf="!savedIgnoreList.isEnable" translate>button.enableIgnoreList</a>
+                            <a class="dropdown-item" href (click)="enableDisableIgnoreList()"
+                               *ngIf="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
+                            <a class="dropdown-item" href (click)="resetIgnoreList()"
+                               translate>button.resetIgnoreList</a>
+
+                        </div>
+                    </div>
+                    <button class="btn btn-default btn-sm " ngbTooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0" >
+        <div class="row m-b m-t-xs">
+            <div class="col-md-6 col-sm-4">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item" *ngIf="permission.History.view.status">
+                        <a class="nav-link" [ngClass]="{'active': historyFilters.type=='ORDER'}" (click)="orderHistory(null)">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.History.view.status">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.History.view.status">
+                        <a class="nav-link" [ngClass]="{'active': historyFilters.type=='TASK'}" (click)="taskHistory(null)">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="permission.YADE.view.transfers">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="permission.YADE.view.transfers">
+                        <a class="nav-link" [ngClass]="{'active': historyFilters.type=='YADE'}" (click)="yadeHistory(null)">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.fileTransfer</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6 col-sm-8">
+                <button class="btn btn-sm inline pull-right m-l btn-default" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-default" (click)="cancel()" *ngIf="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px" name="search">
+            </div>
+        </div>
+        <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
+        //TODO
+        </div>
+        <div class="hide"  [ngClass]="{'show': isLoading}">
+            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'ORDER'}" >
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="jobChain" >
+                        <thead>
+                            <tr>
+                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th *ngIf="!historyView.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i *ngIf="order.filter.sortBy == 'jobschedulerId' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'jobschedulerId' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('orderId')"><a><span translate>label.orderId</span>
+                                    <i *ngIf="order.filter.sortBy == 'orderId' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'orderId' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                    <i *ngIf="order.filter.sortBy == 'jobChain' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'jobChain' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('state._text')"><a><span translate>label.status</span>
+                                    <i *ngIf="order.filter.sortBy == 'state._text' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'state._text' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('startTime')"><a><span translate>label.startTime</span>
+                                    <i *ngIf="order.filter.sortBy == 'startTime' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'startTime' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('endTime')"><a><span translate>label.endTime</span>
+                                    <i *ngIf="order.filter.sortBy == 'endTime' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'endTime' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('duration')">
+                                    <a><span translate>label.duration</span>
+                                    <i *ngIf="order.filter.sortBy == 'duration' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'duration' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy('node')"><a><span translate>label.node</span>
+                                    <i *ngIf="order.filter.sortBy == 'node' && !order.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="order.filter.sortBy == 'node' && order.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let history of historys | filter: searchKey | orderBy: order.filter.sortBy:order.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: order.currentPage }" [ngClass]="{'light-bg':history.show}">
+                        <tr  class="cursor">
+                            <td class="tableexport-ignore">
+                                <div class="btn-group dropdown"  >
+                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                        <a class="dropdown-item" [ngClass]="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" (click)="addOrderToIgnoreList(history.orderId,history.jobChain)" translate>button.addOrderToIgnoreList</a>
+                                        <a class="dropdown-item" [ngClass]="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" (click)="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
+                                    </div>
+                                </div>
+                            </td>
+                             <td *ngIf="!historyView.current" (click)="showLogWindow(history,null,null,history.jobschedulerId)">
+                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>
+                                 <span [innerHtml]="history.jobschedulerId"></span>
+                                 <span *ngIf="!history.jobschedulerId" [innerHtml]="jobChainSearch.jobschedulerId"></span>
+                             </td>
+                            <td class="nowrap" (click)="showLogWindow(history,null)">
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show && historyView.current" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show && historyView.current" (click)="history.show = false;$event.stopPropagation()"></i>
+                                <span [innerHtml]="history.orderId"></span>
+                            </td>
+                            <td (click)="showLogWindow(history,null)">
+                                <span (click)="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="history.jobChain"></span>
+                            </td>
+                            <td (click)="showLogWindow(history,null)"><span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')" [innerHtml]="history.state._text | translate"></span></td>
+                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.startTime | stringToDate"></td>
+                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.endTime | stringToDate"></td>
+                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.startTime | duration:history.endTime"></td>
+                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.node || '-' "></td>
+                        </tr>
+                        <tr class="tableexport-ignore" *ngIf="history.show">
+                            <td></td>
+                             <td colspan="8" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th translate>label.step</th>
+                                         <th translate>label.state</th>
+                                         <th translate>label.job</th>
+                                         <th translate>label.start</th>
+                                         <th translate>label.end</th>
+                                         <th translate>label.duration</th>
+                                         <th translate>label.exitCode</th>
+                                         <th translate>label.errorCode</th>
+                                         <th translate>label.errorText</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr *ngFor="let step of history.steps" class="cursor">
+                                         <td (click)="showLogWindow(null,step)">{{step.step}}</td>
+                                         <td (click)="showLogWindow(null,step)">{{step.node}}</td>
+                                         <td (click)="showLogWindow(null,step)"><a (click)="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
+                                         <td (click)="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
+                                         <td (click)="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
+                                         <td (click)="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
+                                         <td (click)="showLogWindow(null,step)">{{step.exitCode}}</td>
+                                         <td (click)="showLogWindow(null,step)">{{step.error.code}}</td>
+                                         <td (click)="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <div *ngIf="history.steps.length==0" translate>message.noDataMatched</div>
+                             </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls class="pagination" (pageChange)="order.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-l-xs m-b" *ngIf="(historys | filter: searchKey).length > 10">
+                        <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+                             [(ngModel)]="preferences.entryPerPage">
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                                <input ngbButton type="radio" [value]="10"> 10
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                                <input ngbButton type="radio" [value]="25"> 25
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                                <input ngbButton type="radio" [value]="50"> 50
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                                <input ngbButton type="radio" [value]="100"> 100
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                                <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(historys | filter: searchKey).length >0">
+                        <span translate>label.total</span> {{(historys | filter: searchKey).length}}
+                        <span *ngIf="(historys | filter: searchKey).length >1" translate>label.historiesFound</span>
+                        <span *ngIf="(historys | filter: searchKey).length === 1" translate>label.historyFound</span>
+                    </div>
+                    <div *ngIf="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((historys | filter: searchKey).length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+            </div>
+            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'TASK'}">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="job">
+                        <thead>
+                            <tr>
+                               <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th *ngIf="!historyView.current" (click)="sortBy1('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i *ngIf="task.filter.sortBy == 'jobschedulerId' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'jobschedulerId' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('taskId')"><a><span translate>label.taskId</span>
+                                    <i *ngIf="task.filter.sortBy == 'taskId' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'taskId' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('job')"><a><span translate>label.job</span>
+                                    <i *ngIf="task.filter.sortBy == 'job' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'job' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('state._text')"><a><span translate>label.status</span>
+                                    <i *ngIf="task.filter.sortBy == 'state._text' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'state._text' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('startTime')"><a><span translate>label.startTime</span>
+                                    <i *ngIf="task.filter.sortBy == 'startTime' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'startTime' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('endTime')"><a><span translate>label.endTime</span>
+                                    <i *ngIf="task.filter.sortBy == 'endTime' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'endTime' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('duration')">
+                                    <a><span translate>label.duration</span>
+                                    <i *ngIf="task.filter.sortBy == 'duration' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'duration' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy1('exitCode')"><a><span translate>label.exitCode</span>
+                                    <i *ngIf="task.filter.sortBy == 'exitCode' && !task.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="task.filter.sortBy == 'exitCode' && task.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th class="tableexport-ignore"></th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                        <tr *ngFor="let jobHistory of jobHistorys | filter: searchKey | orderBy: task.filter.sortBy:task.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: task.currentPage }" class="cursor">
+                            <td class="tableexport-ignore">
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                        <a class="dropdown-item" [ngClass]="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}" (click)="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td *ngIf="!historyView.current" (click)="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" >
+                                <span [innerHtml]="jobHistory.jobschedulerId"></span>
+                                <span *ngIf="!jobHistory.jobschedulerId" [innerHtml]="jobSearch.jobschedulerId"></span>
+                            </td>
+                            <td (click)="showLogWindow(null,jobHistory)"><span [innerHtml]="jobHistory.taskId"></span></td>
+                            <td (click)="showLogWindow(null,jobHistory)">
+                                <span (click)="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="jobHistory.job"></span>
+                            </td>
+                            <td (click)="showLogWindow(null,jobHistory)"><span class="label" [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')" [innerHtml]="jobHistory.state._text | translate"></span></td>
+                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | stringToDate"></td>
+                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.endTime | stringToDate"></td>
+                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
+                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.exitCode"></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <pagination-controls class="pagination" (pageChange)="task.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-l-xs m-b" *ngIf="(jobHistorys | filter: searchKey).length > 10">
+                        <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+                             [(ngModel)]="preferences.entryPerPage">
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                                <input ngbButton type="radio" [value]="10"> 10
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                                <input ngbButton type="radio" [value]="25"> 25
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                                <input ngbButton type="radio" [value]="50"> 50
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                                <input ngbButton type="radio" [value]="100"> 100
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                                <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(jobHistorys | filter: searchKey).length >0">
+                        <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
+                        <span *ngIf="(jobHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
+                        <span *ngIf="(jobHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
+                    </div>
+                    <div *ngIf="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((jobHistorys | filter: searchKey).length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+            </div>
+            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'YADE'}" >
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="yade" >
+                        <thead>
+                            <tr>
+                                <th *ngIf="!historyView.current" (click)="sortBy2('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'jobschedulerId' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('status')"><a><span translate>label.status</span>
+                                    <i *ngIf="yade.filter.sortBy == 'status' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'status' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('profile')"><a><span translate>label.profileName</span>
+                                    <i *ngIf="yade.filter.sortBy == 'profile' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'profile' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('mandator')"><a><span translate>label.mandator</span>
+                                    <i *ngIf="yade.filter.sortBy == 'mandator' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'mandator' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('operation')"><a><span translate>label.operation</span>
+                                    <i *ngIf="yade.filter.sortBy == 'operation' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'operation' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('source.host')"><a><span translate>label.sourceHost</span>
+                                    <i *ngIf="yade.filter.sortBy == 'sourceHost' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'sourceHost' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('target.host')"><a><span translate>label.targetHost</span>
+                                    <i *ngIf="yade.filter.sortBy == 'target.host' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'target.host' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('target.protocol')"><a><span translate>label.targetProtocol</span>
+                                    <i *ngIf="yade.filter.sortBy == 'target.protocol' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'target.protocol' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                 <th (click)="sortBy2('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
+                                    <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('error.message')"><a><span translate>label.lastErrorMessage</span>
+                                    <i *ngIf="yade.filter.sortBy == 'error.message' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'error.message' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('start')"><a><span translate>label.startTime</span>
+                                    <i *ngIf="yade.filter.sortBy == 'start' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'start' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('end')"><a><span translate>label.endTime</span>
+                                    <i *ngIf="yade.filter.sortBy == 'end' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'end' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th (click)="sortBy2('duration')">
+                                    <a><span translate>label.duration</span>
+                                    <i *ngIf="yade.filter.sortBy == 'duration' && !yade.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i *ngIf="yade.filter.sortBy == 'duration' && yade.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let transfer of yadeHistorys | filter: searchKey | orderBy: yade.filter.sortBy:yade.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: yade.currentPage }" [ngClass]="{'light-bg':transfer.show}">
+                        <tr  class="cursor">
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" *ngIf="!historyView.current" >
+                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!transfer.show && !historyView.current" (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && !historyView.current" (click)="transfer.show = false;$event.stopPropagation()"></i>
+                                 <span [innerHtml]="transfer.jobschedulerId"></span>
+                                 <span *ngIf="!history.jobschedulerId" [innerHtml]="transfer.jobschedulerId"></span>
+                             </td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" class="nowrap" >
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!transfer.show && historyView.current" (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && historyView.current" (click)="transfer.show = false;$event.stopPropagation()"></i>
+                                <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')" [innerHtml]="transfer.state._text | translate"></span>
+                            </td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.profile"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.mandator"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer._operation"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.source.host"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.host"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.protocol"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.numOfFiles"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" class="text-danger" [innerHtml]="transfer.error.message"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | stringToDate"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.end | stringToDate"></td>
+                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | duration:transfer.end"></td>
+                        </tr>
+                        <tr class="tableexport-ignore" *ngIf="transfer.show">
+                            <td></td>
+                            <td colspan="14" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th translate>label.sourceHostUser</th>
+                                         <th translate>label.sourceHostPort</th>
+                                         <th translate>label.sourceHostProtocol</th>
+                                         <th translate>label.targetHostUser</th>
+                                         <th translate>label.targetHostPort</th>
+                                         <th translate>label.targetHostProtocol</th>
+                                         <th translate>label.jumpHost</th>
+                                         <th translate>label.jumpUser</th>
+                                         <th translate>label.jumpPort</th>
+                                         <th translate>label.jumpProtocol</th>
+                                         <th translate>label.jobChain</th>
+                                         <th translate>label.job</th>
+                                         <th translate>label.order</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr>
+                                        <td  [innerHtml]="transfer.source.account"></td>
+                                        <td  [innerHtml]="transfer.source.port"></td>
+                                        <td  [innerHtml]="transfer.source.protocol"></td>
+                                        <td  [innerHtml]="transfer.target.account"></td>
+                                        <td  [innerHtml]="transfer.target.port"></td>
+                                        <td  [innerHtml]="transfer.target.protocol"></td>
+                                        <td  [innerHtml]="transfer.jump.host"></td>
+                                        <td  [innerHtml]="transfer.jump.account"></td>
+                                        <td  [innerHtml]="transfer.jump.port"></td>
+                                        <td  [innerHtml]="transfer.jump.protocol"></td>
+                                        <td><span (click)="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.jobChain"></span></td>
+                                        <td><span (click)="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
+                                        <td><span (click)="showOrderLink(transfer.jobChain, transfer.orderId);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                             </td>
+                        </tr>
+                        <tr class="tableexport-ignore" *ngIf="transfer.show">
+                             <td></td>
+                             <td colspan="14" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th translate>label.sourceFileName</th>
+                                         <th translate>label.sourceFilePath</th>
+                                         <th translate>label.targetFileName</th>
+                                         <th translate>label.targetFilePath</th>
+                                         <th translate>label.status</th>
+                                         <th translate>label.errorMessage</th>
+                                         <th translate>label.size</th>
+                                         <th translate>label.integrityHash</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr *ngFor="let file of transfer.files">
+                                         <td>{{file.sourceName}}</td>
+                                         <td>{{file.sourcePath}}</td>
+                                         <td>{{file.targetName}}</td>
+                                         <td>{{file.targetPath}}</td>
+                                         <td><span class="label" [ngClass]="coreService.getColor(file.state.severity,'bg')" [innerHtml]="file.state._text | translate"></span></td>
+                                         <td>{{file.error}}</td>
+                                         <td>{{file.size | byteToSize}}</td>
+                                         <td>{{file.integrityHash}}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <div *ngIf="transfer.files.length==0" translate>message.noFileFound</div>
+                             </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls class="pagination" (pageChange)="yade.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-l-xs m-b" *ngIf="(yadeHistorys | filter: searchKey).length > 10">
+                        <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+                             [(ngModel)]="preferences.entryPerPage">
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                                <input ngbButton type="radio" [value]="10"> 10
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                   [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                                <input ngbButton type="radio" [value]="25"> 25
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                                <input ngbButton type="radio" [value]="50"> 50
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                                <input ngbButton type="radio" [value]="100"> 100
+                            </label>
+                            <label ngbButtonLabel class="btn btn-default white btn-sm"
+                                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                                <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(yadeHistorys | filter: searchKey).length >0">
+                        <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
+                        <span *ngIf="(yadeHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
+                        <span *ngIf="(yadeHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
+                    </div>
+                    <div *ngIf="isLoading && yadeHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noYadeHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((yadeHistorys | filter: searchKey).length===0 && yadeHistorys.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+            </div>
+        </div>
+        <div  *ngIf="!isLoading" class="text-center m-t-lg text-primary text" >
+          <div class="backdrop"></div>
+          <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+        </div>
+    </div>
+</div>
+<div *ngIf="loading" class="loading-img1"></div>
+

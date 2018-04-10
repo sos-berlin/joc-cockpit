@@ -1,0 +1,32 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                       <span class="text-md text-orange _600 ">
+                            <ol class="breadcrumb p-t-xs">
+                                <li (click)="window.history.back()">
+                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
+                                </li>
+                                <li class="active">
+                                    <span>{{'label.jobChain' | translate }}</span>
+                                </li>
+                            </ol>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="row m-b-sm m-t-xs">
+            <div class="geEditor">
+                <div id="graph"></div>
+            </div>
+        </div>
+    </div>
+</div>

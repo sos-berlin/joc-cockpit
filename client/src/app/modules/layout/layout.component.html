@@ -1,0 +1,36 @@
+<div id="content" class="app-content">
+  <div class="w-full text-right top-header-bar white fa-fa-color"  [ngClass]="{'backup-top-header':permission.precedence>0}">
+        <span class="pull-left p-l-3 backup-text" *ngIf="userPreferences.themeTitle">
+            <span class="_600 m-l-sm text-shadow backup-text" [innerHtml]="userPreferences.themeTitle"></span> </span>
+        <span class="m-r-sm"><span translate>label.time</span>:
+            <span class="text-primary" [innerHtml]="currentTime | stringToDate"></span></span>
+        <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
+            <span class="text-primary" [innerHtml]="remainingSessionTime"></span></span>
+        <span class="m-r-sm" *ngIf="scheduleState"><span translate>label.state</span>:
+            <span class="text-warn" [ngClass]="{'text-success': scheduleState == 'RUNNING', 'text-danger': (scheduleState == 'UNREACHABLE' || scheduleState == 'TERMINATING'  || scheduleState == 'DEAD')}" [innerHtml]="scheduleState | translate"></span>
+        </span>
+        <span class="m-r-sm" [hidden]="!selectedJobScheduler.startedAt">
+            <span translate>label.jobSchedulerStartTime</span>:
+            <span class="text-primary" [innerHtml]="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span>
+        </span>
+        <span class="dropdown" *ngIf="schedulerIds.selected">
+            <a data-toggle="dropdown">
+                <span class="backup-text" translate>label.id</span>:
+                <span class="_500 text-orange" [innerHtml]="schedulerIds.selected"></span><i
+                    class="fa fa-caret-down p-l-xs"></i>
+            </a>
+            <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
+                <a class="dropdown-item" *ngFor="let jobScheduler of schedulerIds.jobschedulerIds"
+                   (click)="changeScheduler(jobScheduler);$event.stopPropagation()"
+                   [ngClass]="{'primary':schedulerIds.selected == jobScheduler}">
+                    <span>{{jobScheduler}}</span>
+                </a>
+            </div>
+        </span>
+    </div>
+    <app-header></app-header>
+    <div class="app-body">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+

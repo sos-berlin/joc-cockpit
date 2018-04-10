@@ -1,0 +1,103 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "joc-cockpit2"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets",
+        "i18n",
+        "styles",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "styles/bootstrap.css",
+        "styles/app.scss",
+        "styles/toaster.css",
+        "styles/jsgantt.css",
+        "assets/mxgraph/styles/grapheditor.css",
+        "styles/bootstrap-year-calendar.css",
+        "styles/style.css",
+        "styles/style.responsive.css"
+      ],
+      "scripts": [
+        "assets/js/jquery.min.js",
+        "assets/js/tether.min.js",
+        "assets/js/jquery-ui.min.js",
+        "assets/js/bootstrap.js",
+        "assets/js/jsgantt.js",
+        "assets/js/d3.min.js",
+        "assets/js/stickySidebar.js",
+        "assets/js/table2excel.js",
+        "assets/js/xml2json.min.js",
+        "assets/js/vkbeautify.js",
+        "assets/js/holiday.js",
+        "assets/js/bootstrap-year-calendar.js",
+        "../node_modules/underscore/underscore-min.js",
+        "../node_modules/moment/min/moment.min.js",
+        "../node_modules/moment-timezone/builds/moment-timezone.min.js",
+        "../node_modules/jstz/dist/jstz.min.js",
+        "assets/mxgraph/js/Init.js",
+        "assets/mxgraph/deflate/pako.min.js",
+        "assets/mxgraph/deflate/base64.js",
+        "assets/mxgraph/jscolor/jscolor.js",
+        "assets/mxgraph/sanitizer/sanitizer.min.js",
+        "assets/mxgraph/mxClient.js",
+        "assets/mxgraph/js/EditorUi.js",
+        "assets/mxgraph/js/Editor.js",
+        "assets/mxgraph/js/Sidebar.js",
+        "assets/mxgraph/js/Graph.js",
+        "assets/mxgraph/js/Format.js",
+        "assets/mxgraph/js/Shapes.js",
+        "assets/mxgraph/js/Actions.js",
+        "assets/mxgraph/js/Menus.js",
+        "assets/mxgraph/js/Toolbar.js",
+        "assets/mxgraph/js/Dialogs.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "src/tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "component": {}
+  }
+}

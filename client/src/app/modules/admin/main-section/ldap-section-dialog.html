@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span>
+            <span *ngIf="isldap" translate>label.addLdapRealm</span>
+            <span *ngIf="!isldap" translate>label.enableJOCCluster</span>
+        </span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(mainSection)">
+    <div class="modal-body container">
+        <div class="form-group row m-b-0" *ngFor="let param of mainSection; let pIndex = index">
+            <div class="col-sm-6 m-b-sm" *ngIf="pIndex==0" translate>label.name</div>
+            <div class="col-sm-6 m-b-sm" *ngIf="pIndex==0" translate>label.value</div>
+            <div class="col-sm-6 m-b-sm">
+                <input type="text" class="form-control" disabled [(ngModel)]="param.entryName" name="entryName{{pIndex+1}}"
+                       placeholder="{{'placeholder.name' | translate}} {{pIndex+1}}">
+            </div>
+
+            <div class="col-sm-6 m-b-sm">
+                <input type="text" class="form-control" [disabled]="param.entryName != 'ldapRealm.contextFactory.url'" name="value{{pIndex+1}}"
+                       [(ngModel)]="param.entryValue" placeholder="{{'placeholder.value' | translate}} {{pIndex+1}}">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer text-left">
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitted">
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>
+            button.cancel
+        </button>
+    </div>
+</form>

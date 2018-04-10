@@ -1,0 +1,37 @@
+<a class="text" (click)="expandAll();" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+  <i class="fa fa-angle-double-down fa-lg"></i>
+</a>
+<a class="text m-l-xs" (click)="collapseAll();" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+  <i class="fa fa-angle-double-up fa-lg"></i>
+</a>
+<a class="text resize-cursor" ngbTooltip="{{'tooltip.hideTree' | translate}}"
+   style="position: absolute; right: 22px;">
+  <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hidePanel()"></i></a>
+<div class="tree-block">
+  <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
+    <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+      <div class="node-wrapper">
+        <span *ngIf="node.hasChildren"
+              [class.toggle-children-wrapper-expanded]="node.isExpanded"
+              [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+              (click)="node.mouseAction('expanderClick', $event)" class="w-16 cursor">
+          <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+          <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+        </span>
+        <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
+        <div class="node-content-wrapper"
+             [class.node-content-wrapper-active]="node.data.isSelected"
+             (click)="node.mouseAction('click', $event)">
+          <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-16"></i>
+          <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-16"></i>
+          <tree-node-content [node]="node" [index]="index"></tree-node-content>
+        </div>
+        <span *ngIf="node.hasChildren" (click)="expandNode(node);"> <i
+          class="expand-collapse fa fa-angle-double-down"></i> </span>
+        <span *ngIf="node.hasChildren" (click)="collapseNode(node);"> <i
+          class="expand-collapse fa fa-angle-double-up"></i></span>
+      </div>
+    </ng-template>
+  </tree-root>
+</div>
+<div class="rg-right"><span></span></div>

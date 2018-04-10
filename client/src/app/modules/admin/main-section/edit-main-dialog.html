@@ -1,0 +1,77 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span translate>label.editEntry</span>:
+        {{existingEntry}}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit(entry)">
+    <div class="modal-body container">
+        <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
+            <div class="row col-md-12">
+                <label class="col-md-4 form-control-label" translate>label.entryName</label>
+                <div class=" col-md-6">
+                    <input type="text" class="form-control" name="name" placeholder="{{'placeholder.name' | translate}}"
+                           [(ngModel)]="entry.entryName" required (blur)="checkMainSection(entry.entryName)" #name="ngModel">
+                    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+                        <div *ngIf="name.errors.required">
+                            <div translate>message.requiredError</div>
+                        </div>
+                    </div>
+                    <div class="help-block text-danger" *ngIf="!isUnique">
+                        <div translate>message.uniqueError</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" [ngClass]="{'m-b-sm': entry.entryName.indexOf('groupRolesMapping') > -1}">
+            <div *ngFor="let value of entryValue; let vIndex = index " class="row col-md-12">
+                <label class="col-md-4 form-control-label" *ngIf="vIndex ==0" translate>label.entryValue</label>
+
+                <div class="col-md-6" [ngClass]="{'col-md-offset-4 m-t-sm': vIndex >0}">
+                    <input type="text" class="form-control"
+                           placeholder="{{'placeholder.value' | translate}} {{vIndex+1}}" [(ngModel)]="value.value" name="value{{vIndex+1}}">
+                </div>
+                <div class="col-md-1 p-l-0" *ngIf="entry.entryName.indexOf('groupRolesMapping') > -1">
+                    <a><i (click)="removeValueField(vIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" *ngIf="entry.entryName.indexOf('groupRolesMapping') > -1">
+            <div class="col-md-12">
+                <a class="text-u-l" *ngIf="entryValue.length>0" (click)="addValueField()" translate>button.addAnotherValue</a>
+                <a class="text-u-l" *ngIf="entryValue.length==0" (click)="addValueField()" translate>button.addValue</a>
+            </div>
+        </div>
+        <div class="form-group row m-b-sm">
+            <div *ngFor="let comment of entryComment; let cIndex = index " class="row col-md-12">
+                <label class="col-md-4 form-control-label" *ngIf="cIndex ==0" translate>label.entryComment</label>
+
+                <div class="col-md-6" [ngClass]="{'col-md-offset-4 m-t-sm': cIndex >0}">
+                    <input class="form-control" placeholder="{{'placeholder.writeComment' | translate}} {{cIndex +1}}"
+                           name="comment{{cIndex+1}}" [(ngModel)]="comment.value">
+                </div>
+                <div class="col-md-1 p-l-0">
+                    <a><i (click)="removeCommentField(cIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <a class="text-u-l" *ngIf="entryComment.length>0" (click)="addCommentField()" translate>button.addAnotherComment</a>
+                <a class="text-u-l" *ngIf="entryComment.length==0" (click)="addCommentField()" translate>button.addComment</a>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer text-left">
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid || submitted" >
+            <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+            {{'button.submit' | translate}}
+        </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')" translate>button.cancel
+        </button>
+    </div>
+</form>
+
