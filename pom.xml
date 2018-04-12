@@ -80,6 +80,7 @@
                     <executable>ng</executable>
                     <arguments>
                       <argument>build</argument>
+                      <argument>--base-href="./"</argument>
                     </arguments>
                     <workingDirectory>${basedir}/target/angular/client</workingDirectory>
                   </configuration>
