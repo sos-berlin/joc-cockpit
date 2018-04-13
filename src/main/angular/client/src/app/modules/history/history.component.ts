@@ -16,9 +16,9 @@ import * as moment from 'moment';
 export class HistoryComponent implements OnInit {
 
   historyView: any = {};
-  schedulerIds: any;
-  preferences: any;
-  permission: any;
+  schedulerIds: any={};
+  preferences: any={};
+  permission: any={};
   subscription: Subscription;
   isLoading: boolean = false;
   loading: boolean = false;

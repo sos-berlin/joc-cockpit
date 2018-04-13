@@ -21,6 +21,7 @@ declare var $;
 export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
+  showSearchPanel: boolean = false;
   loading: boolean;
   schedulerIds: any;
   preferences: any;

@@ -27,7 +27,8 @@ declare var Holidays;
   templateUrl: './show-dialog.html'
 })
 export class ShowModal {
-  constructor(public activeModal: NgbActiveModal) {
+  @Input() calendar:any;
+  constructor(public activeModal: NgbActiveModal, public coreService : CoreService) {
   }
 }
 
@@ -230,6 +231,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
   isRuntimeEdit: boolean;
   countryField: boolean;
   isCalendarDisplay: boolean = false;
+  showMonthRange: boolean = false;
 
   excludedDates: any = [];
   includedDates: any = [];

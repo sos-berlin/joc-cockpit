@@ -2,6 +2,7 @@
     height: 100vh;
     margin: 0;
     padding: 0;
+    padding-bottom: 20px;
     display: flex;
     flex-direction: column;
     -webkit-user-select: none;
@@ -14,9 +15,28 @@ gridster {
     background: transparent;
 }
 
+/* design by piyush starts */
+
+div.scroll-y.max-ht{
+    margin-right: -15px;
+}
+.smallgridster-panel{
+     height: 142px !important;
+}
+.smallgridster-panel-9{
+    font-size: 9px;
+}
+
+/* design by piyush ends */
+
 gridster-item {
     -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important;
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important;
+    z-index: unset !important;
+}
+gridster-item[style]{
+    overflow: visible !important;
+    z-index: unset !important;
 }
 
 :host {
@@ -28,18 +48,15 @@ gridster-item {
 
 .destroy-button {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: -10px;
+    top: -10px;
     z-index: 100;
 }
 
 .destroy-button i {
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     opacity: 0.7;
-    padding: 0 1px;
-    box-shadow: 0 1px 1px 2px #ccc;
-    border-radius: 50%;
 }
 
 .destroy-button:hover i {

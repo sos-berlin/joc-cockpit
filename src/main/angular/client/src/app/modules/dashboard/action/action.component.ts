@@ -4,6 +4,64 @@ import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard/auth.service';
 import { saveAs } from 'file-saver/FileSaver';
 
+
+@Component({
+    selector: 'ngbd-modal-content',
+     templateUrl: './dialog.html',
+})
+
+export class CommentModal implements  OnInit {
+    @Input() action;
+    @Input() comments:any;
+    @Input() obj:any;
+    @Input() performAction;
+    @Input() jobScheduleID;
+    submitted:boolean = false;
+    messageList:any;
+    required:boolean = false;
+    show:boolean = false;
+
+    constructor(public activeModal:NgbActiveModal, public coreService:CoreService) {
+    }
+
+    ngOnInit() {
+        if (sessionStorage.comments)
+            this.messageList = JSON.parse(sessionStorage.comments);
+        if (sessionStorage.$SOS$FORCELOGING == 'true') {
+            this.required = true;
+        }
+    }
+
+    onSubmit(result, obj):void {
+        this.submitted = true;
+        obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+        };
+        if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin') {
+            obj.timeout = result.timeout;
+            let url = 'jobscheduler/terminate';
+            if (this.action == 'terminateAndRestartWithTimeout') {
+                url = 'jobscheduler/restart';
+            }
+            this.postCall(url, obj);
+        } else {
+            this.performAction(this.action, obj);
+        }
+    }
+
+    postCall(url, obj) {
+        this.coreService.post(url, obj).subscribe(res=> {
+            this.submitted = false;
+            this.activeModal.close();
+        }, err => {
+            this.submitted = false;
+        });
+    }
+}
+
+
 @Component({
     selector: 'app-action',
     templateUrl: './action.component.html',
@@ -12,7 +70,7 @@ import { saveAs } from 'file-saver/FileSaver';
 export class ActionComponent implements OnInit {
 
     @Input() master:any;
-    userPreferences:any = {};
+    preferences:any = {};
     schedulerIds:any;
 
     constructor(public modalService:NgbModal, private coreService:CoreService, private authService:AuthService) {
@@ -20,7 +78,7 @@ export class ActionComponent implements OnInit {
 
     ngOnInit() {
         if (sessionStorage.preferences)
-            this.userPreferences = JSON.parse(sessionStorage.preferences);
+            this.preferences = JSON.parse(sessionStorage.preferences);
         if (this.authService.scheduleIds) {
             this.schedulerIds = JSON.parse(this.authService.scheduleIds);
         } else {
@@ -33,11 +91,11 @@ export class ActionComponent implements OnInit {
             jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
             host: data.host,
             port: data.port,
-            auditLog: this.userPreferences.auditLog ? {} : null
+            auditLog: this.preferences.auditLog ? {} : null
         };
         if (action === 'terminateAndRestartWithin' || action === 'terminateWithin') {
             this.getTimeout(action, obj);
-        } else if (this.userPreferences.auditLog && (action !== 'downloadLog')) {
+        } else if (this.preferences.auditLog && (action !== 'downloadLog')) {
             let comments = {
                 radio: 'predefined',
                 name: obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')',
@@ -75,7 +133,7 @@ export class ActionComponent implements OnInit {
         const modalRef = this.modalService.open(CommentModal, {backdrop: "static"});
         modalRef.componentInstance.comments = comments;
         modalRef.componentInstance.action = action;
-        modalRef.componentInstance.show = this.userPreferences.auditLog;
+        modalRef.componentInstance.show = this.preferences.auditLog;
         modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')';
         modalRef.componentInstance.obj = obj;
 
@@ -130,58 +188,5 @@ export class ActionComponent implements OnInit {
         }
         const data = new Blob([res.data], {type: fileType});
         saveAs(data, name);
-    }
-}
-
-
-@Component({
-    selector: 'ngbd-modal-content',
-     templateUrl: './dialog.html',
-})
-
-export class CommentModal implements  OnInit {
-    @Input() action;
-    @Input() performAction;
-    submitted:boolean = false;
-    messageList:any;
-    required:boolean = false;
-
-    constructor(public activeModal:NgbActiveModal, public coreService:CoreService) {
-    }
-
-    ngOnInit() {
-        if (sessionStorage.comments)
-            this.messageList = JSON.parse(sessionStorage.comments);
-        if (sessionStorage.$SOS$FORCELOGING == 'true') {
-            this.required = true;
-        }
-    }
-
-    onSubmit(result, obj):void {
-        this.submitted = true;
-        obj.auditLog = {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-        };
-        if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin') {
-            obj.timeout = result.timeout;
-            let url = 'jobscheduler/terminate';
-            if (this.action == 'terminateAndRestartWithTimeout') {
-                url = 'jobscheduler/restart';
-            }
-            this.postCall(url, obj);
-        } else {
-            this.performAction(this.action, obj);
-        }
-    }
-
-    postCall(url, obj) {
-        this.coreService.post(url, obj).subscribe(res=> {
-            this.submitted = false;
-            this.activeModal.close();
-        }, err => {
-            this.submitted = false;
-        });
     }
 }

@@ -6,7 +6,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit(comments)">
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body container">
     <div class="form-group row" *ngIf="comments.node">
       <label class="col-sm-4" translate>label.node</label>

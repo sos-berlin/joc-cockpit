@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import * as moment from 'moment-timezone';
 
-
 @Pipe({
   name: 'stringToDate'
 })
@@ -9,7 +8,7 @@ export class StringDatePipe implements PipeTransform {
     transform(date:string):string {
         if (sessionStorage.preferences) {
             if (!date)return "-";
-            var n = JSON.parse(sessionStorage.preferences);
+            let n = JSON.parse(sessionStorage.preferences);
             if (!n.zone) {
                 return;
             }
@@ -25,7 +24,7 @@ export class StringDateFormatePipe implements PipeTransform {
     transform(t:string):string {
         if (sessionStorage.preferences) {
             if (!t)return "-";
-            var n = JSON.parse(sessionStorage.preferences);
+            let n = JSON.parse(sessionStorage.preferences);
             if (!n.zone) {
                 return;
             }
@@ -58,11 +57,12 @@ export class DurationPipe implements PipeTransform {
     transform(n:any,r:any):string {
         if (sessionStorage.preferences) {
             if (!n || !r)return "-";
-            var o = JSON.parse(sessionStorage.preferences);
-            n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
-            var i = moment(r).diff(n);
+            let o = JSON.parse(sessionStorage.preferences);
+            n = moment(n).tz(o.zone);
+            r = moment(r).tz(o.zone);
+            let i = moment(r).diff(n);
             if (i >= 1e3) {
-                var a = parseInt((i / 1e3 % 60).toString()), s = parseInt((i / 6e4 % 60).toString()), f = parseInt((i / 36e5 % 24).toString()), u = parseInt((i / 864e5).toString());
+                let a = parseInt((i / 1e3 % 60).toString()), s = parseInt((i / 6e4 % 60).toString()), f = parseInt((i / 36e5 % 24).toString()), u = parseInt((i / 864e5).toString());
                 return 0 == u && 0 != f ? f + "h " + s + "m " + a + "s" : 0 == f && 0 != s ? s + "m " + a + "s" : 0 == u && 0 == f && 0 == s ? a + " sec" : u + "d " + f + "h " + s + "m " + a + "s"
             }
             return '< 1 sec'
@@ -75,8 +75,8 @@ export class DurationPipe implements PipeTransform {
 })
 export class ConvertTimePipe implements PipeTransform {
     transform(e:any):string {
-        e  = parseInt(e)
-        var t = (e % 60), n = (e / 60 % 60), r = (e / 3600 % 24);
+        e  = parseInt(e);
+        let t = (e % 60), n = (e / 60 % 60), r = (e / 3600 % 24);
         let r1 = r > 9 ? r : "0" + r;
         let n1 = n > 9 ? n : "0" + n;
         let t1 = t > 9 ? t : "0" + t;
@@ -89,12 +89,13 @@ export class ConvertTimePipe implements PipeTransform {
 })
 export class DurationFromCurrentPipe implements PipeTransform {
     transform(n:any,r:any):string {
-        if (n || (n = new Date), r || (r = new Date), sessionStorage.preferences) {
-            var o = JSON.parse(sessionStorage.preferences);
-            n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
-            var i:number = Math.abs(moment(r).diff(n));
+        if ((n || (n = new Date)) && (r || (r = new Date)) && sessionStorage.preferences) {
+            let o = JSON.parse(sessionStorage.preferences);
+            n = moment(n).tz(o.zone);
+            r = moment(r).tz(o.zone);
+            let i:number = Math.abs(moment(r).diff(n));
             if (i >= 1e3) {
-                var a = (i / 1e3 % 60), s = (i / 6e4 % 60), f = (i / 36e5 % 24), u = (i / 864e5);
+                let a = (i / 1e3 % 60), s = (i / 6e4 % 60), f = (i / 36e5 % 24), u = (i / 864e5);
                 let a1 = a > 9 ? a : '0' + a;
                 let s1 = s > 9 ? s : '0' + s;
                 let f1 = f > 9 ? f : '0' + f;
@@ -119,7 +120,7 @@ export class DecodeSpacePipe implements PipeTransform {
 })
 export class ByteToSizePipe implements PipeTransform {
     transform(e:any):string {
-        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         e = parseInt(e);
         if (e == 0) return '0 Byte';
         let i:number = Math.floor(Math.log(e) / Math.log(1024));

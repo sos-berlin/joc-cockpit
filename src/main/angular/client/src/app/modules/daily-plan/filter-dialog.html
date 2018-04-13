@@ -14,7 +14,7 @@
                        name="filterName" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                        (blur)="checkFilterName()">
                 <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-                    <div *ngIf="user.errors.required">
+                    <div *ngIf="name.errors.required">
                         <div translate>message.requiredError</div>
                     </div>
                 </div>

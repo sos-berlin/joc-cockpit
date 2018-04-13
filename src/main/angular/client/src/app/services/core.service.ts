@@ -312,14 +312,11 @@ export class CoreService {
     this.dashboard._dashboard.file.label = 'button.today';
 
     if (localStorage.$SOS$DASHBOARDTABS) {
+
       try {
         let obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
-
-        if (obj) {
-          if (obj._dashboard.filter.orderRange != 'today') {
-
-            this.dashboard = obj;
-          }
+        if (obj && obj.order) {
+          this.dashboard = obj;
         }
       } catch (e) {
         console.log(e);
@@ -661,6 +658,21 @@ export class CoreService {
   }
 
   copyLink(objType, path){
+
+  }
+
+  showJob(job){
+
+  }
+  showJobChain(jobChain){
+
+  }
+
+  showOrderLink(order){
+
+  }
+
+  about(){
 
   }
 

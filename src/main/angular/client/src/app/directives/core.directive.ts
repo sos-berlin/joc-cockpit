@@ -55,9 +55,6 @@ export class TimeValidator {
 
                 }
             }
-            if ((/^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) || (/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(target.value))) {
-               // this.model.markAsUntouched();
-            }
         }
 
     }

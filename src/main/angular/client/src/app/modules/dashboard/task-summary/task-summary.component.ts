@@ -11,10 +11,10 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 export class TaskSummaryComponent implements OnInit, OnDestroy {
 
-    taskSummary:any;
+    taskSummary:any={};
     preferences:any = {};
-    schedulerIds:any;
-    filters:any;
+    schedulerIds:any={};
+    filters:any={};
     isLoaded:boolean = false;
     notPermissionForTaskSummary:boolean = false;
     subscription: Subscription;
@@ -29,7 +29,7 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
         for (let i = 0; i < args.length; i++) {
             if (args[i].jobschedulerId == this.schedulerIds.selected) {
                 if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-                    for (var j = 0; j < args[i].eventSnapshots.length; j++) {
+                    for (let j = 0; j < args[i].eventSnapshots.length; j++) {
                         if (args[i].eventSnapshots[j].eventType === "ReportingChangedJob") {
                             this.getSummary();
                             break;

@@ -21,9 +21,9 @@ declare var $;
 })
 export class DailyPlanComponent implements OnInit, OnDestroy {
 
-    schedulerIds:any;
-    preferences:any;
-    permission:any;
+    schedulerIds:any={};
+    preferences:any={};
+    permission:any={};
     plans:any = [];
     isLoaded:boolean = false;
     notAuthenticate:boolean = false;
@@ -98,7 +98,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     private load():void {
         this.isLoaded = false;
 
-        var obj = {
+        let obj = {
             jobschedulerId: this.schedulerIds.selected,
             states: [],
             late: false
@@ -149,11 +149,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     private parseProcessExecuted(regex):any {
-        var date;
+        let date;
         if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
-            var fromDate = new Date();
+            let fromDate = new Date();
             date = new Date();
-            var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+            let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
             date.setSeconds(fromDate.getSeconds() - seconds);
         } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
             date = regex;
@@ -194,12 +194,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
         if (this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
             obj.folders = [];
-            for (var i = 0; i < this.selectedFiltered.paths.length; i++) {
+            for (let i = 0; i < this.selectedFiltered.paths.length; i++) {
                 obj.folders.push({folder: this.selectedFiltered.paths[i], recursive: true});
             }
         }
-        var fromDate;
-        var toDate;
+        let fromDate;
+        let toDate;
 
         if (this.selectedFiltered.from) {
             fromDate = this.parseProcessExecuted(this.selectedFiltered.from);
@@ -249,7 +249,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     private checkSharedFilters() {
         if (this.permission.JOCConfigurations.share.view.status) {
-            var obj = {
+            let obj = {
                 jobschedulerId: this.schedulerIds.selected,
                 configurationType: "CUSTOMIZATION",
                 objectType: "DAILYPLAN",
@@ -270,10 +270,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             if (res.configurations && res.configurations.length > 0) {
                 this.dailyPlanFilterList = this.dailyPlanFilterList.concat(res.configurations);
             }
-            var data = [];
-            for (var i = 0; i < this.dailyPlanFilterList.length; i++) {
-                var flag = true;
-                for (var j = 0; j < data.length; j++) {
+            let data = [];
+            for (let i = 0; i < this.dailyPlanFilterList.length; i++) {
+                let flag = true;
+                for (let j = 0; j < data.length; j++) {
                     if (data[j].account == this.dailyPlanFilterList[i].account && data[j].name == this.dailyPlanFilterList[i].name) {
                         flag = false;
                     }
@@ -289,7 +289,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             this.dailyPlanFilterList = res.configurations;
         }
         if (this.savedDailyPlanFilter.selected) {
-            var flag = true;
+            let flag = true;
             let self = this;
             this.dailyPlanFilterList.forEach(function (value) {
                 if (value.id == this.savedDailyPlanFilter.selected) {
@@ -319,7 +319,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     private getCustomizations() {
-        var obj = {
+        let obj = {
             jobschedulerId: this.schedulerIds.selected,
             account: this.permission.user,
             configurationType: "CUSTOMIZATION",
@@ -356,7 +356,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     private naturalSorter(as, bs) {
-        var a, b, a1, b1, i = 0, n, L,
+        let a, b, a1, b1, i = 0, n, L,
             rx = /(\.\d+)|(\d+(\.\d+)?)|([^\d.]+)|(\.\D+)|(\.$)/g;
         if (as === bs) return 0;
         a = as.toLowerCase().match(rx);
@@ -376,14 +376,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     private sortByKey(array, key, order) {
-        var reA = /[^a-zA-Z]/g;
+        let reA = /[^a-zA-Z]/g;
         let self = this;
         if (key == 'processedPlanned' || key == 'orderId') {
             return array.sort(function (x, y) {
-                var key1 = key == 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
+                let key1 = key == 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
 
-                var a = x[key1];
-                var b = y[key1];
+                let a = x[key1];
+                let b = y[key1];
                 if (order) {
                     a = y[key1];
                     b = x[key1];
@@ -419,8 +419,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
                     }
                 }
 
-                var AInt = parseInt(a, 10);
-                var BInt = parseInt(b, 10);
+                let AInt = parseInt(a, 10);
+                let BInt = parseInt(b, 10);
 
                 if (isNaN(AInt) && isNaN(BInt)) {
                     return self.naturalSorter(a, b);
@@ -429,8 +429,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
                 } else if (isNaN(BInt)) {//B is not an Int
                     return -1;
                 } else if (AInt == BInt) {
-                    var aA = a.replace(reA, "");
-                    var bA = b.replace(reA, "");
+                    let aA = a.replace(reA, "");
+                    let bA = b.replace(reA, "");
                     return aA > bA ? 1 : -1;
                 } else {
                     return AInt > BInt ? 1 : -1;
@@ -439,13 +439,13 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             });
         } else if (key == 'duration') {
             return array.sort(function (x, y) {
-                var a = x;
-                var b = y;
+                let a = x;
+                let b = y;
                 if (!order) {
                     a = y;
                     b = x;
                 }
-                var m, n;
+                let m, n;
                 if (a.plannedStartTime && a.expectedEndTime) {
                     m = moment(a.plannedStartTime).diff(a.expectedEndTime);
                 }
@@ -456,14 +456,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             });
         } else if (key == 'duration1') {
             return array.sort(function (x, y) {
-                var a = x;
-                var b = y;
+                let a = x;
+                let b = y;
                 if (!order) {
                     a = y;
                     b = x;
                 }
 
-                var m = 0, n = 0;
+                let m = 0, n = 0;
                 if (a.startTime && a.endTime) {
                     m = moment(a.startTime).diff(a.endTime) || 0;
                 }
@@ -497,8 +497,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     private setDateRange(obj) {
 
         if (!(this.dailyPlanFilters.filter.range == 'today' || !this.dailyPlanFilters.filter.range)) {
-            var from = new Date();
-            var to = new Date();
+            let from = new Date();
+            let to = new Date();
             from.setDate(from.getDate());
             to.setDate(to.getDate() + 1);
             obj.dateFrom = from;
@@ -516,16 +516,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     prepareGanttData(data2) {
 
-        var minNextStartTime;
-        var maxEndTime;
-        var orders = [];
+        let minNextStartTime;
+        let maxEndTime;
+        let orders = [];
 
-        var groupJobChain = [];
-        for (var i = 0; i < data2.length; i++) {
+        let groupJobChain = [];
+        for (let i = 0; i < data2.length; i++) {
 
             if (groupJobChain.length > 0) {
-                var flag = false;
-                for (var j = 0; j < groupJobChain.length; j++) {
+                let flag = false;
+                for (let j = 0; j < groupJobChain.length; j++) {
                     if (data2[i].jobChain && (groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId)) {
                         flag = true;
                     } else if (data2[i].job && (groupJobChain[j].job == data2[i].job)) {
@@ -547,12 +547,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
                     groupJobChain.push({job: data2[i].job});
             }
         }
-        var theme = window.localStorage.$SOS$THEME;
-        for (var index = 0; index < groupJobChain.length; index++) {
-            var i = 0;
+        let theme = window.localStorage.$SOS$THEME;
+        for (let index = 0; index < groupJobChain.length; index++) {
+            let i = 0;
             orders[index] = {};
             orders[index].tasks = [];
-            for (var index1 = 0; index1 < data2.length; index1++) {
+            for (let index1 = 0; index1 < data2.length; index1++) {
                 if (data2[index1].orderId && (groupJobChain[index].jobChain == data2[index1].jobChain && groupJobChain[index].orderId == data2[index1].orderId)) {
                     orders[index].tasks[i] = {};
                     orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
@@ -595,7 +595,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
                     }
 
                     if (data2[index1].period.repeat) {
-                        var s = parseInt(((data2[index1].period.repeat) % 60).toString()),
+                        let s = parseInt(((data2[index1].period.repeat) % 60).toString()),
                             m = parseInt(((data2[index1].period.repeat / 60) % 60).toString()),
                             h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString());
                         let h1 = h > 9 ? h : '0' + h;
@@ -645,7 +645,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
                     }
 
                     if (data2[index1].period.repeat) {
-                        var s = parseInt(((data2[index1].period.repeat) % 60).toString()),
+                        let s = parseInt(((data2[index1].period.repeat) % 60).toString()),
                             m = parseInt(((data2[index1].period.repeat / 60) % 60).toString()),
                             h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString());
                         let h1 = h > 9 ? h : '0' + h;
@@ -663,7 +663,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     private init(data) {
-        var g = new JSGantt.GanttChart(document.getElementById('embedded-Gantt'), 'hour');
+        let g = new JSGantt.GanttChart(document.getElementById('embedded-Gantt'), 'hour');
         if (g.getDivId() != null) {
             g.setCaptionType('Duration');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
             g.setShowDur(0);
@@ -761,6 +761,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     changeFilter(filter){
 
     }
+
+    saveAsFilter(){
+
+    }
 }
 
 @Component({
@@ -776,6 +780,7 @@ export class FilterModal implements  OnInit {
     submitted:boolean = false;
     isUnique:boolean = true;
     filter:any = {};
+    existingName:any;
 
     constructor(public activeModal:NgbActiveModal, public coreService:CoreService, private modalService:NgbModal) {
     }
@@ -814,10 +819,10 @@ export class FilterModal implements  OnInit {
         this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
     }
 
-    checkFilterName(existingName) {
+    checkFilterName() {
         this.isUnique = true;
         for(let i=0; i< this.allFilter.length;i++) {
-            if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== existingName) {
+            if (this.filter.name === this.allFilter[i].name && this.permission.user === this.allFilter[i].account && this.filter.name !== this.existingName) {
                 this.isUnique = false;
             }
         }

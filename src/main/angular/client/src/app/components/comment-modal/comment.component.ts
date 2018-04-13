@@ -8,7 +8,7 @@ import {CoreService} from "../../services/core.service";
 })
 export class CommentModal implements  OnInit {
   submitted: boolean = false;
-  messageList: any;
+  messageList: any =[];
   required: boolean = false;
   @Input() comments: any;
   @Input() obj: any;

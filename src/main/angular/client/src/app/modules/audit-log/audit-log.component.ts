@@ -17,9 +17,9 @@ declare var $;
 })
 export class AuditLogComponent implements OnInit, OnDestroy {
 
-  schedulerIds: any;
-  preferences: any;
-  permission: any;
+  schedulerIds: any ={};
+  preferences: any ={};
+  permission: any ={};
   adtLog: any = {};
   subscription: Subscription;
   auditLogs: any = [];
@@ -68,7 +68,6 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       max: moment().format(this.dateFormatM)
     }
   }
-
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

@@ -1,19 +1,16 @@
 <div id="ordersSummary1">
     <div class="box-header b-b remove">
         <h3 class="m-t-xs" translate>label.ordersSummary</h3>
-
     </div>
     <div class="row m-b-sm box-tool ">
         <div class="col-md-12 container-fluid">
             <div class="pull-right" *ngIf="!notAuthenticate">
                 <div class="btn-group m-l-sm" style="padding-right:5px">
                     <div class="btn-group dropdown ">
-                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
-                                data-toggle="dropdown">
+                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">
                             <span>  {{filters.label | translate}}</span>
                         </button>
                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-
                             <a class="dropdown-item"
                                (click)="getSummaryByDate('0d');filters.label='button.today'"
                                [ngClass]="{'btn-primary': filters.date=='0d'}" translate>button.today
@@ -61,10 +58,7 @@
                        [ngClass]="{'crimson':orderSummary.orders.failed  >0}" [innerHtml]="orderSummary.orders.failed || 0"></a>
                 </td>
             </tr>
-
-
         </table>
-
         <div *ngIf="notAuthenticate">
             <div class="text-u-c text-center text m-t-md m-b">
                 {{'message.noInformationAvailable' | translate}}

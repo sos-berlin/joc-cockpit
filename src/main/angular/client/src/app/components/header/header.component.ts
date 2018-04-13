@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoreService } from '../../services/core.service';
 import { AuthService } from '../../components/guard/auth.service';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
-import { AvatarModule } from 'ngx-avatar';
 
-declare var $ :any;
+declare let $ :any;
 
 @Component({
   selector: 'app-header',
@@ -30,8 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isLogout:boolean = false;
     showEvent:boolean = false;
 
-
-    constructor(public coreService:CoreService, public authService:AuthService, public router:Router, private dataService: DataService) {
+    constructor(public coreService:CoreService, private authService:AuthService, private router:Router, private dataService: DataService) {
 
     }
 
@@ -76,9 +74,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 sessionStorage.setItem('$SOS$ALLEVENT', null);
                 this.router.navigate(['/login']);
             } else {
-                // CoreService.setDefaultTab();
+                this.coreService.setDefaultTab();
                 localStorage.removeItem('$SOS$URL');
-                localStorage.removeItem('$SOS$URLPARAMS');
                 sessionStorage.clear();
                 this.router.navigate(['/login']);
             }
@@ -127,16 +124,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         eventByPath.events.push(this.allEvents[i].eventSnapshots[j]);
 
-        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+        for (let m = 0; m <= eventByPath.events.length - 1; m++) {
             eventByPath.events[m].read = false;
         }
-        var flag = true;
+        let flag = true;
 
         if (this.allSessionEvent.group) {
 
             for (let i = 0; i <= this.allSessionEvent.group.length - 1; i++) {
                 if (this.allSessionEvent.group[i].objectType == eventByPath.objectType && this.allSessionEvent.group[i].path == eventByPath.path && this.allSessionEvent.group[i].jobschedulerId == eventByPath.jobschedulerId) {
-                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                    for (let m = 0; m <= eventByPath.events.length - 1; m++) {
                         if (this.allSessionEvent.group[i].events.indexOf(eventByPath.events[m]) == -1) {
                             this.allSessionEvent.group[i].eventId = eventByPath.eventId;
                             this.allSessionEvent.group[i].readCount++;
@@ -165,8 +162,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     if (this.allEvents[i] && this.allEvents[i].eventSnapshots) {
                         for (let j = 0; j < this.allEvents[i].eventSnapshots.length; j++) {
                             if (this.allEvents[i].eventSnapshots[j].eventId) {
-                                var evnType = this.allEvents[i].eventSnapshots[j].eventType;
-                                var eventByPath = {
+                                let evnType = this.allEvents[i].eventSnapshots[j].eventType;
+                                let eventByPath = {
                                     jobschedulerId: '',
                                     objectType: '',
                                     path: '',
@@ -180,13 +177,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
                                     }
                                 }
                                 else if (evnType == 'JobStateChanged') {
-                                    var type = "Job" + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
+                                    let type = "Job" + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
                                     if (eventFilter.indexOf(type) != -1) {
                                         this.getNotification(eventByPath, i, j);
                                     }
                                 }
                                 else if (evnType == 'JobChainStateChanged') {
-                                    var type = "JobChain" + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
+                                    let type = "JobChain" + this.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + this.allEvents[i].eventSnapshots[j].state.slice(1);
                                     if (eventFilter.indexOf(type) != -1) {
                                         this.getNotification(eventByPath, i, j);
                                     }
@@ -203,11 +200,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     getEvents(jobScheduler):void {
         if (!this.eventLoading) {
             this.eventLoading = true;
-            var obj = {
+            let obj = {
                 jobscheduler: []
             };
             if (!this.eventsRequest || this.eventsRequest.length == 0) {
-                for (var i = 0; i < jobScheduler.length; i++) {
+                for (let i = 0; i < jobScheduler.length; i++) {
                     if (this.schedulerIds.selected == jobScheduler[i]) {
                         obj.jobscheduler.push(
                             {"jobschedulerId": jobScheduler[i], "eventId": this.eventId}
@@ -215,7 +212,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                         break;
                     }
                 }
-                for (var j = 0; j < jobScheduler.length; j++) {
+                for (let j = 0; j < jobScheduler.length; j++) {
                     if (this.schedulerIds.selected != jobScheduler[j]) {
                         obj.jobscheduler.push(
                             {"jobschedulerId": jobScheduler[j]}
@@ -280,7 +277,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
         event.navigate = true;
 
-        var p = event.path.substring(0, event.path.lastIndexOf('/'));
+        let p = event.path.substring(0, event.path.lastIndexOf('/'));
 
         if (this.schedulerIds.selected != group.jobschedulerId) {
             sessionStorage.$SOS$NAVIGATEOBJ = JSON.stringify({
@@ -294,7 +291,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     makeAllGroupEventRead(allSessionEvent) {
         if (allSessionEvent.group) {
-            for (var i = 0; i <= allSessionEvent.group.length - 1; i++) {
+            for (let i = 0; i <= allSessionEvent.group.length - 1; i++) {
                 allSessionEvent.group[i].readCount = 0;
                 if (allSessionEvent.group[i].events != undefined)
                     for (let i = 0; i <= allSessionEvent.group[i].events.length - 1; i++) {
@@ -310,7 +307,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     makeAllEventRead(allSessionEvent, showGroupEvent) {
         if (showGroupEvent) {
-            for (var i = 0; i <= showGroupEvent.events.length - 1; i++) {
+            for (let i = 0; i <= showGroupEvent.events.length - 1; i++) {
                 if (showGroupEvent.events[i].read == false) {
                     allSessionEvent.eventUnReadCount--;
                 }

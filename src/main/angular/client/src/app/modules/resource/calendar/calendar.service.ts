@@ -120,7 +120,6 @@ export class CalendarService {
     } else {
       if (str.substring(str.length - 1) == ',')
         str = str.substring(0, str.length - 1);
-
     }
     return str;
   }
@@ -313,7 +312,7 @@ export class CalendarService {
             day: self.getDay(data.specificWeekDay),
             weekOfMonth: Math.abs(data.which)
           });
-          var arrObj = [];
+          let arrObj = [];
           arrObj.push({weeklyDays: arr, from: from, to: to});
           if (data.which > 0) {
             obj.includes.months.push({months: data.months, monthdays: arrObj});

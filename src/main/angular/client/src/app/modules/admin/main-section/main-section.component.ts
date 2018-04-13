@@ -1,10 +1,8 @@
 import { Component, OnInit,OnDestroy, Input } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 import { Subscription }   from 'rxjs/Subscription';
-import { AuthService } from '../../../components/guard/auth.service';
 import { Router } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from 'ng2-translate';
 import { DataService } from '../data.service';
 import { DeleteModal } from '../../../components/delete-modal/delete.component';
 import * as _ from 'underscore';
@@ -20,7 +18,7 @@ export class MainSectionModal implements OnInit {
     @Input() userDetail:any;
     @Input() isUpdate:boolean;
 
-    constructor(private activeModal:NgbActiveModal, private coreService:CoreService) {
+    constructor(public activeModal:NgbActiveModal, public coreService:CoreService) {
     }
 
     ngOnInit() {
@@ -76,7 +74,7 @@ export class MainSectionModal implements OnInit {
     }
 
     addMainEntry() {
-        var param = {
+        let param = {
             name: '',
             values: [{value: ''}],
             comments: [{value: ''}]
@@ -128,7 +126,7 @@ export class EditMainSectionModal implements OnInit {
     @Input() oldEntry:any;
     @Input() userDetail:any;
 
-    constructor(private activeModal:NgbActiveModal, private coreService:CoreService) {
+    constructor(public activeModal:NgbActiveModal, private coreService:CoreService) {
     }
 
     ngOnInit() {
@@ -195,7 +193,7 @@ export class EditMainSectionModal implements OnInit {
 
 
     addValueField() {
-        var param = {
+        let param = {
             value: ''
         };
         if (this.entryValue)
@@ -207,7 +205,7 @@ export class EditMainSectionModal implements OnInit {
     }
 
     addCommentField() {
-        var param = {
+        let param = {
             value: ''
         };
         if (this.entryComment)
@@ -230,7 +228,7 @@ export class LdapSectionModal implements OnInit {
     @Input() userDetail:any;
     @Input() isldap:boolean;
 
-    constructor(private activeModal:NgbActiveModal, private coreService:CoreService) {
+    constructor(public activeModal:NgbActiveModal, private coreService:CoreService) {
     }
 
     ngOnInit() {
@@ -291,10 +289,10 @@ export class LdapSectionModal implements OnInit {
     onSubmit(obj):void {
         this.submitted = true;
         if (this.isldap) {
-            for (var i = 0; i < this.mainSection.length; i++) {
+            for (let i = 0; i < this.mainSection.length; i++) {
                 if (this.mainSection[i].entryName == 'ldapRealm.contextFactory.url') {
                     if (!_.isArray(this.mainSection[i].entryValue)) {
-                        var value = _.clone(this.mainSection[i].entryValue);
+                        let value = _.clone(this.mainSection[i].entryValue);
                         this.mainSection[i].entryValue = [value];
                     }
                     break;
@@ -325,7 +323,7 @@ export class MainSectionComponent implements OnInit,OnDestroy {
     subscription1:Subscription;
     subscription2:Subscription;
 
-    constructor(private coreService:CoreService, private router:Router, private modalService:NgbModal, private dataService:DataService) {
+    constructor(public coreService:CoreService, private router:Router, public modalService:NgbModal, private dataService:DataService) {
         this.subscription1 = this.dataService.dataAnnounced$.subscribe(res => {
             if (res)
                 this.setUserData(res);

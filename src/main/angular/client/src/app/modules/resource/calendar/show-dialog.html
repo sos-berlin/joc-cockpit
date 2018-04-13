@@ -14,7 +14,7 @@
       <div class=" col-sm-12">
         <div class="p-l-sm">
           <div class="row form-group"
-               *ngIf="calendar.usedIn.orders || calendar.usedIn.jobs || calendar.usedIn.schedules">
+               *ngIf="calendar.usedIn.orders || calendar.usedIn.jobs">
             <div class="col-md-12">
               <span class="text _600" translate>label.usedIn</span> :
             </div>
@@ -25,7 +25,7 @@
             </label>
             <div class="col-md-9">
               <div *ngFor="let job of calendar.usedIn.jobs;let i = index">
-                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="showJob(job)">{{job}}</span>
+                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="coreService.showJob(job)">{{job}}</span>
               </div>
             </div>
           </div>
@@ -35,23 +35,13 @@
             </label>
             <div class="col-md-9">
               <div *ngFor="let order of calendar.usedIn.orders;let i = index">
-                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="showOrderLink1(order)">{{order}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="row form-group" *ngIf="calendar.usedIn.schedules">
-            <label class="col-md-3" translate="">
-              label.schedules
-            </label>
-            <div class="col-md-9">
-              <div *ngFor="let schedule of calendar.usedIn.schedules;let i = index">
-                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="showScheduleLink(schedule)">{{schedule}}</span>
+                {{i+1}} - <span style="cursor: pointer" class="text-hover-primary" (click)="coreService.showOrderLink(order)">{{order}}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="text-center text"
-             *ngIf="!calendar.usedIn.orders && !calendar.usedIn.jobs && !calendar.usedIn.schedules" translate>
+             *ngIf="!calendar.usedIn.orders && !calendar.usedIn.jobs" translate>
           message.calendarNotUsed
         </div>
       </div>

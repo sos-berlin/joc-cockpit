@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Input,ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription }   from 'rxjs/Subscription';
 import { AuthService } from '../../../components/guard/auth.service';
 import { CoreService } from '../../../services/core.service';
@@ -26,9 +26,11 @@ export class PermissionModal {
     @Input() master:any;
     @Input() role:any;
     @Input() oldPermission:any;
+    @Input() currentPermission:any;
+    @Input() permissionOptions:any;
     @Input() add;
 
-    constructor(public activeModal:NgbActiveModal, private coreService:CoreService) {
+    constructor(public activeModal:NgbActiveModal, public coreService:CoreService) {
     }
 
     checkCovered(currentPermission) {
@@ -176,7 +178,7 @@ export class FolderModal implements OnInit {
 export class PermissionsComponent implements OnInit, OnDestroy {
     masterName;
     roleName;
-    private sub:any;
+    sub:any;
     masters:any =[];
     PermissionsObj:any;
     permissionToEdit:any;
@@ -192,6 +194,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     folderArr:any = [];
     permission:any = [];
     count:number = 0;
+
+    showPanel1:boolean = false;
+    showPanel2:boolean = false;
 
     userDetail:any ={};
     subscription1: Subscription;
@@ -270,7 +275,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     editFolder(folder) {
-        var tempFolder = _.clone(folder);
+        let tempFolder = _.clone(folder);
         tempFolder.folder = tempFolder.folder == "" ? '/' : tempFolder.folder;
         tempFolder.folderName = tempFolder.folder;
         const modalRef = this.modalService.open(FolderModal, {backdrop: "static"});
@@ -318,7 +323,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     editPermission(permission) {
-        var tempPermission = _.clone(permission);
+        let tempPermission = _.clone(permission);
         tempPermission.permissionLabel = permission.path;
         const modalRef = this.modalService.open(PermissionModal, {backdrop: "static"});
         modalRef.componentInstance.currentPermission = tempPermission;
@@ -329,8 +334,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.master = this.masterName;
         modalRef.componentInstance.role = this.roleName;
         modalRef.result.then((result) => {
-            console.log(result);
-         //   this.rolePermissions = result;
+
             let exists = false;
             for (let i = 0; i < this.rolePermissions.length; i++) {
                 if (this.rolePermissions[i].path == result.path) {
@@ -370,7 +374,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
 
     loadPermission() {
-        var self = this;
+        let self = this;
         this.masters.forEach(function (master, index) {
             if (_.isEqual(master.master, self.masterName) || (master.master == '' && self.masterName == 'default')) {
                 master.roles.forEach(function (value) {
@@ -387,12 +391,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     preparePermissionJSON() {
         this.permissionArr = this.permissions.SOSPermissionListCommands.SOSPermission;
         this.permissionArr = this.permissionArr.concat(this.permissions.SOSPermissionListJoc.SOSPermission);
-        for (var i = 0; i < this.permissionArr.length; i++) {
-            var nodes = this.permissionArr[i].split(':');
-            var arr = [];
-            var flag = true, index = 0;
-            for (var j = 0; j < nodes.length; j++) {
-                var obj = {
+        for (let i = 0; i < this.permissionArr.length; i++) {
+            let nodes = this.permissionArr[i].split(':');
+            let arr = [];
+            let flag = true, index = 0;
+            for (let j = 0; j < nodes.length; j++) {
+                let obj = {
                     id: ++this.count,
                     name: nodes[j],
                     path: this.permissionArr[i].substring(0, this.permissionArr[i].indexOf(nodes[j])),
@@ -431,7 +435,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     preparePermissionOptions() {
         let self = this;
-        var temp = self.permissions.SOSPermissionListCommands.SOSPermission;
+        let temp = self.permissions.SOSPermissionListCommands.SOSPermission;
         temp = temp.concat(self.permissions.SOSPermissionListJoc.SOSPermission);
         temp.forEach(function (option, index) {
             if (index > 0 && (option.split(':')[2] != temp[index - 1].split(':')[2] || option.split(':')[3] != temp[index - 1].split(':')[3])) {
@@ -451,9 +455,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     recursiveUpdate1(permission, arr) {
-        var flag = true;
+        let flag = true;
         if (arr[0]._parents) {
-            for (var y = 0; y < permission._parents.length; y++) {
+            for (let y = 0; y < permission._parents.length; y++) {
                 if (arr[0].name == permission._parents[y].name) {
                     flag = false;
                     this.recursiveUpdate1(permission._parents[y], arr[0]._parents);
@@ -469,7 +473,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     findPermissionObj(permissionNodes, permission) {
         if (permissionNodes._parents) {
-            for (var i = 0; i < permissionNodes._parents.length; i++) {
+            for (let i = 0; i < permissionNodes._parents.length; i++) {
                 if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                     permissionNodes._parents[i].selected = false;
                     this.unSelectedNode(permissionNodes._parents[i], permissionNodes._parents[i].excluded);
@@ -494,7 +498,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     updateChildExclude(permissionNodes, excluded) {
         if (permissionNodes._parents) {
-            for (var i = 0; i < permissionNodes._parents.length; i++) {
+            for (let i = 0; i < permissionNodes._parents.length; i++) {
                 permissionNodes._parents[i].excluded = excluded;
                 permissionNodes._parents[i].greyedBtn = excluded;
                 this.updateChildExclude(permissionNodes._parents[i], excluded);
@@ -507,7 +511,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     selectPermissionObj(permissionNodes, permission, excluded) {
         if (permissionNodes._parents) {
-            for (var i = 0; i < permissionNodes._parents.length; i++) {
+            for (let i = 0; i < permissionNodes._parents.length; i++) {
                 if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                     permissionNodes._parents[i].selected = true;
                     permissionNodes._parents[i].excluded = excluded;
@@ -529,7 +533,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     unSelectPermissionObj(permissionNodes, permission, excluded) {
         if (permissionNodes._parents) {
-            for (var i = 0; i < permissionNodes._parents.length; i++) {
+            for (let i = 0; i < permissionNodes._parents.length; i++) {
                 if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                     permissionNodes._parents[i].excluded = !permissionNodes._parents[i].excluded;
                     if (permissionNodes._parents[i].excluded) {
@@ -552,7 +556,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     selectedNode(permission_node, flag) {
         if (permission_node && permission_node._parents) {
-            for (var j = 0; j < permission_node._parents.length; j++) {
+            for (let j = 0; j < permission_node._parents.length; j++) {
                 permission_node._parents[j].greyed = true;
                 permission_node._parents[j].selected = false;
                 permission_node._parents[j].isSelected = permission_node.isSelected;
@@ -567,7 +571,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     unSelectedNode(permission_node, flag) {
         if (permission_node && permission_node._parents) {
-            for (var j = 0; j < permission_node._parents.length; j++) {
+            for (let j = 0; j < permission_node._parents.length; j++) {
                 permission_node._parents[j].greyed = false;
                 permission_node._parents[j].selected = false;
                 permission_node._parents[j].isSelected = permission_node.isSelected;
@@ -583,7 +587,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     checkPermissionListRecursively(permission_node, list) {
         if (permission_node && permission_node._parents) {
-            for (var j = 0; j < permission_node._parents.length; j++) {
+            for (let j = 0; j < permission_node._parents.length; j++) {
                 permission_node._parents[j].greyed = !list.excluded;
                 permission_node._parents[j].selected = false;
                 permission_node._parents[j].excluded = list.excluded;
@@ -601,8 +605,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     checkPermissionList(permission_node, list) {
         if (list.length > 0) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
-                    for (var i = 0; i < list.length; i++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
+                    for (let i = 0; i < list.length; i++) {
                         if (list[i].path.match(permission_node._parents[j].path + permission_node._parents[j].name)) {
                             permission_node._parents[j].isSelected = !(permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
                         }
@@ -621,7 +625,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                     this.checkPermissionList(permission_node._parents[j], list);
                 }
             } else {
-                for (var i = 0; i < list.length; i++) {
+                for (let i = 0; i < list.length; i++) {
                     if (list[i].path.match(permission_node.path + permission_node.name)) {
                         permission_node.isSelected = !(permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
                     }
@@ -640,7 +644,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     selectedExcludeNode(permission_node) {
         if (permission_node && permission_node._parents) {
-            for (var j = 0; j < permission_node._parents.length; j++) {
+            for (let j = 0; j < permission_node._parents.length; j++) {
                 permission_node._parents[j].greyedBtn = true;
                 permission_node._parents[j].excluded = true;
                 permission_node._parents[j].excludedParent = false;
@@ -652,7 +656,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
     unSelectedExcludeNode(permission_node) {
         if (permission_node && permission_node._parents) {
-            for (var j = 0; j < permission_node._parents.length; j++) {
+            for (let j = 0; j < permission_node._parents.length; j++) {
                 permission_node._parents[j].greyedBtn = false;
                 permission_node._parents[j].excluded = false;
                 permission_node._parents[j].excludedParent = false;
@@ -686,7 +690,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     }
 
     saveInfo() {
-        console.log('>>>>>>>>>>')
         let obj = {
             users: this.userDetail.users,
             masters: this.masters,
@@ -706,9 +709,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         this.unSelectedNode(this.permissionNodes[0][0], true);
         this.checkPermissionList(this.permissionNodes[0][0], _.clone(this.rolePermissions));
         this.updateDiagramData(this.permissionNodes[0][0]);
-        for (var i = 0; i < this.masters.length; i++) {
+        for (let i = 0; i < this.masters.length; i++) {
             if (_.isEqual(this.masters[i].master, this.masterName) || (this.masters[i].master == '' && this.masterName == 'default')) {
-                for (var j = 0; j < this.masters[i].roles.length; j++) {
+                for (let j = 0; j < this.masters[i].roles.length; j++) {
                     if (_.isEqual(this.masters[i].roles[j].role, this.roleName)) {
                         this.masters[i].roles[j].permissions = _.clone(this.rolePermissions);
                         break;
@@ -760,7 +763,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     _nodes:any;
     _tree:any;
     drawTree(json, type) {
-        var nodes;
+        let nodes;
         let self = this;
         if (type === 'EXPANDALL') {
 
@@ -823,7 +826,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         self.root = json;
         self.root.x0 = 0;
         self.root.y0 = 0;
-        var _pList = _.clone(self.rolePermissions);
+        let _pList = _.clone(self.rolePermissions);
         self.checkPermissionList(self.root, _pList);
         draw(self.root, 0);
 
@@ -899,10 +902,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 }
             });
 
-            var links = self._tree.links(nodes);
+            let links = self._tree.links(nodes);
 
             // Update links
-            var link = self.svg.selectAll("path.link")
+            let link = self.svg.selectAll("path.link")
                 .data(links, function (d) {
                     return d.target.id;
                 });
@@ -910,7 +913,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             link.enter().append("path")
                 .attr("class", "link")
                 .attr("d", function (d) {
-                    var o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
+                    let o = {x: source.x0, y: (source.y0 + self.boxWidth / 2)};
                     return transitionElbow({source: o, target: o});
                 });
 
@@ -923,19 +926,19 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 .transition()
                 .duration(self.duration)
                 .attr("d", function (d) {
-                    var o = {x: source.x, y: (source.y + self.boxWidth / 2)};
+                    let o = {x: source.x, y: (source.y + self.boxWidth / 2)};
                     return transitionElbow({source: o, target: o});
                 })
                 .remove();
             // Update nodes
-            var node = self.svg.selectAll("g.permission_node")
+            let node = self.svg.selectAll("g.permission_node")
                 .data(nodes, function (permission_node) {
 
                     return permission_node.id;
                 });
 
             // Add any new nodes
-            var nodeEnter = node.enter().append("g")
+            let nodeEnter = node.enter().append("g")
                 .attr("class", "permission_node")
                 .style("cursor", function (d) {
                     if (d.name == 'sos') {
@@ -1007,7 +1010,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 .style('fill-opacity', 0);
 
             // Update the position of both old and new nodes
-            var nodeUpdate = node.transition()
+            let nodeUpdate = node.transition()
                 .duration(self.duration)
                 .attr("transform", function (d) {
                     return "translate(" + d.y + "," + d.x + ")";
@@ -1038,7 +1041,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 .style('fill-opacity', 1);
 
             // Remove nodes we aren't showing anymore
-            var nodeExit = node.exit()
+            let nodeExit = node.exit()
                 .transition()
                 .duration(self.duration)
 
@@ -1072,7 +1075,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             //scrollToLast();
         }
 
-        var endNodes2 = {
+        let endNodes2 = {
             leftMost: {x: 0, y: 0},
             rightMost: {x: 0, y: 0},
             topMost: {x: 0, y: 0},
@@ -1107,7 +1110,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 }
             });
 
-            var diff = 0;
+            let diff = 0;
             if (endNodes2.topMost.y < -225) {
                 diff = (-endNodes2.topMost.y - 225);
             }
@@ -1126,15 +1129,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             }
         }
 
-/*        function scrollToLast() {
-            if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
-                $('#mainTree').animate({
-                    scrollTop: endNodes2.rightMost.y,
-                    scrollLeft: endNodes2.rightMost.x
-                }, 0);
-            }
-        }*/
-
         /**
          * Update a permission_node's state when they are clicked.
          */
@@ -1150,16 +1144,16 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             draw(permission_node, calculateTopMost());
         }
 
-        var _temp = [];
+        let _temp = [];
 
         function generatePermissionList(permission) {
             if (permission._parents) {
-                for (var i = 0; i < permission._parents.length; i++) {
+                for (let i = 0; i < permission._parents.length; i++) {
                     if (permission._parents[i]) {
                         if (permission._parents[i].selected || (permission._parents[i].excluded && !permission._parents[i].greyedBtn)) {
-                            var obj = {
+                            let obj = {
                                 path: permission._parents[i].path + '' + permission._parents[i].name,
-                                excluded: permission._parents[i].excluded ? true : false
+                                excluded: permission._parents[i].excluded
                             };
 
                             if (_temp.indexOf(obj) == -1)
@@ -1180,7 +1174,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
         function selectPermission(permission_node) {
 
-            var _previousPermissionObj = _.clone(self.rolePermissions);
+            let _previousPermissionObj = _.clone(self.rolePermissions);
 
             if (!permission_node.greyed && permission_node.name != 'sos') {
                 permission_node.selected = !permission_node.selected;
@@ -1221,7 +1215,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         }
 
         function toggleExclude(permission_node) {
-            var _previousPermissionObj = _.clone(self.rolePermissions);
+            let _previousPermissionObj = _.clone(self.rolePermissions);
             if (!permission_node.greyedBtn && permission_node.name != 'sos') {
                 permission_node.excluded = !permission_node.excluded;
                 permission_node.excludedParent = !permission_node.excludedParent;
@@ -1268,7 +1262,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
                 .separation(function () {
                     return .5;
                 });
-            var nodes = self._tree.nodes(nData);
+            let nodes = self._tree.nodes(nData);
             self.svg.selectAll("g.permission_node")
                 .data(nodes, function (permission_node) {
                     return permission_node.id;
@@ -1313,7 +1307,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         }
 
         function elbow(d) {
-            var sourceX = d.source.x,
+            let sourceX = d.source.x,
                 sourceY = d.source.y + (self.boxWidth / 2),
                 targetX = d.target.x,
                 targetY = d.target.y - (self.boxWidth / 2);

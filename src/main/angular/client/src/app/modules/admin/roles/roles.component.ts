@@ -1,7 +1,6 @@
 import { Component, OnInit, Input,OnDestroy } from '@angular/core';
 import { Subscription }   from 'rxjs/Subscription';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToasterService } from 'angular2-toaster';
@@ -27,6 +26,7 @@ export class RoleModal implements OnInit {
     @Input() newRole:boolean;
     @Input() copy:boolean;
     @Input() master:any;
+    @Input() masters:any;
 
 
     constructor(public activeModal:NgbActiveModal, private coreService:CoreService) {
@@ -56,7 +56,7 @@ export class RoleModal implements OnInit {
 
     checkRole(newRole) {
         this.isUnique = true;
-        for (var i = 0; i < this.allRoles.length; i++) {
+        for (let i = 0; i < this.allRoles.length; i++) {
             if (this.allRoles[i] === newRole && newRole !== this.oldRole.role) {
                 this.isUnique = false;
                 break;
@@ -152,7 +152,7 @@ export class MasterModal implements OnInit {
 
     checkMaster(newMaster):void {
         this.isUnique = true;
-        for (var i = 0; i < this.allMasters.length; i++) {
+        for (let i = 0; i < this.allMasters.length; i++) {
             if (this.allMasters[i].master === newMaster) {
                 this.isUnique = false;
                 break;
@@ -269,14 +269,14 @@ export class RolesComponent implements OnInit,OnDestroy {
         self.selectedRoles = [];
         self.showMsg = false;
         if (user) {
-            for (var i = 0; i < self.users.length; i++) {
+            for (let i = 0; i < self.users.length; i++) {
                 if (self.users[i].user === user && self.users[i].roles) {
                     self.selectedRoles = self.users[i].roles || [];
                     self.masters.forEach(function (master) {
 
-                        var flag = true;
-                        for (var j = 0; j < self.users[i].roles.length; j++) {
-                            for (var x = 0; x < master.roles.length; x++) {
+                        let flag = true;
+                        for (let j = 0; j < self.users[i].roles.length; j++) {
+                            for (let x = 0; x < master.roles.length; x++) {
                                 if (master.roles[x].role == self.users[i].roles[j]) {
                                     self.selectedMasters.push(master.master);
                                     flag = false;
@@ -374,8 +374,8 @@ export class RolesComponent implements OnInit,OnDestroy {
     deleteRole(role, master) {
         let isAssigned:boolean;
         let waringMessage = '';
-        for (var i = 0; i < this.users.length; i++) {
-            for (var j = 0; j < this.users[i].roles.length; j++) {
+        for (let i = 0; i < this.users.length; i++) {
+            for (let j = 0; j < this.users[i].roles.length; j++) {
                 if (this.users[i].roles[j] == role.role) {
                     isAssigned = true;
                     break;
@@ -419,7 +419,6 @@ export class RolesComponent implements OnInit,OnDestroy {
     }
 
     addMaster() {
-        console.log(this.roles)
         const modalRef = this.modalService.open(MasterModal, {backdrop: "static"});
         modalRef.componentInstance.allMasters = this.masters;
         modalRef.componentInstance.allRoles = this.roles;
@@ -449,7 +448,6 @@ export class RolesComponent implements OnInit,OnDestroy {
         modalRef.componentInstance.master = master.master;
         modalRef.result.then((result) => {
 
-            console.log("Deleted");
             for (let i = 0; i < this.masters.length; i++) {
                 if (_.isEqual(this.masters[i], master)) {
                     this.masters.splice(this.masters.indexOf(master), 1);

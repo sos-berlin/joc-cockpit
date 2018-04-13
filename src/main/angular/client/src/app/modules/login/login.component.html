@@ -9,7 +9,7 @@
               </span>
             </a>
             <ul class="dropdown-menu pull-right dropdown-ac1">
-                <li><a class="dropdown-item first" ng-click="about()">{{'button.aboutJobScheduler' | translate}}</a></li>
+                <li><a class="dropdown-item first" (click)="coreService.about()">{{'button.aboutJobScheduler' | translate}}</a></li>
                 <li class="dropdown-submenu">
                     <a tabindex="-1" class="dropdown-item" href="">{{'button.featuresAndDownload' | translate}}</a>
                     <div class="dropdown-menu dropdown-ac1">
@@ -61,7 +61,7 @@
                 <div class="navbar m-t">
                     <div class="pull-center">
                         <a class="navbar-brand">
-                            <img src="../assets/images/JobScheduler_logo.png" alt="." style="max-height: 90px">
+                            <img src="./assets/images/JobScheduler_logo.png" alt="." style="max-height: 90px">
                         </a>
                     </div>
                 </div>

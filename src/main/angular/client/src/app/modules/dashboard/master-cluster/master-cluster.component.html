@@ -13,24 +13,24 @@
             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.restart"
-                   (click)="clusterAction('restart')"
+                   (click)="clusterAction('restart', null)"
                    [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.restart</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.terminate"
-                   (click)="clusterAction('terminate')"
-                   [ngClass]="{'disable-link': selectedJobScheduler.state &&selectedJobScheduler.state._text ==='STOPPED'}"
+                   (click)="clusterAction('terminate', null)"
+                   [ngClass]="{'disable-link': selectedJobScheduler.state && selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.terminate</a>
                 <a class="dropdown-item"
                    *ngIf="permission.JobschedulerMasterCluster.execute.terminateFailSafe && selectedJobScheduler.clusterType._type === 'passive'"
-                   (click)="clusterAction('terminateFailsafe')"
+                   (click)="clusterAction('terminateFailsafe', null)"
                    [ngClass]="{'disable-link': selectedJobScheduler.state &&selectedJobScheduler.state._text ==='STOPPED'}"
                    translate>button.terminateFailsafe</a>
             </div>
         </div>
     </div>
     <div id="divClusterStatusWidget" class="box-body" [hidden]="!isLoaded">
-      <ng-template ad-host></ng-template>
+     <div class="clusterDiagram"></div>
     </div>
     <div class="hide text-center text-primary text" [ngClass]="{'show': !isLoaded}"
          style="padding: 140px 0 155px 0">

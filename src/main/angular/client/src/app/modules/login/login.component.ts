@@ -12,37 +12,34 @@ import * as crypto from 'crypto-js';
 })
 export class LoginComponent implements OnInit {
 
-    public user:any;
-    public schedulerIds:any;
-    public submitted:boolean = false;
-    public rememberMe:boolean = false;
-    public errorMsg:string = '';
-    public error:string = '';
-
+    user:any ={};
+    schedulerIds:any ={};
+    submitted:boolean = false;
+    rememberMe:boolean = false;
+    errorMsg:string = '';
+    error:string = '';
 
     constructor(public router:Router, public coreService:CoreService, public authService:AuthService) {
-        this.user = {userName:'',password:''};
+
     }
 
     ngOnInit() {
         if (localStorage.$SOS$REMEMBER == 'true' || localStorage.$SOS$REMEMBER == true) {
-            var urs = crypto.AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
-            var pwd = crypto.AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
+            let urs = crypto.AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
+            let pwd = crypto.AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
             this.user.userName = urs.toString(crypto.enc.Utf8);
             this.user.password = pwd.toString(crypto.enc.Utf8);
             this.rememberMe = true;
         }
     }
 
-    setCommentObject(commentList){
-        sessionStorage.$SOS$FORCELOGING = commentList.forceCommentsForAuditLog;
-        sessionStorage.comments = JSON.stringify(commentList.comments);
-    }
-
     getComments():void {
-        this.coreService.post('audit_log/comments', {}).subscribe(res => {
-            this.setCommentObject(res);
-        });
+      let result: any;
+      this.coreService.post('audit_log/comments', {}).subscribe(res => {
+        result = res;
+        sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+        sessionStorage.comments = JSON.stringify(result.comments);
+      });
     }
 
     getPermissions():void {
@@ -52,10 +49,9 @@ export class LoginComponent implements OnInit {
             this.authService.savePermission(this.schedulerIds.selected);
             this.authService.save();
             this.submitted = false;
-            if (localStorage.$SOS$URL && localStorage.$SOS$URLPARAMS) {
-                this.router.navigate([localStorage.$SOS$URL], {queryParams: JSON.parse(localStorage.$SOS$URLPARAMS)});
+            if (localStorage.$SOS$URL) {
+                this.router.navigate([localStorage.$SOS$URL]);
                 localStorage.removeItem('$SOS$URL');
-                localStorage.removeItem('$SOS$URLPARAMS');
             } else {
                 this.router.navigate(['/']);
             }
@@ -92,8 +88,8 @@ export class LoginComponent implements OnInit {
             let userDetail = data;
             this.authService.rememberMe = this.rememberMe;
             if (this.rememberMe) {
-                var urs = crypto.AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');
-                var pwd = crypto.AES.encrypt(values.password, '$SOSJOBSCHEDULER2');
+                let urs = crypto.AES.encrypt(values.userName, '$SOSJOBSCHEDULER2');
+                let pwd = crypto.AES.encrypt(values.password, '$SOSJOBSCHEDULER2');
                 localStorage.$SOS$FOO = urs;
                 localStorage.$SOS$BOO = pwd;
                 localStorage.$SOS$REMEMBER = this.rememberMe;

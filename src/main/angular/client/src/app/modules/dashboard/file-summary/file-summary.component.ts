@@ -11,16 +11,16 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 export class FileSummaryComponent implements OnInit, OnDestroy {
 
-    yadeSummary:any;
-    schedulerIds:any;
+    yadeSummary:any={};
+    schedulerIds:any={};
     preferences:any = {};
-    filters:any;
+    filters:any={};
     isLoaded:boolean = false;
     notAuthenticate:boolean = false;
     subscription:Subscription;
 
     constructor(public authService:AuthService, public coreService:CoreService, private dataService:DataService) {
-        this.filters = coreService.getDashboardTab().file;
+
         this.subscription = dataService.eventAnnounced$.subscribe(res => {
             this.refresh(res);
         });
@@ -69,6 +69,7 @@ export class FileSummaryComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+       this.filters = this.coreService.getDashboardTab().file;
         if (sessionStorage.preferences)
             this.preferences = JSON.parse(sessionStorage.preferences);
         this.schedulerIds = JSON.parse(this.authService.scheduleIds);

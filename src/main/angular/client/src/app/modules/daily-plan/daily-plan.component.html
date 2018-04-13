@@ -48,17 +48,17 @@
                             </div>
                         </div>
                         <div class="btn-group btn-group-toggle m-l-sm" ngbRadioGroup name="late" [(ngModel)]="dailyPlanFilters.filter.state">
-                            <label ngbButtonLabel class="btn btn-default btn-sm button-group-ellipsis"
+                            <label ngbButtonLabel class="btn btn-grey btn-sm button-group-ellipsis"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.state==='LATE'}"  >
                                  <input ngbButton type="radio" [value]="'LATE'"> <span translate>button.late</span>
                             </label>
                         </div>
                         <div class="btn-group btn-group-toggle m-l-sm hidden-btn-group" ngbRadioGroup name="range" [(ngModel)]="dailyPlanFilters.filter.range" >
-                            <label ngbButtonLabel class="btn btn-default btn-sm button-group-ellipsis"
+                            <label ngbButtonLabel class="btn btn-grey btn-sm button-group-ellipsis"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='today'}" >
                                  <input ngbButton type="radio" [value]="'today'" (click)="getPlans(null,'today')"> <span translate>button.today</span>
                             </label>
-                            <label ngbButtonLabel  class="btn btn-default btn-sm button-group-ellipsis"
+                            <label ngbButtonLabel  class="btn btn-grey btn-sm button-group-ellipsis"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.range==='next-24-hours'}" >
                                  <input ngbButton type="radio" [value]="'next-24-hours'" (click)="getPlans(null,'next-24-hours')"> <span translate>button.next24</span>
                             </label>
@@ -141,154 +141,12 @@
             </div>
         </div>
         <div class="row hide" [ngClass]="{'show':showSearchPanel}">
-                <div class="col-md-12">
+          <div class="col-md-12">
                 <div class="box p-a m-b-sm m-t-sm">
-                    <form #myForm="ngForm" (ngSubmit)="saveAsFilter()">
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-
-                            <div class=" col-sm-6">
-                                <input type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}"
-                                       name="filterName" maxlength="25" [(ngModel)]="searchDailyPlanFilter.name"
-                                       (blur)="checkFilterName()">
-                            </div>
-                        </div>
-                        <div class="form-group row m-b-sm">
-                            <label class="col-md-2 col-sm-4" translate>label.dateRange</label>
-                            <div class=" col-sm-8">
-                                <div>
-                                    <label class="md-check w">
-                                        <input type="radio" name="date" [(ngModel)]="searchDailyPlanFilter.radio" value="current">
-                                        <i class="primary"></i> <span translate>label.specificDate</span>
-                                    </label>
-                                    <label class="md-check w">
-                                        <input type="radio" name="date" [(ngModel)]="searchDailyPlanFilter.radio" value="planned">
-                                        <i class="primary"></i> <span translate>label.manualDate</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                       <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'current'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date date-picker" name="fromDate" ngbDatepicker #from="ngbDatepicker" [(ngModel)]="searchDailyPlanFilter.from"
-                                       placeholder="{{'placeholder.setStartDate' | translate}}"
-                                        type="text" (click)="from.toggle()">
-                                <input  maxlength="8" [disabled]="!searchDailyPlanFilter.from" class="form-control input-time m-l" [(ngModel)]="searchDailyPlanFilter.fromTime"
-                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" name="startTime" type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" *ngIf="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" (click)="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'current'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date date-picker" name="toDate" ngbDatepicker #to="ngbDatepicker"
-                                       [(ngModel)]="searchDailyPlanFilter.to" placeholder="{{'placeholder.setEndDate' | translate}}"
-                                        type="text" (click)="to.toggle()">
-                                <input  maxlength="8" [disabled]="!searchDailyPlanFilter.to" class="form-control input-time m-l" name="toTime" [(ngModel)]="searchDailyPlanFilter.toTime"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
-                                 <a class="text-sm text-primary" *ngIf="searchDailyPlanFilter.to || searchDailyPlanFilter.toTime" (click)="searchDailyPlanFilter.to='';searchDailyPlanFilter.toTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'planned'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
-
-                            <div class=" col-sm-6" >
-                                <input type="text" name="from" class="form-control"
-                                       placeholder="{{'placeholder.timeRangeFrom' | translate}}" [(ngModel)]="searchDailyPlanFilter.from1">
-
-                            </div>
-                        </div>
-                        <div class="form-group row" *ngIf="searchDailyPlanFilter.radio == 'planned'">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-                           <div class=" col-sm-6">
-                            <input type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" [(ngModel)]="searchDailyPlanFilter.to1">
-
-                           </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
-
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="regex"
-                                       placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
-                                       [(ngModel)]="searchDailyPlanFilter.regex">
-
-                            </div>
-                            <div class="col-sm-1 p-l-0 p-t-sm"><a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a></div>
-                        </div>
-                        <div class="form-group row" *ngIf="searchDailyPlanFilter.paths && searchDailyPlanFilter.paths.length>0">
-                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
-                            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-                                <div *ngFor="let path of searchDailyPlanFilter.paths">
-                                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path,'path')"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobChain</label>
-
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="jobChain"
-                                       placeholder="{{'placeholder.enterJobChainPath' | translate}}"
-                                       [(ngModel)]="searchDailyPlanFilter.jobChain">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.orderId</label>
-
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="orderId"
-                                       placeholder="{{'placeholder.enterOrderId' | translate}}"
-                                       [(ngModel)]="searchDailyPlanFilter.orderId">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.job</label>
-
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="job"
-                                       placeholder="{{'placeholder.enterJobPath' | translate}}"
-                                       [(ngModel)]="searchDailyPlanFilter.job">
-                            </div>
-                        </div>
-                         <div class="form-group row ">
-                             <label class="col-md-2 col-sm-4 " translate>label.status</label>
-                            <div class=" col-sm-8">
-                                <label class="md-check w">
-                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="WAITING" name="waiting" />
-                                    <i class="primary"></i><span translate>label.waiting</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="LATE" name="late"/>
-                                    <i class="primary"></i><span translate>label.late</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="SUCCESSFUL" name="success"/>
-                                    <i class="primary"></i><span translate>label.successful</span>
-                                </label>
-                                <label class="md-check w m-t-sm">
-                                    <input type="checkbox" [(checklist)]="searchDailyPlanFilter.state" checklistValue="FAILED" name="failed"/>
-                                    <i class="primary"></i><span translate>label.failed</span>
-                                </label>
-                            </div>
-
-                        </div>
-                        <div class="form-group m-t m-b-xs">
-                            <button type="button" class="btn btn-primary btn-sm" (click)="search();" translate>
-                                button.search
-                            </button>
-                            <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    [disabled]="!isUnique || !searchDailyPlanFilter.name" translate>button.saveAsFilter
-                            </button>
-                            <button type="button" class="btn btn-default btn-sm m-l-sm" (click)="cancel()" translate>
-                                button.cancel
-                            </button>
-                        </div>
-                    </form>
+                  //TODO
                 </div>
             </div>
-            </div>
+        </div>
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
             <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
                 <div class="box p-a">
@@ -380,12 +238,12 @@
                             (click)="coreService.showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)"
                             [ngClass]="{'cursor':plan.historyId}">
                             <td>
-                                <span class="hide text-hover-primary" (click)="showJobChain(plan.jobChain);$event.stopPropagation()"
+                                <span class="hide text-hover-primary" (click)="coreService.showJobChain(plan.jobChain);$event.stopPropagation()"
                                       [ngClass]="{show:plan.jobChain!=undefined}" [innerHtml]="plan.jobChain"></span>
-                                <span class="hide text-hover-primary" (click)="showJob(plan.job);$event.stopPropagation()"
+                                <span class="hide text-hover-primary" (click)="coreService.showJob(plan.job);$event.stopPropagation()"
                                       [ngClass]="{show:plan.job!=undefined}" [innerHtml]="plan.job"></span>
                             </td>
-                            <td><span class="text-hover-primary" (click)="showOrderLink(plan.jobChain,plan.orderId);$event.stopPropagation()"
+                            <td><span class="text-hover-primary" (click)="coreService.showOrderLink(plan.jobChain,plan.orderId);$event.stopPropagation()"
                                       [innerHtml]="plan.orderId"></span></td>
                             <td>
                                 <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"

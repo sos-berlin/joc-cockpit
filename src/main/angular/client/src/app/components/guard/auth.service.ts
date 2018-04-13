@@ -75,8 +75,8 @@ export class AuthService {
 
   getPermission(id) {
     if(this.permissions) {
-      var p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
-      for (var i = 0; i < p.length; i++) {
+      let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
+      for (let i = 0; i < p.length; i++) {
         if (p[i].JobSchedulerMaster == id) {
           return p[i].SOSPermissionJocCockpit;
         }
@@ -86,8 +86,8 @@ export class AuthService {
 
   savePermission(id) {
     if(this.permissions) {
-      var p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
-      for (var i = 0; i < p.length; i++) {
+      let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
+      for (let i = 0; i < p.length; i++) {
         if (p[i].JobSchedulerMaster == id) {
           this.permission = JSON.stringify(p[i].SOSPermissionJocCockpit);
           this.save();
