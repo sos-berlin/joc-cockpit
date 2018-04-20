@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, ExtraOptions } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './components/guard';
 
 const routes: Routes = [
@@ -10,13 +10,9 @@ const routes: Routes = [
     },
     { path: 'login', loadChildren: './modules/login/login.module#LoginModule' }
 ];
-const config: ExtraOptions = {
-  useHash: true,
-};
-
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes,config)],
+    imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

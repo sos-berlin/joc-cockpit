@@ -21,11 +21,12 @@ import {
   StringDateFormatePipe,
   GroupByPipe
 } from '../../filters/filter.pipe';
-import {EditFilterModal} from "../../components/edit-filter-modal/edit-filter.component";
+import {EditFilterModal} from "../../components/filter-modal/filter.component";
 import {TreeModal} from '../../components/tree-modal/tree.component';
 import {DeleteModal} from "../../components/delete-modal/delete.component";
 import {TranslateModule} from "ng2-translate";
 import {ConfigurationModal} from "../../components/configuration-modal/configuration.component";
+import {RegexValidator, TimeValidator} from "../../directives/core.directive";
 
 
 @NgModule({
@@ -55,11 +56,14 @@ import {ConfigurationModal} from "../../components/configuration-modal/configura
     DeleteModal,
     TreeModal,
     ConfigurationModal,
-    TreeComponent
+    TreeComponent,
+    TimeValidator,
+    RegexValidator
   ],
   exports: [CommonModule, FormsModule,
     DurationPipe, StringDatePipe, DecodeSpacePipe, ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe, OrderModule, NgxPaginationModule,
-    StringDateFormatePipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent, DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent],
+    StringDateFormatePipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent, DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent,
+    TimeValidator,  RegexValidator],
   entryComponents: [CommentModal, EditFilterModal, DeleteModal, TreeModal, ConfigurationModal]
 })
 export class SharedModule {

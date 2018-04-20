@@ -2,12 +2,13 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../components/guard/auth.service';
 import {CoreService} from '../../services/core.service';
 import {
-  CompactType,
-  DisplayGrid,
-  GridsterConfig,
-  GridsterItem,
-  GridsterItemComponentInterface,
-  GridType
+    CompactType,
+    DisplayGrid,
+    GridsterComponentInterface,
+    GridsterConfig,
+    GridsterItem,
+    GridsterItemComponentInterface,
+    GridType
 } from 'angular-gridster2';
 import {DataService} from "../../services/data.service";
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -57,6 +58,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   itemResize = (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => {
     this.setEqualRowSpace(item, itemComponent);
+  };
+
+  gridInit = (grid: GridsterComponentInterface) => {
+    let self = this;
+    $(window).resize(function () {
+      self.checkWindowSize(grid);
+    });
+    self.checkWindowSize(grid);
   };
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
@@ -186,7 +195,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
+      initCallback: this.gridInit,
       itemResizeCallback: this.itemResize,
+
       margin: 22,
       outerMargin: true,
       outerMarginTop: null,
@@ -195,7 +206,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       outerMarginLeft: null,
       mobileBreakpoint: 768,
       minCols: 1,
-      maxCols: 100,
+      maxCols: 12,
       minRows: 1,
       maxRows: 100,
       maxItemCols: 100,
@@ -243,8 +254,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       pushDirections: {north: true, east: true, south: true, west: true},
       pushResizeItems: false,
       displayGrid: DisplayGrid.None,
-      disableWindowResize: true,
-      disableWarnings: false,
+      disableWindowResize: false,
+      disableWarnings: true,
       scrollToNewItems: false
     };
   }
@@ -322,27 +333,107 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private setEqualRowSpace(item, itemComponent) {
     let newRowIndex = parseInt(item.y) + parseInt(item.rows);
     this.widgetArray = Object.assign([], this.dashboard);
-    if ((this.isEventTriggering == true) && (itemComponent.width < 700) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
+    let gridWidth = itemComponent.gridster.curWidth;
+    if ((itemComponent.width < 750) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
+
+    }
+    if ((itemComponent.width > 750) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
+      if (gridWidth > 1336) {
+        $('#' + item.name).removeClass('small-gridster-panel');
+      }
+      else {
+        $('#' + item.name).removeClass('smallest-gridster-panel');
+      }
+    }
+    let itemHeight = parseInt($('#' + item.name).css('height'));
+    if ((this.isEventTriggering) && (itemComponent.width < 750) && (itemHeight == itemComponent.height) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
+      if (gridWidth > 1336) {
+        $('#' + item.name).addClass('small-gridster-panel');
+      }
+      else {
+        $('#' + item.name).addClass('smallest-gridster-panel');
+      }
+      for (let j = 0; j < this.widgetArray.length; j++) {
+        if (this.widgetArray[j].y >= newRowIndex) {
+          let _tempId = this.widgetArray[j].name;
+
+          let itemTop = $('#' + _tempId).css('top');
+          let newTop;
+          if (gridWidth > 1336) {
+            newTop = parseInt(itemTop) + 16;
+          }
+          else {
+            newTop = parseInt(itemTop) + 32;
+          }
+
+          $('#' + _tempId).css('top', newTop + 'px');
+        
+        }
+      }
+      this.isEventTriggering = false;
+    }
+
+    if ((this.isEventTriggering) && (itemComponent.width > 750) && (itemHeight > itemComponent.height) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
       for (let j = 0; j < this.widgetArray.length; j++) {
         if (this.widgetArray[j].y >= newRowIndex) {
           let _tempId = this.widgetArray[j].name;
           let itemTop = $('#' + _tempId).css('top');
-          let newTop = parseInt(itemTop) + 14;
+          let newTop;
+          if (gridWidth > 1336) {
+            newTop = parseInt(itemTop) - 16;
+          }
+          else {
+            newTop = parseInt(itemTop) - 32;
+          }
           $('#' + _tempId).css('top', newTop + 'px');
         }
       }
       this.isEventTriggering = false;
     }
-    if ((this.isEventTriggering == true) && (itemComponent.width > 700) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
-      for (let j = 0; j < this.widgetArray.length; j++) {
-        if (this.widgetArray[j].y >= newRowIndex) {
-          let _tempId = this.widgetArray[j].name;
-          let itemTop = $('#' + _tempId).css('top');
-          let newTop = parseInt(itemTop) - 14;
-          $('#' + _tempId).css('top', newTop + 'px');
+  }
+
+
+  checkWindowSize(grid) {
+    if (grid.curWidth < 1200) {
+      for (let i = 0; i < this.widgetArray.length; i++) {
+        if (this.widgetArray[i].rows < 2) {
+          let _tempId3 = this.widgetArray[i].name;
+          $('#' + _tempId3).addClass('smallest-gridster-panel');
         }
       }
-      this.isEventTriggering = false;
+      this.dashboard = this.widgetArray;
+    }
+    if (grid.curWidth > 1200) {
+      for (let i = 0; i < this.widgetArray.length; i++) {
+        if (this.widgetArray[i].rows < 2) {
+          let _tempId3 = this.widgetArray[i].name;
+          $('#' + _tempId3).removeClass('smallest-gridster-panel');
+        }
+      }
+    }
+
+    if (grid.curWidth < 1200) {
+      for (let i = 0; i < this.widgetArray.length; i++) {
+        let _tempId4 = this.widgetArray[i].name;
+        let _tempTop = $('#' + _tempId4).css('top');
+        let _tempHeight = $('#' + _tempId4).css('height');
+        let flag = $('#' + _tempId4).hasClass('smallest-gridster-panel');
+        let sum = _tempTop + _tempHeight;
+        let newRowIndex = parseInt(this.widgetArray[i].y) + parseInt(this.widgetArray[i].rows);
+        if (flag) {
+          for (let j = 0; j < this.widgetArray.length; j++) {
+            let nextTop = parseInt($('#' + this.widgetArray[j].name).css('top'));
+            if ((this.widgetArray[j].y >= newRowIndex) && (nextTop - sum != 22)) {
+              let _tempId5 = this.widgetArray[j].name;
+              let _tempTop2 = $('#' + _tempId5).css('top');
+              let newTop2 = parseInt(_tempTop2) + (32);
+              $('#' + this.widgetArray[j].name).css('color', 'red');
+              $('#' + this.widgetArray[j].name).css('top', newTop2 + 'px');
+            }
+          }
+          break;
+        }
+      }
     }
   }
 }

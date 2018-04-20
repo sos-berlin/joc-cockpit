@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="new" translate>label.createFilter</span>
+    <span *ngIf="edit" translate>label.updateFilter</span>
+    <span *ngIf="!new && !edit" translate>label.copyFilter</span> <span *ngIf="name">: {{name}}</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="type === 'ORDER'">
+  <app-order-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                           (onCancel)="cancel()"></app-order-form-template>
+</div>
+<div *ngIf="type === 'TASK'">
+  <app-task-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                          (onCancel)="cancel()"></app-task-form-template>
+</div>
+<div *ngIf="type === 'YADE'">
+  <app-yade-form-template [filter]="filter" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="allFilter"
+                          (onCancel)="cancel()"></app-yade-form-template>
+</div>

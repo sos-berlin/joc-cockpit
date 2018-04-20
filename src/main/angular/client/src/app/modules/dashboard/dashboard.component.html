@@ -52,7 +52,7 @@
     </div>
     <div class="gridster" >
         <gridster [options]="options">
-            <gridster-item  [item]="item" *ngFor="let item of dashboard" [ngClass] = "{ 'smallgridster-panel' : (item.cols < 5 && item.rows < 2) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'jobSchedulerStatus' || item.name == 'fileTransferOverview') }" id = "{{item.name}}"  >
+            <gridster-item  [item]="item" *ngFor="let item of dashboard"  id = "{{item.name}}" >
                 <div class="destroy-button">
                     <i *ngIf="editLayoutObj" class="fa fa-times-circle" (click)="removeWidget($event, item)"></i>
                 </div>

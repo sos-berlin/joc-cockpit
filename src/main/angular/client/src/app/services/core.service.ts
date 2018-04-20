@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {AuthService} from "../components/guard/auth.service";
 import * as _ from 'underscore';
+import {AboutModal} from "../components/about-modal/about.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 declare var $;
 
@@ -13,10 +15,10 @@ export class CoreService {
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
-  newWindow:any;
-  windowProperties:any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
+  newWindow: any;
+  windowProperties: any = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, public modalService: NgbModal) {
 
     this.tabs._job = {};
     this.tabs._job.filter = {};
@@ -95,7 +97,7 @@ export class CoreService {
 
     this.tabs._yade = {};
     this.tabs._yade.filter = {};
-    this.tabs._yade.filter.states = 'all';
+    this.tabs._yade.filter.states = 'ALL';
     this.tabs._yade.filter.date = 'today';
     this.tabs._yade.filter.sortBy = 'start';
     this.tabs._yade.reverse = true;
@@ -109,8 +111,6 @@ export class CoreService {
     this.tabs._yadeDetail.reverse = false;
     this.tabs._yadeDetail.currentPage = '1';
     this.tabs._yadeDetail.pageView = 'grid';
-    this.tabs._yadeDetail.showErrorNodes = true;
-    this.tabs._yadeDetail.fitToScreen = false;
 
     this.tabs._auditLog = {};
     this.tabs._auditLog.filter = {};
@@ -234,7 +234,7 @@ export class CoreService {
 
     this.tempTabs._yade = {};
     this.tempTabs._yade.filter = {};
-    this.tempTabs._yade.filter.states = 'all';
+    this.tempTabs._yade.filter.states = 'ALL';
     this.tempTabs._yade.filter.date = 'today';
     this.tempTabs._yade.filter.sortBy = 'start';
     this.tempTabs._yade.reverse = true;
@@ -248,8 +248,7 @@ export class CoreService {
     this.tempTabs._yadeDetail.reverse = false;
     this.tempTabs._yadeDetail.currentPage = '1';
     this.tempTabs._yadeDetail.pageView = 'grid';
-    this.tempTabs._yadeDetail.showErrorNodes = true;
-    this.tempTabs._yadeDetail.fitToScreen = false;
+
 
     this.tempTabs._auditLog = {};
     this.tempTabs._auditLog.filter = {};
@@ -503,8 +502,8 @@ export class CoreService {
     $('.sidebar-btn').hide();
   }
 
-  prepareTree(actualData):any {
-    if(actualData.folders && actualData.folders.length>0) {
+  prepareTree(actualData): any {
+    if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
         id: 1,
         name: actualData.folders[0].path,
@@ -514,7 +513,7 @@ export class CoreService {
 
       this.recursive(actualData.folders[0], output[0].children);
       return output;
-    }else{
+    } else {
       return [];
     }
   }
@@ -536,7 +535,7 @@ export class CoreService {
     }
   }
 
-  recursiveTreeUpdate(scrTree, destTree):any {
+  recursiveTreeUpdate(scrTree, destTree): any {
     if (scrTree && destTree)
       for (let i = 0; i < scrTree.length; i++) {
         for (let j = 0; j < destTree.length; j++) {
@@ -567,11 +566,15 @@ export class CoreService {
       console.log(x)
     }
   }
-  showLogWindow(order, task, job, id, transfer, preferenceObj, schedulerId) {
+
+  showLogWindow(order, task, job, id, transfer) {
     if (!order && !task) {
       return;
     }
     this.refreshParent();
+
+    let preferenceObj = JSON.parse(sessionStorage.preferences);
+    let schedulerId = JSON.parse(this.authService.scheduleIds).selected;
     let url = null;
     if (preferenceObj.isNewWindow == 'newWindow') {
 
@@ -600,7 +603,7 @@ export class CoreService {
           document.cookie = "$SOS$accessTokenId=" + this.authService.accessTokenId + ";path=/";
           this.newWindow = window.open(url, "Log", 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
           let self = this;
-          setTimeout(()=> {
+          setTimeout(() => {
             self.calWindowSize();
           }, 400);
         }
@@ -657,23 +660,205 @@ export class CoreService {
     }
   }
 
-  copyLink(objType, path){
+  parseProcessExecuted(regex): any {
+    let date;
+    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
+      let fromDate = new Date();
+      date = new Date();
+      let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+      date.setSeconds(fromDate.getSeconds() - seconds);
+    } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = regex;
+    } else if (/^\s*(Today)\s*$/i.test(regex)) {
+      date = '0d';
+    } else if (/^\s*(now)\s*$/i.test(regex)) {
+      date = new Date();
+    } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = regex;
+    }
+    return date;
+  }
+
+   parseProcessExecutedRegex(regex, obj): any {
+    let fromDate, toDate, date, arr;
+
+    if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+
+    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+      fromDate = new Date();
+      toDate = new Date();
+      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+      fromDate.setSeconds(toDate.getSeconds() - seconds);
+    } else if (/^\s*(Today)\s*$/i.test(regex)) {
+      fromDate = '0d';
+      toDate = '0d';
+    } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+      fromDate = '-1d';
+      toDate = '0d';
+    } else if (/^\s*(now)\s*$/i.test(regex)) {
+      fromDate = new Date();
+      toDate = new Date();
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+      arr = date[0].split('to');
+      fromDate = arr[0].trim();
+      toDate = arr[1].trim();
+
+    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+      let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+      fromDate = new Date();
+      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+        fromDate.setHours(parseInt(time[1]) - 12);
+      } else {
+        fromDate.setHours(parseInt(time[1]));
+      }
+
+      fromDate.setMinutes(parseInt(time[2]));
+      toDate = new Date();
+      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+        toDate.setHours(parseInt(time[4]) - 12);
+      } else {
+        toDate.setHours(parseInt(time[4]));
+      }
+      toDate.setMinutes(parseInt(time[5]));
+    }
+
+    if (fromDate) {
+      obj.dateFrom = fromDate;
+    }
+    if (toDate) {
+      obj.dateTo = toDate;
+    }
+    return obj;
+  }
+
+  mergeHostAndProtocol(hosts, protocols) {
+    let arr = [];
+    if (protocols.length < hosts.length) {
+      hosts.forEach(function (value, index) {
+        if (protocols.length > 0) {
+          if (protocols.length < hosts.length) {
+            if (protocols.length == 1) {
+              arr.push({host: value, protocol: protocols[0]});
+            } else {
+              for (let x = 0; x < protocols.length; x++) {
+                if (protocols.length >= index) {
+                  arr.push({host: value, protocol: protocols[index]});
+                }
+                break;
+              }
+            }
+          }
+        } else {
+          arr.push({host: value})
+        }
+
+      })
+    } else if (protocols.length > hosts.length) {
+      protocols.forEach( function (value, index) {
+        if (hosts.length > 0) {
+          if (hosts.length < protocols.length) {
+            if (hosts.length == 1) {
+              arr.push({protocol: value, host: hosts[0]});
+            } else {
+              for (let x = 0; x < hosts.length; x++) {
+                if (hosts.length >= index) {
+                  arr.push({protocol: value, host: hosts[index]});
+                }
+                break;
+              }
+            }
+
+          }
+        } else {
+          arr.push({protocol: value})
+        }
+
+      })
+    } else {
+      hosts.forEach( function (value, index) {
+        for (let x = 0; x < protocols.length; x++) {
+          arr.push({host: value, protocol: protocols[x]});
+          protocols.splice(index, 1);
+          break;
+        }
+      });
+    }
+    return arr;
+  }
+
+
+  checkCopyName(list:any, name:string):string {
+    let _temp = '';
+    if (/.+\((\d+)\)$/.test(name)) {
+      _temp = name;
+    } else {
+      _temp = name + '(1)';
+    }
+
+    function recursion() {
+      for (let j = 0; j < list.length; j++) {
+        if (list[j].name == _temp) {
+          _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1]) + 1) + ')');
+          recursion();
+        }
+      }
+    }
+    recursion();
+    return _temp;
+  }
+
+  copyLink(objType, path) {
 
   }
 
-  showJob(job){
-
-  }
-  showJobChain(jobChain){
+  showJob(job) {
 
   }
 
-  showOrderLink(order){
+  showJobChain(jobChain) {
 
   }
 
-  about(){
+  showOrderLink(order) {
 
+  }
+  showCalendarLink(calendar){
+
+  }
+
+  about() {
+    this.get("version.json").subscribe((data) => {
+      console.log(data);
+      const modalRef = this.modalService.open(AboutModal, {
+        backdrop: "static"
+      });
+      modalRef.componentInstance.versionData = data;
+      modalRef.result.then(() => {
+
+      }, (reason) => {
+        console.log('close...', reason)
+      });
+    });
   }
 
 }

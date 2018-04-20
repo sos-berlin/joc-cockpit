@@ -1,31 +1,57 @@
-<div class="white box-shadow sub-header">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="padding">
-                <div class="text-right ">
-                    <div class="pull-left">
-                       <span class="text-md text-orange _600 ">
-                            <ol class="breadcrumb p-t-xs">
-                                <li (click)="coreService.backClicked()">
-                                    <a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a>
-                                </li>
-                                <li class="active">
-                                    <span>{{'label.jobChain' | translate }}</span>
-                                </li>
-                            </ol>
-                        </span>
+<div class="scroll-y">
+  <div class="padding p-b-0">
+    <div style="display: inline-block;width: 100%" [hidden]="isLoading">
+        <div class="hide-block sidebar-btn resize-cursor">
+          <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
+        </div>
+        <div id="lefSidePanel" class="leftPanel">
+          <div *ngIf="tree.length>0">
+            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+          </div>
+        </div>
+        <div id="centerPanel" class="centerPanel">
+          <div class="row m-t-sm">
+            <div class="col-md-9">
+              <div>
+                <div id="page" style="width: 100%">
+                  <div >
+                    <div class="pull-right">
+                      <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
+                    <div id="mainActions" class="pull-right"></div>
+                    <div class="pull-right m-r m-t-xs">
+                        <label class="md-check">
+                          <input id="source" type="checkbox"/> Show Xml
+                        <i class="primary"></i>
+                    </label>
+                    </div>
+                    <div id="zoomActions"></div>
+                  </div>
+                  <div class="m-t-sm p-t b-t">
+                    <div id="toolbar"></div>
+                    <div id="graph"></div>
+                    <textarea id="xml" class="xml-view" style="display:none;border-style:none;"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="b-a" style="height: 200px">
+              //TODO
+              </div>
+            </div>
+            <div class="col-md-3">
+                <div class="b-a" style="height: 500px">
+                //TODO
+                </div>
+                <div class="b-a m-t" style="height: 335px">
+                //TODO
                 </div>
             </div>
+          </div>
         </div>
+      </div>
+    <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': isLoading}">
+      <div class="backdrop"></div>
+      <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
     </div>
-</div>
-<div class="scroll-y max-ht">
-    <div class="padding p-b-0">
-        <div class="row m-b-sm m-t-xs">
-            <div class="geEditor">
-                <div id="graph"></div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>

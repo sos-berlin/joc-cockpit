@@ -29,14 +29,19 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   agentTasks: any = [];
   agentJobSearch: any = {};
   agentJobExecutionFilters: any = {};
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
   totalJobExecution: any;
-  dataFormat:any;
+  dateFormat:any;
+  dateFormatM:any;
   config:any = {};
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
     });
   }
 
@@ -45,11 +50,10 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "CalendarCreated") {
-
+            if (args[i].eventSnapshots[j].eventType === "JobStateChanged") {
+              this.loadAgentTasks(null);
               break;
             }
-
           }
         }
         break
@@ -59,7 +63,10 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.init();
+  }
 
+  private init() {
     this.agentJobExecutionFilters = this.coreService.getResourceTab().agentJobExecution;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -68,12 +75,17 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
     if (this.authService.permission)
       this.permission = JSON.parse(this.authService.permission);
-
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    this.config = {
+      format: this.dateFormatM
+    };
     this.loadAgentTasks(null);
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
   setDateRange(filter) {
 
@@ -129,12 +141,19 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     });
   }
 
-  advancedSearch(){
-
+  advancedSearch() {
+    this.showSearchPanel = true;
+    this.agentJobSearch = {
+      from: moment().format(this.dateFormatM),
+      fromTime: '00:00',
+      to: moment().format(this.dateFormatM),
+      toTime: '24:00',
+    };
   }
 
   cancel(){
-
+    this.showSearchPanel = false;
+    this.agentJobSearch = {};
   }
 
   search(){

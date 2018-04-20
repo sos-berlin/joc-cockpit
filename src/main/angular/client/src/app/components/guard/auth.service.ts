@@ -52,7 +52,6 @@ export class AuthService {
     this.permission = null;
     this.scheduleIds = null;
     sessionStorage.$SOS$URL = null;
-    sessionStorage.$SOS$URLPARAMS = {};
   }
 
   public clearStorage() {

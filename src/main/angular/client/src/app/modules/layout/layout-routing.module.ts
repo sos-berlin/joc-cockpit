@@ -30,13 +30,13 @@ const routes: Routes = [
         children: [
             { path: 'dashboard',  component: DashboardComponent } ,
             { path: 'daily_plan',  component: DailyPlanComponent } ,
-            { path: 'job_chain',  component: JobChainComponent } ,
+            { path: 'joe',  component: JobChainComponent } ,
             { path: 'job',  component: JobComponent } ,
             { path: 'order',  component: OrderComponent } ,
             { path: 'history',  component: HistoryComponent } ,
             { path: 'file_transfer',  component: FileTransferComponent } ,
             { path: 'audit_log',  component: AuditLogComponent } ,
-            { path: 'resource',  component: ResourceComponent, children:[
+            { path: 'resources',  component: ResourceComponent, children:[
                  { path: 'agent_cluster',  component: AgentClusterComponent },
                  { path: 'agent_job_execution',  component: AgentJobExecutionComponent },
                  { path: 'lock',  component: LockComponent },

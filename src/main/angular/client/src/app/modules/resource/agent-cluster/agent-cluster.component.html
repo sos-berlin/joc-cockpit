@@ -11,11 +11,11 @@
                                         <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
                                     </a>
                                 </li>
-                                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
-                                    <span>{{'breadcrumb.resources' | translate }}</span>
+                                <li class="cursor" routerLink="/resources">
+                                    <span>{{'label.resources' | translate }}</span>
                                 </li>
                                 <li class="active">
-                                    <span>{{'breadcrumb.agentCluster' | translate }}</span>
+                                    <span>{{'label.agentClusters' | translate }}</span>
                                 </li>
                             </ol>
                         </span>
@@ -85,7 +85,7 @@
 </div>
 <div class="sub-link">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
           <a class="nav-link active" >
@@ -96,7 +96,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-          <a class="nav-link" [routerLink]="['/resource/agent_job_execution']">
+          <a class="nav-link" [routerLink]="['/resources/agent_job_execution']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
           </a>
         </li>
@@ -104,7 +104,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.Lock.view.status">
-          <a class="nav-link" [routerLink]="['/resource/lock']">
+          <a class="nav-link" [routerLink]="['/resources/lock']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
           </a>
         </li>
@@ -112,7 +112,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
-          <a class="nav-link" [routerLink]="['/resource/process_class']">
+          <a class="nav-link" [routerLink]="['/resources/process_class']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
           </a>
         </li>
@@ -120,11 +120,21 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.Calendar.view.status">
-          <a class="nav-link" [routerLink]="['/resource/calendar']">
+          <a class="nav-link" [routerLink]="['/resources/calendar']">
             <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
           </a>
         </li>
       </ul>
+    </div>
+    <div class="col-md-4 text-right" *ngIf="agentClusters && agentClusters.length>0 && pageView=='list'">
+      <button class="btn btn-sm btn-default" (click)="expandDetails()">
+        <i class="fa fa fa-caret-down"></i>
+        <span translate>button.expandDetails</span>
+      </button>
+      <button class="btn btn-sm btn-default m-l-sm" (click)="collapseDetails()">
+        <i class="fa fa fa-caret-up"></i>
+        <span translate>button.collapseDetails</span>
+      </button>
     </div>
   </div>
 </div>

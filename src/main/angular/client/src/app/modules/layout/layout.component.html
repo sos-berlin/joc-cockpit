@@ -1,7 +1,7 @@
 <div id="content" class="app-content">
   <div class="w-full text-right top-header-bar white fa-fa-color"  [ngClass]="{'backup-top-header':permission.precedence>0}">
-        <span class="pull-left p-l-3 backup-text" *ngIf="userPreferences.themeTitle">
-            <span class="_600 m-l-sm text-shadow backup-text" [innerHtml]="userPreferences.themeTitle"></span> </span>
+        <span class="pull-left p-l-3 backup-text" *ngIf="preferences.themeTitle">
+            <span class="_600 m-l-sm text-shadow backup-text" [innerHtml]="preferences.themeTitle"></span> </span>
         <span class="m-r-sm"><span translate>label.time</span>:
             <span class="text-primary" [innerHtml]="currentTime | stringToDate"></span></span>
         <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
@@ -28,7 +28,7 @@
             </div>
         </span>
     </div>
-    <app-header></app-header>
+    <app-header (onLogout)="logout(null)"></app-header>
     <div class="app-body">
         <router-outlet></router-outlet>
     </div>

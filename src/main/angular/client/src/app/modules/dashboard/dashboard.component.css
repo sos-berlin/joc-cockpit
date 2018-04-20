@@ -20,11 +20,18 @@ gridster {
 div.scroll-y.max-ht{
     margin-right: -15px;
 }
-.smallgridster-panel{
+.small-gridster-panel{
      height: 142px !important;
+}
+.smallest-gridster-panel{
+    height: 160px !important;
+    /* top:calc(top + 32px) !important; */
 }
 .smallgridster-panel-9{
     font-size: 9px;
+}
+.set-height{
+    height: auto !important;
 }
 
 /* design by piyush ends */

@@ -1,0 +1,168 @@
+<form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
+  <div [ngClass]="{'modal-body p-a' : !isSearch }" >
+    <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
+      <div class="col-sm-6">
+        <input ngbTooltip="Max: 25 characters" triggers="click:blur" required class="form-control"
+               placeholder="{{'placeholder.name' | translate}}"
+               name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
+               (blur)="checkFilterName()">
+        <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+          <div *ngIf="name.errors.required">
+            <div translate>message.requiredError</div>
+          </div>
+        </div>
+        <div class="help-block text-danger" *ngIf="!isUnique">
+          <div translate>message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row m-b-sm" *ngIf="isSearch">
+      <label class="col-md-2 col-sm-4" translate>label.dateRange</label>
+      <div class="col-md-6 col-sm-8">
+        <div>
+          <label class="md-check w">
+            <input type="radio" name="date" [(ngModel)]="filter.radio" value="current">
+            <i class="primary"></i> <span translate>label.specificDate</span>
+          </label>
+          <label class="md-check w">
+            <input type="radio" name="date" [(ngModel)]="filter.radio" value="planned">
+            <i class="primary"></i> <span translate>label.manualDate</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio == 'current'">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+      <div class="col-sm-6">
+        <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setStartDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]="filter.from" name="from" [config]="config"></dp-date-picker>
+        <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.from" #fromTime="ngModel"
+               class="form-control input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" >
+        <a class="text-sm text-primary" *ngIf="filter.from || filter.fromTime"
+           (click)="filter.from='';filter.fromTime=''; " translate>button.clear</a>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio == 'current'">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+      <div class="col-sm-6">
+        <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setEndDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]="filter.to" name="to" [config]="config"></dp-date-picker>
+        <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.to" #toTime="ngModel"
+               class="form-control input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" >
+        <a class="text-sm text-primary" *ngIf="filter.to || filter.toTime"
+           (click)="filter.to='';filter.toTime=''; " translate>button.clear</a>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
+      <div class=" col-sm-6">
+        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+               placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
+        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
+          <div translate *ngIf="!processExc1.valid">message.invalid</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="isSearch">
+      <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+      <div class=" col-sm-6">
+        <select class="form-control" [(ngModel)]="filter.jobschedulerId" name="id">
+          <option value="" translate="">label.selectJobScheduler</option>
+          <option *ngFor="let jobScheduler of schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row" [ngClass]="{'has-error' : ((regex.dirty || regex.touched) && regex.invalid)}">
+          <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.regex</label>
+          <div class=" col-sm-6">
+            <input valid-regex type="text" class="form-control" name="regex" #regex="ngModel"
+                   placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
+            <div class="help-block text-danger" *ngIf="(regex.dirty || regex.touched) && regex.invalid">
+              <div translate>message.invalid</div>
+            </div>
+          </div>
+          <div class="col-sm-1 p-l-0 p-t-sm"><a (click)="getFolderTree(false)"><i
+            class="fa fa-folder-o fa-lg"></i></a></div>
+    </div>
+    <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
+          <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.folders</label>
+          <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+            <div *ngFor="let path of filter.paths">
+              <span class="">{{path}}</span>
+              <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(path,'path')"></i>
+            </div>
+          </div>
+    </div>
+    <div class="form-group row m-b-sm" [ngClass]="{'m-t-sm': filter.paths &&  filter.paths.length>0}">
+          <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}">
+            <span translate>label.jobChains</span>
+            <span>/</span>
+            <span translate>label.orders</span>
+          </label>
+          <div class="col-sm-6" *ngIf="(filter.jobChain &&  filter.jobChains.length>0) || (filter.orders && filter.orders.length>0)">
+            <div style="max-height: 140px; overflow: auto" *ngIf="filter.jobChain && filter.jobChains.length>0">
+              <div *ngFor="let jobChain of filter.jobChains">
+                <span class="text-muted" translate>label.jobChain</span>: <span class="">{{jobChain}}</span> <i
+                class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(jobChain,'jobChain')"></i>
+              </div>
+            </div>
+            <div style="max-height: 140px; overflow: auto" *ngIf="filter.orders.length>0">
+              <div *ngFor="let order of filter.orders">
+                <span class="text-muted" translate>label.order</span>: <span class="">{{order.orderId}}</span> <i
+                class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(order,'order')"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-1" [ngClass]="{'p-l-0': (filter.jobChain &&  filter.jobChains.length>0) || (filter.orders && filter.orders.length>0)}">
+            <a (click)="getFolderTree(true)"><i class="fa fa-folder-o fa-lg"></i></a>
+          </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>label.status</label>
+      <div class="col-sm-8">
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.states"  [checklistValue]="'SUCCESSFUL'" name="success">
+          <i class="primary"></i><span translate>label.successful</span>
+        </label>
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.states"  [checklistValue]="'FAILED'" name="failed">
+          <i class="primary"></i><span translate>label.failed</span>
+        </label>
+        <label class="md-check w">
+          <input type="checkbox"  [(checklist)]="filter.states"  [checklistValue]="'INCOMPLETE'" name="incomplete">
+          <i class="primary"></i><span translate>label.incomplete</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && !isSearch">
+      <label class="col-sm-4" translate>label.sharedFilter</label>
+      <div class="col-sm-6">
+        <label class="md-check">
+          <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
+          <i class="primary"></i>
+        </label>
+      </div>
+    </div>
+    <div class="form-group m-t m-b-xs" *ngIf="isSearch">
+      <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
+        button.search
+      </button>
+      <button type="submit" class="btn orange btn-sm m-l-sm"
+              [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" translate>
+         <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+          button.saveAsFilter
+      </button>
+      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+        button.cancel
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer" *ngIf="!isSearch">
+    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      {{'button.submit' | translate}}
+    </button>
+    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
+      button.cancel
+    </button>
+  </div>
+</form>

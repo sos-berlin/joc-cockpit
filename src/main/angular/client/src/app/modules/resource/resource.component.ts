@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resource',
@@ -7,13 +6,10 @@ import { Router } from '@angular/router';
 })
 export class ResourceComponent implements OnInit {
 
-    constructor(private router:Router) {
+  constructor() {
+  }
 
-    }
+  ngOnInit() {
 
-    ngOnInit() {
-        if (this.router.url === '/resource') {
-            this.router.navigate(['/resource/calendar']);
-        }
-    }
+  }
 }

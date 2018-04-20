@@ -97,7 +97,7 @@
                         <div class="btn-group dropdown m-r-sm">
                             <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered1.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered1.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" (click)="advanceFilter()" translate>label.createFilter</a>
+                                <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
                                 <a class="dropdown-item" (click)="editFilters()" *ngIf="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" *ngIf="orderHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" [ngClass]="{orange: (savedHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of orderHistoryFilterList | orderBy: 'name'">
@@ -185,8 +185,8 @@
                         <div class="btn-group dropdown m-r-sm">
                             <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered2.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered2.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href (click)="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href (click)="editFilters()" *ngIf="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
+                                <a class="dropdown-item" (click)="editFilters()" *ngIf="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" *ngIf="jobHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" [ngClass]="{orange: (savedJobHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of jobHistoryFilterList | orderBy: 'name'">
                                     <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
@@ -273,8 +273,8 @@
                         <div class="btn-group dropdown m-r-sm">
                             <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" ngbTooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" [innerHtml]="selectedFiltered3.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href (click)="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href (click)="editFilters()" *ngIf="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <a class="dropdown-item" (click)="createCustomization()" translate>label.createFilter</a>
+                                <a class="dropdown-item" (click)="editFilters()" *ngIf="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" *ngIf="yadeHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" [ngClass]="{orange: (savedYadeHistoryFilter.selected == filter.id)}" (click)="changeFilter(filter)" *ngFor="let filter of yadeHistoryFilterList | orderBy: 'name'">
                                     <span ngbTooltip="{{filter.account}}">{{filter.name}}</span>
@@ -289,15 +289,15 @@
                         <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item"
                                *ngIf="(savedIgnoreList.jobChains.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'ORDER'"
-                               href (click)="editIgnoreList()" translate>button.editIgnoreList</a>
+                                (click)="editIgnoreList()" translate>button.editIgnoreList</a>
                             <a class="dropdown-item"
-                               *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'" href
+                               *ngIf="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK'"
                                (click)="editIgnoreList()" translate>button.editIgnoreList</a>
-                            <a class="dropdown-item" href (click)="enableDisableIgnoreList()"
+                            <a class="dropdown-item"  (click)="enableDisableIgnoreList()"
                                *ngIf="!savedIgnoreList.isEnable" translate>button.enableIgnoreList</a>
-                            <a class="dropdown-item" href (click)="enableDisableIgnoreList()"
+                            <a class="dropdown-item"  (click)="enableDisableIgnoreList()"
                                *ngIf="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
-                            <a class="dropdown-item" href (click)="resetIgnoreList()"
+                            <a class="dropdown-item"  (click)="resetIgnoreList()"
                                translate>button.resetIgnoreList</a>
 
                         </div>
@@ -347,7 +347,22 @@
             </div>
         </div>
         <div class="row m-b hide" [ngClass]="{'show':showSearchPanel}">
-        //TODO
+          <div class="col-md-12">
+            <div class="box p-a m-b-sm m-t-sm p-t-md">
+                <div *ngIf="historyFilters.type === 'ORDER'">
+                    <app-order-form-template [filter]="jobChainSearch" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="orderHistoryFilterList"
+                                         [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-order-form-template>
+               </div>
+               <div *ngIf="historyFilters.type === 'TASK'">
+                    <app-task-form-template [filter]="jobSearch" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="jobHistoryFilterList"
+                                         [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-task-form-template>
+               </div>
+               <div *ngIf="historyFilters.type === 'YADE'">
+                    <app-yade-form-template [filter]="yadeSearch" [preferences]="preferences" [schedulerIds]="schedulerIds" [permission]="permission" [allFilter]="yadeHistoryFilterList"
+                                         [isSearch]="true" (onCancel)="cancel()" (onSearch)="search()"></app-yade-form-template>
+               </div>
+            </div>
+          </div>
         </div>
         <div class="hide"  [ngClass]="{'show': isLoading}">
             <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'ORDER'}" >
@@ -419,25 +434,25 @@
                                     </div>
                                 </div>
                             </td>
-                             <td *ngIf="!historyView.current" (click)="showLogWindow(history,null,null,history.jobschedulerId)">
+                             <td *ngIf="!historyView.current" (click)="coreService.showLogWindow(history,null,null,history.jobschedulerId)">
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>
                                  <span [innerHtml]="history.jobschedulerId"></span>
                                  <span *ngIf="!history.jobschedulerId" [innerHtml]="jobChainSearch.jobschedulerId"></span>
                              </td>
-                            <td class="nowrap" (click)="showLogWindow(history,null)">
+                            <td class="nowrap" (click)="coreService.showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show && historyView.current" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show && historyView.current" (click)="history.show = false;$event.stopPropagation()"></i>
                                 <span [innerHtml]="history.orderId"></span>
                             </td>
-                            <td (click)="showLogWindow(history,null)">
-                                <span (click)="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="history.jobChain"></span>
+                            <td (click)="coreService.showLogWindow(history,null)">
+                                <span (click)="coreService.showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="history.jobChain"></span>
                             </td>
-                            <td (click)="showLogWindow(history,null)"><span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')" [innerHtml]="history.state._text | translate"></span></td>
-                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.startTime | stringToDate"></td>
-                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.endTime | stringToDate"></td>
-                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.startTime | duration:history.endTime"></td>
-                            <td (click)="showLogWindow(history,null)" [innerHtml]="history.node || '-' "></td>
+                            <td (click)="coreService.showLogWindow(history,null)"><span class="label" [ngClass]="coreService.getColor(history.state.severity,'bg')" [innerHtml]="history.state._text | translate"></span></td>
+                            <td (click)="coreService.showLogWindow(history,null)" [innerHtml]="history.startTime | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(history,null)" [innerHtml]="history.endTime | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(history,null)" [innerHtml]="history.startTime | duration:history.endTime"></td>
+                            <td (click)="coreService.showLogWindow(history,null)" [innerHtml]="history.node || '-' "></td>
                         </tr>
                         <tr class="tableexport-ignore" *ngIf="history.show">
                             <td></td>
@@ -458,15 +473,15 @@
                                      </thead>
                                      <tbody>
                                      <tr *ngFor="let step of history.steps" class="cursor">
-                                         <td (click)="showLogWindow(null,step)">{{step.step}}</td>
-                                         <td (click)="showLogWindow(null,step)">{{step.node}}</td>
-                                         <td (click)="showLogWindow(null,step)"><a (click)="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
-                                         <td (click)="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
-                                         <td (click)="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
-                                         <td (click)="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
-                                         <td (click)="showLogWindow(null,step)">{{step.exitCode}}</td>
-                                         <td (click)="showLogWindow(null,step)">{{step.error.code}}</td>
-                                         <td (click)="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.step}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.node}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)"><a (click)="coreService.showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.exitCode}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)">{{step.error.code}}</td>
+                                         <td (click)="coreService.showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
                                      </tr>
                                      </tbody>
                                  </table>
@@ -579,19 +594,19 @@
                                     </div>
                                 </div>
                             </td>
-                            <td *ngIf="!historyView.current" (click)="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" >
+                            <td *ngIf="!historyView.current" (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" >
                                 <span [innerHtml]="jobHistory.jobschedulerId"></span>
                                 <span *ngIf="!jobHistory.jobschedulerId" [innerHtml]="jobSearch.jobschedulerId"></span>
                             </td>
-                            <td (click)="showLogWindow(null,jobHistory)"><span [innerHtml]="jobHistory.taskId"></span></td>
-                            <td (click)="showLogWindow(null,jobHistory)">
-                                <span (click)="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="jobHistory.job"></span>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)"><span [innerHtml]="jobHistory.taskId"></span></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)">
+                                <span (click)="coreService.showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="jobHistory.job"></span>
                             </td>
-                            <td (click)="showLogWindow(null,jobHistory)"><span class="label" [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')" [innerHtml]="jobHistory.state._text | translate"></span></td>
-                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | stringToDate"></td>
-                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.endTime | stringToDate"></td>
-                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
-                            <td (click)="showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.exitCode"></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)"><span class="label" [ngClass]="coreService.getColor(jobHistory.state.severity,'bg')" [innerHtml]="jobHistory.state._text | translate"></span></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.endTime | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
+                            <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.exitCode"></td>
                         </tr>
 
                         </tbody>
@@ -719,28 +734,28 @@
                         </thead>
                         <tbody *ngFor="let transfer of yadeHistorys | filter: searchKey | orderBy: yade.filter.sortBy:yade.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: yade.currentPage }" [ngClass]="{'light-bg':transfer.show}">
                         <tr  class="cursor">
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" *ngIf="!historyView.current" >
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" *ngIf="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!transfer.show && !historyView.current" (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && !historyView.current" (click)="transfer.show = false;$event.stopPropagation()"></i>
                                  <span [innerHtml]="transfer.jobschedulerId"></span>
                                  <span *ngIf="!history.jobschedulerId" [innerHtml]="transfer.jobschedulerId"></span>
                              </td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" class="nowrap" >
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!transfer.show && historyView.current" (click)="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="transfer.show && historyView.current" (click)="transfer.show = false;$event.stopPropagation()"></i>
                                 <span class="label" [ngClass]="coreService.getColor(transfer.state.severity,'bg')" [innerHtml]="transfer.state._text | translate"></span>
                             </td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.profile"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.mandator"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer._operation"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.source.host"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.host"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.protocol"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.numOfFiles"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" class="text-danger" [innerHtml]="transfer.error.message"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | stringToDate"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.end | stringToDate"></td>
-                            <td (click)="showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | duration:transfer.end"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.profile"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.mandator"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer._operation"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.source.host"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.host"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.target.protocol"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.numOfFiles"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" class="text-danger" [innerHtml]="transfer.error.message"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.end | stringToDate"></td>
+                            <td (click)="coreService.showLogWindow(null, transfer,null,null,true)" [innerHtml]="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" *ngIf="transfer.show">
                             <td></td>
@@ -775,9 +790,9 @@
                                         <td  [innerHtml]="transfer.jump.account"></td>
                                         <td  [innerHtml]="transfer.jump.port"></td>
                                         <td  [innerHtml]="transfer.jump.protocol"></td>
-                                        <td><span (click)="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.jobChain"></span></td>
-                                        <td><span (click)="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
-                                        <td><span (click)="showOrderLink(transfer.jobChain, transfer.orderId);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
+                                        <td><span (click)="coreService.showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.jobChain"></span></td>
+                                        <td><span (click)="coreService.showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.job"></span></td>
+                                        <td><span (click)="coreService.showOrderLink(transfer.jobChain, transfer.orderId);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>

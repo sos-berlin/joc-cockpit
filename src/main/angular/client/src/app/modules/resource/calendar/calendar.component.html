@@ -11,11 +11,11 @@
                                         <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
                                     </a>
                                 </li>
-                                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
-                                    <span>{{'breadcrumb.resources' | translate }}</span>
+                                <li class="cursor" routerLink="/resources">
+                                    <span>{{'label.resources' | translate }}</span>
                                 </li>
                                 <li class="active">
-                                    <span>{{'breadcrumb.calendar' | translate }}</span>
+                                    <span>{{'label.calendars' | translate }}</span>
                                 </li>
                             </ol>
                         </span>
@@ -109,7 +109,7 @@
     <div class="col-md-12">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-          <a class="nav-link" [routerLink]="['/resource/agent_cluster']" [routerLinkActive]="['active']">
+          <a class="nav-link" [routerLink]="['/resources/agent_cluster']" [routerLinkActive]="['active']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
           </a>
         </li>
@@ -117,7 +117,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-          <a class="nav-link" [routerLink]="['/resource/agent_job_execution']" [routerLinkActive]="['active']">
+          <a class="nav-link" [routerLink]="['/resources/agent_job_execution']" [routerLinkActive]="['active']">
             <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
           </a>
         </li>
@@ -126,7 +126,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.Lock.view.status">
-          <a class="nav-link" [routerLink]="['/resource/lock']" [routerLinkActive]="['active']">
+          <a class="nav-link" [routerLink]="['/resources/lock']" [routerLinkActive]="['active']">
             <span class="nav-text text-dark p-b-sm"><span translate>label.locks</span></span>
           </a>
         </li>
@@ -135,7 +135,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
-          <a class="nav-link" [routerLink]="['/resource/process_class']" [routerLinkActive]="['active']">
+          <a class="nav-link" [routerLink]="['/resources/process_class']" [routerLinkActive]="['active']">
             <span class="nav-text text-dark p-b-sm"><span translate>label.processClasses</span></span>
           </a>
         </li>

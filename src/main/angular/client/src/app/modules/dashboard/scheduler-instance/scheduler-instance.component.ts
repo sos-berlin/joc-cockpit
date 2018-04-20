@@ -42,12 +42,13 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
 
   private mergeResult(result, res) {
     this.mastersList = [];
-    if (!result && !res) {
+    if (!(result && res)) {
       return;
     }
     if (result) {
       for (let i = 0; i < result.masters.length; i++) {
-        result.masters[i].permission = this.authService.getPermission(result.masters[i].jobschedulerId).JobschedulerMaster;
+        if(this.authService.getPermission(result.masters[i].jobschedulerId))
+          result.masters[i].permission = this.authService.getPermission(result.masters[i].jobschedulerId).JobschedulerMaster;
         if (res) {
           for (let j = 0; j < res.masters.length; j++) {
             if (result.masters[i].jobschedulerId == res.masters[j].jobschedulerId && _.isEqual(result.masters[i].clusterType, res.masters[j].clusterType)) {
@@ -60,8 +61,10 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
         }
       }
     } else {
+
       for (let i = 0; i < res.masters.length; i++) {
-        res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;
+        if(this.authService.getPermission(res.masters[i].jobschedulerId))
+          res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;
         this.mastersList.push(res.masters[i]);
       }
     }
@@ -84,7 +87,8 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
       jobschedulerId: ''
     }).subscribe(result => {
       this.getVolatile(result);
-    }, () => {
+    }, (err) => {
+      console.log(err)
       this.getVolatile(null);
     });
   }
@@ -97,7 +101,7 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  changeScheduler() {
-
+  changeScheduler(id) {
+    this.dataService.switchScheduler(id);
   }
 }

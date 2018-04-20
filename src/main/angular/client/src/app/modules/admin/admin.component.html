@@ -13,16 +13,16 @@
                                     </a>
                                 </li>
                                 <li  routerLink = "account" routerLinkActive = "active" [ngClass] = "{'cursor' : route != '/users/account'}" >
-                                    <span>{{'breadcrumb.manageUser' | translate }}</span>
+                                    <span>{{'label.manageUser' | translate }}</span>
                                 </li>
                                  <li *ngIf = "route.match('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
-                                    <span>{{'breadcrumb.masters' | translate }}</span>
+                                    <span>{{'label.masters' | translate }}</span>
                                 </li>
                                 <li *ngIf = "route == '/users/main_section'"  routerLink = "main_section" routerLinkActive = "active">
-                                    <span>{{'breadcrumb.main' | translate }}</span>
+                                    <span>{{'label.mainSection' | translate }}</span>
                                 </li>
                                 <li *ngIf = "route.match('/users/permissions')"  class = "active" >
-                                    <span>{{'breadcrumb.permissions' | translate }}</span>
+                                    <span>{{'label.permissions' | translate }}</span>
                                 </li>
                             </ol>
                         </span>

@@ -11,11 +11,11 @@
                     <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
                   </a>
                 </li>
-                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
-                  <span>{{'breadcrumb.resources' | translate }}</span>
+                <li class="cursor" routerLink="/resources">
+                  <span>{{'label.resources' | translate }}</span>
                 </li>
                 <li class="active">
-                  <span>{{'breadcrumb.lock' | translate }}</span>
+                  <span>{{'label.locks' | translate }}</span>
                 </li>
               </ol>
             </span>
@@ -53,7 +53,7 @@
       <div class="col-md-12">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-            <a class="nav-link" [routerLink]="['/resource/agent_cluster']">
+            <a class="nav-link" [routerLink]="['/resources/agent_cluster']">
               <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
             </a>
           </li>
@@ -61,7 +61,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-            <a class="nav-link" [routerLink]="['/resource/agent_job_execution']">
+            <a class="nav-link" [routerLink]="['/resources/agent_job_execution']">
               <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
             </a>
           </li>
@@ -79,7 +79,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
-            <a class="nav-link" [routerLink]="['/resource/process_class']">
+            <a class="nav-link" [routerLink]="['/resources/process_class']">
               <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
             </a>
           </li>
@@ -87,7 +87,7 @@
             <span class="separator"></span>
           </li>
           <li class="nav-item" *ngIf="permission.Calendar.view.status">
-            <a class="nav-link" [routerLink]="['/resource/calendar']">
+            <a class="nav-link" [routerLink]="['/resources/calendar']">
               <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
             </a>
           </li>
@@ -138,11 +138,13 @@
                         {{'label.maxTask' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-xs">
-                        <span class="text-black _600" [innerHtml]="lock.holders.tasks.length || '0'"></span>
+                       <span class="text-black _600" *ngIf="lock.holders && lock.holders.tasks" [innerHtml]="lock.holders.tasks.length"></span>
+                       <span class="text-black _600" *ngIf="!lock.holders || !lock.holders.tasks">0</span>
                         {{'label.runningTask' | translate}}
                       </div>
                       <div class="text-sm  text-left text-muted p-t-xs">
-                        <span class="text-black _600" [innerHtml]="lock.queue.length || '0'"></span>
+                        <span class="text-black _600" *ngIf="lock.queue" [innerHtml]="lock.queue.length"></span>
+                        <span class="text-black _600" *ngIf="!lock.queue">0</span>
                         {{'label.waitingTask' | translate}}
                       </div>
                     </div>
@@ -214,8 +216,14 @@
                     <td>{{lock.path}}</td>
                     <td [innerHtml]="lock.status || '-'"></td>
                     <td [innerHtml]="lock.maxNonExclusive || '0'"></td>
-                    <td [innerHtml]="lock.holders.tasks.length || '0'"></td>
-                    <td [innerHtml]="lock.queue.length || '0'"></td>
+                    <td>
+                      <span *ngIf="lock.holders && lock.holders.tasks">{{lock.holders.tasks.length}}</span>
+                      <span *ngIf="!lock.holders || !lock.holders.tasks">0</span>
+                    </td>
+                    <td >
+                      <span *ngIf="lock.queue" [innerHtml]="lock.queue.length"></span>
+                      <span *ngIf="!lock.queue">0</span>
+                    </td>
                   </tr>
                   </tbody>
                 </table>

@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
-import { FileTransferComponent } from './file-transfer.component';
+import { FileTransferComponent,FilterModal, SearchComponent } from './file-transfer.component';
 import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [FileTransferComponent]
+  declarations: [FileTransferComponent, FilterModal, SearchComponent],
+  entryComponents: [
+    FilterModal
+  ]
 })
 export class FileTransferModule { }

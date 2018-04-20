@@ -52,12 +52,32 @@
 <link rel="stylesheet" href="./styles/light-style.css" type="text/css" id="style-color"/>
 
 <script>
-    function themeInit() {
-        if (localStorage.$SOS$THEME != null) {
-            document.getElementById('style-color').href = './styles/' + window.localStorage.$SOS$THEME + '-style.css';
-        }
-    }
-    themeInit();
+(function() {
+
+				if (!sessionStorage.length) {
+					// Ask other tabs for session storage
+					localStorage.setItem('getSessionStorage', Date.now());
+				}
+
+				window.addEventListener('storage', function(event) {
+					console.log('storage event', event);
+					if (event.key == 'getSessionStorage') {
+						// Some tab asked for the sessionStorage -> send it
+						localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
+						localStorage.removeItem('sessionStorage');
+
+					} else if (event.key == 'sessionStorage' && !sessionStorage.length) {
+						// sessionStorage is empty -> fill it
+						var data = JSON.parse(event.newValue);
+						for (var key in data) {
+						  console.log(key)
+							sessionStorage.setItem(key, data[key]);
+						}
+					}
+				});
+
+			})();
+
 </script>
 </body>
 </html>

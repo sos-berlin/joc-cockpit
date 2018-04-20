@@ -11,11 +11,11 @@
                                         <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
                                     </a>
                                 </li>
-                                <li class="cursor" routerLink="/resource/agent-clusters" routerLinkActive="active">
-                                    <span>{{'breadcrumb.resources' | translate }}</span>
+                                <li class="cursor" routerLink="/resources" >
+                                    <span>{{'label.resources' | translate }}</span>
                                 </li>
                                 <li class="active">
-                                    <span>{{'breadcrumb.agentJobExecution' | translate }}</span>
+                                    <span>{{'label.agentJobExecution' | translate }}</span>
                                 </li>
                             </ol>
                         </span>
@@ -85,7 +85,7 @@
             <div class="col-md-8">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-                        <a class="nav-link" [routerLink]="['/resource/agent_cluster']">
+                        <a class="nav-link" [routerLink]="['/resources/agent_cluster']">
                             <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
                         </a>
                     </li>
@@ -101,7 +101,7 @@
                         <span class="separator"></span>
                     </li>
                     <li class="nav-item" *ngIf="permission.Lock.view.status">
-                        <a class="nav-link" [routerLink]="['/resource/lock']">
+                        <a class="nav-link" [routerLink]="['/resources/lock']">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
                         </a>
                     </li>
@@ -109,7 +109,7 @@
                         <span class="separator"></span>
                     </li>
                     <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
-                        <a class="nav-link" [routerLink]="['/resource/process_class']">
+                        <a class="nav-link" [routerLink]="['/resources/process_class']">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
                         </a>
                     </li>
@@ -117,7 +117,7 @@
                         <span class="separator"></span>
                     </li>
                     <li class="nav-item" *ngIf="permission.Calendar.view.status">
-                        <a class="nav-link" [routerLink]="['/resource/calendar']">
+                        <a class="nav-link" [routerLink]="['/resources/calendar']">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
                         </a>
                     </li>
@@ -142,31 +142,26 @@
                       <div class="col-md-12">
                           <div class="box p-a m-b-xs m-t-xs">
                               <form #myForm="ngForm" (ngSubmit)="search()">
-                                  <div class="form-group row m-t-sm" >
+                                    <div class="form-group row">
                                       <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                                       <div class="col-sm-6">
-
-                                        <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" [(ngModel)]="agentJobSearch.from" name="from" [config]="config"></dp-date-picker>
-                                          <input valid-time maxlength="8" [disabled]="!agentJobSearch.from" class="form-control input-time m-l" [(ngModel)]="agentJobSearch.fromTime"
-                                                 placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" name="startTime" type="text" style="width: 175px;background-position: 150px">
-                                          <a class="text-sm text-primary" *ngIf="agentJobSearch.from || agentJobSearch.fromTime" (click)="agentJobSearch.from='';agentJobSearch.fromTime=''; " translate>button.clear</a>
+                                        <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setStartDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]=" agentJobSearch.from" name="from" [config]="config"></dp-date-picker>
+                                        <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="! agentJobSearch.from" #fromTime="ngModel"
+                                               class="form-control input-time m-l time-picker" [(ngModel)]=" agentJobSearch.fromTime" name="fromTime" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" >
+                                        <a class="text-sm text-primary" *ngIf=" agentJobSearch.from ||  agentJobSearch.fromTime"
+                                           (click)=" agentJobSearch.from=''; agentJobSearch.fromTime=''; " translate>button.clear</a>
                                       </div>
-                                  </div>
-                                  <div class="form-group row">
+                                    </div>
+                                    <div class="form-group row">
                                       <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-
                                       <div class="col-sm-6">
-
-                                        <dp-date-picker [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" [(ngModel)]="agentJobSearch.to" name="from" [config]="config"></dp-date-picker>
-                                          <input valid-time maxlength="8" [disabled]="!agentJobSearch.to"
-                                                 class="form-control input-time m-l" [(ngModel)]="agentJobSearch.toTime"
-                                                 placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" name="endTime" type="text"
-                                                 style="width: 175px;background-position: 150px">
-                                          <a class="text-sm text-primary" *ngIf="agentJobSearch.to || agentJobSearch.toTime"
-                                             (click)="agentJobSearch.to='';agentJobSearch.toTime=''; "
-                                             translate>button.clear</a>
+                                        <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setEndDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]=" agentJobSearch.to" name="to" [config]="config"></dp-date-picker>
+                                        <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="! agentJobSearch.to" #toTime="ngModel"
+                                               class="form-control input-time m-l time-picker" [(ngModel)]=" agentJobSearch.toTime" name="toTime" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" >
+                                        <a class="text-sm text-primary" *ngIf=" agentJobSearch.to ||  agentJobSearch.toTime"
+                                           (click)=" agentJobSearch.to=''; agentJobSearch.toTime=''; " translate>button.clear</a>
                                       </div>
-                                  </div>
+                                    </div>
                                   <div class="form-group row" >
                                       <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                                       <div class=" col-sm-6">

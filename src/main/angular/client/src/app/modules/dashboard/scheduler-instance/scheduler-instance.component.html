@@ -10,7 +10,7 @@
                         <app-action [master]="master"></app-action>
                     </td>
                     <td><a class="text-hover-primary"
-                           (click)="changeScheduler(master.jobschedulerId);">{{master.jobschedulerId}}</a>
+                           (click)="changeScheduler(master.jobschedulerId)">{{master.jobschedulerId}}</a>
                     </td>
                     <td><a class="text-hover-primary" target="_blank" href="{{master.url}}">{{master.url}}</a></td>
                     <td><span [ngClass]="coreService.getColor(master.state.severity, 'bg')" class="label">{{master.state._text | translate}}</span>
@@ -34,7 +34,7 @@
                 </tr>
             </table>
         </div>
-        <div *ngIf="mastersList && mastersList.length==0" class="text-u-c text-center"
+        <div *ngIf="mastersList && mastersList.length==0 && isLoaded" class="text-u-c text-center"
              style="padding: 60px; font-size: 17px;">
             {{'message.noDataAvailable' | translate}}
         </div>

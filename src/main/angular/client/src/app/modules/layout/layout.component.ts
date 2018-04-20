@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 import { AuthService } from '../../components/guard/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router,RouterEvent} from '@angular/router';
 import {TranslateService} from "ng2-translate";
 import {ToasterService} from "angular2-toaster";
 
@@ -16,31 +16,45 @@ declare var $:any;
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css'],
   host: {
-    '(window:resize)': 'onResize($event)',
-    '(window:click)': 'onClick($event)'
+    '(window:resize)': 'onResize()',
+    '(window:click)': 'onClick()'
   }
 })
 export class LayoutComponent implements OnInit, OnDestroy {
 
-  userPreferences: any = {};
+  preferences: any = {};
   schedulerIds: any = {};
   permission: any = {};
   selectedScheduler: any = {};
-  scheduleState: any = {};
+  scheduleState: string = '';
   selectedJobScheduler: any = {};
   currentTime = new Date();
   interval: any;
   remainingSessionTime: any;
   isTouch: boolean = false;
   count: number = 0;
-  subscription: Subscription;
-  logout: boolean = false;
+  subscription1: Subscription;
+  subscription2: Subscription;
+  isLogout: boolean = false;
 
   @ViewChild(HeaderComponent) child;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router, private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.switchSchedulerAnnounced$.subscribe(res => {
+      this.changeScheduler(res);
+    });
+    let evn: any;
+    router.events.subscribe(e => {
+      evn = e;
+      if (evn.url) {
+        LayoutComponent.calculateHeight();
+        if (evn.url === '/resources') {
+          this.router.navigate(['/resources/agent_cluster']);
+        }
+      }
     });
   }
 
@@ -54,7 +68,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 this.loadScheduleDetail();
                 break;
               } else if (args[i].eventSnapshots[j].eventType === "CurrentJobSchedulerChanged") {
-                this.getScheduleDetail();
+                this.getScheduleDetail(true);
                 break;
               }
             }
@@ -68,27 +82,33 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.router.url === '/') {
-      this.router.navigate(['/dashboard']);
+      if (localStorage.$SOS$URL) {
+        this.router.navigate([localStorage.$SOS$URL]);
+      } else {
+        this.router.navigate(['/dashboard']);
+      }
     }
-    if (sessionStorage.preferences)
-      this.userPreferences = JSON.parse(sessionStorage.preferences);
+
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     }
+    if (sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences);
     this.permission = JSON.parse(this.authService.permission);
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData);
     this.count = parseInt(this.authService.sessionTimeout) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
-    this.calculateHeight();
+    LayoutComponent.calculateHeight();
   }
 
   ngOnDestroy() {
     clearInterval(this.interval);
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
-  private calculateHeight() {
+  static calculateHeight() {
     if (window.innerHeight > 450 && window.innerWidth > 740) {
       let headerHt = $('.app-header').height() || 60;
       let topHeaderHt = $('.top-header-bar').height() || 16;
@@ -104,20 +124,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkNavHeader() {
-    if ($('#navbar1').hasClass('in')) {
-      $('#navbar1').removeClass('in');
+  static checkNavHeader() {
+    let dom = $('#navbar1');
+    if (dom && dom.hasClass('in')) {
+      dom.removeClass('in');
       $('a.navbar-item').addClass('collapsed');
     }
   }
 
-  onResize(event) {
-    this.calculateHeight();
-    this.checkNavHeader();
+  onResize() {
+    LayoutComponent.calculateHeight();
+    LayoutComponent.checkNavHeader();
   }
 
-  onClick(event) {
-    if (!this.logout)
+  onClick() {
+    if (!this.isLogout)
       this.refreshSession();
   }
 
@@ -128,7 +149,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.isTouch = false;
         if (res)
           this.count = parseInt(this.authService.sessionTimeout) / 1000 - 1;
-      },  () =>{
+      }, () => {
         this.isTouch = false;
       });
     }
@@ -160,8 +181,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.count < 0) {
         clearInterval(this.interval);
         localStorage.$SOS$URL = this.router.url;
-        this.logout = true;
-        this.child.logout('timeout');
+        this.isLogout = true;
+        this.logout('timeout');
       }
 
     }, 1000);
@@ -249,14 +270,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }).subscribe(res => {
         this.setUserObject(preferences, res, configObj);
 
-        //  $rootScope.$broadcast('reloadPreferences');
       }, (err) => {
         this.setUserPreferences(preferences, configObj);
-        // $rootScope.$broadcast('reloadPreferences');
       });
     } else {
       this.setUserPreferences(preferences, configObj);
-      // $rootScope.$broadcast('reloadPreferences');
     }
   }
 
@@ -272,7 +290,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.setUserProfileConfiguration(configObj, preferences, res1, id);
     }, (err) => {
       this.setUserPreferences(preferences, configObj);
-      // $rootScope.$broadcast('reloadPreferences');
     });
   }
 
@@ -298,19 +315,25 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.permission.precedence = this.selectedJobScheduler.clusterType.precedence;
   }
 
-  private getVolatileData(result): void {
+  private getVolatileData(result: any, flag: boolean): void {
     this.coreService.post('jobscheduler', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
       this.mergeData(result, res);
+      if (flag) {
+        this.dataService.refreshUI('reload');
+      }
     }, (err) => {
       this.mergeData(result, null);
+      if (flag) {
+        this.dataService.refreshUI('reload');
+      }
     });
   }
 
-  getScheduleDetail(): void {
+  getScheduleDetail(refresh: boolean): void {
     this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
-      this.getVolatileData(result);
+      this.getVolatileData(result, refresh);
     }, error => {
-      this.getVolatileData(null);
+      this.getVolatileData(null, refresh);
     });
   }
 
@@ -323,41 +346,64 @@ export class LayoutComponent implements OnInit, OnDestroy {
       if (this.selectedScheduler && this.selectedScheduler.scheduler)
         document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
     } else if (this.schedulerIds.selected) {
-      this.getScheduleDetail();
+      this.getScheduleDetail(false);
     }
+  }
+
+  private reloadUI() {
+    this.getScheduleDetail(true);
+    this.child.reloadSettings();
+    this.preferences = JSON.parse(sessionStorage.preferences);
+    this.permission = JSON.parse(this.authService.permission);
   }
 
   changeScheduler(jobScheduler) {
     this.child.switchScheduler = true;
     this.schedulerIds.selected = jobScheduler;
-    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe( (permission) =>{
+    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
 
-      this.coreService.post('jobscheduler/ids', {}).subscribe((res)=> {
+      this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
         if (res) {
           this.coreService.setDefaultTab();
           this.authService.setIds(res);
           this.authService.save();
 
-          // $rootScope.$broadcast('reloadUser');
           if (this.router.url.match('job_chain_detail/')) {
-              this.router.navigate(['/dashboard'], {queryParams: {}});
+            this.router.navigate(['/dashboard'], {queryParams: {}});
           } else {
-              this.getScheduleDetail();
-              this.dataService.refreshUI('reload');
+            this.reloadUI();
           }
         } else {
           let title = '', msg = '';
-
           this.translate.get('message.oops').subscribe(translatedValue => {
-              title = translatedValue;
-            });
-            this.translate.get('message.errorInLoadingScheduleIds').subscribe(translatedValue => {
-              msg = translatedValue;
-            });
-            this.toasterService.pop('error', title, msg);
+            title = translatedValue;
+          });
+          this.translate.get('message.errorInLoadingScheduleIds').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('error', title, msg);
         }
       });
     })
   }
 
+  logout(timeout) {
+    this.isLogout = true;
+    this.coreService.post('security/logout', {}).subscribe((res) => {
+      this.authService.clearUser();
+      this.authService.clearStorage();
+      if (timeout) {
+        localStorage.setItem('clientLogs', null);
+        sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+        sessionStorage.setItem('$SOS$ALLEVENT', null);
+        this.router.navigate(['/login']);
+      } else {
+        this.coreService.setDefaultTab();
+        localStorage.removeItem('$SOS$URL');
+        sessionStorage.clear();
+        this.router.navigate(['/login']);
+      }
+
+    });
+  }
 }

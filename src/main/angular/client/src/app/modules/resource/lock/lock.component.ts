@@ -1,10 +1,7 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard/auth.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-
 import {DataService} from '../../../services/data.service';
 import * as _ from 'underscore';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
@@ -29,13 +26,17 @@ export class LockComponent implements OnInit, OnDestroy {
   pageView: any;
   locks: any = [];
   locksFilters: any = {};
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild(TreeComponent) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
     });
   }
 
@@ -44,9 +45,23 @@ export class LockComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "CalendarCreated") {
+            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
               this.initTree();
               break;
+            } else if (args[i].eventSnapshots[j].eventType === "JobStateChanged" && args[i].eventSnapshots[j].path) {
+              if(this.locks.length>0) {
+                for (let x = 0; x < this.locks.length; x++) {
+                  if (this.locks[x].path === args[i].eventSnapshots[j].path) {
+                    let obj = {
+                      jobschedulerId: this.schedulerIds.selected,
+                      folders: [{folder: this.locks[x].path, recursive: false}]
+                    };
+                    this.coreService.post('locks',obj).subscribe(res=>{
+                      //TODO merge
+                    })
+                  }
+                }
+              }
             }
           }
         }
@@ -61,6 +76,21 @@ export class LockComponent implements OnInit, OnDestroy {
       dom.stickySidebar({
         sidebarTopMargin: 192
       });
+
+    this.init();
+
+    if (dom)
+      dom.resizable({
+        handles: 'e',
+        maxWidth: 450,
+        minWidth: 180,
+        resize: function () {
+          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
+        }
+      });
+  }
+
+  private init() {
     this.locksFilters = this.coreService.getResourceTab().locks;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
@@ -73,21 +103,12 @@ export class LockComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).lock;
 
     this.initTree();
-
-    if (dom)
-      dom.resizable({
-        handles: 'e',
-        maxWidth: 450,
-        minWidth: 180,
-        resize: function () {
-          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
-        }
-      });
-
   }
 
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   initTree() {

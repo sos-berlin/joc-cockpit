@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
-import { AuditLogComponent } from './audit-log.component';
+import { AuditLogComponent, FilterModal, SearchComponent } from './audit-log.component';
 import { SharedModule } from '../shared/shared.module';
-import { TimeValidator } from '../../directives/core.directive';
-import {ValidatorOneDirective} from "../../directives/validator.directive";
 
 
 @NgModule({
     imports: [
         SharedModule
     ],
-    declarations: [AuditLogComponent, TimeValidator,ValidatorOneDirective]
+    declarations: [AuditLogComponent, FilterModal, SearchComponent],
+    entryComponents: [
+        FilterModal
+    ]
 })
 export class AuditLogModule {
 }

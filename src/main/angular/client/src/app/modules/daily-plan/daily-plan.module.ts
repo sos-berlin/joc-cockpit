@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
-import { DailyPlanComponent, FilterModal } from './daily-plan.component';
+import {DailyPlanComponent, FilterModal, SearchComponent} from './daily-plan.component';
 import { SharedModule } from '../shared/shared.module';
+import {DailyPlanRegexValidator} from "../../directives/core.directive";
 
 @NgModule({
     imports: [
         SharedModule
     ],
-    declarations: [DailyPlanComponent, FilterModal],
+    declarations: [DailyPlanComponent, FilterModal, SearchComponent, DailyPlanRegexValidator],
     entryComponents: [
         FilterModal
     ]

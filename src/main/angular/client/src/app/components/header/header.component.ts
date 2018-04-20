@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { CoreService } from '../../services/core.service';
 import { AuthService } from '../../components/guard/auth.service';
 import { DataService } from '../../services/data.service';
@@ -13,7 +13,7 @@ declare let $ :any;
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-    userPreferences:any = {};
+    preferences:any = {};
     schedulerIds:any = {};
     permission:any = {};
     username:string = '';
@@ -29,18 +29,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isLogout:boolean = false;
     showEvent:boolean = false;
 
-    constructor(public coreService:CoreService, private authService:AuthService, private router:Router, private dataService: DataService) {
+    @Output() onLogout: EventEmitter<any> = new EventEmitter();
 
+    constructor(public coreService:CoreService, private authService:AuthService, private router:Router, private dataService: DataService) {
     }
 
     ngOnInit() {
         this.allSessionEvent = {group: [], eventUnReadCount: 0};
         this.username = this.authService.currentUserData;
-        this.setIds();
-        if (sessionStorage.preferences)
-            this.userPreferences = JSON.parse(sessionStorage.preferences);
-        this.permission = JSON.parse(this.authService.permission);
-
+        this.reloadSettings();
         if (this.schedulerIds && this.schedulerIds.jobschedulerIds && this.schedulerIds.jobschedulerIds.length > 0)
             this.getEvents(this.schedulerIds.jobschedulerIds);
 
@@ -51,36 +48,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
     }
 
+    reloadSettings() {
+      if (this.authService.scheduleIds)
+        this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+      if (sessionStorage.preferences)
+        this.preferences = JSON.parse(sessionStorage.preferences);
+      this.permission = JSON.parse(this.authService.permission);
+    }
+
     ngOnDestroy() {
         clearTimeout(this.timeout);
     }
 
-    setIds() {
-        if (this.authService.scheduleIds) {
-            this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-        } else {
-            this.schedulerIds = {};
-        }
-    }
-
-    logout(timeout) {
-        this.isLogout = true;
-        this.coreService.post('security/logout', {}).subscribe((res)=> {
-            this.authService.clearUser();
-            this.authService.clearStorage();
-            if (timeout) {
-                localStorage.setItem('clientLogs', null);
-                sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
-                sessionStorage.setItem('$SOS$ALLEVENT', null);
-                this.router.navigate(['/login']);
-            } else {
-                this.coreService.setDefaultTab();
-                localStorage.removeItem('$SOS$URL');
-                sessionStorage.clear();
-                this.router.navigate(['/login']);
-            }
-
-        });
+    logout() {
+      this.isLogout = true;
+      this.onLogout.emit();
     }
 
     filterEventResult(res):void {
@@ -155,8 +137,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     reformatEventResult() {
-        if(this.userPreferences.events) {
-            let eventFilter = this.userPreferences.events.filter;
+        if(this.preferences.events) {
+            let eventFilter = this.preferences.events.filter;
             if (eventFilter && (eventFilter instanceof Array) && eventFilter.length > 0) {
                 for (let i = 0; i < this.allEvents.length; i++) {
                     if (this.allEvents[i] && this.allEvents[i].eventSnapshots) {
@@ -227,13 +209,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     this.eventsRequest = [];
                     this.filterEventResult(res);
                 }
-                if (this.isLogout == false) {
+                if (!this.isLogout) {
                     this.eventLoading = false;
                     this.getEvents(this.schedulerIds.jobschedulerIds);
                 }
                 this.switchScheduler = false;
             }, (err) => {
-                if (this.isLogout == false && (err.status == 420 || err.status == 434)) {
+                if (!this.isLogout && (err.status == 420 || err.status == 434)) {
                     this.timeout = setTimeout(()=> {
                         this.eventLoading = false;
                         this.getEvents(this.schedulerIds.jobschedulerIds);

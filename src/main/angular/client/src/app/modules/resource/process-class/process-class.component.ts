@@ -29,50 +29,41 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   pageView: any;
   processClasses: any = [];
   processFilters: any = {};
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
   process_class_expand_to: any;
 
   @ViewChild(TreeComponent) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+      this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
+    });
   }
-
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
+            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
               this.initTree();
               break;
             } else if (args[i].eventSnapshots[j].eventType === "JobStateChanged") {
-              if (this.processClasses && this.processClasses.length > 0) {
-                let obj = {
-                  jobschedulerId: this.schedulerIds.selected,
-                  folders: [{
-                    folder: this.processClasses[0].path.substring(0, this.processClasses[0].path.lastIndexOf('/')),
-                    recursive: false
-                  }]
-                };
-                let result: any;
-                this.coreService.post('process_classes', obj).subscribe((res) => {
-                  result = res;
-                  if (result.processClasses) {
-                    for (let j = 0; j < this.processClasses.length; j++) {
-                      for (let i = 0; i < result.processClasses.length; i++) {
-                        if (result.processClasses[i].path == this.processClasses[j].path) {
-                          this.processClasses[j].processes = result.processClasses[i].processes;
-                          this.processClasses[j].numOfProcesses = result.processClasses[i].numOfProcesses;
-                          result.processClasses.splice(i,1);
-                          break;
-                        }
-                      }
-                    }
+              if (this.processClasses.length > 0) {
+                for (let x = 0; x < this.processClasses.length; x++) {
+                  if (this.processClasses[x].path === args[i].eventSnapshots[j].path) {
+                    let obj = {
+                      jobschedulerId: this.schedulerIds.selected,
+                      folders: [{folder: this.processClasses[x].path, recursive: false}]
+                    };
+                    this.coreService.post('process_classes', obj).subscribe(res => {
+                      //TODO merge
+                    })
                   }
-                });
+                }
               }
             }
           }
@@ -88,19 +79,8 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       dom.stickySidebar({
         sidebarTopMargin: 192
       });
-    this.processFilters = this.coreService.getResourceTab().processClasses;
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
 
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
-    if (localStorage.views)
-      this.pageView = JSON.parse(localStorage.views).processClass;
-
-    this.initTree();
-
+    this.init();
     if (dom)
       dom.resizable({
         handles: 'e',
@@ -112,8 +92,25 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       });
   }
 
+  private init() {
+   this.processFilters = this.coreService.getResourceTab().processClasses;
+    if (sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (this.authService.scheduleIds)
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+
+    if (this.authService.permission)
+      this.permission = JSON.parse(this.authService.permission);
+    if (localStorage.views)
+      this.pageView = JSON.parse(localStorage.views).processClass;
+
+    this.initTree();
+  }
+
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   private initTree() {
@@ -218,15 +215,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   loadProcessClass(status) {
-    if (status) {
-      this.processFilters.filter.type = status;
-    }
     let self = this;
     let obj = {
       folders: [],
-      type: this.processFilters.filter.type != 'ALL' ? this.processFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      jobschedulerId: this.schedulerIds.selected
     };
 
     this.processClasses = [];
@@ -270,17 +262,25 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
-      type: this.processFilters.filter.type != 'ALL' ? this.processFilters.filter.type : undefined,
-      compact: true
+      folders: [{folder: node.data.path, recursive: true}]
     };
     this.getProcessClassList(obj, node);
   }
 
+  getProcessClass(data) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: false}],
+      jobschedulerId: this.schedulerIds.selected
+    };
+
+    this.getProcessClassList(obj, null);
+  }
+
   receiveAction($event) {
     if($event.action === 'NODE')
-    // this.getProcessClass($event.data);
-      console.log($event.data)
+      this.getProcessClass($event.data);
     else
       this.expandNode($event)
 

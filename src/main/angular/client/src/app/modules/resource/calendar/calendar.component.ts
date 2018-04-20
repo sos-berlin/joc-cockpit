@@ -2053,7 +2053,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
   loading: boolean;
-  folderPath: string;
   schedulerIds: any;
   tree: any = [];
   preferences: any;
@@ -2064,7 +2063,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   categories: any = [];
   calendarFilters: any = {};
   calendar_expand_to: any = {};
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
   showPanel: any;
   object: any = {calendars: [], checkbox: false};
 
@@ -2073,8 +2073,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   public options = {};
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
     });
   }
 
@@ -2142,7 +2145,21 @@ export class CalendarComponent implements OnInit, OnDestroy {
       dom.stickySidebar({
         sidebarTopMargin: 192
       });
-    this.calendarFilters = this.coreService.getResourceTab().calendars;
+
+    this.init();
+    if (dom)
+      dom.resizable({
+        handles: 'e',
+        maxWidth: 450,
+        minWidth: 180,
+        resize: function () {
+          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
+        }
+      });
+  }
+
+  private init(){
+        this.calendarFilters = this.coreService.getResourceTab().calendars;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
     if (this.authService.scheduleIds)
@@ -2155,20 +2172,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     this.initTree();
     this.getCategories();
-
-    if (dom)
-      dom.resizable({
-        handles: 'e',
-        maxWidth: 450,
-        minWidth: 180,
-        resize: function () {
-          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
-        }
-      });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   initTree() {
@@ -2335,7 +2343,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   expandNode(node): void {
     this.calendars = [];
     this.loading = true;
-    this.folderPath = node.data.name || '/';
 
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
@@ -2353,7 +2360,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   getCalendars(data) {
     data.isSelected = true;
     this.loading = true;
-    this.folderPath = data.name || '/';
+
     let obj = {
       folders: [{folder: data.path, recursive: false}],
       type: this.calendarFilters.filter.type != 'ALL' ? this.calendarFilters.filter.type : undefined,

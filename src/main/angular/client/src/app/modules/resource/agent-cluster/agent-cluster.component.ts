@@ -9,6 +9,7 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
 
 import * as _ from 'underscore';
+
 declare var $;
 
 //Main Component
@@ -29,13 +30,17 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   pageView: any;
   agentClusters: any = [];
   agentsFilters: any = {};
-  subscription: Subscription;
+  subscription1: Subscription;
+  subscription2: Subscription;
 
   @ViewChild(TreeComponent) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal, private dataService: DataService) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+      this.init();
     });
   }
 
@@ -44,8 +49,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "CalendarCreated") {
-
+            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
+              this.init();
               break;
             }
           }
@@ -61,19 +66,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       dom.stickySidebar({
         sidebarTopMargin: 192
       });
-    this.agentsFilters = this.coreService.getResourceTab().agents;
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
 
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
-    if (localStorage.views)
-      this.pageView = JSON.parse(localStorage.views).agent;
-
-    this.initTree(null);
-
+    this.init();
     if (dom)
       dom.resizable({
         handles: 'e',
@@ -85,8 +79,23 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       });
   }
 
+  private init() {
+    this.agentsFilters = this.coreService.getResourceTab().agents;
+    if (sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    if (this.authService.scheduleIds)
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+    if (this.authService.permission)
+      this.permission = JSON.parse(this.authService.permission);
+    if (localStorage.views)
+      this.pageView = JSON.parse(localStorage.views).agent;
+
+    this.initTree(null);
+  }
+
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
   private initTree(type) {
@@ -161,6 +170,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       const node = self.child.getNodeById(1);
       node.expand();
       node.setActiveAndVisible(true);
+
+      console.log(self.tree)
     }, 10)
   }
 
@@ -174,7 +185,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
         self.getExpandTreeForUpdates(value, obj);
     });
   }
-
 
   loadAgents(status) {
     if (status) {
@@ -194,17 +204,17 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       if (value.isExpanded || value.isSelected)
         self.getExpandTreeForUpdates(value, obj);
     });
-    this.getProcessClassList(obj, null);
+    this.getAgentClassList(obj, null);
   }
 
   loadAgentsV(data, type) {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
-      folders: [ {folder: data.path, recursive: type}],
+      folders: [{folder: data.path, recursive: type}],
       state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
     };
-     let result: any;
-    this.coreService.post('jobscheduler/agent_clusters',obj).subscribe( (res) => {
+    let result: any;
+    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res) => {
       result = res;
       data.agentClusters = result.agentClusters;
       data.agentClusters.forEach(function (value) {
@@ -213,7 +223,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       });
       this.loading = false;
 
-    },  () =>{
+    }, () => {
       this.loading = false;
 
     });
@@ -227,7 +237,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getProcessClassList(obj, node) {
+  private getAgentClassList(obj, node) {
     let result: any;
     this.coreService.post('jobscheduler/agent_clusters', obj).subscribe(res => {
       this.loading = false;
@@ -255,7 +265,20 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
       compact: true
     };
-    this.getProcessClassList(obj, node);
+    this.getAgentClassList(obj, node);
+  }
+
+  getAgents(data) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: false}],
+      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
+    };
+
+    this.getAgentClassList(obj, null);
   }
 
   /** ---------------------------- Action ----------------------------------*/
@@ -277,13 +300,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  showProcessClass(agent) {
-
-  }
-
-  showProcesses(agent) {
-
-  }
 
   showAgents(cluster) {
     cluster.show = true;
@@ -299,8 +315,10 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
-    console.log($event);
-    this.expandNode($event)
+    if ($event.action === 'NODE')
+      this.getAgents($event.data);
+    else
+      this.expandNode($event)
   }
 
 }

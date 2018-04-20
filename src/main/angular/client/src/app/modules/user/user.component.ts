@@ -87,21 +87,22 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.locales = [{lang: 'en', country: 'US', name: 'English'}, {
-      lang: 'fr',
-      country: 'FR',
-      name: 'French'
-    }, {lang: 'de', country: 'DE', name: 'German'}, {lang: 'ja', country: 'JA', name: 'Japanese'}];
+    this.locales = [
+      {lang: 'en', country: 'US', name: 'English'},
+      {lang: 'fr', country: 'FR', name: 'French'},
+      {lang: 'de', country: 'DE', name: 'German'},
+      {lang: 'ja', country: 'JA', name: 'Japanese'}];
+
     this.object = {
       jobs: [],
       jobChains: [],
       positiveOrders: [],
       negativeOrders: []
     };
-   if (sessionStorage.$SOS$FORCELOGING === 'true') {
-     this.forceLoging = true;
-     this.preferences.auditLog = true;
-   }
+    if (sessionStorage.$SOS$FORCELOGING === 'true') {
+      this.forceLoging = true;
+      this.preferences.auditLog = true;
+    }
 
     this.setIds();
     this.setPreferences();
@@ -124,14 +125,16 @@ export class UserComponent implements OnInit {
 
     let self = this;
     this.eventFilter.forEach(function (name) {
-      if (name.match('JobChain')) {
-          self.object.jobChains(name)
-      }else if(name.match('Job')){
-         self.object.jobs(name)
-      }else if(name.match('OrderS')){
-         self.object.negativeOrders(name)
-      }else {
-         self.object.positiveOrders(name)
+      if(name) {
+        if (name.match('JobChain')) {
+          self.object.jobChains.push(name)
+        } else if (name.match('Job')) {
+          self.object.jobs.push(name)
+        } else if (name.match('OrderS')) {
+          self.object.negativeOrders.push(name)
+        } else {
+          self.object.positiveOrders.push(name)
+        }
       }
     });
   }

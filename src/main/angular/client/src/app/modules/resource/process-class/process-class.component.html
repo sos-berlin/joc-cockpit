@@ -11,11 +11,11 @@
                     <i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i>
                   </a>
                 </li>
-                <li class="cursor" routerLink="agent-clusters" routerLinkActive="active">
-                  <span>{{'breadcrumb.resources' | translate }}</span>
+                <li class="cursor" routerLink="/resources">
+                  <span>{{'label.resources' | translate }}</span>
                 </li>
                 <li routerLink="calendar" class="active">
-                  <span>{{'breadcrumb.processClass' | translate }}</span>
+                  <span>{{'label.processClasses' | translate }}</span>
                 </li>
               </ol>
             </span>
@@ -56,7 +56,7 @@
     <div class="col-md-8">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-          <a class="nav-link" [routerLink]="['/resource/agent_cluster']">
+          <a class="nav-link" [routerLink]="['/resources/agent_cluster']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
           </a>
         </li>
@@ -64,7 +64,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-          <a class="nav-link" [routerLink]="['/resource/agent_job_execution']">
+          <a class="nav-link" [routerLink]="['/resources/agent_job_execution']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
           </a>
         </li>
@@ -73,7 +73,7 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.Lock.view.status">
-          <a class="nav-link" [routerLink]="['/resource/lock']">
+          <a class="nav-link" [routerLink]="['/resources/lock']">
             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
           </a>
         </li>
@@ -90,13 +90,13 @@
           <span class="separator"></span>
         </li>
         <li class="nav-item" *ngIf="permission.Calendar.view.status">
-          <a class="nav-link" [routerLink]="['/resource/calendar']">
+          <a class="nav-link" [routerLink]="['/resources/calendar']">
             <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
           </a>
         </li>
       </ul>
     </div>
-    <div class="col-md-4 text-right">
+    <div class="col-md-4 text-right" *ngIf="pageView=='list' && processClasses.length>0">
       <button class="btn btn-sm btn-default" (click)="expandDetails()">
         <i class="fa fa fa-caret-down"></i>
         <span translate>button.expandDetails</span>
@@ -142,7 +142,7 @@
                                                       class="text fa fa-ellipsis-h"></i></a>
                                               <div class="dropdown-menu dropdown-ac dropdown-more">
                                                   <a *ngIf="permission.ProcessClass.view.configuration" (click)="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
-                                                   <a (click)="copyLink('processClass',processClass.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
+                                                   <a (click)="coreService.copyLink('processClass',processClass.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                               </div>
                                           </div>
                                           <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" [innerHtml]="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
@@ -199,7 +199,7 @@
                                                    <a *ngIf="permission.ProcessClass.view.configuration" (click)="showConfiguration('processClass',processClass.path,processClass.name)"
                                                       class="dropdown-item"
                                                       translate>button.showConfiguration</a>
-                                                   <a (click)="copyLink('processClass',processClass.path)"
+                                                   <a (click)="coreService.copyLink('processClass',processClass.path)"
                                                       class="dropdown-item"
                                                       translate>button.copyLinkToObject</a>
 
@@ -239,7 +239,7 @@
                                                               <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                                                   <i class="fa fa-ellipsis-h"></i></button>
                                                               <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                                                  <a class="dropdown-item" *ngIf="permission.Job.view.taskLog" (click)="showLogWindow(null,process,process.job)" translate>button.viewLog</a>
+                                                                  <a class="dropdown-item" *ngIf="permission.Job.view.taskLog" (click)="coreService.showLogWindow(null,process,process.job)" translate>button.viewLog</a>
                                                                   <a class="dropdown-item" *ngIf="permission.Job.execute.endAllTasks" (click)="end(process,process.job)" translate>button.end</a>
                                                                   <a class="dropdown-item bg-hover-color" *ngIf="permission.Job.execute.kill" (click)="killTask(process,process.job)" translate>button.killImmediately</a>
                                                                   <a class="dropdown-item bg-hover-color" *ngIf="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" (click)="terminateTask(process,process.job)" translate>button.terminate</a>
