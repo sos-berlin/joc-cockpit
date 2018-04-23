@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="text-capitalize" translate>label.ignoreListFilters</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered ">
+          <thead>
+          <tr>
+            <th>
+              <span *ngIf="historyFilters.type == 'jobChain'">{{'label.order' | translate}}/{{'label.jobChain' | translate}}</span>
+              <span *ngIf="historyFilters.type == 'job'">{{'label.job' | translate}}</span>
+            </th>
+            <th translate>label.action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let order of savedIgnoreList.orders" [hidden]="historyFilters.type !== 'ORDER'">
+            <td>{{order.jobChain}}, {{order.orderId}}</td>
+            <td>
+              <a class="text-u-l text-danger" (click)="removeOrderIgnoreList(order)" translate>button.remove</a>
+            </td>
+          </tr>
+          <tr *ngFor="let jobChain of savedIgnoreList.jobChains" [hidden]="historyFilters.type !== 'ORDER'">
+            <td>{{jobChain}}</td>
+            <td>
+              <a class="text-u-l text-danger" (click)="removeJobChainIgnoreList(jobChain)" translate>button.remove</a>
+            </td>
+          </tr>
+          <tr *ngFor="let job of savedIgnoreList.jobs" [hidden]="historyFilters.type !== 'TASK'">
+            <td>{{job}}</td>
+            <td>
+              <a   class="text-u-l text-danger" (click)="removeJobIgnoreList(job)"
+                 translate>button.remove</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

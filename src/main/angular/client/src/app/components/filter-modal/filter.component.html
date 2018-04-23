@@ -1,12 +1,12 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="text-capitalize" translate>label.delete</span>
+    <span class="text-capitalize" translate>label.editFilters</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body container">
+<div class="modal-body container" style="min-height: 400px">
   <div class="row">
     <div class="col-sm-12">
       <table class="table table-hover table-bordered ">
@@ -19,13 +19,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="start-on-hover" *ngFor="let filter of filters.list | orderBy:'name'; let i = index">
+        <tr class="start-on-hover" *ngFor="let filter of filterList | orderBy:'name'; let i = index">
           <td>{{i+1}}</td>
           <td>
-            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="filters.favorite == filter.id" href=""
+            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="favorite == filter.id"
                (click)="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="filters.favorite !=filter.id" href=""
-               (click)="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
+            <a ngbTooltip="{{'tooltip.useDefault' | translate}}" *ngIf="favorite !=filter.id"
+               (click)="makeFavorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
             {{filter.name}} <label *ngIf="filter.shared" class="label label-info" translate>label.share</label>
           </td>
           <td>{{filter.account}}</td>
@@ -45,12 +45,12 @@
                    *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared && filter.account==username && !filter.shared"
                    (click)="makeShare(filter)" translate>button.share</a>
                 <a class="dropdown-item bg-hover-color"
-                   *ngIf="filters.list.length==1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
+                   *ngIf="filterList.length==1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
                    (click)="deleteFilter(filter)">
                   <span translate>button.delete</span>
                 </a>
                 <a class="dropdown-item bg-hover-color"
-                   *ngIf="filters.list.length>1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
+                   *ngIf="filterList.length>1 && (permission.JOCConfigurations.share.change.delete || filter.account==username)"
                    (click)="deleteFilter(filter)">
                   <span translate>button.delete</span>
                 </a>

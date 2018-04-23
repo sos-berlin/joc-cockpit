@@ -28,35 +28,35 @@
 		<add as="rectangle">
 			<Rect label="Job" href="">
 				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="80" height="40"/>
+					<mxGeometry as="geometry" width="120" height="60"/>
 				</mxCell>
 			</Rect>
 		</add>
 		<add as="text">
 			<Text label="Text Here" href="">
 				<mxCell vertex="1" style="text">
-					<mxGeometry as="geometry" width="80" height="20"/>
+					<mxGeometry as="geometry" width="120" height="40"/>
 				</mxCell>
 			</Text>
 		</add>
 		<add as="rounded">
 			<Roundrect label="Instruction" href="">
 				<mxCell vertex="1" style="rounded">
-					<mxGeometry as="geometry" width="80" height="40"/>
+					<mxGeometry as="geometry" width="120" height="60"/>
 				</mxCell>
 			</Roundrect>
 		</add>
 		<add as="shape">
 			<Shape label="Process" href="">
 				<mxCell vertex="1" style="ellipse">
-					<mxGeometry as="geometry" width="60" height="60"/>
+					<mxGeometry as="geometry" width="70" height="70"/>
 				</mxCell>
 			</Shape>
 		</add>
 		<add as="actor">
 			<Shape label="Instruction" href="">
 				<mxCell vertex="1" style="actor">
-					<mxGeometry as="geometry" width="40" height="60"/>
+					<mxGeometry as="geometry" width="60" height="80"/>
 				</mxCell>
 			</Shape>
 		</add>
@@ -70,7 +70,7 @@
 		<add as="hline">
 			<Shape label="" href="">
 				<mxCell vertex="1" style="ellipse">
-					<mxGeometry as="geometry" width="60" height="10"/>
+					<mxGeometry as="geometry" width="100" height="40"/>
 				</mxCell>
 			</Shape>
 		</add>
@@ -226,14 +226,6 @@
 				<add as="verticalAlign" value="bottom"/>
 				<add as="strokeColor" value="#36393D"/>
 			</add>
-			<add as="image">
-				<add as="shape" value="image"/>
-				<add as="perimeter" value="rectanglePerimeter"/>
-				<add as="fontSize" value="10"/>
-				<add as="align" value="center"/>
-				<add as="verticalAlign" value="middle"/>
-				<add as="image" value="./assets/mxgraph/editors/images/draw/mxlogo.jpg"/>
-			</add>
 		</mxStylesheet>
 		<mxGraphModel as="model">
 			<add as="valueForCellChanged"><![CDATA[
@@ -264,7 +256,7 @@
 				}
 			]]></add>
 			<root>
-				<Diagram label="My Diagram" href="http://www.jgraph.com/" id="0">
+				<Diagram label="JOE Diagram" href="http://localhost:4200/joe/" id="0">
 					<mxCell/>
 				</Diagram>
 				<Layer label="Default Layer" id="1">
@@ -301,7 +293,7 @@
 				}
 			}
 		]]></add>
-		<br/><br/>
+		<hr/>
 		<add as="Text" template="text" icon="./assets/mxgraph/editors/images/text.gif"/>
 		<add as="Container" template="container" icon="./assets/mxgraph/editors/images/swimlane.gif"/>
 		<add as="Rectangle" template="rectangle" icon="./assets/mxgraph/editors/images/rectangle.gif"/>
@@ -309,6 +301,7 @@
 		<add as="Ellipse" template="shape" style="ellipse" icon="./assets/mxgraph/editors/images/ellipse.gif"/>
 		<add as="Double Ellipse" template="shape" style="doubleEllipse" icon="./assets/mxgraph/editors/images/doubleellipse.gif"/>
 		<add as="Rhombus" template="shape" style="rhombus" icon="./assets/mxgraph/editors/images/rhombus.gif"/>
+   	<hr/>
 		<add as="Triangle" template="actor" style="triangle" icon="./assets/mxgraph/editors/images/triangle.gif"/>
 		<add as="Hexagon" template="cloud" style="hexagon" icon="./assets/mxgraph/editors/images/hexagon.gif"/>
 		<add as="Actor" template="actor" style="actor" icon="./assets/mxgraph/editors/images/actor.gif"/>

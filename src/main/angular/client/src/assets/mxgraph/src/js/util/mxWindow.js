@@ -191,6 +191,13 @@ function mxWindow(title, content, x, y, width, height, minimizable, movable, rep
 	{
 		minimizable = (minimizable != null) ? minimizable : true;
 		this.content = content;
+
+		if(title == 'Outline'){
+		  x = document.body.clientWidth -340;
+		  y =document.body.clientHeight-270;
+		  width= width +100;
+		  height= height +50;
+    }
 		this.init(x, y, width, height, style);
 		
 		this.installMaximizeHandler();

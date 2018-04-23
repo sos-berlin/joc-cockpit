@@ -99,7 +99,7 @@ mxGraphHandler.prototype.moveEnabled = true;
  * Specifies if other cells should be used for snapping the right, center or
  * left side of the current selection. Default is false.
  */
-mxGraphHandler.prototype.guidesEnabled = false;
+mxGraphHandler.prototype.guidesEnabled = true;
 
 /**
  * Variable: guide

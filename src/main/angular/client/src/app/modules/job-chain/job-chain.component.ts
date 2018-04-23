@@ -14,16 +14,8 @@ declare var mxVertexHandler;
 declare var mxGuide;
 declare var mxEdgeHandler;
 declare var mxImage;
-declare var mxGraphHandler;
 declare var mxConnectionHandler;
 declare var mxCodec;
-declare var mxXmlCanvas2D;
-declare var mxImageExport;
-declare var mxXmlRequest;
-declare var mxConstants;
-declare var mxSvgCanvas2D;
-declare var mxResources;
-declare var mxAutoSaveManager;
 declare var $;
 
 @Component({
@@ -51,7 +43,7 @@ export class JobChainComponent implements OnInit {
         maxWidth: 450,
         minWidth: 180,
         resize: function () {
-          $('#centerPanel').css('margin-left', dom.width() + 20 + 'px')
+          $('#centerPanel').css({'margin-left': dom.width() + 20 + 'px'})
         }
       });
     }
@@ -79,11 +71,6 @@ export class JobChainComponent implements OnInit {
 
 
   private initEditorConf(editor) {
-    // Enables rotation handle
-    mxVertexHandler.prototype.rotationEnabled = true;
-
-    // Enables guides
-    mxGraphHandler.prototype.guidesEnabled = true;
 
     // Alt disables guides
     mxGuide.prototype.isEnabledForEvent = function (evt) {
@@ -105,166 +92,28 @@ export class JobChainComponent implements OnInit {
     // Clones the source if new connection has no target
     editor.graph.connectionHandler.setCreateTarget(true);
 
+
     // Changes the zoom on mouseWheel events
     mxEvent.addMouseWheelListener(function (evt, up) {
       if (!mxEvent.isConsumed(evt)) {
         if (up) {
           editor.execute('zoomIn');
-        }
-        else {
+        } else {
           editor.execute('zoomOut');
         }
-
         mxEvent.consume(evt);
       }
     });
 
-    // Defines a new action to switch between
-    // XML and graphical display
-    let textNode: any = document.getElementById('xml');
-    let graphNode = editor.graph.container;
-    let sourceInput: any = document.getElementById('source');
-    sourceInput.checked = false;
-
     let funct = function (editor) {
-      if (sourceInput.checked) {
-        graphNode.style.display = 'none';
-        textNode.style.display = 'inline';
-
         let enc = new mxCodec();
         let node = enc.encode(editor.graph.getModel());
-
-        textNode.value = mxUtils.getPrettyXml(node);
-        textNode.originalValue = textNode.value;
-        textNode.focus();
-      }
-      else {
-        graphNode.style.display = '';
-
-        if (textNode.value != textNode.originalValue) {
-          let doc = mxUtils.parseXml(textNode.value);
-          let dec = new mxCodec(doc);
-          dec.decode(doc.documentElement, editor.graph.getModel());
-        }
-
-        textNode.originalValue = null;
-
-        // Makes sure nothing is selected in IE
-        if (mxClient.IS_IE) {
-          mxUtils.clearSelection();
-        }
-
-        textNode.style.display = 'none';
-
-        // Moves the focus back to the graph
-        editor.graph.container.focus();
-      }
+        console.log(mxUtils.getPrettyXml(node));
     };
-
-     editor.addAction('switchView', funct);
-
-    // Defines a new action to switch between
-    // XML and graphical display
-    mxEvent.addListener(sourceInput, 'click', function () {
-      editor.execute('switchView');
-    });
 
     // Create select actions in page
     let node = document.getElementById('mainActions');
-    let buttons = ['group', 'ungroup', 'undo', 'redo', 'cut', 'copy', 'paste', 'delete','show','toggleOutline'];
-    // Only adds image and SVG export from backend
-    // NOTE: The old image export in mxEditor is not used, the urlImage is used for the new export.
-    if (editor.urlImage != null) {
-      // Client-side code for image export
-      let exportImage = function (editor) {
-        let graph = editor.graph;
-        let scale = graph.view.scale;
-        let bounds = graph.getGraphBounds();
-
-        // New image export
-        let xmlDoc = mxUtils.createXmlDocument();
-        let root = xmlDoc.createElement('output');
-        xmlDoc.appendChild(root);
-
-        // Renders graph. Offset will be multiplied with state's scale when painting state.
-        let xmlCanvas = new mxXmlCanvas2D(root);
-        xmlCanvas.translate(Math.floor(1 / scale - bounds.x), Math.floor(1 / scale - bounds.y));
-        xmlCanvas.scale(scale);
-
-        let imgExport = new mxImageExport();
-        imgExport.drawState(graph.getView().getState(graph.model.root), xmlCanvas);
-
-        // Puts request data together
-        let w = Math.ceil(bounds.width * scale + 2);
-        let h = Math.ceil(bounds.height * scale + 2);
-        let xml = mxUtils.getXml(root);
-
-        // Requests image if request is valid
-        if (w > 0 && h > 0) {
-          let name = 'export.png';
-          let format = 'png';
-          let bg = '&bg=#FFFFFF';
-
-          new mxXmlRequest(editor.urlImage, 'filename=' + name + '&format=' + format +
-            bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).simulate(document, '_blank');
-        }
-      };
-
-      editor.addAction('exportImage', exportImage);
-
-      // Client-side code for SVG export
-      let exportSvg = function (editor) {
-        let graph = editor.graph;
-        let scale = graph.view.scale;
-        let bounds = graph.getGraphBounds();
-
-        // Prepares SVG document that holds the output
-        let svgDoc = mxUtils.createXmlDocument();
-        let root = (svgDoc.createElementNS != null) ?
-          svgDoc.createElementNS(mxConstants.NS_SVG, 'svg') : svgDoc.createElement('svg');
-
-        if (root.style != null) {
-          root.style.backgroundColor = '#FFFFFF';
-        }
-        else {
-          root.setAttribute('style', 'background-color:#FFFFFF');
-        }
-
-        if (svgDoc.createElementNS == null) {
-          root.setAttribute('xmlns', mxConstants.NS_SVG);
-        }
-
-        root.setAttribute('width', Math.ceil(bounds.width * scale + 2) + 'px');
-        root.setAttribute('height', Math.ceil(bounds.height * scale + 2) + 'px');
-        root.setAttribute('xmlns:xlink', mxConstants.NS_XLINK);
-        root.setAttribute('version', '1.1');
-
-        // Adds group for anti-aliasing via transform
-        let group = (svgDoc.createElementNS != null) ?
-          svgDoc.createElementNS(mxConstants.NS_SVG, 'g') : svgDoc.createElement('g');
-        group.setAttribute('transform', 'translate(0.5,0.5)');
-        root.appendChild(group);
-        svgDoc.appendChild(root);
-
-        // Renders graph. Offset will be multiplied with state's scale when painting state.
-        let svgCanvas = new mxSvgCanvas2D(group);
-        svgCanvas.translate(Math.floor(1 / scale - bounds.x), Math.floor(1 / scale - bounds.y));
-        svgCanvas.scale(scale);
-
-        let imgExport = new mxImageExport();
-        imgExport.drawState(graph.getView().getState(graph.model.root), svgCanvas);
-
-        let name = 'export.svg';
-        let xml = encodeURIComponent(mxUtils.getXml(root));
-
-        new mxXmlRequest(editor.urlEcho, 'filename=' + name + '&format=svg' + '&xml=' + xml).simulate(document, "_blank");
-      };
-
-      editor.addAction('exportSvg', exportSvg);
-
-      buttons.push('exportImage');
-      buttons.push('exportSvg');
-    }
+    let buttons = ['group', 'ungroup', 'undo', 'redo', 'cut', 'copy', 'paste', 'delete'];
 
     for (let i = 0; i < buttons.length; i++) {
       let button = document.createElement('button');
@@ -302,7 +151,7 @@ export class JobChainComponent implements OnInit {
         icon = "./assets/mxgraph/editors/images/delete.gif";
         button.setAttribute('class', 'btn btn-sm m-r-sm');
         button.setAttribute('title', 'Delete');
-      }else if(buttons[i] == "show"){
+      }/*else if(buttons[i] == "show"){
          icon = "./assets/mxgraph/editors/images/preview.gif";
         button.setAttribute('class', 'btn btn-sm m-r-sm');
         button.setAttribute('title', 'Preview');
@@ -310,8 +159,8 @@ export class JobChainComponent implements OnInit {
          icon = "./assets/mxgraph/editors/images/outline.gif";
         button.setAttribute('class', 'btn btn-sm');
         button.setAttribute('title', 'Outline');
-      }
-      //<add as="outline" action="toggleOutline" icon="./assets/mxgraph/editors/images/outline.gif"/>
+      }*/
+
       dom.setAttribute('src', icon);
       button.appendChild(dom);
       mxUtils.write(button, '');
@@ -324,6 +173,8 @@ export class JobChainComponent implements OnInit {
       mxEvent.addListener(button, 'click', factory(buttons[i]));
       node.appendChild(button);
     }
+
+    editor.execute('toggleOutline');
 
 
     // Create zoom actions in page
@@ -368,7 +219,6 @@ export class JobChainComponent implements OnInit {
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-
   createEditor(config) {
     let editor = null;
     try {
