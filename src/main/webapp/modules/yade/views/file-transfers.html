@@ -28,17 +28,17 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="yadeFilters.filter.states" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
+                                <a class="dropdown-item " ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
+                                   ng-class="{'btn-primary': yadeFilters.filter.states=='all', 'disable-link':savedYadeFilter.selected}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadYadeFiles()"
+                                   ng-class="{'btn-primary':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedYadeFilter.selected}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadYadeFiles()"
+                                   ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED', 'disable-link':savedYadeFilter.selected}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadYadeFiles()"
+                                   ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedYadeFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
                         </div>

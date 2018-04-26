@@ -10,8 +10,11 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService","$filter"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService,$filter) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService",
+        "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService", "$filter"];
+
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService,
+                          CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -23,7 +26,7 @@
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
 
-        vm.selectedFiltered='';
+        vm.selectedFiltered = '';
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
         vm.eventFilterList = [];
 
@@ -427,6 +430,7 @@
 
         function startTraverseNodeA(data) {
             vm.allAgentClusters = [];
+
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
@@ -462,6 +466,7 @@
          * Function to initialized Agent tasks
          */
         vm.loadAgentTasks = getAgentTasks;
+
         function getAgentTasks() {
             vm.isLoading = false;
             var obj = {};
@@ -519,10 +524,9 @@
         vm.advancedSearch = function () {
             vm.showSearchPanel = true;
             vm.agentJobSearch.from = new Date();
-            vm.agentJobSearch.from.setDate(vm.agentJobSearch.from.getDate() - 1);
             vm.agentJobSearch.fromTime = '00:00';
             vm.agentJobSearch.to = new Date();
-            vm.agentJobSearch.toTime = '00:00';
+            vm.agentJobSearch.toTime = moment().format("HH:mm")
         };
         vm.cancel = function () {
             if (!vm.agentJobExecutionFilters.filter.date) {
@@ -639,6 +643,7 @@
         });
 
         vm.loadEvents = getEvents;
+
         function getEvents() {
             vm.isLoading = false;
             var obj = {};
@@ -854,7 +859,9 @@
                     types: ['ORDER']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
-
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#singleObjectModal').modal('hide');
                 });
@@ -865,6 +872,9 @@
                     types: ['JOB']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#singleObjectModal').modal('hide');
                 });
@@ -880,7 +890,9 @@
                     types: ['ORDER']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
-
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#objectModal').modal('hide');
                 });
@@ -891,6 +903,9 @@
                     types: ['JOB']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#objectModal').modal('hide');
                 });
@@ -1411,6 +1426,7 @@
             SavedFilter.setEvent(vm.savedEventFilter);
             SavedFilter.save();
         };
+
         function parseProcessExecuted(regex) {
             var date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
@@ -1544,6 +1560,7 @@
             vm.locksFilters.reverse = !vm.locksFilters.reverse;
             vm.locksFilters.filter.sortBy = propertyName;
         };
+
         /**
          * Function to initialized Lock tree
          */
@@ -1633,6 +1650,7 @@
 
         function startTraverseNodeL(data) {
             vm.allLocks = [];
+
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
@@ -1875,6 +1893,7 @@
             vm.processFilters.reverse = !vm.processFilters.reverse;
             vm.processFilters.filter.sortBy = propertyName;
         };
+
         /**
          * Function to initialized Proccess tree
          */
@@ -1983,7 +2002,7 @@
             }
         }
 
-        function checkExpandTreeForUpdatesP(data,obj) {
+        function checkExpandTreeForUpdatesP(data, obj) {
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 vm.folderPathP = data.name || '/';
@@ -1992,7 +2011,7 @@
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
-                    checkExpandTreeForUpdatesP(value,obj);
+                    checkExpandTreeForUpdatesP(value, obj);
             });
         }
 
@@ -2002,10 +2021,10 @@
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1) == node.path)) {
                     x[i].path1 = node.path;
-                    if(_temp && _temp.length>0){
-                        for(var j=0; j < _temp.length;j++){
-                            if(_temp[j].path == x[i].path){
-                                 x[i].show = _temp[j].show;
+                    if (_temp && _temp.length > 0) {
+                        for (var j = 0; j < _temp.length; j++) {
+                            if (_temp[j].path == x[i].path) {
+                                x[i].show = _temp[j].show;
                                 break;
                             }
                         }
@@ -2266,6 +2285,7 @@
             vm.loading = true;
             expandFolderDataP(data);
         };
+
         function navFullTreeP() {
             angular.forEach(vm.treeProcess, function (value) {
                 value.selected1 = false;
@@ -2295,6 +2315,7 @@
 
         function startTraverseNodeP(data) {
             vm.allProcessClasses = [];
+
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
@@ -2370,6 +2391,7 @@
 
             });
         };
+
         function navFullTreeForUpdateProcess(path) {
             for (var i = 0; i < vm.treeProcess.length; i++) {
                 if (vm.treeProcess[i].path != path) {
@@ -2410,6 +2432,7 @@
             vm.scheduleFilters.reverse = !vm.scheduleFilters.reverse;
             vm.scheduleFilters.filter.sortBy = propertyName;
         };
+
         /**
          * Function to initialized SCHEDULE tree
          */
@@ -2788,6 +2811,7 @@
 
         function startTraverseNode(data) {
             vm.allSchedules = [];
+
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
@@ -3029,6 +3053,7 @@
             });
 
         };
+
         function navFullTreeForUpdateSchedule(path) {
             for (var i = 0; i < vm.treeSchedule.length; i++) {
                 if (vm.treeSchedule[i].path != path) {
@@ -3219,6 +3244,7 @@
             vm.loading = true;
             expandFolderDataC(data);
         };
+
         function navFullTreeC() {
             angular.forEach(vm.treeCalendar, function (value) {
                 value.selected1 = false;
@@ -3368,7 +3394,9 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.storeCalendar(obj);
+            CalendarService.storeCalendar(obj).then(function () {
+                $rootScope.$broadcast('calendar-close');
+            });
         }
 
         $scope.$on('calendar-obj', function (event, data) {
@@ -3493,6 +3521,7 @@
         };
         vm.basedOnCalendars = [];
         vm.fileContentCalendars = [];
+
         function onLoadFile(event) {
             var data = JSON.parse(event.target.result);
             var paths = [];
@@ -3770,7 +3799,9 @@
                 types: ["WORKINGDAYSCALENDAR", "NONWORKINGDAYSCALENDAR"]
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
-
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
                 $('.fade-modal').css('opacity', '1');
@@ -4093,6 +4124,7 @@
     }
 
     ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver'];
+
     function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
@@ -4456,7 +4488,9 @@
                 compact: true
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
-
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
                 $('.fade-modal').css('opacity', '1');
@@ -4689,8 +4723,9 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService','PermissionService'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService,PermissionService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService', 'PermissionService'];
+
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService, PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
 
@@ -4719,7 +4754,7 @@
                         if (vm.isMasterClusterVisible) {
                             prepareClusterStatusData();
                         }
-                         interval = $interval(function () {
+                        interval = $interval(function () {
                             setClusterWidgetHeight();
                             count = count + 1;
                             if (count > 2) {
@@ -4737,7 +4772,8 @@
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
-        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary = true, isLoadedFileOverview = true, isLoadedTaskSummary = true, isLoadedTaskSnapshot = true;
+        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary = true,
+            isLoadedFileOverview = true, isLoadedTaskSummary = true, isLoadedTaskSnapshot = true;
 
         vm.isAgentClusterVisible = true;
         vm.isRunningAgentVisible = true;
@@ -4754,6 +4790,7 @@
 
         vm.dashboard = {widgets: []};
         vm.widgetWithPermission = [];
+
         function initWidgets() {
             vm.dashboard = {widgets: []};
             vm.widgetWithPermission = [];
@@ -4957,6 +4994,7 @@
             }, 50);
         };
         var interval;
+
         function setWidgetHeight() {
             var count = 0;
             interval = $interval(function () {
@@ -5214,7 +5252,7 @@
                 }
                 vm.isLoadedAgentCluster = true;
             }, function () {
-                vm.agentClusterData =[];
+                vm.agentClusterData = [];
                 vm.isLoadedAgentCluster = true;
             });
         };
@@ -5422,6 +5460,7 @@
         var clusterStatusData = {};
 
         vm.isLoadedMasterCluster = false;
+
         function prepareClusterStatusData() {
             if (!vm.isMasterClusterVisible) {
                 $rootScope.$broadcast('reloadScheduleDetail', true);
@@ -5469,7 +5508,7 @@
                     }, 60);
 
                 }, function () {
-                    vm.clusterStatusData=[];
+                    vm.clusterStatusData = [];
                     vm.isLoadedMasterCluster = true;
 
                 });
@@ -5479,6 +5518,7 @@
         }
 
         vm.getSupervisor = getSupervisorDetails;
+
         function getSupervisorDetails() {
             return JobSchedulerService.getSupervisorP({jobschedulerId: $scope.schedulerIds.selected});
         }
@@ -5488,6 +5528,7 @@
         }
 
         vm.getClusterMembers = getClusterMembers;
+
         function getClusterMembers(refresh) {
             return JobSchedulerService.getClusterMembers({jobschedulerId: $scope.schedulerIds.selected}, refresh);
         }
@@ -5586,7 +5627,7 @@
                             if (res) {
                                 CoreService.setDefaultTab();
                                 SOSAuth.setIds(res);
-                               
+
                                 SOSAuth.save();
                                 if (res.selected != vm.schedulerIds.selected)
                                     $state.reload(vm.currentState);
@@ -5637,7 +5678,7 @@
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = id + ' (' + host + ':' + port + ')';
-                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : action == 'terminateAndRestartWithTimeout' ? '': "Continue";
+                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : action == 'terminateAndRestartWithTimeout' ? '' : "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
@@ -5853,19 +5894,19 @@
                 vm.mastersList = res.masters;
                 JobSchedulerService.getClusterMembers({jobschedulerId: ''}).then(function (result) {
                     vm.mastersList = angular.merge(res.masters, result.masters);
-                    angular.forEach(vm.mastersList, function(data){
-                        data.permission =  PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
+                    angular.forEach(vm.mastersList, function (data) {
+                        data.permission = PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
                     });
                 })
 
             }, function () {
                 JobSchedulerService.getClusterMembers({jobschedulerId: ''}).then(function (result) {
                     vm.mastersList = result.masters;
-                    angular.forEach(vm.mastersList, function(data){
-                        data.permission =  PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
+                    angular.forEach(vm.mastersList, function (data) {
+                        data.permission = PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
                     });
-                },function(){
-                    vm.mastersList =[];
+                }, function () {
+                    vm.mastersList = [];
                 })
             })
         };
@@ -6132,7 +6173,7 @@
                             vm.getAgentCluster();
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
-                    }else if(args.events[0].eventSnapshots[i].objectType === "OTHER") {
+                    } else if (args.events[0].eventSnapshots[i].objectType === "OTHER") {
                         if (args.events[0].eventSnapshots[i].eventType === "YADEFileStateChanged" && isLoadedFileOverview) {
                             vm.getFileOverview();
                         } else if (args.events[0].eventSnapshots[i].eventType === "YADETransferStarted" && isLoadedFileSummary) {
@@ -6146,7 +6187,7 @@
                     }
                 }
             }
-            if(args.otherEvents && args.otherEvents.length>0) {
+            if (args.otherEvents && args.otherEvents.length > 0) {
                 for (var j = 0; j < args.otherEvents.length; j++) {
                     if (args.otherEvents[j].jobschedulerId != vm.schedulerIds.selected) {
                         var flag = false;
@@ -6173,7 +6214,7 @@
                 $timeout.cancel(t2);
             if (interval)
                 $interval.cancel(interval);
-            if(interval1)
+            if (interval1)
                 $interval.cancel(interval1);
 
 
@@ -6181,13 +6222,14 @@
     }
 
     DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettext', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService', 'ResourceService'];
+
     function DailyPlanCtrl($scope, $timeout, gettext, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService, ResourceService) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
-        vm.selectedFiltered='';
+        vm.selectedFiltered = '';
         vm.isUnique = true;
         var promise1;
         vm.object = {};
@@ -6484,15 +6526,15 @@
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
 
-                if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                   delete obj["timeZone"];
-                }
-                    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
+            }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
@@ -6519,10 +6561,9 @@
             vm.searchDailyPlanFilter.from1 = 'today';
             vm.searchDailyPlanFilter.to1 = 'today';
             vm.searchDailyPlanFilter.from = new Date();
-            vm.searchDailyPlanFilter.fromTime = '00:00';
+            vm.searchDailyPlanFilter.fromTime = moment().format("HH:mm")
             vm.searchDailyPlanFilter.to = new Date();
-            vm.searchDailyPlanFilter.to.setDate(vm.searchDailyPlanFilter.to.getDate() + 1);
-            vm.searchDailyPlanFilter.toTime = '00:00';
+            vm.searchDailyPlanFilter.toTime = '24:00';
             vm.dailyPlanFilter = undefined;
         };
         vm.cancel = function (form) {
@@ -6714,7 +6755,7 @@
             var minNextStartTime;
             var maxEndTime;
             var orders = [];
-           // vm.ordersNoDuplicate = [];
+            // vm.ordersNoDuplicate = [];
 
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {
@@ -6920,15 +6961,15 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-                if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                   delete obj["timeZone"];
-                }
-                    if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                    obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                    obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj["timeZone"];
+            }
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
+                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
+            }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
@@ -7415,7 +7456,9 @@
                 types: ['DAILYPLAN']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
-
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
             });

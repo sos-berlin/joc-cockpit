@@ -749,10 +749,9 @@
             vm.auditSearch = {};
             vm.auditSearch.date = 'date';
             vm.auditSearch.from = new Date();
-            vm.auditSearch.from.setDate(vm.auditSearch.from.getDate() - 1);
             vm.auditSearch.fromTime = '00:00';
             vm.auditSearch.to = new Date();
-            vm.auditSearch.toTime = '00:00';
+            vm.auditSearch.toTime =  moment().format("HH:mm");
         };
         vm.cancel = function () {
             if (!vm.adtLog.filter.date) {
@@ -1797,7 +1796,9 @@
             }
             ResourceService.tree({jobschedulerId: vm.masterName, compact: true, force: true}).then(function (res) {
                 vm.folderList = res.folders;
-
+                angular.forEach(vm.folderList, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
             });

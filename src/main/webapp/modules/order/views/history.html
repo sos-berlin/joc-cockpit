@@ -28,16 +28,16 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="order.filter.historyStates" uib-btn-radio="'all'"
+                                <a class="dropdown-item " ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': order.filter.historyStates=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL', 'disable-link':savedHistoryFilter.selected}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'"
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': order.filter.historyStates=='FAILED', 'disable-link':savedHistoryFilter.selected}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE', 'disable-link':savedHistoryFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
@@ -116,16 +116,16 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="task.filter.historyStates" uib-btn-radio="'all'"
+                                <a class="dropdown-item " ng-model="task.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': task.filter.historyStates=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': task.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'"
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': task.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
                                    ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
@@ -204,17 +204,17 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="yade.filter.historyStates" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': yade.filter.historyStates=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
+                                <a class="dropdown-item " ng-model="yade.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                   ng-class="{'btn-primary': yade.filter.historyStates=='all', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
+                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
+                                   ng-class="{'btn-primary':yade.filter.historyStates=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': yade.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
+                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                                   ng-class="{'btn-primary': yade.filter.historyStates=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
+                                <a class="dropdown-item" ng-model="yade.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                                   ng-class="{'btn-primary': yade.filter.historyStates=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
                         </div>
@@ -331,12 +331,12 @@
                 </ul>
             </div>
             <div class="col-md-6 col-sm-8">
-                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </div>
-                <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </div>
+                </button>
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
             </div>
         </div>
@@ -1092,7 +1092,7 @@
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>
                             </td>
-                            <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
+                            <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{jobHistory.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.endTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
@@ -1134,7 +1134,6 @@
                     <table class="table table-hover table-bordered " id="yade" >
                         <thead>
                             <tr>
-
                                 <th ng-if="!historyView.current" ng-click="sortBy2('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                     <i ng-show="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1221,8 +1220,8 @@
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                 <span ng-bind="history.jobschedulerId"></span>
-                                 <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
+                                 <span ng-bind="transfer.jobschedulerId"></span>
+                                 <span ng-if="!transfer.jobschedulerId" ng-bind="yadeSearch.jobschedulerId"></span>
                              </td>
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>

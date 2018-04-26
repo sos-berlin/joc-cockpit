@@ -15,6 +15,7 @@
         .controller('LogCtrl', LogCtrl);
 
     JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location"];
+
     function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -180,6 +181,7 @@
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
         "CoreService", "$uibModal", "AuditLogService", "FileSaver", "$filter"];
+
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
                                   CoreService, $uibModal, AuditLogService, FileSaver, $filter) {
 
@@ -238,6 +240,7 @@
             loadAuditLogs();
 
         vm.getJobInfo = getJobInfo;
+
         function getJobInfo(jobInfo) {
             jobInfo.jobschedulerId = vm.schedulerIds.selected;
             jobInfo.compact = false;
@@ -1303,9 +1306,9 @@
                     var data = canvas.toDataURL('image/png');
 
                     if (type == 'pdf') {
-                        if(vm.jobChain.title) {
-                            var text = "Job Chain -" + vm.jobChain.path + " - " +vm.jobChain.title;
-                        }else {
+                        if (vm.jobChain.title) {
+                            var text = "Job Chain -" + vm.jobChain.path + " - " + vm.jobChain.title;
+                        } else {
                             var text = "Job Chain -" + vm.jobChain.path;
                         }
 
@@ -1313,8 +1316,8 @@
                             content: [{
                                 image: data,
                                 fit: [bound.maxTop + 100, bound.maxTop + 100]
-                            },{
-                                text:text
+                            }, {
+                                text: text
                             }],
                             pageOrientation: 'landscape'
                         };
@@ -1327,7 +1330,7 @@
                         setCanvasBackground(canvas);
                         canvas.toBlob(function (blob) {
                             FileSaver.saveAs(blob, vm.jobChain.name + '.png');
-                        },'image/png', 1.0)
+                        }, 'image/png', 1.0)
                     }
                     if (els && els.length > 0) {
                         $.each(els, function (i, e) {
@@ -1427,12 +1430,14 @@
         });
 
         vm.getJobChain = getJobChain;
+
         function getJobChain(filter) {
             filter.jobschedulerId = vm.schedulerIds.selected;
             return JobChainService.getJobChain(filter);
         }
 
         vm.getJobChainInfo = getJobChainInfo;
+
         function getJobChainInfo(filter) {
             filter.jobschedulerId = vm.schedulerIds.selected;
             return JobChainService.getJobChainP(filter);
@@ -1441,6 +1446,7 @@
         vm.isLoading1 = false;
 
         vm.loadHistory = loadHistory;
+
         function loadHistory(nestedJobChain) {
             if (vm.jobChain) {
                 var filter = {};
@@ -1489,6 +1495,7 @@
         vm.setHeight = setHeight;
 
         vm.fitIntoScreen = fitIntoScreen;
+
         function fitIntoScreen() {
             vm.loading = false;
         }
@@ -1908,7 +1915,7 @@
                 }
             }
 
-           else if (action == 'resume order') {
+            else if (action == 'resume order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2005,7 +2012,7 @@
                 });
             }
 
-           else if (action == 'reset order') {
+            else if (action == 'reset order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2105,7 +2112,7 @@
                     vm.obj = angular.copy(order);
                     vm.obj.calendars = res.calendars;
                 });
-                 modalInstance = $uibModal.open({
+                modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -2158,7 +2165,7 @@
             }
         };
         vm.getPlan = function (calendarView, viewDate) {
-             var date ='';
+            var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
@@ -2167,7 +2174,7 @@
                     date = "+0y";
                 }
                 else {
-                    date = "+"+  viewDate.getFullYear() - new Date().getFullYear() +"y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -2177,9 +2184,9 @@
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()){
+                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }else{
+                } else {
                     return;
                 }
             }
@@ -2229,13 +2236,14 @@
     }
 
     JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService", "$timeout"];
+
     function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService, $timeout) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         var object = $location.search();
 
         vm.reset = function () {
-           vm.object.orders = [];
+            vm.object.orders = [];
         };
 
         function volatileInfo(draw) {
@@ -2353,7 +2361,7 @@
         var t1 = '';
         $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
             vm.object = {};
-            vm.object.orders =[];
+            vm.object.orders = [];
             vm.orderFilters.isOverview = toState.url == '/overview';
             if (vm.orderFilters.isOverview && fromState.name == 'app.jobChainDetails.orders') {
                 t1 = $timeout(function () {
@@ -2386,8 +2394,8 @@
         };
 
 
-          vm.getPlan = function (calendarView, viewDate) {
-             var date ='';
+        vm.getPlan = function (calendarView, viewDate) {
+            var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
@@ -2396,7 +2404,7 @@
                     date = "+0y";
                 }
                 else {
-                    date = "+"+  viewDate.getFullYear() - new Date().getFullYear() +"y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -2406,9 +2414,9 @@
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()){
+                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }else{
+                } else {
                     return;
                 }
             }
@@ -2436,13 +2444,13 @@
             vm._jobChain = nestedJobChain ? angular.copy(nestedJobChain) : vm.jobChain;
             vm.isCaledarLoading = true;
             vm.planItems = [];
-            
+
             DailyPlanService.getPlans({
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
                 dateFrom: "+0M",
-	            dateTo: "+0M",
+                dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -2971,6 +2979,7 @@
     }
 
     OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "$filter"];
+
     function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, $filter) {
         var vm = $scope;
 
@@ -3234,6 +3243,7 @@
 
         function startTraverseNode(data) {
             vm.allOrders = [];
+
             function recursive(data) {
                 data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
@@ -3665,23 +3675,23 @@
                     fromDate = new Date();
                     toDate = new Date();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                    date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                    date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                    date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                    date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
@@ -3800,7 +3810,7 @@
             });
 
             OrderService.getOrdersP(obj1).then(function (result) {
-                 vm.allOrders = [];
+                vm.allOrders = [];
                 if (vm.scheduleState == 'UNREACHABLE') {
                     angular.forEach(vm.tree, function (node, index) {
                         insertData(node, result.orders);
@@ -3911,6 +3921,7 @@
             vm.orderFilters.reverse = !vm.orderFilters.reverse;
             vm.orderFilters.filter.sortBy = propertyName;
         };
+
         function parseDateForSearch(obj) {
             var fromDate;
             var toDate;
@@ -3984,10 +3995,9 @@
             vm.showSearchPanel = true;
             vm.orderFilter1 = {};
             vm.orderFilter1.fromDate = new Date();
-            vm.orderFilter1.fromTime = '00:00';
+            vm.orderFilter1.fromTime = moment().format("HH:mm");
             vm.orderFilter1.toDate = new Date();
-            vm.orderFilter1.toDate.setDate(vm.orderFilter1.toDate.getDate() + 1);
-            vm.orderFilter1.toTime = '00:00';
+            vm.orderFilter1.toTime = '24:00';
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -4739,6 +4749,7 @@
                 value.show = false;
             });
         };
+
         function recursiveSort(tree) {
             function recursive(data) {
                 data.folders = orderBy(data.folders, 'name');
@@ -4792,15 +4803,14 @@
                                 navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                             }
                         }
-                    }else if (event.eventType === "OrderAdded" && !event.eventId) {
+                    } else if (event.eventType === "OrderAdded" && !event.eventId) {
                         var path1 = event.path.substring(1, event.path.lastIndexOf('/')) || '/';
                         if (path1 == vm.folderPath) {
-                             navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
+                            navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                         }
                     }
 
                     if (vm.showLogPanel && event.eventType == "ReportingChangedOrder" && !event.eventId) {
-
                         var orders = {};
                         orders.orders = [];
                         orders.orders.push({
@@ -4889,6 +4899,7 @@
     }
 
     OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService"];
+
     function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService) {
         var vm = $scope;
 
@@ -5312,6 +5323,7 @@
     }
 
     OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];
+
     function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location, $filter) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -6047,7 +6059,7 @@
                 deleteOrder(orders, order, jobChain);
             }
         };
-       vm.showAssignedCalendar = function (order) {
+        vm.showAssignedCalendar = function (order) {
             var orders = {};
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.jobChain = order.jobChain;
@@ -6070,8 +6082,8 @@
             });
         };
 
-         vm.getPlan = function (calendarView, viewDate) {
-             var date ='';
+        vm.getPlan = function (calendarView, viewDate) {
+            var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
@@ -6080,7 +6092,7 @@
                     date = "+0y";
                 }
                 else {
-                    date = "+"+  viewDate.getFullYear() - new Date().getFullYear() +"y";
+                    date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
@@ -6090,9 +6102,9 @@
                 else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()){
+                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }else{
+                } else {
                     return;
                 }
             }
@@ -6126,9 +6138,9 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 states: ['PLANNED'],
                 orderId: order.orderId,
-                jobChain:order.jobChain,
+                jobChain: order.jobChain,
                 dateFrom: "+0M",
-	            dateTo: "+0M",
+                dateTo: "+0M",
                 timeZone: vm.userPreferences.zone
 
             }).then(function (res) {
@@ -6224,6 +6236,7 @@
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout",
         "JobService", "orderByFilter", "CoreService", "UserService", "YadeService"];
+
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout,
                          JobService, orderBy, CoreService, UserService, YadeService) {
         var vm = $scope;
@@ -6648,6 +6661,7 @@
             checkSharedYadeFilters();
         }
         vm.ignoreListConfigId = 0;
+
         function getIgnoreList() {
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
@@ -6679,6 +6693,7 @@
                 vm.init();
             });
         }
+
         getIgnoreList();
 
         /**--------------- sorting and pagination -------------------*/
@@ -6747,6 +6762,7 @@
         }
 
         vm.jobHistory = jobHistory;
+
         function jobHistory(filter) {
             if (!filter) {
                 if (!vm.jobHistoryFilterList) {
@@ -6770,15 +6786,15 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
 
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
-                }
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter["timeZone"];
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+            }
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
                 setDuration(vm.jobHistorys);
@@ -6791,6 +6807,7 @@
         }
 
         vm.orderHistory = orderHistory;
+
         function orderHistory(filter) {
             if (!vm.orderHistoryFilterList) {
                 checkSharedFilters();
@@ -6812,15 +6829,15 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
-                }
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter["timeZone"];
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+            }
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
                 setDuration(vm.historys);
@@ -6833,6 +6850,7 @@
         }
 
         vm.yadeHistory = yadeHistory;
+
         function yadeHistory(filter) {
             if (!vm.yadeHistoryFilterList) {
                 checkSharedYadeFilters();
@@ -6854,15 +6872,15 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
-                }
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter["timeZone"];
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+            }
             filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
                 vm.yadeHistorys = res.transfers;
@@ -6888,8 +6906,9 @@
                 }
             }
         };
-        function mergeHostAndProtocol(hosts, protocols ) {
-            var arr =[];
+
+        function mergeHostAndProtocol(hosts, protocols) {
+            var arr = [];
             if (protocols.length < hosts.length) {
                 angular.forEach(hosts, function (value, index) {
                     if (protocols.length > 0) {
@@ -6930,17 +6949,18 @@
                     }
 
                 })
-            }else {
+            } else {
                 angular.forEach(hosts, function (value, index) {
                     for (var x = 0; x < protocols.length; x++) {
                         arr.push({host: value, protocol: protocols[x]});
-                        protocols.splice(index,1);
+                        protocols.splice(index, 1);
                         break;
                     }
                 });
             }
             return arr;
         }
+
         vm.search = function (flag) {
             if (!flag)
                 vm.loading = true;
@@ -7018,7 +7038,7 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
+                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7130,7 +7150,7 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
+                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7175,29 +7195,29 @@
                 }
                 if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
                     var hosts = [];
-                    var protocols =[];
-                    if(vm.yadeSearch.sourceHost){
+                    var protocols = [];
+                    if (vm.yadeSearch.sourceHost) {
                         vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
                         hosts = vm.yadeSearch.sourceHost.split(',');
                     }
-                    if(vm.yadeSearch.sourceProtocol){
+                    if (vm.yadeSearch.sourceProtocol) {
                         vm.yadeSearch.sourceProtocol = vm.yadeSearch.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                         protocols = vm.yadeSearch.sourceProtocol.split(',');
                     }
-                    filter.sources = mergeHostAndProtocol(hosts,protocols);
+                    filter.sources = mergeHostAndProtocol(hosts, protocols);
                 }
                 if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
-                    var hosts =[];
-                    var protocols =[];
-                    if(vm.yadeSearch.targetHost){
+                    var hosts = [];
+                    var protocols = [];
+                    if (vm.yadeSearch.targetHost) {
                         vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
                         hosts = vm.yadeSearch.targetHost.split(',');
                     }
-                    if(vm.yadeSearch.targetProtocol){
+                    if (vm.yadeSearch.targetProtocol) {
                         vm.yadeSearch.targetProtocol = vm.yadeSearch.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                         protocols = vm.yadeSearch.targetProtocol.split(',');
                     }
-                    filter.targets = mergeHostAndProtocol(hosts,protocols);
+                    filter.targets = mergeHostAndProtocol(hosts, protocols);
                 }
 
                 if (vm.yadeSearch.date == 'process') {
@@ -7238,7 +7258,7 @@
                 }
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
+                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7271,22 +7291,19 @@
             vm.yadeSearch.date = 'date';
 
             vm.jobChainSearch.from = new Date();
-            vm.jobChainSearch.from.setDate(vm.jobChainSearch.from.getDate() - 1);
             vm.jobChainSearch.fromTime = '00:00';
             vm.jobChainSearch.to = new Date();
-            vm.jobChainSearch.toTime = '00:00';
+            vm.jobChainSearch.toTime =  moment().format("HH:mm");
 
             vm.jobSearch.from = new Date();
-            vm.jobSearch.from.setDate(vm.jobSearch.from.getDate() - 1);
             vm.jobSearch.fromTime = '00:00';
             vm.jobSearch.to = new Date();
-            vm.jobSearch.toTime = '00:00';
+            vm.jobSearch.toTime =  moment().format("HH:mm");
 
             vm.yadeSearch.from = new Date();
-            vm.yadeSearch.from.setDate(vm.yadeSearch.from.getDate() - 1);
             vm.yadeSearch.fromTime = '00:00';
             vm.yadeSearch.to = new Date();
-            vm.yadeSearch.toTime = '00:00';
+            vm.yadeSearch.toTime =  moment().format("HH:mm")
         };
         vm.cancel = function (form) {
             if (form)
@@ -7495,7 +7512,7 @@
             obj.transferIds = [];
             obj.transferIds.push(value.id);
             YadeService.getTransfers(obj).then(function (res) {
-                value = angular.merge(value,res.transfers[0]);
+                value = angular.merge(value, res.transfers[0]);
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -7503,7 +7520,10 @@
             value.show = true;
             var ids = [];
             ids.push(value.id);
-            YadeService.files({transferIds: ids,jobschedulerId:value.jobschedulerId || vm.schedulerIds.selected}).then(function (res) {
+            YadeService.files({
+                transferIds: ids,
+                jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
+            }).then(function (res) {
                 value.files = res.files
             })
         };
@@ -7542,6 +7562,7 @@
             $('#exportToExcelBtn').attr("disabled", false);
             isLoaded = true;
         };
+
         function isCustomizationSelected1(flag) {
             if (flag) {
                 vm.temp_filter1.historyStates = angular.copy(vm.order.filter.historyStates);
@@ -7757,15 +7778,15 @@
                     vm.yadeHistoryFilterList.push(configObj);
 
 
-                        if (vm.yadeHistoryFilterList.length == 1) {
-                            vm.savedHistoryFilter.selected = res.id;
-                            vm.yadeFilter.yade.selectedView = true;
-                            vm.selectedFiltered3 = vm.yadeFilter;
-                            vm.selectedFiltered3.account = vm.permission.user;
-                            vm.init();
-                            isCustomizationSelected3(true);
-                        }
-                        vm.historyFilterObj.yade = vm.savedHistoryFilter;
+                    if (vm.yadeHistoryFilterList.length == 1) {
+                        vm.savedHistoryFilter.selected = res.id;
+                        vm.yadeFilter.yade.selectedView = true;
+                        vm.selectedFiltered3 = vm.yadeFilter;
+                        vm.selectedFiltered3.account = vm.permission.user;
+                        vm.init();
+                        isCustomizationSelected3(true);
+                    }
+                    vm.historyFilterObj.yade = vm.savedHistoryFilter;
 
                     SavedFilter.setHistory(vm.historyFilterObj);
                     SavedFilter.save();
@@ -7811,7 +7832,7 @@
                 vm.object.orders = vm.orders;
                 vm.object.jobChains = vm.jobChains;
                 vm.object.jobs = vm.jobs;
-                if(vm.historyFilters.type == 'yade'){
+                if (vm.historyFilters.type == 'yade') {
                     vm.yadeFilter = vm.historyFilter;
                 }
             });
@@ -7867,7 +7888,7 @@
                     configObj.shared = vm.yadeFilter.shared;
                     filter.shared = vm.yadeFilter.shared;
                     filter.name = vm.yadeFilter.name;
-                }else {
+                } else {
                     configObj.configurationItem = JSON.stringify(vm.historyFilter);
                     configObj.name = vm.historyFilter.name;
                     configObj.shared = vm.historyFilter.shared;
@@ -7959,7 +7980,7 @@
                 vm.yadeFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.yadeFilter.shared = filter.shared;
 
-                if (vm.yadeFilter.type == 'yade') {
+                if (vm.historyFilters.type == 'yade') {
                     vm.yadeFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
                 }
             });
@@ -8283,6 +8304,9 @@
                     types: ['ORDER']
                 }).then(function (res) {
                     vm.tree = res.folders;
+                    angular.forEach(vm.tree, function (value) {
+                        value.expanded = true;
+                    });
                 }, function (err) {
                     $('#treeModal').modal('hide');
                 });
@@ -8293,6 +8317,9 @@
                     types: ['JOB']
                 }).then(function (res) {
                     vm.tree = res.folders
+                    angular.forEach(vm.tree, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#treeModal').modal('hide');
                 });
@@ -8308,7 +8335,9 @@
                     types: ['ORDER']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
-
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function (err) {
                     $('#objectModal').modal('hide');
                 });
@@ -8319,6 +8348,9 @@
                     types: ['JOB']
                 }).then(function (res) {
                     vm.tree1 = res.folders;
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                    });
                 }, function () {
                     $('#objectModal').modal('hide');
                 });
@@ -8675,7 +8707,7 @@
             obj.transferIds = [];
             obj.transferIds.push(transfer.id);
             YadeService.getTransfers(obj).then(function (res) {
-                if(res.transfers && res.transfers.length>0) {
+                if (res.transfers && res.transfers.length > 0) {
                     transfer.states = res.transfers[0].states;
                     transfer.operations = res.transfers[0].operations;
                     transfer.hasIntervention = res.transfers[0].hasIntervention;
@@ -8688,6 +8720,7 @@
                 }
             });
         }
+
         function getFiles(value) {
             var ids = [];
             ids.push(value.id);
@@ -8721,7 +8754,7 @@
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                       delete filter["timeZone"];
+                        delete filter["timeZone"];
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                         filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -8755,7 +8788,7 @@
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                       delete filter["timeZone"];
+                        delete filter["timeZone"];
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                         filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -8771,7 +8804,7 @@
                         isLoaded = true;
                     });
                 }
-            }else if (vm.historyFilters.type == 'yade') {
+            } else if (vm.historyFilters.type == 'yade') {
 
                 filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
 
@@ -8788,7 +8821,7 @@
                 filter.limit = parseInt(vm.userPreferences.maxRecords);
                 filter.timeZone = vm.userPreferences.zone;
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
+                    delete filter["timeZone"];
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -8797,9 +8830,9 @@
                     filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                 }
                 filter.compact = true;
-                if(yadeSearch) {
+                if (yadeSearch) {
                     vm.search(true);
-                }else {
+                } else {
                     YadeService.getTransfers(filter).then(function (res) {
                         vm.yadeHistorys = res.transfers;
                         vm.isLoading = true;
@@ -8824,18 +8857,18 @@
                         break;
                     } else if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
                         if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
-                           updateHistoryAfterEvent();
+                            updateHistoryAfterEvent();
                             break;
-                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated' && vm.historyFilters.type == 'yade'){
-                            for(var x=0; x<vm.yadeHistorys.length;x++){
-                                if(vm.yadeHistorys[x].id ==vm.events[0].eventSnapshots[i].path ){
+                        } else if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated' && vm.historyFilters.type == 'yade') {
+                            for (var x = 0; x < vm.yadeHistorys.length; x++) {
+                                if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path) {
                                     getTransfer(vm.yadeHistorys[x]);
                                     break;
                                 }
                             }
-                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged'){
-                            for(var x=0; x<vm.yadeHistorys.length;x++){
-                                if(vm.yadeHistorys[x].id ==vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show ){
+                        } else if (vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged') {
+                            for (var x = 0; x < vm.yadeHistorys.length; x++) {
+                                if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show) {
                                     getFiles(vm.yadeHistorys[x]);
                                     break;
                                 }
@@ -8853,6 +8886,7 @@
                 }
             })
         }
+
         vm.$on('resetViewDate', function () {
             updateHistoryAfterEvent();
         });
@@ -8868,6 +8902,7 @@
     }
 
     LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$sce", "$timeout"];
+
     function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $sce, $timeout) {
         var vm = $scope;
         vm.isLoading = false;
@@ -8882,7 +8917,7 @@
             FileSaver.saveAs(data, 'history.log');
         };
 
-        function getParam( name ) {
+        function getParam(name) {
             var url = window.location.href;
             if (!url) url = location.href;
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -8939,10 +8974,10 @@
             vm.orderId = getParam("orderId");
             vm.loadOrderLog();
         }
-        else if(object && getParam("taskId")){
+        else if (object && getParam("taskId")) {
             vm.taskId = getParam("taskId");
             vm.loadJobLog();
-        }else{
+        } else {
             alert('Invalid URL');
         }
 

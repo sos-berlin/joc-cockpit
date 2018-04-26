@@ -607,10 +607,9 @@
             vm.showSearchPanel = true;
             vm.yadeSearch.date = 'date';
             vm.yadeSearch.from = new Date();
-            vm.yadeSearch.from.setDate(vm.yadeSearch.from.getDate() - 1);
             vm.yadeSearch.fromTime = '00:00';
             vm.yadeSearch.to = new Date();
-            vm.yadeSearch.toTime = '00:00';
+            vm.yadeSearch.toTime =  moment().format("HH:mm")
         };
 
         vm.cancel = function (form) {
@@ -737,6 +736,7 @@
         vm.advanceFilter = function () {
             vm.cancel();
             vm.action = 'add';
+            vm.isUnique = true;
             vm.yadeFilter = {};
             vm.yadeFilter.planned = 'today';
             var modalInstance = $uibModal.open({

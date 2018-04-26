@@ -391,20 +391,20 @@
             </button>
         </div>
         <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'agentJobExecutions'">
-           <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+           <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-           </div>
-            <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+           </button>
+            <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                 <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-            </div>
+            </button>
         </div>
          <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'events'">
-           <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedEventSearch()" ng-show="!showSearchPanel">
+           <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedEventSearch()" ng-show="!showSearchPanel">
                <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-           </div>
-            <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancelEventSearch()" ng-if="showSearchPanel">
+           </button>
+            <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancelEventSearch()" ng-if="showSearchPanel">
                 <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-            </div>
+            </button>
              <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="searchObj.filterString" style="width: 180px">
         </div>
     </div>

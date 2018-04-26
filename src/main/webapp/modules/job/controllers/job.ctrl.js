@@ -38,14 +38,14 @@
             if (!dest.nodes && sour.nodes) {
                 dest.nodes = sour.nodes;
                 if(nestedJobChain && dest.nodes) {
-                    for (var i = 0; i < dest.nodes.length; i++) {
+                    for (let i = 0; i < dest.nodes.length; i++) {
                         if (dest.nodes[i].jobChain)
                             dest.nestedJobChains = nestedJobChain;
                     }
                 }
             } else if (dest.nodes && sour.nodes) {
-                for (var i = 0; i < dest.nodes.length; i++) {
-                    for (var j = 0; j < sour.nodes.length; j++) {
+                for (let i = 0; i < dest.nodes.length; i++) {
+                    for (let j = 0; j < sour.nodes.length; j++) {
                         if (sour.nodes[j].job && (dest.nodes[i].name == sour.nodes[j].name) && (dest.nodes[i].job.path == sour.nodes[j].job.path)) {
                             sour.nodes[j].job.processClass = dest.nodes[i].job.processClass;
                             dest.nodes[i] = sour.nodes[j];
@@ -77,7 +77,6 @@
         else {
             vm.savedJobChainFilter.selected = undefined;
         }
-
 
         vm.expanding_property = {
             field: "name"
@@ -141,7 +140,6 @@
         }
 
         function getCustomizations() {
-
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.account = vm.permission.user;
@@ -201,7 +199,6 @@
         }
 
         function isCustomizationSelected(flag) {
-
             if (flag) {
                 vm.temp_filter.state = angular.copy(vm.jobChainFilters.filter.state);
                 vm.jobChainFilters.filter.state = '';
@@ -210,7 +207,6 @@
                     vm.jobChainFilters.filter.state = angular.copy(vm.temp_filter.state);
                 else
                     vm.jobChainFilters.filter.state = 'ALL';
-
             }
         }
 
@@ -234,7 +230,6 @@
                 folders: folders,
                 types: ['JOBCHAIN']
             }).then(function (res) {
-
                 if ($rootScope.expand_to) {
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
@@ -261,7 +256,6 @@
         });
 
         vm.treeHandler = function (data) {
-
             vm.reset();
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 != data.path)) {
@@ -272,14 +266,11 @@
             vm.allJobChains = [];
             vm.loading = true;
             expandFolderData(data);
-
-
         };
         vm.treeHandler1 = function (data) {
             if (data.expanded) {
                 data.folders = orderBy(data.folders, 'name');
             }
-
         };
         vm.expandNode = function (data) {
             vm.reset();
@@ -341,10 +332,8 @@
                 data.selected1 = true;
                 for (var j = 0; j < data.folders.length; j++) {
                     recursive(data.folders[j]);
-
                 }
             }
-
             recursive(data);
         }
 
@@ -358,7 +347,6 @@
             obj.folders = [
                 {folder: data.path, recursive: false}
             ];
-
             JobChainService.getJobChainsP(obj).then(function (result) {
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(result.jobChains, function (newValue, index) {
@@ -389,7 +377,6 @@
             obj.folders = [
                 {folder: data.path, recursive: false}
             ];
-
             JobChainService.getJobChainsP(obj).then(function (result) {
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(result.jobChains, function (newValue, index) {
@@ -411,6 +398,8 @@
             }, function () {
                 volatileFolderData1(data, obj);
             });
+
+
         }
 
         function volatileFolderData(data, obj) {
@@ -2360,7 +2349,9 @@
             }).then(function (res) {
 
                 vm.filterTree1 = res.folders;
-
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
             });
@@ -2416,12 +2407,13 @@
 
         function traverseToSelectedJobChain(data, jobChain) {
             function recursive(data) {
-                if (data.path == jobChain.path1)
+                if (data.path == jobChain.path1 && data.jobChains && data.jobChains.length>0) {
                     for (var index = 0; index < data.jobChains.length; index++) {
                         if (jobChain.path == data.jobChains[index].path) {
                             data.jobChains[index] = jobChain;
                         }
                     }
+                }
                 for (var i = 0; i < data.folders.length; i++) {
                     if (data.folders[i].path.match(jobChain.path1) || jobChain.path1.match(data.folders[i].path)) {
                         recursive(data.folders[i]);
@@ -2541,7 +2533,7 @@
         vm.showHistory = showHistory;
 
         function showHistory(jobChain) {
-            vm.showHistoryPanel = jobChain;
+            vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = false;
             var filter = {};
             filter.jobChain = jobChain.path;
@@ -2561,7 +2553,7 @@
         };
 
         vm.showAuditLogs = function (jobChain) {
-            vm.showHistoryPanel = jobChain;
+             vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -2574,7 +2566,6 @@
         vm.hideHistoryPanel = function () {
             vm.showHistoryPanel = '';
         };
-
 
         function recursiveTreeUpdate(scrTree, destTree) {
             if (scrTree && destTree)
@@ -2641,6 +2632,12 @@
                     }
                     if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "JOB" || vm.events[0].eventSnapshots[j].objectType == "ORDER") && loadFileBasedObj && !callTree) {
                         callTree = vm.events[0].eventSnapshots[j].path;
+                    }
+
+                    if(vm.showHistoryPanel && vm.events[0].eventSnapshots[j].eventType == "FileBasedRemoved" && vm.events[0].eventSnapshots[j].objectType == "JOBCHAIN"){
+                        if(vm.showHistoryPanel.path == vm.events[0].eventSnapshots[j].path){
+                            vm.showHistoryPanel = '';
+                        }
                     }
                 }
                 if (callTree) {
@@ -2733,6 +2730,7 @@
                             }
                         }
                     }
+
                 }
             }
 
@@ -3963,10 +3961,9 @@
             vm.isUnique = true;
             vm.showSearchPanel = true;
             vm.jobFilter.fromDate = new Date();
-            vm.jobFilter.fromTime = "00:00";
+            vm.jobFilter.fromTime =  moment().format("HH:mm")
             vm.jobFilter.toDate = new Date();
-            vm.jobFilter.toDate.setDate(vm.jobFilter.toDate.getDate() + 1);
-            vm.jobFilter.toTime = "00:00";
+            vm.jobFilter.toTime = "24:00";
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -4338,6 +4335,9 @@
                 types: ['JOB']
             }).then(function (res) {
                 vm.filterTree1 = res.folders
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                });
             }, function () {
                 $('#treeModal').modal('hide');
             });
@@ -5633,6 +5633,11 @@
                             }
                         } else {
                             navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
+                        }
+                        if(vm.showTaskPanel && value1.eventType == "FileBasedRemoved") {
+                            if (vm.showTaskPanel.path == value1.path) {
+                                vm.showTaskPanel = '';
+                            }
                         }
                     }
                     if (value1.eventType == "JobTaskQueueChanged" && vm.showTaskPanel) {

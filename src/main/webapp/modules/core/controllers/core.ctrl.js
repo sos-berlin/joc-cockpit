@@ -1411,18 +1411,14 @@
                                         $state.reload(vm.currentState);
                                     }
                                 });
-
-                                break;
-                            }
-                        }
-                        for (var j = 0; j < res.events.length; j++) {
-                            if (res.events[j].jobschedulerId != vm.schedulerIds.selected) {
+                            }else {
                                 vm.eventsRequest.push({
-                                    jobschedulerId: res.events[j].jobschedulerId,
-                                    eventId: res.events[j].eventId
+                                    jobschedulerId: res.events[i].jobschedulerId,
+                                    eventId: res.events[i].eventId
                                 });
                             }
                         }
+
                         vm.allEvents = res.events;
                         filterdEvents();
                     }
@@ -11953,6 +11949,10 @@
         }
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
+        $scope.$on('calendar-close', function (event) {
+            $uibModalInstance.close('ok');
+        });
+
         function submit() {
             if (!vm.calendar.create) {
                 CalendarService.calendarUsed({
@@ -11980,7 +11980,6 @@
                                 $rootScope.$broadcast('calendar-obj', {
                                     calendar: vm.calendar
                                 });
-                                $uibModalInstance.close('ok');
                             }, function () {
 
                             });
@@ -11989,14 +11988,12 @@
                         $rootScope.$broadcast('calendar-obj', {
                             calendar: vm.calendar
                         });
-                        $uibModalInstance.close('ok');
                     }
                 });
             } else {
                 $rootScope.$broadcast('calendar-obj', {
                     calendar: vm.calendar
                 });
-                $uibModalInstance.close('ok');
             }
         }
 
