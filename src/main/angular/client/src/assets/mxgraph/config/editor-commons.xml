@@ -1,0 +1,96 @@
+<mxEditor>
+	<ui>
+		<resource basename="./assets/mxgraph/resources/app"/>
+	</ui>
+	<mxDefaultPopupMenu as="popupHandler">
+		<add as="cut" action="cut" icon="./assets/mxgraph/images/cut.gif"/>
+		<add as="copy" action="copy" icon="./assets/mxgraph/images/copy.gif"/>
+		<add as="paste" action="paste" icon="./assets/mxgraph/images/paste.gif"/>
+		<hr/>
+		<add as="delete" action="delete" icon="./assets/mxgraph/images/delete.gif" if="cell"/>
+		<hr/>
+		<add as="shape" if="cell">
+			<add as="group" action="group" icon="./assets/mxgraph/images/group.gif" if="ncells"/>
+			<add as="ungroup" action="ungroup" icon="./assets/mxgraph/images/ungroup.gif" if="cell"/>
+			<hr/>
+			<add as="removeFromParent" action="removeFromParent" if="cell"/>
+			<hr/>
+			<add as="collapse" action="collapse" icon="./assets/mxgraph/images/collapse.gif" if="expandable"/>
+			<add as="expand" action="expand" icon="./assets/mxgraph/images/expand.gif" if="collapsable"/>
+			<hr/>
+			<add as="toFront" action="toFront" icon="./assets/mxgraph/images/tofront.gif" if="cell"/>
+			<add as="toBack" action="toBack" icon="./assets/mxgraph/images/toback.gif" if="cell"/>
+		</add>
+	</mxDefaultPopupMenu>
+	<include name="./assets/mxgraph/config/keyhandler-commons.xml"/>
+	<Array as="actions">
+		<add as="open"><![CDATA[
+			function (editor)
+			{
+				editor.open(mxUtils.prompt('Enter filename', 'workflow.xml'));
+			}
+		]]></add>
+		<add as="straightConnector"><![CDATA[
+			function (editor)
+			{
+				editor.graph.setCellStyle("straightEdge");
+			}
+		]]></add>
+		<add as="elbowConnector"><![CDATA[
+			function (editor)
+			{
+				editor.graph.setCellStyle("");
+			}
+		]]></add>
+		<add as="arrowConnector"><![CDATA[
+			function (editor)
+			{
+				editor.graph.setCellStyle("arrowEdge");
+			}
+		]]></add>
+		<add as="toggleOrientation"><![CDATA[
+			function (editor, cell)
+			{
+				editor.graph.toggleCellStyles(mxConstants.STYLE_HORIZONTAL, true);
+			}
+		]]></add>
+		<add as="toggleRounded"><![CDATA[
+			function (editor)
+			{
+				editor.graph.toggleCellStyles(mxConstants.STYLE_ROUNDED);
+			}
+		]]></add>
+		<add as="toggleShadow"><![CDATA[
+			function (editor)
+			{
+				editor.graph.toggleCellStyles(mxConstants.STYLE_SHADOW);
+			}
+		]]></add>
+		<add as="horizontalTree"><![CDATA[
+			function (editor, cell)
+			{
+				cell = cell || editor.graph.getSelectionCell();
+
+				if (cell == null)
+				{
+					cell = editor.graph.getDefaultParent();
+				}
+
+				editor.treeLayout(cell, true);
+			}
+		]]></add>
+		<add as="verticalTree"><![CDATA[
+			function (editor, cell)
+			{
+				cell = cell || editor.graph.getSelectionCell();
+
+				if (cell == null)
+				{
+					cell = editor.graph.getDefaultParent();
+				}
+
+				editor.treeLayout(cell, false);
+			}
+		]]></add>
+	</Array>
+</mxEditor>

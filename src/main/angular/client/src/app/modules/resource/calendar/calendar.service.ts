@@ -248,7 +248,8 @@ export class CalendarService {
       }
       let repetitions = data.dateEntity == 'DAILY' ? 'day' : data.dateEntity == 'WEEKLY' ? 'week' : data.dateEntity == 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
-        return 'Every ' + str + repetitions + ' starting with day ' + self.datePipe.transform(data.startingWith, dataFormat);
+let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
+        return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(formattedDate, dataFormat);
       } else {
         return 'Every ' + str + repetitions;
       }

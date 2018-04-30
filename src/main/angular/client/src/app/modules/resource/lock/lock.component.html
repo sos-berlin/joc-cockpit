@@ -266,13 +266,6 @@
               <span translate>message.noLocksFound</span>
             </div>
           </div>
-          <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': loading}">
-            <div class="backdrop"></div>
-            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-          </div>
-          <div *ngIf="!isLoading" class="text-center m-t-lg">
-            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-          </div>
         </div>
         <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
           message.noLocksFound
@@ -281,3 +274,4 @@
     </div>
   </div>
 </div>
+<div id="spinner" *ngIf="loading || !isLoading"><div></div></div>

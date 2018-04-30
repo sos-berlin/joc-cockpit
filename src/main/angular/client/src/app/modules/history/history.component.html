@@ -868,11 +868,7 @@
                 </div>
             </div>
         </div>
-        <div  *ngIf="!isLoading" class="text-center m-t-lg text-primary text" >
-          <div class="backdrop"></div>
-          <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-        </div>
     </div>
 </div>
-<div *ngIf="loading" class="loading-img1"></div>
 
+<div id="spinner" *ngIf="loading || !isLoading"><div></div></div>

@@ -295,13 +295,10 @@
                           <span translate>message.noProcessClassesFound</span>
                       </div>
                   </div>
-                  <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': loading}">
-                      <div class="backdrop" ></div>
-                      <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-                  </div>
                 </div>
                 <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
             </div>
         </div>
     </div>
 </div>
+<div id="spinner" *ngIf="loading || !isLoading"><div></div></div>

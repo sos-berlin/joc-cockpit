@@ -304,10 +304,7 @@
               </div>
             </div>
         </div>
-      <div class=" text-center m-t text-uppercase" *ngIf="plans.length==0 && isLoaded" translate>message.noDataFound
-        </div>
-        <div class="hide text-center m-t-lg" [ngClass]="{'show': !isLoaded}">
-            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-        </div>
+      <div class=" text-center m-t text-uppercase" *ngIf="plans.length==0 && isLoaded" translate>message.noDataFound</div>
     </div>
 </div>
+<div id="spinner" *ngIf="!isLoaded"><div></div></div>

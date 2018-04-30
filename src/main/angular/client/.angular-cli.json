@@ -46,7 +46,7 @@
         "../node_modules/moment/min/moment.min.js",
         "../node_modules/moment-timezone/builds/moment-timezone.min.js",
         "../node_modules/jstz/dist/jstz.min.js",
-        "assets/mxgraph/src/js/mxClient.js"
+        "../node_modules/mxgraph/javascript/mxClient.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

@@ -1,14 +1,14 @@
 .gridster {
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    padding-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  height: 100pc;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 gridster {
@@ -17,9 +17,6 @@ gridster {
 
 /* design by piyush starts */
 
-div.scroll-y.max-ht{
-    margin-right: -15px;
-}
 .small-gridster-panel{
      height: 142px !important;
 }

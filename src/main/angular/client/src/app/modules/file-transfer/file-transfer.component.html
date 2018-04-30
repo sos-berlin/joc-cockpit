@@ -407,8 +407,6 @@
                     <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((fileTransfers | filter: searchKey).length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-        <div *ngIf="!isLoading" class="text-center m-t-lg" >
-            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-        </div>
     </div>
 </div>
+<div id="spinner" *ngIf="!isLoading"><div></div></div>

@@ -152,7 +152,7 @@
   </div>
 </div>
 
-<div class="scroll-y max-ht2">
+<div>
     <div class="padding p-b-0">
         <div class="row">
             <div class="col-sm-12">
@@ -344,13 +344,6 @@
                             <span class="text-primary" translate>message.noCalendarFound</span>
                         </div>
                     </div>
-                    <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': loading}">
-                        <div class="backdrop"></div>
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-                    </div>
-                   <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': !isLoading}">
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-                    </div>
                      <div class="hide " [ngClass]="{'show': isLoading}">
                          <div class="row hide" *ngIf="showPanel" [ngClass]="{'show': pageView=='list'}">
                              <div class="col-md-12" [hidden]="loading">
@@ -447,3 +440,4 @@
         </div>
     </div>
 </div>
+<div id="spinner" *ngIf="loading || !isLoading"><div></div></div>

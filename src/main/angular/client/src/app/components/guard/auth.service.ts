@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AuthService {
 
-  props = ["accessTokenId", "currentUserData", "sessionTimeout","permissions", "permission", "scheduleIds"];
-  propsPrefix:string = '$SOS$';
-  rememberMe:boolean = false;
+  props = ["accessTokenId", "currentUserData", "sessionTimeout", "permissions", "permission", "scheduleIds"];
+  propsPrefix: string = '$SOS$';
+  rememberMe: boolean = false;
   scheduleIds;
   accessTokenId;
   currentUserData;
@@ -20,7 +20,6 @@ export class AuthService {
       self[this.props[i]] = this.load(this.props[i]);
     }
   }
-
 
   public save() {
     let self = this;
@@ -38,7 +37,6 @@ export class AuthService {
   public setPermissions = function (permissions) {
     this.permissions = JSON.stringify(permissions);
   };
-
 
   public setIds = function (scheduleIds) {
     this.scheduleIds = JSON.stringify(scheduleIds);
@@ -73,7 +71,7 @@ export class AuthService {
   }
 
   getPermission(id) {
-    if(this.permissions) {
+    if (this.permissions) {
       let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
       for (let i = 0; i < p.length; i++) {
         if (p[i].JobSchedulerMaster == id) {
@@ -84,7 +82,7 @@ export class AuthService {
   }
 
   savePermission(id) {
-    if(this.permissions) {
+    if (this.permissions) {
       let p = JSON.parse(this.permissions).SOSPermissionJocCockpitMaster;
       for (let i = 0; i < p.length; i++) {
         if (p[i].JobSchedulerMaster == id) {

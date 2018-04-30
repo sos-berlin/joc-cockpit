@@ -3390,7 +3390,14 @@ aside {
   left: auto;
   height: 100%
 }
-
+#leftSidePanel.sticky {
+  float: none;
+  position: fixed;
+  top: 90px;
+  z-index: 6;
+  left: auto;
+  height: 100%
+}
 #rightPanel, #rightPanel1, .m-l-290 {
   margin-left: 290px
 }
@@ -3578,16 +3585,19 @@ table.folder-tree-grid > tbody > tr > td {
 #toolbar{
   width: 40px;
   box-shadow: 0 0 4px #bbb;
-  padding: 10px 8px;
+  padding: 10px;
   position: absolute;
-  margin-top: 40px;
+
 }
 #toolbar img{
-  width: 22px;
+  width: 18px;
 }
+#toolbar hr {
+  margin: 10px 0 !important;
+}
+
 #graph {
   position: relative;
-  height: 580px;
   overflow: hidden;
   margin-left: 54px;
   cursor: default;

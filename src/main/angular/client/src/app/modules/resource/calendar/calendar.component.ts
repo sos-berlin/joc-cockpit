@@ -15,9 +15,9 @@ import {CommentModal} from '../../../components/comment-modal/comment.component'
 import {TreeModal} from '../../../components/tree-modal/tree.component';
 import {CalendarService} from './calendar.service';
 import {saveAs} from 'file-saver/FileSaver';
+import {TreeComponent} from "../../../components/tree-navigation/tree.component";
 import * as _ from 'underscore';
 import * as moment from 'moment';
-import {TreeComponent} from "../../../components/tree-navigation/tree.component";
 
 declare var $;
 declare var Holidays;
@@ -323,6 +323,13 @@ export class FrequencyModal implements OnInit, OnDestroy {
         }
       });
     }
+  this.setEditorEnable();
+  }
+
+  setEditorEnable(){
+    if(this.frequency.days && this.frequency.days.length > 0){
+      this.editor.isEnable = true;
+    }
   }
 
   ngOnDestroy() {
@@ -386,6 +393,14 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (this.frequencyList[i].endOn)
         this.frequency.endOn = moment(this.frequencyList[i].endOn).format(this.dateFormatM);
     }
+    //
+    if (this.frequencyList[i].tab == 'specificWeekDays') {
+      if (this.frequencyList[i].startingWithS)
+        this.frequency.startingWithS = moment(this.frequencyList[i].startingWithS).format(this.dateFormatM);
+      if (this.frequencyList[i].endOnS)
+        this.frequency.endOnS = moment(this.frequencyList[i].endOnS).format(this.dateFormatM);
+    }
+    //
   }
 
   generateFrequencyObj() {
@@ -409,11 +424,11 @@ export class FrequencyModal implements OnInit, OnDestroy {
         } else if (this.frequency.tab == 'specificDays') {
           this.str = 'label.specificDays';
         } else if (this.frequency.tab == 'weekDays') {
-          this.str = 'tab.weekDays';
+          this.str = 'label.weekDays';
         } else if (this.frequency.tab == 'every') {
-          this.str = 'tab.every';
+          this.str = 'label.every';
         } else if (this.frequency.tab == 'nationalHoliday') {
-          this.str = 'tab.nationalHoliday';
+          this.str = 'label.nationalHoliday';
         }
       }
 
@@ -911,9 +926,23 @@ export class FrequencyModal implements OnInit, OnDestroy {
           color: '#eb8814'
         });
       });
-      $('#full-calendar').data('calendar').setDataSource(this.planItems);
-      this.tempList = _.clone(this.planItems);
+      if($('#full-calendar') && $('#full-calendar').data('calendar')) {
 
+      }else {
+        $('#full-calendar').calendar({
+          clickDay: function (e) {
+            self.checkDate(e.date);
+          },
+          renderEnd: function (e) {
+            self.calendarTitle = e.currentYear;
+            if (self.isCalendarDisplay) {
+              self.changeDate();
+            }
+          }
+        });
+      }
+      this.tempList = _.clone(this.planItems);
+      $('#full-calendar').data('calendar').setDataSource(this.planItems);
 
       this.isCalendarLoading = false;
       setTimeout(() => {
@@ -956,10 +985,35 @@ export class FrequencyModal implements OnInit, OnDestroy {
   }
 
   addFrequency() {
-
     let self = this;
     this.countryField = false;
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+
+    this.setEditorEnable();
+    if(this.frequency.startingWith){
+      this.frequency.startingWith = this.coreService.toMomentDateFormat(this.frequency.startingWith);
+    }
+    if(this.frequency.startingWithW){
+      this.frequency.startingWithW = this.coreService.toMomentDateFormat(this.frequency.startingWithW);
+    }
+    if(this.frequency.startingWithM){
+      this.frequency.startingWithM = this.coreService.toMomentDateFormat(this.frequency.startingWithM);
+    }
+    if(this.frequency.startingWithS){
+      this.frequency.startingWithS = this.coreService.toMomentDateFormat(this.frequency.startingWithS);
+    }
+    if(this.frequency.endOn){
+      this.frequency.endOn = this.coreService.toMomentDateFormat(this.frequency.endOn);
+    }
+    if(this.frequency.endOnW){
+      this.frequency.endOnW = this.coreService.toMomentDateFormat(this.frequency.endOnW);
+    }
+    if(this.frequency.endOnM){
+      this.frequency.endOnM = this.coreService.toMomentDateFormat(this.frequency.endOnM);
+    }
+    if(this.frequency.endOnS){
+      this.frequency.endOnS = this.coreService.toMomentDateFormat(this.frequency.endOnS);
+    }
 
     let flag = false;
     if (this.isRuntimeEdit) {
@@ -1248,6 +1302,41 @@ export class FrequencyModal implements OnInit, OnDestroy {
     let self = this;
     this._temp = _.clone(data);
     this.frequency = _.clone(data);
+
+    if (data.tab == "weekDays") {
+      this.frequency = _.clone(data);
+      let StartDate = moment(data.startingWithW).format('YYYY-MM-DD');
+      let endDate = moment(data.endOnW).format('YYYY-MM-DD');
+      let startingWithW = _.clone(StartDate.split("-").reverse().join("."));
+      let endOnW = _.clone(endDate.split("-").reverse().join("."));
+      this.frequency.startingWithW = startingWithW;
+      this.frequency.endOnW = endOnW;
+    } else if (data.tab == "every") {
+      this.frequency = _.clone(data);
+      let StartDate = moment(data.startingWith).format('YYYY-MM-DD');
+      let endDate = moment(data.endOn).format('YYYY-MM-DD');
+      let startingWith = _.clone(StartDate.split("-").reverse().join("."));
+      let endOn = _.clone(endDate.split("-").reverse().join("."));
+      this.frequency.startingWith = startingWith;
+      this.frequency.endOn = endOn;
+    }else if (data.tab == "specificWeekDays") {
+      this.frequency = _.clone(data);
+      let StartDate = moment(data.startingWithS).format('YYYY-MM-DD');
+      let endDate = moment(data.endOnS).format('YYYY-MM-DD');
+      let startingWithS = _.clone(StartDate.split("-").reverse().join("."));
+      let endOnS = _.clone(endDate.split("-").reverse().join("."));
+      this.frequency.startingWithS = startingWithS;
+      this.frequency.endOnS = endOnS;
+    }else if (data.tab == "monthDays") {
+      this.frequency = _.clone(data);
+      let StartDate = moment(data.startingWithM).format('YYYY-MM-DD');
+      let endDate = moment(data.endOnM).format('YYYY-MM-DD');
+      let startingWithM = _.clone(StartDate.split("-").reverse().join("."));
+      let endOnM = _.clone(endDate.split("-").reverse().join("."));
+      this.frequency.startingWithM = startingWithM;
+      this.frequency.endOnM = endOnM;
+    }
+
     if (this.frequency.tab == 'nationalHoliday') {
       this.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
       this.holidayList = [];
@@ -1565,11 +1654,12 @@ export class CalendarModal implements OnInit {
           if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
             monthday.weeklyDays.forEach(function (day) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", monthday, null);
+              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", monthday, 'months');
             });
           } else {
             obj = {};
             self.iterateData(obj, monthday, null, "monthDays", "INCLUDE", null, 'months');
+
           }
         });
       }
@@ -1579,7 +1669,7 @@ export class CalendarModal implements OnInit {
           if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
             ultimos.weeklyDays.forEach(function (day) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", ultimos, null);
+              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", ultimos, 'ultimos');
 
             });
           } else {
@@ -1667,7 +1757,7 @@ export class CalendarModal implements OnInit {
           if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
             monthday.weeklyDays.forEach(function (day) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", null, null);
+              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", null, 'months');
             });
           } else {
             obj = {};
@@ -1681,8 +1771,7 @@ export class CalendarModal implements OnInit {
           if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
             ultimos.weeklyDays.forEach(function (day) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", ultimos, null);
-
+              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", ultimos, 'ultimos');
             });
           } else {
             obj = {};
@@ -1866,9 +1955,12 @@ export class CalendarModal implements OnInit {
       obj.all = data.days.length == 7;
     }
     else if (tab === "specificWeekDays") {
-
       obj.specificWeekDay = this.calendarService.getStringDay(data.day);
-      obj.which = -data.weekOfMonth;
+      if(isUltimos === 'months'){
+         obj.which = data.weekOfMonth;
+      }else {
+        obj.which = -data.weekOfMonth;
+      }
       obj.startingWithS = monthday.from;
       obj.endOnS = monthday.to;
     } else if (tab === "specificDays") {

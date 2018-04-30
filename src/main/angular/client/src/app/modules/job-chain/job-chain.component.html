@@ -1,56 +1,164 @@
-<div class="scroll-y">
+<div>
   <div class="padding p-b-0">
-    <div style="display: inline-block;width: 100%" [hidden]="isLoading">
+    <div class="inline w-full" [hidden]="isLoading">
         <div class="hide-block sidebar-btn resize-cursor">
           <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
         </div>
-        <div id="lefSidePanel" class="leftPanel">
+        <div id="leftSidePanel" class="leftPanel">
           <div *ngIf="tree.length>0">
-            <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
+              <input type="search" class="form-control" placeholder="Search" style="width: 90%">
+              <div class="tree-block">
+                <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" [options]="options" (toggleExpanded)="toggleExpanded($event)">
+                  <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+                    <div class="node-wrapper">
+                      <span *ngIf="node.hasChildren"
+                            [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                            [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                            (click)="node.mouseAction('expanderClick', $event)" class="w-16 cursor">
+                        <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg"></span>
+                        <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg"></span>
+                      </span>
+                      <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-16 m-t-xs"></span>
+                      <div class="node-content-wrapper"
+                           [class.node-content-wrapper-active]="node.data.isSelected"
+                           (click)="node.mouseAction('click', $event)">
+                        <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-16"></i>
+                        <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-16"></i>
+                        <tree-node-content [node]="node" [index]="index"></tree-node-content>
+                      </div>
+                    </div>
+                  </ng-template>
+                </tree-root>
+              </div>
+              <div class="rg-right"><span></span></div>
           </div>
         </div>
         <div id="centerPanel" class="centerPanel">
           <div class="row m-t-sm">
             <div class="col-md-9">
-              <div>
-                <div id="page" style="width: 100%">
-                  <div >
-                    <div class="pull-right">
-                      <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
-                    </div>
-                    <div id="mainActions" class="pull-right"></div>
-<!--                    <div class="pull-right m-r m-t-xs">
-                        <label class="md-check">
-                          <input id="source" type="checkbox"/> Show Xml
-                        <i class="primary"></i>
-                    </label>
-                    </div>-->
-                    <div id="zoomActions"></div>
-                  </div>
-                  <div class="m-t-sm p-t b-t">
-                    <div id="toolbar"></div>
-                    <div id="graph"></div>
+              <div >
+                <div class="row">
+                  <div class="col-md-12">
+                      <div class="pull-right">
+                        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+                      </div>
+                      <div id="mainActions" class="pull-right" [hidden]="view !== 'grid'"></div>
+                      <div id="zoomActions" [hidden]="view !== 'grid'"></div>
                   </div>
                 </div>
-              </div>
-              <div class="b-a" style="height: 200px">
-              //TODO
+                <div class="m-t-sm p-t b-t" >
+                  <div [hidden]="view !== 'grid'">
+                    <div id="toolbar"></div>
+                    <div id="graph" style="height: 80vh"></div>
+                  </div>
+                  <div [hidden]="view === 'grid'">
+                    <div class="box p-a" style="height: 80vh">
+                      <div class="table-responsive">
+                        <table class="table table-hover table-bordered" >
+                          <thead>
+                          <tr>
+                            <th width="30">
+                              <label class="md-check lg-check">
+                                <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
+                              </label>
+                            </th>
+                            <th><span translate>label.job</span></th>
+                            <th><span translate>label.path</span></th>
+                          </tr>
+                          </thead>
+                          <tbody *ngFor="let workflow of workFlows">
+                          <tr >
+                            <td>
+                              <label class="md-check">
+                                <input type="checkbox" [(checklist)]="object.workflows" [checklistValue]="workflow" (change)="checkMainCheckbox()">
+                                <i class="primary"></i>
+                              </label>
+                            </td>
+                            <td>
+                              {{workflow.job}}
+                            </td>
+                            <td>
+                              {{workflow.path}}
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-3">
-                <div class="b-a" style="height: 500px">
-                //TODO
+              <div class="box">
+                <div class="box-header b-b p-t-sm p-b-sm">
+                  <h3 translate>Properties</h3>
                 </div>
-                <div class="b-a m-t" style="height: 335px">
-                //TODO
+                <div class="box-tool" style="top: 7px;">
+                  <i class="fa fa-close"></i>
                 </div>
+                <div class="box-body">
+                  <div id="properties"></div>
+<!--                  <div class="form-group m-b-sm row">
+                    <label class="col-md-4 form-control-label" translate>label.jobName</label>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" placeholder="Enter Job Name" name="regex">
+                    </div>
+                  </div>
+                  <div class="form-group m-b-sm row">
+                    <label class="col-md-4 form-control-label" translate>label.title</label>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" placeholder="Enter Job Title" name="regex">
+                    </div>
+                  </div>
+                  <div class="form-group m-b-sm row">
+                    <label class="col-md-4 form-control-label" translate>label.processClass</label>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" placeholder="Enter Process Class" name="regex">
+                    </div>
+                  </div>
+                  <div class="form-group m-b-sm row">
+                    <label class="col-md-4 form-control-label" translate>label.language</label>
+                    <div class="col-md-8">
+                      <select class="form-control">
+                        <option selected value="">Shell</option>
+                        <option value="">Java</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group m-b-sm row">
+                    <label class="col-md-4 form-control-label" translate>Script</label>
+                    <div class="col-md-8">
+                      <textarea rows="10" class="form-control" name="regex"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group m-t m-b-xs">
+                    <button type="button" class="btn btn-primary btn-sm" translate>
+                      button.save
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" translate>
+                      button.cancel
+                    </button>
+                  </div>-->
+                </div>
+              </div>
+              <div class="m-t">
+                <div class="box">
+                  <div class="box-header b-b p-t-sm p-b-sm">
+                    <h3 translate>Source</h3>
+                  </div>
+                  <div class="box-tool" style="top: 7px;">
+                    <i class="fa fa-close"></i>
+                  </div>
+                  <div class="box-body" style="max-height: 500px; overflow: auto">
+                    <pre>{{json | json}}</pre>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    <div class="hide text-center m-t-lg text-primary text" [ngClass]="{'show': isLoading}">
-      <div class="backdrop"></div>
-      <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-    </div>
   </div>
 </div>
+<div id="spinner" *ngIf="isLoading"><div></div></div>

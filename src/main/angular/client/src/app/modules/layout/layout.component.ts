@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 import { AuthService } from '../../components/guard/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
-import {ActivatedRoute, Router,RouterEvent} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from "ng2-translate";
 import {ToasterService} from "angular2-toaster";
 
@@ -109,19 +109,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight() {
-    if (window.innerHeight > 450 && window.innerWidth > 740) {
-      let headerHt = $('.app-header').height() || 60;
-      let topHeaderHt = $('.top-header-bar').height() || 16;
-      let subHeaderHt = 59;
-      let ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
-      $('.max-ht').css('height', ht + 'px');
-      $('.max-ht2').css('height', ht - 42 + 'px');
-      $('.max-tree-ht').css('height', ht - 43 + 'px');
-    } else {
-      $('.max-ht').css('height', 'auto');
-      $('.max-ht2').css('height', 'auto');
-      $('.max-tree-ht').css('height', 'auto');
-    }
+    let headerHt = $('.fixed-top').height() || 70;
+    $('.app-body').css('margin-top', headerHt + 'px');
   }
 
   static checkNavHeader() {
