@@ -36,48 +36,44 @@
 //-->
 <html lang="en">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta charset="utf-8"/>
-    <title>JobScheduler</title>
-    <base href="/"/>
-    <meta name="description" content="opensource, scheduler, sos-berlin, jobscheduler, Joc"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta charset="utf-8"/>
+  <title>JobScheduler</title>
+  <base href="/"/>
+  <meta name="description" content="opensource, scheduler, sos-berlin, jobscheduler, Joc"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 <body>
 <app-root>
-    <div id="spinner">
-        <div></div>
-    </div>
+  <div id="spinner">
+    <div></div>
+  </div>
 </app-root>
 <link rel="stylesheet" href="./styles/light-style.css" type="text/css" id="style-color"/>
 
 <script>
-(function() {
+  var mxBasePath = './assets/mxgraph';
+  (function () {
+    if (!sessionStorage.length) {
+      // Ask other tabs for session storage
+      localStorage.setItem('getSessionStorage', Date.now());
+    }
+    window.addEventListener('storage', function (event) {
+      console.log('storage event', event);
+      if (event.key === 'getSessionStorage') {
+        // Some tab asked for the sessionStorage -> send it
+        localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
+        localStorage.removeItem('sessionStorage');
+      } else if (event.key === 'sessionStorage' && !sessionStorage.length) {
+        // sessionStorage is empty -> fill it
+        var data = JSON.parse(event.newValue);
+        for (var key in data) {
+          sessionStorage.setItem(key, data[key]);
+        }
+      }
+    });
 
-				if (!sessionStorage.length) {
-					// Ask other tabs for session storage
-					localStorage.setItem('getSessionStorage', Date.now());
-				}
-
-				window.addEventListener('storage', function(event) {
-					console.log('storage event', event);
-					if (event.key == 'getSessionStorage') {
-						// Some tab asked for the sessionStorage -> send it
-						localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
-						localStorage.removeItem('sessionStorage');
-
-					} else if (event.key == 'sessionStorage' && !sessionStorage.length) {
-						// sessionStorage is empty -> fill it
-						var data = JSON.parse(event.newValue);
-						for (var key in data) {
-						  console.log(key)
-							sessionStorage.setItem(key, data[key]);
-						}
-					}
-				});
-
-			})();
-
+  })();
 </script>
 </body>
 </html>

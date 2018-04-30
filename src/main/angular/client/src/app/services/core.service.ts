@@ -4,6 +4,8 @@ import {AuthService} from "../components/guard/auth.service";
 import * as _ from 'underscore';
 import {AboutModal} from "../components/about-modal/about.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import * as moment from 'moment';
+
 
 declare var $;
 
@@ -859,6 +861,12 @@ export class CoreService {
         console.log('close...', reason)
       });
     });
+  }
+
+ //To convert date string into moment date format 
+  toMomentDateFormat(date){
+    let formattedDate = moment(date, 'DD.MM.YYYY');
+    return formattedDate;
   }
 
 }
