@@ -4,19 +4,23 @@
     <list default="true" id="7fdcebdb-4304-4229-b854-90d5910cd44b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/template/edit-ignorelist-dialog.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/template/edit-ignorelist-dialog.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/template/assign-calendar-dialog.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/template/assign-calendar-dialog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/template/order-list-dialog.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/template/order-list-dialog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/core/views/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/core/views/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain-info.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain-info.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-info.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-info.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/views/job.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/job/views/jobs-overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/job/views/jobs-overview.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/daily-plan.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/daily-plan.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource-calendars.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource-calendars.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/user/controllers/user.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/user/controllers/user.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/user/views/audit-log.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/user/views/audit-log.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/yade/controllers/yade.ctrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/yade/controllers/yade.ctrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/yade/views/file-transfers.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/yade/views/file-transfers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-orders.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-overview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/order-info.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/order-info.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/order.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/order.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/order/views/orders-overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/order/views/orders-overview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.service.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.service.js" afterDir="false" />
     </list>
     <ignored path="joc-cockpit.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,11 +41,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="core.ctrl.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="core.ctrl.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="10845" column="37" lean-forward="true" selection-start-line="10845" selection-start-column="37" selection-end-line="10845" selection-end-column="37" />
+            <state relative-caret-position="49">
+              <caret line="1388" column="57" lean-forward="true" selection-start-line="1388" selection-start-column="57" selection-end-line="1388" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="router.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/router.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="168">
+              <caret line="250" column="39" lean-forward="true" selection-start-line="250" selection-start-column="39" selection-end-line="250" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="user.service.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/services/user.service.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="424">
+              <caret line="233" column="78" selection-start-line="233" selection-start-column="78" selection-end-line="233" selection-end-column="78" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="user.auth.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="31" column="44" selection-start-line="31" selection-start-column="44" selection-end-line="31" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="header.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/views/header.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="404">
+              <caret line="251" column="75" selection-start-line="251" selection-start-column="75" selection-end-line="251" selection-end-column="101" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resource.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-50">
+              <caret line="334" column="81" selection-start-line="334" selection-start-column="55" selection-end-line="334" selection-end-column="81" />
             </state>
           </provider>
         </entry>
@@ -49,8 +98,8 @@
       <file leaf-file-name="jobscheduler.ctrl.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="7199" column="19" selection-start-line="7199" selection-start-column="19" selection-end-line="7199" selection-end-column="19" />
+            <state relative-caret-position="289">
+              <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
               <folding>
                 <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
@@ -65,24 +114,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>transfer</find>
-      <find>noAgentTaskFound</find>
-      <find>calendar</find>
-      <find>showNodePanelFuc</find>
-      <find>showHistoryPanel</find>
-      <find>vm.showHistoryPanel</find>
-      <find>showLogPanel</find>
-      <find>$scope.$on('event-started'</find>
-      <find>'event-started'</find>
-      <find>.tree</find>
-      <find>console.l</find>
       <find>advanceSearc</find>
       <find>advance</find>
       <find>advancedSearc</find>
       <find>advancedSearch</find>
       <find>.tree(</find>
       <find>toTime</find>
-      <find>.toTime</find>
       <find>.toTime</find>
       <find>'calendar-obj'</find>
       <find>store</find>
@@ -91,6 +128,22 @@
       <find>console.log</find>
       <find>console</find>
       <find>console.lo</find>
+      <find>YADE</find>
+      <find>:permission.YADE</find>
+      <find>permission.YADE.view</find>
+      <find>permission.YADE</find>
+      <find>permission.</find>
+      <find>transfers</find>
+      <find>showAssignedCalendar</find>
+      <find>showAss</find>
+      <find>.showAssignedCalendar</find>
+      <find>tree</find>
+      <find>navigateToResource</find>
+      <find>console.log(</find>
+      <find>app.resources.calendars</find>
+      <find>event</find>
+      <find>events</find>
+      <find>logout</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -103,16 +156,31 @@
         <option value="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/dashboard.html" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/core/directives/core.directive.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/yade/views/file-transfers.html" />
-        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html" />
-        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/user/views/audit-log.html" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/user/controllers/user.ctrl.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/yade/controllers/yade.ctrl.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/core/views/header.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/order.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/order-info.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/orders-overview.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-overview.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-orders.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain-info.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/job-info.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/job.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/job/views/jobs-overview.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/core/template/order-list-dialog.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/core/template/assign-calendar-dialog.html" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource-calendars.html" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.service.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js" />
       </list>
     </option>
   </component>
@@ -146,9 +214,9 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="65" />
-    <option name="y" value="24" />
-    <option name="width" value="1855" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
@@ -156,6 +224,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -215,26 +284,7 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="webapp" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="job" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="job" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="job" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -264,35 +314,6 @@
               <item name="webapp" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="jobscheduler" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -303,16 +324,6 @@
               <item name="webapp" type="462c0819:PsiDirectoryNode" />
               <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="user" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="user" type="462c0819:PsiDirectoryNode" />
-              <item name="controllers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
@@ -324,21 +335,10 @@
               <item name="user" type="462c0819:PsiDirectoryNode" />
               <item name="services" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="joc-cockpit" type="b2602c69:ProjectViewProjectNode" />
-              <item name="joc-cockpit" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="user" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -389,7 +389,7 @@
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="TypeScript Compiler" order="18" weight="0.32976446" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -397,11 +397,11 @@
       <window_info anchor="bottom" id="Inspection Results" order="1" weight="0.32946146" />
       <window_info anchor="bottom" id="Grunt" order="10" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.3993576" />
-      <window_info anchor="bottom" id="Messages" order="12" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Changes" order="7" weight="0.17273673" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Application Servers" order="11" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Messages" order="12" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -416,20 +416,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19295">
-          <caret line="1135" selection-start-line="1135" selection-end-line="1135" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/directives/core.directive.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="40" column="75" selection-start-line="40" selection-start-column="75" selection-end-line="40" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/set-run-time-dialog.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2312">
@@ -480,19 +466,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/set-run-time-dialog.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/set-run-time-dialog.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2312">
           <caret line="136" column="40" selection-start-line="136" selection-start-column="40" selection-end-line="136" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/dashboard.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="63" column="82" selection-start-line="63" selection-start-column="82" selection-end-line="63" selection-end-column="82" />
         </state>
       </provider>
     </entry>
@@ -500,16 +476,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="680">
           <caret line="40" column="75" selection-start-line="40" selection-start-column="75" selection-end-line="40" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2941">
-          <caret line="173" column="59" selection-start-line="173" selection-start-column="59" selection-end-line="173" selection-end-column="59" />
-          <folding>
-            <element signature="n#style#0;n#iframe#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -532,49 +498,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
-          <caret line="1336" column="67" selection-start-line="1336" selection-start-column="67" selection-end-line="1336" selection-end-column="67" />
-          <folding>
-            <element signature="n#div#0;n#!!top" />
-            <element signature="n#div#1;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#div#0;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#div#1;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#div#0;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#td#1;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#div#1;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#tr#1;n#tbody#0;n#table#0;n#div#0;n#div#1;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#ul#0;n#div#0;n#div#1;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#div#1;n#div#0;n#div#1;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#div#2;n#!!top" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/order.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="817" column="63" selection-start-line="817" selection-start-column="51" selection-end-line="817" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource-calendars.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1032">
-          <caret line="1102" column="57" selection-start-line="1102" selection-start-column="48" selection-end-line="1102" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/yade/views/file-transfers.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="125" column="23" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/views/audit-log.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -589,74 +512,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="607">
-          <caret line="404" column="19" selection-start-line="404" selection-start-column="19" selection-end-line="404" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="333" column="101" selection-start-line="333" selection-start-column="87" selection-end-line="333" selection-end-column="101" />
-          <folding>
-            <element signature="n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#tr#0;n#tbody#0;n#table#0;n#div#0;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#tr#1;n#tbody#0;n#table#0;n#div#0;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-            <element signature="n#tr#2;n#tbody#0;n#table#0;n#div#0;n#div#2;n#div#2;n#div#0;n#div#1;n#!!top" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/controllers/job.ctrl.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
           <caret line="3913" column="62" selection-start-line="3913" selection-start-column="55" selection-end-line="3913" selection-end-column="62" />
-          <folding>
-            <element signature="e#1401#3135#0" />
-            <element signature="e#5877#8416#0" />
-            <element signature="e#8465#8891#0" />
-            <element signature="e#8990#10485#0" />
-            <element signature="e#16501#21716#0" />
-            <element signature="e#107937#108387#0" />
-            <element signature="e#108441#110401#0" />
-            <element signature="e#222130#225064#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="3999" column="35" selection-start-line="3999" selection-start-column="27" selection-end-line="3999" selection-end-column="35" />
-          <folding>
-            <element signature="e#787#6960#0" />
-            <element signature="e#7465#88623#0" />
-            <element signature="e#89048#119056#0" />
-            <element signature="e#151232#154581#0" />
-            <element signature="e#164275#166117#0" />
-            <element signature="e#166157#166523#0" />
-            <element signature="e#166595#168598#0" />
-            <element signature="e#168643#170325#0" />
-            <element signature="e#170372#171651#0" />
-            <element signature="e#171700#172279#0" />
-            <element signature="e#172326#172568#0" />
-            <element signature="e#172611#172880#0" />
-            <element signature="e#173516#174505#0" />
-            <element signature="e#176125#179358#0" />
-            <element signature="e#179401#181327#0" />
-            <element signature="e#181369#183291#0" />
-            <element signature="e#183332#185253#0" />
-            <element signature="e#185294#187226#0" />
-            <element signature="e#187263#187524#0" />
-            <element signature="e#187566#187830#0" />
-            <element signature="e#187889#188671#0" />
-            <element signature="e#188735#189529#0" />
-            <element signature="e#189571#190472#0" />
-            <element signature="e#364273#369923#0" />
-            <element signature="e#372775#375823#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -674,10 +533,196 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="72" column="88" selection-start-line="72" selection-start-column="88" selection-end-line="72" selection-end-column="88" />
+          <folding>
+            <element signature="n#style#0;n#iframe#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/yade/views/file-transfers.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
-          <caret line="7199" column="19" selection-start-line="7199" selection-start-column="19" selection-end-line="7199" selection-end-column="19" />
+          <caret line="102" column="71" selection-start-line="102" selection-start-column="55" selection-end-line="102" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/yade/views/transfer-overview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="32" column="72" lean-forward="true" selection-start-line="32" selection-start-column="72" selection-end-line="32" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/yade/views/pie-chart.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/dashboard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="614">
+          <caret line="46" selection-start-line="46" selection-end-line="47" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/history.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="324" column="75" selection-start-line="324" selection-start-column="75" selection-end-line="324" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/controllers/order.ctrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="4131" column="50" selection-start-line="4131" selection-start-column="50" selection-end-line="4131" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/order.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="660" column="141" selection-start-line="660" selection-start-column="141" selection-end-line="660" selection-end-column="141" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/order-info.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="87" column="87" selection-start-line="87" selection-start-column="67" selection-end-line="87" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-details.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="3" column="33" lean-forward="true" selection-start-line="3" selection-start-column="33" selection-end-line="3" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="1108" column="157" selection-start-line="1108" selection-start-column="157" selection-end-line="1108" selection-end-column="157" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/job-chain-info.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="654" column="153" selection-start-line="654" selection-start-column="153" selection-end-line="654" selection-end-column="153" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/job-info.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="80" column="104" selection-start-line="80" selection-start-column="84" selection-end-line="80" selection-end-column="104" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/job.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="550" column="89" selection-start-line="550" selection-start-column="89" selection-end-line="550" selection-end-column="89" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/order-list-dialog.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="75" column="129" selection-start-line="75" selection-start-column="129" selection-end-line="75" selection-end-column="129" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/job/views/jobs-overview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="369" column="85" selection-start-line="369" selection-start-column="85" selection-end-line="369" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-orders.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="253" column="141" selection-start-line="253" selection-start-column="141" selection-end-line="253" selection-end-column="141" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/job-chain-overview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="724" column="161" selection-start-line="724" selection-start-column="161" selection-end-line="724" selection-end-column="161" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/order/views/orders-overview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="383" column="137" selection-start-line="383" selection-start-column="137" selection-end-line="383" selection-end-column="137" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/show-assigned-calendar-dialog.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/assign-calendar-dialog.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="14" lean-forward="true" selection-start-line="28" selection-start-column="14" selection-end-line="30" selection-end-column="22" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/calendar-dialog.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource-calendars.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="621">
+          <caret line="328" column="16" selection-start-line="328" selection-start-column="16" selection-end-line="328" selection-end-column="16" />
+          <folding>
+            <element signature="n#script#1;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/calendar.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/object-tree-filter-structure1.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/template/set-calendar-dialog.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="32" column="61" selection-start-line="32" selection-start-column="61" selection-end-line="32" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/controllers/jobscheduler.ctrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
           <folding>
             <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#!!top" expanded="true" />
@@ -687,10 +732,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/jobscheduler/views/resource.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-50">
+          <caret line="334" column="81" selection-start-line="334" selection-start-column="55" selection-end-line="334" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/router.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="250" column="39" lean-forward="true" selection-start-line="250" selection-start-column="39" selection-end-line="250" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/views/header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="251" column="75" selection-start-line="251" selection-start-column="75" selection-end-line="251" selection-end-column="101" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/core/controllers/core.ctrl.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="10845" column="37" lean-forward="true" selection-start-line="10845" selection-start-column="37" selection-end-line="10845" selection-end-column="37" />
+        <state relative-caret-position="49">
+          <caret line="1388" column="57" lean-forward="true" selection-start-line="1388" selection-start-column="57" selection-end-line="1388" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/services/user.service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="424">
+          <caret line="233" column="78" selection-start-line="233" selection-start-column="78" selection-end-line="233" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/user/services/user.auth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="31" column="44" selection-start-line="31" selection-start-column="44" selection-end-line="31" selection-end-column="44" />
         </state>
       </provider>
     </entry>

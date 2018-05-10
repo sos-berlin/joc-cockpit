@@ -3,8 +3,7 @@
         <div class="modal-content">
             <div class="modal-body p-a"
                  style="min-height: 500px;max-height: 550px; overflow: auto; vertical-align: middle;">
-
-                <div ng-if="filterTree1">
+                <div ng-if="filterTree1 && filterTree1.length>0">
                     <a class="text" ng-click="filter_tree.expand_all();"
                        uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
@@ -27,7 +26,7 @@
                     </tree>
                 </div>
 
-                <div class="text-center m-t-lg" ng-if="!filterTree1">
+                <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
                     <span translate>message.noCalendarFound</span>
                 </div>
 

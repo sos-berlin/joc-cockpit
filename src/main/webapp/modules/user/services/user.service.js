@@ -231,12 +231,12 @@
                             }
                             break;
                         case 'History':
-                            if (permissionModel.permission.History.view) {
+                            if (permissionModel.permission.History.view.status || permissionModel.permission.YADE.view.status) {
                                 ifPermissionPassed = true;
                             }
                             break;
                         case 'Resource':
-                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status) {
+                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status || permissionModel.permission.Calendar.view.status || permissionModel.permission.Event.view.status) {
                                 ifPermissionPassed = true;
                             }
                             break;
@@ -246,7 +246,7 @@
                             }
                             break;
                         case 'File Transfer':
-                            if (permissionModel.permission.YADE.view.transfers) {
+                            if (permissionModel.permission.YADE.view.status) {
                                 ifPermissionPassed = true;
                             }
                             break;
@@ -276,17 +276,17 @@
     function z(SOSAuth) {
         return {
             getPermission: function (id) {
-                var p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
-                for (var i = 0; i < p.length; i++) {
-                    if (p[i].JobSchedulerMaster == id) {
+                let p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                for (let i = 0; i < p.length; i++) {
+                    if (p[i].JobSchedulerMaster === id) {
                         return p[i].SOSPermissionJocCockpit;
                     }
                 }
             },
             savePermission: function (id) {
-                var p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
-                for (var i = 0; i < p.length; i++) {
-                    if (p[i].JobSchedulerMaster == id) {
+                let p = JSON.parse(SOSAuth.permissions).SOSPermissionJocCockpitMaster;
+                for (let i = 0; i < p.length; i++) {
+                    if (p[i].JobSchedulerMaster === id) {
                         SOSAuth.setPermission(p[i].SOSPermissionJocCockpit);
                         SOSAuth.save();
                         return;

@@ -341,7 +341,7 @@
                                                ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
                                             <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
                                                     ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.change.runTime">
+                                               ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
@@ -548,7 +548,7 @@
                                                    ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
                                                 <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
                                                    ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                                   ng-if="permission.Job.change.runTime">
+                                                   ng-if="permission.Calendar.view.status">
                                                     <span translate>button.showAssignedCalendar</span>
                                                 </a>
 

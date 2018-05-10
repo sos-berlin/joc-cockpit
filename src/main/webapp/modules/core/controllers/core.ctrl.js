@@ -1423,17 +1423,14 @@
                         filterdEvents();
                     }
 
-                    if (logout == false) {
+                    if (!logout) {
                         eventLoading = false;
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                     }
                     vm.switchScheduler = false;
 
                 }, function (err) {
-                    if (logout == false && (err.status == 420 || err.status == 434)) {
-                        if (eventTimeOut) {
-                            $timeout.cancel(eventTimeOut);
-                        }
+                    if (!logout && (err.status == 420 || err.status == 434)) {
                         eventTimeOut = $timeout(function () {
                             eventLoading = false;
                             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
@@ -1444,7 +1441,7 @@
             }
         };
         $scope.$on('reloadEvents', function (event, data) {
-            if (logout == false) {
+            if (!logout) {
                 eventLoading = false;
                 vm.changeEvent(vm.schedulerIds.jobschedulerIds);
             }

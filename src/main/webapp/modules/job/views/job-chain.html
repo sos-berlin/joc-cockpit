@@ -817,7 +817,7 @@
                                                                                                  ng-click="viewCalendar(order)"
                                                                                                  translate>button.showDailyPlan</a>
                                                                                               <a href
-                                                                                                 ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
+                                                                                                 ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
                                                                                                  class="dropdown-item"
                                                                                                  ng-click="showAssignedCalendar(order)">
                                                                                                   <span translate>button.showAssignedCalendar</span>
@@ -1106,7 +1106,7 @@
                                                                        ng-click="viewCalendar(order)"
                                                                        translate>button.showDailyPlan</a>
                                                                     <a href
-                                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
+                                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
                                                                        class="dropdown-item"
                                                                        ng-click="showAssignedCalendar(order)">
                                                                         <span translate>button.showAssignedCalendar</span>

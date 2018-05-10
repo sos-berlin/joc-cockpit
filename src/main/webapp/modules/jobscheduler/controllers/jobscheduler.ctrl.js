@@ -15,6 +15,7 @@
 
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService,
                           CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter) {
+        console.log('ResourceCtrl')
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -4907,9 +4908,9 @@
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 } else if (vm.dashboardLayout[i].name == 'tasksSummary' && vm.permission.Job.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && vm.permission.YADE.view.transfers) {
+                } else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && vm.permission.YADE.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && vm.permission.YADE.view.transfers) {
+                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && vm.permission.YADE.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 }
             }
