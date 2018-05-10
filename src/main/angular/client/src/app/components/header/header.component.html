@@ -151,7 +151,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link text-white" data-toggle="dropdown">
                  <span class="avatar w-32">
-                    <ngx-avatar [name]="username" size="33" textSizeRatio="2"></ngx-avatar>
+                    <ngx-avatar [name]="username" size="33"></ngx-avatar>
                   </span>
                   <span class="text-left p-l-xs">
                         <span class="_500 text-md" >{{username | decodeSpace}}</span>
@@ -199,19 +199,11 @@
                         </span>
                     </a>
                 </li>
-<!--                <li class="nav-item" *ngIf="permission.JobChain.view.status">
-                    <a class="nav-link" routerLink="/job_chain" [routerLinkActive]="['active']">
-                        <span class="nav-text " id="jobChain_id">
-                            <i class="fa fa-chain text-white jobchain-icon"></i>
-                            <span class="font11 text-white text-u-c _600" translate>label.jobChains</span>
-                        </span>
-                    </a>
-                </li>-->
-                <li class="nav-item" *ngIf="permission.Order.view.status">
-                    <a class="nav-link" routerLink="/order" [routerLinkActive]="['active']">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/workflow" [routerLinkActive]="['active']">
                         <span class="nav-text " id="orders_id" >
-                            <img src="./assets/images/order1.png" width="18" height="22" class="order-icon">
-                            <span class="font11 text-white text-u-c _600" translate>label.orders</span>
+                            <i class="fa fa-sitemap text-white dashboard-icon"></i>
+                            <span class="font11 text-white text-u-c _600" translate>label.workflows</span>
                         </span>
                     </a>
                 </li>

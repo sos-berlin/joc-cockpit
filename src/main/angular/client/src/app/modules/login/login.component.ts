@@ -1,7 +1,8 @@
+///<reference path="../../../../node_modules/@angular/router/src/router.d.ts"/>
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard/auth.service';
+import { AuthService } from '../../components/guard';
 import * as crypto from 'crypto-js';
 
 @Component({
@@ -12,12 +13,12 @@ import * as crypto from 'crypto-js';
 })
 export class LoginComponent implements OnInit {
 
-    user:any ={};
-    schedulerIds:any ={};
-    submitted:boolean = false;
-    rememberMe:boolean = false;
-    errorMsg:string = '';
-    error:string = '';
+    user: any ={};
+    schedulerIds: any ={};
+    submitted = false;
+    rememberMe = false;
+    errorMsg: string;
+    error: string;
 
     constructor(public router:Router, public coreService:CoreService, public authService:AuthService) {
 
@@ -27,8 +28,8 @@ export class LoginComponent implements OnInit {
         if (localStorage.$SOS$REMEMBER == 'true' || localStorage.$SOS$REMEMBER == true) {
             let urs = crypto.AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
             let pwd = crypto.AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
-            this.user.userName = urs.toString(crypto.enc.Utf8);
-            this.user.password = pwd.toString(crypto.enc.Utf8);
+            this.user.userName = urs.toString();
+            this.user.password = pwd.toString();
             this.rememberMe = true;
         }
     }
@@ -55,7 +56,7 @@ export class LoginComponent implements OnInit {
             } else {
                 this.router.navigate(['/']);
             }
-        }, (err)=> {
+        }, ()=> {
             this.submitted = false;
         });
     }
@@ -101,7 +102,7 @@ export class LoginComponent implements OnInit {
             this.authService.setUser(userDetail);
             this.authService.save();
             this.getSchedulerIds();
-        }, (error) => {
+        }, () => {
             this.submitted = false;
             this.errorMsg = 'message.loginError'
         });

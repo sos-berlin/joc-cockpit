@@ -5,7 +5,7 @@ export class AuthService {
 
   props = ["accessTokenId", "currentUserData", "sessionTimeout", "permissions", "permission", "scheduleIds"];
   propsPrefix: string = '$SOS$';
-  rememberMe: boolean = false;
+  rememberMe = false;
   scheduleIds;
   accessTokenId;
   currentUserData;
@@ -21,28 +21,28 @@ export class AuthService {
     }
   }
 
-  public save() {
+  save() {
     let self = this;
     for (let i = 0; i < this.props.length; i++) {
       this._save(sessionStorage, this.props[i], self[this.props[i]]);
     }
   }
 
-  public setUser = function (userData) {
+  setUser (userData) {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.user;
     this.sessionTimeout = userData.sessionTimeout;
-  };
+  }
 
-  public setPermissions = function (permissions) {
+  setPermissions (permissions) {
     this.permissions = JSON.stringify(permissions);
-  };
+  }
 
-  public setIds = function (scheduleIds) {
+  setIds (scheduleIds) {
     this.scheduleIds = JSON.stringify(scheduleIds);
-  };
+  }
 
-  public clearUser() {
+  clearUser() {
     this.accessTokenId = null;
     this.currentUserData = null;
     this.sessionTimeout = null;
@@ -52,20 +52,20 @@ export class AuthService {
     sessionStorage.$SOS$URL = null;
   }
 
-  public clearStorage() {
+  clearStorage() {
     for (let i = 0; i < this.props.length; i++) {
       this._save(sessionStorage, this.props[i], null);
       this._save(localStorage, this.props[i], null);
     }
   }
 
-  _save(storage, name, value) {
+  private _save(storage, name, value) {
     let key = this.propsPrefix + name;
     if (value == null) value = '';
     storage[key] = value;
   }
 
-  load(name) {
+  private load(name) {
     let key = this.propsPrefix + name;
     return localStorage[key] || sessionStorage[key] || null;
   }

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Subscription} from "rxjs/Subscription";
-import {AuthService} from "../../components/guard/auth.service";
+import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 import {SaveService} from "../../services/save.service";

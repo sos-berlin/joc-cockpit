@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from './layout.component';
+import { ErrorComponent } from '../error/error.component';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { DailyPlanComponent } from '../daily-plan/daily-plan.component';
-import { JobChainComponent } from '../job-chain/job-chain.component';
+import { EditorComponent } from '../editor/editor.component';
 import { JobComponent } from '../job/job.component';
-import { OrderComponent } from '../order/order.component';
+import { WorkflowComponent } from '../workflow/workflow.component';
 import { HistoryComponent } from '../history/history.component';
 import { FileTransferComponent } from '../file-transfer/file-transfer.component';
 import { AuditLogComponent } from '../audit-log/audit-log.component';
@@ -28,11 +29,12 @@ const routes: Routes = [
         path: '',
         component: LayoutComponent,
         children: [
+            { path: 'error',  component: ErrorComponent } ,
             { path: 'dashboard',  component: DashboardComponent } ,
             { path: 'daily_plan',  component: DailyPlanComponent } ,
-            { path: 'joe',  component: JobChainComponent } ,
+            { path: 'joe',  component: EditorComponent } ,
             { path: 'job',  component: JobComponent } ,
-            { path: 'order',  component: OrderComponent } ,
+            { path: 'workflow',  component: WorkflowComponent } ,
             { path: 'history',  component: HistoryComponent } ,
             { path: 'file_transfer',  component: FileTransferComponent } ,
             { path: 'audit_log',  component: AuditLogComponent } ,

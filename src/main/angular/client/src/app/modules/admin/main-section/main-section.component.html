@@ -16,10 +16,10 @@
             <tbody *ngFor="let mainSection of main  | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: usr.currentPage }">
             <tr>
                 <td>
-                    <div class="btn-group dropdown pull-left m-r-sm">
+                    <div appDropdown class="btn-group dropdown pull-left m-r-sm">
                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
                                 class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                             <a class="dropdown-item" (click)="editMain(mainSection)" translate>button.edit</a>
                             <a class="dropdown-item" (click)="deleteMain(mainSection)" translate="">button.delete</a>
                         </div>

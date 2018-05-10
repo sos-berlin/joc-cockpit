@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { OrderComponent } from './order.component';
+import { WorkflowComponent } from './workflow.component';
 import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [OrderComponent]
+  declarations: [WorkflowComponent]
 })
-export class OrderModule { }
+export class WorkflowModule { }

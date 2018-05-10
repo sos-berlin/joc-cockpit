@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {AuthService} from "../components/guard/auth.service";
+import {AuthService} from "../components/guard";
 import * as _ from 'underscore';
 import {AboutModal} from "../components/about-modal/about.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -604,7 +604,7 @@ export class CoreService {
           }
           document.cookie = "$SOS$accessTokenId=" + this.authService.accessTokenId + ";path=/";
           this.newWindow = window.open(url, "Log", 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
-          let self = this;
+          const self = this;
           setTimeout(() => {
             self.calWindowSize();
           }, 400);
@@ -614,7 +614,7 @@ export class CoreService {
       }
     } else {
       if (order && order.historyId && order.orderId) {
-        url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || schedulerId);
+        url = '#!/workflow/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || schedulerId);
       } else if (task && task.taskId) {
 
         if (transfer) {
@@ -641,20 +641,21 @@ export class CoreService {
   }
 
   calWindowSize() {
+    const self = this;
     if (this.newWindow) {
       try {
         this.newWindow.onbeforeunload = function () {
-          window.localStorage.log_window_wt = this.newWindow.innerWidth;
-          window.localStorage.log_window_ht = this.newWindow.innerHeight;
-          window.localStorage.log_window_x = this.newWindow.screenX;
-          window.localStorage.log_window_y = this.newWindow.screenY;
+          window.localStorage.log_window_wt = self.newWindow.innerWidth;
+          window.localStorage.log_window_ht = self.newWindow.innerHeight;
+          window.localStorage.log_window_x = self.newWindow.screenX;
+          window.localStorage.log_window_y = self.newWindow.screenY;
           return;
         };
         this.newWindow.addEventListener("resize", function () {
-          window.localStorage.log_window_wt = this.newWindow.innerWidth;
-          window.localStorage.log_window_ht = this.newWindow.innerHeight;
-          window.localStorage.log_window_x = this.newWindow.screenX;
-          window.localStorage.log_window_y = this.newWindow.screenY;
+          window.localStorage.log_window_wt = self.newWindow.innerWidth;
+          window.localStorage.log_window_ht = self.newWindow.innerHeight;
+          window.localStorage.log_window_x = self.newWindow.screenX;
+          window.localStorage.log_window_y = self.newWindow.screenY;
         });
       } catch (e) {
         console.log(e);
@@ -863,7 +864,7 @@ export class CoreService {
     });
   }
 
- //To convert date string into moment date format 
+ //To convert date string into moment date format
   toMomentDateFormat(date){
     let formattedDate = moment(date, 'DD.MM.YYYY');
     return formattedDate;

@@ -1,15 +1,11 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
-
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard/auth.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-
 import {DataService} from '../../../services/data.service';
 
 import * as moment from 'moment';
-
-declare var $;
 
 //Main Component
 @Component({

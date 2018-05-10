@@ -8,7 +8,7 @@ export class StringDatePipe implements PipeTransform {
     transform(date:string):string {
         if (sessionStorage.preferences) {
             if (!date)return "-";
-            let n = JSON.parse(sessionStorage.preferences);
+            const n = JSON.parse(sessionStorage.preferences);
             if (!n.zone) {
                 return;
             }
@@ -24,7 +24,7 @@ export class StringDateFormatePipe implements PipeTransform {
     transform(t:string):string {
         if (sessionStorage.preferences) {
             if (!t)return "-";
-            let n = JSON.parse(sessionStorage.preferences);
+            const n = JSON.parse(sessionStorage.preferences);
             if (!n.zone) {
                 return;
             }
@@ -57,10 +57,10 @@ export class DurationPipe implements PipeTransform {
     transform(n:any,r:any):string {
         if (sessionStorage.preferences) {
             if (!n || !r)return "-";
-            let o = JSON.parse(sessionStorage.preferences);
+            const o = JSON.parse(sessionStorage.preferences);
             n = moment(n).tz(o.zone);
             r = moment(r).tz(o.zone);
-            let i = moment(r).diff(n);
+            const i = moment(r).diff(n);
             if (i >= 1e3) {
                 let a = parseInt((i / 1e3 % 60).toString()), s = parseInt((i / 6e4 % 60).toString()), f = parseInt((i / 36e5 % 24).toString()), u = parseInt((i / 864e5).toString());
                 return 0 == u && 0 != f ? f + "h " + s + "m " + a + "s" : 0 == f && 0 != s ? s + "m " + a + "s" : 0 == u && 0 == f && 0 == s ? a + " sec" : u + "d " + f + "h " + s + "m " + a + "s"
@@ -90,7 +90,7 @@ export class ConvertTimePipe implements PipeTransform {
 export class DurationFromCurrentPipe implements PipeTransform {
     transform(n:any,r:any):string {
         if ((n || (n = new Date)) && (r || (r = new Date)) && sessionStorage.preferences) {
-            let o = JSON.parse(sessionStorage.preferences);
+            const o = JSON.parse(sessionStorage.preferences);
             n = moment(n).tz(o.zone);
             r = moment(r).tz(o.zone);
             let i:number = Math.abs(moment(r).diff(n));
@@ -120,10 +120,10 @@ export class DecodeSpacePipe implements PipeTransform {
 })
 export class ByteToSizePipe implements PipeTransform {
     transform(e:any):string {
-        let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         e = parseInt(e);
         if (e == 0) return '0 Byte';
-        let i:number = Math.floor(Math.log(e) / Math.log(1024));
+        const i:number = Math.floor(Math.log(e) / Math.log(1024));
         return parseFloat((e / Math.pow(1024, i)).toString()).toFixed(2) + ' ' + sizes[i];
     }
 }

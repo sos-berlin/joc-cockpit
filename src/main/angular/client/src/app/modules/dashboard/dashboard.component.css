@@ -1,5 +1,5 @@
 .gridster {
-  height: 100pc;
+  height: 96pc;
   margin: 0;
   padding: 0;
   padding-bottom: 20px;
@@ -15,8 +15,6 @@ gridster {
     background: transparent;
 }
 
-/* design by piyush starts */
-
 .small-gridster-panel{
      height: 142px !important;
 }
@@ -30,8 +28,6 @@ gridster {
 .set-height{
     height: auto !important;
 }
-
-/* design by piyush ends */
 
 gridster-item {
     -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important;

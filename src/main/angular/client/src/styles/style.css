@@ -4355,7 +4355,6 @@ input[type=text][disabled] {
 
 .list-dropdown {
   position: fixed;
-  z-index: 9999
 }
 
 .list-drop a:first-child:before, .list-drop li:first-child:after, .list-dropdown a:first-child:before, .list-dropdown li:first-child:after {
@@ -4578,7 +4577,6 @@ svg text {
 
 .cluster-dropdown {
   position: fixed;
-  z-index: 999999;
 }
 
 .cluster-dropdown ::after, .cluster-dropdown ::before, [flex] {
@@ -5315,4 +5313,36 @@ tree-node-checkbox {
   padding-left: 17px;
   padding-right: 19px;
   padding-top: 17px;
+}
+.property-table{
+  border: none !important;
+  font-size: 13px;
+   font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
+  width: 100%;
+}
+.property-table tr{
+  border: none !important;
+  padding: 16px;
+}
+
+.property-table tr td:first-child {
+  width: 30%;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+.property-table tr td input {
+  width: 100%;
+  line-height: 1.5;
+  color: #55595c;
+  background: #fff none;
+  display: block;
+  border: 1px solid rgba(120, 130, 140, .2);
+  border-radius: 0;
+  font-size: 13px;
+  padding: 4px 8px;
+  margin: 8px auto;
+}
+.property-table tr td input:focus {
+  border-color: #007da6;
+  outline: 0
 }

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
   selector: 'app-toggle',
   template: `
           <div class="btn-group m-l-sm">
-            <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i class="fa fa-th"></i>
+            <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i class="fa fa-th-large"></i>
             </button>
             <button class="btn btn-grey btn-sm"  [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')"><i class="fa fa-bars"></i>
             </button>
@@ -52,7 +52,7 @@ export class ToggleComponent implements OnInit {
             this.pageView = this.views.joe;
         } else if (this.router.url === '/job') {
             this.pageView = this.views.job;
-        } else if (this.router.url === '/order') {
+        } else if (this.router.url === '/workflow') {
             this.pageView = this.views.order;
         } else if (this.router.url.match('/resources/agent_cluster')) {
             this.pageView = this.views.agent;
@@ -79,7 +79,7 @@ export class ToggleComponent implements OnInit {
             this.views.joe = view;
         } else if (this.router.url === '/job') {
             this.views.job = view;
-        } else if (this.router.url === '/order') {
+        } else if (this.router.url === '/workflow') {
             this.views.order = view;
         } else if (this.router.url.match('/resources/agent_cluster')) {
             this.views.agent = view;

@@ -108,10 +108,10 @@ export class RoleModal implements OnInit {
             }
         }
 
-        this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+        this.coreService.post('security_configuration/write', this.userDetail).subscribe(() => {
             this.submitted = false;
             this.activeModal.close(this.userDetail.masters);
-        }, err => {
+        }, () => {
             this.submitted = false;
         });
     }
@@ -180,10 +180,10 @@ export class MasterModal implements OnInit {
 
             this.userDetail.masters.push(data);
         }
-        this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+        this.coreService.post('security_configuration/write', this.userDetail).subscribe(() => {
             this.submitted = false;
             this.activeModal.close(this.userDetail.masters);
-        }, err => {
+        }, () => {
             this.submitted = false;
         });
     }
@@ -321,7 +321,7 @@ export class RolesComponent implements OnInit,OnDestroy {
         };
         this.coreService.post('security_configuration/write', obj).subscribe(res => {
             console.log(res)
-        }, err => {
+        }, () => {
 
         });
     }
@@ -335,7 +335,7 @@ export class RolesComponent implements OnInit,OnDestroy {
         modalRef.componentInstance.newRole = true;
         modalRef.result.then((result) => {
             console.log(result)
-        }, reason => {
+        }, () => {
 
         });
     }
@@ -350,7 +350,7 @@ export class RolesComponent implements OnInit,OnDestroy {
 
         modalRef.result.then((result) => {
             console.log(result)
-        }, reason => {
+        }, () => {
 
         });
     }
@@ -365,7 +365,7 @@ export class RolesComponent implements OnInit,OnDestroy {
         modalRef.componentInstance.copy = true;
         modalRef.result.then((result) => {
             console.log(result)
-        }, reason => {
+        }, () => {
 
         });
     }
@@ -385,7 +385,7 @@ export class RolesComponent implements OnInit,OnDestroy {
         if (isAssigned != true) {
             const modalRef = this.modalService.open(DeleteModal, {backdrop: "static"});
             modalRef.componentInstance.role = role.role;
-            modalRef.result.then((result) => {
+            modalRef.result.then(() => {
 
                 for (let i = 0; i < this.masters.length; i++) {
                     if (_.isEqual(this.masters[i].master, master)) {
@@ -400,7 +400,7 @@ export class RolesComponent implements OnInit,OnDestroy {
                 }
 
                 this.saveInfo();
-            }, reason => {
+            }, () => {
 
             });
         } else {
@@ -423,9 +423,9 @@ export class RolesComponent implements OnInit,OnDestroy {
         modalRef.componentInstance.allMasters = this.masters;
         modalRef.componentInstance.allRoles = this.roles;
         modalRef.componentInstance.userDetail = this.userDetail;
-        modalRef.result.then((result) => {
+        modalRef.result.then(() => {
 
-        }, reason => {
+        }, () => {
 
         });
     }
@@ -436,9 +436,9 @@ export class RolesComponent implements OnInit,OnDestroy {
         modalRef.componentInstance.allMasters = this.masters;
         modalRef.componentInstance.copy = true;
         modalRef.componentInstance.userDetail = this.userDetail;
-        modalRef.result.then((result) => {
+        modalRef.result.then(() => {
 
-        }, reason => {
+        }, () => {
 
         });
     }
@@ -446,7 +446,7 @@ export class RolesComponent implements OnInit,OnDestroy {
     deleteMaster(master) {
         const modalRef = this.modalService.open(DeleteModal, {backdrop: "static"});
         modalRef.componentInstance.master = master.master;
-        modalRef.result.then((result) => {
+        modalRef.result.then(() => {
 
             for (let i = 0; i < this.masters.length; i++) {
                 if (_.isEqual(this.masters[i], master)) {
@@ -455,7 +455,7 @@ export class RolesComponent implements OnInit,OnDestroy {
             }
             this.saveInfo();
 
-        }, reason => {
+        }, () => {
 
         });
     }

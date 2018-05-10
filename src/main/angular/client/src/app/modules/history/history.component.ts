@@ -150,8 +150,7 @@ export class OrderSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -276,8 +275,7 @@ export class TaskSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -402,8 +400,7 @@ export class YadeSearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -461,7 +458,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   config: any = {};
   notAuthenticate: boolean = false;
   historyFilters: any = {};
-  dataFormat: string;
   selectedFiltered1: any = {};
   selectedFiltered2: any = {};
   selectedFiltered3: any = {};
@@ -511,32 +507,32 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private refresh(args) {
-/*    for (let i = 0; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
             if (args[i].eventSnapshots[i].eventType == 'ReportingChangedOrder' && this.isLoaded && this.historyFilters.type == 'ORDER') {
               this.isLoaded = false;
-              this.updateHistoryAfterEvent();
+            //  this.updateHistoryAfterEvent();
               break;
             } else if (args[i].eventSnapshots[i].eventType == 'ReportingChangedJob' && this.isLoaded && this.historyFilters.type == 'TASK') {
-              this.updateHistoryAfterEvent();
+           //   this.updateHistoryAfterEvent();
               break;
             } else if (args[i].eventSnapshots[i].objectType == 'OTHER' && this.historyFilters.type == 'YADE') {
               if (args[i].eventSnapshots[i].eventType == 'YADETransferStarted') {
-                this.updateHistoryAfterEvent();
+            //    this.updateHistoryAfterEvent();
                 break;
               } else if (args[i].eventSnapshots[i].eventType == 'YADETransferUpdated') {
                 for (let x = 0; x < this.yadeHistorys.length; x++) {
                   if (this.yadeHistorys[x].id == args[i].eventSnapshots[i].path) {
-                    this.getTransfer(this.yadeHistorys[x]);
+               //     this.getTransfer(this.yadeHistorys[x]);
                     break;
                   }
                 }
               } else if (args[i].eventSnapshots[i].eventType == 'YADEFileStateChanged') {
                 for (let x = 0; x < this.yadeHistorys.length; x++) {
                   if (this.yadeHistorys[x].id == args[i].eventSnapshots[i].path && this.yadeHistorys[x].show) {
-                    this.getFiles(this.yadeHistorys[x]);
+                //    this.getFiles(this.yadeHistorys[x]);
                     break;
                   }
                 }
@@ -547,7 +543,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
         break
       }
-    }*/
+    }
   }
 
   ngOnInit() {
@@ -1315,9 +1311,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         filter = this.orderParseDate(filter);
       } else {
         filter = this.setOrderDateRange(filter);
-        if (this.order.filter.historyStates != 'all') {
+        if (this.workflow.filter.historyStates != 'all') {
           filter.historyStates = [];
-          filter.historyStates.push(this.order.filter.historyStates);
+          filter.historyStates.push(this.workflow.filter.historyStates);
         }
       }
       filter.limit = parseInt(this.preferences.maxRecords);
@@ -1457,7 +1453,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       historyId: data.historyId
     };
     let result: any;
-    this.coreService.post('order/history', obj).subscribe((res) => {
+    this.coreService.post('workflow/history', obj).subscribe((res) => {
       result = res;
       data.steps = result.history.steps;
     });

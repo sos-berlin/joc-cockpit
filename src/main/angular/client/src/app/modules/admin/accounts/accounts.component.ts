@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription }   from 'rxjs/Subscription';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '../data.service';
 import { DeleteModal } from '../../../components/delete-modal/delete.component';

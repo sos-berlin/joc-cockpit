@@ -2,14 +2,14 @@ import { Component, OnInit,OnDestroy, ViewChild} from '@angular/core';
 import { CoreService } from '../../services/core.service';
 import { DataService } from '../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
-import { AuthService } from '../../components/guard/auth.service';
+import { AuthService } from '../../components/guard';
 import { HeaderComponent } from '../../components/header/header.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from "ng2-translate";
 import {ToasterService} from "angular2-toaster";
 
 import * as jstz from 'jstz';
-declare var $:any;
+declare var $: any;
 
 @Component({
   selector: 'app-layout',
@@ -26,16 +26,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   permission: any = {};
   selectedScheduler: any = {};
-  scheduleState: string = '';
   selectedJobScheduler: any = {};
-  currentTime = new Date();
-  interval: any;
   remainingSessionTime: any;
-  isTouch: boolean = false;
-  count: number = 0;
+  interval: any;
+  scheduleState: string;
+  currentTime = new Date();
   subscription1: Subscription;
   subscription2: Subscription;
-  isLogout: boolean = false;
+  isLogout = false;
+  isTouch = false;
+  count = 0;
 
   @ViewChild(HeaderComponent) child;
 
@@ -79,7 +79,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-
   ngOnInit() {
     if (this.router.url === '/') {
       if (localStorage.$SOS$URL) {
@@ -100,6 +99,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.loadScheduleDetail();
     this.calculateTime();
     LayoutComponent.calculateHeight();
+
   }
 
   ngOnDestroy() {
@@ -231,16 +231,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences = JSON.parse(sessionStorage.preferences);
       $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
       localStorage.$SOS$THEME = preferences.theme;
-      if (preferences.theme == 'lighter') {
-        $('#orders_id img').attr("src", './assets/images/order.png');
-        $('#jobs_id img').attr("src", './assets/images/job.png');
-        $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
-        $('resources_id img').attr("src", './assets/images/resources1.png');
-      } else {
-        $('#orders_id img').attr("src", './assets/images/order1.png');
-        $('#jobs_id img').attr("src", './assets/images/job1.png');
-        $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
-        $('#resources_id img').attr("src", './assets/images/resources.png');
+      if($('#dailyPlan_id img')) {
+        if (preferences.theme == 'lighter') {
+          $('#jobs_id img').attr("src", './assets/images/job.png');
+          $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
+          $('#resources_id img').attr("src", './assets/images/resources1.png');
+        } else {
+          $('#jobs_id img').attr("src", './assets/images/job1.png');
+          $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
+          $('#resources_id img').attr("src", './assets/images/resources.png');
+        }
       }
       localStorage.$SOS$LANG = preferences.locale;
       this.translate.setDefaultLang(preferences.locale);
@@ -257,6 +257,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         jobschedulerId: id,
         id: sessionStorage.preferenceId
       }).subscribe(res => {
+        console.log(res);
         this.setUserObject(preferences, res, configObj);
 
       }, (err) => {
@@ -277,7 +278,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.coreService.post('configurations', configObj).subscribe(res1 => {
       sessionStorage.preferenceId = 0;
       this.setUserProfileConfiguration(configObj, preferences, res1, id);
-    }, (err) => {
+    }, () => {
       this.setUserPreferences(preferences, configObj);
     });
   }
@@ -321,7 +322,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   getScheduleDetail(refresh: boolean): void {
     this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
       this.getVolatileData(result, refresh);
-    }, error => {
+    }, () => {
       this.getVolatileData(null, refresh);
     });
   }
@@ -349,7 +350,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   changeScheduler(jobScheduler) {
     this.child.switchScheduler = true;
     this.schedulerIds.selected = jobScheduler;
-    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission) => {
+    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe(() => {
 
       this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
         if (res) {
@@ -378,7 +379,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout) {
     this.isLogout = true;
-    this.coreService.post('security/logout', {}).subscribe((res) => {
+    this.coreService.post('security/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();
       if (timeout) {

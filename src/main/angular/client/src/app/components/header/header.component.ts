@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard/auth.service';
+import { AuthService } from '../../components/guard';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 
-declare let $ :any;
+declare var $ :any;
 
 @Component({
   selector: 'app-header',
@@ -180,12 +180,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     getEvents(jobScheduler):void {
+        if(!jobScheduler){
+          return;
+        }
         if (!this.eventLoading) {
             this.eventLoading = true;
             let obj = {
                 jobscheduler: []
             };
-            if (!this.eventsRequest || this.eventsRequest.length == 0) {
+            if (!this.eventsRequest || (this.eventsRequest && this.eventsRequest.length == 0)) {
                 for (let i = 0; i < jobScheduler.length; i++) {
                     if (this.schedulerIds.selected == jobScheduler[i]) {
                         obj.jobscheduler.push(
@@ -215,7 +218,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 }
                 this.switchScheduler = false;
             }, (err) => {
-                if (!this.isLogout && (err.status == 420 || err.status == 434)) {
+                if (!this.isLogout && err && (err.status == 420 || err.status == 434)) {
                     this.timeout = setTimeout(()=> {
                         this.eventLoading = false;
                         this.getEvents(this.schedulerIds.jobschedulerIds);

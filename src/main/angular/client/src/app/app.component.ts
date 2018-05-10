@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from 'ng2-translate';
-import {ToasterService, ToasterConfig} from 'angular2-toaster';
+import { ToasterConfig} from 'angular2-toaster';
 
 declare var $;
 
@@ -19,12 +19,12 @@ export class AppComponent {
 
   constructor(public translate: TranslateService) {
     this.getTranslate();
-    this.themeInit();
+    AppComponent.themeInit();
 
   }
 
   private getTranslate() {
-    let locales = ['en', 'fr', 'de', 'ja'];
+    const locales = ['en', 'fr', 'de', 'ja'];
     let lang = localStorage.$SOS$LANG || navigator.language;
     if (locales.indexOf(lang) <= -1) lang = 'en';
 
@@ -32,7 +32,7 @@ export class AppComponent {
     this.translate.use(lang);
   }
 
-  private themeInit() {
+  static themeInit() {
     if (localStorage.$SOS$THEME != null) {
       $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
     }

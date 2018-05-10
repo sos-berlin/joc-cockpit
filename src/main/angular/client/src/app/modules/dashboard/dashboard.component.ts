@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {AuthService} from '../../components/guard/auth.service';
+import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
 import {
     CompactType,
@@ -10,8 +10,8 @@ import {
     GridsterItemComponentInterface,
     GridType
 } from 'angular-gridster2';
-import {DataService} from "../../services/data.service";
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { DataService } from "../../services/data.service";
+import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 declare var $;
 
@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   gridInit = (grid: GridsterComponentInterface) => {
-    let self = this;
+    const self = this;
     $(window).resize(function () {
       self.checkWindowSize(grid);
     });
@@ -76,6 +76,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.init();
+    $('.linked1').scroll(function(){
+      $('.max-ht').scrollTop(($('.linked1').scrollTop()-140));
+    })
+
   }
 
   private init() {
@@ -367,7 +371,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
 
           $('#' + _tempId).css('top', newTop + 'px');
-        
+
         }
       }
       this.isEventTriggering = false;

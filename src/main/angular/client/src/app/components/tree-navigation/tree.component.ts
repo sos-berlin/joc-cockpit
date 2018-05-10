@@ -19,7 +19,7 @@ export class TreeComponent implements OnInit {
   }
 
   ngOnInit() {
-    let self = this;
+    const self = this;
     let interval = setInterval(function () {
       if (self.treeCtrl && self.treeCtrl.treeModel) {
         const node = self.treeCtrl.treeModel.getNodeById(1);
@@ -30,7 +30,7 @@ export class TreeComponent implements OnInit {
   }
 
   private traverseTree(data) {
-    let self = this;
+    const self = this;
     data.children.forEach(function (value) {
       value.isSelected = false;
       self.traverseTree(value);
@@ -38,7 +38,7 @@ export class TreeComponent implements OnInit {
   }
 
   private navFullTree() {
-    let self = this;
+    const self = this;
     this.tree.forEach(function (value) {
       value.isSelected = false;
       self.traverseTree(value);

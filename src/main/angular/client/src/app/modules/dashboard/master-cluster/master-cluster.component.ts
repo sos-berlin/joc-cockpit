@@ -179,14 +179,30 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   private setListeners() {
     let self = this;
+    let offset:any;
     $('[data-toggle="popover"]').popover({html: true, trigger: "hover"});
     $('.clusterDiagram').on('shown.bs.dropdown', function (e) {
       $("[data-toggle='popover']").popover('hide');
       let p = $(e.target).find(".more-option");
-      let offset = p.offset();
-      if (offset)
-        $('.cluster-dropdown').css({'left': (offset.left - 8) + 'px', 'top': (offset.top + 19) + 'px'});
+      offset = p.offset();
+      if (offset) {
+        $('.cluster-dropdown').css({'left': (offset.left - 8) + 'px', 'top': (offset.top + 19) - window.scrollY + 'px'});
+        window.addEventListener('scroll', scroll, true);
+      }
+
     });
+    $('.clusterDiagram').on('hide.bs.dropdown', function (e) {
+      offset={};
+      console.log('close...')
+      window.removeEventListener('scroll', scroll, true);
+    });
+
+    function scroll() {
+      console.log('scroll...')
+      if (offset.top) {
+        $('div.open .cluster-dropdown').css({top: (offset.top + 16)- window.scrollY + 'px'});
+      }
+    }
 
     let anchors: any = document.querySelectorAll("a[id^='__']");
     anchors.forEach(function (anchor) {

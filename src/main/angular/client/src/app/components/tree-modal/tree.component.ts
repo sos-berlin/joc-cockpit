@@ -62,7 +62,7 @@ export class TreeModal implements OnInit,OnDestroy {
 
 
   private prepareTree(actualData) {
-    let self = this;
+    const self = this;
     let output = [{
       id:1,
       name: actualData.folders[0].path,

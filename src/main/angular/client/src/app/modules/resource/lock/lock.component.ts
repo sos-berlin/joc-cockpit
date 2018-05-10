@@ -1,12 +1,10 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard/auth.service';
+import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import * as _ from 'underscore';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
-
-declare var $;
 
 //Main Component
 @Component({
@@ -71,23 +69,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let dom = $('#leftPanel');
-    if (dom)
-      dom.stickySidebar({
-        sidebarTopMargin: 192
-      });
-
     this.init();
-
-    if (dom)
-      dom.resizable({
-        handles: 'e',
-        maxWidth: 450,
-        minWidth: 180,
-        resize: function () {
-          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
-        }
-      });
   }
 
   private init() {

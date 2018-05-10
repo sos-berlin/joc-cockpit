@@ -27,7 +27,7 @@
         <div class="form-group row" *ngIf="!copy">
             <label class="col-sm-4 form-control-label" translate>label.roles</label>
             <div class="col-sm-6">
-                <ng-select [multiple]="true" [items]="allRoles" [active]="currentMaster.roles" [disabled]="disabled" (selected)="selected($event)" required="copy"
+                <ng-select [multiple]="true" [items]="allRoles" [active]="currentMaster.roles" (selected)="selected($event)" required="copy"
                                (removed)="removed($event)" placeholder="{{'placeholder.selectRoles' | translate}}"></ng-select>
             </div>
         </div>

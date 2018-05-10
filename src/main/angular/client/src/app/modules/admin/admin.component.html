@@ -87,10 +87,10 @@
     </div>
 </div>
 <!-- Admin Sub Header Ends -->
-<div class="scroll-y max-ht">
+<div>
     <div class="padding p-b-0">
         <div *ngIf = "showTabs" class="row m-b m-t-xs">
-            <div class="col-md-6 col-sm-4">
+            <div class="col-md-8 col-sm-8">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
                         <a class="nav-link" routerLink = "account" routerLinkActive="active" >
@@ -115,7 +115,7 @@
                     </li>
                 </ul>
             </div>
-            <div *ngIf = "route === '/users/account'" class="col-md-6 col-sm-8">
+            <div *ngIf = "route === '/users/account'" class="col-md-4 col-sm-4">
                 <input type="search" #input (keyup) = "searchBar(input.value)" id="searchBar"  class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
             </div>
         </div>

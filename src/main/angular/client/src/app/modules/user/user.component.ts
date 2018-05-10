@@ -199,7 +199,7 @@ export class UserComponent implements OnInit {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage.$SOS$THEME = theme;
     if (theme == 'lighter') {
-      $('#orders_id img').attr("src", './assets/images/order.png');
+      $('#orders_id img').attr("src", './assets/images/workflow.png');
       $('#jobs_id img').attr("src", './assets/images/job.png');
       $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
       $('#resources_id img').attr("src", './assets/images/resources1.png');

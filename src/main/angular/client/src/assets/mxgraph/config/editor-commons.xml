@@ -24,12 +24,6 @@
 	</mxDefaultPopupMenu>
 	<include name="./assets/mxgraph/config/keyhandler-commons.xml"/>
 	<Array as="actions">
-		<add as="open"><![CDATA[
-			function (editor)
-			{
-				editor.open(mxUtils.prompt('Enter filename', 'workflow.xml'));
-			}
-		]]></add>
 		<add as="straightConnector"><![CDATA[
 			function (editor)
 			{

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-order',
-  templateUrl: './order.component.html',
-  styleUrls: ['./order.component.css']
+  templateUrl: './workflow.component.html',
+  styleUrls: ['./workflow.component.css']
 })
-export class OrderComponent implements OnInit {
+export class WorkflowComponent implements OnInit {
 
   constructor() { }
 

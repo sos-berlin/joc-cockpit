@@ -2,14 +2,12 @@ import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard/auth.service';
+import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
 import * as _ from 'underscore';
-
-declare var $;
 
 //Main Component
 @Component({
@@ -74,22 +72,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let dom = $('#leftPanel');
-    if (dom)
-      dom.stickySidebar({
-        sidebarTopMargin: 192
-      });
-
     this.init();
-    if (dom)
-      dom.resizable({
-        handles: 'e',
-        maxWidth: 450,
-        minWidth: 180,
-        resize: function () {
-          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
-        }
-      });
   }
 
   private init() {

@@ -1,5 +1,6 @@
-import {Directive, HostListener, forwardRef} from '@angular/core';
+import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
+declare var $;
 
 @Directive({
   selector: '[timevalidator][ngModel]',
@@ -126,3 +127,89 @@ export class DailyPlanRegexValidator implements Validator {
   }
 }
 
+
+@Directive({
+  selector: '[appDropdown]'
+})
+export class DropdownDirective implements  OnDestroy {
+
+  constructor(private el: ElementRef) {
+  }
+
+  @HostListener('click', ['$event'])
+  click(event) {
+    if ($(event.target).attr('class') != 'dropdown-backdrop') {
+      const top = event.clientY + 8;
+      const left = event.clientX - 20;
+      $('.list-dropdown').css({top: top + "px", left: left + "px"});
+      window.addEventListener('scroll', this.scroll, true);
+    } else {
+      window.removeEventListener('scroll', this.scroll, true);
+    }
+  }
+
+  scroll = (): void => {
+    if (this.el.nativeElement.attributes.class.value.match(' open')) {
+      $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
+    }
+  };
+
+  ngOnDestroy() {
+    window.removeEventListener('scroll', this.scroll, true);
+    window.removeEventListener('click', this.click, true);
+  }
+
+}
+
+@Directive({
+  selector: '[appResizable]'
+})
+export class ResizableDirective implements OnInit {
+
+  constructor(private el: ElementRef) {
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  scroll(event) {
+    let dom: any;
+    if (this.el.nativeElement.attributes.class.value.match('resource')) {
+      dom = $('#leftPanel');
+      if (dom && dom.offset() && dom.offset().top > 88)
+        dom.css('top', 192 - event.pageY + 'px')
+    }
+  }
+
+  ngOnInit() {
+    let dom: any;
+    if (this.el.nativeElement.attributes.class.value.match('resource')) {
+      dom = $('#leftPanel');
+      if (dom) {
+        dom.css('top', '192px');
+        dom.resizable({
+          handles: 'e',
+          maxWidth: 450,
+          minWidth: 180,
+          resize: function () {
+            $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
+          }
+        });
+      }
+    } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
+      dom = $('#leftSidePanel');
+      if (dom) {
+        dom.css('top', '96px');
+        dom.resizable({
+          handles: 'e',
+          maxWidth: 500,
+          minWidth: 10,
+          resize: function () {
+            $('#centerPanel').css({'margin-left': dom.width() + 20 + 'px'});
+            if (dom.width() > 250)
+              $('.angular-tree-component').css({'width': dom.width() + 'px', 'heigth': dom.height() + 'px'});
+          }
+        });
+      }
+    }
+  }
+
+}

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { JobChainComponent } from './job-chain.component';
+import { EditorComponent } from './editor.component';
 import { SharedModule } from '../shared/shared.module';
 @NgModule({
   imports: [
       SharedModule
   ],
-  declarations: [JobChainComponent]
+  declarations: [EditorComponent]
 })
-export class JobChainModule { }
+export class EditorModule { }

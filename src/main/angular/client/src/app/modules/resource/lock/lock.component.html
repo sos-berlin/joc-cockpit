@@ -102,7 +102,7 @@
         <div class="hide-block sidebar-btn resize-cursor">
           <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
         </div>
-        <div id="leftPanel" class="leftPanel">
+        <div appResizable id="leftPanel" class="sticky leftPanel resource">
           <div *ngIf="tree.length>0">
             <app-tree-nagivation [tree]="tree" (messageEvent)="receiveAction($event)"></app-tree-nagivation>
            </div>

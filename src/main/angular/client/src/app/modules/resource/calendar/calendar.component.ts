@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {TranslateService} from 'ng2-translate';
 import {ToasterService} from 'angular2-toaster';
 import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard/auth.service';
+import {AuthService} from '../../../components/guard';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
 
@@ -19,8 +19,8 @@ import {TreeComponent} from "../../../components/tree-navigation/tree.component"
 import * as _ from 'underscore';
 import * as moment from 'moment';
 
-declare var $;
-declare var Holidays;
+declare const Holidays;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -2232,22 +2232,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let dom = $('#leftPanel');
-    if (dom)
-      dom.stickySidebar({
-        sidebarTopMargin: 192
-      });
-
     this.init();
-    if (dom)
-      dom.resizable({
-        handles: 'e',
-        maxWidth: 450,
-        minWidth: 180,
-        resize: function () {
-          $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
-        }
-      });
   }
 
   private init(){
