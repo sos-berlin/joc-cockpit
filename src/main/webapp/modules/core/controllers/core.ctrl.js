@@ -1430,7 +1430,7 @@
                     vm.switchScheduler = false;
 
                 }, function (err) {
-                    if (!logout && (err.status == 420 || err.status == 434)) {
+                    if (!logout && (err.status == 420 || err.status == 434 || err.status == 504)) {
                         eventTimeOut = $timeout(function () {
                             eventLoading = false;
                             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
