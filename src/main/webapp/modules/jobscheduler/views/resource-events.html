@@ -240,7 +240,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="event in filtered = (customEvents | filter: searchObj.filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                <tr ng-repeat="event in filtered = (customEvents | filter: searchObj.filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'disable-link': event.isDeleted}">
                     <td ng-if="permission.Event.execute.delete">
                         <label class="md-check">
                             <input type="checkbox" data-checklist-model="object.events"

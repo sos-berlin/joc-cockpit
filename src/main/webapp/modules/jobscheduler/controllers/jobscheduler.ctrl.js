@@ -15,7 +15,6 @@
 
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService,
                           CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter) {
-        console.log('ResourceCtrl')
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -790,8 +789,17 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    EventService.deleteEvent(obj);
-                    vm.object.events = [];
+                    EventService.deleteEvent(obj).then(function (res) {
+                        if(event) {
+                            event.isDeleted = true;
+                        }else {
+                            angular.forEach(vm.object.events, function (value) {
+                                value.isDeleted = true;
+                            });
+                             vm.object.events = [];
+                        }
+                    });
+
                 }, function () {
                     vm.object.events = [];
                 });
@@ -803,8 +811,17 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    EventService.deleteEvent(obj);
-                    vm.object.events = [];
+                     EventService.deleteEvent(obj).then(function(res){
+                        if(event) {
+                            event.isDeleted = true;
+                        }else {
+                            angular.forEach(vm.object.events, function (value) {
+                                value.isDeleted = true;
+                            });
+                            vm.object.events = [];
+                        }
+                    });
+
                 }, function () {
                     vm.object.events = [];
                 });

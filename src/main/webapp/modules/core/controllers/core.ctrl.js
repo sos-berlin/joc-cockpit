@@ -1388,8 +1388,8 @@
                 CoreService.getEvents(obj).then(function (res) {
                     if (!vm.switchScheduler && !logout) {
                         vm.eventsRequest = [];
-                        for (var i = 0; i < res.events.length; i++) {
-                            if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
+                        for (let i = 0; i < res.events.length; i++) {
+                            if (res.events[i].jobschedulerId === vm.schedulerIds.selected) {
                                 vm.events = [];
                                 vm.events.push(res.events[i]);
 
@@ -1411,7 +1411,11 @@
                                         $state.reload(vm.currentState);
                                     }
                                 });
-                            }else {
+                                break;
+                            }
+                        }
+                        for (let i = 0; i < res.events.length; i++) {
+                            if (res.events[i].jobschedulerId !== vm.schedulerIds.selected) {
                                 vm.eventsRequest.push({
                                     jobschedulerId: res.events[i].jobschedulerId,
                                     eventId: res.events[i].eventId

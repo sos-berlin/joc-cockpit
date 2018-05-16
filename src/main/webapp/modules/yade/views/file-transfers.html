@@ -135,8 +135,8 @@
                        ng-model="filterString" style="width: 180px">
             </div>
         </div>
-        <div class="row hide" ng-class="{'show':showSearchPanel}">
-             <div class="box p-a m-b-xs">
+        <div class="hide m-b-sm" ng-class="{'show':showSearchPanel}">
+             <div class="box p-a ">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
