@@ -7518,14 +7518,16 @@
                 vm.isLoading = true;
             });
             value.show = true;
-            var ids = [];
-            ids.push(value.id);
-            YadeService.files({
-                transferIds: ids,
-                jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
-            }).then(function (res) {
-                value.files = res.files
-            })
+            if (vm.permission.YADE.view.files) {
+                var ids = [];
+                ids.push(value.id);
+                YadeService.files({
+                    transferIds: ids,
+                    jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
+                }).then(function (res) {
+                    value.files = res.files
+                })
+            }
         };
 
         vm.exportToExcel = function () {
@@ -8722,14 +8724,16 @@
         }
 
         function getFiles(value) {
-            var ids = [];
-            ids.push(value.id);
-            YadeService.files({
-                transferIds: ids,
-                jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
-            }).then(function (res) {
-                value.files = res.files
-            })
+            if (vm.permission.YADE.view.files) {
+                var ids = [];
+                ids.push(value.id);
+                YadeService.files({
+                    transferIds: ids,
+                    jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
+                }).then(function (res) {
+                    value.files = res.files
+                })
+            }
         }
 
         function updateHistoryAfterEvent() {
