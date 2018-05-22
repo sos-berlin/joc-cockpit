@@ -1,16 +1,16 @@
 import {Component, OnInit, OnDestroy, Input, ElementRef} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard/auth.service';
+import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs/Subscription';
-import {TranslateService} from "ng2-translate";
+import {TranslateService} from '@ngx-translate/core';
 import {CommentModal} from "../action/action.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { saveAs } from 'file-saver/FileSaver';
 
 import * as _ from 'underscore';
 import * as moment from 'moment';
-declare var $: any;
+declare const $;
 
 
 @Component({
@@ -80,7 +80,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
   }
 
-  getClusterStatusData(flag:boolean): void {
+  getClusterStatusData(flag: boolean): void {
     let obj = {
       database: {},
       members: {}
@@ -90,9 +90,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       obj.database = res;
       this.coreService.post('jobscheduler/cluster/members/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
         obj.members = res;
-        if(flag){
+        if (flag) {
           this.refresh();
-        }else {
+        } else {
           this.prepareDataObj(obj);
         }
         this.isLoaded = true;
@@ -170,7 +170,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   private startToCheck() {
-    let self = this;
+    const self = this;
     this.interval = setInterval(function () {
       self.drawConnections();
       self.setListeners();
@@ -178,38 +178,39 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   private setListeners() {
-    let self = this;
-    let offset:any;
+    const self = this;
+    let offset: any;
     $('[data-toggle="popover"]').popover({html: true, trigger: "hover"});
     $('.clusterDiagram').on('shown.bs.dropdown', function (e) {
       $("[data-toggle='popover']").popover('hide');
       let p = $(e.target).find(".more-option");
       offset = p.offset();
       if (offset) {
-        $('.cluster-dropdown').css({'left': (offset.left - 8) + 'px', 'top': (offset.top + 19) - window.scrollY + 'px'});
+        $('.cluster-dropdown').css({
+          'left': (offset.left - 8) + 'px',
+          'top': (offset.top + 19) - window.scrollY + 'px'
+        });
         window.addEventListener('scroll', scroll, true);
       }
 
     });
     $('.clusterDiagram').on('hide.bs.dropdown', function (e) {
-      offset={};
-      console.log('close...')
+      offset = {};
       window.removeEventListener('scroll', scroll, true);
     });
 
     function scroll() {
-      console.log('scroll...')
       if (offset.top) {
-        $('div.open .cluster-dropdown').css({top: (offset.top + 16)- window.scrollY + 'px'});
+        $('div.open .cluster-dropdown').css({top: (offset.top + 16) - window.scrollY + 'px'});
       }
     }
 
     let anchors: any = document.querySelectorAll("a[id^='__']");
-    anchors.forEach(function (anchor) {
-      anchor.addEventListener('click', function () {
+      for(let i=0; i<anchors.length;i++ ){
+      anchors[i].addEventListener('click', function () {
         let obj: any = {};
-        if (/__(.+)-(.+)-(\d+)-(\d+)/.test(anchor.id)) {
-          let results = /__(.+)-(.+)-(\d+)-(\d+)/.exec(anchor.id);
+        if (/__(.+)-(.+)-(\d+)-(\d+)/.test(anchors[i].id)) {
+          let results = /__(.+)-(.+)-(\d+)-(\d+)/.exec(anchors[i].id);
           if (results[4] !== '99') {
             obj.host = self.clusterStatusData.supervisors[results[4]].masters[results[3]].host;
             obj.port = self.clusterStatusData.supervisors[results[4]].masters[results[3]].port;
@@ -220,15 +221,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             obj.jobschedulerId = self.clusterStatusData.members.masters[results[3]].jobschedulerId;
           }
           self.clusterAction(results[2], obj);
-        } else if (/__(.+)-(.+)-(\d+)/.test(anchor.id)) {
-          let results = /__(.+)-(.+)-(\d+)/.exec(anchor.id);
+        } else if (/__(.+)-(.+)-(\d+)/.test(anchors[i].id)) {
+          let results = /__(.+)-(.+)-(\d+)/.exec(anchors[i].id);
           obj.host = self.clusterStatusData.supervisors[results[3]].host;
           obj.port = self.clusterStatusData.supervisors[results[3]].port;
           obj.jobschedulerId = self.clusterStatusData.supervisors[results[3]].jobschedulerId;
           self.clusterAction(results[2], obj);
         }
       })
-    })
+    }
   }
 
   private prepareData() {
@@ -240,7 +241,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     this.startToCheck();
-    let self = this;
+    const self = this;
     let labelState: any, status: any, terminateBtn: any, terminateWithinBtn: any, abortBtn: any,
       abortAndRestartBtn: any,
       terminateAndRestartBtn: any, terminateAndRestartWithinBtn: any, pauseBtn: any, continueBtn: any,
@@ -285,7 +286,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       downloadLogBtn = translatedValue;
     });
 
-
     self.translate.get('label.architecture').subscribe(translatedValue => {
       labelArchitecture = translatedValue;
     });
@@ -302,61 +302,59 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       labelStartedAt = translatedValue;
     });
 
-    this.clusterStatusData.members.masters.forEach(function (master, index) {
-      if (!master.supervisor && index == self.clusterStatusData.members.masters.length - 1) {
+    for (let i = 0; i < this.clusterStatusData.members.masters.length; i++) {
+      if (!this.clusterStatusData.members.masters[i].supervisor && i == this.clusterStatusData.members.masters.length - 1) {
         removeSupervised();
         return;
       }
-      if (!master.supervisor) {
+      if (!this.clusterStatusData.members.masters[i].supervisor) {
         return;
       }
 
-      self.supervisedMasters.push(index);
+      self.supervisedMasters.push(i);
       let nMaster = {};
-      if (supervisors.indexOf(master.supervisor.jobschedulerId) >= 0) {
-        self.clusterStatusData.supervisors[supervisors.indexOf(master.supervisor.jobschedulerId)].masters.push(_.extend(master, nMaster));
+      if (supervisors.indexOf(this.clusterStatusData.members.masters[i].supervisor.jobschedulerId) >= 0) {
+        self.clusterStatusData.supervisors[supervisors.indexOf(this.clusterStatusData.members.masters[i].supervisor.jobschedulerId)].masters.push(_.extend(this.clusterStatusData.members.masters[i], nMaster));
       } else {
-        supervisors.push(master.supervisor.jobschedulerId);
-        let nSupervisor = master.supervisor;
+        supervisors.push(this.clusterStatusData.members.masters[i].supervisor.jobschedulerId);
+        let nSupervisor = this.clusterStatusData.members.masters[i].supervisor;
         nSupervisor.masters = [];
-        nSupervisor.masters.push(_.extend(master, nMaster));
+        nSupervisor.masters.push(_.extend(this.clusterStatusData.members.masters[i], nMaster));
         self.clusterStatusData.supervisors.push(nSupervisor);
       }
 
-      if (index == self.clusterStatusData.members.masters.length - 1) {
+      if (1 == this.clusterStatusData.members.masters.length - 1) {
         removeSupervised();
       }
-    });
+    }
 
     function removeSupervised() {
       if (self.clusterStatusData.supervisors.length <= 0) {
         getTemporaryData(null);
       }
-
-      self.supervisedMasters.forEach(function (master, index) {
-        self.clusterStatusData.members.masters.splice(master - index, 1);
-        if (index == self.supervisedMasters.length - 1) {
+      for (let i = 0; i < self.supervisedMasters.length; i++) {
+        self.clusterStatusData.members.masters.splice(self.supervisedMasters[i] - i, 1);
+        if (i == self.supervisedMasters.length - 1) {
           getSupervisor(null);
         }
-      })
+      }
     }
 
     function getSupervisor(refresh) {
       if (self.clusterStatusData.supervisors.length <= 0) {
         getTemporaryData(refresh);
       }
-      self.clusterStatusData.supervisors.forEach(function (supervisor, index) {
-
+      for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
         self.getSupervisorDetails().subscribe(res => {
-          self.clusterStatusData.supervisors[index].data = res;
+          self.clusterStatusData.supervisors[i].data = res;
           if (refresh) {
-            refreshSupervisorState(supervisor);
+            refreshSupervisorState(self.clusterStatusData.supervisors[i]);
           }
-          if (index == self.clusterStatusData.supervisors.length - 1) {
+          if (i == self.clusterStatusData.supervisors.length - 1) {
             getTemporaryData(refresh);
           }
         })
-      })
+      }
     }
 
     function getTemporaryData(refresh) {
@@ -366,26 +364,25 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           getTemporaryData2(res, refresh);
         }
 
-        self.clusterStatusData.supervisors.forEach(function (supervisor, sIndex) {
-          supervisor.masters.forEach(function (master, index) {
-            res.masters.forEach(function (nMaster, rIndex) {
-              if (nMaster.host == master.host && nMaster.port == master.port) {
-                supervisor.masters[index].state = nMaster.state;
-                supervisor.masters[index].startedAt = nMaster.startedAt;
-                if (master.state && refresh) {
-                  refreshMasterState(master);
+        for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
+          for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
+            for (let x = 0; x < res.masters.length; x++) {
+              if (res.masters[x].host == self.clusterStatusData.supervisors[i].masters[j].host && res.masters[x].port == self.clusterStatusData.supervisors[i].masters[j].port) {
+                self.clusterStatusData.supervisors[i].masters[j].state = res.masters[x].state;
+                self.clusterStatusData.supervisors[i].masters[j].startedAt = res.masters[x].startedAt;
+                if (self.clusterStatusData.supervisors[i].masters[j].state && refresh) {
+                  refreshMasterState(self.clusterStatusData.supervisors[i].masters[j]);
                 }
               }
-              if (self.clusterStatusData.supervisors.length - 1 == sIndex && supervisor.masters.length - 1 == index && res.masters.length - 1 == rIndex) {
+              if (self.clusterStatusData.supervisors.length - 1 == i && self.clusterStatusData.supervisors[i].masters.length - 1 == j && res.masters.length - 1 == x) {
                 getTemporaryData2(res, refresh);
               }
-            })
-          });
-          //    $rootScope.$broadcast('reloadScheduleDetail', supervisor);
-        })
+            }
+          }
+        }
 
-      }, (err) => {
-        getTemporaryData2(undefined, refresh);
+      }, () => {
+        getTemporaryData2(null, refresh);
       })
     }
 
@@ -394,29 +391,29 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         drawFlow();
       }
 
-      if (res)
-        self.clusterStatusData.members.masters.forEach(function (master, index) {
-
-          res.masters.forEach(function (nMaster, rIndex) {
-            if (nMaster.host == master.host && nMaster.port == master.port) {
-              self.clusterStatusData.members.masters[index].state = nMaster.state;
-              self.clusterStatusData.members.masters[index].startedAt = nMaster.startedAt;
-              if (master.state && refresh) {
-                refreshMasterState(master);
+      if (res) {
+        for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
+          for (let j = 0; j < res.masters.length; j++) {
+            if (res.masters[j].host == self.clusterStatusData.members.masters[i].host && res.masters[j].port == self.clusterStatusData.members.masters[i].port) {
+              self.clusterStatusData.members.masters[i].state = res.masters[j].state;
+              self.clusterStatusData.members.masters[i].startedAt = res.masters[j].startedAt;
+              if (self.clusterStatusData.members.masters[i].state && refresh) {
+                refreshMasterState(self.clusterStatusData.members.masters[i]);
               }
             }
-            if (self.clusterStatusData.members.masters.length - 1 == index && res.masters.length - 1 == rIndex && !refresh) {
+            if (self.clusterStatusData.members.masters.length - 1 == i && res.masters.length - 1 == j && !refresh) {
               drawFlow();
             }
-          });
+          }
 
           if (refresh && (refresh.state == 'stopping' || refresh.state == 'starting') && res.masters.length == 0) {
-            if (master.state._text !== ' ') {
-              master.state._text = refresh.state;
-              refreshMasterState(master);
+            if (self.clusterStatusData.members.masters[i].state._text !== ' ') {
+              self.clusterStatusData.members.masters[i].state._text = refresh.state;
+              refreshMasterState(self.clusterStatusData.members.masters[i]);
             }
           }
-        });
+        }
+      }
       //$rootScope.$broadcast('reloadScheduleDetail', self.clusterStatusData.members);
     }
 
@@ -444,34 +441,34 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (self.clusterStatusData.supervisors.length == 0) {
         drawFlowForRemainings(true);
       }
-      self.clusterStatusData.supervisors.forEach(function (supervisor, sIndex) {
-        self.tWidth = self.rWidth * supervisor.masters.length + self.margin * (supervisor.masters.length - 1);
+      for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
+        self.tWidth = self.rWidth * self.clusterStatusData.supervisors[i].masters.length + self.margin * (self.clusterStatusData.supervisors[i].masters.length - 1);
         sLeft = self.tWidth / 2 - self.rWidth / 2 + self.margin;
-        if (sIndex !== 0) {
+        if (i !== 0) {
           sLeft = sLeft + self.tWidth + self.margin;
         }
 
         let c = "cluster-rect";
-        if (new Date().getTime() - new Date(supervisor.data.jobscheduler.surveyDate).getTime() < 2000) {
+        if (new Date().getTime() - new Date(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).getTime() < 2000) {
           c = c + " yellow-border";
         }
 
         let sClassRunning = 'text-success';
 
-        if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() == 'stopped') {
           sClassRunning = 'text-danger';
-        } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
+        } else if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
           sClassRunning = 'text-danger1';
         }
-        else if (!supervisor.data.jobscheduler.state || supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
+        else if (!self.clusterStatusData.supervisors[i].data.jobscheduler.state || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() != 'running') {
           sClassRunning = 'text-warn';
         }
 
         let colorClass = 'text-warn', permissionClass = 'hide';
 
-        if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
-          colorClass = supervisor.data.jobscheduler.state._text === 'RUNNING' ? 'text-success' : supervisor.data.jobscheduler.state._text == 'STOPPED' ? 'text-danger' :
-            (supervisor.data.jobscheduler.state._text == 'STOPPING' || supervisor.data.jobscheduler.state._text == 'STARTING' || supervisor.data.jobscheduler.state._text == 'TERMINATING' || supervisor.data.jobscheduler.state._text == 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
+          colorClass = self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'RUNNING' ? 'text-success' : self.clusterStatusData.supervisors[i].data.jobscheduler.state._text == 'STOPPED' ? 'text-danger' :
+            (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text == 'STOPPING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text == 'STARTING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text == 'TERMINATING' || self.clusterStatusData.supervisors[i].data.jobscheduler.state._text == 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
         }
 
         if (self.permission.JobschedulerMaster.execute.restart.terminate || self.permission.JobschedulerMaster.execute.restart.abort || self.permission.JobschedulerMaster.execute.abort ||
@@ -483,7 +480,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           continueClass = 'hide', mainlogClass = 'hide', removeClass = 'hide', restartTerminateClass = 'hide',
           disableLink = '';
 
-        if (supervisor.data.jobscheduler.state._text != 'RUNNING' && supervisor.data.jobscheduler.state._text != 'PAUSED' && supervisor.data.jobscheduler.state._text != 'WAITING_FOR_ACTIVATION') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'RUNNING' && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'PAUSED' && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text != 'WAITING_FOR_ACTIVATION') {
           disableLink = 'disable-link';
         }
         if (self.permission.JobschedulerMaster.execute.terminate) {
@@ -496,10 +493,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         if (self.permission.JobschedulerMaster.execute.restart.abort) {
           restartAbortClass = 'show';
         }
-        if (self.permission.JobschedulerMaster.execute.pause && supervisor.data.jobscheduler.state._text !== 'PAUSED') {
+        if (self.permission.JobschedulerMaster.execute.pause && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text !== 'PAUSED') {
           pauseClass = 'show';
         }
-        if (self.permission.JobschedulerMaster.execute.continue && supervisor.data.jobscheduler.state._text === 'PAUSED') {
+        if (self.permission.JobschedulerMaster.execute.continue && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text === 'PAUSED') {
           continueClass = 'show';
         }
         if (self.permission.JobschedulerMaster.execute.restart.terminate) {
@@ -512,92 +509,92 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           removeClass = 'show';
         }
 
-        self.translate.get(supervisor.data.jobscheduler.state._text).subscribe(translatedValue => {
+        self.translate.get(self.clusterStatusData.supervisors[i].data.jobscheduler.state._text).subscribe(translatedValue => {
           status = translatedValue;
         });
 
-        self.lastId = supervisor.host + supervisor.port;
+        self.lastId = self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port;
 
         self.template = self.template +
           ' <div class="cluster-rect" ' +
-          'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
-          '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
+          'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '">' +
+          '<span id="' + 'sp' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '"  class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
           '</span> <span class="pull-right"><div class="btn-group dropdown" >' +
           '<a href class="hide more-option ' + permissionClass + '" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
           '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
-          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + sIndex + '">' + terminateBtn + '</a>' +
-          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWith-' + sIndex + '">' + terminateWithinBtn + '</a>' +
-          '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + sIndex + '">' + abortBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + sIndex + '">' + abortAndRestartBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + sIndex + '">' + terminateAndRestartBtn + '</a>' +
-          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + sIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
-          '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__supervisor-pause-' + sIndex + '">' + pauseBtn + '</a>' +
-          '<a class="hide dropdown-item ' + continueClass + '" id="' + '__supervisor-continue-' + sIndex + '">' + continueBtn + '</a>' +
-          '<a class="hide dropdown-item ' + removeClass + '" id="' + '__supervisor-remove-' + sIndex + '">' + removeInstanceBtn + '</a>' +
-          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-download-' + sIndex + '">' + downloadLogBtn + '</a>' +
+          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + i + '">' + terminateBtn + '</a>' +
+          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWith-' + i + '">' + terminateWithinBtn + '</a>' +
+          '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + i + '">' + abortBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + i + '">' + abortAndRestartBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + i + '">' + terminateAndRestartBtn + '</a>' +
+          '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestartWith-' + i + '">' + terminateAndRestartWithinBtn + '</a>' +
+          '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__supervisor-pause-' + i + '">' + pauseBtn + '</a>' +
+          '<a class="hide dropdown-item ' + continueClass + '" id="' + '__supervisor-continue-' + i + '">' + continueBtn + '</a>' +
+          '<a class="hide dropdown-item ' + removeClass + '" id="' + '__supervisor-remove-' + i + '">' + removeInstanceBtn + '</a>' +
+          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-download-' + i + '">' + downloadLogBtn + '</a>' +
           '</div>' +
           '</div></span></div>';
 
-        if (supervisor.data.jobscheduler.os) {
-          self.template = self.template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.os) {
+          self.template = self.template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + self.clusterStatusData.supervisors[i].data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + self.clusterStatusData.supervisors[i].jobschedulerId + '">' + self.clusterStatusData.supervisors[i].jobschedulerId +
             '</span></div>';
         } else {
-          self.template = self.template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+          self.template = self.template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + self.clusterStatusData.supervisors[i].jobschedulerId + '">' + self.clusterStatusData.supervisors[i].jobschedulerId +
             '</span></div>';
         }
-        self.template = self.template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + supervisor.host + ':' + supervisor.port +
+        self.template = self.template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + self.clusterStatusData.supervisors[i].host + ':' + self.clusterStatusData.supervisors[i].port +
           '</span></div>';
-        if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
           self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >+"labelState+"</span>: ' +
-            '<span class="text-sm ' + colorClass + '" id="' + 'state' + supervisor.host + supervisor.port + '">' + status + '</span></div>';
+            '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '">' + status + '</span></div>';
         } else {
           self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >+"labelState+"</span>: ' +
-            '<span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '"></span></div>';
+            '<span id="' + 'state' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '" class="' + sClassRunning + '"></span></div>';
         }
         self.template = self.template + '</div>';
         let masterTemplate = '';
-        supervisor.masters.forEach(function (master, index) {
+        for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
           self.mLeft = self.mLeft + self.margin;
-          if (sIndex !== 0 || index > 0) {
+          if (i !== 0 || j > 0) {
             self.mLeft = self.mLeft + self.rWidth;
           }
           let name = 'JobScheduler ';
           self.top = self.rHeight + self.vMargin;
-          if (supervisor.masters.length - 1 == index) {
+          if (self.clusterStatusData.supervisors[i].masters.length - 1 == j) {
             c = "cluster-rect ";
           }
-          if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
+          if (new Date().getTime() - new Date(self.clusterStatusData.supervisors[i].masters[j].surveyDate).getTime() < 2000) {
             c = c + " yellow-border";
           }
-          if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-            if (master.clusterType.precedence == 0) {
+          if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type == 'PASSIVE') {
+            if (self.clusterStatusData.supervisors[i].masters[j].clusterType.precedence == 0) {
               name = 'PRIMARY';
             } else {
               name = 'BACKUP';
             }
 
-          } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
-            name = 'JobScheduler JS' + (index + 1);
+          } else if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type == 'ACTIVE') {
+            name = 'JobScheduler JS' + (j + 1);
           }
-          if (master.clusterType._type == "PASSIVE" && !master.state) {
-            master.state = {};
-            master.state._text = ' ';
+          if (self.clusterStatusData.supervisors[i].masters[j].clusterType._type == "PASSIVE" && !self.clusterStatusData.supervisors[i].masters[j].state) {
+            self.clusterStatusData.supervisors[i].masters[j].state = {};
+            self.clusterStatusData.supervisors[i].masters[j].state._text = ' ';
           }
 
-          self.lastId = master.host + master.port;
+          self.lastId = self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port;
 
-          masterTemplate = drawSchedulerDiagram(master, name, c, index, sIndex);
+          masterTemplate = drawSchedulerDiagram(self.clusterStatusData.supervisors[i].masters[j], name, c, j, i);
 
-          if (index == 0) {
+          if (j == 0) {
             self.template = self.template + '<div id="masterContainer">' + masterTemplate;
-          } else if (supervisor.masters.length - 1 == index) {
+          } else if (self.clusterStatusData.supervisors[i].masters.length - 1 == j) {
             self.template = self.template + masterTemplate + '</div>';
           } else {
             self.template = self.template + masterTemplate;
           }
 
-          if (self.clusterStatusData.supervisors.length - 1 == sIndex && supervisor.masters.length - 1 == index) {
+          if (self.clusterStatusData.supervisors.length - 1 == i && self.clusterStatusData.supervisors[i].masters.length - 1 == j) {
             if (self.clusterStatusData.members.masters.length > 0) {
               drawFlowForRemainings(false);
             } else if (self.clusterStatusData.database) {
@@ -607,8 +604,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
               self.loadComponent();
             }
           }
-        })
-      })
+        }
+      }
     }
 
     function drawSchedulerDiagram(master, name, c, index, pIndex): any {
@@ -711,44 +708,43 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     function drawFlowForRemainings(zeroSupervisor) {
-
-      self.clusterStatusData.members.masters.forEach(function (master, index) {
-        if (master) {
+      for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
+        if (self.clusterStatusData.members.masters[i]) {
           let c = "cluster-rect";
-          if (zeroSupervisor && index == 0) {
+          if (zeroSupervisor && i == 0) {
             self.mLeft = self.mLeft + self.margin;
           } else {
             self.mLeft = self.mLeft + self.margin + self.rWidth;
           }
 
-          if (self.clusterStatusData.members.masters - 1 == index) {
+          if (self.clusterStatusData.members.masters - 1 == i) {
             c = "cluster-rect";
           }
-          if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
+          if (new Date().getTime() - new Date(self.clusterStatusData.members.masters[i].surveyDate).getTime() < 2000) {
             c = c + " yellow-border";
           }
           let name = '';
-          if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-            if (master.clusterType.precedence == 0) {
+          if (self.clusterStatusData.members.masters[i].clusterType && self.clusterStatusData.members.masters[i].clusterType._type == 'PASSIVE') {
+            if (self.clusterStatusData.members.masters[i].clusterType.precedence == 0) {
               name = 'PRIMARY';
             } else {
               name = 'BACKUP';
             }
 
-          } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
-            name = 'JobScheduler JS' + (index + 1);
+          } else if (self.clusterStatusData.members.masters[i].clusterType && self.clusterStatusData.members.masters[i].clusterType._type == 'ACTIVE') {
+            name = 'JobScheduler JS' + (i + 1);
           }
 
-          self.lastId = master.host + master.port;
-          let masterTemplate = drawSchedulerDiagram(master, name, c, index, 99);
+          self.lastId = self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port;
+          let masterTemplate = drawSchedulerDiagram(self.clusterStatusData.members.masters[i], name, c, i, 99);
 
-          if (index == 0) {
+          if (i == 0) {
             self.template = self.template + '<div  id="masterContainer">' + masterTemplate;
           }
           else {
             self.template = self.template + masterTemplate;
           }
-          if (self.clusterStatusData.members.masters.length - 1 == index) {
+          if (self.clusterStatusData.members.masters.length - 1 == i) {
             if (self.clusterStatusData.database) {
               drawFlowForDatabase();
             } else {
@@ -757,7 +753,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             }
           }
         }
-      })
+      }
     }
 
     function drawFlowForDatabase() {
@@ -781,46 +777,48 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     function alignToCenter() {
-      let containerCt = $("#divClusterStatusWidget").height() / 2;
-      let containerHCt = $("#divClusterStatusWidget").width() / 2;
+      let dom = $("#divClusterStatusWidget");
+      if (!dom) {
+        return;
+      }
+      let containerCt = dom.height() / 2;
+      let containerHCt = dom.width() / 2;
       let diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px', '')) + $("#database").width() - self.margin) / 2;
       let diagramCt = (document.getElementById(self.lastId).offsetTop + document.getElementById(self.lastId).clientHeight + self.vMargin / 2) / 2;
       if (containerCt > diagramCt || containerHCt > diagramHCt) {
-        var diff = (containerCt - diagramCt);
-        var diffH = (containerHCt - diagramHCt);
-        self.clusterStatusData.supervisors.forEach(function (supervisor, sIndex) {
+        let diff = (containerCt - diagramCt);
+        let diffH = (containerHCt - diagramHCt);
+        for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
           if (diff > 0) {
-            document.getElementById(supervisor.host + supervisor.port).style.top =
-              parseInt(document.getElementById(supervisor.host + supervisor.port).style.top.replace('px', '')) + diff + 'px';
+            document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.top =
+              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.top.replace('px', '')) + diff + 'px';
           }
           if (diffH > 0) {
-            document.getElementById(supervisor.host + supervisor.port).style.left =
-              parseInt(document.getElementById(supervisor.host + supervisor.port).style.left.replace('px', '')) + diffH + 'px';
+            document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.left =
+              parseInt(document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port).style.left.replace('px', '')) + diffH + 'px';
           }
-
-          supervisor.masters.forEach(function (master, index) {
+          for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
             if (diff > 0) {
-              document.getElementById(master.host + master.port).style.top =
-                parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
+              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.top =
+                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.top.replace('px', '')) + diff + 'px';
             }
             if (diffH > 0) {
-              document.getElementById(master.host + master.port).style.left =
-                parseInt(document.getElementById(master.host + master.port).style.left.replace('px', '')) + diff + 'px';
+              document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left =
+                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left.replace('px', '')) + diff + 'px';
             }
-          })
-        });
-
-        self.clusterStatusData.members.masters.forEach(function (master, index) {
+          }
+        }
+        for (let j = 0; j < self.clusterStatusData.members.masters.length; j++) {
           if (diff > 0) {
-            document.getElementById(master.host + master.port).style.top =
-              parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
+            document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.top =
+              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.top.replace('px', '')) + diff + 'px';
           }
           if (diffH > 0) {
-            document.getElementById(master.host + master.port).style.left =
-              parseInt(document.getElementById(master.host + master.port).style.left.replace('px', '')) + diff + 'px';
+            document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left =
+              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left.replace('px', '')) + diff + 'px';
           }
 
-        });
+        }
         if (diff > 0) {
           document.getElementById('database').style.top =
             parseInt(document.getElementById('database').style.top.replace('px', '')) + diff + 'px';
@@ -835,7 +833,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   private drawConnections() {
-    let self = this;
+    const self = this;
     let dLLeft = 0;
     let dLTop = 0;
     let dTop = 0;
@@ -848,9 +846,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     if (self.clusterStatusData.supervisors.length <= 0) {
       drawForRemainings();
     }
-    self.clusterStatusData.supervisors.forEach(function (supervisor, sIndex) {
+
+    for(let i=0; i<self.clusterStatusData.supervisors.length;i++ ){
+
       let clusterStatusContainer = document.getElementById('clusterStatusContainer');
-      let supervisorRect = document.getElementById(supervisor.host + supervisor.port);
+      let supervisorRect = document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port);
       if (!supervisorRect) {
         return;
       }
@@ -865,9 +865,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let databaseRect = document.getElementById('database');
       dTop = databaseRect.offsetTop;
       dLeft = databaseRect.offsetLeft;
-
-      supervisor.masters.forEach(function (master, index) {
-        let masterRect = document.getElementById(master.host + master.port);
+      for(let j=0; j<self.clusterStatusData.supervisors[i].masters.length;j++ ){
+        let masterRect = document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port);
 
         let mLeft = masterRect.offsetLeft;
         let mTop = masterRect.offsetTop;
@@ -886,7 +885,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
         let node1 = document.createElement('div');
         dLLeft = mLeft + sWidth / 2;
-        if (index != 0) {
+        if (j != 0) {
           dLTop = dLTop - 10;
         } else {
           dLTop = dTop + databaseRect.clientHeight / 2;
@@ -897,10 +896,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           databaseRect.style.setProperty('top', databaseRect.offsetTop - 10 + 'px');
         }
 
-        let border = master.state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
+        let border = self.clusterStatusData.supervisors[i].masters[j].state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
 
         node1.setAttribute('class', 'h-line');
-        node1.setAttribute('id', '&&' + master.host + master.port + '&&database01');
+        node1.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '&&database01');
         node1.style.setProperty('top', dLTop + 'px');
         node1.style.setProperty('left', dLLeft + 'px');
         node1.style.setProperty('width', dLeft - mLeft - sWidth / 2 + 'px');
@@ -908,7 +907,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         clusterStatusContainer.appendChild(node1);
 
         let node2 = document.createElement('div');
-        node2.setAttribute('id', '&&' + master.host + master.port + '&&database02');
+        node2.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '&&database02');
         node2.setAttribute('class', 'h-line ');
         node2.style.setProperty('top', dLTop + 'px');
         node2.style.setProperty('left', dLLeft + 'px');
@@ -919,11 +918,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
         let lNoConnection = '#D9D9D9';
 
-        if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
           lNoConnection = '#eb8814';
         }
         let node3 = document.createElement('div');
-        node3.setAttribute('id', '&&' + supervisor.host + supervisor.port + '&&' + master.host + master.port + '01');
+        node3.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '01');
         node3.setAttribute('class', 'h-line');
         node3.style.setProperty('top', top + 'px');
         node3.style.setProperty('left', left + 'px');
@@ -934,7 +933,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           left = left + width;
         }
         let node4 = document.createElement('div');
-        node4.setAttribute('id', '&&' + supervisor.host + supervisor.port + '&&' + master.host + master.port + '02');
+        node4.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '02');
         node4.setAttribute('class', 'h-line');
         node4.style.setProperty('top', top + 'px');
         node4.style.setProperty('left', left + 'px');
@@ -946,7 +945,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           left = left - offset;
         }
         let node5 = document.createElement('div');
-        node5.setAttribute('id', '&&' + supervisor.host + supervisor.port + '&&' + master.host + master.port + '03');
+        node5.setAttribute('id', '&&' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '&&' + self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port + '03');
         node5.setAttribute('class', 'h-line');
         node5.style.setProperty('top', top + height + 'px');
         node5.style.setProperty('left', left + 'px');
@@ -955,19 +954,18 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         node5.style.setProperty('border', '1px solid ' + lNoConnection);
         clusterStatusContainer.appendChild(node5);
 
-        if (index == supervisor.masters.length - 1) {
+        if (j == self.clusterStatusData.supervisors[i].masters.length - 1) {
           drawForRemainings();
         }
-      })
-    });
+      }
+    }
 
     function drawForRemainings() {
       if (!self.clusterStatusData.members) {
         return;
       }
-
-      self.clusterStatusData.members.masters.forEach(function (master, index) {
-        let masterRect = document.getElementById(master.host + master.port);
+  for(let i=0; i<self.clusterStatusData.members.masters.length;i++ ){
+        let masterRect = document.getElementById(self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port);
         if (masterRect) {
           clearInterval(self.interval)
         }
@@ -997,11 +995,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           dLTop = dLTop - 10;
         }
 
-        let border = master.state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
+        let border = self.clusterStatusData.members.masters[i].state._text === 'UNREACHABLE' ? '1px dashed #f44455' : '1px dashed #D9D9D9';
 
 
         let node = document.createElement('div');
-        node.setAttribute('id', '&&' + master.host + master.port + '&&database01');
+        node.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port + '&&database01');
         node.setAttribute('class', 'h-line');
 
         node.style.setProperty('top', dLTop + 'px');
@@ -1012,7 +1010,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         clusterStatusContainer.appendChild(node);
 
         let node2 = document.createElement('div');
-        node2.setAttribute('id', '&&' + master.host + master.port + '&&database02');
+        node2.setAttribute('id', '&&' + self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port + '&&database02');
         node2.setAttribute('class', 'h-line');
         node2.style.setProperty('top', dLTop + 'px');
         node2.style.setProperty('left', dLLeft + 'px');
@@ -1021,7 +1019,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         node2.style.setProperty('border', border);
         clusterStatusContainer.appendChild(node2);
 
-      })
+      }
     }
   }
 

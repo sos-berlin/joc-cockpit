@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CoreService } from '../../services/core.service';
 
 import * as _ from 'underscore';
-declare var $;
+declare const $;
 
 @Component({
     selector: 'ngbd-modal-content',
@@ -74,7 +74,7 @@ export class TreeModal implements OnInit,OnDestroy {
     this.tree = output;
 
     setTimeout(function () {
-      const node = self.treeCtrl.treeModel.getNodeById(1);
+      let node = self.treeCtrl.treeModel.getNodeById(1);
       node.expand();
     }, 10)
   }

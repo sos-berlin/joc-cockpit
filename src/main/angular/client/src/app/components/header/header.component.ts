@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
+import { AuthService } from '../guard';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 
-declare var $ :any;
+declare const $;
 
 @Component({
   selector: 'app-header',
@@ -18,10 +18,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     permission:any = {};
     username:string = '';
     timeout:any;
-    eventId:any;
+    eventId:string;
     eventLoading:boolean = false;
     switchScheduler:boolean = false;
-    allEvents:any;
+    allEvents:any = [];
     eventsRequest:any = [];
     events:any = [];
     allSessionEvent:any = {};
@@ -53,7 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.schedulerIds = JSON.parse(this.authService.scheduleIds);
       if (sessionStorage.preferences)
         this.preferences = JSON.parse(sessionStorage.preferences);
-      this.permission = JSON.parse(this.authService.permission);
+      this.permission = JSON.parse(this.authService.permission) || {};
     }
 
     ngOnDestroy() {
@@ -218,7 +218,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 }
                 this.switchScheduler = false;
             }, (err) => {
-                if (!this.isLogout && err && (err.status == 420 || err.status == 434)) {
+            
+                if (!this.isLogout && err && (err.status == 420 || err.status == 434 || err.status == 504)) {
                     this.timeout = setTimeout(()=> {
                         this.eventLoading = false;
                         this.getEvents(this.schedulerIds.jobschedulerIds);

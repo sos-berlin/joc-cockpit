@@ -1,7 +1,7 @@
 import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angular/core';
 import { CoreService } from '../../services/core.service';
 import { SaveService } from '../../services/save.service';
-import { AuthService } from '../../components/guard/auth.service';
+import { AuthService } from '../../components/guard';
 import { DataService } from '../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -10,7 +10,7 @@ import {EditFilterModal} from "../../components/filter-modal/filter.component";
 
 import * as moment from 'moment';
 import * as _ from 'underscore';
-declare var $;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -19,8 +19,8 @@ declare var $;
 
 export class FilterModal implements OnInit {
   schedulerIds: any = {};
-  preferences: any = {};
-  permission: any = {};
+  preferences: any  = {};
+  permission: any  = {};
 
   @Input() allFilter;
   @Input() new;
@@ -33,9 +33,9 @@ export class FilterModal implements OnInit {
   }
 
   ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -225,9 +225,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.adtLog = this.coreService.getAuditLogTab();
     this.load(null);

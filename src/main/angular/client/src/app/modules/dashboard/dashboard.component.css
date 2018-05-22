@@ -1,8 +1,6 @@
 .gridster {
-  height: 96pc;
   margin: 0;
   padding: 0;
-  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   -webkit-user-select: none;
@@ -15,28 +13,14 @@ gridster {
     background: transparent;
 }
 
-.small-gridster-panel{
-     height: 142px !important;
-}
-.smallest-gridster-panel{
-    height: 160px !important;
-    /* top:calc(top + 32px) !important; */
-}
-.smallgridster-panel-9{
-    font-size: 9px;
-}
-.set-height{
-    height: auto !important;
-}
-
 gridster-item {
     -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important;
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05) !important;
     z-index: unset !important;
 }
-gridster-item[style]{
-    overflow: visible !important;
-    z-index: unset !important;
+gridster-item[style] {
+  overflow: visible !important;
+  z-index: unset !important;
 }
 
 :host {

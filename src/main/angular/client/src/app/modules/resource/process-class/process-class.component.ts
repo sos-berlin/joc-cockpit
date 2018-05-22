@@ -20,16 +20,16 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
   loading: boolean;
-  schedulerIds: any;
+  schedulerIds: any = {};
   tree: any = [];
-  preferences: any;
-  permission: any;
+  preferences: any = {};
+  permission: any = {};
   pageView: any;
   processClasses: any = [];
   processFilters: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
-  process_class_expand_to: any;
+  process_class_expand_to: any = {};
 
   @ViewChild(TreeComponent) child;
 
@@ -37,10 +37,11 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
-      this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
+    this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
   }
+
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
@@ -76,14 +77,11 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-   this.processFilters = this.coreService.getResourceTab().processClasses;
+    this.processFilters = this.coreService.getResourceTab().processClasses;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views)
       this.pageView = JSON.parse(localStorage.views).processClass;
 
@@ -138,8 +136,9 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private navigatePath(data) {
-    if (this.process_class_expand_to) {
-      let self = this;
+     const self = this;
+    if (this.process_class_expand_to && self.child) {
+
       let node = self.child.getNodeById(data.id);
       if (self.process_class_expand_to.path.indexOf(data.path) != -1) {
         node.expand();
@@ -157,7 +156,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private expandTree() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       self.tree.forEach(function (data) {
         recursive(data);
@@ -165,7 +164,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded) {
+      if (data.isExpanded && self.child) {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
@@ -178,7 +177,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       const node = self.child.getNodeById(1);
       node.expand();
@@ -187,7 +186,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private getExpandTreeForUpdates(data, obj) {
-    let self = this;
+    const self = this;
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
@@ -262,7 +261,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
-    if($event.action === 'NODE')
+    if ($event.action === 'NODE')
       this.getProcessClass($event.data);
     else
       this.expandNode($event)

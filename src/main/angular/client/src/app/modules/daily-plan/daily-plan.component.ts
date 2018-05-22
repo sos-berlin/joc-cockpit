@@ -1,7 +1,7 @@
 import {Component, OnInit, Input,Output, OnDestroy, EventEmitter} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
-import {AuthService} from '../../components/guard/auth.service';
+import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {Subscription} from 'rxjs/Subscription';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
@@ -11,8 +11,8 @@ import {EditFilterModal} from '../../components/filter-modal/filter.component';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 
-declare var JSGantt: any;
-declare var $;
+declare const JSGantt: any;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -20,7 +20,7 @@ declare var $;
 })
 
 export class FilterModal implements OnInit {
-  schedulerIds: any = {};
+  schedulerIds: any  = {};
   preferences: any = {};
   permission: any = {};
 
@@ -35,9 +35,9 @@ export class FilterModal implements OnInit {
   }
 
   ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -69,7 +69,7 @@ export class FilterModal implements OnInit {
 })
 export class SearchComponent implements OnInit {
 
-  @Input() schedulerIds: any;
+  @Input() schedulerIds: any
   @Input() filter: any;
   @Input() preferences: any;
   @Input() allFilter: any;
@@ -152,8 +152,8 @@ export class SearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+    console.log(fromDate);
+    console.log(toDate);
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -247,10 +247,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private initConf() {
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
 
@@ -444,7 +444,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     if (this.savedFilter.selected) {
       let flag = true;
-      let self = this;
+      const self = this;
       this.filterList.forEach(function (value) {
         if (value.id == self.savedFilter.selected) {
           flag = false;
@@ -521,8 +521,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private sortByKey(array, key, order) {
-    let reA = /[^a-zA-Z]/g;
-    let self = this;
+    const reA = /[^a-zA-Z]/g;
+    const self = this;
     if (key == 'processedPlanned' || key == 'orderId') {
       return array.sort(function (x, y) {
         let key1 = key == 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;

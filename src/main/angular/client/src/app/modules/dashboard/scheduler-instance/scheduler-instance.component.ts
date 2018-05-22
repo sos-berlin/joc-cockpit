@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 import * as _ from 'underscore';
@@ -20,6 +20,14 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
       if (res)
         this.refresh(res);
     });
+  }
+
+  ngOnInit() {
+    this.getInstances();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   refresh(args) {
@@ -47,7 +55,7 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     }
     if (result) {
       for (let i = 0; i < result.masters.length; i++) {
-        if(this.authService.getPermission(result.masters[i].jobschedulerId))
+        if (this.authService.getPermission(result.masters[i].jobschedulerId))
           result.masters[i].permission = this.authService.getPermission(result.masters[i].jobschedulerId).JobschedulerMaster;
         if (res) {
           for (let j = 0; j < res.masters.length; j++) {
@@ -63,7 +71,7 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     } else {
 
       for (let i = 0; i < res.masters.length; i++) {
-        if(this.authService.getPermission(res.masters[i].jobschedulerId))
+        if (this.authService.getPermission(res.masters[i].jobschedulerId))
           res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;
         this.mastersList.push(res.masters[i]);
       }
@@ -88,17 +96,8 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     }).subscribe(result => {
       this.getVolatile(result);
     }, (err) => {
-      console.log(err)
       this.getVolatile(null);
     });
-  }
-
-  ngOnInit() {
-    this.getInstances();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   changeScheduler(id) {

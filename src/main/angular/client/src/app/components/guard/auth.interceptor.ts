@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { tap } from 'rxjs/operators';
-import { AuthService } from '../guard/auth.service';
+import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from 'ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 
 @Injectable()

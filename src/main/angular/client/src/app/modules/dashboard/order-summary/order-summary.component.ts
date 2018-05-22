@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 
@@ -51,6 +51,10 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     this.getSummary();
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   getSummary(): void {
     this.coreService.post('orders/overview/summary', {
       jobschedulerId: this.schedulerIds.selected,
@@ -74,10 +78,6 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       this.orderSummary = res;
     });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   showOrderSummary(trye) {

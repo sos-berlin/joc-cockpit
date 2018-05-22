@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard/auth.service';
-import { TranslateService } from 'ng2-translate';
+import { AuthService } from '../../components/guard';
+import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment-timezone';
 import * as jstz from 'jstz';
@@ -69,11 +69,7 @@ export class UserComponent implements OnInit {
   }
 
   setIds() {
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    } else {
-      this.schedulerIds = {};
-    }
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
   }
 
   setPreferences() {
@@ -167,8 +163,10 @@ export class UserComponent implements OnInit {
     }
 
     // $rootScope.$broadcast('reloadPreferences');
-    // if (reload)
-    // $rootScope.$broadcast('reloadDate');
+    if (reload){
+      // $rootScope.$broadcast('reloadDate');
+    }
+
     this.savePreferences();
   }
 

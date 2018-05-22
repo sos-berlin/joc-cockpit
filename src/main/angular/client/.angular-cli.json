@@ -9,9 +9,9 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "i18n",
         "styles",
         "favicon.ico",
+        "workflow.json",
         "version.json"
       ],
       "index": "index.html",

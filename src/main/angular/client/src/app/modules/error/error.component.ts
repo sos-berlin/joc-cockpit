@@ -17,7 +17,7 @@ export class ErrorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.error = 'API error';
+    this.error = sessionStorage.errorMsg;
   }
 
   logout() {

@@ -4,7 +4,7 @@ import { CoreService } from '../../../services/core.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToasterService } from 'angular2-toaster';
-import { TranslateService } from 'ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../data.service';
 import { DeleteModal } from '../../../components/delete-modal/delete.component';
 import * as _ from 'underscore';

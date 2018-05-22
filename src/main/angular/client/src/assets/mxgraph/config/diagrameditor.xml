@@ -2,7 +2,6 @@
 	<include name="./assets/mxgraph/config/editor-commons.xml"/>
 	<ui>
 		<add as="graph" element="graph"/>
-		<add as="status" element="status"/>
 		<add as="toolbar" element="toolbar"/>
 	</ui>
 	<Array as="templates">
@@ -12,7 +11,7 @@
 			</Group>
 		</add>
 		<add as="connector">
-			<Connector label="" >
+			<Connector label="" type="">
 				<mxCell edge="1">
 					<mxGeometry as="geometry" relative="1"/>
 				</mxCell>
@@ -26,7 +25,7 @@
 			</Container>
 		</add>
 		<add as="rectangle">
-			<Rect label="Job" >
+			<Rect label="rectangle" >
 				<mxCell vertex="1">
 					<mxGeometry as="geometry" width="120" height="60"/>
 				</mxCell>
@@ -40,30 +39,38 @@
 			</Text>
 		</add>
 		<add as="rounded">
-			<Job label="Job" title="" agent="">
+			<Job path="/Job" title="" agent="" >
 				<mxCell vertex="1" style="rounded">
-					<mxGeometry as="geometry" width="140" height="40"/>
+					<mxGeometry as="geometry" width="200" height="50"/>
 				</mxCell>
 			</Job>
 		</add>
 		<add as="shape">
 			<Process label="Process" >
 				<mxCell vertex="1" style="ellipse">
-					<mxGeometry as="geometry" width="70" height="70"/>
+					<mxGeometry as="geometry" width="80" height="60"/>
 				</mxCell>
 			</Process>
 		</add>
 		<add as="If">
-			<If label="If">
+			<If predicate="returnCode > 0">
 				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="70" height="70"/>
+					<mxGeometry as="geometry" width="150" height="70"/>
 				</mxCell>
 			</If>
 		</add>
+                <add as="Retry">
+                        <Retry predicate="returnCode > 0" maxSteps="10" delay="0">
+                                <mxCell vertex="1">
+                                        <mxGeometry as="geometry" width="200" height="90"/>
+                                </mxCell>
+                        </Retry>
+                </add>
+	
 		<add as="Exit">
-			<Exit label="Exit">
+			<Exit label="Exit" returnCode="">
 				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="70" height="70"/>
+					<mxGeometry as="geometry" width="60" height="60"/>
 				</mxCell>
 			</Exit>
 		</add>
@@ -74,45 +81,25 @@
 				</mxCell>
 			</Fork>
 		</add>
-		<add as="Setback">
-			<Setback label="Setback" maxSteps="" delay="">
-				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="70" height="70"/>
-				</mxCell>
-			</Setback>
-		</add>
-		<add as="Await">
-			<Await label="Await">
-				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="70" height="70"/>
-				</mxCell>
-			</Await>
-		</add>
-		<add as="Merge">
-			<Merge label="Merge">
-				<mxCell vertex="1">
-					<mxGeometry as="geometry" width="70" height="70"/>
-				</mxCell>
-			</Merge>
-		</add>
-		<add as="actor">
-			<Shape label="Instruction" >
-				<mxCell vertex="1" style="actor">
-					<mxGeometry as="geometry" width="60" height="80"/>
-				</mxCell>
-			</Shape>
-		</add>
-		<add as="cloud">
-			<Shape label="Shape" >
-				<mxCell vertex="1" style="cloud">
-					<mxGeometry as="geometry" width="80" height="60"/>
-				</mxCell>
-			</Shape>
-		</add>
+	    <add as="Join">
+      <Join label="Join">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Join>
+    </add>
+    <add as="Await">
+      <Await label="Await">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Await>
+    </add>
+
 		<add as="symbol">
 			<Symbol label="Instruction" description="" >
 				<mxCell vertex="1" style="symbol;image=images/symbols/event.png">
-					<mxGeometry as="geometry" width="48" height="48"/>
+					<mxGeometry as="geometry" width="70" height="70"/>
 				</mxCell>
 			</Symbol>
 		</add>
@@ -173,9 +160,10 @@
 				<add as="align" value="center"/>
 				<add as="verticalAlign" value="middle"/>
 				<add as="shadow" value="1"/>
-				<add as="strokeColor" value="#C3D9FF"/>
-				<add as="fillColor" value="#C3D9FF"/>
-				<add as="gradientColor" value="white"/></add>
+				<add as="strokeColor" value="#333333"/>
+				<add as="fillColor" value="#ffffff"/>
+				<add as="gradientColor" value="white"/>
+			</add>
 			<add as="group">
 				<add as="shape" value="rectangle"/>
 				<add as="perimeter" value="rectanglePerimeter"/>
@@ -183,20 +171,23 @@
 				<add as="align" value="center"/>
 				<add as="verticalAlign" value="middle"/>
 				<add as="strokeColor" value="gray"/>
-				<add as="dashed" value="1"/></add>
+				<add as="dashed" value="1"/>
+			</add>
 			<add as="defaultEdge">
 				<add as="shape" value="connector"/>
-				<add as="fontSize" value="11"/>
+				<add as="fontSize" value="12"/>
 				<add as="align" value="center"/>
-				<add as="verticalAlign" value="middle"/>
+				<add as="verticalAlign" value="center"/>
 				<add as="rounded" value="1"/>
-				<add as="labelBackgroundColor" value="white"/>
+				<add as="labelBackgroundColor" value="#fafafa"/>
 				<add as="strokeColor" value="#36393D"/>
 				<add as="strokeWidth" value="1"/>
 				<add as="edgeStyle" value="elbowEdgeStyle"/>
-				<add as="endArrow" value="classic"/></add>
+				<add as="endArrow" value="classic"/>
+			</add>
 			<add as="verticalConnector">
-				<add as="elbow" value="vertical"/></add>
+				<add as="elbow" value="vertical"/>
+			</add>
 			<add as="straightConnector">
 				<add as="shape" value="connector"/>
 				<add as="endArrow" value="classic"/>
@@ -214,8 +205,7 @@
 				<add as="startSize" value="23"/>
 				<add as="align" value="center"/>
 				<add as="verticalAlign" value="top"/>
-				<add as="strokeColor" value="#EEEEEE"/>
-				<add as="fillColor" value="#D4D4D4"/></add>
+			</add>
 			<add as="rounded">
 				<add as="rounded" value="1"/>
 				<add as="shape" value="label"/>
@@ -225,15 +215,13 @@
 			<add as="ellipse">
 				<add as="shape" value="ellipse"/>
 				<add as="perimeter" value="ellipsePerimeter"/>
-				<add as="strokeColor" value="#CDEB8B"/>
-				<add as="fillColor" value="#CDEB8B"/></add>
+			</add>
 			<add as="doubleEllipse" extend="ellipse">
 				<add as="shape" value="doubleEllipse"/></add>
 			<add as="rhombus">
 				<add as="shape" value="rhombus"/>
 				<add as="perimeter" value="rhombusPerimeter"/>
-				<add as="strokeColor" value="#FFCF8A"/>
-				<add as="fillColor" value="#FFCF8A"/></add>
+			</add>
 			<add as="triangle" extend="rhombus">
 				<add as="shape" value="triangle"/>
 				<add as="perimeter" value="trianglePerimeter"/>
@@ -242,22 +230,16 @@
 				<add as="shape" value="hexagon"/></add>
 			<add as="actor">
 				<add as="shape" value="actor"/>
-				<add as="strokeColor" value="#FFC7C7"/>
-				<add as="fillColor" value="#FFC7C7"/></add>
+
+			</add>
 			<add as="cloud">
 				<add as="shape" value="cloud"/>
 				<add as="perimeter" value="ellipsePerimeter"/>
-				<add as="strokeColor" value="#CDEB8B"/>
-				<add as="fillColor" value="#CDEB8B"/></add>
-			<add as="cylinder">
-				<add as="shape" value="cylinder"/>
-				<add as="spacingTop" value="10"/>
-				<add as="strokeColor" value="#4096EE"/>
-				<add as="fillColor" value="#4096EE"/></add>
+			</add>
 			<add as="symbol">
 				<add as="shape" value="image"/>
 				<add as="perimeter" value="rectanglePerimeter"/>
-				<add as="labelBackgroundColor" value="#FFCF8A"/>
+				<add as="labelBackgroundColor" value="#e8e8e8"/>
 				<add as="fontSize" value="12"/>
 				<add as="align" value="center"/>
 				<add as="verticalAlign" value="top"/>
@@ -317,13 +299,13 @@
 		<hr/>
 		<add as="Job" template="rounded" icon="./assets/mxgraph/images/rounded.gif"/>
 		<add as="Process" template="shape" style="ellipse" icon="./assets/mxgraph/images/ellipse.gif"/>
-		<add as="Setback" template="Setback" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
-		<add as="Hexagon" template="cloud" style="hexagon" icon="./assets/mxgraph/images/hexagon.gif"/>
+		<add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
+
 		<hr/>
-		<add as="If" template="If" style="symbol;image=./assets/mxgraph/images/symbols/inclusive.png" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
+		<add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
 		<add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png" icon="./assets/mxgraph/images/symbols/small_timer.gif"/>
 		<add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png" icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
 		<add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png" icon="./assets/mxgraph/images/symbols/small_fork.gif"/>
-		<add as="Merge" template="Merge" style="symbol;image=./assets/mxgraph/images/symbols/merge.png" icon="./assets/mxgraph/images/symbols/small_merge.gif"/>
+		<add as="Join" template="Join" style="symbol;image=./assets/mxgraph/images/symbols/fork.png" icon="./assets/mxgraph/images/symbols/small_merge.gif"/>
 	</mxDefaultToolbar>
 </mxEditor>

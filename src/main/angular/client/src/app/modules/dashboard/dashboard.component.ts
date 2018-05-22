@@ -13,7 +13,7 @@ import {
 import { DataService } from "../../services/data.service";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
-declare var $;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -38,34 +38,23 @@ export class AddWidgetModal {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  options: GridsterConfig;
-  dashboard: any = [];
-  editLayoutObj: boolean = false;
-  schedulerIds: any = {};
-  preferences: any = {};
-  permission: any = {};
-  _tempDashboard: any = [];
-  dashboardLayout: any = [];
-  widgets: any = [];
+  options: GridsterConfig ={};
+  dashboard: Array<any> =[];
+  editLayoutObj = false;
+  schedulerIds: any ={};
+  preferences: any ={};
+  permission: any ={};
+  _tempDashboard: Array<any> =[];
+  dashboardLayout: Array<any> =[];
+  widgets: Array<any> =[];
   subscription: any;
 
-  isEventTriggering: boolean = false;
-  widgetArray: any = [];
-
   eventStop = () => {
-    this.isEventTriggering = true;
+
   };
 
   itemResize = (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => {
-    this.setEqualRowSpace(item, itemComponent);
-  };
 
-  gridInit = (grid: GridsterComponentInterface) => {
-    const self = this;
-    $(window).resize(function () {
-      self.checkWindowSize(grid);
-    });
-    self.checkWindowSize(grid);
   };
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
@@ -76,18 +65,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.init();
-    $('.linked1').scroll(function(){
-      $('.max-ht').scrollTop(($('.linked1').scrollTop()-140));
-    })
-
+    $('.gridster').height(window.innerHeight - 140 +'px')
   }
 
   private init() {
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    if(sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+
     this.initConfig(false);
     this.initWidgets();
   }
@@ -199,7 +185,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
-      initCallback: this.gridInit,
       itemResizeCallback: this.itemResize,
 
       margin: 22,
@@ -334,110 +319,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
   }
 
-  private setEqualRowSpace(item, itemComponent) {
-    let newRowIndex = parseInt(item.y) + parseInt(item.rows);
-    this.widgetArray = Object.assign([], this.dashboard);
-    let gridWidth = itemComponent.gridster.curWidth;
-    if ((itemComponent.width < 750) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
-
-    }
-    if ((itemComponent.width > 750) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
-      if (gridWidth > 1336) {
-        $('#' + item.name).removeClass('small-gridster-panel');
-      }
-      else {
-        $('#' + item.name).removeClass('smallest-gridster-panel');
-      }
-    }
-    let itemHeight = parseInt($('#' + item.name).css('height'));
-    if ((this.isEventTriggering) && (itemComponent.width < 750) && (itemHeight == itemComponent.height) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
-      if (gridWidth > 1336) {
-        $('#' + item.name).addClass('small-gridster-panel');
-      }
-      else {
-        $('#' + item.name).addClass('smallest-gridster-panel');
-      }
-      for (let j = 0; j < this.widgetArray.length; j++) {
-        if (this.widgetArray[j].y >= newRowIndex) {
-          let _tempId = this.widgetArray[j].name;
-
-          let itemTop = $('#' + _tempId).css('top');
-          let newTop;
-          if (gridWidth > 1336) {
-            newTop = parseInt(itemTop) + 16;
-          }
-          else {
-            newTop = parseInt(itemTop) + 32;
-          }
-
-          $('#' + _tempId).css('top', newTop + 'px');
-
-        }
-      }
-      this.isEventTriggering = false;
-    }
-
-    if ((this.isEventTriggering) && (itemComponent.width > 750) && (itemHeight > itemComponent.height) && (item.name == 'tasksOverview' || item.name == 'ordersOverview' || item.name == 'fileTransferOverview')) {
-      for (let j = 0; j < this.widgetArray.length; j++) {
-        if (this.widgetArray[j].y >= newRowIndex) {
-          let _tempId = this.widgetArray[j].name;
-          let itemTop = $('#' + _tempId).css('top');
-          let newTop;
-          if (gridWidth > 1336) {
-            newTop = parseInt(itemTop) - 16;
-          }
-          else {
-            newTop = parseInt(itemTop) - 32;
-          }
-          $('#' + _tempId).css('top', newTop + 'px');
-        }
-      }
-      this.isEventTriggering = false;
-    }
-  }
-
-
-  checkWindowSize(grid) {
-    if (grid.curWidth < 1200) {
-      for (let i = 0; i < this.widgetArray.length; i++) {
-        if (this.widgetArray[i].rows < 2) {
-          let _tempId3 = this.widgetArray[i].name;
-          $('#' + _tempId3).addClass('smallest-gridster-panel');
-        }
-      }
-      this.dashboard = this.widgetArray;
-    }
-    if (grid.curWidth > 1200) {
-      for (let i = 0; i < this.widgetArray.length; i++) {
-        if (this.widgetArray[i].rows < 2) {
-          let _tempId3 = this.widgetArray[i].name;
-          $('#' + _tempId3).removeClass('smallest-gridster-panel');
-        }
-      }
-    }
-
-    if (grid.curWidth < 1200) {
-      for (let i = 0; i < this.widgetArray.length; i++) {
-        let _tempId4 = this.widgetArray[i].name;
-        let _tempTop = $('#' + _tempId4).css('top');
-        let _tempHeight = $('#' + _tempId4).css('height');
-        let flag = $('#' + _tempId4).hasClass('smallest-gridster-panel');
-        let sum = _tempTop + _tempHeight;
-        let newRowIndex = parseInt(this.widgetArray[i].y) + parseInt(this.widgetArray[i].rows);
-        if (flag) {
-          for (let j = 0; j < this.widgetArray.length; j++) {
-            let nextTop = parseInt($('#' + this.widgetArray[j].name).css('top'));
-            if ((this.widgetArray[j].y >= newRowIndex) && (nextTop - sum != 22)) {
-              let _tempId5 = this.widgetArray[j].name;
-              let _tempTop2 = $('#' + _tempId5).css('top');
-              let newTop2 = parseInt(_tempTop2) + (32);
-              $('#' + this.widgetArray[j].name).css('color', 'red');
-              $('#' + this.widgetArray[j].name).css('top', newTop2 + 'px');
-            }
-          }
-          break;
-        }
-      }
-    }
-  }
 }

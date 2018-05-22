@@ -3,8 +3,9 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CoreService} from './services/core.service';
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import {TranslateModule} from 'ng2-translate';
+import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToasterModule} from 'angular2-toaster';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AppRoutingModule} from './app-routing.module';
@@ -12,6 +13,10 @@ import {AppComponent} from './app.component';
 import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AboutModal} from "./components/about-modal/about.component";
+
+export function createTranslateLoader(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -26,7 +31,13 @@ import {AboutModal} from "./components/about-modal/about.component";
     BrowserAnimationsModule,
     AppRoutingModule,
     ToasterModule.forRoot(),
-    TranslateModule.forRoot(),
+    TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            }
+        }),
     NgbModule.forRoot()
   ],
   providers: [

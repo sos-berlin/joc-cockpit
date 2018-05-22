@@ -65,11 +65,12 @@
         localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
         localStorage.removeItem('sessionStorage');
       } else if (event.key === 'sessionStorage' && !sessionStorage.length) {
-        // sessionStorage is empty -> fill it
-        var data = JSON.parse(event.newValue);
-        for (var key in data) {
-          sessionStorage.setItem(key, data[key]);
-        }
+       if(event.newValue) {
+        	var data = JSON.parse(event.newValue);
+        	for (var key in data) {
+          		sessionStorage.setItem(key, data[key]);
+        	}
+	}
       }
     });
 

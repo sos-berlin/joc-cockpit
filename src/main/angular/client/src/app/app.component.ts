@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { TranslateService } from 'ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import { ToasterConfig} from 'angular2-toaster';
 
-declare var $;
+declare const $;
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,8 @@ declare var $;
 export class AppComponent {
 
   public config: ToasterConfig = new ToasterConfig({
-    positionClass: 'toast-top-center'
+    positionClass: 'toast-top-center',
+    limit: 2
   });
 
   constructor(public translate: TranslateService) {
@@ -27,7 +28,6 @@ export class AppComponent {
     const locales = ['en', 'fr', 'de', 'ja'];
     let lang = localStorage.$SOS$LANG || navigator.language;
     if (locales.indexOf(lang) <= -1) lang = 'en';
-
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
   }

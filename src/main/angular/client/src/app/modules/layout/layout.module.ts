@@ -12,7 +12,6 @@ import { FileTransferModule } from '../file-transfer/file-transfer.module';
 import { AuditLogModule } from '../audit-log/audit-log.module';
 import { ResourceModule } from '../resource/resource.module';
 import { UserModule } from '../user/user.module';
-import { AvatarModule } from 'ngx-avatar';
 import { AdminModule } from '../admin/admin.module';
 import { SharedModule } from '../shared/shared.module';
 import { DataService } from '../../services/data.service';
@@ -34,8 +33,7 @@ import {ErrorModule} from "../error/error.module";
         AuditLogModule,
         ResourceModule,
         UserModule,
-        AdminModule,
-        AvatarModule
+        AdminModule
     ],
     declarations: [
         LayoutComponent,

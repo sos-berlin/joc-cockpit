@@ -12,11 +12,11 @@
                             <span>  {{filters.label | translate}}</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                            <a class="dropdown-item" 
+                            <a class="dropdown-item"
                                (click)="getSummaryByDate('0d');filters.label='button.today'"
                                [ngClass]="{'btn-primary': filters.date=='0d'}" translate>button.today
                             </a>
-                            <a class="dropdown-item" 
+                            <a class="dropdown-item"
                                (click)="getSummaryByDate('-1h');filters.label='button.last1'"
                                [ngClass]="{'btn-primary': filters.date=='-1h'}" translate>button.last1
                             </a>
@@ -28,7 +28,7 @@
                                (click)="getSummaryByDate('-1d');filters.label='button.last24'"
                                [ngClass]="{'btn-primary': filters.date=='-1d'}" translate>button.last24
                             </a>
-                            <a class="dropdown-item" 
+                            <a class="dropdown-item"
                                (click)="getSummaryByDate('-1w');filters.label='button.lastWeak'"
                                [ngClass]="{'btn-primary': filters.date=='-1w'}" translate>button.lastWeak
                             </a>
@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="box-body">
-        <table style="width: 100%" *ngIf="!notAuthenticate && isLoaded">
+        <table class="w-full" *ngIf="!notAuthenticate && isLoaded">
             <tr class="text-center">
                 <td width="50%">
                     <div translate>label.successful</div>

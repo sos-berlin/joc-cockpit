@@ -3,8 +3,9 @@ import {Subscription} from 'rxjs/Subscription';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import * as _ from 'underscore';
 import {TreeComponent} from "../../../components/tree-navigation/tree.component";
+
+import * as _ from 'underscore';
 
 //Main Component
 @Component({
@@ -17,10 +18,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
   loading: boolean;
-  schedulerIds: any;
+  schedulerIds: any  = {};
   tree: any = [];
-  preferences: any;
-  permission: any;
+  preferences: any  = {};
+  permission: any  = {};
   pageView: any;
   locks: any = [];
   locksFilters: any = {};
@@ -56,6 +57,7 @@ export class LockComponent implements OnInit, OnDestroy {
                     };
                     this.coreService.post('locks',obj).subscribe(res=>{
                       //TODO merge
+                      console.log(res)
                     })
                   }
                 }
@@ -76,11 +78,8 @@ export class LockComponent implements OnInit, OnDestroy {
     this.locksFilters = this.coreService.getResourceTab().locks;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds)  || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views)
       this.pageView = JSON.parse(localStorage.views).lock;
 
@@ -121,7 +120,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
 
   private expandTree() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       self.tree.forEach(function (data) {
         recursive(data);
@@ -129,7 +128,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded) {
+      if (data.isExpanded && self.child) {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
@@ -142,25 +141,13 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       const node = self.child.getNodeById(1);
       node.expand();
       node.setActiveAndVisible(true);
     }, 10)
   }
-
-  private getExpandTreeForUpdates(data, obj) {
-    let self = this;
-    if (data.isSelected) {
-      obj.folders.push({folder: data.path, recursive: false});
-    }
-    data.children.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
-    });
-  }
-
 
   private startTraverseNode(data) {
     let self = this;

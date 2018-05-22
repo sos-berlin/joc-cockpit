@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 
@@ -24,7 +24,16 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
             this.refresh(res);
         });
     }
-
+    ngOnInit() {
+        this.filters = this.coreService.getDashboardTab().task;
+        if(sessionStorage.preferences)
+        this.preferences = JSON.parse(sessionStorage.preferences);
+        this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+        this.getSummary();
+    }
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
     refresh(args) {
         for (let i = 0; i < args.length; i++) {
             if (args[i].jobschedulerId == this.schedulerIds.selected) {
@@ -66,16 +75,6 @@ export class TaskSummaryComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnInit() {
-        this.filters = this.coreService.getDashboardTab().task;
-        if(sessionStorage.preferences)
-        this.preferences = JSON.parse(sessionStorage.preferences);
-        this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-        this.getSummary();
-    }
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
 
     showTaskSummary(type){
 

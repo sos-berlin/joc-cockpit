@@ -1,7 +1,6 @@
 import {Component, OnInit, Input, ViewChild, Output, EventEmitter} from '@angular/core';
 import { CoreService } from '../../services/core.service';
 
-declare var $;
 
 @Component({
     selector: 'app-tree-nagivation',
@@ -19,7 +18,7 @@ export class TreeComponent implements OnInit {
   }
 
   ngOnInit() {
-    const self = this;
+    let self = this;
     let interval = setInterval(function () {
       if (self.treeCtrl && self.treeCtrl.treeModel) {
         const node = self.treeCtrl.treeModel.getNodeById(1);
@@ -30,7 +29,7 @@ export class TreeComponent implements OnInit {
   }
 
   private traverseTree(data) {
-    const self = this;
+    let self = this;
     data.children.forEach(function (value) {
       value.isSelected = false;
       self.traverseTree(value);
@@ -38,7 +37,7 @@ export class TreeComponent implements OnInit {
   }
 
   private navFullTree() {
-    const self = this;
+    let self = this;
     this.tree.forEach(function (value) {
       value.isSelected = false;
       self.traverseTree(value);

@@ -44,7 +44,7 @@
     border: 3px solid transparent;
     border-top-color: #eb8814;
     transform: translate3d(0, 0, 0);
-    animation: spin 1.9s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    animation: spin 1.2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
     &:before {
       content: "";
       position: absolute;

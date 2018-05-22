@@ -5,14 +5,14 @@
           <tr>
               <th width="55"><span translate>label.action</span></th>
               <th [class.active]="order === 'user'"
-                (click)="setOrder('user')">
+                (click)="sortBy('user')">
                 <span translate>label.user</span>
                 <span class = "arrows fa fa-caret-up" [hidden]="reverse"></span>
                 <span class = "arrows fa fa-caret-down" [hidden]="!reverse"></span>
              </th>
              <th><span translate>label.password</span></th>
              <th [class.active]="order === 'roles'"
-                (click)="setOrder('roles')">
+                (click)="sortBy('roles')">
                 <span translate>label.roles</span>
                 <span class = "arrows fa fa-caret-up" [hidden]="reverse"></span>
                 <span class = "arrows fa fa-caret-down" [hidden]="!reverse"></span>

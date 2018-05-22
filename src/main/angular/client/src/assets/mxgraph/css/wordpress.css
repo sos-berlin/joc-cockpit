@@ -13,15 +13,6 @@ body {
 	text-align: left;
 	}
 
-#header {
-	background: #73a0c5 url('../images/draw/drawheader.jpg') no-repeat bottom center;
-	}
-
-#headerimg 	{ 
-	margin: 7px 9px 0; 
-	height: 62px; 
-	width: 740px; 
-	} 
 
 #content {
 	font-size: 1.2em

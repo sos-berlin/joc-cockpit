@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {Subscription} from "rxjs/Subscription";
 import {DataService} from "../../services/data.service";
 import {CoreService} from "../../services/core.service";
-import {AuthService} from "../../components/guard/auth.service";
+import {AuthService} from "../../components/guard";
 import {SaveService} from "../../services/save.service";
 
 import {TreeModal} from "../../components/tree-modal/tree.component";
@@ -12,7 +12,7 @@ import {EditFilterModal} from "../../components/filter-modal/filter.component";
 import * as _ from 'underscore';
 import * as moment from 'moment';
 
-declare var $;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -36,9 +36,9 @@ export class FilterModal implements OnInit {
   }
 
   ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -551,10 +551,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private initConf() {
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.historyFilters = this.coreService.getHistoryTab();
     this.order = this.historyFilters.order;
     this.task = this.historyFilters.task;

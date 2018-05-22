@@ -5,11 +5,10 @@ import { Subscription }   from 'rxjs/Subscription';
 import { AuthService } from '../../components/guard';
 import { HeaderComponent } from '../../components/header/header.component';
 import {ActivatedRoute, Router} from '@angular/router';
-import {TranslateService} from "ng2-translate";
+import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from "angular2-toaster";
-
 import * as jstz from 'jstz';
-declare var $: any;
+declare const $;
 
 @Component({
   selector: 'app-layout',
@@ -22,12 +21,12 @@ declare var $: any;
 })
 export class LayoutComponent implements OnInit, OnDestroy {
 
-  preferences: any = {};
-  schedulerIds: any = {};
-  permission: any = {};
-  selectedScheduler: any = {};
-  selectedJobScheduler: any = {};
-  remainingSessionTime: any;
+  preferences:any= {};
+  schedulerIds:any= {};
+  permission:any= {};
+  selectedScheduler:any= {};
+  selectedJobScheduler:any= {};
+  remainingSessionTime:any= {};
   interval: any;
   scheduleState: string;
   currentTime = new Date();
@@ -88,12 +87,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    }
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if(sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData);
     this.count = parseInt(this.authService.sessionTimeout) / 1000;
     this.loadScheduleDetail();
@@ -257,7 +254,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         jobschedulerId: id,
         id: sessionStorage.preferenceId
       }).subscribe(res => {
-        console.log(res);
         this.setUserObject(preferences, res, configObj);
 
       }, (err) => {
@@ -335,7 +331,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.selectedScheduler.scheduler = this.selectedJobScheduler;
       if (this.selectedScheduler && this.selectedScheduler.scheduler)
         document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
-    } else if (this.schedulerIds.selected) {
+    } else if (this.schedulerIds && this.schedulerIds.selected) {
       this.getScheduleDetail(false);
     }
   }
@@ -379,6 +375,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   logout(timeout) {
     this.isLogout = true;
+    this.child.isLogout = true;
     this.coreService.post('security/logout', {}).subscribe(() => {
       this.authService.clearUser();
       this.authService.clearStorage();

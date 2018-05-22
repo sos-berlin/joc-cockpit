@@ -1,7 +1,7 @@
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
-import { TranslateService } from 'ng2-translate';
+import { AuthService } from '../../../components/guard';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription }   from 'rxjs/Subscription';
 import { DataService } from '../../../services/data.service';
 

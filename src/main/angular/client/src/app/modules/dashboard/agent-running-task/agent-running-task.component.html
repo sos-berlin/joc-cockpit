@@ -10,7 +10,7 @@
         </ul>
     </div>
     <div class="row "  [hidden]="!isLoaded" >
-        <div class="m-l m-r m-t" style="overflow: auto;width: 100%" *ngIf="data.length>0">
+        <div class="m-l m-r m-t w-full" style="overflow: auto;" *ngIf="data.length>0">
             <ngx-charts-bar-vertical
               [view]="view"
               [scheme]="colorScheme"

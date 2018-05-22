@@ -2,13 +2,12 @@ import {Component, OnInit, Input, OnDestroy, ViewChild} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
-import {TranslateService} from 'ng2-translate';
+import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileUploader} from 'ng2-file-upload';
-
 import {DataService} from '../../../services/data.service';
 import {DeleteModal} from '../../../components/delete-modal/delete.component';
 import {CommentModal} from '../../../components/comment-modal/comment.component';
@@ -27,8 +26,9 @@ declare const $;
   templateUrl: './show-dialog.html'
 })
 export class ShowModal {
-  @Input() calendar:any;
-  constructor(public activeModal: NgbActiveModal, public coreService : CoreService) {
+  @Input() calendar: any;
+
+  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 }
 
@@ -133,14 +133,14 @@ export class ImportModal implements OnInit {
       self.coreService.post('/calendar/used', obj).subscribe((res) => {
         result = res;
         self.calendrs = result.calendars;
-        result.calendars.forEach(function (value) {
+        for (let x = 0; x < result.calendars.length; x++) {
           for (let i = 0; i < self.fileContentCalendars.length; i++) {
-            if (value.path == self.fileContentCalendars[i].path) {
+            if (result.calendars[x].path == self.fileContentCalendars[i].path) {
               self.fileContentCalendars[i].isExit = true;
               break;
             }
           }
-        });
+        }
         self.fileLoading = false;
       }, () => {
         self.fileLoading = false;
@@ -163,14 +163,14 @@ export class ImportModal implements OnInit {
     } else {
       this.checkImportCalendar.checkbox = false;
     }
-    this.calendrs.forEach(function (value) {
+    for (let x = 0; x < this.calendrs.length; x++) {
       for (let i = 0; i < this.importCalendarObj.calendars.length; i++) {
-        if (value.usedBy && this.importCalendarObj.calendars[i].path == value.path) {
-          this.importCalendars.push(value);
+        if (this.calendrs[x].usedBy && this.importCalendarObj.calendars[i].path == this.calendrs[x].path) {
+          //this.importCalendars.push(this.calendrs[x]);
           break;
         }
       }
-    });
+    }
   }
 
   private importCalendarCall() {
@@ -209,7 +209,8 @@ export class ImportModal implements OnInit {
 
 @Component({
   selector: 'ngbd-modal-content',
-  templateUrl: './frequency-dialog.html'
+  templateUrl: './frequency-dialog.html',
+  styleUrls: ['./calendar.component.css'],
 })
 export class FrequencyModal implements OnInit, OnDestroy {
 
@@ -263,7 +264,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
     $('.modal').css('opacity', 0.65);
     $('#freq-modal').parents('div').addClass('card m-a');
 
-    this.str = 'tab.weekDays';
+    this.str = 'label.weekDays';
     this.calendarTitle = new Date().getFullYear();
     this.config = {
       format: this.dateFormatM
@@ -323,11 +324,11 @@ export class FrequencyModal implements OnInit, OnDestroy {
         }
       });
     }
-  this.setEditorEnable();
+    this.setEditorEnable();
   }
 
-  setEditorEnable(){
-    if(this.frequency.days && this.frequency.days.length > 0){
+  setEditorEnable() {
+    if (this.frequency.days && this.frequency.days.length > 0) {
       this.editor.isEnable = true;
     }
   }
@@ -342,15 +343,15 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (this.frequencyList[i].isUltimos === 'months') {
         this.frequency.selectedMonths = _.clone(this.frequencyList[i].selectedMonths);
         this.selectedMonths = [];
-        this.frequencyList[i].selectedMonths.forEach(function (val) {
-          self.selectMonthDaysFunc(val);
-        });
+        for (let x = 0; x < this.frequencyList[i].selectedMonths.length; x++) {
+          self.selectMonthDaysFunc(this.frequencyList[i].selectedMonths[x]);
+        }
       } else {
         this.frequency.selectedMonthsU = _.clone(this.frequencyList[i].selectedMonthsU);
         this.selectedMonthsU = [];
-        this.frequencyList[i].selectedMonthsU.forEach(function (val) {
-          self.selectMonthDaysUFunc(val);
-        });
+        for (let x = 0; x < this.frequencyList[i].selectedMonthsU.length; x++) {
+          self.selectMonthDaysUFunc(this.frequencyList[i].selectedMonthsU[x]);
+        }
       }
 
       if (this.frequencyList[i].startingWithM)
@@ -358,15 +359,15 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (this.frequencyList[i].endOnM)
         this.frequency.endOnM = moment(this.frequencyList[i].endOnM).format(this.dateFormatM);
     } else if (this.frequencyList[i].tab === 'specificDays') {
-      this.frequencyList[i].dates.forEach(function (date) {
-        let x = date.split('-');
+      for (let m = 0; m < this.frequencyList[i].dates.length; m++) {
+        let x = this.frequencyList[i].dates[m].split('-');
         self.tempItems.push({
           startDate: new Date(x[0], x[1] - 1, x[2] - 1),
           endDate: new Date(x[0], x[1] - 1, x[2] - 1),
           color: '#007da6'
         });
 
-      });
+      }
 
       if (this.frequencyList[i].startingWithS)
         this.frequency.startingWithS = moment(this.frequencyList[i].startingWithS).format(this.dateFormatM);
@@ -375,9 +376,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
 
     } else if (this.frequencyList[i].tab == 'nationalHoliday') {
       this.frequency.nationalHoliday = _.clone(this.frequencyList[i].nationalHoliday) || [];
-      this._temp.nationalHoliday.forEach(function (date) {
-        self.holidayList.push({date: date})
-      });
+      for (let m = 0; m < this.frequency.nationalHoliday.length; m++) {
+        self.holidayList.push({date: this.frequency.nationalHoliday[m]})
+      }
     }
     if (this.frequencyList[i].tab === 'weekDays') {
       this.frequency.days = _.clone(this.frequencyList[i].days);
@@ -393,14 +394,12 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (this.frequencyList[i].endOn)
         this.frequency.endOn = moment(this.frequencyList[i].endOn).format(this.dateFormatM);
     }
-    //
     if (this.frequencyList[i].tab == 'specificWeekDays') {
       if (this.frequencyList[i].startingWithS)
         this.frequency.startingWithS = moment(this.frequencyList[i].startingWithS).format(this.dateFormatM);
       if (this.frequencyList[i].endOnS)
         this.frequency.endOnS = moment(this.frequencyList[i].endOnS).format(this.dateFormatM);
     }
-    //
   }
 
   generateFrequencyObj() {
@@ -487,9 +486,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
       str: ''
     };
 
-    dates.forEach(function (date) {
-      obj.dates.push(date.startDate);
-    });
+    for (let m = 0; m < dates.length; m++) {
+      obj.dates.push(dates[m].startDate);
+    }
 
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
     let flag = true;
@@ -529,9 +528,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
       str: ''
     };
 
-    dates.forEach(function (date) {
-      obj.dates.push(date.startDate);
-    });
+    for (let m = 0; m < dates.length; m++) {
+      obj.dates.push(dates[m].startDate);
+    }
 
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
 
@@ -704,25 +703,25 @@ export class FrequencyModal implements OnInit, OnDestroy {
     let self = this;
 
     if (this.holidayDays.checked && this.holidayList.length > 0) {
-      let temp =[];
-      this.holidayList.forEach(function (holiday) {
-        if (self.frequency.nationalHoliday.indexOf(holiday.date) == -1)
-          temp.push(holiday.date);
-      });
+      let temp = [];
+      for (let m = 0; m < this.holidayList.length; m++) {
+        if (self.frequency.nationalHoliday.indexOf(this.holidayList[m].date) == -1)
+          temp.push(this.holidayList[m].date);
+      }
 
       this.frequency.nationalHoliday = this.frequency.nationalHoliday.concat(temp);
     } else {
       if (this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0) {
-        let temp= _.clone(this.frequency.nationalHoliday);
-        this.holidayList.forEach(function (holiday) {
+        let temp = _.clone(this.frequency.nationalHoliday);
+        for (let m = 0; m < this.holidayList.length; m++) {
           for (let x = 0; x < temp.length; x++) {
-            if (temp[x] == holiday.date) {
+            if (temp[x] == this.holidayList[m].date) {
               temp.splice(x, 1);
               break;
             }
           }
-        });
-        this.frequency.nationalHoliday= _.clone(temp)
+        }
+        this.frequency.nationalHoliday = _.clone(temp)
       }
     }
     this.editor.isEnable = !!(this.frequency.nationalHoliday && this.frequency.nationalHoliday.length > 0);
@@ -770,11 +769,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
     } else {
       this.tempItems.splice(index, 1);
     }
-    if (this.tempItems.length > 0) {
-      this.editor.isEnable = true;
-    } else {
-      this.editor.isEnable = false;
-    }
+    this.editor.isEnable = this.tempItems.length > 0;
     $('#calendar').data('calendar').setDataSource(this.tempItems);
   }
 
@@ -910,25 +905,25 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (data && data.type == 'EXCLUDE') {
         color = '#eb8814';
       }
-      result.dates.forEach(function (date) {
-        let x = date.split('-');
+      for (let m = 0; m < result.dates.length; m++) {
+        let x = result.dates[m].split('-');
         self.planItems.push({
           startDate: new Date(x[0], x[1] - 1, x[2] - 1),
           endDate: new Date(x[0], x[1] - 1, x[2] - 1),
           color: color
         });
-      });
-      result.withExcludes.forEach(function (date) {
-        let x = date.split('-');
+      }
+      for (let m = 0; m < result.withExcludes.length; m++) {
+        let x = result.withExcludes[m].split('-');
         self.planItems.push({
           startDate: new Date(x[0], x[1] - 1, x[2] - 1),
           endDate: new Date(x[0], x[1] - 1, x[2] - 1),
           color: '#eb8814'
         });
-      });
-      if($('#full-calendar') && $('#full-calendar').data('calendar')) {
+      }
+      if ($('#full-calendar') && $('#full-calendar').data('calendar')) {
 
-      }else {
+      } else {
         $('#full-calendar').calendar({
           clickDay: function (e) {
             self.checkDate(e.date);
@@ -963,15 +958,15 @@ export class FrequencyModal implements OnInit, OnDestroy {
       this.hd.init(this.frequency.country);
       holidays = this.hd.getHolidays(this.frequency.year);
       let self = this;
-      holidays.forEach(function (holiday) {
-        if (holiday.type == 'public' && holiday.date && holiday.name && holiday.date != 'null') {
-          if (holiday.date.length > 19) {
-            holiday.date = holiday.date.substring(0, 19);
+      for (let m = 0; m < holidays.length; m++) {
+        if (holidays[m].type == 'public' && holidays[m].date && holidays[m].name && holidays[m].date != 'null') {
+          if (holidays[m].date.length > 19) {
+            holidays[m].date = holidays[m].date.substring(0, 19);
           }
-          holiday.date = moment(holiday.date).format('YYYY-MM-DD');
-          self.holidayList.push(holiday);
+          holidays[m].date = moment(holidays[m].date).format('YYYY-MM-DD');
+          self.holidayList.push(holidays[m]);
         }
-      });
+      }
     }
     if (this.frequencyList.length > 0) {
       for (let i = 0; i < this.frequencyList.length; i++) {
@@ -990,28 +985,28 @@ export class FrequencyModal implements OnInit, OnDestroy {
     this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
 
     this.setEditorEnable();
-    if(this.frequency.startingWith){
+    if (this.frequency.startingWith) {
       this.frequency.startingWith = this.coreService.toMomentDateFormat(this.frequency.startingWith);
     }
-    if(this.frequency.startingWithW){
+    if (this.frequency.startingWithW) {
       this.frequency.startingWithW = this.coreService.toMomentDateFormat(this.frequency.startingWithW);
     }
-    if(this.frequency.startingWithM){
+    if (this.frequency.startingWithM) {
       this.frequency.startingWithM = this.coreService.toMomentDateFormat(this.frequency.startingWithM);
     }
-    if(this.frequency.startingWithS){
+    if (this.frequency.startingWithS) {
       this.frequency.startingWithS = this.coreService.toMomentDateFormat(this.frequency.startingWithS);
     }
-    if(this.frequency.endOn){
+    if (this.frequency.endOn) {
       this.frequency.endOn = this.coreService.toMomentDateFormat(this.frequency.endOn);
     }
-    if(this.frequency.endOnW){
+    if (this.frequency.endOnW) {
       this.frequency.endOnW = this.coreService.toMomentDateFormat(this.frequency.endOnW);
     }
-    if(this.frequency.endOnM){
+    if (this.frequency.endOnM) {
       this.frequency.endOnM = this.coreService.toMomentDateFormat(this.frequency.endOnM);
     }
-    if(this.frequency.endOnS){
+    if (this.frequency.endOnS) {
       this.frequency.endOnS = this.coreService.toMomentDateFormat(this.frequency.endOnS);
     }
 
@@ -1024,10 +1019,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
 
             if (this.frequency.tab == 'specificDays') {
               this.frequency.dates = [];
-              this.tempItems.forEach(function (date) {
-
-                self.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
-              });
+              for (let j = 0; j < this.tempItems.length; j++) {
+                self.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
+              }
               this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             }
 
@@ -1048,9 +1042,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
     }
     if (this.frequency.tab == 'specificDays') {
       this.frequency.dates = [];
-      this.tempItems.forEach(function (date) {
-        self.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
-      });
+      for (let j = 0; j < this.tempItems.length; j++) {
+        self.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
+      }
       this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
     }
     for (let i = 0; i < this.frequencyList.length; i++) {
@@ -1092,10 +1086,10 @@ export class FrequencyModal implements OnInit, OnDestroy {
               } else {
                 if (this.frequencyList[i].months)
                   if (_.isEqual(this.frequencyList[i].days, this.frequency.days)) {
-                    this.frequency.months.forEach(function (month) {
-                      if (self.frequencyList[i].months.indexOf(month) == -1)
-                        self.frequencyList[i].months.push(month)
-                    });
+                    for (let j = 0; j < this.frequency.months.length; j++) {
+                      if (self.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        self.frequencyList[i].months.push(this.frequency.months[j])
+                    }
                     this.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
@@ -1124,10 +1118,10 @@ export class FrequencyModal implements OnInit, OnDestroy {
               } else {
                 if (this.frequencyList[i].months)
                   if (_.isEqual(this.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
-                    this.frequency.months.forEach(function (month) {
-                      if (self.frequencyList[i].months.indexOf(month) == -1)
-                        self.frequencyList[i].months.push(month)
-                    });
+                    for (let j = 0; j < this.frequency.months.length; j++) {
+                      if (self.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        self.frequencyList[i].months.push(this.frequency.months[j])
+                    }
                     this.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
@@ -1156,10 +1150,10 @@ export class FrequencyModal implements OnInit, OnDestroy {
               } else {
                 if (this.frequencyList[i].months)
                   if (_.isEqual(this.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)) {
-                    this.frequency.months.forEach(function (month) {
-                      if (self.frequencyList[i].months.indexOf(month) == -1)
-                        self.frequencyList[i].months.push(month)
-                    });
+                    for (let j = 0; j < this.frequency.months.length; j++) {
+                      if (self.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                        self.frequencyList[i].months.push(this.frequency.months[j])
+                    }
                     this.frequencyList[i].str = _.clone(this.frequency.str);
                     flag1 = true;
                     break;
@@ -1181,10 +1175,10 @@ export class FrequencyModal implements OnInit, OnDestroy {
             if (this.frequency.months && this.frequencyList[i].months) {
               if (!_.isEqual(this.frequencyList[i].months, this.frequency.months)) {
                 if (_.isEqual(this.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && _.isEqual(this.frequencyList[i].which, this.frequency.which)) {
-                  this.frequency.months.forEach(function (month) {
-                    if (self.frequencyList[i].months.indexOf(month) == -1)
-                      self.frequencyList[i].months.push(month);
-                  });
+                  for (let j = 0; j < this.frequency.months.length; j++) {
+                    if (self.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1)
+                      self.frequencyList[i].months.push(this.frequency.months[j]);
+                  }
                   this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
                   flag1 = true;
                   break;
@@ -1194,42 +1188,40 @@ export class FrequencyModal implements OnInit, OnDestroy {
           }
           else if (this.frequency.tab == 'nationalHoliday') {
             flag1 = true;
-            datesArr.forEach(function (dates) {
+            for (let i = 0; i < datesArr.length; i++) {
               if (self.frequencyList[i].nationalHoliday && self.frequencyList[i].nationalHoliday.length > 0) {
-                if (new Date(self.frequencyList[i].nationalHoliday[0]).getFullYear() == new Date(dates[0].toString()).getFullYear()) {
-                  dates.forEach(function (date) {
-                    if (self.frequencyList[i].nationalHoliday.indexOf(date) == -1) {
-                      self.frequencyList[i].nationalHoliday.push(date);
+                if (new Date(self.frequencyList[i].nationalHoliday[0]).getFullYear() == new Date(datesArr[i][0].toString()).getFullYear()) {
+                  for (let j = 0; j < datesArr[i].length; j++) {
+                    if (self.frequencyList[i].nationalHoliday.indexOf(datesArr[i][j]) == -1) {
+                      self.frequencyList[i].nationalHoliday.push(datesArr[i][j]);
                     }
-                  });
+                  }
                   self.frequencyList[i].str = self.calendarService.freqToStr(self.frequencyList[i], self.dateFormat);
                   for (let x = 0; x < _dates.length; x++) {
-                    if (_.isEqual(_dates[x], dates)) {
+                    if (_.isEqual(_dates[x], datesArr[i])) {
                       _dates.splice(x, 1);
                       break;
                     }
                   }
                 }
               }
-            });
+            }
 
           } else if (this.frequency.tab == 'specificDays') {
             this.frequency.dates = [];
-            this.tempItems.forEach(function (date) {
-              self.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
-            });
+            for (let j = 0; j < this.tempItems.length; j++) {
+              self.frequency.dates.push(moment(this.tempItems[j].startDate).format('YYYY-MM-DD'));
+            }
             this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
             this.frequencyList[i].dates = _.clone(this.frequency.dates);
             this.frequencyList[i].str = _.clone(this.frequency.str);
             flag1 = true;
             break;
           } else if (this.frequency.tab == 'every') {
-            if (this.frequency.dateEntity && this.frequencyList[i].dateEntity) {
-              this.frequency.months.forEach(function (month) {
-                if (self.frequencyList[i].months.indexOf(month) == -1)
-                  self.frequencyList[i].months.push(month);
-              });
-              this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
+            if (_.isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity) && _.isEqual(this.frequency.startingWith, this.frequencyList[i].startingWith)) {
+              this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              this.frequencyList[i].interval = _.clone(this.frequency.interval);
+              this.frequencyList[i].str = _.clone(this.frequency.str);
               flag1 = true;
               break;
             }
@@ -1237,46 +1229,46 @@ export class FrequencyModal implements OnInit, OnDestroy {
         }
       }
       if (_dates && _dates.length > 0) {
-        _dates.forEach(function (dates) {
+        for (let i = 0; i < _dates.length; i++) {
           let obj = _.clone(self.frequency);
           obj.type = self.editor.frequencyType;
-          obj.nationalHoliday = dates;
+          obj.nationalHoliday = _dates[i];
           obj.str = self.calendarService.freqToStr(obj, self.dateFormat);
           self.frequencyList.push(obj);
-        })
+        }
       }
       if (!flag1) {
         if (this.frequency.tab == 'specificDays') {
           this.frequency.dates = [];
-          this.tempItems.forEach(function (date) {
-            self.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
-          });
+          for (let i = 0; i < this.tempItems.length; i++) {
+            self.frequency.dates.push(moment(this.tempItems[i].startDate).format('YYYY-MM-DD'));
+          }
           this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
         }
         if (this.frequency.tab != 'nationalHoliday') {
           this.frequency.type = this.editor.frequencyType;
           this.frequencyList.push(_.clone(this.frequency));
         }
-      }else{
-        this.frequency.nationHoliday =[];
+      } else {
+        this.frequency.nationHoliday = [];
       }
 
     } else {
 
       if (this.frequency.tab == 'nationalHoliday') {
-        datesArr.forEach(function (dates) {
+        for (let i = 0; i < datesArr.length; i++) {
           let obj = _.clone(self.frequency);
           obj.type = self.editor.frequencyType;
-          obj.nationalHoliday = dates;
+          obj.nationalHoliday = datesArr[i];
           obj.str = self.calendarService.freqToStr(obj, self.dateFormat);
           self.frequencyList.push(obj);
-        })
+        }
       } else {
         if (this.frequency.tab == 'specificDays') {
           this.frequency.dates = [];
-          this.tempItems.forEach(function (date) {
-            self.frequency.dates.push(moment(date.startDate).format('YYYY-MM-DD'));
-          });
+          for (let i = 0; i < this.tempItems.length; i++) {
+            self.frequency.dates.push(moment(this.tempItems[i].startDate).format('YYYY-MM-DD'));
+          }
           this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
         }
         this.frequency.type = this.editor.frequencyType;
@@ -1319,7 +1311,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
       let endOn = _.clone(endDate.split("-").reverse().join("."));
       this.frequency.startingWith = startingWith;
       this.frequency.endOn = endOn;
-    }else if (data.tab == "specificWeekDays") {
+    } else if (data.tab == "specificWeekDays") {
       this.frequency = _.clone(data);
       let StartDate = moment(data.startingWithS).format('YYYY-MM-DD');
       let endDate = moment(data.endOnS).format('YYYY-MM-DD');
@@ -1327,7 +1319,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
       let endOnS = _.clone(endDate.split("-").reverse().join("."));
       this.frequency.startingWithS = startingWithS;
       this.frequency.endOnS = endOnS;
-    }else if (data.tab == "monthDays") {
+    } else if (data.tab == "monthDays") {
       this.frequency = _.clone(data);
       let StartDate = moment(data.startingWithM).format('YYYY-MM-DD');
       let endDate = moment(data.endOnM).format('YYYY-MM-DD');
@@ -1342,9 +1334,9 @@ export class FrequencyModal implements OnInit, OnDestroy {
       this.holidayList = [];
       this.countryField = true;
       this.holidayDays.checked = true;
-      data.nationalHoliday.forEach(function (date) {
-        self.holidayList.push({date: date})
-      });
+      for (let i = 0; i < data.nationalHoliday.length; i++) {
+        self.holidayList.push({date: data.nationalHoliday[i]})
+      }
     } else {
       this.holidayDays.checked = false;
     }
@@ -1352,14 +1344,14 @@ export class FrequencyModal implements OnInit, OnDestroy {
     if (this.frequency.tab == 'monthDays') {
       if (this.frequency.isUltimos == 'months') {
         this.selectedMonths = [];
-        data.selectedMonths.forEach(function (val) {
-          self.selectMonthDaysFunc(val);
-        });
+        for (let i = 0; i < data.selectedMonths.length; i++) {
+          self.selectMonthDaysFunc(data.selectedMonths[i]);
+        }
       } else {
         this.selectedMonthsU = [];
-        data.selectedMonthsU.forEach(function (val) {
-          self.selectMonthDaysUFunc(val);
-        });
+        for (let i = 0; i < data.selectedMonthsU.length; i++) {
+          self.selectMonthDaysUFunc(data.selectedMonthsU[i]);
+        }
       }
     }
     this.onFrequencyChange();
@@ -1428,24 +1420,23 @@ export class FrequencyModal implements OnInit, OnDestroy {
         if (this.calObj.frequency && this.calObj.frequency != 'all' && this.calObj.frequency.type == 'EXCLUDE') {
           color = '#eb8814';
         }
-
-        result.dates.forEach(function (date) {
-          let x = date.split('-');
+        for (let i = 0; i < result.dates.length; i++) {
+          let x = result.dates[i].split('-');
           let obj = {
             startDate: new Date(x[0], x[1] - 1, x[2] - 1),
             endDate: new Date(x[0], x[1] - 1, x[2] - 1),
             color: color
           };
           self.planItems.push(obj);
-        });
-        result.withExcludes.forEach(function (date) {
-          let x = date.split('-');
+        }
+        for (let i = 0; i < result.withExcludes.length; i++) {
+          let x = result.withExcludes[i].split('-');
           self.planItems.push({
             startDate: new Date(x[0], x[1] - 1, x[2] - 1),
             endDate: new Date(x[0], x[1] - 1, x[2] - 1),
             color: '#eb8814'
           });
-        });
+        }
 
         this.isCalendarLoading = false;
         $('#full-calendar').data('calendar').setDataSource(this.planItems);
@@ -1462,14 +1453,14 @@ export class FrequencyModal implements OnInit, OnDestroy {
     this.calendarTitle = new Date().getFullYear();
     this.frequencyList1 = [];
     if (this.calendar.includesFrequency.length > 0) {
-      this.calendar.includesFrequency.forEach(function (val) {
-        self.frequencyList1.push(val)
-      });
+      for (let i = 0; i < this.calendar.includesFrequency.length; i++) {
+        self.frequencyList1.push(this.calendar.includesFrequency[i])
+      }
     }
     if (this.calendar.excludesFrequency.length > 0) {
-      this.calendar.excludesFrequency.forEach(function (val) {
-        self.frequencyList1.push(val)
-      });
+      for (let i = 0; i < this.calendar.excludesFrequency.length; i++) {
+        self.frequencyList1.push(this.calendar.excludesFrequency[i])
+      }
     }
     this.changeFrequencyObj(data);
   }
@@ -1478,14 +1469,14 @@ export class FrequencyModal implements OnInit, OnDestroy {
     let obj = {includes: {}, excludes: {}};
     let self = this;
     if (this.calendar.includesFrequency.length > 0) {
-      self.calendar.includesFrequency.forEach(function (data) {
-        self.calendarService.generateCalendarObj(data, obj);
-      });
+      for (let i = 0; i < self.calendar.includesFrequency.length; i++) {
+        self.calendarService.generateCalendarObj(self.calendar.includesFrequency[i], obj);
+      }
     }
     if (this.calendar.excludesFrequency.length > 0) {
-      self.calendar.excludesFrequency.forEach(function (data) {
-        self.calendarService.generateCalendarObj(data, obj);
-      });
+      for (let i = 0; i < self.calendar.excludesFrequency.length; i++) {
+        self.calendarService.generateCalendarObj(self.calendar.excludesFrequency[i], obj);
+      }
     }
     return obj;
   }
@@ -1518,7 +1509,8 @@ export class FrequencyModal implements OnInit, OnDestroy {
 
 @Component({
   selector: 'ngbd-modal-content',
-  templateUrl: './calendar-dialog.html'
+  templateUrl: './calendar-dialog.html',
+  styleUrls: ['./calendar.component.css']
 })
 export class CalendarModal implements OnInit {
   submitted: boolean = false;
@@ -1593,46 +1585,43 @@ export class CalendarModal implements OnInit {
     let obj = {};
     if (data.includes && !_.isEmpty(data.includes)) {
       if (data.includes.months && data.includes.months.length > 0) {
-        data.includes.months.forEach(function (month) {
-          if (month.weekdays && month.weekdays.length > 0) {
-            month.weekdays.forEach(function (weekday) {
+        for (let m = 0; m < data.includes.months.length; m++) {
+          if (data.includes.months[m].weekdays && data.includes.months[m].weekdays.length > 0) {
+            for (let x = 0; x < data.includes.months[m].weekdays.length; x++) {
               obj = {};
-              self.iterateData(obj, weekday, month, "weekDays", "INCLUDE", null, null);
-            });
+              self.iterateData(obj, data.includes.months[m].weekdays[x], data.includes.months[m], "weekDays", "INCLUDE", null, null);
+            }
           }
-          if (month.monthdays && month.monthdays.length > 0) {
+          if (data.includes.months[m].monthdays && data.includes.months[m].monthdays.length > 0) {
 
-            month.monthdays.forEach(function (monthday) {
-
-              if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
-                monthday.weeklyDays.forEach(function (day) {
+            for (let x = 0; x < data.includes.months[m].monthdays.length; x++) {
+              if (data.includes.months[m].monthdays[x].weeklyDays && data.includes.months[m].monthdays[x].weeklyDays.length > 0) {
+                for (let y = 0; y < data.includes.months[m].monthdays[x].weeklyDays.length; y++) {
                   obj = {};
-                  self.iterateData(obj, day, month, "specificWeekDays", "INCLUDE", monthday, 'months');
-                });
+                  self.iterateData(obj, data.includes.months[m].monthdays[x].weeklyDays[y], data.includes.months[m], "specificWeekDays", "INCLUDE", data.includes.months[m].monthdays[x], 'months');
+                }
               } else {
                 obj = {};
-                self.iterateData(obj, monthday, month, "monthDays", "INCLUDE", null, 'months');
+                self.iterateData(obj, data.includes.months[m].monthdays[x], data.includes.months[m], "monthDays", "INCLUDE", null, 'months');
               }
-            });
+            }
           }
-          if (month.ultimos && month.ultimos.length > 0) {
-            month.ultimos.forEach(function (ultimos) {
-              if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
-                ultimos.weeklyDays.forEach(function (day) {
+          if (data.includes.months[m].ultimos && data.includes.months[m].ultimos.length > 0) {
+            for (let x = 0; x < data.includes.months[m].ultimos.length; x++) {
+              if (data.includes.months[m].ultimos[x].weeklyDays && data.includes.months[m].ultimos[x].weeklyDays.length > 0) {
+                for (let y = 0; y < data.includes.months[m].ultimos[x].weeklyDays.length; y++) {
                   obj = {};
-                  self.iterateData(obj, day, month, "specificWeekDays", "INCLUDE", ultimos, 'ultimos');
+                  self.iterateData(obj, data.includes.months[m].ultimos[x].weeklyDays[y], data.includes.months[m], "specificWeekDays", "INCLUDE", data.includes.months[m].ultimos[x], 'ultimos');
 
-                });
+                }
               } else {
                 obj = {};
-                self.iterateData(obj, ultimos, month, "monthDays", "INCLUDE", null, 'ultimos');
+                self.iterateData(obj, data.includes.months[m].ultimos[x], data.includes.months[m], "monthDays", "INCLUDE", null, 'ultimos');
 
               }
-
-            });
-
+            }
           }
-        });
+        }
       }
       if (data.includes.dates && data.includes.dates.length > 0) {
         obj = {};
@@ -1640,103 +1629,96 @@ export class CalendarModal implements OnInit {
 
       }
       if (data.includes.weekdays && data.includes.weekdays.length > 0) {
-        data.includes.weekdays.forEach(function (weekday) {
+        for (let x = 0; x < data.includes.weekdays.length; x++) {
           obj = {};
-          self.iterateData(obj, weekday, null, "weekDays", "INCLUDE", null, null);
-
-        });
+          self.iterateData(obj, data.includes.weekdays[x], null, "weekDays", "INCLUDE", null, null);
+        }
 
       }
       if (data.includes.monthdays && data.includes.monthdays.length > 0) {
+        for (let x = 0; x < data.includes.monthdays.length; x++) {
 
-        data.includes.monthdays.forEach(function (monthday) {
-
-          if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
-            monthday.weeklyDays.forEach(function (day) {
+          if (data.includes.monthdays[x].weeklyDays && data.includes.monthdays[x].weeklyDays.length > 0) {
+            for (let y = 0; y < data.includes.monthdays[x].weeklyDays.length; y++) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", monthday, 'months');
-            });
+              self.iterateData(obj, data.includes.monthdays[x].weeklyDays[y], null, "specificWeekDays", "INCLUDE", data.includes.monthdays[x], 'months');
+            }
           } else {
             obj = {};
-            self.iterateData(obj, monthday, null, "monthDays", "INCLUDE", null, 'months');
+            self.iterateData(obj, data.includes.monthdays[x], null, "monthDays", "INCLUDE", null, 'months');
 
           }
-        });
+        }
       }
       if (data.includes.ultimos && data.includes.ultimos.length > 0) {
-        data.includes.ultimos.forEach(function (ultimos) {
+        for (let x = 0; x < data.includes.ultimos.length; x++) {
 
-          if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
-            ultimos.weeklyDays.forEach(function (day) {
+          if (data.includes.ultimos[x].weeklyDays && data.includes.ultimos[x].weeklyDays.length > 0) {
+            for (let y = 0; y < data.includes.ultimos[x].weeklyDays.length; y++) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "INCLUDE", ultimos, 'ultimos');
-
-            });
+              self.iterateData(obj, data.includes.ultimos[x].weeklyDays[y], null, "specificWeekDays", "INCLUDE", data.includes.ultimos[x], 'ultimos');
+            }
           } else {
             obj = {};
-            self.iterateData(obj, ultimos, null, "monthDays", "INCLUDE", null, 'ultimos');
+            self.iterateData(obj, data.includes.ultimos[x], null, "monthDays", "INCLUDE", null, 'ultimos');
           }
 
-        });
+        }
       }
       if (data.includes.holidays && data.includes.holidays.length > 0) {
         let arr = self.calendarService.groupByDates(data.includes.holidays[0].dates);
-
-        arr.forEach(function (holidays) {
+        for (let x = 0; x < arr.length; x++) {
           obj = {};
-          self.iterateData(obj, holidays, null, "nationalHoliday", "INCLUDE", null, null);
-
-        });
+          self.iterateData(obj, arr[x], null, "nationalHoliday", "INCLUDE", null, null);
+        }
       }
       if (data.includes.repetitions && data.includes.repetitions.length > 0) {
-        data.includes.repetitions.forEach(function (value) {
+        for (let x = 0; x < data.includes.repetitions.length; x++) {
           obj = {};
-          self.iterateData(obj, value, null, "every", "INCLUDE", null, null);
+          self.iterateData(obj, data.includes.repetitions[x], null, "every", "INCLUDE", null, null);
 
-        });
+        }
       }
     }
     if (data.excludes && !_.isEmpty(data.excludes)) {
       if (data.excludes.months && data.excludes.months.length > 0) {
-        data.excludes.months.forEach(function (month) {
-          if (month.weekdays && month.weekdays.length > 0) {
-            month.weekdays.forEach(function (weekday) {
+        for (let m = 0; m < data.excludes.months; m++) {
+          if (data.excludes.months[m].weekdays && data.excludes.months[m].weekdays.length > 0) {
+            for (let y = 0; y < data.excludes.months[m].weekdays.length; y++) {
               obj = {};
-              self.iterateData(obj, weekday, month, "weekDays", "EXCLUDE", null, null);
-            });
+              self.iterateData(obj, data.excludes.months[m].weekdays[y], data.excludes.months[m], "weekDays", "EXCLUDE", null, null);
+            }
           }
-          if (month.monthdays && month.monthdays.length > 0) {
-
-            month.monthdays.forEach(function (monthday) {
-
-              if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
-                monthday.weeklyDays.forEach(function (day) {
+          if (data.excludes.months[m].monthdays && data.excludes.months[m].monthdays.length > 0) {
+            for (let x = 0; x < data.excludes.months[m].monthdays.length; x++) {
+              if (data.excludes.months[m].monthdays[x].weeklyDays && data.excludes.months[m].monthdays[x].weeklyDays.length > 0) {
+                for (let y = 0; y < data.excludes.months[m].months.length; y++) {
                   obj = {};
-                  self.iterateData(obj, day, month, "specificWeekDays", "EXCLUDE", monthday, 'months');
-                });
+                  self.iterateData(obj, data.excludes.months[m].months[y], data.excludes.months[m], "specificWeekDays", "EXCLUDE", data.excludes.months[m].monthdays[x], 'months');
+                }
               } else {
                 obj = {};
-                self.iterateData(obj, monthday, month, "monthDays", "EXCLUDE", null, 'months');
+                self.iterateData(obj, data.excludes.months[m].monthdays[x], data.excludes.months[m], "monthDays", "EXCLUDE", null, 'months');
               }
-            });
+            }
           }
-          if (month.ultimos && month.ultimos.length > 0) {
-            month.ultimos.forEach(function (ultimos) {
-              if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
-                ultimos.weeklyDays.forEach(function (day) {
+          if (data.excludes.months[m].ultimos && data.excludes.months[m].ultimos.length > 0) {
+            for (let x = 0; x < data.excludes.months[m].ultimos.length; x++) {
+              if (data.excludes.months[m].ultimos[x].weeklyDays && data.excludes.months[m].ultimos[x].weeklyDays.length > 0) {
+                for (let y = 0; y < data.excludes.months[m].ultimos[x].weeklyDays.length; y++) {
                   obj = {};
-                  self.iterateData(obj, day, month, "specificWeekDays", "EXCLUDE", ultimos, 'ultimos');
-                });
+                  self.iterateData(obj, data.excludes.months[m].ultimos[x].weeklyDays[y], data.excludes.months[m], "specificWeekDays", "EXCLUDE", data.excludes.months[m].ultimos[x], 'ultimos');
+                }
               } else {
                 obj = {};
-                self.iterateData(obj, ultimos, month, "monthDays", "EXCLUDE", null, 'ultimos');
+                self.iterateData(obj, data.excludes.months[m].ultimos[x], data.excludes.months[m], "monthDays", "EXCLUDE", null, 'ultimos');
 
               }
 
-            });
+            }
 
           }
-        });
+        }
       }
       if (data.excludes.dates && data.excludes.dates.length > 0) {
         obj = {};
@@ -1744,57 +1726,54 @@ export class CalendarModal implements OnInit {
 
       }
       if (data.excludes.weekdays && data.excludes.weekdays.length > 0) {
-        data.excludes.weekdays.forEach(function (weekday) {
+        for (let x = 0; x < data.excludes.weekdays.length; x++) {
           obj = {};
-          self.iterateData(obj, weekday, null, "weekDays", "EXCLUDE", null, null);
+          self.iterateData(obj, data.excludes.weekdays[x], null, "weekDays", "EXCLUDE", null, null);
 
-        });
+        }
 
       }
       if (data.excludes.monthdays && data.excludes.monthdays.length > 0) {
-        data.excludes.monthdays.forEach(function (monthday) {
-
-          if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
-            monthday.weeklyDays.forEach(function (day) {
+        for (let x = 0; x < data.excludes.monthdays.length; x++) {
+          if (data.excludes.monthdays[x].weeklyDays && data.excludes.monthdays[x].weeklyDays.length > 0) {
+            for (let y = 0; y < data.excludes.monthdays[x].weeklyDays.length; y++) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", null, 'months');
-            });
+              self.iterateData(obj, data.excludes.monthdays[x].weeklyDays[y], null, "specificWeekDays", "EXCLUDE", null, 'months');
+            }
           } else {
             obj = {};
-            self.iterateData(obj, monthday, null, "monthDays", "EXCLUDE", null, 'months');
+            self.iterateData(obj, data.excludes.monthdays[x], null, "monthDays", "EXCLUDE", null, 'months');
           }
-        });
+        }
       }
       if (data.excludes.ultimos && data.excludes.ultimos.length > 0) {
-        data.excludes.ultimos.forEach(function (ultimos) {
-
-          if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
-            ultimos.weeklyDays.forEach(function (day) {
+        for (let x = 0; x < data.excludes.ultimos.months.length; x++) {
+          if (data.excludes.ultimos[x].weeklyDays && data.excludes.ultimos[x].weeklyDays.length > 0) {
+            for (let y = 0; y < data.excludes.ultimos[x].weeklyDays.length; y++) {
               obj = {};
-              self.iterateData(obj, day, null, "specificWeekDays", "EXCLUDE", ultimos, 'ultimos');
-            });
+              self.iterateData(obj, data.excludes.ultimos[x].weeklyDays[y], null, "specificWeekDays", "EXCLUDE", data.excludes.ultimos[x], 'ultimos');
+            }
           } else {
             obj = {};
-            self.iterateData(obj, ultimos, null, "monthDays", "EXCLUDE", null, 'ultimos');
+            self.iterateData(obj, data.excludes.ultimos[x], null, "monthDays", "EXCLUDE", null, 'ultimos');
           }
 
-        });
+        }
       }
       if (data.excludes.holidays && data.excludes.holidays.length > 0) {
         let arr = self.calendarService.groupByDates(data.excludes.holidays[0].dates);
-
-        arr.forEach(function (holidays) {
+        for (let x = 0; x < arr.length; x++) {
           obj = {};
-          self.iterateData(obj, holidays, null, "nationalHoliday", "EXCLUDE", null, null);
+          self.iterateData(obj, arr[x], null, "nationalHoliday", "EXCLUDE", null, null);
 
-        });
+        }
       }
       if (data.excludes.repetitions && data.excludes.repetitions.length > 0) {
-        data.excludes.repetitions.forEach(function (value) {
+        for (let x = 0; x < data.excludes.repetitions.length; x++) {
           obj = {};
-          self.iterateData(obj, value, null, "every", "EXCLUDE", null, null);
+          self.iterateData(obj, data.excludes.repetitions[x], null, "every", "EXCLUDE", null, null);
 
-        });
+        }
       }
     }
   }
@@ -1927,7 +1906,7 @@ export class CalendarModal implements OnInit {
     modalRef.componentInstance.showCheckBox = false;
     modalRef.componentInstance.type = this.calendar.type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
     modalRef.result.then((path) => {
-          this.calendar.path = path;
+      this.calendar.path = path;
     }, (reason) => {
       console.log('close...', reason)
     });
@@ -1939,15 +1918,15 @@ export class CalendarModal implements OnInit {
     obj.type = type;
     if (month) {
       obj.months = [];
-      month.months.forEach(function (mon) {
-        obj.months.push(mon.toString())
-      });
+      for (let x = 0; x < month.months.length; x++) {
+        obj.months.push(month.months[x].toString())
+      }
     }
     if (tab === "weekDays") {
       obj.days = [];
-      data.days.forEach(function (val) {
-        obj.days.push(val.toString())
-      });
+      for (let x = 0; x < data.days.length; x++) {
+        obj.days.push(data.days[x].toString())
+      }
       if (month)
         obj.allMonth = month.months.length == 12;
       obj.startingWithW = data.from;
@@ -1956,29 +1935,29 @@ export class CalendarModal implements OnInit {
     }
     else if (tab === "specificWeekDays") {
       obj.specificWeekDay = this.calendarService.getStringDay(data.day);
-      if(isUltimos === 'months'){
-         obj.which = data.weekOfMonth;
-      }else {
+      if (isUltimos === 'months') {
+        obj.which = data.weekOfMonth;
+      } else {
         obj.which = -data.weekOfMonth;
       }
       obj.startingWithS = monthday.from;
       obj.endOnS = monthday.to;
     } else if (tab === "specificDays") {
       obj.dates = [];
-      data.forEach(function (date) {
-        obj.dates.push(date);
-      });
+      for (let x = 0; x < data.length; x++) {
+        obj.dates.push(data[x]);
+      }
     } else if (tab === "monthDays") {
       if (isUltimos == 'months') {
         obj.selectedMonths = [];
-        data.days.forEach(function (val) {
-          obj.selectedMonths.push(val.toString())
-        });
+        for (let x = 0; x < data.days.length; x++) {
+          obj.selectedMonths.push(data.days[x].toString())
+        }
       } else {
         obj.selectedMonthsU = [];
-        data.days.forEach(function (val) {
-          obj.selectedMonthsU.push(val.toString())
-        });
+        for (let x = 0; x < data.days.length; x++) {
+          obj.selectedMonthsU.push(data.days[x].toString())
+        }
       }
       obj.startingWithM = data.from;
       obj.endOnM = data.to;
@@ -2006,14 +1985,14 @@ export class CalendarModal implements OnInit {
     let obj = {includes: {}, excludes: {}};
     let self = this;
     if (this.calendar.includesFrequency.length > 0) {
-      self.calendar.includesFrequency.forEach(function (data) {
-        self.calendarService.generateCalendarObj(data, obj);
-      });
+      for (let x = 0; x < self.calendar.includesFrequency.length; x++) {
+        self.calendarService.generateCalendarObj(self.calendar.includesFrequency[x], obj);
+      }
     }
     if (this.calendar.excludesFrequency.length > 0) {
-      self.calendar.excludesFrequency.forEach(function (data) {
-        self.calendarService.generateCalendarObj(data, obj);
-      });
+      for (let x = 0; x < self.calendar.excludesFrequency.length; x++) {
+        self.calendarService.generateCalendarObj(self.calendar.excludesFrequency[x], obj);
+      }
     }
     return obj;
   }
@@ -2138,21 +2117,21 @@ export class CalendarModal implements OnInit {
 @Component({
   selector: 'app-calendar',
   templateUrl: 'calendar.component.html',
-  styleUrls: ['./calendar.component.css'],
+  styleUrls: ['./calendar.component.css']
 
 })
 export class CalendarComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
   loading: boolean;
-  schedulerIds: any;
+  schedulerIds: any = {};
   tree: any = [];
-  preferences: any;
-  permission: any;
+  categories: any = [];
+  preferences: any = {};
+  permission: any = {};
   pageView: any;
   calendars: any = [];
   auditLogs: any = [];
-  categories: any = [];
   calendarFilters: any = {};
   calendar_expand_to: any = {};
   subscription1: Subscription;
@@ -2235,15 +2214,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.init();
   }
 
-  private init(){
-        this.calendarFilters = this.coreService.getResourceTab().calendars;
+  private init() {
+    this.calendarFilters = this.coreService.getResourceTab().calendars;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views)
       this.pageView = JSON.parse(localStorage.views).calendar;
 
@@ -2270,36 +2246,39 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private filteredTreeData(output) {
-      if (!_.isEmpty(this.calendar_expand_to)) {
-        this.tree = output;
+    if (!_.isEmpty(this.calendar_expand_to)) {
+      this.tree = output;
+      if (this.tree.length > 0)
         this.navigateToPath();
+    } else {
+      if (_.isEmpty(this.calendarFilters.expand_to)) {
+        this.tree = output;
+        this.calendarFilters.expand_to = this.tree;
+        this.checkExpand();
       } else {
-        if (_.isEmpty(this.calendarFilters.expand_to)) {
-          this.tree = output;
-          this.calendarFilters.expand_to = this.tree;
-          this.checkExpand();
-        } else {
-          this.calendarFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.calendarFilters.expand_to);
-          this.tree = this.calendarFilters.expand_to;
-          this.loadCalendar(null);
+        this.calendarFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.calendarFilters.expand_to);
+        this.tree = this.calendarFilters.expand_to;
+        this.loadCalendar(null);
+        if (this.tree.length > 0)
           this.expandTree();
-        }
       }
+    }
   }
 
   private navigateToPath() {
     let self = this;
     this.calendars = [];
     setTimeout(function () {
-      self.tree.forEach(function (value) {
-        self.navigatePath(value);
-      });
+      for (let x = 0; x < self.tree.length; x++) {
+        self.navigatePath(self.tree[x]);
+      }
     }, 10);
   }
 
   private navigatePath(data) {
-    if (this.calendar_expand_to) {
-      let self = this;
+    const self = this;
+    if (this.calendar_expand_to && self.child) {
+
       let node = self.child.getNodeById(data.id);
       if (self.calendar_expand_to.path.indexOf(data.path) != -1) {
         node.expand();
@@ -2310,35 +2289,35 @@ export class CalendarComponent implements OnInit, OnDestroy {
       }
 
       if (data.children && data.children.length > 0)
-        data.children.forEach(function (value) {
-          self.navigatePath(value)
-        });
+        for (let x = 0; x < data.children.length; x++) {
+          self.navigatePath(data.children[x])
+        }
     }
   }
 
   private expandTree() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
-      self.tree.forEach(function (data) {
-        recursive(data);
-      });
+      for (let x = 0; x < self.tree.length; x++) {
+        recursive(self.tree[x]);
+      }
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded) {
+      if (data.isExpanded && self.child) {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
-          data.children.forEach(function (child) {
-            recursive(child);
-          });
+          for (let x = 0; x < data.length; x++) {
+            recursive(data[x]);
+          }
         }
       }
     }
   }
 
   private checkExpand() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       const node = self.child.getNodeById(1);
       node.expand();
@@ -2351,10 +2330,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
-    data.children.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
-    });
+    for (let x = 0; x < data.length; x++) {
+      if (data[x].isExpanded || data[x].isSelected)
+        self.getExpandTreeForUpdates(data[x], obj);
+    }
   }
 
   loadCalendar(status) {
@@ -2376,10 +2355,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
     this.calendars = [];
     this.loading = true;
-    this.tree.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
-    });
+    for (let x = 0; x < this.tree.length; x++) {
+      if (this.tree[x].isExpanded || this.tree[x].isSelected)
+        self.getExpandTreeForUpdates(this.tree[x], obj);
+    }
     this.getCalendarsList(obj, null);
   }
 
@@ -2394,9 +2373,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private startTraverseNode(data) {
     let self = this;
     data.isSelected = true;
-    data.children.forEach(function (a) {
-      self.startTraverseNode(a);
-    });
+    for (let x = 0; x < data.length; x++) {
+      self.startTraverseNode(data[x]);
+    }
   }
 
   private getCalendarsList(obj, node) {
@@ -2404,10 +2383,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.coreService.post('calendars', obj).subscribe(res => {
       this.loading = false;
       result = res;
-      result.calendars.forEach(function (value) {
-        value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
-
-      });
+      for (let i = 0; i < result.length; i++) {
+        result[i].path1 = result[i].path.substring(0, result[i].path.lastIndexOf('/')) || result[i].path.substring(0, result[i].path.lastIndexOf('/') + 1);
+      }
       this.calendars = result.calendars;
       if (node) {
         this.startTraverseNode(node.data);
@@ -2453,8 +2431,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
-    if($event.action === 'NODE')
-     this.getCalendars($event.data);
+    if ($event.action === 'NODE')
+      this.getCalendars($event.data);
     else
       this.expandNode($event)
   }
@@ -2542,9 +2520,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (calendar) {
       calendars.push(calendar.path);
     } else {
-      this.object.calendars.forEach(function (value) {
-        calendars.push(value.path)
-      });
+      for (let i = 0; i < this.object.calendars.length; i++) {
+        calendars.push(this.object.calendars[i].path)
+      }
     }
     this.coreService.post('calendars/export', {
       calendars: calendars,
@@ -2596,13 +2574,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
         name: calendar ? calendar.path : ''
       };
       if (!calendar) {
-        this.object.calendars.forEach(function (value, index) {
-          if (index == this.object.calendars.length - 1) {
-            this.comments.name = this.comments.name + ' ' + value.path;
+        for (let i = 0; i < this.object.calendars.length; i++) {
+          if (i == this.object.calendars.length - 1) {
+            calendar.comments.name = calendar.comments.name + ' ' + this.object.calendars[i].path;
           } else {
-            this.comments.name = value.path + ', ' + this.comments.name;
+            calendar.comments.name = this.object.calendars[i].path + ', ' + calendar.comments.name;
           }
-        });
+        }
       }
       const modalRef = this.modalService.open(CommentModal, {backdrop: "static"});
       modalRef.componentInstance.calendar = calendar;
@@ -2636,9 +2614,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (calendar) {
       obj.calendarIds.push(calendar.id)
     } else {
-      this.object.calendars.forEach(function (value) {
-        obj.calendarIds.push(value.id)
-      });
+      for (let i = 0; i < this.object.calendars.length; i++) {
+        obj.calendarIds.push(this.object.calendars[i].id)
+      }
     }
     let calendarObj = _.clone(calendar);
     if (calendar) {
@@ -2652,16 +2630,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
       });
     } else {
       let calendarArr = _.clone(this.object.calendars);
-      calendarArr.forEach(function (value, index) {
+      for (let i = 0; i < calendarArr.length; i++) {
         this.coreService.post('calendar/used', {
-          id: value.id,
+          id: calendarArr[i].id,
           jobschedulerId: this.schedulerIds.selected
         }).subscribe((res) => {
-          value.usedIn = res;
-          if (index === this.calendarArr.length - 1)
+          calendarArr[i].usedIn = res;
+          if (i === calendarArr.length - 1)
             this.deleteCalendarFn(obj, null, calendarArr);
         });
-      });
+      }
 
     }
   }

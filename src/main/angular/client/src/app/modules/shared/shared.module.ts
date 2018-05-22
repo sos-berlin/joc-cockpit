@@ -8,6 +8,7 @@ import {ChecklistModule} from 'angular-checklist';
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {TreeModule} from 'angular-tree-component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule} from '@ngx-translate/core';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModal} from '../../components/comment-modal/comment.component';
 import { TreeComponent } from '../../components/tree-navigation/tree.component';
@@ -24,7 +25,6 @@ import {
 import {EditFilterModal} from "../../components/filter-modal/filter.component";
 import {TreeModal} from '../../components/tree-modal/tree.component';
 import {DeleteModal} from "../../components/delete-modal/delete.component";
-import {TranslateModule} from "ng2-translate";
 import {ConfigurationModal} from "../../components/configuration-modal/configuration.component";
 import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidator} from "../../directives/core.directive";
 

@@ -851,7 +851,6 @@ export class CoreService {
 
   about() {
     this.get("version.json").subscribe((data) => {
-      console.log(data);
       const modalRef = this.modalService.open(AboutModal, {
         backdrop: "static"
       });

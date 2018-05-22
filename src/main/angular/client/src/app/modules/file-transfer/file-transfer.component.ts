@@ -10,7 +10,7 @@ import {EditFilterModal} from "../../components/filter-modal/filter.component";
 import * as moment from "moment";
 import * as _ from "underscore";
 
-declare var $;
+declare const $;
 
 @Component({
   selector: 'ngbd-modal-content',
@@ -33,9 +33,9 @@ export class FilterModal implements OnInit {
   }
 
   ngOnInit() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     if (this.new) {
       this.filter = {
         radio: 'planned',
@@ -130,8 +130,7 @@ export class SearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -154,7 +153,7 @@ export class SearchComponent implements OnInit {
          this.onCancel.emit(configObj);
       }
       this.submitted = false;
-    }, err => {
+    }, () => {
       this.submitted = false;
     });
   }
@@ -249,9 +248,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.yadeFilters = this.coreService.getYadeTab();
     this.yadeView = this.preferences.fileTransfer == 'current';
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
@@ -300,6 +299,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   load() {
+    const self = this;
     this.reset();
     if (!this.filterList) {
       this.checkSharedFilters();
@@ -396,18 +396,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.fileTransfers = result.transfers;
 
       this.fileTransfers.forEach(function (transfer) {
-        let id = transfer.jobschedulerId || this.schedulerIds.selected;
-        transfer.permission = this.authService.getPermission(id).YADE;
-        if (this.showFiles) {
+        let id = transfer.jobschedulerId || self.schedulerIds.selected;
+        transfer.permission = self.authService.getPermission(id).YADE;
+        if (self.showFiles) {
           transfer.show = true;
-          this.getFiles(transfer);
+          self.getFiles(transfer);
         }
       });
 
       this.isLoading = true;
-    }, function () {
-      this.isLoading = true;
-    });
+    },  ()=> this.isLoading = true);
   }
 
   getTransfer(transfer) {
@@ -444,9 +442,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.fileTransfers = result.transfers;
       this.fileTransfers[0].permission = this.authService.getPermission(this.schedulerIds.selected).YADE;
       this.isLoading = true;
-    }, function () {
-      this.isLoading = true;
-    });
+    },  ()=> this.isLoading = true);
   }
 
   getFiles(value) {
@@ -463,7 +459,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
 
   checkAllFileTransfersFnc() {
-    let self = this;
+    const self = this;
     if (this.checkAllFileTransfers.checkbox && this.fileTransfers.length > 0) {
       this.object.fileTransfers = [];
      // let data = $filter('orderBy')($scope.filtered, this.yadeFilters.filter.sortBy, this.yadeFilters.sortReverse);
@@ -494,25 +490,24 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   }
 
-
   checkALLFilesFnc(transfer) {
+    const self = this;
     if ($("#" + transfer.id) && $("#" + transfer.id).prop('checked')) {
       if (transfer && transfer.files) {
         transfer.files.forEach(function (file) {
           let flag = false;
-          for (let x = 0; x < this.object.files.length; x++) {
-            if (_.isEqual(file, this.object.files[x])) {
+          for (let x = 0; x < self.object.files.length; x++) {
+            if (_.isEqual(file, self.object.files[x])) {
               flag = true;
               break;
             }
           }
           if (!flag) {
-            this.object.files.push(file)
+            self.object.files.push(file)
           }
         });
       }
     } else {
-      let self  = this;
       let _temp = _.clone(this.object.files);
       _temp.forEach(function (file, index) {
         for (let x = 0; x < self.object.files.length; x++) {
@@ -527,19 +522,20 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
 
   checkFile(newNames) {
+    const self = this;
     if (newNames && newNames.length > 0) {
       let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
       newNames.forEach( function (value) {
         for (let i = 0; i < data.length; i++) {
           if (data[i].id == value.transferId) {
             let flg = false;
-            for (let x = 0; x < this.object.fileTransfers.length; x++) {
-              if (this.object.fileTransfers[x].id == data[i].id) {
+            for (let x = 0; x < self.object.fileTransfers.length; x++) {
+              if (self.object.fileTransfers[x].id == data[i].id) {
                 flg = true
               }
             }
             if (!flg)
-              this.object.fileTransfers.push(data[i]);
+              self.object.fileTransfers.push(data[i]);
             break;
           }
         }
@@ -669,9 +665,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       result = res;
       value = _.extend(value, result.transfers[0]);
       this.isLoading = true;
-    }, function () {
-      this.isLoading = true;
-    });
+    },  ()=> this.isLoading = true);
     value.show = true;
     this.getFiles(value);
   }
@@ -786,7 +780,7 @@ let result:any;
       this.fileTransfers = result.transfers;
       this.loading = false;
       this.isLoaded = true;
-    }, function () {
+    },  ()=> {
       this.loading = false;
       this.isLoaded = true;
     });
@@ -835,7 +829,7 @@ let result:any;
         if (result.configurations && result.configurations.length > 0)
           this.filterList = result.configurations;
         this.getYadeCustomizations();
-      }, function () {
+      }, () =>{
         this.filterList = [];
         this.getYadeCustomizations();
       });
@@ -879,7 +873,7 @@ let result:any;
 
       if (this.savedFilter.selected) {
         let flag = true;
-        let self = this;
+        const self = this;
         this.filterList.forEach(function (value) {
           if (value.id == self.savedFilter.selected) {
             flag = false;

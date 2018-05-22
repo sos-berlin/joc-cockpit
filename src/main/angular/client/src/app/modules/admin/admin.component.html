@@ -30,7 +30,7 @@
                     <div class="inline">
                         <!-- Sorting via Account Name Starts -->
                         <div class="btn-group dropdown" *ngIf="route.match('/users/master')">
-                            <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
                                 <span class="text-primary" >{{selectedUser | decodeSpace}} </span></button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" [ngClass]="{orange: selectedUser === user.user}"
@@ -41,39 +41,39 @@
                             </div>
                         </div>
                         <!-- Sorting via Account Name Ends -->
-                        <button *ngIf="route === '/users/account'" class="btn btn-default btn-sm m-l-sm" (click) = "addAccount()">
+                        <button *ngIf="route === '/users/account'" class="btn btn-grey btn-sm m-l-sm" (click) = "addAccount()">
                             <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.addUser</span>
                         </button>
-                        <button *ngIf="route.match('/users/master')" class="btn btn-default btn-sm m-l-sm" (click) = "addMaster()" >
+                        <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addMaster()" >
                             <i class="fa fa-plus"></i>
                             <span translate>button.addMaster</span>
                         </button>
-                        <button *ngIf="route.match('/users/master')" class="btn btn-default btn-sm m-l-sm" (click) = "addRole()" >
+                        <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addRole()" >
                             <i class="fa fa-plus"></i>
                             <span translate>button.addRole</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable" (click)="addLdapRealm()"
-                                class="btn btn-sm btn-default m-l-sm" >
+                                class="btn btn-sm btn-grey m-l-sm" >
                             <span translate>button.addLdapRealm</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isJOCClusterEnable" (click)="enableJOCCluster()"
-                                class="btn btn-sm btn-default m-l-sm" >
+                                class="btn btn-sm btn-grey m-l-sm" >
                             <span translate>button.enableJOCCluster</span>
                         </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-default m-l-sm" (click)="editMainSection()">
+                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="editMainSection()">
                             <i class="fa fa-pencil"></i>
                             <span translate>button.updateSection</span>
                         </button>
-                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-default m-l-sm" (click)="addMainSection()">
+                        <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="addMainSection()">
                             <i class="fa fa-plus"></i>
                             <span translate>button.addEntry</span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-default m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
+                        <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
                             <i class="fa fa-plus"></i>
                             {{'button.addFolder' | translate}}
                         </button>
-                        <button type="button" class="btn btn-sm btn-default m-l-sm" *ngIf="route.match('/users/permissions')" [hidden]="pageView=='grid'" (click)="addPermission();" >
+                        <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" [hidden]="pageView=='grid'" (click)="addPermission();" >
                             <i class="fa fa-plus"></i>
                             {{'button.addPermission' | translate}}
                         </button>

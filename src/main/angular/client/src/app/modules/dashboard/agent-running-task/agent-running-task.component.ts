@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 
 
 declare var $:any;

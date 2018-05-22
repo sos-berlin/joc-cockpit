@@ -19,10 +19,10 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
   loading: boolean;
-  schedulerIds: any;
+  schedulerIds: any = {};
   tree: any = [];
-  preferences: any;
-  permission: any;
+  preferences: any = {};
+  permission: any = {};
   pageView: any;
   agentClusters: any = [];
   agentsFilters: any = {};
@@ -64,10 +64,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     this.agentsFilters = this.coreService.getResourceTab().agents;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission)  || {};
     if (localStorage.views)
       this.pageView = JSON.parse(localStorage.views).agent;
 
@@ -125,7 +123,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   private expandTree() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       self.tree.forEach(function (data) {
         recursive(data);
@@ -133,7 +131,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded) {
+      if (data.isExpanded && self.child) {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
@@ -146,7 +144,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    let self = this;
+    const self = this;
     setTimeout(function () {
       const node = self.child.getNodeById(1);
       node.expand();
@@ -189,6 +187,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   loadAgentsV(data, type) {
+     let self = this;
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
       folders: [{folder: data.path, recursive: type}],
@@ -200,7 +199,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
       data.agentClusters = result.agentClusters;
       data.agentClusters.forEach(function (value) {
         value.path1 = data.path;
-        this.agentClusters.push(value);
+        self.agentClusters.push(value);
       });
       this.loading = false;
 

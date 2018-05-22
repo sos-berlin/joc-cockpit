@@ -32,11 +32,13 @@ export class AdminComponent implements OnInit {
     if (val.url) {
       this.route = val.url;
       this.showTabs = !!(this.route === '/users/account' || this.route.search('/users/master') > -1 || this.route === '/users/main_section');
-      this.dataService.announceData(this.userObj);
-      this.activeRoute.queryParams
-        .subscribe(params => {
-          this.selectedUser = params.user;
-        });
+      if(this.route.match('/users')) {
+        this.dataService.announceData(this.userObj);
+        this.activeRoute.queryParams
+          .subscribe(params => {
+            this.selectedUser = params.user;
+          });
+      }
     }
 
   }
@@ -45,8 +47,8 @@ export class AdminComponent implements OnInit {
     if (this.router.url === '/users') {
       this.router.navigate(['/users/account']);
     }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.pageView = JSON.parse(localStorage.views).permission;
     this.getUsersData();
   }

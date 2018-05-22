@@ -1,6 +1,6 @@
 import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
-declare var $;
+declare const $;
 
 @Directive({
   selector: '[timevalidator][ngModel]',

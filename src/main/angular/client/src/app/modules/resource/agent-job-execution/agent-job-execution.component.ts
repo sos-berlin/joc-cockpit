@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
 import {CoreService} from '../../../services/core.service';
-import {AuthService} from '../../../components/guard/auth.service';
+import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
 
@@ -19,9 +19,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   showSearchPanel: boolean = false;
   loading: boolean;
-  schedulerIds: any;
-  preferences: any;
-  permission: any;
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
   agentTasks: any = [];
   agentJobSearch: any = {};
   agentJobExecutionFilters: any = {};
@@ -66,11 +66,9 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
     this.agentJobExecutionFilters = this.coreService.getResourceTab().agentJobExecution;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    if (this.authService.scheduleIds)
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
 
-    if (this.authService.permission)
-      this.permission = JSON.parse(this.authService.permission);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.config = {
@@ -131,7 +129,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       this.agentTasks = result.agents;
       this.totalJobExecution = result.totalNumOfSuccessfulTasks;
       this.isLoading = true;
-    }, (err) => {
+    }, () => {
       this.isLoading = true;
       this.agentTasks = [];
     });

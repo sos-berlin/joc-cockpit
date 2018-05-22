@@ -28,27 +28,27 @@
                             </label>
                             <div class="inline">
                                 <div class="btn-group m-r-sm hidden-btn-group">
-                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('all')"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('all')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
                                     </button>
-                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('today')"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('today')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
                                     </button>
-                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1h')"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1h')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
                                     </button>
-                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-12h')"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-12h')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
                                     </button>
-                                    <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1d')"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1d')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
                                     </button>
-                                     <button class="btn btn-default btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1w')"
+                                     <button class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadAgentTasks('-1w')"
                                             [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
                                     </button>
                                 </div>
                                 <div class="btn-group dropdown hidden-dropdown">
-                                    <button class="btn btn-default btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" (click)="loadAgentTasks('all')"
                                                 [ngClass]="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
@@ -70,7 +70,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <button class="btn btn-default btn-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
+                                <button class="btn btn-grey btn-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}"
                                         id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
                             </div>
                         </div>
@@ -124,10 +124,10 @@
                 </ul>
             </div>
             <div class="col-md-4 text-right">
-               <button class="btn btn-sm btn-default" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+               <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
                    <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
                </button>
-                <button class="btn btn-sm btn-default" (click)="cancel()" *ngIf="showSearchPanel">
+                <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
                     <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
                 </button>
             </div>
@@ -180,7 +180,7 @@
                                       <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
                                           button.search
                                       </button>
-                                      <button type="button" class="btn btn-default btn-sm m-l-sm" (click)="cancel()" translate>
+                                      <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
                                           button.cancel
                                       </button>
                                   </div>

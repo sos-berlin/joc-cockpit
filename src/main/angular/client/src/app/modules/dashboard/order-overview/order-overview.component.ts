@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
+import { AuthService } from '../../../components/guard';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
 
@@ -11,8 +11,8 @@ import { Subscription }   from 'rxjs/Subscription';
 })
 export class OrderOverviewComponent implements OnInit,OnDestroy {
 
-  snapshot: any ={};
-  schedulerIds: any ={};
+  snapshot: any = {};
+  schedulerIds: any = {};
   notAuthenticate: boolean = false;
   isLoaded: boolean = false;
   subscription: Subscription;
@@ -21,6 +21,16 @@ export class OrderOverviewComponent implements OnInit,OnDestroy {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+  }
+
+  ngOnInit() {
+    this.snapshot = {orders: {}};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+    this.getSnapshot();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   refresh(args) {
@@ -49,13 +59,4 @@ export class OrderOverviewComponent implements OnInit,OnDestroy {
     });
   }
 
-  ngOnInit() {
-    this.snapshot = {orders: {}};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.getSnapshot();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
 }

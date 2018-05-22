@@ -1,4 +1,3 @@
-///<reference path="../../../../node_modules/@angular/router/src/router.d.ts"/>
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CoreService } from '../../services/core.service';
@@ -18,10 +17,8 @@ export class LoginComponent implements OnInit {
     submitted = false;
     rememberMe = false;
     errorMsg: string;
-    error: string;
 
     constructor(public router:Router, public coreService:CoreService, public authService:AuthService) {
-
     }
 
     ngOnInit() {
@@ -34,7 +31,7 @@ export class LoginComponent implements OnInit {
         }
     }
 
-    getComments():void {
+    private getComments():void {
       let result: any;
       this.coreService.post('audit_log/comments', {}).subscribe(res => {
         result = res;
@@ -43,7 +40,7 @@ export class LoginComponent implements OnInit {
       });
     }
 
-    getPermissions():void {
+    private getPermissions():void {
         this.schedulerIds = JSON.parse(this.authService.scheduleIds);
         this.coreService.post('security/joc_cockpit_permissions', {jobschedulerId: this.schedulerIds.selected}).subscribe((permission)=> {
             this.authService.setPermissions(permission);
@@ -61,7 +58,7 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    getSchedulerIds():void {
+    private getSchedulerIds():void {
         sessionStorage.errorMsg = '';
         this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
             this.authService.setIds(res);
@@ -75,7 +72,6 @@ export class LoginComponent implements OnInit {
                 sessionStorage.errorMsg = err.error;
             else
                 sessionStorage.errorMsg = 'Internal server error';
-            this.error = sessionStorage.errorMsg;
             this.router.navigate(['/error']);
             this.submitted = false;
         });

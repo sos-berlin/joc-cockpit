@@ -1,5 +1,5 @@
 <form id="freq-modal" #myForm="ngForm" (ngSubmit)="save()">
-<div  class="modal-body p-a" style="min-height: 515px;">
+<div  class="modal-body p-a" style="min-height: 490px;max-height: 562px;margin-bottom: 50px">
     <div [hidden]="editor.showYearView">
         <div>
             <div class="row m-b-sm">
@@ -21,13 +21,11 @@
                             <select class="form-control" [(ngModel)]="frequency.tab"
                                     (change)="changeFrequency(frequency.tab)" name="tab">
                                 <option value="weekDays" translate>label.weekDays</option>
-                                <option value="specificWeekDays" translate>label.specificWeekDays
-                                </option>
+                                <option value="specificWeekDays" translate>label.specificWeekDays</option>
                                 <option value="specificDays" translate>label.specificDays</option>
                                 <option value="monthDays" translate>label.monthDays</option>
                                 <option value="every" translate>label.every</option>
-                                <option value="nationalHoliday" translate>label.nationalHoliday
-                                </option>
+                                <option value="nationalHoliday" translate>label.nationalHoliday</option>
                             </select>
                         </div>
                     </div>
@@ -120,13 +118,14 @@
 
                             <div class="col-sm-5">
                                 <select class="form-control" [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (change)="onFrequencyChange()">
+                                    <option value="sunday">{{'label.sunday' | translate}}</option>
                                     <option value="monday">{{'label.monday' | translate}}</option>
                                     <option value="tuesday">{{'label.tuesday' | translate}}</option>
                                     <option value="wednesday">{{'label.wednesday' | translate}}</option>
                                     <option value="thursday">{{'label.thursday' | translate}}</option>
                                     <option value="friday">{{'label.friday' | translate}}</option>
                                     <option value="saturday">{{'label.saturday' | translate}}</option>
-                                    <option value="sunday">{{'label.sunday' | translate}}</option>
+
                                 </select>
                             </div>
                         </div>
@@ -662,7 +661,7 @@
         </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-            style="position:absolute; bottom: 10px;" [disabled]="!editor.isEnable"
+            style="position:fixed; bottom: 85px;" [disabled]="!editor.isEnable"
             (click)="addFrequency()">
         <span *ngIf="editor.create" translate>button.addNewFrequency</span>
         <span *ngIf="!editor.create" translate>button.updateFrequency</span>
