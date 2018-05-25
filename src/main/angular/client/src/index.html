@@ -59,7 +59,7 @@
       localStorage.setItem('getSessionStorage', Date.now());
     }
     window.addEventListener('storage', function (event) {
-      console.log('storage event', event);
+      
       if (event.key === 'getSessionStorage') {
         // Some tab asked for the sessionStorage -> send it
         localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
