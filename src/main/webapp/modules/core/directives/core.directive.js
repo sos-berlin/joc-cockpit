@@ -647,7 +647,29 @@
             }
         }
     }
-    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).constant("defaultAvatarSettings", {
+   function dd () {
+       return {
+           restrict: 'A',
+           link: function (scope, element) {
+               element.bind("click", function (e) {
+                   const top = e.clientY + 8;
+                   const left = e.clientX - 20;
+                   if (window.innerHeight > top + 240) {
+                       $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'});
+                       $('.list-dropdown').removeClass('arrow-down').addClass('dropdown-ac');
+                   } else {
+                       $('.list-dropdown').css({
+                           top: "auto",
+                           left: left + "px",
+                           bottom: (window.innerHeight - top + 14) + "px"
+                       });
+                       $('.list-dropdown').addClass('arrow-down').removeClass('dropdown-ac');
+                   }
+               });
+           }
+       };
+   }
+    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).constant("defaultAvatarSettings", {
         alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
         textColor: "#ffffff",
         defaultBorder: "border:5px solid white",

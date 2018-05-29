@@ -2486,7 +2486,7 @@ input[type=search]:focus {
     width: 90%
 }
 
-.dropdown-ac {
+.dropdown-ac, .arrow-down {
     top: 57px;
     border-radius: 1px;
     border: 1px solid #eceef4;
@@ -2529,6 +2529,36 @@ input[type=search]:focus {
     color: #fff;
     text-shadow: 0 -1px rgba(0, 0, 0, .3);
     background: #007da6
+}
+
+
+.arrow-down {
+    font-size: 12px;
+}
+
+.arrow-down a:first-child {
+    margin-bottom: -1px
+}
+
+.arrow-down a:last-child:before, .arrow-down li:last-child:after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 8px;
+    border: 9px outset transparent
+}
+
+.arrow-down a:last-child:before {
+    border-top: 9px solid #fff;
+    bottom: -18px;
+    right: 4px
+}
+
+.arrow-down a:last-child:after {
+    border-bottom: 9px solid #fff;
+    bottom: -18px
 }
 
 .dropdown-more {
@@ -3699,7 +3729,7 @@ input[type=search]:focus {
     border-radius: 8px
 }
 
-.btn-grey, .list-group-item.active > .label, .nav-pills > .active > a > .label {
+.list-group-item.active > .label, .nav-pills > .active > a > .label {
     color: rgba(0, 0, 0, .87)
 }
 
@@ -3738,13 +3768,12 @@ input[type=search]:focus {
 }
 
 .btn-grey {
-    background-color: #eee;
+    background: #eee;
     border-color: #e0e0e0
 }
 
 .btn-grey:hover {
-    color: rgba(0, 0, 0, .9);
-    background-color: #e0e0e0;
+    background: #e0e0e0;
     border-color: #d0d0d0
 }
 
@@ -4243,7 +4272,7 @@ input[type=text][disabled] {
 
 .btn-primary {
     background-color: #007da6 !important;
-    color: #fff
+    color: #fff;
 }
 
 .form-control:focus {
@@ -4598,4 +4627,7 @@ div.min-ht-widget{
 }
 div.min-ht-widget-master-status{
     min-height: 300px !important;
+}
+.highlighted{
+    font-weight: bolder;
 }

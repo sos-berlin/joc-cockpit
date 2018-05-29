@@ -136,7 +136,6 @@
                 return 'chocolate-box';
             }
         };
-
         vm.bgColorFunction = function (d) {
             if (d == 0) {
                 return 'bg-green';
@@ -204,7 +203,7 @@
                 _temp = name + '(1)';
             }
             function recursion() {
-                for (var j = 0; j < list.length; j++) {
+                for (let j = 0; j < list.length; j++) {
                     if (list[j].name == _temp) {
                         _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1]) + 1) + ')');
                         recursion();
@@ -646,7 +645,6 @@
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
                         $window.localStorage.log_window_y = newWindow.screenY;
-                        return;
                     };
                     newWindow.addEventListener("resize",function () {
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
@@ -1422,7 +1420,6 @@
                                 });
                             }
                         }
-
                         vm.allEvents = res.events;
                         filterdEvents();
                     }
@@ -2808,12 +2805,8 @@
                             vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                             flag1 = true;
                             break;
-                        } else if (vm.frequency.tab == 'specificDays') {
+                        } else if (vm.frequency.tab == 'every') {
                             if (vm.frequency.dateEntity && vm.frequencyList[i].dateEntity) {
-                                angular.forEach(vm.frequency.months, function (month) {
-                                    if (vm.frequencyList[i].months.indexOf(month) == -1)
-                                        vm.frequencyList[i].months.push(month);
-                                });
                                 vm.frequencyList[i].str = frequencyToString(vm.frequencyList[i]);
                                 flag1 = true;
                                 break;

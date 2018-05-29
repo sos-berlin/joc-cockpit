@@ -82,7 +82,7 @@
             </aside>
             <div id="rightPanel">
                 <div class="hide " ng-class="{'show': isLoading}">
-                    <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
+                    <div class="row m-t-xs" ng-if="pageView=='grid'">
                         <div ng-repeat="(key, value) in allJobs | orderBy:'path1' | groupBy: 'path1' track by $index">
                             <div class="col-sm-12" style="margin-bottom: 10px">
                                 <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
@@ -218,8 +218,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="hide box p-a " ng-class="{'show': pageView=='list' && allJobs.length >0}">
+                    <div class="box p-a " ng-if="pageView=='list' && allJobs.length >0">
                         <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
@@ -325,9 +324,9 @@
                                 </td>
                                 <td class="tableexport-ignore">
                                     <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
                                                 class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more"
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                              role="menu">
                                               <a class="dropdown-item"
                                                ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
@@ -370,8 +369,7 @@
                                                ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
-                                            <div class="dropdown-divider"></div>
-                                                                                        <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
+                                            <div class="dropdown-divider"></div><a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                                ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                             <a ng-click="showConfiguration('job',job.path,job.name)"
                                                class="hide dropdown-item"
@@ -390,12 +388,12 @@
                                     <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                           ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                           ng-bind="job.name"></span>
-                                    <span ng-if="job.title">-</span><i class="text-muted"
-                                                                       ng-bind-html="job.title | linky:'_blank'"></i>
+                                    <span ng-if="job.title">-</span>
+                                    <i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                                 </td>
                                 <td ng-bind="job.path"></td>
                                 <td>
-                                    <span class="label" ng-class="bgColorFunction(job.state.severity)"
+                                    <span class="label" ng-if="job.state" ng-class="bgColorFunction(job.state.severity)"
                                           ng-bind="job.state._text  | translate"></span>
                                 </td>
                                 <td><span ng-bind-html="job.stateText | linky:'_blank'"></span></td>
@@ -478,10 +476,9 @@
                                             <td width="40"
                                                 ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                 <div class="btn-group dropdown">
-                                                    <button type="button" class="btn-drop more-option-h"
-                                                            data-toggle="dropdown"><i
-                                                            class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more"
+                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                                        <i class="fa fa-ellipsis-h"></i></button>
+                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                                          role="menu">
                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog"
                                                            ng-click="showLogWindow(null,task,job.path)" translate>button.viewLog</a>
@@ -503,21 +500,16 @@
                                             </td>
                                             <td ng-click="showLogWindow(null,task,job.path)">{{task.pid}}</td>
                                             <td ng-click="showLogWindow(null,task,job.path)">{{task.taskId}}</td>
-                                            <td ng-click="showLogWindow(null,task,job.path)">{{task._cause |
-                                                translate}}
+                                            <td ng-click="showLogWindow(null,task,job.path)">{{task._cause | translate}}
                                             </td>
-                                            <td ng-click="showLogWindow(null,task,job.path)"
-                                                ng-if="job.isOrderJob==true">{{task.order.orderId}}
+                                            <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob==true">{{task.order.orderId}}
                                             </td>
                                             <td ng-click="showLogWindow(null,task,job.path)">{{task.steps}}</td>
-                                            <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt |
-                                                stringToDate}} <span class="text-success">(<span
-                                                        time="{{task.startedAt}}"></span>)</span></td>
-                                            <td ng-click="showLogWindow(null,task,job.path)"
-                                                ng-if="job.isOrderJob!=true">{{task.enqueued | stringToDate}} <span
+                                            <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt | stringToDate}}
+                                                <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
+                                            <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob!=true">{{task.enqueued | stringToDate}} <span
                                                     class="text-success">(<span time="{{task.enqueued}}"></span>)</span>
                                             </td>
-
                                         </tr>
                                         </tbody>
                                     </table>
@@ -534,13 +526,10 @@
                                                 translate>label.jobChain</span> :
                                         </div>
                                         <div class="btn-group dropdown m-l-md">
-                                            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                                <i
-                                                        class="fa fa-ellipsis-h"></i></button>
-                                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list"
-                                                 role="menu">
-                                                <a class="dropdown-item"
-                                                   ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
+                                            <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                                <i class="fa fa-ellipsis-h"></i></button>
+                                            <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                         <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
@@ -696,9 +685,9 @@
                                                             </td>
                                                             <td width="40" ng-if="permission.Job.execute.kill">
                                                                 <div class="btn-group dropdown">
-                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
-                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                                         <a class="dropdown-item bg-hover-color" ng-click="killTask(task,showTaskPanel.path)" translate>button.delete</a>
                                                                     </div>
                                                                 </div>
@@ -743,9 +732,9 @@
                                                             </td>
                                                             <td width="40" ng-if="permission.Order.delete.permanent">
                                                                 <div class="btn-group dropdown">
-                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" >
+                                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" >
                                                                         <i class="fa fa-ellipsis-h"></i></button>
-                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                                         <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':order._type =='PERMANENT'}" ng-click="deleteOrder(order)" translate>button.delete</a>
                                                                     </div>
                                                                 </div>
@@ -790,9 +779,9 @@
                                                         <tr ng-repeat="task in showTaskPanel.runningTasks" class="cursor">
                                                              <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                                 <div class="btn-group dropdown">
-                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
-                                                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,showTaskPanel.path)" translate>button.viewLog</a>
                                                                         <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
@@ -887,27 +876,7 @@
 </div>
 </div>
 
-
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 235 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 235 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({
             sidebarTopMargin: 155

@@ -391,29 +391,24 @@
                 </div>
                 <div ng-controller="OrderFunctionCtrl">
                     <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
-                        <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
+                        <div class="row m-t-xs" ng-if="pageView=='grid'">
                             <div ng-repeat="(key, value) in filtered = (allOrders | filter: filterString:strict) | orderBy:'path1' | groupBy: 'path1' track by $index">
                                 <div class="col-sm-12" style="margin-bottom: 10px">
                                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                                 </div>
-                                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                                     ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse track by $index">
+                                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12" ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse track by $index">
                                     <div class="box card" ng-class="colorBorderFunction(order.processingState.severity)">
-                                        <div class="box-body">
+                                        <div class="box-body" title="{{order.configurationStatus._text | translate}}">
                                             <div>
-                                                <label class="md-check pos-abt"
-                                                       ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
-                                                    <input type="checkbox" data-checklist-model="object.orders"
-                                                           data-checklist-value="order">
-                                                    <i class="primary"></i></label>
-
-                                                <div class="text-left block-ellipsis"
-                                                     ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
-                                                    <span uib-tooltip="{{order.title}}">{{order.orderId}}</span></div>
+                                                <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
+                                                    <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order">
+                                                    <i class="primary"></i>
+                                                </label>
+                                                <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
+                                                    <span uib-tooltip="{{order.title}}"  ng-class="{'crimson':job.configurationStatus.severity==2}" >{{order.orderId}}</span></div>
                                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                                     <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                                         <i class="text fa fa-ellipsis-h"></i></a>
-
                                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                                         <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId"
@@ -480,45 +475,34 @@
                                             </div>
                                             <div class="text-left text-muted p-t-sm">
                                                 <span translate>label.state </span>:
-                                                <span ng-class="colorFunction(order.processingState.severity)"
-                                                      ng-bind="order.processingState._text | translate"></span>
+                                                <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                             </div>
                                             <div class="text-left text-muted text-sm p-t-sm">
-                                                    <span class="hide"
-                                                          ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                                    <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                                         {{'label.nextStart' | translate}}:
                                                         {{order.nextStartTime | stringToDate}}
-                                                       <span class="text-success">(<span
-                                                               time="{{order.nextStartTime}}"></span>)</span>
+                                                       <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
                                                     </span>
-                                                <span class="hide"
-                                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
-                                                      translate>label.nextStartNever</span>
+                                                <span class="hide" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
                                                     <span class="hide" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}
-                                                        <span class="text-success">(<span
-                                                                time="{{order.startedAt}}"></span>)</span>
+                                                        <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span>
                                                     </span>
                                             </div>
                                         </div>
                                         <div class="box-footer b-t">
                                             <div>
-                                                <a href class="hide text-left primary-text-hover-color"
-                                                   ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
-                                                   ng-class="{'show-block':permission.Order.execute.start}"
-                                                   ng-click="start(order)">
+                                                <a href class="hide text-left primary-text-hover-color" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
+                                                   ng-class="{'show-block':permission.Order.execute.start}" ng-click="start(order)">
                                                     <i class="fa fa-play text-black-lt"></i>
                                                     <span class="text-black-lt" translate>button.startNow</span>
                                                 </a>
-                                                <a href class="hide text-left primary-text-hover-color"
-                                                   ng-if="order.processingState._text == 'SUSPENDED' "
-                                                   ng-class="{'show-block':permission.Order.execute.resume}"
-                                                   ng-click="resumeOrder(order)">
+                                                <a href class="hide text-left primary-text-hover-color" ng-if="order.processingState._text == 'SUSPENDED' "
+                                                   ng-class="{'show-block':permission.Order.execute.resume}" ng-click="resumeOrder(order)">
                                                     <i class="fa fa-step-forward text-black-lt"></i>
                                                     <span class="text-black-lt" translate>button.resume</span>
                                                 </a>
                                                 <a href class="text-hover-color pull-right"
-                                                   ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
-                                                   ng-click="suspendOrder(order)">
+                                                   ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend" ng-click="suspendOrder(order)">
                                                     <i class="fa fa-pause text-black-lt"></i>
                                                     <span class="text-black-lt" translate>button.suspend</span>
                                                 </a>
@@ -527,11 +511,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-center m-t text-uppercase hide text-orange"
-                                 ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}"
-                                 translate>message.noDataMatched</div>
+                            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
                         </div>
-                        <div class="hide box p-a " ng-class="{'show': pageView=='list' && allOrders.length >0}">
+                        <div class="box p-a " ng-if="pageView=='list' && allOrders.length >0">
                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
@@ -595,25 +577,21 @@
                                             <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && orderFilters.reverse"
                                                class="fa fa-caret-down "></i></a>
                                         </th>
-
                                     </tr>
                                     </thead>
                                     <tbody ng-repeat="order in filtered = (allOrders | filter: filterString:strict) | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage track by $index"
                                            ng-class="{'light-bg':showLogPanel == order}">
-                                    <tr>
+                                    <tr title="{{order.configurationStatus._text | translate}}">
                                         <td class="tableexport-ignore"
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check">
-                                                <input type="checkbox" data-checklist-model="object.orders"
-                                                       data-checklist-value="order"><i class="primary"></i>
+                                                <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i class="primary"></i>
                                             </label>
                                         </td>
                                         <td class="tableexport-ignore">
                                             <div class="btn-group dropdown ">
-                                                <button type="button" class="btn-drop more-option-h"
-                                                        data-toggle="dropdown"><i
-                                                        class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more " role="menu">
+                                                <button type="button" class="btn-drop more-option-h" data-toggle="dropdown" dropdown><i class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                     <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                        ng-if="order.historyId"
                                                        ng-class="{'show':permission.Order.view.orderLog}"
@@ -652,15 +630,13 @@
                                                    <div class="dropdown-divider"></div>
                                                     <a href class="dropdown-item"
                                                        ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                       ng-click="setRunTime(order)"><span
-                                                            translate>button.setRunTime</span></a>
+                                                       ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
                                                     <a href class="dropdown-item"
                                                        ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                        ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                     <a href class="dropdown-item"
                                                        ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
-                                                       ng-click="showAssignedCalendar(order)">
-                                                            <span translate>button.showAssignedCalendar</span>
+                                                       ng-click="showAssignedCalendar(order)"><span translate>button.showAssignedCalendar</span>
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
@@ -679,49 +655,39 @@
                                                ng-click="showPanelFuc(order)"></i>
                                             <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show"
                                                ng-click="order.show=false"></i>
-
-                                                    <span class="text-hover-primary" ng-click="showLogFuc(order)"><span
-                                                            class="text-dark ">{{order.orderId}}</span> <span
-                                                            ng-if="order.title">-</span>
-                                                    <i class="text-muted"
-                                                       ng-bind-html="order.title | linky:'_blank'"></i></span>
+                                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark "
+                                             ng-class="{'crimson':order.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:filterString"></span>
+                                                <span ng-if="order.title">-</span>
+                                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                                         </td>
-                                        <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)"
-                                                  ng-bind="order.jobChain"></span></td>
+                                        <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
                                         <td>
-                                            <a class="label" ng-click="showLogWindow(order)"
-                                               ng-if="order.historyId && permission.Order.view.orderLog"
+                                            <a class="label" ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text"
                                                ng-class="bgColorFunction(order.processingState.severity)"
                                                ng-bind="order.processingState._text | translate"></a>
-                                            <span class="label" ng-if="!order.historyId"
-                                                  ng-class="bgColorFunction(order.processingState.severity)"
+                                            <span class="label" ng-if="!order.historyId && order.processingState._text" ng-class="bgColorFunction(order.processingState.severity)"
                                                   ng-bind="order.processingState._text | translate"></span>
-                                            <span class="text-muted text-sm"
-                                                  ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span
+                                            <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span
                                                     class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
                                         </td>
                                         <td uib-tooltip="{{order.stateText}}"><span ng-bind="order.state"></span></td>
                                         <td>
-                                            <span ng-if="order.startedAt"
-                                                  ng-bind="order.startedAt | stringToDate"></span>
+                                            <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                             <span class="hide tableexport-ignore" ng-class="{'show-inline':!order.startedAt}"
                                                   translate>label.never</span>
                                         </td>
-                                        <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span
-                                                class="text-success">(<span
+                                        <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span
                                                 time="{{order.startedAt}}"></span>)</span></span></td>
                                         <td ng-bind="order.historyId || '-'"></td>
                                         <td>
                                             <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                                 {{order.nextStartTime | stringToDate}}
                                                 <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                            <span class="hide tableexport-ignore"
-                                                  ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                            <span class="hide tableexport-ignore" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
                                                   translate>label.never</span>
                                         </td>
                                     </tr>
                                     <tr ng-show="order.show" class="tableexport-ignore">
-
                                         <td></td>
                                         <td colspan="9" style="padding: 1px !important;">
                                             <table class="table m-a-0">
@@ -755,18 +721,13 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="inline text-sm m-l-xs m-b-sm"
-                                     ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span
-                                        translate>label.total</span> {{filtered.length}}
+                                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0">
+                                    <span translate>label.total</span> {{filtered.length}}
                                     <span translate ng-if="filtered.length >1">label.ordersFound</span>
                                     <span translate ng-if="filtered.length ==1">label.orderFound</span>
                                 </div>
-                                <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination
-                                    total-items="filtered.length" ng-model="orderFilters.currentPage"
-                                    items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
-                                    class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
-                                    boundary-link-numbers="true" rotate="false"
-                                    previous-text="{{'button.prev' | translate}}"
+                                <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="orderFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
+                                    class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}"
                                     next-text="{{'button.next' | translate}}"></ul>
                                 <div class="pull-left" ng-show="filtered.length > 10">
                                     <div class="btn-group m-r-xxs">
@@ -795,18 +756,15 @@
                                     </div>
                                 </div>
                                 <div class="text-center m-t text-uppercase hide text-orange"
-                                     ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}"
-                                     translate>message.noDataMatched</div>
+                                     ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
                             </div>
                         </div>
-
                     </div>
                     <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
                         <div class="backdrop"></div>
                         <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                     </div>
-                    <div ng-if="isLoading && !loading && folderPath && allOrders.length==0"
-                         class="text-center m-t m-b-lg h6">
+                    <div ng-class="{'show' : isLoading && !loading && folderPath && allOrders.length==0}" class="hide text-center m-t m-b-lg h6">
                         <span class="text-primary">"{{folderPath}}"</span>
                         <span translate>message.emptyFolder</span>
                     </div>
@@ -819,9 +777,9 @@
                         <div class="col-md-12">
                             <div class="box white">
                                 <div class="box-header">
-                                    <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i
-                                            ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted"
-                                                                                ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
+                                    <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}}
+                                        <i ng-if="showLogPanel.title">-</i>
+                                        <i class="text-sm text-muted" ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
                                 </div>
                                 <div class="box-tool">
                                     <ul class="nav text-muted text-md">
@@ -866,9 +824,8 @@
                                                         <tr ng-repeat="history in historys | orderBy: 'startTime':true"
                                                             ng-click="showLogWindow(history,null)" class="cursor">
                                                             <td ng-bind="history.orderId"></td>
-                                                            <td><span class="label"
-                                                                      ng-bind="history.state._text | translate"
-                                                                      ng-class="bgColorFunction(history.state.severity)"></span>
+                                                            <td>
+                                                                <span ng-if="history.state._text" class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span>
                                                             </td>
                                                             <td ng-bind="history.startTime | stringToDate"></td>
                                                             <td ng-bind="history.endTime | stringToDate"></td>
@@ -877,10 +834,7 @@
                                                         </tr>
                                                         </tbody>
                                                     </table>
-                                                    <div ng-if="historys.length==0"
-                                                         class="text-center m-t-md h6 text-uppercase" translate>
-                                                        message.noOrderHistoryFound
-                                                    </div>
+                                                    <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -912,7 +866,6 @@
                                                             </td>
                                                             <td><span ng-bind="auditLog.account"></span></td>
                                                             <td><span ng-bind="auditLog.request"></span></td>
-                                                            <!--<td><span ng-bind="auditLog.orderId"></span></td>-->
                                                             <td><span ng-bind="auditLog.comment"></span></td>
                                                             <td>
                                                             <span ng-if="auditLog.timeSpent">
@@ -920,22 +873,19 @@
                                                                 <span>m</span>
                                                             </span>
                                                             </td>
-                                                            <td><a href="{{auditLog.ticketLink}}"
-                                                                   class="text-hover-primary" target="_blank"
-                                                                   ng-bind="auditLog.ticketLink"></a></td>
+                                                            <td>
+                                                                <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a>
+                                                            </td>
                                                         </tr>
                                                         <tr class="tableexport-ignore" ng-show="auditLog.show">
                                                             <td colspan="6">
                                                                 <table class="table m-a-0">
                                                                     <thead>
-                                                                    <tr>
-                                                                        <th translate>label.parameters</th>
-                                                                    </tr>
+                                                                        <tr><th translate>label.parameters</th></tr>
                                                                     </thead>
                                                                     <tbody>
                                                                     <tr>
-                                                                        <td><span ng-bind="auditLog.parameters"></span>
-                                                                        </td>
+                                                                        <td><span ng-bind="auditLog.parameters"></span></td>
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
@@ -943,10 +893,7 @@
                                                         </tr>
                                                         </tbody>
                                                     </table>
-                                                    <div ng-if="auditLogs.length==0"
-                                                         class="text-center m-t-md h6 text-uppercase" translate>
-                                                        message.noAuditLogFound
-                                                    </div>
+                                                    <div ng-if="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAuditLogFound</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -956,7 +903,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -975,7 +921,6 @@
                        uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
-
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
@@ -1003,27 +948,6 @@
 </div>
 
 <script>
-
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 280 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 280 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 155
