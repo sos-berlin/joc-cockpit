@@ -227,6 +227,9 @@
             if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
+            if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject))){
+                vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject);
+            }
             if (vm.preferences.entryPerPage > 100) {
                 vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
             }
@@ -561,7 +564,7 @@
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 fromDate.setSeconds(toDate.getSeconds() - seconds);
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
@@ -573,31 +576,31 @@
                 fromDate = new Date();
                 toDate = new Date();
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-               var arr = date[0].split('to');
+                let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+               let arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                let arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                let arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                let date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                let arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+                let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
                 fromDate = new Date();
                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
                     fromDate.setHours(parseInt(time[1]) - 12);
@@ -660,8 +663,8 @@
             if (vm.auditSearch.jobChain) {
                 filter.orders = [];
                 if (vm.auditSearch.orderIds) {
-                    var s = vm.auditSearch.orderIds.replace(/\s*(,|^|$)\s*/g, "$1");
-                    var orderIds = s.split(',');
+                    let s = vm.auditSearch.orderIds.replace(/\s*(,|^|$)\s*/g, "$1");
+                    let orderIds = s.split(',');
                     angular.forEach(orderIds, function (value) {
                         filter.orders.push({jobChain: vm.auditSearch.jobChain, orderId: value})
                     });
@@ -671,14 +674,14 @@
             }
             if (vm.auditSearch.job) {
                 filter.jobs = [];
-                var s = vm.auditSearch.job.replace(/\s*(,|^|$)\s*/g, "$1");
-                var jobs = s.split(',');
+                let s = vm.auditSearch.job.replace(/\s*(,|^|$)\s*/g, "$1");
+                let jobs = s.split(',');
                 angular.forEach(jobs, function (value) {
                     filter.jobs.push({job: value})
                 });
             }
             if (vm.auditSearch.calendars) {
-                var s = vm.auditSearch.calendars.replace(/\s*(,|^|$)\s*/g, "$1");
+                let s = vm.auditSearch.calendars.replace(/\s*(,|^|$)\s*/g, "$1");
                 filter.calendars = s.split(',');
             }
             if (vm.auditSearch.regex) {
@@ -703,7 +706,7 @@
                    filter.dateFrom = fromDate;
                }
                if (vm.auditSearch.date == 'date' && vm.auditSearch.to) {
-                   var toDate = new Date(vm.auditSearch.to);
+                   let toDate = new Date(vm.auditSearch.to);
                    if (vm.auditSearch.toTime) {
                        toDate.setHours(moment(vm.auditSearch.toTime, 'HH:mm:ss').hours());
                        toDate.setMinutes(moment(vm.auditSearch.toTime, 'HH:mm:ss').minutes());
@@ -824,7 +827,7 @@
                 vm.main = res.main;
                 if(vm.main && vm.main.length>0){
                     if(vm.main.length>1){
-                        for(var i =0; i< vm.main.length;i++){
+                        for(let i =0; i< vm.main.length;i++){
                             if((vm.main[i].entryName == 'sessionDAO' && vm.main[i].entryValue =='com.sos.auth.shiro.SOSDistributedSessionDAO') ||
                                 (vm.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue =='$sessionDAO')){
                                 vm.isJOCClusterEnable = false;
@@ -861,14 +864,14 @@
         //--------------------ACTION-----------------------
         vm.checkUser = function () {
             vm.isUnique = true;
-            angular.forEach(vm.users, function (usr, index) {
+            angular.forEach(vm.users, function (usr) {
                 if (usr.user != vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user == vm.user.user))
                     vm.isUnique = false;
             });
         };
         vm.checkMaster = function () {
             vm.isUnique = true;
-            angular.forEach(vm.masters, function (mast, index) {
+            angular.forEach(vm.masters, function (mast) {
                 if ((angular.equals(mast.master, vm.master.master) || mast.master == vm.master.master))
                     vm.isUnique = false;
             });
@@ -876,7 +879,7 @@
 
         vm.checkMainSection = function () {
             vm.isUnique = true;
-            angular.forEach(vm.main, function (mast, index) {
+            angular.forEach(vm.main, function (mast) {
                 if (mast.entryName != vm.temp_name && (angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName == vm.entry.entryName))
                     vm.isUnique = false;
             });
@@ -884,7 +887,7 @@
 
         vm.checkRole = function () {
             vm.isUnique = true;
-            for (var j = 0; j < vm.roles.length; j++) {
+            for (let j = 0; j < vm.roles.length; j++) {
                 if (vm.roles[j] != temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] == vm.role.role)) {
                     vm.isUnique = false;
                     break;
@@ -1016,7 +1019,7 @@
                     }
                 });
                 if (vm.selectedUser) {
-                    for (var i = 0; i < vm.users.length; i++) {
+                    for (let i = 0; i < vm.users.length; i++) {
                         if (vm.users[i].user == vm.selectedUser) {
                             vm.users[i].roles.push(vm.role.role);
                             break;
@@ -1053,15 +1056,15 @@
                         }
                     });
                 });
-                for (var i = 0; i < vm.users.length; i++) {
-                    for (var j = 0; j < vm.users[i].roles.length; j++) {
+                for (let i = 0; i < vm.users.length; i++) {
+                    for (let j = 0; j < vm.users[i].roles.length; j++) {
                         if (vm.users[i].roles[j] == temp_role) {
                             vm.users[i].roles.splice(j, 1);
                             vm.users[i].roles.push(vm.role.role);
                         }
                     }
                 }
-                for (var i = 0; i < vm.roles.length; i++) {
+                for (let i = 0; i < vm.roles.length; i++) {
                     if (vm.roles[i] == temp_role || angular.equals(vm.roles[i], temp_role)) {
                         vm.roles.splice(i, 1);
                         vm.roles.push(vm.role.role);
@@ -1107,8 +1110,8 @@
         };
         vm.deleteRole = function (role, mast) {
             var flag = true;
-            for (var i = 0; i < vm.users.length; i++) {
-                for (var j = 0; j < vm.users[i].roles.length; j++) {
+            for (let i = 0; i < vm.users.length; i++) {
+                for (let j = 0; j < vm.users[i].roles.length; j++) {
                     if (vm.users[i].roles[j] == role.role) {
                         flag = false;
                         break;
@@ -1206,7 +1209,7 @@
             });
             modalInstance.result.then(function () {
                 vm.master = {};
-                angular.forEach(vm.masters, function (master, index) {
+                angular.forEach(vm.masters, function (master) {
                     if (angular.equals(master, mast)) {
                         vm.masters.splice(vm.masters.indexOf(mast), 1);
                     }
@@ -1225,14 +1228,14 @@
             selectedRoles = [];
             vm.showMsg = false;
             if (user) {
-                for (var i = 0; i < vm.users.length; i++) {
+                for (let i = 0; i < vm.users.length; i++) {
                     if (vm.users[i].user == vm.selectedUser && vm.users[i].roles) {
                         selectedRoles = vm.users[i].roles || [];
                         angular.forEach(vm.masters, function (master) {
 
                             var flag = true;
-                            for (var j = 0; j < vm.users[i].roles.length; j++) {
-                                for (var x = 0; x < master.roles.length; x++) {
+                            for (let j = 0; j < vm.users[i].roles.length; j++) {
+                                for (let x = 0; x < master.roles.length; x++) {
                                     if (master.roles[x].role == vm.users[i].roles[j]) {
                                         selectedMasters.push(master.master);
                                         flag = false;
@@ -1398,10 +1401,10 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                for(var i =0; i<vm.mainSection.length;i++){
+                for(let i =0; i<vm.mainSection.length;i++){
                     if(vm.mainSection[i].entryName == 'ldapRealm.contextFactory.url'){
                         if(!angular.isArray(vm.mainSection[i].entryValue)){
-                            var value = angular.copy(vm.mainSection[i].entryValue);
+                            let value = angular.copy(vm.mainSection[i].entryValue);
                             vm.mainSection[i].entryValue =[value];
 
                         }
@@ -1706,13 +1709,13 @@
         function preparePermissionJSON() {
             vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
             vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
-            for (var i = 0; i < vm.permissionArr.length; i++) {
+            for (let i = 0; i < vm.permissionArr.length; i++) {
 
                 var nodes = vm.permissionArr[i].split(':');
 
                 var arr = [];
                 var flag = true, index = 0;
-                for (var j = 0; j < nodes.length; j++) {
+                for (let j = 0; j < nodes.length; j++) {
                     var obj = {};
                     obj.id = count++;
                     obj.name = nodes[j];
@@ -1770,7 +1773,7 @@
 
 
         function loadPermission() {
-            angular.forEach(vm.masters, function (master, index) {
+            angular.forEach(vm.masters, function (master) {
                 if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
                     angular.forEach(master.roles, function (value) {
                         if (angular.equals(value.role, vm.roleName)) {
@@ -1952,29 +1955,6 @@
             }
         }
 
-        function unSelectPermissionObj(permissionNodes, permission, excluded) {
-            if (permissionNodes._parents) {
-                for (var i = 0; i < permissionNodes._parents.length; i++) {
-                    if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
-                        permissionNodes._parents[i].excluded = !permissionNodes._parents[i].excluded;
-                        if (permissionNodes._parents[i].excluded) {
-                            permissionNodes._parents[i].greyedBtn = false;
-                        }
-                        updateChildExclude(permissionNodes._parents[i], excluded);
-                        break;
-                    }
-                    unSelectPermissionObj(permissionNodes._parents[i], permission, excluded);
-                }
-            } else {
-                if ((permissionNodes.path + permissionNodes.name) == permission) {
-                    permissionNodes.excluded = !permissionNodes.excluded;
-                    if (permissionNodes.excluded) {
-                        permissionNodes.greyedBtn = false;
-                    }
-                }
-            }
-        }
-
         vm.deletePermission = function (permission) {
             vm.permission = angular.copy(permission);
             var modalInstance = $uibModal.open({
@@ -2004,7 +1984,7 @@
             $('#editPermission').modal('hide');
             vm.isCovered = false;
             var exists = false;
-            for (var i = 0; i < vm.rolePermissions.length; i++) {
+            for (let i = 0; i < vm.rolePermissions.length; i++) {
                 if (vm.rolePermissions[i].path == vm.permission.path) {
                     vm.rolePermissions[i].excluded = vm.permission.excluded;
                     exists = true;
@@ -2012,7 +1992,7 @@
                 }
             }
             if (!exists) {
-                for (var i = 0; i < vm.rolePermissions.length; i++) {
+                for (let i = 0; i < vm.rolePermissions.length; i++) {
                     if (vm.rolePermissions[i].path == vm.permissionToEdit.path) {
                         vm.rolePermissions.splice(i, 1);
                         vm.rolePermissions.splice(i, 0, vm.permission);
@@ -2066,9 +2046,9 @@
             unSelectedNode(permissionNodes[0][0], true);
             checkPermissionList(permissionNodes[0][0], angular.copy(vm.rolePermissions));
             updateDiagramData(permissionNodes[0][0]);
-            for (var i = 0; i < vm.masters.length; i++) {
+            for (let i = 0; i < vm.masters.length; i++) {
                 if (angular.equals(vm.masters[i].master, vm.masterName) || (vm.masters[i].master == '' && vm.masterName == 'default')) {
-                    for (var j = 0; j < vm.masters[i].roles.length; j++) {
+                    for (let j = 0; j < vm.masters[i].roles.length; j++) {
                         if (angular.equals(vm.masters[i].roles[j].role, vm.roleName)) {
                             vm.masters[i].roles[j].permissions = angular.copy(vm.rolePermissions);
                             break;
@@ -2099,7 +2079,7 @@
 
         function checkPermissionListRecursively(permission_node, list) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = !list.excluded;
                     permission_node._parents[j].selected = false;
                     permission_node._parents[j].excluded = list.excluded;
@@ -2117,8 +2097,8 @@
         function checkPermissionList(permission_node, list) {
             if (list.length > 0) {
                 if (permission_node && permission_node._parents) {
-                    for (var j = 0; j < permission_node._parents.length; j++) {
-                        for (var i = 0; i < list.length; i++) {
+                    for (let j = 0; j < permission_node._parents.length; j++) {
+                        for (let i = 0; i < list.length; i++) {
                             if (list[i].path.match(permission_node._parents[j].path + permission_node._parents[j].name)) {
                                 permission_node._parents[j].isSelected = !(permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
                             }
@@ -2137,7 +2117,7 @@
                         checkPermissionList(permission_node._parents[j], list);
                     }
                 } else {
-                    for (var i = 0; i < list.length; i++) {
+                    for (let i = 0; i < list.length; i++) {
                         if (list[i].path.match(permission_node.path + permission_node.name)) {
                             permission_node.isSelected = !(permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
                         }
@@ -2155,7 +2135,7 @@
 
         function selectedNode(permission_node, flag) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = true;
                     permission_node._parents[j].selected = false;
                     permission_node._parents[j].isSelected = permission_node.isSelected;
@@ -2170,7 +2150,7 @@
 
         function unSelectedNode(permission_node, flag) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
                     permission_node._parents[j].isSelected = permission_node.isSelected;
@@ -2185,7 +2165,7 @@
 
         function selectedExcludeNode(permission_node) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyedBtn = true;
                     permission_node._parents[j].excluded = true;
                     permission_node._parents[j].excludedParent = false;
@@ -2197,7 +2177,7 @@
 
         function unSelectedExcludeNode(permission_node) {
             if (permission_node && permission_node._parents) {
-                for (var j = 0; j < permission_node._parents.length; j++) {
+                for (let j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyedBtn = false;
                     permission_node._parents[j].excluded = false;
                     permission_node._parents[j].excludedParent = false;
@@ -2260,7 +2240,7 @@
 
                 .children(function (permission_node) {
                     if (permission_node.collapsed) {
-                        return;
+
                     } else {
                         return permission_node._parents;
                     }
@@ -2370,7 +2350,7 @@
                     if (diff > 0) {
                         d.x = d.x + diff;
                     }
-                })
+                });
 
                 var links = tree.links(nodes);
 
@@ -2575,7 +2555,6 @@
 
             function calculateTopMost() {
                 endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
-                var topMost = 0;
                 nodes = tree.nodes(root);
                 nodes.forEach(function (node) {
                     if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
@@ -2629,7 +2608,7 @@
                             if (permission._parents[i].selected || (permission._parents[i].excluded && !permission._parents[i].greyedBtn)) {
                                 var obj = {
                                     path: permission._parents[i].path + '' + permission._parents[i].name,
-                                    excluded: permission._parents[i].excluded ? true : false
+                                    excluded: !!permission._parents[i].excluded
                                 };
 
                                 if (_temp.indexOf(obj) == -1)

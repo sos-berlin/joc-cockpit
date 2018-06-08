@@ -895,7 +895,7 @@
                                                                 </div>
                                                             </td>
                                                             <td>{{order.orderId}}</td>
-                                                            <td><a class="text-hover-primary" ng-click="showJonChain(order.jobChain)">{{order.jobChain}}</a></td>
+                                                            <td><a class="text-hover-primary" ng-click="showJobChain(order.jobChain)">{{order.jobChain}}</a></td>
                                                             <td>
                                                                 <a class="label" ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
                                                                 <span class="label" ng-if="!order.historyId && order.processingState._text" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>

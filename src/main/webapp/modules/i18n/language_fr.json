@@ -1308,5 +1308,6 @@
   "button.addLdapRealm": "Add ldap realm",
   "message.jobSchedulerStatus": "This widget displays the status of all JobSchedules",
   "label.updateMainSection": "Edit Main Section",
-  "button.updateSection": "Edit Main Section"
+  "button.updateSection": "Edit Main Section",
+  "label.maxNumberOfHistoryEntriesInOrderOverview": "Max. number of Order overview History entries per Order"
 }

@@ -644,19 +644,15 @@
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" ng-if="runTime.frequency == 'time_slot'" ng-hide="!runTime.frequency || runTime.frequency=='single_start'"
+                    <div class="form-group row" ng-hide="(!runTime.frequency || runTime.frequency=='single_start')"
                          ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
-
                         <div class="col-sm-2" ng-class="{ 'has-error' : form.begin.$invalid && form.begin.$dirty }">
-                            <input valid-time maxlength="8" class="form-control"
-                                   ng-model="runTime.period._begin" name="begin" placeholder="HH:MM:SS" type="text">
+                            <input valid-time maxlength="8" class="form-control" ng-model="runTime.period._begin" name="begin" placeholder="HH:MM:SS" type="text">
                         </div>
                         <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
-
                         <div class="col-sm-2" ng-class="{ 'has-error' : form.end.$invalid && form.end.$dirty }">
-                            <input valid-time maxlength="8" class="form-control"
-                                   ng-model="runTime.period._end" name="end" placeholder="HH:MM:SS" type="text">
+                            <input valid-time maxlength="8" class="form-control" ng-model="runTime.period._end" name="end" placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row" ng-if="runTime.period._when_holiday">

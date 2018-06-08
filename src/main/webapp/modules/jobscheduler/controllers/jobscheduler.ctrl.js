@@ -412,7 +412,7 @@
             }
 
             obj.folders = [
-                {folder: data.path, recursive: type ? true : false}
+                {folder: data.path, recursive: !!type}
             ];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
                 data.agentClusters = result.agentClusters;
@@ -693,22 +693,57 @@
             });
         }
 
+        vm.checkExpireValue = function(type) {
+            console.log(type);
+            if (type === 'expirationPeriod') {
+                vm.event.expirationCycle = '';
+                vm.event.expiresDate = '';
+                vm.event.expiresTime = '';
+            } else if (type === 'expirationCycle') {
+                vm.event.expirationPeriod = '';
+                vm.event.expiresDate = '';
+                vm.event.expiresTime = '';
+            } else {
+                vm.event.expirationCycle = '';
+                vm.event.expirationPeriod = '';
+            }
+        };
+
         function addEvent() {
             var obj = {};
             obj.eventId = vm.event.eventId;
             obj.eventClass = vm.event.eventClass;
             obj.exitCode = vm.event.exitCode;
+            let d = new Date();
             if (vm.event.expiresDate && vm.event.expiresTime) {
                 vm.event.expiresDate.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
                 vm.event.expiresDate.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
                 vm.event.expiresDate.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
+                d = vm.event.expiresDate;
+            } else if (vm.event.expirationPeriod) {
+                if (moment().format(vm.event.expirationPeriod) < moment().format('HH:mm:ss')) {
+                        d.setDate(d.getDate()+1);
+                }
+                d.setHours(moment(vm.event.expirationPeriod, 'HH:mm:ss').hours());
+                d.setMinutes(moment(vm.event.expirationPeriod, 'HH:mm:ss').minutes());
+                d.setSeconds(moment(vm.event.expirationPeriod, 'HH:mm:ss').seconds());
+                d.setMilliseconds(0);
+
+            } else if (vm.event.expirationCycle) {
+                if (moment().format(vm.event.expirationCycle) < moment().format('HH:mm:ss')) {
+                    d.setDate(d.getDate()+1);
+                }
+                d.setHours(moment(vm.event.expirationCycle, 'HH:mm:ss').hours());
+                d.setMinutes(moment(vm.event.expirationCycle, 'HH:mm:ss').minutes());
+                d.setSeconds(moment(vm.event.expirationCycle, 'HH:mm:ss').seconds());
+                d.setMilliseconds(0);
             }
-            obj.expires = vm.event.expiresDate;
+            obj.expires = d;
+
             obj.job = vm.event.job;
             obj.jobChain = vm.event.jobChain;
             obj.orderId = vm.event.order;
-            obj.expirationPeriod = vm.event.expirationPeriod;
-            obj.expirationCycle = vm.event.expirationCycle;
+
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.auditLog = {};
             if (vm.comments.comment)
@@ -722,6 +757,7 @@
             if (vm.paramObject.params && vm.paramObject.params.length > 0)
                 obj.params = vm.paramObject.params;
             EventService.addEvent(obj);
+
         }
 
         vm.addEvent = function () {
@@ -827,6 +863,7 @@
                 });
             }
         };
+
         vm.eventSearch = {};
         vm.advancedEventSearch = function () {
             vm.isUnique = true;
@@ -4045,7 +4082,7 @@
                             };
                             initCalendarTree();
                         } else if (event.eventType == "CalendarUpdated") {
-                            for (var x = 0; x < vm.allCalendars.length; x++) {
+                            for (let x = 0; x < vm.allCalendars.length; x++) {
                                 if (vm.allCalendars[x].path == event.path) {
                                     var obj = {};
                                     obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -5457,7 +5494,7 @@
                 if (d % 1 === 0) {
                     return d3.format(',f')(d);
                 } else {
-                    return;
+
                 }
             };
         }
@@ -5979,7 +6016,6 @@
             vm.totalPlanData = 0;
             angular.forEach(vm.planItemData, function (value) {
                 vm.totalPlanData++;
-                var time;
                 if (value.state._text == 'FAILED') {
                     if (value.late) {
                         vm.lateError++;
@@ -6579,7 +6615,7 @@
             vm.searchDailyPlanFilter.from1 = 'today';
             vm.searchDailyPlanFilter.to1 = 'today';
             vm.searchDailyPlanFilter.from = new Date();
-            vm.searchDailyPlanFilter.fromTime = moment().format("HH:mm")
+            vm.searchDailyPlanFilter.fromTime = moment().format("HH:mm");
             vm.searchDailyPlanFilter.to = new Date();
             vm.searchDailyPlanFilter.toTime = '24:00';
             vm.dailyPlanFilter = undefined;

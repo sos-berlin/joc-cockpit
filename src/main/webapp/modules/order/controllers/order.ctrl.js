@@ -2313,7 +2313,6 @@
             getPermanent();
         });
 
-        getPermanent();
 
         function getPermanent() {
 
@@ -2346,6 +2345,7 @@
             }
         }
 
+        getPermanent();
 
         $rootScope.expand_to = '';
         vm.setPath = function (path) {
@@ -2430,7 +2430,7 @@
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
-            }, function (err) {
+            }, function () {
                 vm.isCaledarLoading = false;
             });
         };
@@ -2478,7 +2478,7 @@
         vm.showCalendar = vm.viewCalendar;
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+             $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -2947,30 +2947,24 @@
 
                         var flag = false;
                         if (vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
-                            for (var m = 0; m < vm.jobChain.nodes.length; m++) {
-                                if (vm.jobChain.nodes[m].job && path[0] == vm.jobChain.nodes[m].job.path) {
+                            for (let m = 0; m < vm.jobChain.nodes.length; m++) {
+                                if (vm.jobChain.nodes[m].job && path[0] === vm.jobChain.nodes[m].job.path) {
                                     flag = true;
                                     break;
                                 }
-                                if (vm.jobChain.nodes[m].jobChain && path[0] == vm.jobChain.nodes[m].jobChain.path) {
+                                if (vm.jobChain.nodes[m].jobChain && path[0] === vm.jobChain.nodes[m].jobChain.path) {
                                     flag = true;
                                     break;
                                 }
                             }
                         }
 
-                        if (vm.jobChain.path == path[0] || flag) {
+                        if (vm.jobChain.path === path[0] || flag) {
                             volatileInfo();
                         }
 
                     }
-                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType == "ORDER") && vm.events[0].eventSnapshots[i].path == vm.showLogPanel.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        loadAuditLogs(obj);
-                    }
+                   
                 }
         });
     }
@@ -4078,8 +4072,7 @@
             UserService.deleteConfiguration({
                 jobschedulerId: filter.jobschedulerId,
                 id: filter.id
-            }).then(function (res) {
-                var indexArr = [];
+            }).then(function () {
                 angular.forEach(vm.orderFilterList, function (value, index) {
                     if (value.name == filter.name && value.account == filter.account) {
                         vm.orderFilterList.splice(index, 1);
@@ -4815,12 +4808,13 @@
             let orders = {jobschedulerId: vm.schedulerIds.selected, limit: vm.userPreferences.maxHistoryPerOrder};
             vm.isAuditLog = false;
             vm.isTaskHistory = false;
-            if (!value.historyId) {
-                orders.orders = [];
-                orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            } else {
+
+            if (value.historyId) {
+                orders.limit = vm.userPreferences.maxNumInOrderOverviewPerObject;
                 orders.historyIds = [value.historyId];
             }
+            orders.orders = [];
+            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
@@ -6804,7 +6798,7 @@
                             if (protocols.length == 1) {
                                 arr.push({host: value, protocol: protocols[0]});
                             } else {
-                                for (var x = 0; x < protocols.length; x++) {
+                                for (let x = 0; x < protocols.length; x++) {
                                     if (protocols.length >= index) {
                                         arr.push({host: value, protocol: protocols[index]});
                                     }
@@ -6824,7 +6818,7 @@
                             if (hosts.length == 1) {
                                 arr.push({protocol: value, host: hosts[0]});
                             } else {
-                                for (var x = 0; x < hosts.length; x++) {
+                                for (let x = 0; x < hosts.length; x++) {
                                     if (hosts.length >= index) {
                                         arr.push({protocol: value, host: hosts[index]});
                                     }
@@ -6839,7 +6833,7 @@
                 })
             } else {
                 angular.forEach(hosts, function (value, index) {
-                    for (var x = 0; x < protocols.length; x++) {
+                    for (let x = 0; x < protocols.length; x++) {
                         arr.push({host: value, protocol: protocols[x]});
                         protocols.splice(index, 1);
                         break;
@@ -7510,7 +7504,6 @@
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "CUSTOMIZATION";
-            var fromDate;
             var obj = {};
             if (vm.jobChainSearch.name) {
                 configObj.name = vm.jobChainSearch.name;
@@ -8206,7 +8199,7 @@
                     compact: true,
                     types: ['JOB']
                 }).then(function (res) {
-                    vm.tree = res.folders
+                    vm.tree = res.folders;
                     angular.forEach(vm.tree, function (value) {
                         value.expanded = true;
                     });

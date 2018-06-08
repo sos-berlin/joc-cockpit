@@ -104,10 +104,9 @@
                                     </span>
                                 </span> </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('orderId')"
-                                   translate>label.orderId</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('processingState._text')" translate>label.status</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')" translate>label.nextStartTime</a>
+                                <a class="dropdown-item" href ng-click="sortBy('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" href ng-click="sortBy('processingState._text')" translate>label.status</a>
+                                <a class="dropdown-item" href ng-click="sortBy('nextStartTime')" translate>label.nextStartTime</a>
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}"

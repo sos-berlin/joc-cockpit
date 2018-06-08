@@ -41,7 +41,7 @@
         var $header = $('app-header').height() || 60;
         var $topHeader = $('.top-header-bar').height() || 16;
         var $subHeaderHt = 59;
-        var $window = $(window).on('resize', function(){
+        $(window).on('resize', function(){
            var height = $(this).height() - ($header + $topHeader +$subHeaderHt +104);
            $('.log').height(height);
         }).trigger('resize'); //on page load
