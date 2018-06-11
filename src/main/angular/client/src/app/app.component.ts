@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ToasterConfig} from 'angular2-toaster';
-
+import {Component} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {ToasterConfig} from 'angular2-toaster';
+import { Router } from '@angular/router';
 declare const $;
 
 @Component({
@@ -18,10 +18,12 @@ export class AppComponent {
     limit: 2
   });
 
-  constructor(public translate: TranslateService) {
+  constructor(public translate: TranslateService, private router: Router) {
     this.getTranslate();
     AppComponent.themeInit();
-
+    if (window.location.href) {
+      this.router.navigate([window.location.href.substring(window.location.href.lastIndexOf('/'))]);
+    }
   }
 
   private getTranslate() {
