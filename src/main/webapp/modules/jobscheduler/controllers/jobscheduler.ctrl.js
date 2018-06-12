@@ -694,7 +694,7 @@
         }
 
         vm.checkExpireValue = function(type) {
-            console.log(type);
+          
             if (type === 'expirationPeriod') {
                 vm.event.expirationCycle = '';
                 vm.event.expiresDate = '';
@@ -703,7 +703,7 @@
                 vm.event.expirationPeriod = '';
                 vm.event.expiresDate = '';
                 vm.event.expiresTime = '';
-            } else {
+            } else if (type === 'expires') {
                 vm.event.expirationCycle = '';
                 vm.event.expirationPeriod = '';
             }
@@ -715,10 +715,12 @@
             obj.eventClass = vm.event.eventClass;
             obj.exitCode = vm.event.exitCode;
             let d = new Date();
-            if (vm.event.expiresDate && vm.event.expiresTime) {
-                vm.event.expiresDate.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
-                vm.event.expiresDate.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
-                vm.event.expiresDate.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
+            if (vm.event.expiresDate) {
+                if(vm.event.expiresTime) {
+                    vm.event.expiresDate.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
+                    vm.event.expiresDate.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
+                    vm.event.expiresDate.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
+                }
                 d = vm.event.expiresDate;
             } else if (vm.event.expirationPeriod) {
                 if (moment().format(vm.event.expirationPeriod) < moment().format('HH:mm:ss')) {
@@ -737,6 +739,16 @@
                 d.setMinutes(moment(vm.event.expirationCycle, 'HH:mm:ss').minutes());
                 d.setSeconds(moment(vm.event.expirationCycle, 'HH:mm:ss').seconds());
                 d.setMilliseconds(0);
+            }else {
+                if (vm.event.expiresTime) {
+                    if (moment().format(vm.event.expiresTime) < moment().format('HH:mm:ss')) {
+                        d.setDate(d.getDate() + 1);
+                    }
+                    d.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
+                    d.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
+                    d.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
+                    d.setMilliseconds(0);
+                }
             }
             obj.expires = d;
 
