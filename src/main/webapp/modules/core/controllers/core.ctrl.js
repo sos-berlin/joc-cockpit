@@ -21,8 +21,9 @@
         .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService', 'FileSaver'];
+
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService, FileSaver) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -453,7 +454,8 @@
                 return;
             }
             var url = null;
-            if (vm.userPreferences.isNewWindow == 'newWindow') {
+            if (!vm.userPreferences.isDownload) {
+                if (vm.userPreferences.isNewWindow == 'newWindow') {
 
                 try {
                     if (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true) {
@@ -508,10 +510,24 @@
                             url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
                     }
 
-                } else {
-                    return;
+                    } else {
+                        return;
+                    }
+                    $window.open(url, '_blank');
                 }
-                $window.open(url, '_blank');
+            } else {
+                let val = order || task || transfer;
+                vm.downloadLog(val);
+            }
+        };
+
+        vm.downloadLog = function (data) {
+            if (data.historyId) {
+                 $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/order/log/download?historyId='+data.historyId+'&jobschedulerId='+vm.schedulerIds.selected+
+                     '&orderId='+data.orderId+'&jobChain='+data.jobChain+'&accessToken='+ SOSAuth.accessTokenId);
+            }
+            else if (data.taskId) {
+                 $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/task/log/download?taskId='+data.taskId+'&jobschedulerId='+vm.schedulerIds.selected+'&accessToken='+ SOSAuth.accessTokenId);
             }
         };
 

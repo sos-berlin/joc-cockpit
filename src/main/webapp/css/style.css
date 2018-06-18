@@ -2960,7 +2960,7 @@ div.order-panel div {
 pre.log {
     color: #3d464d;
     margin-bottom: 0;
-    line-height: .6557143;
+    /*line-height: .6557143;*/
     font-family: Lucida Console, monospace;
     font-size: 12px;
     background: 0 0

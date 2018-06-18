@@ -7385,6 +7385,8 @@
             orders.historyId = value.historyId;
             OrderService.history(orders).then(function (res) {
                 value.steps = res.history.steps;
+            },function(){
+                value.steps = [];
             });
 
         };
@@ -8821,17 +8823,16 @@
             orders.jobChain = vm.jobChain;
             orders.orderId = vm.orderId;
             orders.historyId = getParam("historyId");
-            orders.mime = ['HTML'];
+            //  orders.mime = ['HTML'];
             OrderService.log(orders).then(function (res) {
-                if (res.log)
-                    vm.logs = $sce.trustAsHtml(res.log.html);
                 vm.isLoading = true;
+                if (res.log)
+                //    vm.logs = $sce.trustAsHtml(res.log.html);
+                   vm.logs = res.log.plain;
+               // vm.logs = res.log.plain.replace(new RegExp('(ERROR)*','gi'), "<span class='log_error'>$1</span>");
 
-                t1 = $timeout(function () {
-                    if (vm.userPreferences.theme != 'light' && vm.userPreferences.theme != 'lighter')
-                        $('.log_info').css('color', 'white')
-                }, 100);
-            }, function () {
+            }, function (err) {
+                vm.logs = err;
                 vm.isLoading = true;
             });
         };
@@ -8841,16 +8842,15 @@
             var jobs = {};
             jobs.jobschedulerId = getParam("schedulerId");
             jobs.taskId = vm.taskId;
-            jobs.mime = ['HTML'];
+           // jobs.mime = ['HTML'];
             TaskService.log(jobs).then(function (res) {
-                if (res.log)
-                    vm.logs = $sce.trustAsHtml(res.log.html);
                 vm.isLoading = true;
-                t1 = $timeout(function () {
-                    if (vm.userPreferences.theme != 'light' && vm.userPreferences.theme != 'lighter')
-                        $('.log_info').css('color', 'white')
-                }, 100);
-            }, function () {
+                if (res.log)
+                   // vm.logs = $sce.trustAsHtml(res.log.html);
+                vm.logs = res.log.plain.replace(new RegExp('(ERROR)*','gi'), "<span class='log_error'>$1</span>");
+
+            }, function (err) {
+                vm.logs = err;
                 vm.isLoading = true;
             });
         };

@@ -522,7 +522,7 @@
                                  </table>
                              </td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show" ng-if="permission.YADE.view.files">
+                        <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
                             <td></td>
                             <td colspan="14" >
                                  <table class="table m-a-0">
@@ -548,8 +548,7 @@
                                                 <input type="checkbox" data-checklist-model="object.files" ng-disabled="transfer.state._text=='SUCCESSFUL'"
                                                        data-checklist-value="file"><i class="primary"></i>
                                             </label>
-                                        </td>
-
+                                         </td>
                                          <td>{{file.sourceName}}</td>
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>
@@ -562,6 +561,7 @@
                                      </tbody>
                                  </table>
                                  <div ng-if="transfer.files.length==0" translate>message.noFileFound</div>
+                                <div ng-if="!transfer.files" class="text-center text-primary"><i class="fa fa-spin fa-spinner"></i></div>
                              </td>
                         </tr>
                         </tbody>

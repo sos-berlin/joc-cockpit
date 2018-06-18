@@ -940,6 +940,7 @@
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="history.show = false;$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)">
@@ -982,7 +983,8 @@
                                      </tr>
                                      </tbody>
                                  </table>
-                                 <div ng-if="steps.length==0" translate>message.noDataMatched</div>
+                                 <div ng-if="history.steps.length==0" translate>message.noDataMatched</div>
+                                 <div ng-if="!history.steps" class="text-primary text-center" translate><i class="fa fa-spin fa-spinner"></i></div>
                              </td>
                         </tr>
                         </tbody>
@@ -1088,7 +1090,10 @@
                                 <span ng-bind="jobHistory.jobschedulerId"></span>
                                 <span ng-if="!jobHistory.jobschedulerId" ng-bind="jobSearch.jobschedulerId"></span>
                             </td>
-                            <td ng-click="showLogWindow(null,jobHistory)"><span ng-bind="jobHistory.taskId"></span></td>
+                            <td ng-click="showLogWindow(null,jobHistory)">
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(jobHistory);$event.stopPropagation()"></i>
+                                <span ng-bind="jobHistory.taskId"></span>
+                            </td>
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>
                             </td>
@@ -1242,7 +1247,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                            <td colspan="14" >
+                            <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1281,9 +1286,9 @@
                                  </table>
                              </td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show" ng-if="permission.YADE.view.files">
+                        <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
                              <td></td>
-                             <td colspan="14" >
+                             <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1311,6 +1316,7 @@
                                      </tbody>
                                  </table>
                                  <div ng-if="transfer.files.length==0" translate>message.noFileFound</div>
+                                 <div ng-if="!transfer.files" class="text-center text-primary"><i class="fa fa-spin fa-spinner"></i></div>
                              </td>
                         </tr>
                         </tbody>

@@ -237,15 +237,6 @@
                            </select>
                        </div>
                     </div>
-<!--                    <div class="row m-t">
-                       <div class="col-sm-3 text-dark form-control-label" translate>label.dashboardWidgetLayout</div>
-                       <div class="col-sm-6">
-                           <select class="form-control w-xl" ng-model="upc.preferences.dashboardLayout" ng-change="upc.changeConfiguration()">
-                               <option value="default" translate>label.defaultLayout</option>
-                               <option value="custom" translate>label.customLayout</option>
-                           </select>
-                       </div>
-                   </div>-->
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.theme</div>
                        <div class="col-sm-6">
@@ -267,15 +258,26 @@
                        </div>
                    </div>
                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxLogSizeThreshold</div>
+                       <div class="col-sm-6">
+                           <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl" ng-model="upc.preferences.maxLogThreshold" ng-blur="upc.changeConfiguration()">
+                       </div>
+                   </div>
+                   <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.showLogs</div>
                        <div class="col-sm-6">
                            <label class="md-check w">
-                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
+                               <input type="radio" ng-disabled="upc.preferences.isDownload" name="log" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newWindow</span>
                            </label>
-                           <label class="md-check w">
-                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
+                            <label class="md-check w">
+                               <input type="radio" ng-disabled="upc.preferences.isDownload" name="log" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newTab</span>
+                           </label>
+                           <br>
+                           <label class="md-check m-t-sm">
+                               <input type="checkbox" name="log-download" ng-model="upc.preferences.isDownload" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.downloadLogs</span>
                            </label>
                        </div>
                    </div>
@@ -434,7 +436,6 @@
                                        ng-change="upc.selectNegativeOrderFunction(checked)"/><i class="primary"></i>  <span>{{negativeOrder.label  | translate}}</span>
                             </span>
                         </div>
-
                     </div>
                    <hr>
                    <h5 translate>label.roles</h5>

@@ -1252,11 +1252,12 @@
                                                     <tbody>
                                                     <tr ng-repeat="history in historys | orderBy: 'startTime':true"
                                                         ng-click="showLogWindow(history,null)" class="cursor">
-                                                        <td ng-bind="history.orderId"></td>
                                                         <td>
-                                                            <span class="label"
-                                                                  ng-bind="history.state._text | translate"
-                                                                  ng-class="bgColorFunction(history.state.severity)"></span>
+                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
+                                                            <span ng-bind="history.orderId"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span>
                                                         </td>
                                                         <td ng-bind="history.startTime | stringToDate"></td>
                                                         <td ng-bind="history.endTime | stringToDate"></td>

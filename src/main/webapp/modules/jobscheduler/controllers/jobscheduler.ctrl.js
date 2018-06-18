@@ -714,32 +714,20 @@
             obj.eventId = vm.event.eventId;
             obj.eventClass = vm.event.eventClass;
             obj.exitCode = vm.event.exitCode;
-            let d = new Date();
+
             if (vm.event.expiresDate) {
-                if(vm.event.expiresTime) {
+                if (vm.event.expiresTime) {
                     vm.event.expiresDate.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
                     vm.event.expiresDate.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
                     vm.event.expiresDate.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
                 }
-                d = vm.event.expiresDate;
+                obj.expires = vm.event.expiresDate;
             } else if (vm.event.expirationPeriod) {
-                if (moment().format(vm.event.expirationPeriod) < moment().format('HH:mm:ss')) {
-                        d.setDate(d.getDate()+1);
-                }
-                d.setHours(moment(vm.event.expirationPeriod, 'HH:mm:ss').hours());
-                d.setMinutes(moment(vm.event.expirationPeriod, 'HH:mm:ss').minutes());
-                d.setSeconds(moment(vm.event.expirationPeriod, 'HH:mm:ss').seconds());
-                d.setMilliseconds(0);
-
+                obj.expirationPeriod = vm.event.expirationPeriod;
             } else if (vm.event.expirationCycle) {
-                if (moment().format(vm.event.expirationCycle) < moment().format('HH:mm:ss')) {
-                    d.setDate(d.getDate()+1);
-                }
-                d.setHours(moment(vm.event.expirationCycle, 'HH:mm:ss').hours());
-                d.setMinutes(moment(vm.event.expirationCycle, 'HH:mm:ss').minutes());
-                d.setSeconds(moment(vm.event.expirationCycle, 'HH:mm:ss').seconds());
-                d.setMilliseconds(0);
-            }else {
+                obj.expirationCycle = vm.event.expirationCycle;
+            } else {
+                let d = new Date();
                 if (vm.event.expiresTime) {
                     if (moment().format(vm.event.expiresTime) < moment().format('HH:mm:ss')) {
                         d.setDate(d.getDate() + 1);
@@ -749,8 +737,8 @@
                     d.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
                     d.setMilliseconds(0);
                 }
+                obj.expires = d;
             }
-            obj.expires = d;
 
             obj.job = vm.event.job;
             obj.jobChain = vm.event.jobChain;
@@ -769,7 +757,6 @@
             if (vm.paramObject.params && vm.paramObject.params.length > 0)
                 obj.params = vm.paramObject.params;
             EventService.addEvent(obj);
-
         }
 
         vm.addEvent = function () {
@@ -5715,7 +5702,9 @@
                     if (!id) {
                         id = vm.schedulerIds.selected;
                     }
-                    JobSchedulerService.downloadLog({
+                    $("#tmpFrame").attr('src', './api/jobscheduler/log?host='+host+'&jobschedulerId='+id+'&port='+port+'&accessToken='+ SOSAuth.accessTokenId);
+
+/*                    JobSchedulerService.downloadLog({
                         jobschedulerId: id,
                         host: host,
                         port: port
@@ -5734,7 +5723,7 @@
                         FileSaver.saveAs(data, name);
                     }, function () {
                         vm.loading = false;
-                    });
+                    });*/
                 }
             }
 

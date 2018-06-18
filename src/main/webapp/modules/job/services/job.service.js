@@ -342,12 +342,13 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+
             }
         }
     }
 
-    TaskService.$inject = ["$resource", "$q"];
-    function TaskService($resource, $q) {
+    TaskService.$inject = ["$resource", "$q","$http"];
+    function TaskService($resource, $q,$http) {
         return {
             histories: function (filters) {
                 var deferred = $q.defer();
@@ -434,6 +435,16 @@
                 var deferred = $q.defer();
                 var Job = $resource('tasks/kill');
                 Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            download: function (obj) {
+
+                var deferred = $q.defer();
+                $http.get('task/log/download?taskId='+obj.taskId+'&jobschedulerId='+obj.jobschedulerId).then(function(res){
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

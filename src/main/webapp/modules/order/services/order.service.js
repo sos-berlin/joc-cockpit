@@ -8,8 +8,8 @@
     angular.module('app')
         .service('OrderService', OrderService);
 
-    OrderService.$inject = ["$resource", "$q","$window"];
-    function OrderService($resource, $q, $window) {
+    OrderService.$inject = ["$resource", "$q","$window","$http"];
+    function OrderService($resource, $q, $window,$http) {
         return {
             jobSelected:undefined,
             get: function (filter) {
@@ -68,7 +68,18 @@
 
                 return deferred.promise;
             },
-
+            download: function (obj) {
+                var deferred = $q.defer();
+                $http.get('order/log/download?historyId='+obj.historyId+'&jobschedulerId='+obj.jobschedulerId+'&orderId='+obj.orderId+'&jobChain='+obj.jobChain).then(function(res){
+                    console.log('res')
+                    console.log(JSON.stringify(res))
+                    deferred.resolve(res);
+                }, function (err) {
+                    console.log(err)
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             getSnapshot: function (filter) {
                 var deferred = $q.defer();
 

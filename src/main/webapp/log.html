@@ -14,6 +14,7 @@
             line-height: .6557143;
             font-family: Lucida Console, monospace;
             font-size: 12px;
+            margin-top: 4px;
         }
         .no_data {
             color: #007da6;
@@ -52,7 +53,7 @@
         .loading-img {
             position: fixed;
             overflow: hidden !important;
-            top: 0;
+            top: 25px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -63,20 +64,23 @@
             background-size: 50px
         }
     </style>
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
 </head>
 <body ng-controller="LogCtrl">
 
-<div ng-if="loading" class="loading-img">
+<div ng-if="loading" class="loading-img"></div>
+<div style="margin: 0 8px ">
+    <button class="btn" ng-click="download()"><i class="fa fa-download"></i></button>
 </div>
 <pre class="p-l-sm log">
     <span ng-bind-html="logs"></span>
     <span class="log_error" ng-bind="error"></span>
 </pre>
-<div class="no_data">
-    <span ng-bind="noData">
 
-    </span>
+<div class="no_data">
+    <span ng-bind="noData"></span>
 </div>
+<iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
 <!-- Angular -->
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="modules/log.js"></script>

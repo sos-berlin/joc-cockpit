@@ -794,7 +794,10 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
-                                                           <td>{{task.taskId}}</td>
+                                                           <td>
+                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                                <span ng-bind="task.taskId"></span>
+                                                           </td>
                                                            <td>
                                                                <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
                                                            </td>

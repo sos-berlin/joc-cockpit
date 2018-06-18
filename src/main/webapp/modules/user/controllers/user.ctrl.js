@@ -230,6 +230,10 @@
             if(isNaN(parseInt(vm.preferences.maxNumInOrderOverviewPerObject))){
                 vm.preferences.maxNumInOrderOverviewPerObject = parseInt(angular.copy($scope.userPreferences).maxNumInOrderOverviewPerObject);
             }
+            if(isNaN(parseInt(vm.preferences.maxLogThreshold))){
+                vm.preferences.maxLogThreshold = parseInt(angular.copy($scope.userPreferences).maxLogThreshold);
+            }
+
             if (vm.preferences.entryPerPage > 100) {
                 vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
             }

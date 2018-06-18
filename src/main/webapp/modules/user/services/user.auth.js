@@ -12,7 +12,7 @@
                 return {
                     request: function (config) {
 
-                        if (config.method == 'POST' || config.url.match('jobscheduler/log?')) {
+                        if (config.method == 'POST' || config.url.match('jobscheduler/log?') || config.url.match('log/download?')) {
 
                             if (SOSAuth.accessTokenId) {
                                 if (config.url.match('security/permission')) {

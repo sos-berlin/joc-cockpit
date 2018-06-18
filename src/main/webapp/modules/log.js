@@ -8,11 +8,11 @@
     'use strict';
     angular.module('myapp', []).controller('LogCtrl', ['$location', '$scope', '$http', '$sce', function ($location, $scope, $http, $sce) {
         function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
                 while (c.charAt(0) == ' ') {
                     c = c.substring(1);
                 }
@@ -23,18 +23,28 @@
             return "";
         }
 
-        function getParam( name ) {
-            var url = window.location.href;
+        function getParam(name) {
+            let url = window.location.href;
             if (!url) url = location.href;
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-            var regexS = "[\\?&]" + name + "=([^&]*)";
-            var regex = new RegExp(regexS);
-            var results = regex.exec(url);
+            let regexS = "[\\?&]" + name + "=([^&]*)";
+            let regex = new RegExp(regexS);
+            let results = regex.exec(url);
             return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ""));
         }
 
-        var id = getCookie('$SOS$scheduleId');
-        var token = getCookie('$SOS$accessTokenId');
+        $scope.download = function () {
+            if (getParam("orderId")) {
+                 document.getElementById("tmpFrame").src= './api/order/log/download?historyId='+getParam("historyId")+'&jobschedulerId='+id+
+                     '&orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&accessToken='+ token;
+            }
+            else if (getParam("taskId")) {
+                 document.getElementById("tmpFrame").src= './api/task/log/download?taskId='+getParam("taskId")+'&jobschedulerId='+id+'&accessToken='+ token;
+            }
+        };
+
+        let id = getCookie('$SOS$scheduleId');
+        let token = getCookie('$SOS$accessTokenId');
         $scope.loading = true;
         $scope.shareData = $location.search();
 
@@ -42,12 +52,13 @@
 
 
         if ($scope.shareData && getParam("orderId")) {
-            var orders = {};
-            orders.jobschedulerId = id;
-            orders.jobChain = getParam("jobChain");
-            orders.orderId = getParam("orderId");
-            orders.historyId = getParam("historyId");
-            orders.mime = ['HTML'];
+             let orders = {
+                jobschedulerId: id,
+                jobChain: getParam("jobChain"),
+                orderId: getParam("orderId"),
+                historyId: getParam("historyId"),
+                mime: ['HTML']
+            };
 
             $http.post('./api/order/log', orders, {
                 headers: {
@@ -56,11 +67,12 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
+                $scope.loading = false;
                 if (res.data && res.data.log)
                     $scope.logs = $sce.trustAsHtml(res.data.log.html);
                 else
                     $scope.noData = 'No logs found';
-                $scope.loading = false;
+              
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
@@ -71,10 +83,11 @@
             });
         }
         else if ($scope.shareData && getParam("taskId")) {
-            var tasks = {};
-            tasks.jobschedulerId = id;
-            tasks.taskId = getParam("taskId");
-            tasks.mime = ['HTML'];
+          let tasks = {
+                jobschedulerId: id,
+                taskId: getParam("taskId"),
+                mime: ['HTML']
+            };
 
             $http.post('./api/task/log', tasks, {
                 headers: {
@@ -83,11 +96,12 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
+ 		$scope.loading = false;
                 if (res.data && res.data.log)
                     $scope.logs = $sce.trustAsHtml(res.data.log.html);
                 else
                     $scope.noData = 'No logs found';
-                 $scope.loading = false;
+                
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
