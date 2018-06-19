@@ -33,86 +33,77 @@
             return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ""));
         }
 
-        $scope.download = function () {
-            if (getParam("orderId")) {
-                 document.getElementById("tmpFrame").src= './api/order/log/download?historyId='+getParam("historyId")+'&jobschedulerId='+id+
-                     '&orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&accessToken='+ token;
-            }
-            else if (getParam("taskId")) {
-                 document.getElementById("tmpFrame").src= './api/task/log/download?taskId='+getParam("taskId")+'&jobschedulerId='+id+'&accessToken='+ token;
-            }
-        };
 
         let id = getCookie('$SOS$scheduleId');
         let token = getCookie('$SOS$accessTokenId');
         $scope.loading = true;
+        $scope.downloadUrl = '';
         $scope.shareData = $location.search();
 
-
-
-
         if ($scope.shareData && getParam("orderId")) {
-             let orders = {
+            let orders = {
                 jobschedulerId: id,
                 jobChain: getParam("jobChain"),
                 orderId: getParam("orderId"),
                 historyId: getParam("historyId"),
+                filename: getParam("filename"),
                 mime: ['HTML']
             };
-
+            $scope.downloadUrl = './api/order/log/download?historyId='+orders.historyId+'&jobschedulerId='+id+
+                     '&orderId='+orders.orderId+'&jobChain='+orders.jobChain+'&filename='+orders.filename+'&accessToken='+ token;
             $http.post('./api/order/log', orders, {
                 headers: {
-                    'access_token': token,
                     'X-Access-Token': token,
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
                 $scope.loading = false;
-                if (res.data && res.data.log)
-                    $scope.logs = $sce.trustAsHtml(res.data.log.html);
+                if (res.data)
+                    $scope.logs = $sce.trustAsHtml(res.data);
                 else
                     $scope.noData = 'No logs found';
-              
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
                 } else {
                     $scope.error = JSON.stringify(err.data);
                 }
-                 $scope.loading = false;
+                $scope.loading = false;
             });
-        }
-        else if ($scope.shareData && getParam("taskId")) {
-          let tasks = {
+        } else if ($scope.shareData && getParam("taskId")) {
+            let tasks = {
                 jobschedulerId: id,
                 taskId: getParam("taskId"),
+                filename: getParam("filename"),
                 mime: ['HTML']
             };
-
+            $scope.downloadUrl = './api/task/log/download?taskId='+tasks.taskId+'&filename='+tasks.filename+'&jobschedulerId='+id+'&accessToken='+ token;
             $http.post('./api/task/log', tasks, {
                 headers: {
-                    'access_token': token,
                     'X-Access-Token': token,
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
- 		$scope.loading = false;
-                if (res.data && res.data.log)
-                    $scope.logs = $sce.trustAsHtml(res.data.log.html);
+                if (res.data)
+                    $scope.logs = $sce.trustAsHtml(res.data);
                 else
                     $scope.noData = 'No logs found';
-                
+                $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
                 } else {
                     $scope.error = JSON.stringify(err.data);
                 }
-                 $scope.loading = false;
+                $scope.loading = false;
             });
-        }else{
+        } else {
             $scope.loading = false;
             $scope.error = 'Internal error!! Please close the window and reopen.';
         }
+
+        $scope.download = function () {
+            document.getElementById("tmpFrame").src= $scope.downloadUrl;
+        };
     }]);
 })();

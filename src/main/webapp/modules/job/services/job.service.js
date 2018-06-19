@@ -392,8 +392,7 @@
             },
             log: function (filter) {
                 var deferred = $q.defer();
-                var Job = $resource('task/log');
-                Job.save(filter, function (res) {
+                 $http.post('task/log',filter).then(function(res){
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -409,8 +408,7 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }
-      ,
+            },
             terminate: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('tasks/terminate');
@@ -442,9 +440,18 @@
                 return deferred.promise;
             },
             download: function (obj) {
-
                 var deferred = $q.defer();
                 $http.get('task/log/download?taskId='+obj.taskId+'&jobschedulerId='+obj.jobschedulerId).then(function(res){
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            info: function (obj) {
+                var deferred = $q.defer();
+                var Info = $resource('task/log/info');
+                Info.save(obj, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

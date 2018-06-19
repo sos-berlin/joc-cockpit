@@ -28,15 +28,19 @@
         <div class="col-md-12">
             <div class="box white">
                 <div class="box-body m-t-sm p-a p-b-xs">
+                    <div style="margin-bottom: -6px ">
+                        <a href="" class="text-primary text-u-l" ng-click="downloadLog()"><i class="fa fa-download"></i> {{downloadUrl}}</a>
+                    </div>
                     <pre class="log" style="overflow: auto">
                         <span ng-bind-html="logs"></span>
+                        <div ng-if="!isLoading" class="loading-img2"></div>
                     </pre>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div ng-if="!isLoading" class="loading-img1"></div>
+
 <script>
     $(function(){
         var $header = $('app-header').height() || 60;

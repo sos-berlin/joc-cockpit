@@ -2960,7 +2960,7 @@ div.order-panel div {
 pre.log {
     color: #3d464d;
     margin-bottom: 0;
-    /*line-height: .6557143;*/
+    line-height: .6557143;
     font-family: Lucida Console, monospace;
     font-size: 12px;
     background: 0 0
@@ -3711,6 +3711,12 @@ input[type=search]:focus {
     width: 100%;
     height: 100%;
     z-index: 1020;
+    background: url(../images/loader.gif) 50% 50% no-repeat;
+    background-size: 50px
+}
+.loading-img2 {
+    width: 100%;
+    height: 100%;
     background: url(../images/loader.gif) 50% 50% no-repeat;
     background-size: 50px
 }

@@ -453,63 +453,86 @@
                 });
                 return;
             }
-            var url = null;
-            if (!vm.userPreferences.isDownload) {
-                if (vm.userPreferences.isNewWindow == 'newWindow') {
+            if (order && order.historyId && order.orderId) {
+                OrderService.info({
+                    jobschedulerId: id || vm.schedulerIds.selected,
+                    jobChain: order.jobChain,
+                    orderId: order.orderId,
+                    historyId: order.historyId
+                }).then(function (res) {
+                    vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
+                    let isDownload = (vm.userPreferences.maxLogThreshold*1024*1024) > res.log.size ? false : true;
+                
+                    openLog(order, task, job, id, transfer, res.log.filename,isDownload);
+                });
+            }
+            else if(task && task.taskId) {
+                TaskService.info({
+                    jobschedulerId: id || vm.schedulerIds.selected,
+                    taskId: task.taskId
+                }).then(function (res) {
+                    vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
+                    let isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
+                    openLog(order, task, job, id, transfer, res.log.filename, isDownload);
+                });
+            }
+        };
 
-                try {
-                    if (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true) {
+        function openLog(order, task, job, id, transfer, filename, isDownload) {
+            let url = null;
+            if (!isDownload) {
+                if (vm.userPreferences.isNewWindow === 'newWindow') {
 
-                        if (order && order.historyId && order.orderId) {
-                            url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
-                        } else if (task && task.taskId) {
+                    try {
+                        if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
+
+                            if (order && order.historyId && order.orderId) {
+                                url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain+'&filename='+filename;
+                            } else if (task && task.taskId) {
+                                if (task.job)
+                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job+'&filename='+filename;
+                                else if (job)
+                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job+'&filename='+filename;
+                                else
+                                    url = 'log.html#!/?taskId=' + task.taskId+'&filename='+filename;
+                            } else {
+                                return;
+                            }
+
+                            if (id) {
+                                document.cookie = "$SOS$scheduleId=" + id + ";path=/";
+                            } else {
+                                document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
+                            }
+                            document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
+                            newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
+
+                            t1 = $timeout(function () {
+                                calWindowSize();
+                            }, 400);
+                        }
+                    } catch (e) {
+                        throw new Error(e.message);
+                    }
+                } else {
+                    if (order && order.historyId && order.orderId) {
+                        url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                    } else if (task && task.taskId) {
+                        if (transfer) {
                             if (task.job)
-                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job;
-                            else if(job)
-                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job;
+                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                            else if (job)
+                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
                             else
-                                url = 'log.html#!/?taskId=' + task.taskId;
-
+                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
                         } else {
-                            return;
+                            if (task.job)
+                                url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                            else if (job)
+                                url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                            else
+                                url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
                         }
-
-                        if (id) {
-                            document.cookie = "$SOS$scheduleId=" + id + ";path=/";
-                        } else {
-                            document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
-                        }
-                        document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
-                        newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
-
-                        t1 = $timeout(function () {
-                            calWindowSize();
-                        }, 400);
-                    }
-                } catch (e) {
-                    throw new Error(e.message);
-                }
-            } else {
-                if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                } else if (task && task.taskId) {
-
-                    if (transfer) {
-                        if (task.job)
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                        else if (job)
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                        else
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                    } else {
-                        if (task.job)
-                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                        else if (job)
-                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                        else
-                            url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
-                    }
-
                     } else {
                         return;
                     }
@@ -517,17 +540,17 @@
                 }
             } else {
                 let val = order || task || transfer;
-                vm.downloadLog(val);
+                vm.downloadLog(val, filename);
             }
-        };
+        }
 
-        vm.downloadLog = function (data) {
-            if (data.historyId) {
-                 $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/order/log/download?historyId='+data.historyId+'&jobschedulerId='+vm.schedulerIds.selected+
-                     '&orderId='+data.orderId+'&jobChain='+data.jobChain+'&accessToken='+ SOSAuth.accessTokenId);
+        vm.downloadLog = function (data, filename) {
+            if (data && data.historyId) {
+                 $("#tmpFrame").attr('src', './api/order/log/download?historyId='+data.historyId+'&jobschedulerId='+vm.schedulerIds.selected+
+                     '&orderId='+data.orderId+'&jobChain='+data.jobChain+'&filename='+filename+'&accessToken='+ SOSAuth.accessTokenId);
             }
-            else if (data.taskId) {
-                 $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/task/log/download?taskId='+data.taskId+'&jobschedulerId='+vm.schedulerIds.selected+'&accessToken='+ SOSAuth.accessTokenId);
+            else if (data && data.taskId) {
+                $("#tmpFrame").attr('src', './api/task/log/download?taskId=' + data.taskId + '&filename=' + filename + '&jobschedulerId=' + vm.schedulerIds.selected + '&accessToken=' + SOSAuth.accessTokenId);
             }
         };
 

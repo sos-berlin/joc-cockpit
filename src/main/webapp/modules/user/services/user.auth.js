@@ -56,7 +56,7 @@
                                 SOSAuth.clearUser();
                                 SOSAuth.clearStorage();
                                 $location.path('/login');
-                            } else {
+                            } else if(rejection.status < 500){
                                 if ((rejection.data && rejection.data.error && rejection.status != 434)) {
                                     toasty.error({
                                         title: rejection.data.error.code || rejection.status,
@@ -67,6 +67,12 @@
                                 if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
                                     toasty.error({
                                         msg: rejection.data.errors[0].message || 'API exception',
+                                        timeout: 10000
+                                    });
+                            }else if(rejection.status >= 500 && rejection.status != 504){
+                                 toasty.error({
+                                        title: rejection.status,
+                                        msg: rejection.message || 'Server exception',
                                         timeout: 10000
                                     });
                             }

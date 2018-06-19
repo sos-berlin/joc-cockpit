@@ -59,8 +59,7 @@
             log: function (filter) {
 
                 var deferred = $q.defer();
-                var Snapshot = $resource('order/log');
-                Snapshot.save(filter, function (res) {
+                 $http.post('order/log',filter).then(function(res){
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -68,14 +67,21 @@
 
                 return deferred.promise;
             },
+            info: function (obj) {
+                var deferred = $q.defer();
+                var Info = $resource('order/log/info');
+                Info.save(obj, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             download: function (obj) {
                 var deferred = $q.defer();
                 $http.get('order/log/download?historyId='+obj.historyId+'&jobschedulerId='+obj.jobschedulerId+'&orderId='+obj.orderId+'&jobChain='+obj.jobChain).then(function(res){
-                    console.log('res')
-                    console.log(JSON.stringify(res))
                     deferred.resolve(res);
                 }, function (err) {
-                    console.log(err)
                     deferred.reject(err);
                 });
                 return deferred.promise;

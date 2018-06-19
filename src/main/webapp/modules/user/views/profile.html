@@ -258,27 +258,19 @@
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxLogSizeThreshold</div>
-                       <div class="col-sm-6">
-                           <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl" ng-model="upc.preferences.maxLogThreshold" ng-blur="upc.changeConfiguration()">
-                       </div>
-                   </div>
-                   <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.showLogs</div>
                        <div class="col-sm-6">
                            <label class="md-check w">
-                               <input type="radio" ng-disabled="upc.preferences.isDownload" name="log" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
+                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newWindow</span>
                            </label>
                             <label class="md-check w">
-                               <input type="radio" ng-disabled="upc.preferences.isDownload" name="log" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
+                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newTab</span>
                            </label>
                            <br>
-                           <label class="md-check m-t-sm">
-                               <input type="checkbox" name="log-download" ng-model="upc.preferences.isDownload" ng-change="upc.changeConfiguration()">
-                               <i class="primary"></i> <span translate>label.downloadLogs</span>
-                           </label>
+                           <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl m-t-sm" placeholder="Size in MB" ng-model="upc.preferences.maxLogThreshold" ng-blur="upc.changeConfiguration()">
+                           <div class="help-block" translate>Download Logs exceeding the size of {{upc.preferences.maxLogThreshold}} MB</div>
                        </div>
                    </div>
                    <div class="row m-t">

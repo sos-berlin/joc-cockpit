@@ -63,6 +63,9 @@
             background: url(images/loader.gif) 50% 50% no-repeat;
             background-size: 50px
         }
+        .link{
+            font-size: 13px;
+        }
     </style>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
 </head>
@@ -70,7 +73,7 @@
 
 <div ng-if="loading" class="loading-img"></div>
 <div style="margin: 0 8px ">
-    <button class="btn" ng-click="download()"><i class="fa fa-download"></i></button>
+    <a href="" class="link" ng-click="download()"><i class="fa fa-download"></i> {{downloadUrl}}</a>
 </div>
 <pre class="p-l-sm log">
     <span ng-bind-html="logs"></span>

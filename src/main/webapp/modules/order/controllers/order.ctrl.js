@@ -8788,19 +8788,20 @@
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$sce", "$timeout"];
-    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $sce, $timeout) {
+    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$timeout","SOSAuth"];
+    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $timeout, SOSAuth) {
         var vm = $scope;
         vm.isLoading = false;
+        $scope.downloadUrl = '';
 
-        vm.logClass = function (logData) {
-            var logStatus = logData.substring(logData.indexOf("[") + 1, logData.indexOf("]"));
-            return "log_" + logStatus.toLowerCase();
-        };
         vm.downloadLog = function () {
-            var code = String(vm.logs).replace(/<[^>]+>/gm, '');
-            var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
-            FileSaver.saveAs(data, 'history.log');
+            if(vm.logs) {
+                var code = String(vm.logs).replace(/<[^>]+>/gm, '');
+                var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
+                FileSaver.saveAs(data, 'history.log');
+            }else{
+                document.getElementById("tmpFrame").src= $scope.downloadUrl;
+            }
         };
 
         function getParam(name) {
@@ -8816,39 +8817,43 @@
         var object = $location.search();
         var t1;
         vm.loadOrderLog = function () {
-
             vm.jobChain = getParam("jobChain");
             var orders = {};
             orders.jobschedulerId = getParam("schedulerId");
             orders.jobChain = vm.jobChain;
             orders.orderId = vm.orderId;
             orders.historyId = getParam("historyId");
-            //  orders.mime = ['HTML'];
+            orders.filename = getParam("filename");
+            orders.mime = ['HTML'];
+            vm.downloadUrl = './api/order/log/download?historyId='+orders.historyId+'&jobschedulerId='+orders.jobschedulerId+
+                     '&orderId='+orders.orderId+'&jobChain='+orders.jobChain+'&filename='+orders.filename+'&accessToken='+ SOSAuth.accessTokenId;
             OrderService.log(orders).then(function (res) {
                 vm.isLoading = true;
-                if (res.log)
-                //    vm.logs = $sce.trustAsHtml(res.log.html);
-                   vm.logs = res.log.plain;
-               // vm.logs = res.log.plain.replace(new RegExp('(ERROR)*','gi'), "<span class='log_error'>$1</span>");
-
+                vm.logs = res.data;
+                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
+                    t1 = $timeout(function () {
+                        $('.log_info').css('color', 'white')
+                    }, 100);
             }, function (err) {
                 vm.logs = err;
                 vm.isLoading = true;
             });
         };
         vm.loadJobLog = function () {
-
             vm.job = getParam("job");
             var jobs = {};
             jobs.jobschedulerId = getParam("schedulerId");
             jobs.taskId = vm.taskId;
-           // jobs.mime = ['HTML'];
+            jobs.filename = getParam("filename");
+            jobs.mime = ['HTML'];
+            $scope.downloadUrl = './api/task/log/download?taskId='+tasks.taskId+'&filename='+jobs.filename+'&jobschedulerId='+jobs.jobschedulerId+'&accessToken='+ SOSAuth.accessTokenId;
             TaskService.log(jobs).then(function (res) {
                 vm.isLoading = true;
-                if (res.log)
-                   // vm.logs = $sce.trustAsHtml(res.log.html);
-                vm.logs = res.log.plain.replace(new RegExp('(ERROR)*','gi'), "<span class='log_error'>$1</span>");
-
+                vm.logs = res.data;
+                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
+                    t1 = $timeout(function () {
+                        $('.log_info').css('color', 'white')
+                    }, 100);
             }, function (err) {
                 vm.logs = err;
                 vm.isLoading = true;
