@@ -116,7 +116,7 @@
                     }
                 }).then(function (res) {
                     console.log(res.data.log);
-                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/order/log/download?jobschedulerId=' + id +
+                    document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + id +
                         '&filename=' + res.data.log.filename + '&accessToken=' + token;
                     $scope.downloading = false;
                      document.getElementById("tmpFrame").contentWindow.onerror = function() {
@@ -138,7 +138,7 @@
                     }
                 }).then(function (res) {
                     console.log(res.data.log);
-                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/task/log/download?jobschedulerId=' + id +
+                    document.getElementById("tmpFrame").src = './api/task/log/download?jobschedulerId=' + id +
                         '&filename=' + res.data.log.filename + '&accessToken=' + token;
                     $scope.downloading = false;
                      document.getElementById("tmpFrame").contentWindow.onerror = function() {
