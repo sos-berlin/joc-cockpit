@@ -725,7 +725,12 @@
             } else if (vm.event.expirationPeriod) {
                 obj.expirationPeriod = vm.event.expirationPeriod;
             } else if (vm.event.expirationCycle) {
-                obj.expirationCycle = vm.event.expirationCycle;
+                let d = new Date();
+                d.setHours(moment(vm.event.expirationCycle, 'HH:mm:ss').hours());
+                d.setMinutes(moment(vm.event.expirationCycle, 'HH:mm:ss').minutes());
+                d.setSeconds(moment(vm.event.expirationCycle, 'HH:mm:ss').seconds());
+
+                obj.expirationCycle = moment(d).utc().format('HH:mm:ss');
             } else {
                 let d = new Date();
                 if (vm.event.expiresTime) {
@@ -5698,32 +5703,21 @@
                     JobSchedulerService.restartCluster(obj1);
                 }
                 else if (action == 'downloadLog') {
-                    vm.loading = true;
+                    vm.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
                     }
-                    $("#tmpFrame").attr('src', './api/jobscheduler/log?host='+host+'&jobschedulerId='+id+'&port='+port+'&accessToken='+ SOSAuth.accessTokenId);
 
-/*                    JobSchedulerService.downloadLog({
+                    JobSchedulerService.info({
                         jobschedulerId: id,
                         host: host,
                         port: port
                     }).then(function (res) {
-                        vm.loading = false;
-                        var name = 'jobscheduler.' + id + '.main.log';
-                        var fileType = 'application/octet-stream';
-
-                        if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
-                            name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
-                        }
-                        if (res.headers('Content-Type')) {
-                            fileType = res.headers('Content-Type');
-                        }
-                        var data = new Blob([res.data], {type: fileType});
-                        FileSaver.saveAs(data, name);
+                        vm.downloading = false;
+                         $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/log?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
                     }, function () {
-                        vm.loading = false;
-                    });*/
+                        vm.downloading = false;
+                    });
                 }
             }
 

@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-6 ">
             <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()" uib-tooltip="{{'tooltip.printLogFile' | translate}}" tooltip-placement="bottom"><i class="fa fa-print"></i></button>
-            <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()" uib-tooltip="{{'tooltip.saveLogFile'| translate}}" tooltip-placement="bottom"><i class="fa fa-save"></i></button>
+            <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="saveLog()" uib-tooltip="{{'tooltip.saveLogFile'| translate}}" tooltip-placement="bottom"><i class="fa fa-save"></i></button>
         </div>
     </div>
     <div class="row">
@@ -40,7 +40,9 @@
         </div>
     </div>
 </div>
-
+<div ng-if="downloading" class="download-progress">
+    <i class="fa fa-spinner fa-spin"> </i> <span translate>label.downloading</span>...
+</div>
 <script>
     $(function(){
         var $header = $('app-header').height() || 60;

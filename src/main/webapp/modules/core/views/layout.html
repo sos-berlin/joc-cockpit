@@ -1,3 +1,6 @@
+<div ng-if="downloading" class="download-progress">
+    <i class="fa fa-spinner fa-spin"> </i> <span translate>label.pleaseWait</span>...
+</div>
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl" ng-click="refreshSession()">
     <div class="w-full text-right top-header-bar white fa-fa-color"  ng-class="{'backup-top-header':permission.precedence>0}">
         <span class="pull-left p-l-3 backup-text" ng-if="userPreferences.themeTitle">

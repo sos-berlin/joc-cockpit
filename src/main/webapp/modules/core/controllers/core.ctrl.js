@@ -453,6 +453,7 @@
                 });
                 return;
             }
+            vm.downloading = true;
             if (order && order.historyId && order.orderId) {
                 OrderService.info({
                     jobschedulerId: id || vm.schedulerIds.selected,
@@ -462,8 +463,11 @@
                 }).then(function (res) {
                     vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
                     let isDownload = (vm.userPreferences.maxLogThreshold*1024*1024) > res.log.size ? false : true;
-                
+                    vm.downloading = false;
                     openLog(order, task, job, id, transfer, res.log.filename,isDownload);
+
+                },function () {
+                     vm.downloading = false;
                 });
             }
             else if(task && task.taskId) {
@@ -473,8 +477,14 @@
                 }).then(function (res) {
                     vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
                     let isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
+                    vm.downloading = false;
                     openLog(order, task, job, id, transfer, res.log.filename, isDownload);
+
+                },function () {
+                     vm.downloading = false;
                 });
+            }else{
+                vm.downloading = false;
             }
         };
 
@@ -540,17 +550,66 @@
                 }
             } else {
                 let val = order || task || transfer;
-                vm.downloadLog(val, filename);
+                vm.downloadLog(val, filename, id);
             }
         }
 
-        vm.downloadLog = function (data, filename) {
-            if (data && data.historyId) {
-                 $("#tmpFrame").attr('src', './api/order/log/download?historyId='+data.historyId+'&jobschedulerId='+vm.schedulerIds.selected+
-                     '&orderId='+data.orderId+'&jobChain='+data.jobChain+'&filename='+filename+'&accessToken='+ SOSAuth.accessTokenId);
-            }
-            else if (data && data.taskId) {
-                $("#tmpFrame").attr('src', './api/task/log/download?taskId=' + data.taskId + '&filename=' + filename + '&jobschedulerId=' + vm.schedulerIds.selected + '&accessToken=' + SOSAuth.accessTokenId);
+        vm.downloadLog = function (data, filename, id) {
+            if(filename) {
+                if (data && data.historyId) {
+                    $("#tmpFrame").attr('src', './api/order/log/download?jobschedulerId=' + (id || vm.schedulerIds.selected) +
+                        '&filename=' + filename + '&accessToken=' + SOSAuth.accessTokenId);
+                    document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }
+                else if (data && data.taskId) {
+                    $("#tmpFrame").attr('src', './api/task/log/download?filename=' + filename + '&jobschedulerId=' + (id || vm.schedulerIds.selected) + '&accessToken=' + SOSAuth.accessTokenId);
+                    document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }
+            }else {
+                vm.downloading = true;
+                if (data && data.historyId) {
+                    OrderService.info({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        jobChain: data.jobChain,
+                        orderId: data.orderId,
+                        historyId: data.historyId,
+                    }).then(function (res) {
+                        document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + vm.schedulerIds.selected +
+                            '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
+                        vm.downloading = false;
+                        document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                            alert('Download error!!');
+                            return false;
+                        };
+                    }, function (err) {
+                        console.log(err);
+                        vm.downloading = false;
+                    });
+                } else if (data && data.taskId) {
+                    TaskService.info({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        taskId: data.taskId
+                    }).then(function (res) {
+                        document.getElementById("tmpFrame").src = './api/task/log/download?jobschedulerId=' + vm.schedulerIds.selected +
+                            '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
+                        vm.downloading = false;
+                        document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                            alert('Download error!!');
+                            return false;
+                        };
+                    }, function (err) {
+                        console.log(err);
+                        vm.downloading = false;
+                    });
+                } else {
+                    vm.downloading = false;
+                }
             }
         };
 
@@ -686,7 +745,7 @@
                         $window.localStorage.log_window_x = newWindow.screenX;
                         $window.localStorage.log_window_y = newWindow.screenY;
                     };
-                    newWindow.addEventListener("resize",function () {
+                    newWindow.addEventListener("resize", function () {
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
@@ -697,8 +756,9 @@
                 }
             }
         }
-        vm.$on('order-list', function (event,path) {
-            
+
+        vm.$on('order-list', function (event, path) {
+
             vm.showOrderLink(path)
         });
         vm.showJobChain = function (jobChain) {

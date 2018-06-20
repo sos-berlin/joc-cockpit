@@ -77,15 +77,6 @@
                 });
                 return deferred.promise;
             },
-            download: function (obj) {
-                var deferred = $q.defer();
-                $http.get('order/log/download?historyId='+obj.historyId+'&jobschedulerId='+obj.jobschedulerId+'&orderId='+obj.orderId+'&jobChain='+obj.jobChain).then(function(res){
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             getSnapshot: function (filter) {
                 var deferred = $q.defer();
 

@@ -8793,14 +8793,14 @@
         var vm = $scope;
         vm.isLoading = false;
         $scope.downloadUrl = '';
+        let abs_url = $location.absUrl();
+        abs_url = abs_url.substring(0, abs_url.indexOf('#!/'));
 
-        vm.downloadLog = function () {
-            if(vm.logs) {
+        vm.saveLog = function () {
+            if (vm.logs) {
                 var code = String(vm.logs).replace(/<[^>]+>/gm, '');
                 var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(data, 'history.log');
-            }else{
-                document.getElementById("tmpFrame").src= $scope.downloadUrl;
             }
         };
 
@@ -8825,8 +8825,8 @@
             orders.historyId = getParam("historyId");
             orders.filename = getParam("filename");
             orders.mime = ['HTML'];
-            vm.downloadUrl = './api/order/log/download?historyId='+orders.historyId+'&jobschedulerId='+orders.jobschedulerId+
-                     '&orderId='+orders.orderId+'&jobChain='+orders.jobChain+'&filename='+orders.filename+'&accessToken='+ SOSAuth.accessTokenId;
+            vm.downloadUrl = abs_url + 'joc/api/order/log/download?jobschedulerId=' + orders.jobschedulerId +
+                '&filename=' + orders.filename + '&accessToken=' + SOSAuth.accessTokenId;
             OrderService.log(orders).then(function (res) {
                 vm.isLoading = true;
                 vm.logs = res.data;
@@ -8846,7 +8846,7 @@
             jobs.taskId = vm.taskId;
             jobs.filename = getParam("filename");
             jobs.mime = ['HTML'];
-            $scope.downloadUrl = './api/task/log/download?taskId='+tasks.taskId+'&filename='+jobs.filename+'&jobschedulerId='+jobs.jobschedulerId+'&accessToken='+ SOSAuth.accessTokenId;
+            vm.downloadUrl = abs_url + 'joc/api/task/log/download?filename=' + jobs.filename + '&jobschedulerId=' + jobs.jobschedulerId + '&accessToken=' + SOSAuth.accessTokenId;
             TaskService.log(jobs).then(function (res) {
                 vm.isLoading = true;
                 vm.logs = res.data;
@@ -8869,6 +8869,48 @@
         } else {
             alert('Invalid URL');
         }
+
+        vm.downloadLog = function () {
+            vm.downloading = true;
+            if (getParam("orderId")) {
+                OrderService.info({
+                    jobschedulerId: getParam("schedulerId"),
+                    jobChain: getParam("jobChain"),
+                    orderId: getParam("orderId"),
+                    historyId: getParam("historyId"),
+                }).then(function (res) {
+                    console.log(res.log);
+                    document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + getParam("schedulerId") +
+                        '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
+                    vm.downloading = false;
+                    document.getElementById("tmpFrame").contentWindow.onerror = function() {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }, function (err) {
+                    console.log(err);
+                    vm.downloading = false;
+                });
+            } else if (getParam("taskId")) {
+                TaskService.info({
+                    jobschedulerId: getParam("schedulerId"),
+                    taskId: getParam("taskId")
+                }).then(function (res) {
+                    console.log(res.log);
+                    document.getElementById("tmpFrame").src = './api/task/log/download?jobschedulerId=' + getParam("schedulerId") +
+                        '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
+
+                    vm.downloading = false;
+                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }, function (err) {
+                    console.log(err);
+                    vm.downloading = false;
+                });
+            }
+        };
 
         $scope.$on('$destroy', function () {
             if (t1)

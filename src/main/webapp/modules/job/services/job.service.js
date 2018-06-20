@@ -439,15 +439,6 @@
                 });
                 return deferred.promise;
             },
-            download: function (obj) {
-                var deferred = $q.defer();
-                $http.get('task/log/download?taskId='+obj.taskId+'&jobschedulerId='+obj.jobschedulerId).then(function(res){
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             info: function (obj) {
                 var deferred = $q.defer();
                 var Info = $resource('task/log/info');

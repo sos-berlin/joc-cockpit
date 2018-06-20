@@ -7,6 +7,8 @@
 (function () {
     'use strict';
     angular.module('myapp', []).controller('LogCtrl', ['$location', '$scope', '$http', '$sce', function ($location, $scope, $http, $sce) {
+        $scope.downloading = false;
+
         function getCookie(cname) {
             let name = cname + "=";
             let decodedCookie = decodeURIComponent(document.cookie);
@@ -40,6 +42,9 @@
         $scope.downloadUrl = '';
         $scope.shareData = $location.search();
 
+        let abs_url = $location.absUrl();
+        abs_url = abs_url.substring(0, abs_url.indexOf('log.html'));
+
         if ($scope.shareData && getParam("orderId")) {
             let orders = {
                 jobschedulerId: id,
@@ -49,8 +54,8 @@
                 filename: getParam("filename"),
                 mime: ['HTML']
             };
-            $scope.downloadUrl = './api/order/log/download?historyId='+orders.historyId+'&jobschedulerId='+id+
-                     '&orderId='+orders.orderId+'&jobChain='+orders.jobChain+'&filename='+orders.filename+'&accessToken='+ token;
+            $scope.downloadUrl = abs_url + 'joc/api/order/log/download?jobschedulerId=' + id +
+                '&filename=' + orders.filename + '&accessToken=' + token;
             $http.post('./api/order/log', orders, {
                 headers: {
                     'X-Access-Token': token,
@@ -58,10 +63,7 @@
                 }
             }).then(function (res) {
                 $scope.loading = false;
-                if (res.data)
-                    $scope.logs = $sce.trustAsHtml(res.data);
-                else
-                    $scope.noData = 'No logs found';
+                $scope.logs = $sce.trustAsHtml(res.data);
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
@@ -77,17 +79,14 @@
                 filename: getParam("filename"),
                 mime: ['HTML']
             };
-            $scope.downloadUrl = './api/task/log/download?taskId='+tasks.taskId+'&filename='+tasks.filename+'&jobschedulerId='+id+'&accessToken='+ token;
+            $scope.downloadUrl = abs_url + 'joc/api/task/log/download?filename=' + tasks.filename + '&jobschedulerId=' + id + '&accessToken=' + token;
             $http.post('./api/task/log', tasks, {
                 headers: {
                     'X-Access-Token': token,
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                if (res.data)
-                    $scope.logs = $sce.trustAsHtml(res.data);
-                else
-                    $scope.noData = 'No logs found';
+                $scope.logs = $sce.trustAsHtml(res.data);
                 $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {
@@ -103,7 +102,54 @@
         }
 
         $scope.download = function () {
-            document.getElementById("tmpFrame").src= $scope.downloadUrl;
+            $scope.downloading = true;
+            if (getParam("orderId")) {
+                $http.post('./api/order/log/info', {
+                    jobschedulerId: id,
+                    jobChain: getParam("jobChain"),
+                    orderId: getParam("orderId"),
+                    historyId: getParam("historyId"),
+                }, {
+                    headers: {
+                        'X-Access-Token': token,
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (res) {
+                    console.log(res.data.log);
+                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/order/log/download?jobschedulerId=' + id +
+                        '&filename=' + res.data.log.filename + '&accessToken=' + token;
+                    $scope.downloading = false;
+                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }, function (err) {
+                    $scope.downloading = false;
+                    alert(JSON.stringify(err));
+                });
+            } else if (getParam("taskId")) {
+                $http.post('./api/task/log/info', {
+                    jobschedulerId: id,
+                    taskId: getParam("taskId")
+                }, {
+                    headers: {
+                        'X-Access-Token': token,
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (res) {
+                    console.log(res.data.log);
+                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/task/log/download?jobschedulerId=' + id +
+                        '&filename=' + res.data.log.filename + '&accessToken=' + token;
+                    $scope.downloading = false;
+                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
+                        alert('Download error!!');
+                        return false;
+                    };
+                }, function (err) {
+                    $scope.downloading = false;
+                    alert(JSON.stringify(err));
+                });
+            }
         };
     }]);
 })();

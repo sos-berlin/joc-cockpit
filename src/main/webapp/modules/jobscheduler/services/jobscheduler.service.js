@@ -436,9 +436,10 @@
                 });
                 return deferred.promise;
             },
-            downloadLog: function (obj) {
+            info: function (filter) {
                 var deferred = $q.defer();
-                $http.get('jobscheduler/log?host='+obj.host+'&jobschedulerId='+obj.jobschedulerId+'&port='+obj.port).then(function(res){
+                var Info = $resource('jobscheduler/log/info');
+                Info.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

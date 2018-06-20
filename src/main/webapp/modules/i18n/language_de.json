@@ -1310,6 +1310,7 @@
   "label.updateMainSection": "Edit Main Section",
   "button.updateSection": "Edit Main Section",
   "label.maxNumberOfHistoryEntriesInOrderOverview": "Max. number of Order overview History entries per Order",
-  "label.downloadLogs": "Download Logs",
+  "label.downloading": "Downloading",
+  "label.pleaseWait": "Please wait",
   "label.maxLogSizeThreshold": "Max. Log Size Threshold"
 }
