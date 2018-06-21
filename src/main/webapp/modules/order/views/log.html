@@ -29,7 +29,7 @@
             <div class="box white">
                 <div class="box-body m-t-sm p-a p-b-xs">
                     <div style="margin-bottom: -6px ">
-                        <a href="" class="text-primary text-u-l" ng-click="downloadLog()"><i class="fa fa-download"></i> {{downloadUrl}}</a>
+                        <a href="" class="text-primary text text-u-l" ng-click="downloadLog()"><i class="fa fa-download"></i> Download</a>
                     </div>
                     <pre class="log" style="overflow: auto">
                         <span ng-bind-html="logs"></span>
@@ -39,9 +39,6 @@
             </div>
         </div>
     </div>
-</div>
-<div ng-if="downloading" class="download-progress">
-    <i class="fa fa-spinner fa-spin"> </i> <span translate>label.downloading</span>...
 </div>
 <script>
     $(function(){

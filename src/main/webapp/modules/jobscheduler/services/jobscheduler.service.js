@@ -445,6 +445,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            debugInfo: function (filter) {
+                var deferred = $q.defer();
+                var Debug = $resource('jobscheduler/debuglog/info');
+                Debug.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

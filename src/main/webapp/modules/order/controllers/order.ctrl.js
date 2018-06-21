@@ -8792,7 +8792,6 @@
     function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $timeout, SOSAuth) {
         var vm = $scope;
         vm.isLoading = false;
-        $scope.downloadUrl = '';
         let abs_url = $location.absUrl();
         abs_url = abs_url.substring(0, abs_url.indexOf('#!/'));
 
@@ -8824,12 +8823,12 @@
             orders.orderId = vm.orderId;
             orders.historyId = getParam("historyId");
             orders.filename = getParam("filename");
-            orders.mime = ['HTML'];
-            vm.downloadUrl = abs_url + 'joc/api/order/log/download?jobschedulerId=' + orders.jobschedulerId +
-                '&filename=' + orders.filename + '&accessToken=' + SOSAuth.accessTokenId;
+            //orders.mime = ['HTML'];
+
             OrderService.log(orders).then(function (res) {
                 vm.isLoading = true;
-                vm.logs = res.data;
+                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                vm.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
                 if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
                     t1 = $timeout(function () {
                         $('.log_info').css('color', 'white')
@@ -8845,11 +8844,12 @@
             jobs.jobschedulerId = getParam("schedulerId");
             jobs.taskId = vm.taskId;
             jobs.filename = getParam("filename");
-            jobs.mime = ['HTML'];
-            vm.downloadUrl = abs_url + 'joc/api/task/log/download?filename=' + jobs.filename + '&jobschedulerId=' + jobs.jobschedulerId + '&accessToken=' + SOSAuth.accessTokenId;
+            //jobs.mime = ['HTML'];
+
             TaskService.log(jobs).then(function (res) {
                 vm.isLoading = true;
-                vm.logs = res.data;
+                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                vm.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
                 if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
                     t1 = $timeout(function () {
                         $('.log_info').css('color', 'white')
@@ -8869,46 +8869,18 @@
         } else {
             alert('Invalid URL');
         }
-
-        vm.downloadLog = function () {
-            vm.downloading = true;
+        
+        $scope.downloadLog = function () {
             if (getParam("orderId")) {
-                OrderService.info({
-                    jobschedulerId: getParam("schedulerId"),
-                    jobChain: getParam("jobChain"),
-                    orderId: getParam("orderId"),
-                    historyId: getParam("historyId"),
-                }).then(function (res) {
-                    console.log(res.log);
-                    document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + getParam("schedulerId") +
-                        '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
-                    vm.downloading = false;
-                    document.getElementById("tmpFrame").contentWindow.onerror = function() {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }, function (err) {
-                    console.log(err);
-                    vm.downloading = false;
-                });
+                document.getElementById("tmpFrame").src = './api/order/log/download?orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&historyId='+getParam("historyId")+'&jobschedulerId=' + getParam("schedulerId") +
+                     '&accessToken=' + SOSAuth.accessTokenId;
             } else if (getParam("taskId")) {
-                TaskService.info({
-                    jobschedulerId: getParam("schedulerId"),
-                    taskId: getParam("taskId")
-                }).then(function (res) {
-                    console.log(res.log);
-                    document.getElementById("tmpFrame").src = './api/task/log/download?jobschedulerId=' + getParam("schedulerId") +
-                        '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
-
-                    vm.downloading = false;
-                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }, function (err) {
-                    console.log(err);
-                    vm.downloading = false;
-                });
+                document.getElementById("tmpFrame").src = './api/task/log/download?taskId='+getParam("taskId")+'&jobschedulerId=' + getParam("schedulerId") +
+                     '&accessToken=' + SOSAuth.accessTokenId;
+            }
+            document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                alert('Download error!!');
+                return false;
             }
         };
 
@@ -8916,7 +8888,6 @@
             if (t1)
                 $timeout.cancel(t1);
         });
-
     }
 })
 ();

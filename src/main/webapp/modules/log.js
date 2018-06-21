@@ -7,7 +7,6 @@
 (function () {
     'use strict';
     angular.module('myapp', []).controller('LogCtrl', ['$location', '$scope', '$http', '$sce', function ($location, $scope, $http, $sce) {
-        $scope.downloading = false;
 
         function getCookie(cname) {
             let name = cname + "=";
@@ -39,11 +38,7 @@
         let id = getCookie('$SOS$scheduleId');
         let token = getCookie('$SOS$accessTokenId');
         $scope.loading = true;
-        $scope.downloadUrl = '';
         $scope.shareData = $location.search();
-
-        let abs_url = $location.absUrl();
-        abs_url = abs_url.substring(0, abs_url.indexOf('log.html'));
 
         if ($scope.shareData && getParam("orderId")) {
             let orders = {
@@ -52,10 +47,9 @@
                 orderId: getParam("orderId"),
                 historyId: getParam("historyId"),
                 filename: getParam("filename"),
-                mime: ['HTML']
+                //mime: ['HTML']
             };
-            $scope.downloadUrl = abs_url + 'joc/api/order/log/download?jobschedulerId=' + id +
-                '&filename=' + orders.filename + '&accessToken=' + token;
+            
             $http.post('./api/order/log', orders, {
                 headers: {
                     'X-Access-Token': token,
@@ -63,7 +57,9 @@
                 }
             }).then(function (res) {
                 $scope.loading = false;
-                $scope.logs = $sce.trustAsHtml(res.data);
+              //  res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+               // $scope.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
+                $scope.logs = res.logs;
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
@@ -77,16 +73,19 @@
                 jobschedulerId: id,
                 taskId: getParam("taskId"),
                 filename: getParam("filename"),
-                mime: ['HTML']
+                //mime: ['HTML']
             };
-            $scope.downloadUrl = abs_url + 'joc/api/task/log/download?filename=' + tasks.filename + '&jobschedulerId=' + id + '&accessToken=' + token;
+           
             $http.post('./api/task/log', tasks, {
                 headers: {
                     'X-Access-Token': token,
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                $scope.logs = $sce.trustAsHtml(res.data);
+                //$scope.logs = $sce.trustAsHtml(res.data);
+/*                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                $scope.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");*/
+                 $scope.logs = res.logs;
                 $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {
@@ -102,53 +101,16 @@
         }
 
         $scope.download = function () {
-            $scope.downloading = true;
             if (getParam("orderId")) {
-                $http.post('./api/order/log/info', {
-                    jobschedulerId: id,
-                    jobChain: getParam("jobChain"),
-                    orderId: getParam("orderId"),
-                    historyId: getParam("historyId"),
-                }, {
-                    headers: {
-                        'X-Access-Token': token,
-                        'Content-Type': 'application/json'
-                    }
-                }).then(function (res) {
-                    console.log(res.data.log);
-                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/order/log/download?jobschedulerId=' + id +
-                        '&filename=' + res.data.log.filename + '&accessToken=' + token;
-                    $scope.downloading = false;
-                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }, function (err) {
-                    $scope.downloading = false;
-                    alert(JSON.stringify(err));
-                });
+                document.getElementById("tmpFrame").src = './api/order/log/download?orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&historyId='+getParam("historyId")+'&jobschedulerId=' + id +
+                     '&accessToken=' + token;
             } else if (getParam("taskId")) {
-                $http.post('./api/task/log/info', {
-                    jobschedulerId: id,
-                    taskId: getParam("taskId")
-                }, {
-                    headers: {
-                        'X-Access-Token': token,
-                        'Content-Type': 'application/json'
-                    }
-                }).then(function (res) {
-                    console.log(res.data.log);
-                    document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/task/log/download?jobschedulerId=' + id +
-                        '&filename=' + res.data.log.filename + '&accessToken=' + token;
-                    $scope.downloading = false;
-                     document.getElementById("tmpFrame").contentWindow.onerror = function() {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }, function (err) {
-                    $scope.downloading = false;
-                    alert(JSON.stringify(err));
-                });
+                document.getElementById("tmpFrame").src = './api/task/log/download?taskId='+getParam("taskId")+'&jobschedulerId=' + id +
+                     '&accessToken=' + token;
+            }
+            document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                alert('Download error!!');
+                return false;
             }
         };
     }]);

@@ -171,6 +171,8 @@
                                                    ng-click="clusterAction('master', 'remove', master.host, master.port, master.jobschedulerId)" translate>button.removeInstance</a>
                                                 <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                    ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)" translate>button.downloadLog</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+                                                   ng-click="clusterAction('master', 'downloadDebugLog', master.host, master.port, master.jobschedulerId)" translate>button.downloadDebugLog</a>
                                             </div>
                                         </div>
                                     </td>
@@ -278,7 +280,7 @@
                                             <span>  {{dashboardFilters.filter.orderLabel | translate}}</span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                          
+
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
                                                ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.today'"
                                                uib-btn-radio="'0d'"
@@ -409,7 +411,7 @@
                                             <span>  {{dashboardFilters.filter.taskLabel | translate}}</span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                            
+
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom"
                                                ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.today'"
                                                uib-btn-radio="'0d'"

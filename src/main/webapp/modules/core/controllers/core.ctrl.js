@@ -461,8 +461,10 @@
                     orderId: order.orderId,
                     historyId: order.historyId
                 }).then(function (res) {
-                    vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
-                    let isDownload = (vm.userPreferences.maxLogThreshold*1024*1024) > res.log.size ? false : true;
+                    let isDownload = res.log.download;
+                    if(vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold ==0) {
+                        isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
+                    }
                     vm.downloading = false;
                     openLog(order, task, job, id, transfer, res.log.filename,isDownload);
 
@@ -475,8 +477,10 @@
                     jobschedulerId: id || vm.schedulerIds.selected,
                     taskId: task.taskId
                 }).then(function (res) {
-                    vm.userPreferences.maxLogThreshold = vm.userPreferences.maxLogThreshold ? vm.userPreferences.maxLogThreshold : 10;
-                    let isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
+                    let isDownload = res.log.download;
+                    if(vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold ==0) {
+                        isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
+                    }
                     vm.downloading = false;
                     openLog(order, task, job, id, transfer, res.log.filename, isDownload);
 

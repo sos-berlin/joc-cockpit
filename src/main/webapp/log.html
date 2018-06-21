@@ -11,7 +11,7 @@
         pre.log {
             color: #3d464d;
             margin-bottom: 0;
-            line-height: .6557143;
+            /*line-height: .6557143;*/
             font-family: Lucida Console, monospace;
             font-size: 12px;
             margin-top: 4px;
@@ -57,27 +57,21 @@
             background: url(images/loader.gif) 50% 50% no-repeat;
             background-size: 50px
         }
-        .link{
-            font-size: 13px;
+        .link {
+            font-size: 14px;
         }
         a{
             color: #007da6;
-        }
-        .show{
-            display: inline-block;
         }
     </style>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
 </head>
 <body ng-controller="LogCtrl">
-<div class="hide" ng-class="{'show':downloading}" style="background: rgba(255,165,0,0.84); color: #ffff; position: fixed; top: 8px; right: 8px;z-index: 9999; border-radius: 4px;padding: 2px 6px;font-size: 12px;display: none">
-    <i class="fa fa-spinner fa-spin"> </i> Downloading...
-</div>
 <div style="margin: 0 8px ">
-    <a href class="link" ng-click="download()"><i class="fa fa-download"></i> <span ng-bind="downloadUrl"></span></a>
+    <a href class="link" ng-click="download()"><i class="fa fa-download"></i> <span> Download</span></a>
 </div>
 <pre class="p-l-sm log">
-    <span ng-bind-html="logs"></span>
+    <span ng-bind="logs"></span>
     <span class="log_error" ng-bind="error"></span>
 </pre>
 <div ng-if="loading" class="loading-img"></div>

@@ -1312,5 +1312,6 @@
   "label.maxNumberOfHistoryEntriesInOrderOverview": "Max. number of Order overview History entries per Order",
   "label.downloading": "Downloading",
   "label.pleaseWait": "Please wait",
-  "label.maxLogSizeThreshold": "Max. Log Size Threshold"
+  "label.maxLogSizeThreshold": "Max. Log Size Threshold",
+  "button.downloadDebugLog": "Download Debug Log"
 }

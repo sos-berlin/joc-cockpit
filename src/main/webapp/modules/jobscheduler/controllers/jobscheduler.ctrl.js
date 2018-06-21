@@ -5719,6 +5719,22 @@
                         vm.downloading = false;
                     });
                 }
+                else if (action == 'downloadDebugLog') {
+                    vm.downloading = true;
+                    if (!id) {
+                        id = vm.schedulerIds.selected;
+                    }
+                    JobSchedulerService.debugInfo({
+                        jobschedulerId: id,
+                        host: host,
+                        port: port
+                    }).then(function (res) {
+                        vm.downloading = false;
+                         $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/debuglog?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
+                    }, function () {
+                        vm.downloading = false;
+                    });
+                }
             }
 
             if ((objectType == 'supervisor' || objectType == 'master') && (action == 'terminateAndRestartWithTimeout' || action == 'terminateWithin')) {
