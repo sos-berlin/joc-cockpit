@@ -56,6 +56,7 @@
                 }
             }).then(function (res) {
                 $scope.loading = false;
+                 $scope.logs =$sce.trustAsHtml(res.data);
                  res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
                 $scope.logs = $sce.trustAsHtml(res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>"));
             }, function (err) {
@@ -79,9 +80,10 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
-                $scope.logs = $sce.trustAsHtml(res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>"));
                 $scope.loading = false;
+                 $scope.logs =$sce.trustAsHtml(res.data);
+                 res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                 $scope.logs = $sce.trustAsHtml(res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>"));
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);

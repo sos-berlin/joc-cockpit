@@ -13,7 +13,7 @@
             margin-bottom: 0;
             font-family: Lucida Console, monospace;
             font-size: 12px;
-            margin-top: 8px;
+            margin-top: 4px;
         }
         .log_error, .log_stderr {
             color: red !important
@@ -70,7 +70,7 @@
     <a href class="link" ng-click="download()"><i class="fa fa-download"></i> <span> Download</span></a>
 </div>
 <pre class="p-l-sm log">
-    <span ng-bind-html="logs"></span>
+    <div ng-bind-html="logs"></div>
     <span class="log_error" ng-bind="error"></span>
 </pre>
 <div ng-if="loading" class="loading-img"></div>

@@ -453,6 +453,7 @@
                 });
                 return;
             }
+            let isDownload = '', filename = '',isCalled= false;
 
             if (order && order.historyId && order.orderId) {
                 OrderService.info({
@@ -461,26 +462,41 @@
                     orderId: order.orderId,
                     historyId: order.historyId
                 }).then(function (res) {
-                    let isDownload = res.log.download;
+                    filename = res.log.filename;
+                    isDownload = res.log.download;
                     if (vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold == 0) {
                         isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
                     }
-
-                    vm.openLog(order, task, job, id, transfer, res.log.filename, isDownload);
+                    if(isCalled){
+                        vm.openLog(order, task, job, id, transfer, filename, isDownload);
+                    }
                 });
-            }
-            else if(task && task.taskId) {
+            } else if (task && task.taskId) {
                 TaskService.info({
                     jobschedulerId: id || vm.schedulerIds.selected,
                     taskId: task.taskId
                 }).then(function (res) {
-                    let isDownload = res.log.download;
-                    if(vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold ==0) {
+                    filename = res.log.filename;
+                    isDownload = res.log.download;
+                    if (vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold == 0) {
                         isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
                     }
-                    vm.openLog(order, task, job, id, transfer, res.log.filename, isDownload);
+                    if(isCalled){
+                        vm.openLog(order, task, job, id, transfer, filename, isDownload);
+                    }
+
                 });
             }
+            let interval = setTimeout(function () {
+                if(filename) {
+
+                    console.log('filename '+filename);
+                    console.log(interval);
+                    isCalled= true;
+                    vm.openLog(order, task, job, id, transfer, filename, isDownload);
+                    clearTimeout(interval);
+                }
+            }, 950);
         };
 
 
