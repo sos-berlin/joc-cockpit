@@ -11,10 +11,9 @@
         pre.log {
             color: #3d464d;
             margin-bottom: 0;
-            /*line-height: .6557143;*/
             font-family: Lucida Console, monospace;
             font-size: 12px;
-            margin-top: 4px;
+            margin-top: 8px;
         }
         .log_error, .log_stderr {
             color: red !important
@@ -67,11 +66,11 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
 </head>
 <body ng-controller="LogCtrl">
-<div style="margin: 0 8px ">
+<div class="p-l-sm log">
     <a href class="link" ng-click="download()"><i class="fa fa-download"></i> <span> Download</span></a>
 </div>
 <pre class="p-l-sm log">
-    <span ng-bind="logs"></span>
+    <span ng-bind-html="logs"></span>
     <span class="log_error" ng-bind="error"></span>
 </pre>
 <div ng-if="loading" class="loading-img"></div>

@@ -37,21 +37,21 @@
                     <input class="form-control input-date" data-min-date="{{minDate}}" ng-model="event.expiresDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
                            bs-datepicker type="text" ng-change="checkExpireValue('expires')">
                     <input valid-time maxlength="8" class="form-control input-time" ng-model="event.expiresTime" placeholder="HH:MM:SS"
-                           type="text" ng-change="checkExpireValue('expires')" ng-required="!event.expirationPeriod && !event.expirationCycle">
+                           type="text" ng-change="checkExpireValue('expires')" ng-required="event.expiresDate">
                 </div>
             </div>
             <div class="form-group row" ng-class="{ 'has-error' : form.expirationPeriod.$invalid && form.expirationPeriod.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.expirationPeriod</label>
                 <div class="col-sm-6">
                     <input valid-time1 maxlength="8" type="text" name="expirationPeriod" class="form-control" placeholder="{{'placeholder.expirationPeriod' | translate}}"
-                           ng-model="event.expirationPeriod" ng-change="checkExpireValue('expirationPeriod')" ng-required="!event.expirationCycle && !event.expiresDate && !event.expiresTime">
+                           ng-model="event.expirationPeriod" ng-change="checkExpireValue('expirationPeriod')">
                 </div>
             </div>
             <div class="form-group row" ng-class="{ 'has-error' : form.expirationCycle.$invalid && form.expirationCycle.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.expirationCycle</label>
                 <div class="col-sm-6">
                     <input valid-time1 maxlength="8" type="text" class="form-control" name="expirationCycle" placeholder="{{'placeholder.expirationCycle' | translate}}"
-                           ng-model="event.expirationCycle" ng-change="checkExpireValue('expirationCycle')" ng-required="!event.expirationPeriod && !event.expiresDate && !event.expiresTime">
+                           ng-model="event.expirationCycle" ng-change="checkExpireValue('expirationCycle')">
                 </div>
             </div>
                 <div class="form-group row m-b-sm">

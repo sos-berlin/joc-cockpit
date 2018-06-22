@@ -453,7 +453,7 @@
                 });
                 return;
             }
-            vm.downloading = true;
+
             if (order && order.historyId && order.orderId) {
                 OrderService.info({
                     jobschedulerId: id || vm.schedulerIds.selected,
@@ -462,14 +462,11 @@
                     historyId: order.historyId
                 }).then(function (res) {
                     let isDownload = res.log.download;
-                    if(vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold ==0) {
+                    if (vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold == 0) {
                         isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
                     }
-                    vm.downloading = false;
-                    openLog(order, task, job, id, transfer, res.log.filename,isDownload);
 
-                },function () {
-                     vm.downloading = false;
+                    vm.openLog(order, task, job, id, transfer, res.log.filename, isDownload);
                 });
             }
             else if(task && task.taskId) {
@@ -481,34 +478,28 @@
                     if(vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold ==0) {
                         isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
                     }
-                    vm.downloading = false;
-                    openLog(order, task, job, id, transfer, res.log.filename, isDownload);
-
-                },function () {
-                     vm.downloading = false;
+                    vm.openLog(order, task, job, id, transfer, res.log.filename, isDownload);
                 });
-            }else{
-                vm.downloading = false;
             }
         };
 
-        function openLog(order, task, job, id, transfer, filename, isDownload) {
+
+        vm.openLog = function(order, task, job, id, transfer, filename, isDownload) {
             let url = null;
             if (!isDownload) {
                 if (vm.userPreferences.isNewWindow === 'newWindow') {
 
                     try {
                         if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
-
                             if (order && order.historyId && order.orderId) {
-                                url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain+'&filename='+filename;
+                                url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&filename=' + filename;
                             } else if (task && task.taskId) {
                                 if (task.job)
-                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job+'&filename='+filename;
+                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job + '&filename=' + filename;
                                 else if (job)
-                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job+'&filename='+filename;
+                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job + '&filename=' + filename;
                                 else
-                                    url = 'log.html#!/?taskId=' + task.taskId+'&filename='+filename;
+                                    url = 'log.html#!/?taskId=' + task.taskId + '&filename=' + filename;
                             } else {
                                 return;
                             }
@@ -556,7 +547,7 @@
                 let val = order || task || transfer;
                 vm.downloadLog(val, filename, id);
             }
-        }
+        };
 
         vm.downloadLog = function (data, filename, id) {
             if(filename) {

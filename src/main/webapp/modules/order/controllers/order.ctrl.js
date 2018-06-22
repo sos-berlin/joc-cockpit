@@ -8823,7 +8823,6 @@
             orders.orderId = vm.orderId;
             orders.historyId = getParam("historyId");
             orders.filename = getParam("filename");
-            //orders.mime = ['HTML'];
 
             OrderService.log(orders).then(function (res) {
                 vm.isLoading = true;
@@ -8838,14 +8837,13 @@
                 vm.isLoading = true;
             });
         };
+
         vm.loadJobLog = function () {
             vm.job = getParam("job");
             var jobs = {};
             jobs.jobschedulerId = getParam("schedulerId");
             jobs.taskId = vm.taskId;
             jobs.filename = getParam("filename");
-            //jobs.mime = ['HTML'];
-
             TaskService.log(jobs).then(function (res) {
                 vm.isLoading = true;
                 res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");

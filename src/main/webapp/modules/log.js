@@ -46,8 +46,7 @@
                 jobChain: getParam("jobChain"),
                 orderId: getParam("orderId"),
                 historyId: getParam("historyId"),
-                filename: getParam("filename"),
-                //mime: ['HTML']
+                filename: getParam("filename")
             };
             
             $http.post('./api/order/log', orders, {
@@ -57,9 +56,8 @@
                 }
             }).then(function (res) {
                 $scope.loading = false;
-              //  res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
-               // $scope.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
-                $scope.logs = res.logs;
+                 res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                $scope.logs = $sce.trustAsHtml(res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>"));
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
@@ -72,8 +70,7 @@
             let tasks = {
                 jobschedulerId: id,
                 taskId: getParam("taskId"),
-                filename: getParam("filename"),
-                //mime: ['HTML']
+                filename: getParam("filename")
             };
            
             $http.post('./api/task/log', tasks, {
@@ -82,10 +79,8 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                //$scope.logs = $sce.trustAsHtml(res.data);
-/*                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
-                $scope.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");*/
-                 $scope.logs = res.logs;
+                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
+                $scope.logs = $sce.trustAsHtml(res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>"));
                 $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {

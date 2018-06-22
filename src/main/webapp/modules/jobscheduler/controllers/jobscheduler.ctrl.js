@@ -5703,24 +5703,23 @@
                     JobSchedulerService.restartCluster(obj1);
                 }
                 else if (action == 'downloadLog') {
-                    vm.downloading = true;
+                    $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
                     }
-
                     JobSchedulerService.info({
                         jobschedulerId: id,
                         host: host,
                         port: port
                     }).then(function (res) {
-                        vm.downloading = false;
+                        $rootScope.downloading = false;
                          $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/log?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
                     }, function () {
-                        vm.downloading = false;
+                        $rootScope.downloading = false;
                     });
                 }
                 else if (action == 'downloadDebugLog') {
-                    vm.downloading = true;
+                    $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
                     }
@@ -5729,10 +5728,10 @@
                         host: host,
                         port: port
                     }).then(function (res) {
-                        vm.downloading = false;
+                        $rootScope.downloading = false;
                          $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/debuglog?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
                     }, function () {
-                        vm.downloading = false;
+                        $rootScope.downloading = false;
                     });
                 }
             }

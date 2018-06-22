@@ -263,7 +263,11 @@
                     <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)" ng-bind="event.orderId"></a></td>
                     <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
                     <td><span ng-bind="event.exitCode"></span></td>
-                    <td><span ng-bind="event.expires | stringToDate"></span></td>
+                    <td>
+                        <span ng-if="event.expires && !event.expires.match('2999')" ng-bind="event.expires | stringToDate"></span>
+                        <span ng-if="!event.expires">-</span>
+                        <span ng-if="event.expires && event.expires.match('2999')">never</span>
+                    </td>
                     <td>
                         <span ng-bind="event.remoteJobSchedulerHost"></span>
                         <span ng-if="event.remoteJobSchedulerPort">:</span>
