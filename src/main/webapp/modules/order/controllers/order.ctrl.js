@@ -4809,8 +4809,7 @@
             vm.isAuditLog = false;
             vm.isTaskHistory = false;
 
-            if (value.historyId) {
-                orders.limit = vm.userPreferences.maxNumInOrderOverviewPerObject;
+            if (value.historyId && vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {          
                 orders.historyIds = [value.historyId];
             }
             orders.orders = [];
