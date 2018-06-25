@@ -1310,10 +1310,10 @@
   "label.updateMainSection": "Main Sektion editieren",
   "button.updateSection": "Main Sektion editieren",
   "label.maxNumberOfHistoryEntriesInOrderOverview": "Max. Anzahl Historieneinträge der Auftragsübersicht",
-  "label.downloading": "Herunterladen",
+  "label.downloading": "Herunterladen in Arbeit",
   "label.pleaseWait": "Bitte warten",
   "label.maxLogSizeThreshold": "Schwellenwert für Download des Protokolls",
   "button.downloadDebugLog": "Debug Log herunterladen",
-  "button.download": "Download",
-  "button.reload": "Reload"
+  "button.download": "Herunterladen",
+  "button.reload": "Erneut laden"
 }
