@@ -21,9 +21,9 @@
         .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService', 'FileSaver'];
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService','$interval'];
 
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService, FileSaver) {
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService, $interval) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -453,175 +453,86 @@
                 });
                 return;
             }
-            let isDownload = '', filename = '',isCalled= false;
 
-            if (order && order.historyId && order.orderId) {
-                OrderService.info({
-                    jobschedulerId: id || vm.schedulerIds.selected,
-                    jobChain: order.jobChain,
-                    orderId: order.orderId,
-                    historyId: order.historyId
-                }).then(function (res) {
-                    filename = res.log.filename;
-                    isDownload = res.log.download;
-                    if (vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold == 0) {
-                        isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
-                    }
-                    if(isCalled){
-                        vm.openLog(order, task, job, id, transfer, filename, isDownload);
-                    }
-                });
-            } else if (task && task.taskId) {
-                TaskService.info({
-                    jobschedulerId: id || vm.schedulerIds.selected,
-                    taskId: task.taskId
-                }).then(function (res) {
-                    filename = res.log.filename;
-                    isDownload = res.log.download;
-                    if (vm.userPreferences.maxLogThreshold || vm.userPreferences.maxLogThreshold == 0) {
-                        isDownload = (vm.userPreferences.maxLogThreshold * 1024 * 1024) > res.log.size ? false : true;
-                    }
-                    if(isCalled){
-                        vm.openLog(order, task, job, id, transfer, filename, isDownload);
-                    }
-
-                });
-            }
-            let interval = setTimeout(function () {
-                if(filename) {
-
-                    console.log('filename '+filename);
-                    console.log(interval);
-                    isCalled= true;
-                    vm.openLog(order, task, job, id, transfer, filename, isDownload);
-                    clearTimeout(interval);
-                }
-            }, 950);
+            vm.openLog(order, task, job, id, transfer);
         };
 
-
-        vm.openLog = function(order, task, job, id, transfer, filename, isDownload) {
+        vm.openLog = function(order, task, job, id, transfer) {
             let url = null;
-            if (!isDownload) {
-                if (vm.userPreferences.isNewWindow === 'newWindow') {
 
-                    try {
-                        if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
-                            if (order && order.historyId && order.orderId) {
-                                url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&filename=' + filename;
-                            } else if (task && task.taskId) {
-                                if (task.job)
-                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job + '&filename=' + filename;
-                                else if (job)
-                                    url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job + '&filename=' + filename;
-                                else
-                                    url = 'log.html#!/?taskId=' + task.taskId + '&filename=' + filename;
-                            } else {
-                                return;
-                            }
+            if (vm.userPreferences.isNewWindow === 'newWindow') {
 
-                            if (id) {
-                                document.cookie = "$SOS$scheduleId=" + id + ";path=/";
-                            } else {
-                                document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
-                            }
-                            document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
-                            newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
-
-                            t1 = $timeout(function () {
-                                calWindowSize();
-                            }, 400);
-                        }
-                    } catch (e) {
-                        throw new Error(e.message);
-                    }
-                } else {
-                    if (order && order.historyId && order.orderId) {
-                        url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
-                    } else if (task && task.taskId) {
-                        if (transfer) {
+                try {
+                    if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
+                        if (order && order.historyId && order.orderId) {
+                            url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+                        } else if (task && task.taskId) {
                             if (task.job)
-                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job;
                             else if (job)
-                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job;
                             else
-                                url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                                url = 'log.html#!/?taskId=' + task.taskId;
                         } else {
-                            if (task.job)
-                                url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
-                            else if (job)
-                                url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
-                            else
-                                url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected)+'&filename='+filename;
+                            return;
                         }
-                    } else {
-                        return;
+
+                        if (id) {
+                            document.cookie = "$SOS$scheduleId=" + id + ";path=/";
+                        } else {
+                            document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
+                        }
+                        document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
+
+                        newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
+
+                        t1 = $timeout(function () {
+                            calWindowSize();
+                        }, 400);
                     }
-                    $window.open(url, '_blank');
+                } catch (e) {
+                    throw new Error(e.message);
                 }
             } else {
-                let val = order || task || transfer;
-                vm.downloadLog(val, filename, id);
+                if (order && order.historyId && order.orderId) {
+                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                } else if (task && task.taskId) {
+                    if (transfer) {
+                        if (task.job)
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else if (job)
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else
+                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                    } else {
+                        if (task.job)
+                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else if (job)
+                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                        else
+                            url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                    }
+                } else {
+                    return;
+                }
+
+                $window.open(url, '_blank');
             }
         };
 
-        vm.downloadLog = function (data, filename, id) {
-            if(filename) {
-                if (data && data.historyId) {
-                    $("#tmpFrame").attr('src', './api/order/log/download?jobschedulerId=' + (id || vm.schedulerIds.selected) +
-                        '&filename=' + filename + '&accessToken=' + SOSAuth.accessTokenId);
-                    document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }
-                else if (data && data.taskId) {
-                    $("#tmpFrame").attr('src', './api/task/log/download?filename=' + filename + '&jobschedulerId=' + (id || vm.schedulerIds.selected) + '&accessToken=' + SOSAuth.accessTokenId);
-                    document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                        alert('Download error!!');
-                        return false;
-                    };
-                }
-            }else {
-                vm.downloading = true;
-                if (data && data.historyId) {
-                    OrderService.info({
-                        jobschedulerId: vm.schedulerIds.selected,
-                        jobChain: data.jobChain,
-                        orderId: data.orderId,
-                        historyId: data.historyId,
-                    }).then(function (res) {
-                        document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + vm.schedulerIds.selected +
-                            '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
-                        vm.downloading = false;
-                        document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                            alert('Download error!!');
-                            return false;
-                        };
-                    }, function (err) {
-                        console.log(err);
-                        vm.downloading = false;
-                    });
-                } else if (data && data.taskId) {
-                    TaskService.info({
-                        jobschedulerId: vm.schedulerIds.selected,
-                        taskId: data.taskId
-                    }).then(function (res) {
-                        document.getElementById("tmpFrame").src = './api/task/log/download?jobschedulerId=' + vm.schedulerIds.selected +
-                            '&filename=' + res.log.filename + '&accessToken=' + SOSAuth.accessTokenId;
-                        vm.downloading = false;
-                        document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                            alert('Download error!!');
-                            return false;
-                        };
-                    }, function (err) {
-                        console.log(err);
-                        vm.downloading = false;
-                    });
-                } else {
-                    vm.downloading = false;
-                }
+        vm.downloadLog = function (data, id) {
+            if (data.orderId) {
+                document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + data.orderId + '&jobChain=' + data.jobChain + '&historyId=' + data.historyId + '&jobschedulerId=' + (id || vm.schedulerIds.selected) +
+                    '&accessToken=' + SOSAuth.accessTokenId;
+            } else if (data.taskId) {
+                document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + data.taskId + '&jobschedulerId=' + (id || vm.schedulerIds.selected) +
+                    '&accessToken=' + SOSAuth.accessTokenId;
             }
+            document.getElementById("tmpFrame").contentWindow.onerror = function () {
+                alert('Download error!!');
+                return false;
+            };
+
         };
 
         vm.end = function (task, path) {

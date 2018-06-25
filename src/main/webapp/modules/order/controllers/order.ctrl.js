@@ -8787,12 +8787,10 @@
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$timeout","SOSAuth"];
-    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $timeout, SOSAuth) {
+    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$timeout","SOSAuth", "$q", "$interval"];
+    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $timeout, SOSAuth, $q, $interval) {
         var vm = $scope;
         vm.isLoading = false;
-        let abs_url = $location.absUrl();
-        abs_url = abs_url.substring(0, abs_url.indexOf('#!/'));
 
         vm.saveLog = function () {
             if (vm.logs) {
@@ -8813,7 +8811,7 @@
         }
 
         var object = $location.search();
-        var t1;
+        var t1, canceller, logElems=[], interval;
         vm.loadOrderLog = function () {
             vm.jobChain = getParam("jobChain");
             var orders = {};
@@ -8821,16 +8819,9 @@
             orders.jobChain = vm.jobChain;
             orders.orderId = vm.orderId;
             orders.historyId = getParam("historyId");
-            orders.filename = getParam("filename");
-
-            OrderService.log(orders).then(function (res) {
-                vm.isLoading = true;
-                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
-                vm.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
-                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
-                    t1 = $timeout(function () {
-                        $('.log_info').css('color', 'white')
-                    }, 100);
+            canceller = $q.defer();
+            OrderService.log(orders, {timeout: canceller.promise}).then(function (res) {
+               renderData(res);
             }, function (err) {
                 vm.logs = err;
                 vm.isLoading = true;
@@ -8842,32 +8833,92 @@
             var jobs = {};
             jobs.jobschedulerId = getParam("schedulerId");
             jobs.taskId = vm.taskId;
-            jobs.filename = getParam("filename");
-            TaskService.log(jobs).then(function (res) {
-                vm.isLoading = true;
-                res.data = res.data.replace("[ERROR]", "<span class=\"log_error\">[ERROR]</span>");
-                vm.logs = res.data.replace("[WARN]", "<span class=\"log_warn\">[WARN]</span>");
-                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
-                    t1 = $timeout(function () {
-                        $('.log_info').css('color', 'white')
-                    }, 100);
+            canceller = $q.defer();
+            TaskService.log(jobs, {timeout: canceller.promise}).then(function (res) {
+                renderData(res);
             }, function (err) {
                 vm.logs = err;
                 vm.isLoading = true;
             });
         };
-        if (object && getParam("historyId")) {
-            vm.orderId = getParam("orderId");
-            vm.loadOrderLog();
+
+        function init() {
+            if (object && getParam("historyId")) {
+                vm.orderId = getParam("orderId");
+                vm.loadOrderLog();
+            }
+            else if (object && getParam("taskId")) {
+                vm.taskId = getParam("taskId");
+                vm.loadJobLog();
+            } else {
+                alert('Invalid URL');
+            }
         }
-        else if (object && getParam("taskId")) {
-            vm.taskId = getParam("taskId");
-            vm.loadJobLog();
-        } else {
-            alert('Invalid URL');
+
+        init();
+
+        function renderData(res) {
+            vm.isLoading = true;
+            if (res.data) {
+                res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
+                    var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
+                    div.className = "log_" + ((level) ? level.toLowerCase() : "info");
+                    div.textContent = match.replace(/^\r?\n/, "");
+                    var j = 0;
+                    while (true) {
+                        if (offset < (j + 1) * 1024 * 512) {
+                            if (logElems.length == j) {
+                                logElems.push(window.document.createElement("span"));
+                            }
+                            logElems[j].appendChild(div);
+                            return "";
+                        }
+                        j++;
+                    }
+                    return "";
+                });
+                var firstLogs = logElems.shift(); //first MB of log
+                if (firstLogs !== undefined) {
+                    window.document.getElementById('logs').appendChild(firstLogs);
+                }
+
+                // now the scroll simulation. It loads the next MB for each 50ms.
+                interval = $interval(function () {
+                    var nextLogs = logElems.shift();
+                    if (nextLogs !== undefined) {
+                        window.document.getElementById('logs').appendChild(nextLogs);
+                    } else {
+                        $scope.finished = true;
+                        $interval.cancel(interval)
+                    }
+                }, 50);
+                if (vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter')
+                    t1 = $timeout(function () {
+                        $('.log_info').css('color', 'white')
+                    }, 100);
+            }
         }
-        
-        $scope.downloadLog = function () {
+
+
+        vm.cancel = function () {
+            vm.isCancel = true;
+            if (canceller) {
+                canceller.resolve("user cancelled");
+            }
+            if (interval) {
+                $interval.cancel(interval);
+            }
+        };
+
+        vm.reload = function () {
+            vm.isCancel = false;
+            vm.finished = false;
+            init();
+        };
+
+
+        vm.downloadLog = function () {
+            vm.cancel();
             if (getParam("orderId")) {
                 document.getElementById("tmpFrame").src = './api/order/log/download?orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&historyId='+getParam("historyId")+'&jobschedulerId=' + getParam("schedulerId") +
                      '&accessToken=' + SOSAuth.accessTokenId;
@@ -8884,6 +8935,9 @@
         $scope.$on('$destroy', function () {
             if (t1)
                 $timeout.cancel(t1);
+            if (interval)
+                $interval.cancel(interval);
+
         });
     }
 })

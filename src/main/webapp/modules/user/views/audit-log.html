@@ -273,13 +273,13 @@
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
                                    ng-if="auditLog.show && adtLog.current" ng-click="auditLog.show = false"></i>
                                 <span ng-bind="auditLog.created | stringToDate"></span></td>
-                            <td><span ng-bind="auditLog.account"></span></td>
-                            <td><span ng-bind="auditLog.request"></span></td>
-                            <td><span ng-click="showJobChain(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.jobChain"></span></td>
-                            <td><span ng-click="showOrderLink(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.orderId"></span></td>
-                            <td><span ng-click="showJob(auditLog.job);" class="text-hover-primary" ng-bind="auditLog.job"></span></td>
-                            <td><span ng-click="showCalendarLink(auditLog.calendar);" class="text-hover-primary" ng-bind="auditLog.calendar"></span></td>
-                            <td><span ng-bind="auditLog.comment"></span></td>
+                            <td><span ng-bind-html="auditLog.account | highlight:filterString"></span></td>
+                            <td><span ng-bind-html="auditLog.request | highlight:filterString"></span></td>
+                            <td><span ng-click="showJobChain(auditLog.jobChain);" class="text-hover-primary" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:filterString"></span></td>
+                            <td><span ng-click="showOrderLink(auditLog.jobChain);" class="text-hover-primary" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:filterString"></span></td>
+                            <td><span ng-click="showJob(auditLog.job);" class="text-hover-primary" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:filterString"></span></td>
+                            <td><span ng-click="showCalendarLink(auditLog.calendar);" class="text-hover-primary" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:filterString"></span></td>
+                            <td><span ng-if="auditLog.comment" ng-bind-html="auditLog.comment | highlight:filterString"></span></td>
                             <td>
                                 <span ng-if="auditLog.timeSpent">
                                     <span ng-bind="auditLog.timeSpent"></span>

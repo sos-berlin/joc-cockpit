@@ -28,13 +28,17 @@
         <div class="col-md-12">
             <div class="box white">
                 <div class="box-body m-t-sm p-a p-b-xs">
-                    <div style="margin-bottom: -6px ">
-                        <a href="" class="text-primary text text-u-l" ng-click="downloadLog()"><i class="fa fa-download"></i> Download</a>
+                    <div>
+                        <a class="text-primary text text-u-l cursor" ng-click="downloadLog()"><i
+                                class="fa fa-download"></i> <span translate>button.download</span></a>
+                        <a class="pull-right text m-r-sm cursor text-danger-hover" ng-if="!isCancel && !finished"
+                           ng-click="cancel()"><i class="fa fa-times"></i> <span translate>button.cancel</span></a>
+                        <a class="hide pull-right text m-r-sm cursor text-primary-hover"
+                           ng-class="{'show': isCancel && !finished}" ng-click="reload()"><i class="fa fa-refresh"></i>
+                            <span translate>button.reload</span></a>
                     </div>
-                    <pre class="log" style="overflow: auto">
-                        <div ng-bind-html="logs"></div>
-                        <div ng-if="!isLoading" class="loading-img2"></div>
-                    </pre>
+                    <div ng-if="!isLoading" class="text-center m-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
+                    <pre id="logs" class="log" style="overflow: auto"></pre>
                 </div>
             </div>
         </div>
@@ -46,7 +50,7 @@
         var $topHeader = $('.top-header-bar').height() || 16;
         var $subHeaderHt = 59;
         $(window).on('resize', function(){
-           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +104);
+           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +124);
            $('.log').height(height);
         }).trigger('resize'); //on page load
     });

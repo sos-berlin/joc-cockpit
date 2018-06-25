@@ -1313,5 +1313,7 @@
   "label.downloading": "En train de télécharger",
   "label.pleaseWait": "Attendez, s'il vous plaît",
   "label.maxLogSizeThreshold": "Seuil pour télécharger le Protocole",
-  "button.downloadDebugLog": "Télécharger le Debug Log"
+  "button.downloadDebugLog": "Télécharger le Debug Log",
+  "button.download": "Download",
+  "button.reload": "Reload"
 }

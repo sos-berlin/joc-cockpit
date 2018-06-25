@@ -1313,5 +1313,7 @@
   "label.downloading": "Herunterladen",
   "label.pleaseWait": "Bitte warten",
   "label.maxLogSizeThreshold": "Schwellenwert für Download des Protokolls",
-  "button.downloadDebugLog": "Debug Log herunterladen"
+  "button.downloadDebugLog": "Debug Log herunterladen",
+  "button.download": "Download",
+  "button.reload": "Reload"
 }

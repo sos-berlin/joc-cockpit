@@ -168,6 +168,9 @@
 
     function hl($sce) {
         return function (text, phrase) {
+            if(!text){
+                return;
+            }
             if (phrase) text = text.replace(new RegExp('(' + phrase + ')', 'gi'),
                 '<span class="highlighted">$1</span>');
 
