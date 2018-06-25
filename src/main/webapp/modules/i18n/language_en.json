@@ -1313,5 +1313,7 @@
   "label.downloading": "Downloading",
   "label.pleaseWait": "Please wait",
   "label.maxLogSizeThreshold": "Max. Log Size Threshold",
-  "button.downloadDebugLog": "Download Debug Log"
+  "button.downloadDebugLog": "Download Debug Log",
+  "button.download":"Download",
+  "button.reload":"Reload"
 }

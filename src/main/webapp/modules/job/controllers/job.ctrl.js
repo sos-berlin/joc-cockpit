@@ -214,7 +214,7 @@
             let tempArr = [];
             vm.reset();
             if (vm.filterString) {
-                tempArr = $filter('filter')(vm.allJobChains, vm.filterString, false, 'path');
+                tempArr = $filter('filter')(vm.allJobChains, {path:vm.filterString},false);
             } else {
                 tempArr = vm.allJobChains;
             }
@@ -2650,7 +2650,7 @@
             let tempArr = [];
             vm.reset();
             if (vm.filterString) {
-                tempArr = $filter('filter')(vm.allJobs, vm.filterString, false, 'path');
+                tempArr = $filter('filter')(vm.allJobs, {path:vm.filterString},false);
             } else {
                 tempArr = vm.allJobs;
             }

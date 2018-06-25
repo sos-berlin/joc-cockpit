@@ -56,16 +56,8 @@
                 });
                 return deferred.promise;
             },
-            log: function (filter) {
-
-                var deferred = $q.defer();
-                 $http.post('order/log',filter).then(function(res){
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-
-                return deferred.promise;
+            log: function (filter, timeout) {
+                 return $http.post('order/log',filter, timeout);
             },
             info: function (obj) {
                 var deferred = $q.defer();

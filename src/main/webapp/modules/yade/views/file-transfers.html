@@ -465,16 +465,16 @@
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
                                 <span class="label cursor"  ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-bind="transfer.profile"></td>
-                            <td ng-bind="transfer.mandator"></td>
+                            <td ng-bind-html="transfer.profile | highlight:filterString"></td>
+                            <td ng-bind-html="transfer.mandator | highlight:filterString"></td>
                             <td ng-if="!yadeView.current" >
                                  <span ng-bind="yade.jobschedulerId"></span>
                                  <span ng-if="!yade.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td ng-bind="transfer._operation"></td>
-                            <td ng-bind="transfer.source.host"></td>
-                            <td ng-bind="transfer.target.host"></td>
-                            <td ng-bind="transfer.target.protocol"></td>
+                            <td ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></td>
+                            <td ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></td>
+                            <td ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></td>
+                            <td ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></td>
                             <td ng-bind="transfer.numOfFiles"></td>
                             <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>

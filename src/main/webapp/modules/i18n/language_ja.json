@@ -1313,5 +1313,7 @@
   "label.downloading": "ダウンロード中",
   "label.pleaseWait": "お待ち下さい",
   "label.maxLogSizeThreshold": "最大ログサイズ",
-  "button.downloadDebugLog": "デバッグログダウンロード"
+  "button.downloadDebugLog": "デバッグログダウンロード",
+  "button.download": "Download",
+  "button.reload": "Reload"
 }
