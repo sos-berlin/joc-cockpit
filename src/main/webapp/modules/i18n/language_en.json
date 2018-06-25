@@ -375,7 +375,7 @@
   "label.continue": "continue",
   "label.continueAllTasks": "continue all Tasks",
   "label.copyFilter": "Copy Customization",
-  "label.copyMaster": "Copy Master",
+  "label.copyMaster": "Copy JobScheduler Master",
   "label.copyRole": "Copy Role",
   "label.copyUser": "Copy Account",
   "label.countFromTheLastDay": "Count from Last Day",
