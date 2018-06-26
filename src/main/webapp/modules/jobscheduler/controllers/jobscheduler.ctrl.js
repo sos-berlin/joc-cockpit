@@ -5743,7 +5743,7 @@
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = id + ' (' + host + ':' + port + ')';
-                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : action == 'terminateAndRestartWithTimeout' ? '' : "Continue";
+                    vm.comments.operation = action == 'remove' ? 'Remove instance' : 'button.'+action;
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',

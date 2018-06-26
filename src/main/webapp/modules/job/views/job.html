@@ -290,7 +290,9 @@
                         </div>
                         <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
-                            <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
+                            <div class="box card" ng-class="{'green-box':job.state.severity==0,'gold-box':job.state.severity==1,'crimson-box':job.state.severity==2,'dimgrey-box':job.state.severity==3,
+                                              'text-dark-box':job.state.severity==4,'dark-orange-box':job.state.severity==5,'corn-flower-blue-box':job.state.severity==6,'dark-magenta-box':job.state.severity==7,'chocolate-box':job.state.severity==8}"
+                            >
                                 <div class="box-body" title="{{job.configurationStatus._text | translate}}">
                                     <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
@@ -592,7 +594,7 @@
                                     <td>
                                         <a class="text-hover-primary"
                                               ng-click="showProcessClass(job.processClass)">
-                                        {{job.processClass || '-'}}</a>
+                                        {{::job.processClass || '-'}}</a>
                                     </td>
                                     <td>
                                         <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
@@ -603,7 +605,7 @@
                                         <span ng-if="!job.numOfRunningTasks">
                                             <span ng-bind="job.numOfRunningTasks || 0"></span>
                                             <i class="text-black" translate>label.of</i>
-                                            <span ng-bind="job.maxTasks"></span>
+                                            <span ng-bind="::job.maxTasks"></span>
                                         </span>
                                     </td>
                                     <td>

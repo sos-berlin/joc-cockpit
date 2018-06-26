@@ -189,13 +189,31 @@
                                        <div ng-message="invalid" translate>message.invalid</div>
                                    </div>
                                </div>
-                               <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                               <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure('jobChain')"><i class="fa fa-folder-o fa-lg"></i></a></div>
                             </div>
                             <div class="form-group row" ng-if="jobChainFilter.paths.length>0">
                                 <label class="col-md-3 col-sm-4" translate>label.folders</label>
                                 <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
                                     <div ng-repeat="path in jobChainFilter.paths track by $index">
                                             <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                               <label class="col-md-3 col-sm-4 form-control-label" translate>label.job</label>
+                               <div class="col-md-6 col-sm-8" ng-class="{ 'has-error' : form.job.$invalid && form.job.$dirty }">
+                                   <input valid-regex type="text" class="form-control" name="job" placeholder="{{'placeholder.jobRegexAndChooseTree' | translate}}" ng-model="jobChainFilter.jobRegex">
+                                   <div class="help-block text-danger" ng-messages="form.job.$error">
+                                       <div ng-message="invalid" translate>message.invalid</div>
+                                   </div>
+                               </div>
+                               <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure('job')"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                            </div>
+                            <div class="form-group row" ng-if="jobChainFilter.jobs.length>0">
+                                <label class="col-md-3 col-sm-4" translate>label.folders</label>
+                                <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
+                                    <div ng-repeat="job in jobChainFilter.jobs track by $index">
+                                            <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove1(job)"></i>
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +255,9 @@
                         </div>
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                              ng-repeat="jobChain in value | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse track by $index">
-                            <div class="box card" ng-class="colorBorderFunction(jobChain.state.severity)">
+                            <div class="box card"
+                            ng-class="{'green-box':jobChain.state.severity==0,'gold-box':jobChain.state.severity==1,'crimson-box':jobChain.state.severity==2,'dimgrey-box':jobChain.state.severity==3,
+                                              'text-dark-box':jobChain.state.severity==4,'dark-orange-box':jobChain.state.severity==5,'corn-flower-blue-box':jobChain.state.severity==6,'dark-magenta-box':jobChain.state.severity==7,'chocolate-box':jobChain.state.severity==8}">
                                 <div class="box-body" title="{{jobChain.configurationStatus._text | translate}}">
                                     <div>
                                         <label class="md-check pos-abt"
@@ -1390,7 +1410,44 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="treeModal1" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text m-r-sm" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'button.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'button.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            object="object1"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            icon-collapse="fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand1(branch)"
+                            on-click="treeExpand1(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()"
+                        data-dismiss="modal" translate>button.done
+                </button>
+                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({

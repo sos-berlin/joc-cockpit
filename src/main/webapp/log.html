@@ -72,7 +72,7 @@
 <div class="p-l-sm link">
     <a href ng-click="download()"><i class="fa fa-download"></i> <span> Download</span></a>
     <a href ng-if="!isCancel && !finished" ng-click="cancel()" style="float:right; margin-right: 8px;"><i class="fa fa-times"></i> <span> Cancel</span></a>
-    <a href ng-class="{'show': isCancel && !finished}" ng-click="reload()" style="float:right; margin-right: 8px;display: none"><i class="fa fa-refresh"></i> <span> Reload</span></a>
+    <a href ng-class="{'show': isCancel || finished}" ng-click="reload()" style="float:right; margin-right: 8px;display: none"><i class="fa fa-refresh"></i> <span> Reload</span></a>
 </div>
 <pre id="logs" class="p-l-sm log"></pre>
 <div ng-if="error">

@@ -18,6 +18,7 @@
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
         vm.object = {};
+        vm.object1 = {};
         vm.isUnique = true;
         vm.tree = [];
         vm.allJobChains = [];
@@ -27,6 +28,7 @@
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
+        vm.object1.paths = [];
         vm.temp_filter = {};
 
         var modalInstance;
@@ -306,6 +308,20 @@
             obj.compact = true;
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
+                if (vm.selectedFiltered.jobRegex) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs && vm.selectedFiltered.jobs.length > 0) {
+                    obj.job.folders =[];
+                    for (let i = 0; i < vm.selectedFiltered.jobs.length; i++) {
+                        obj.job.folders.push({folder: vm.selectedFiltered.jobs[i]});
+                    }
+                }
             }
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
@@ -334,6 +350,7 @@
                     }
                 }
             }
+
             recursive(data);
         };
 
@@ -412,7 +429,22 @@
             };
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
-            }else {
+                if (vm.selectedFiltered.jobRegex) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs && vm.selectedFiltered.jobs.length > 0) {
+                    obj.job.folders =[];
+                    for (let i = 0; i < vm.selectedFiltered.jobs.length; i++) {
+                        obj.job.folders.push({folder: vm.selectedFiltered.jobs[i]});
+                    }
+                }
+
+            } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
@@ -631,6 +663,21 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj1.regex = vm.selectedFiltered.regex;
+                if (vm.selectedFiltered.jobRegex) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs) {
+                    obj.job = {};
+                    obj.job.regex = vm.selectedFiltered.jobRegex;
+                }
+                if (vm.selectedFiltered.jobs && vm.selectedFiltered.jobs.length > 0) {
+                    obj.job.folders =[];
+                    for (let i = 0; i < vm.selectedFiltered.jobs.length; i++) {
+                        obj.job.folders.push({folder: vm.selectedFiltered.jobs[i]});
+                    }
+                }
+                obj1.job = obj.job;
             } else {
                 if (vm.jobChainFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -1785,6 +1832,21 @@
                     obj.folders.push({folder: vm.jobChainFilter.paths[i], recursive: true});
                 }
             }
+            if(vm.jobChainFilter.jobRegex){
+                obj.job = {};
+                obj.job.regex = vm.jobChainFilter.jobRegex;
+            }
+            if (vm.jobChainFilter.jobs && vm.jobChainFilter.jobs.length > 0) {
+                if(!obj.job){
+                    obj.job = {};
+                }
+                console.log(obj.job)
+                obj.job.folders = [];
+                for (let i = 0; i < vm.jobChainFilter.jobs.length; i++) {
+                    obj.job.folders.push({folder: vm.jobChainFilter.jobs[i], recursive: true});
+                }
+            }
+        
             JobChainService.getJobChainsP(obj).then(function (result) {
                 searchV(obj, result.jobChains);
             }, function () {
@@ -1888,7 +1950,9 @@
                 vm.jobChainFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.jobChainFilter.shared = filter.shared;
                 vm.paths = vm.jobChainFilter.paths;
+                vm.jobPaths = vm.jobChainFilter.jobs;
                 vm.object.paths = vm.paths;
+                vm.object1.paths = vm.jobPaths;
             });
 
             modalInstance = $uibModal.open({
@@ -1930,7 +1994,9 @@
                 vm.jobChainFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.jobChainFilter.shared = filter.shared;
                 vm.paths = vm.jobChainFilter.paths;
+                vm.jobPaths = vm.jobChainFilter.jobs;
                 vm.object.paths = vm.paths;
+                vm.object1.paths = vm.jobPaths;
                 vm.jobChainFilter.name = vm.checkCopyName(vm.jobChainFilterList, filter.name)
             });
 
@@ -2064,11 +2130,13 @@
             SavedFilter.save();
 
         };
-        vm.getTreeStructure = function () {
+        vm.type='';
+        vm.getTreeStructure = function (type) {
+            vm.type = type;
             JobChainService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ['JOBCHAIN']
+                types: type == 'job' ? ['JOB'] : ['JOBCHAIN']
             }).then(function (res) {
 
                 vm.filterTree1 = res.folders;
@@ -2076,9 +2144,17 @@
                     value.expanded = true;
                 });
             }, function () {
-                $('#treeModal').modal('hide');
+                if (type == 'job') {
+                    $('#treeModal1').modal('hide');
+                } else {
+                    $('#treeModal').modal('hide');
+                }
             });
-            $('#treeModal').modal('show');
+            if (type == 'job') {
+                $('#treeModal1').modal('show');
+            } else {
+                $('#treeModal').modal('show');
+            }
         };
 
         vm.treeExpand = function (data) {
@@ -2094,20 +2170,52 @@
             });
         };
 
+        vm.treeExpand1 = function (data) {
+            angular.forEach(vm.object1.paths, function (value) {
+                if (data.path == value) {
+                    if (data.folders.length > 0) {
+                        data.folders = orderBy(data.folders, 'name');
+                        angular.forEach(data.folders, function (res) {
+                            vm.object1.paths.push(res.path);
+                        });
+                    }
+                }
+            });
+        };
+
         var watcher4 = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.paths = newNames;
             }
         });
 
+        var watcher5 = $scope.$watchCollection('object1.paths', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.jobPaths = newNames;
+            }
+        });
+
         vm.addJobChainPaths = function () {
-            vm.jobChainFilter.paths = vm.paths;
+            if(vm.type == 'job') {
+                vm.jobChainFilter.jobs = vm.jobPaths;
+            }else{
+                 vm.jobChainFilter.paths = vm.paths;
+            }
         };
 
         vm.remove = function (object) {
             for (let i = 0; i < vm.jobChainFilter.paths.length; i++) {
                 if (angular.equals(vm.jobChainFilter.paths[i], object)) {
                     vm.jobChainFilter.paths.splice(i, 1);
+                    break;
+                }
+            }
+        };
+
+        vm.remove1 = function (object) {
+            for (let i = 0; i < vm.jobChainFilter.jobs.length; i++) {
+                if (angular.equals(vm.jobChainFilter.jobs[i], object)) {
+                    vm.jobChainFilter.jobs.splice(i, 1);
                     break;
                 }
             }
@@ -2459,7 +2567,7 @@
                 vm.object = {};
         });
 
-        const watcher5 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
+        const watcher6 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
             if (newValue && oldValue) {
                 getFilteredData();
             }
@@ -2472,6 +2580,7 @@
             watcher3();
             watcher4();
             watcher5();
+            watcher6();
             if (t1) {
                 $timeout.cancel(t1);
             }

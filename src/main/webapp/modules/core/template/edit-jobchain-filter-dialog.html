@@ -29,13 +29,31 @@
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                </div>
-               <div class="col-sm-1  p-l-0 p-t-sm"><a href=""  ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+               <div class="col-sm-1  p-l-0 p-t-sm"><a href=""  ng-click="getTreeStructure('jobChain')"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="jobChainFilter.paths.length>0">
                 <label class="col-sm-4" translate>label.folders</label>
                 <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in jobChainFilter.paths track by $index">
-                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove1(path)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.job</label>
+                <div class="col-md-6 col-sm-8" ng-class="{ 'has-error' : form.job.$invalid && form.job.$dirty }">
+                    <input valid-regex type="text" class="form-control" name="job" placeholder="{{'placeholder.jobRegexAndChooseTree' | translate}}" ng-model="jobChainFilter.jobRegex">
+                    <div class="help-block text-danger" ng-messages="form.job.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure('job')"><i class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row" ng-if="jobChainFilter.jobs.length>0">
+                <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="job in jobChainFilter.jobs track by $index">
+                        <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job)"></i>
                     </div>
                 </div>
             </div>

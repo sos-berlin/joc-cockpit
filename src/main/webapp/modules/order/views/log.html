@@ -34,7 +34,7 @@
                         <a class="pull-right text m-r-sm cursor text-danger-hover" ng-if="!isCancel && !finished"
                            ng-click="cancel()"><i class="fa fa-times"></i> <span translate>button.cancel</span></a>
                         <a class="hide pull-right text m-r-sm cursor text-primary-hover"
-                           ng-class="{'show': isCancel && !finished}" ng-click="reload()"><i class="fa fa-refresh"></i>
+                           ng-class="{'show': isCancel || finished}" ng-click="reload()"><i class="fa fa-refresh"></i>
                             <span translate>button.reload</span></a>
                     </div>
                     <div ng-if="!isLoading" class="text-center m-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
