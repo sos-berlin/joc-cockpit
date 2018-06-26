@@ -51,13 +51,13 @@
                     orderId: getParam("orderId"),
                     historyId: getParam("historyId")
                 };
-                renderData('http://localhost:4446/joc/api/order/log', orders);
+                renderData('./api/order/log', orders);
             } else if ($scope.shareData && getParam("taskId")) {
                 let tasks = {
                     jobschedulerId: id,
                     taskId: getParam("taskId")
                 };
-                renderData('http://localhost:4446/joc/api/task/log', tasks);
+                renderData('./api/task/log', tasks);
 
             } else {
                 $scope.loading = false;
@@ -134,10 +134,10 @@
         $scope.download = function () {
             $scope.cancel();
             if (getParam("orderId")) {
-                document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id +
+                document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id +
                     '&accessToken=' + token;
             } else if (getParam("taskId")) {
-                document.getElementById("tmpFrame").src = 'http://localhost:4446/joc/api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + id +
+                document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + id +
                     '&accessToken=' + token;
             }
             document.getElementById("tmpFrame").contentWindow.onerror = function () {

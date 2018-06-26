@@ -5713,7 +5713,7 @@
                         port: port
                     }).then(function (res) {
                         $rootScope.downloading = false;
-                         $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/log?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
+                         $("#tmpFrame").attr('src', './api/jobscheduler/log?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
                     }, function () {
                         $rootScope.downloading = false;
                     });
@@ -5729,7 +5729,7 @@
                         port: port
                     }).then(function (res) {
                         $rootScope.downloading = false;
-                         $("#tmpFrame").attr('src', 'http://localhost:4446/joc/api/jobscheduler/debuglog?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
+                         $("#tmpFrame").attr('src', './api/jobscheduler/debuglog?jobschedulerId='+id+'&filename='+res.log.filename+'&accessToken='+ SOSAuth.accessTokenId);
                     }, function () {
                         $rootScope.downloading = false;
                     });
