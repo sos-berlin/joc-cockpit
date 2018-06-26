@@ -294,7 +294,7 @@
                                     <th class="tableexport-ignore"
                                         ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                         <label class="md-check lg-check">
-                                            <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
+                                            <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i
                                                 class="primary"></i>
                                         </label>
                                     </th>
@@ -638,25 +638,23 @@
                                                         <tr>
                                                             <td>
                                                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                                   ng-if="!auditLog.show"
-                                                                   ng-click="auditLog.show =true"></i>
+                                                                   ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
                                                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                                   ng-if="auditLog.show"
-                                                                   ng-click="auditLog.show =false"></i>
+                                                                   ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                                 <span ng-bind="auditLog.created | stringToDate"></span>
                                                             </td>
                                                             <td><span ng-bind="auditLog.account"></span></td>
                                                             <td><span ng-bind="auditLog.request"></span></td>
-
                                                             <td><span ng-bind="auditLog.comment"></span></td>
                                                             <td>
-                                                            <span ng-if="auditLog.timeSpent">
-                                                                <span ng-bind="auditLog.timeSpent"></span>
-                                                                <span>m</span>
-                                                            </span>
+                                                                <span ng-if="auditLog.timeSpent">
+                                                                    <span ng-bind="auditLog.timeSpent"></span>
+                                                                    <span>m</span>
+                                                                </span>
                                                             </td>
-                                                            <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank"
-                                                                   ng-bind="auditLog.ticketLink"></a></td>
+                                                            <td>
+                                                                <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a>
+                                                            </td>
                                                         </tr>
                                                         <tr class="tableexport-ignore" ng-show="auditLog.show">
                                                             <td colspan="6">

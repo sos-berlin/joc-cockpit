@@ -177,8 +177,8 @@
         }
     }
 
-    JobSchedulerService.$inject=["$resource", "$q","$http"];
-    function JobSchedulerService($resource,$q, $http){
+    JobSchedulerService.$inject=["$resource", "$q"];
+    function JobSchedulerService($resource,$q){
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();

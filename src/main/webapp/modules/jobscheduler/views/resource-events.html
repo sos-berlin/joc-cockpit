@@ -243,8 +243,7 @@
                 <tr ng-repeat="event in filtered = (customEvents | filter: searchObj.filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'disable-link': event.isDeleted}">
                     <td ng-if="permission.Event.execute.delete">
                         <label class="md-check">
-                            <input type="checkbox" data-checklist-model="object.events"
-                                   data-checklist-value="event"><i class="primary"></i>
+                            <input type="checkbox" data-checklist-model="object.events" data-checklist-value="event"><i class="primary"></i>
                         </label>
                     </td>
                     <td>
@@ -257,16 +256,16 @@
                             </div>
                         </div>
                     </td>
-                    <td ng-bind="event.eventId"></td>
-                    <td><span ng-bind="event.eventClass"></span></td>
-                    <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-bind="event.jobChain"></a></td>
-                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)" ng-bind="event.orderId"></a></td>
-                    <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
-                    <td><span ng-bind="event.exitCode"></span></td>
+                    <td ng-bind-html="event.eventId | highlight:searchObj.filterString"></td>
+                    <td><span ng-bind-html="event.eventClass | highlight:searchObj.filterString"></span></td>
+                    <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-if="event.jobChain" ng-bind-html="event.jobChain | highlight:searchObj.filterString"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)" ng-if="event.jobChain" ng-bind-html="event.orderId | highlight:searchObj.filterString"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-if="event.jobChain" ng-bind-html="event.job | highlight:searchObj.filterString"></a></td>
+                    <td><span ng-if="event.jobChain" ng-bind-html="event.exitCode | highlight:searchObj.filterString"></span></td>
                     <td>
-                        <span ng-if="event.expires && !event.expires.match('2999')" ng-bind="event.expires | stringToDate"></span>
+                        <span ng-if="event.expires && !event.expires.match('2999-01-01')" ng-bind="event.expires | stringToDate"></span>
                         <span ng-if="!event.expires">-</span>
-                        <span ng-if="event.expires && event.expires.match('2999')">never</span>
+                        <span ng-if="event.expires && event.expires.match('2999-01-01')">never</span>
                     </td>
                     <td>
                         <span ng-bind="event.remoteJobSchedulerHost"></span>

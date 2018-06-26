@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <label class="md-check" >
-                        <input type="checkbox" ng-model="historyView.current" ng-click="changeJobScheduler()">
+                        <input type="checkbox" ng-model="historyView.current" ng-change="changeJobScheduler()">
                         <i class="primary"></i><span translate>label.currentJobscheduler</span>
                     </label>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">

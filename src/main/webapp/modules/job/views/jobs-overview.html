@@ -670,7 +670,7 @@
                                                     <tr>
                                                         <th width="30" ng-if="permission.Job.execute.kill">
                                                             <label class="md-check lg-check" ng-if="showTaskPanel.taskQueue.length>0">
-                                                                <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-click="checkAllTask()"><i class="primary"></i>
+                                                                <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-change="checkAllTask()"><i class="primary"></i>
                                                             </label>
                                                         </th>
                                                         <th ng-if="permission.Job.execute.kill" translate>label.action</th>
@@ -715,7 +715,7 @@
                                                     <tr>
                                                         <th width="30" ng-if="permission.Order.delete.permanent">
                                                             <label class="md-check lg-check" ng-if="queueOrders.orderQueue.length>0">
-                                                                <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-click="checkAllOrder()"><i class="primary"></i>
+                                                                <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-change="checkAllOrder()"><i class="primary"></i>
                                                             </label>
                                                         </th>
                                                         <th ng-if="permission.Order.delete.permanent" translate>label.action</th>

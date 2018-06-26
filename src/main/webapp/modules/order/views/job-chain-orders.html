@@ -135,7 +135,7 @@
                                     <tr>
                                         <th width="40" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
-                                                <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
+                                                <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i
                                                     class="primary"></i>
                                             </label>
                                         </th>

@@ -8,7 +8,7 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.fileTransfers.length>0}">
                         <label class="md-check" >
-                            <input type="checkbox" ng-model="yadeView.current" ng-click="changeJobScheduler()">
+                            <input type="checkbox" ng-model="yadeView.current" ng-change="changeJobScheduler()">
                             <i class="primary"></i><span translate>label.currentJobscheduler</span>
                         </label>
                         <div class="btn-group m-l-sm hidden-btn-group" >
@@ -354,7 +354,7 @@
                             <tr>
                                 <th width="30" ng-if="permission.YADE.execute.transferStart">
                                     <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-click="checkAllFileTransfersFnc()"><i class="primary"></i>
+                                        <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc()"><i class="primary"></i>
                                     </label>
                                 </th>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
@@ -444,7 +444,7 @@
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
                                     <input type="checkbox" id="{{transfer.id}}" data-checklist-model="object.fileTransfers" ng-disabled="transfer.state._text=='SUCCESSFUL'"
-                                           data-checklist-value="transfer" data-checklist-comparator=".id" ng-click="checkALLFilesFnc(transfer)"><i class="primary"></i>
+                                           data-checklist-value="transfer" data-checklist-comparator=".id" ng-change="checkALLFilesFnc(transfer)"><i class="primary"></i>
                                 </label>
                             </td>
                             <td class="tableexport-ignore">

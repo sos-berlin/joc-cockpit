@@ -390,14 +390,8 @@
                 });
                 return deferred.promise;
             },
-            log: function (filter) {
-                var deferred = $q.defer();
-                 $http.post('task/log',filter).then(function(res){
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
+            log: function (filter, timout) {
+                return $http.post('task/log', filter, timout);
             },
             end: function (filter) {
                 var deferred = $q.defer();

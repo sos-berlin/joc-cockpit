@@ -168,9 +168,6 @@
             <div class="hide" ng-class={show:orderFilters.pageView=='grid'} resizable r-directions="['bottom']"
                  r-height="500" style="overflow: auto;width: 100%"  id="exportId">
                 <div class="flow-diagram" id="flowDiagramContainer">
-
-
-
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
                                   on-remove="onRemove($item)"
@@ -201,7 +198,7 @@
                             <th ng-if="permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check lg-check">
-                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-click="checkAllJobChains()"><i
+                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-change="checkAllJobChains()"><i
                                         class="primary"></i>
                                 </label>
                             </th>
@@ -337,11 +334,12 @@
                                         </div>
                                         <span>
                                                 <span class="text-sm">
-                                                    <span>{{'label.order'| translate}}:&nbsp;</span><a href=""
-                                                                                                       class="text-hover-primary"
-                                                                                                       ng-click="viewOrders(jobChain)">{{order.orderId}}</a> <i
-                                                        class="text-muted text-xs" ng-if="order.title">-
-                                                    <span ng-bind-html="order.title | linky:'_blank'"></span></i> -
+                                                    <span>{{'label.order'| translate}}:&nbsp;</span>
+                                                    <a href=""
+                                                       class="text-hover-primary"
+                                                       ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
+                                                    <i class="text-muted text-xs" ng-if="order.title">-
+                                                        <span ng-bind-html="order.title | linky:'_blank'"></span></i> -
                                                     <span class="label"
                                                           ng-class="bgColorFunction(order.processingState.severity)"
                                                           ng-bind="order.processingState._text | translate"></span>
@@ -455,7 +453,7 @@
                             <th ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check lg-check">
-                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-click="checkAllJobChains()"><i
+                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-change="checkAllJobChains()"><i
                                         class="primary"></i>
                                 </label>
                             </th>

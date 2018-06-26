@@ -387,7 +387,9 @@
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
-                                        <span uib-tooltip="{{job.stateText}}" ng-if="job.state._text" ng-class="colorFunction(job.state.severity)" ng-bind="job.state._text | translate" ></span>
+                                        <span uib-tooltip="{{job.stateText}}" ng-if="job.state._text"
+                                              ng-class="{'green':job.state.severity==0,'gold':job.state.severity==1,'crimson':job.state.severity==2,'dimgrey':job.state.severity==3,
+                                              'text-dark':job.state.severity==4,'dark-orange':job.state.severity==5,'corn-flower-blue':job.state.severity==6,'dark-magenta':job.state.severity==7,'chocolate':job.state.severity==8}" ng-bind="job.state._text | translate" ></span>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
@@ -408,7 +410,7 @@
                             <tr>
                                 <th class="tableexport-ignore" width="30" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                     <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
+                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
@@ -572,15 +574,16 @@
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                               ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                               ng-bind-html="job.name | highlight:filterString"></span>
-                                        <span ng-if="job.title">-</span><i class="text-muted"
-                                                                           ng-bind-html="job.title | linky:'_blank'"></i>
+                                        <span ng-if="job.title">-</span>
+                                        <i ng-if="job.title" class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                                     </td>
                                     <td ng-bind-html="job.path | highlight:filterString"></td>
                                     <td>
-                                        <span class="label" ng-if="job.state._text" ng-class="bgColorFunction(job.state.severity)"
+                                        <span class="label" ng-if="job.state._text" ng-class="{'bg-green':job.state.severity==0,'bg-gold':job.state.severity==1,'bg-crimson':job.state.severity==2,'bg-dimgrey':job.state.severity==3,
+                                              'bg-transparent':job.state.severity==4,'bg-dark-orange':job.state.severity==5,'bg-corn-flower-blue':job.state.severity==6,'bg-dark-magenta':job.state.severity==7,'bg-chocolate':job.state.severity==8}"
                                               ng-bind="job.state._text  | translate"></span>
                                     </td>
-                                    <td><span ng-bind-html="job.stateText | linky:'_blank'"></span></td>
+                                    <td><span ng-if="job.stateText" ng-bind-html="job.stateText | linky:'_blank'"></span></td>
                                     <td>
                                         <span ng-if="job.usedInJobChains" class="text-hover-primary"
                                               ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
@@ -604,7 +607,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
+                                        <span ng-if="job.nextStartTime">
                                             {{job.nextStartTime | stringToDate}}
                                             <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                         </span>
@@ -825,7 +828,7 @@
                                                     <tr>
                                                         <th width="30" ng-if="permission.Job.execute.kill">
                                                             <label class="md-check lg-check">
-                                                                <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-click="checkAllTask()"><i class="primary"></i>
+                                                                <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-change="checkAllTask()"><i class="primary"></i>
                                                             </label>
                                                         </th>
                                                         <th ng-if="permission.Job.execute.kill" translate>label.action</th>
@@ -870,7 +873,7 @@
                                                     <tr>
                                                         <th width="30" ng-if="permission.Order.delete.permanent">
                                                             <label class="md-check lg-check">
-                                                                <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-click="checkAllOrder()"><i class="primary"></i>
+                                                                <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-change="checkAllOrder()"><i class="primary"></i>
                                                             </label>
                                                         </th>
                                                         <th ng-if="permission.Order.delete.permanent" translate>label.action</th>

@@ -4805,12 +4805,16 @@
         vm.init();
 
         vm.showLogFuc = function (value) {
-            let orders = {jobschedulerId: vm.schedulerIds.selected, limit: vm.userPreferences.maxHistoryPerOrder};
+            let orders = {
+                jobschedulerId: vm.schedulerIds.selected,
+                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+            };
             vm.isAuditLog = false;
             vm.isTaskHistory = false;
-
-            if (value.historyId && vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {          
-                orders.historyIds = [value.historyId];
+            if (value.historyId) {
+                if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                    orders.historyIds = [value.historyId];
+                }
             }
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});

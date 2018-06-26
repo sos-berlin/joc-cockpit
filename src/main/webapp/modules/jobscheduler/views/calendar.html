@@ -167,7 +167,7 @@
 
                                             <div class="col-sm-9">
                                                 <label class="md-check w">
-                                                    <input type="checkbox" ng-model="frequency.all" ng-click="checkAllWeek()">
+                                                    <input type="checkbox" ng-model="frequency.all" ng-change="checkAllWeek()">
                                                     <i class="primary"></i> <span translate>label.everyDay</span>
                                                 </label><br>
                                                 <label class="md-check w">
@@ -645,7 +645,7 @@
                                             <label class="col-sm-3" translate>label.selectAll</label>
                                             <div class="col-sm-6">
                                                 <label class="md-check">
-                                                    <input type="checkbox" ng-model="holidayDays.checked" ng-click="selectAllHolidays()"><i class="primary"></i>
+                                                    <input type="checkbox" ng-model="holidayDays.checked" ng-change="selectAllHolidays()"><i class="primary"></i>
                                                 </label>
                                             </div>
                                         </div>
@@ -692,7 +692,7 @@
 
                                     <div class="col-sm-9" ng-show="showMonthRange">
                                         <label class="md-check w">
-                                            <input type="checkbox" ng-model="frequency.allMonth" ng-click="checkAllMonth()">
+                                            <input type="checkbox" ng-model="frequency.allMonth" ng-change="checkAllMonth()">
                                             <i class="primary"></i> <span translate>label.everyMonth</span>
                                         </label><br>
                                         <label class="md-check w">

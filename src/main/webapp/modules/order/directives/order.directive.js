@@ -1037,7 +1037,6 @@
                                     createLine(top, left, 2, height, index, item);
                                     width = left - pDiv.offsetLeft - pDiv.clientWidth;
                                     createLine(top, left, width, 2, index, item);
-                                    console.log(top+ ' if >> '+left)
                                 } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
@@ -1049,7 +1048,6 @@
                                     top = top + height;
                                     width = left - div1.offsetLeft;
                                     createLine(top, left, width, 2, index, item);
-                                    console.log(top+ ' else if >> '+left)
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {

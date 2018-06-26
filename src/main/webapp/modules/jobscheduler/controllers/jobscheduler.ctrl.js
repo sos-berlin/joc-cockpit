@@ -5739,7 +5739,7 @@
             if ((objectType == 'supervisor' || objectType == 'master') && (action == 'terminateAndRestartWithTimeout' || action == 'terminateWithin')) {
                 vm.getTimeout(host, port, id, action);
             } else {
-                if (vm.userPreferences.auditLog && action !== 'downloadLog') {
+                if (vm.userPreferences.auditLog && action != 'downloadLog' && action != 'downloadDebugLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = id + ' (' + host + ':' + port + ')';
