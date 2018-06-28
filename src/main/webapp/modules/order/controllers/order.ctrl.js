@@ -8796,14 +8796,7 @@
         var vm = $scope;
         vm.isLoading = false;
 
-        vm.saveLog = function () {
-            if (vm.logs) {
-                var code = String(vm.logs).replace(/<[^>]+>/gm, '');
-                var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
-                FileSaver.saveAs(data, 'history.log');
-            }
-        };
-
+ 
         function getParam(name) {
             var url = window.location.href;
             if (!url) url = location.href;
@@ -8827,7 +8820,8 @@
             OrderService.log(orders, {timeout: canceller.promise}).then(function (res) {
                renderData(res);
             }, function (err) {
-                vm.logs = err;
+                window.document.getElementById('logs').innerHTML ='';
+                vm.error = err;
                 vm.isLoading = true;
             });
         };
@@ -8841,7 +8835,8 @@
             TaskService.log(jobs, {timeout: canceller.promise}).then(function (res) {
                 renderData(res);
             }, function (err) {
-                vm.logs = err;
+                window.document.getElementById('logs').innerHTML ='';
+                vm.error = err;
                 vm.isLoading = true;
             });
         };
@@ -8864,6 +8859,7 @@
         function renderData(res) {
             vm.isLoading = true;
             if (res.data) {
+                window.document.getElementById('logs').innerHTML ='';
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
                     div.className = "log_" + ((level) ? level.toLowerCase() : "info");

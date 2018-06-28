@@ -73,6 +73,8 @@
                 headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
             }).then(function (res) {
                 $scope.loading = false;
+                document.getElementById("logs").innerHTML = "";
+
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
                     div.className = "log_" + ((level) ? level.toLowerCase() : "info");
@@ -90,14 +92,14 @@
                     }
                     return "";
                 });
-                var firstLogs = logElems.shift(); //first MB of log
+                let firstLogs = logElems.shift(); //first MB of log
                 if (firstLogs !== undefined) {
                     window.document.getElementById('logs').appendChild(firstLogs);
                 }
 
                 // now the scroll simulation. It loads the next MB for each 50ms.
                 interval = $interval(function () {
-                    var nextLogs = logElems.shift();
+                    let nextLogs = logElems.shift();
                     if (nextLogs !== undefined) {
                         window.document.getElementById('logs').appendChild(nextLogs);
                     } else {
@@ -107,6 +109,8 @@
                 }, 50);
 
             }, function (err) {
+                document.getElementById("logs").innerHTML = "";
+                $scope.loading = false;
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
                 } else {
@@ -116,6 +120,7 @@
         }
 
         $scope.cancel = function () {
+            $scope.loading = false;
             $scope.isCancel = true;
             if (canceller) {
                 canceller.resolve("user cancelled");

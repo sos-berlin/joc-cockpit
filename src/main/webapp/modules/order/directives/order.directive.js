@@ -531,7 +531,7 @@
                         var itemType = item.job ? 'job' : 'jobChain';
                         var itemPath = item.job ? item.job.path : item.jobChain.path;
                         rectangleTemplate = rectangleTemplate +
-                            '<div id="' + item.name + '" style=" padding: 0px;z-index:9999;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
+                            '<div id="' + item.name + '" style=" padding: 0;z-index:99;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
                             'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':(jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\')||jobChainData.nodes[\'' + index + '\'].jobChain.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
                             '<div class="block-ellipsis-job">' +
                             '<label class="md-check md-check1 pos-abt ' + permissionClass + '" ><input type="checkbox"  id="' + chkId + '"><i class="ch-purple"></i></label>' +
@@ -661,7 +661,7 @@
                             '<div   class="hide nowrap text-success" ng-class="{show:\'' + item.move + '\'!==\'undefined\'}"' +
                             'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 30) + 'px' + '">Move: ' + item.move + ' </div>' +
                             '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
-                            'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>'
+                            'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>';
                         return node;
                     }
 
@@ -1545,8 +1545,8 @@
                                         '<span ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
                                         + '<span  class="show-block v-m text-success text-xs">  ' + (time !== 0 ? moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) : '') + '(' + diff + ')</span>'
                                         + '</span>'
-                                        + '<div class="btn-group dropdown "><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                        + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'
+                                        + '<div class="btn-group dropdown "><button type="button" class="btn-drop more-option-h" data-toggle="dropdown" dropdown><i class="fa fa-ellipsis-h"></i></button>'
+                                        + '<div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">'
                                         + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order._type + '\'!==\'AD_HOC\' && \'' + order.historyId + '\'!==\'undefined\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.start}">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'

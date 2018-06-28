@@ -4782,9 +4782,9 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService', 'PermissionService'];
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', "$interval", "UserService", "$window", "YadeService", 'JobService', 'PermissionService'];
 
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService, PermissionService) {
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, $interval, UserService, $window, YadeService, JobService, PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
 
