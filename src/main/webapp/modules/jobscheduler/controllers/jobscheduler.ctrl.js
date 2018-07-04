@@ -731,18 +731,6 @@
                 d.setSeconds(moment(vm.event.expirationCycle, 'HH:mm:ss').seconds());
 
                 obj.expirationCycle = moment(d).utc().format('HH:mm:ss');
-            } else {
-                let d = new Date();
-                if (vm.event.expiresTime) {
-                    if (moment().format(vm.event.expiresTime) < moment().format('HH:mm:ss')) {
-                        d.setDate(d.getDate() + 1);
-                    }
-                    d.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
-                    d.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
-                    d.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
-                    d.setMilliseconds(0);
-                }
-                obj.expires = d;
             }
 
             obj.job = vm.event.job;
