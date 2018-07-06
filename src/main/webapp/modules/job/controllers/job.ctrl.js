@@ -32,6 +32,7 @@
         vm.temp_filter = {};
 
         var modalInstance;
+        $scope.reloadState = 'no';
         vm.selectedFiltered;
 
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
@@ -230,10 +231,25 @@
             tempArr = [];
         }
 
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                console.log($scope.reloadState);
+                //$scope.tree = [];
+                $scope.allJobs = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+                vm.jobFilters.expand_to = vm.tree;
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                $scope.load();
+            }
+        };
+
         /**
          * Function to initialized tree view
          */
         function initTree() {
+            $scope.reloadState == 'no'
             let folders = [];
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                 for (let i = 0; i < vm.selectedFiltered.paths.length; i++) {
@@ -2610,6 +2626,7 @@
         vm.object.paths = [];
 
         vm.selectedFiltered = '';
+        vm.reloadState = 'no';
         vm.temp_filter = {};
 
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || {};
@@ -2774,11 +2791,26 @@
             tempArr = [];
         }
 
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                console.log($scope.reloadState);
+                //$scope.tree = [];
+                $scope.allJobs = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+                vm.jobFilters.expand_to = vm.tree;
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                $scope.load();
+            }
+        };
+
         /**
          * Function to initialized tree view
          */
         function initTree() {
-             let folders = [];
+            vm.reloadState = 'no';
+            let folders = [];
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
 
                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -2823,6 +2855,7 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
+            $scope.reloadState = 'no';
             navFullTree();
             if (vm.showTaskPanel && (vm.showTaskPanel.path1 !== data.path)) {
                 vm.hideTaskPanel();
@@ -2843,6 +2876,7 @@
         vm.expandNode = function (data) {
             vm.reset();
             navFullTree();
+            $scope.reloadState = 'no';
             if (vm.showTaskPanel && (vm.showTaskPanel.path1 !== data.path)) {
                 vm.hideTaskPanel();
             }
@@ -2935,6 +2969,7 @@
         }
 
         function expandFolderData(data) {
+            data.selected1 = true;
             vm.folderPath = data.name;
             let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true};
             obj.folders = [{folder: data.path, recursive: false}];
@@ -2974,6 +3009,7 @@
         function navFullTree() {
             angular.forEach(vm.tree, function (value) {
                 value.selected1 = false;
+                value.jobs =[];
                 if (value.expanded) {
                     traverseTree1(value);
                 }
@@ -2983,6 +3019,7 @@
         function traverseTree1(data) {
             for (let i = 0; i < data.folders.length; i++) {
                 data.folders[i].selected1 = false;
+                data.folders[i].jobs =[];
                 if (data.folders[i].expanded) {
                     traverseTree1(data.folders[i]);
                 }
@@ -3267,6 +3304,7 @@
 
         vm.changeStatus = function () {
             vm.hideTaskPanel();
+            $scope.reloadState = 'no';
             vm.allJobs = [];
             vm.loading = true;
             var obj = {folders : [], jobschedulerId : vm.schedulerIds.selected};

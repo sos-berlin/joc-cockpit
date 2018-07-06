@@ -165,7 +165,7 @@
                            ng-model="filterString" ng-change="searchInResult()" style="width: 180px">
                 </div>
             </div>
-            <div class="row hide" ng-class="{'show':showSearchPanel}">
+            <div class="row" ng-if="showSearchPanel">
                 <div class="col-md-12">
                 <div class="box p-a m-b-xs">
                        <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
@@ -480,9 +480,9 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in filtered track by $index" ng-class="{'light-bg':jobChain.show}">
+                            <tbody ng-repeat="jobChain in filtered track by $index" class="{{jobChain.show ? 'light-bg':''}}">
                                 <tr title="{{jobChain.configurationStatus._text | translate}}">
-                                    <td class="tableexport-ignore" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
+                                    <td class="tableexport-ignore {{permission.JobChain.execute.stop || permission.JobChain.execute.unstop ? '' :'hide'}}">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="object.jobChains" data-checklist-value="jobChain"><i class="primary"></i>
                                         </label>
@@ -493,24 +493,21 @@
                                                 <i class="fa fa-ellipsis-h"></i></button>
                                             <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more"
                                                  role="menu">
-                                                <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item"
-                                                   ng-class="{'disable-link':(!jobChain.numOfNodes || jobChain.numOfNodes == 0)}"
+                                                <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item {{(!jobChain.numOfNodes || jobChain.numOfNodes == 0) ? 'disable-link': ''}}"
                                                    translate>button.showDetailView</a>
-                                                <a class="hide dropdown-item bg-hover-color"
-                                                   ng-if="jobChain.state._text != 'STOPPED'"
-                                                   ng-class="{show:permission.JobChain.execute.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                                <a class="dropdown-item bg-hover-color {{(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
+                                                   ng-if="jobChain.state._text != 'STOPPED' && permission.JobChain.execute.stop"
                                                    ng-click="stopJobChain(jobChain)" translate>button.stopJobChain</a>
-                                                <a class="hide dropdown-item" ng-if="jobChain.state._text == 'STOPPED'"
-                                                   ng-class="{show:permission.JobChain.execute.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                                <a class="dropdown-item {{(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
+                                                   ng-if="jobChain.state._text == 'STOPPED' && permission.JobChain.execute.unstop"
                                                    ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
-                                                <a ng-click="viewOrders(jobChain)"
-                                                   ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}"
-                                                   class="dropdown-item" translate>button.showOrders</a>
+                                                <a ng-click="viewOrders(jobChain)" class="dropdown-item {{(!jobChain.numOfOrders || jobChain.numOfOrders == 0) ? 'disable-link': ''}}"
+                                                    translate>button.showOrders</a>
                                                 <a class="hide dropdown-item"
                                                    ng-class="{show:permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                    ng-click="addOrder(jobChain);" translate>button.addOrder</a>
-                                                <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
-                                                   ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                                <a class="dropdown-item {{(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED') ? 'disable-link': ''}}"
+                                                   ng-if="permission.DailyPlan.view.status"
                                                    ng-click="showCalendar(jobChain);" translate>button.showDailyPlan</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="hide dropdown-item"
@@ -539,11 +536,11 @@
                                         <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
                                     <td ng-bind-html="jobChain.path | highlight:filterString"></td>
-                                    <td><span class="label" ng-class="{'bg-green':jobChain.state.severity==0,'bg-gold':jobChain.state.severity==1,'bg-crimson':jobChain.state.severity==2,'bg-dimgrey':jobChain.state.severity==3,
-                                              'bg-transparent':jobChain.state.severity==4,'bg-dark-orange':jobChain.state.severity==5,'bg-corn-flower-blue':jobChain.state.severity==6,'bg-dark-magenta':jobChain.state.severity==7,'bg-chocolate':jobChain.state.severity==8}" ng-bind="jobChain.state._text  | translate"></span></td>
+                                    <td><span class="label {{jobChain.state.severity==0 ? 'bg-green' : jobChain.state.severity==1 ? 'bg-gold' : jobChain.state.severity==2 ? 'bg-crimson': jobChain.state.severity==3 ?'bg-dimgrey':
+                                              jobChain.state.severity==4 ? 'bg-transparent': jobChain.state.severity==5 ? 'bg-dark-orange' : jobChain.state.severity==6 ? 'bg-corn-flower-blue' :jobChain.state.severity==7 ? 'bg-dark-magenta' : jobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="jobChain.state._text  | translate"></span></td>
                                     <td ng-bind="jobChain.numOfNodes || 0"></td>
                                     <td>
-                                        <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
+                                        <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass"></a></td>
                                     <td>
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
                                     </td>
@@ -1222,7 +1219,6 @@
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
             <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
-                <div class="backdrop" ></div>
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
             <div class="hide " ng-class="{'show': isLoading}">
@@ -1371,7 +1367,7 @@
     </div>
 
 </div>
-<div ng-if="isLoaded" class="loading-img1"></div>
+<div class="{{isLoaded ? loading-img1 :''}}"></div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1408,6 +1404,12 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+<div ng-if="loading || !isLoading || isLoaded || reloadState == 'yes'">
+    <div class="bottom-btn" ng-click="reload()">
+        <i ng-if="reloadState == 'no'" class="fa fa-times"></i>
+        <i ng-if="reloadState == 'yes'" class="fa fa-refresh"></i>
     </div>
 </div>
 <div class="modal fade" id="treeModal1" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
