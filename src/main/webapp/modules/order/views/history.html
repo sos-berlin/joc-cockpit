@@ -10,7 +10,7 @@
                         <input type="checkbox" ng-model="historyView.current" ng-change="changeJobScheduler()">
                         <i class="primary"></i><span translate>label.currentJobscheduler</span>
                     </label>
-                    <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">
+                    <div class="show-inline" ng-if="historyFilters.type == 'jobChain'">
                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
@@ -98,7 +98,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hide" ng-class="{'show-block':historyFilters.type == 'job'}">
+                    <div class="show-inline" ng-if="historyFilters.type == 'job'">
                         <div class="btn-group m-l-sm hidden-btn-group" >
                             <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="task.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.historyStates=='all'}" translate>button.allStatus
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hide" ng-class="{'show-block':historyFilters.type == 'yade'}">
+                    <div class="show-inline" ng-if="historyFilters.type == 'yade'">
                         <div class="btn-group m-l-sm hidden-btn-group" >
                             <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yade.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': yade.filter.historyStates=='all'}" translate>button.allStatus
@@ -340,7 +340,7 @@
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
             </div>
         </div>
-        <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
+        <div class="row m-b" ng-if="showSearchPanel">
 
             <div class="col-md-12" ng-show="historyFilters.type == 'jobChain'">
                 <div class="box p-a m-b-xs">
@@ -862,7 +862,7 @@
             </div>
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
-            <div class="m-t-sm box p-a hide" ng-class="{'show':historyFilters.type == 'jobChain'}" >
+            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'jobChain'" >
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
@@ -946,13 +946,15 @@
                             <td ng-click="showLogWindow(history,null)">
                                 <span ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind-html="history.jobChain | highlight:filterString"></span>
                             </td>
-                            <td ng-click="showLogWindow(history,null)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | stringToDate"></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.endTime | stringToDate"></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | duration:history.endTime"></td>
+                            <td ng-click="showLogWindow(history,null)">
+                                <span uib-tooltip="{{history.error.message}}" class="label {{history.state.severity==0 ? 'bg-green' : history.state.severity==1 ? 'bg-gold' : history.state.severity==2 ? 'bg-crimson': history.state.severity==3 ?'bg-dimgrey':
+                                              history.state.severity==4 ? 'bg-transparent': history.state.severity==5 ? 'bg-dark-orange' : history.state.severity==6 ? 'bg-corn-flower-blue' :history.state.severity==7 ? 'bg-dark-magenta' : history.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="history.state._text | translate"></span></td>
+                            <td ng-click="showLogWindow(history,null)"><span  ng-bind="history.startTime | stringToDate"></span></td>
+                            <td ng-click="showLogWindow(history,null)"><span ng-if="history.endTime" ng-bind="history.endTime | stringToDate"></span></td>
+                            <td ng-click="showLogWindow(history,null)"><span ng-if="history.endTime" ng-bind="history.startTime | duration:history.endTime"></span></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.node || '-' "></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="history.show">
+                        <tr class="tableexport-ignore" ng-if="history.show">
                             <td></td>
                              <td colspan="8" >
                                  <table class="table m-a-0">
@@ -970,13 +972,13 @@
                                      </tr>
                                      </thead>
                                      <tbody>
-                                     <tr ng-repeat="step in history.steps" class="cursor">
+                                     <tr ng-repeat="step in history.steps track by $index" class="cursor">
                                          <td ng-click="showLogWindow(null,step)">{{step.step}}</td>
                                          <td ng-click="showLogWindow(null,step)">{{step.node}}</td>
                                          <td ng-click="showLogWindow(null,step)"><a ng-click="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
                                          <td ng-click="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
-                                         <td ng-click="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
-                                         <td ng-click="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
+                                         <td ng-click="showLogWindow(null,step)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
+                                         <td ng-click="showLogWindow(null,step)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
                                          <td ng-click="showLogWindow(null,step)">{{step.exitCode}}</td>
                                          <td ng-click="showLogWindow(null,step)">{{step.error.code}}</td>
                                          <td ng-click="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
@@ -1017,7 +1019,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a hide" ng-class="{'show':historyFilters.type == 'job'}">
+            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'job'">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
@@ -1097,7 +1099,10 @@
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind-html="jobHistory.job | highlight:filterString"></span>
                             </td>
-                            <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{jobHistory.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
+                            <td ng-click="showLogWindow(null,jobHistory)">
+                                <span uib-tooltip="{{jobHistory.error.message}}" class="label {{jobHistory.state.severity==0 ? 'bg-green' : jobHistory.state.severity==1 ? 'bg-gold' : jobHistory.state.severity==2 ? 'bg-crimson': jobHistory.state.severity==3 ?'bg-dimgrey':
+                                              jobHistory.state.severity==4 ? 'bg-transparent': jobHistory.state.severity==5 ? 'bg-dark-orange' : jobHistory.state.severity==6 ? 'bg-corn-flower-blue' :jobHistory.state.severity==7 ? 'bg-dark-magenta' : jobHistory.state.severity==8 ? 'bg-chocolate' : ''}}"
+                                     ng-bind="jobHistory.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.endTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
@@ -1134,7 +1139,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a hide" ng-class="{'show':historyFilters.type == 'yade'}" >
+            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'yade'" >
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="yade" >
                         <thead>
@@ -1231,7 +1236,9 @@
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                <span class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                                <span class="label {{transfer.state.severity==0 ? 'bg-green' : transfer.state.severity==1 ? 'bg-gold' : transfer.state.severity==2 ? 'bg-crimson': transfer.state.severity==3 ?'bg-dimgrey':
+                                       transfer.state.severity==4 ? 'bg-transparent': transfer.state.severity==5 ? 'bg-dark-orange' : transfer.state.severity==6 ? 'bg-corn-flower-blue' :transfer.state.severity==7 ? 'bg-dark-magenta' : transfer.state.severity==8 ? 'bg-chocolate' : ''}}"
+                                      ng-bind="transfer.state._text | translate"></span>
                             </td>
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind-html="transfer.profile | highlight:filterString"></td>
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind-html="transfer.mandator | highlight:filterString"></td>

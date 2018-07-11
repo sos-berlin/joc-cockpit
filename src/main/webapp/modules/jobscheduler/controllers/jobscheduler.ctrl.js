@@ -5518,6 +5518,7 @@
                 clusterStatusData.database = res;
                 getClusterMembersP().then(function (res) {
                     clusterStatusData.members = res;
+
                     if (clusterStatusData.members.masters && clusterStatusData.members.masters.length > 1) {
 
                         clusterStatusData.members.masters.sort(function (a, b) {
@@ -5674,7 +5675,6 @@
                             if (res) {
                                 CoreService.setDefaultTab();
                                 SOSAuth.setIds(res);
-
                                 SOSAuth.save();
                                 if (res.selected != vm.schedulerIds.selected)
                                     $state.reload(vm.currentState);
@@ -6292,6 +6292,20 @@
             field: "name"
         };
 
+        $scope.reloadState = 'no';
+
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                $scope.plans = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                vm.isLoading = false;
+                vm.getPlans();
+            }
+        };
+
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
         vm.dailyPlanFilterList = [];
         if ($stateParams.filter != null) {
@@ -6344,6 +6358,7 @@
                 getCustomizations();
             }
         }
+        checkSharedFilters();
 
         function getCustomizations() {
             var obj = {};
@@ -6360,7 +6375,7 @@
                     var data = [];
                     for (var i = 0; i < vm.dailyPlanFilterList.length; i++) {
                         var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.dailyPlanFilterList[i].account && data[j].name == vm.dailyPlanFilterList[i].name) {
                                 flag = false;
                             }
@@ -6399,7 +6414,7 @@
                     vm.load();
                 }
 
-            }, function (err) {
+            }, function () {
                 vm.savedDailyPlanFilter.selected = undefined;
                 vm.load();
             })
@@ -6505,12 +6520,7 @@
             groupDisplayMode: 'group',
             shrinkToFit: true,
             columnMagnet: '15 minutes',
-            targetDataAddRowIndex: undefined,
-            api: function (api) {
-                api.core.on.ready(vm, function () {
-                    checkSharedFilters();
-                });
-            }
+            targetDataAddRowIndex: undefined
         };
 
         $(window).resize(function () {
@@ -7546,14 +7556,14 @@
         };
         vm.remove = function (object) {
             if (vm.dailyPlanFilter && vm.dailyPlanFilter.paths) {
-                for (var i = 0; i < vm.dailyPlanFilter.paths.length; i++) {
+                for (let i = 0; i < vm.dailyPlanFilter.paths.length; i++) {
                     if (angular.equals(vm.dailyPlanFilter.paths[i], object)) {
                         vm.dailyPlanFilter.paths.splice(i, 1);
                         break;
                     }
                 }
             } else if (vm.searchDailyPlanFilter && vm.searchDailyPlanFilter.paths) {
-                for (var i = 0; i < vm.searchDailyPlanFilter.paths.length; i++) {
+                for (let i = 0; i < vm.searchDailyPlanFilter.paths.length; i++) {
                     if (angular.equals(vm.searchDailyPlanFilter.paths[i], object)) {
                         vm.searchDailyPlanFilter.paths.splice(i, 1);
                         break;

@@ -601,7 +601,7 @@
                                     <td ng-bind="job.ordersSummary.waitingForResource"></td>
                                     <td ng-bind="job.ordersSummary.setback"></td>
                                 </tr>
-                                <tr class="{{job.configurationStatus._text ? '' : 'hide'}}" style="background: transparent !important;">
+                                <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                                     <td></td>
                                     <td colspan="13">
                                      {{job.configurationStatus._text | translate}} :
@@ -609,7 +609,7 @@
                                               job.configurationStatus.severity==4 ? 'text-dark': job.configurationStatus.severity==5 ? 'dark-orange' : job.configurationStatus.severity==6 ? 'corn-flower-blue' :job.configurationStatus.severity==7 ? 'dark-magenta' : job.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{job.configurationStatus.message}}</span>
                                     </td>
                                 </tr>
-                                <tr class="{{job.error ? '' : 'hide'}}" style="background: transparent !important;">
+                                <tr ng-if="job.error" style="background: transparent !important;">
                                     <td></td>
                                     <td colspan="13">
                                      {{job.error.code}} :<span ng-if="job.error.message" class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':

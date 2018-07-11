@@ -133,7 +133,7 @@
                                 return '#7ab97a';
                             } else if (d.key == 'suspended') {
                                 return '#e86680';
-                            } else if (d.key == 'setbacks') {
+                            } else if (d.key == 'setback') {
                                 return '#99b2df';
                             } else if (d.key == 'waitingForResource') {
                                 return '#ffa366';

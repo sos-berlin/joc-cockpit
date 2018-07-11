@@ -147,7 +147,7 @@
                 <input type="search" class="pull-right hide" ng-class="{'show-block': pageView=='list'}"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="width: 180px">
             </div>
         </div>
-        <div class="row hide" ng-class="{'show':showSearchPanel}">
+        <div class="row" ng-if="showSearchPanel">
                 <div class="col-md-12">
                 <div class="box p-a m-b-sm m-t-sm">
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
@@ -318,7 +318,7 @@
             </div>
             </div>
         <div class="hide p-t-sm" ng-class="{'show': isLoading }">
-            <div class=" hide " ng-class="{'show': pageView=='grid' && plans.length>0}">
+            <div ng-if="pageView=='grid' && plans.length>0">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
                          <div gantt
@@ -358,8 +358,8 @@
 
                 </div>
             </div>
-            <div class="hide box p-a " ng-class="{'show': pageView=='list' && plans.length>0}">
-                <div class="table-responsive" ng-if="plans.length>0">
+            <div class="box p-a" ng-if="pageView=='list' && plans.length>0">
+                <div class="table-responsive">
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
                             <tr>
@@ -495,7 +495,6 @@
                             </div>
                         </div>
                     </div>
-
             </div>
         </div>
         <div class=" text-center m-t text-uppercase "
@@ -507,6 +506,12 @@
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
+    </div>
+</div>
+<div ng-if="!isLoading || showSpinner || reloadState == 'yes'">
+    <div class="bottom-btn" ng-click="reload()">
+        <i ng-if="reloadState == 'no'" class="fa fa-times"></i>
+        <i ng-if="reloadState == 'yes'" class="fa fa-refresh"></i>
     </div>
 </div>
 <div ng-if="showSpinner && isLoading" class="loading-img1"></div>

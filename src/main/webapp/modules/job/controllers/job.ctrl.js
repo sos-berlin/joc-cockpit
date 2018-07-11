@@ -13,7 +13,7 @@
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
                           DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService,$filter) {
-        var vm = $scope;
+        const vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
@@ -233,12 +233,10 @@
 
         vm.reload = function() {
             if ($scope.reloadState == 'no') {
-                console.log($scope.reloadState);
-                //$scope.tree = [];
-                $scope.allJobs = [];
+                $scope.allJobChains = [];
                 $scope.folderPath = 'Process aborted';
                 $scope.reloadState = 'yes';
-                vm.jobFilters.expand_to = vm.tree;
+                vm.jobChainFilters.expand_to = vm.tree;
             } else if ($scope.reloadState == 'yes') {
                 $scope.reloadState = 'no';
                 $scope.load();
@@ -490,14 +488,17 @@
         function navFullTree() {
             for (let i = 0; i < vm.tree.length; i++) {
                 vm.tree[i].selected1 = false;
+                vm.tree[i].jobChains =[];
                 if (vm.tree[i].expanded) {
                     traverseTree1(vm.tree[i]);
                 }
             }
         }
+
         function traverseTree1(data) {
             for (let i = 0; i < data.folders.length; i++) {
                 data.folders[i].selected1 = false;
+                data.folders[i].jobChains = [];
                 if (data.folders[i].expanded) {
                     traverseTree1(data.folders[i]);
                 }
@@ -657,6 +658,7 @@
 
 
         vm.changeStatus = function () {
+            vm.reloadState = 'no';
             vm.showHistoryPanel = '';
             vm.allJobChains = [];
             vm.loading = true;
@@ -1741,7 +1743,6 @@
                     vm.isLoaded = false;
                 });
             } else {
-                console.log(vm.allJobChains.length + ' ' + isFiltered);
                 if (!isFiltered) {
                     getFilteredData();
                 }
@@ -2320,6 +2321,7 @@
 
 
         vm.expandDetails = function () {
+            vm.isLoaded = true;
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobChains = [];
@@ -2370,6 +2372,9 @@
                         }
                     }
                 });
+                vm.isLoaded = false;
+            }, function () {
+                vm.isLoaded = false;
             });
         };
 
@@ -2854,17 +2859,16 @@
         });
 
         vm.treeHandler = function (data) {
-            vm.reset();
-            $scope.reloadState = 'no';
             navFullTree();
-            if (vm.showTaskPanel && (vm.showTaskPanel.path1 !== data.path)) {
-                vm.hideTaskPanel();
-            }
-            data.selected1 = true;
+            $scope.reloadState = 'no';
             data.jobs = [];
             vm.allJobs = [];
             vm.loading = true;
             expandFolderData(data);
+            vm.reset();
+            if (vm.showTaskPanel && (vm.showTaskPanel.path1 !== data.path)) {
+              vm.hideTaskPanel();
+            }
         };
 
         vm.treeHandler1 = function (data) {
@@ -4131,6 +4135,7 @@
         };
         vm.expandDetails = function () {
             let obj = {};
+            vm.isLoaded = true;
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             angular.forEach(vm.allJobs, function (value) {
@@ -5346,6 +5351,19 @@
         vm.allJobs = [];
         vm.jobFilters.filter.state = $stateParams.name;
         vm.object = {};
+        $scope.reloadState = 'no';
+
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                $scope.allJobs = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                vm.isLoading = false;
+                $scope.init();
+            }
+        };
 
         function mergePermanentAndVolatile(sour, dest) {
             dest.runningTasks = sour.runningTasks;
@@ -5369,6 +5387,8 @@
 
         vm.init = function () {
             var obj = {};
+            vm.isLoaded = true;
+            $scope.reloadState = 'no';
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.states = [];
@@ -5396,8 +5416,10 @@
                         });
                     }
                     vm.isLoading = true;
+                    vm.isLoaded = false;
                 }, function () {
                     vm.isLoading = true;
+                    vm.isLoaded = false;
                     vm.isError = true;
                 });
             }else {

@@ -2987,6 +2987,8 @@
         vm.filterTree1 = [];
         vm.object.paths = [];
 
+        $scope.reloadState = 'no';
+
         vm.selectedFiltered;
         vm.temp_filter = {};
 
@@ -3123,10 +3125,24 @@
             $rootScope.$broadcast('exportData');
         };
 
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                //$scope.tree = [];
+                $scope.allOrders = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+                vm.orderFilters.expand_to = vm.tree;
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                $scope.load();
+            }
+        };
+
         /**
          * Function to initialized tree view
          */
         function initTree() {
+            $scope.reloadState = 'no';
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                 var folders = [];
                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -3171,6 +3187,7 @@
         vm.treeHandler = function (data) {
             vm.reset();
             navFullTree();
+            $scope.reloadState = 'no';
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
                 vm.hideLogPanel();
             }
@@ -3188,6 +3205,7 @@
         vm.expandNode = function (data) {
             vm.reset();
             navFullTree();
+            $scope.reloadState = 'no';
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
                 vm.hideLogPanel();
             }
@@ -3343,6 +3361,7 @@
         function navFullTree() {
             angular.forEach(vm.tree, function (value) {
                 value.selected1 = false;
+                value.orders = [];
                 if (value.expanded) {
                     traverseTree1(value);
                 }
@@ -3352,6 +3371,7 @@
         function traverseTree1(data) {
             for (let i = 0; i < data.folders.length; i++) {
                 data.folders[i].selected1 = false;
+                data.folders[i].orders = [];
                 if (data.folders[i].expanded) {
                     traverseTree1(data.folders[i]);
                 }
@@ -3612,6 +3632,7 @@
 
         vm.changeStatus = function () {
             vm.hideLogPanel();
+            $scope.reloadState = 'no';
             vm.allOrders = [];
             vm.loading = true;
             var obj = {jobschedulerId : vm.schedulerIds.selected, folders: [], compact : true};
@@ -4517,6 +4538,7 @@
 
         vm.expandDetails = function () {
             var obj = {};
+            vm.isLoaded = true;
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             angular.forEach(vm.allOrders, function (value, index) {
@@ -4534,6 +4556,9 @@
                         }
                     }
                 }
+                vm.isLoaded = false;
+            }, function () {
+                vm.isLoaded = false;
             });
         };
 
@@ -4772,8 +4797,10 @@
         vm.orderFilters.currentPage = 1;
 
         vm.allOrders = [];
+        vm.isLoaded = true;
         vm.object = {};
         vm.object.orders = [];
+        $scope.reloadState = 'no';
 
         vm.reset = function () {
             vm.object.orders = [];
@@ -4783,8 +4810,23 @@
             $rootScope.$broadcast('exportData');
         };
 
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                $scope.allOrders = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+               
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                vm.isLoading = false;
+                $scope.init();
+            }
+        };
+
         vm.init = function () {
             var obj1 = {};
+             vm.isLoaded = true;
+             $scope.reloadState = 'no';
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
             obj1.processingStates = [];
@@ -4796,9 +4838,11 @@
                 });
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
+                vm.isLoaded = false;
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
+                 vm.isLoaded = false;
             });
         };
 
@@ -4883,18 +4927,9 @@
         };
         $scope.$on("orderState", function (evt, state) {
             if (state) {
+                vm.isLoaded = true;
                 vm.orderFilters.filter.state = state;
-                let obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.compact = true;
-                obj.processingStates = [];
-                obj.processingStates.push(vm.orderFilters.filter.state);
-                OrderService.get(obj).then(function (res) {
-                    angular.forEach(res.orders, function (value) {
-                        value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
-                    });
-                    vm.allOrders = res.orders;
-                });
+                vm.init();
             }
         });
 
