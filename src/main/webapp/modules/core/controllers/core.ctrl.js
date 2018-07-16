@@ -2622,7 +2622,7 @@
                 vm.editor.isEnable = false;
                 return;
             }
-            if (vm.frequency.tab == 'specificDays') {
+            if (vm.frequency.tab === 'specificDays') {
                 vm.frequency.dates = [];
                 angular.forEach(vm.tempItems, function (date) {
                     vm.frequency.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
@@ -3599,7 +3599,7 @@
             if (form1)
                 form1.$setPristine();
             $('#period-editor').modal('hide');
-            $('.fade-modal').css('opacity', 1);
+
         };
         vm.save = function (form1) {
             if (vm.period.frequency === 'single_start') {
@@ -3669,8 +3669,6 @@
                 form1.$setUntouched();
             }
             $('#period-editor').modal('hide');
-            $('.fade-modal').css('opacity', 1);
-
         };
 
     }
@@ -3727,7 +3725,6 @@
                 form2.$setUntouched();
             }
             $('#schedule-editor').modal('hide');
-            $('.fade-modal').css('opacity', 1);
         };
 
         vm.removeSubstitue = function (form2) {
@@ -6340,7 +6337,6 @@
                 isOrderJob: flag
             });
             $('#period-editor').modal('show');
-            $('.fade-modal').css('opacity', '0.85');
         };
         var promise4 = $timeout(function(){
             $rootScope.$broadcast('restrictionModalTemplateLoaded');
@@ -6419,7 +6415,7 @@
                 isOrderJob: flag
             });
             $('#period-editor').modal('show');
-            $('.fade-modal').css('opacity', '0.85');
+
         };
         $scope.$on('cancel-period', function () {
             _tempPeriod = {};
@@ -7027,7 +7023,7 @@
                 period: undefined,
                 isOrderJob: flag
             });
-            $('.fade-modal').css('opacity', '0.85');
+
             $('#period-editor').modal('show');
 
         };
@@ -9943,8 +9939,6 @@
                     isOrderJob: flag
                 });
                 $('#period-editor').modal('show');
-                $('.fade-modal').css('opacity', '0.85')
-
             }
 
             if (runTime.period._single_start) {
@@ -10000,7 +9994,7 @@
                 to: vm.to
             });
             $('#schedule-editor').modal('show');
-            $('.fade-modal').css('opacity', '0.85');
+
         };
 
         vm.from = {};
@@ -11136,13 +11130,11 @@
         vm.assignCalendar = function () {
             $rootScope.$broadcast('calendar-editor', {calendar: vm.selectedCalendar});
             $('#calendar-editor').modal('show');
-            $('.fade-modal').css('opacity', '0.85');
         };
 
         vm.assignHolidayCalendar = function () {
             $rootScope.$broadcast('calendar-editor', {data: 'holiday', calendar: vm.holidayCalendar});
             $('#calendar-editor').modal('show');
-            $('.fade-modal').css('opacity', '0.85');
         };
 
         function generateCalendarDates(run_time, dates, calendar) {
@@ -13137,13 +13129,11 @@
                 });
             }
             $('#calendar-editor').modal('hide');
-            $('.fade-modal').css('opacity', '1');
         };
 
 
         vm.cancel = function () {
             $('#calendar-editor').modal('hide');
-            $('.fade-modal').css('opacity', 1);
         };
 
         var watcher = $scope.$watchCollection('object.calendars', function (newNames) {

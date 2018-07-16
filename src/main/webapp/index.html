@@ -54,24 +54,16 @@
     <!-- Calendar -->
     <link href="bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
           rel="stylesheet">
-    <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.min.css" type="text/css"/>
+    <link rel="stylesheet" href="bower_components/angular-resizable-master/angular-resizable.min.css"/>
+    <meta id="load_styles_before">
     <!-- table-->
     <link rel="stylesheet" href="bower_components/angular-bootstrap-grid-tree/src/treeGrid.css" type="text/css"/>
     <!-- Graph-->
     <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css"/>
-
-    <link rel="stylesheet" href="bower_components/angular-resizable-master/angular-resizable.min.css"/>
-    <link rel="stylesheet" href="bower_components/angular-gantt/assets/angular-gantt.css"/>
-    <link rel="stylesheet" href="bower_components/angular-gantt/assets/angular-gantt-plugins.css"/>
-    <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.css"/>
-
-    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
     <link rel="stylesheet" href="bower_components/angular-gridster/dist/angular-gridster.min.css"/>
     <!-- custom-->
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
-
     <link rel="stylesheet" href="css/light-style.css" type="text/css" id="style-color"/>
-
     <script>
         function themeInit() {
             if (window.localStorage.$SOS$THEME != undefined && window.localStorage.$SOS$THEME != 'undefined') {
@@ -81,11 +73,6 @@
         themeInit();
     </script>
     <link rel="stylesheet" href="css/style.responsive.css" type="text/css"/>
-    <style type="text/css">
-        [ng-cloak] {
-            display: none;
-        }
-    </style>
 </head>
 <body ng-controller="AppCtrl">
 <!--[if lt IE 9]>
@@ -98,7 +85,7 @@
 <div ng-spinner-bar class="loading-img"></div>
 <!-- END PAGE SPINNER -->
 <!-- BEGIN ACTUAL CONTENT -->
-<div class="app" ng-cloak ui-view></div>
+<div class="app" ui-view></div>
 <!-- END ACTUAL CONTENT -->
 
 <toasty></toasty>
@@ -122,7 +109,6 @@
 <!-- Calendar -->
 <script src="bower_components/moment/min/moment.min.js"></script>
 <script src="bower_components/moment-timezone/moment-timezone.min.js"></script>
-<script src="bower_components/angular-moment/angular-moment.min.js"></script>
 <script src="bower_components/jstz/jstz.js"></script>
 <script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js"></script>
 <!-- angular-bootstrap -->
@@ -132,30 +118,25 @@
 <script src="bower_components/angular-strap/dist/angular-strap.js"></script>
 <script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
 <script src="bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
-<!-- Slider -->
-<script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
 <!-- Breadcrumb -->
 <script src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
 <!-- table-->
 <script src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js"></script>
 <script src="bower_components/angular-resizable-master/angular-resizable.min.js"></script>
-<script src="bower_components/angular-ui-select/dist/select.min.js"></script>
+<script src="bower_components/ocLazyLoad-master/dist/ocLazyLoad.min.js"></script>
 <!-- AngularJS directive for D3 and NVD3 -->
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="bower_components/nvd3/nv.d3.min.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angular-nvd3-directive.min.js"></script>
+<script src="bower_components/angular-moment/angular-moment.min.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
-<script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
 <script src="bower_components/angular-file-saver/dist/angular-file-saver.min.js"></script>
-<script src="bower_components/Blob/Blob.js"></script>
 <script type="text/javascript" src="js/xlsx.core.min.js"></script>
 <script src="bower_components/FileSaver/FileSaver.min.js"></script>
 <script src="bower_components/crypto-js/crypto-js.js"></script>
 
 <script src="bower_components/angular-clipboard/angular-clipboard.js"></script>
-<script src="bower_components/clipboard/dist/clipboard.min.js"></script>
-<script src="bower_components/ngclipboard/dist/ngclipboard.min.js"></script>
 <script type="text/javascript" src="js/jquery.resize.js"></script>
 <script src="bower_components/angular-gridster/src/angular-gridster.js"></script>
 <script type="text/javascript" src="bower_components/tracekit/tracekit.js"></script>
@@ -167,16 +148,9 @@
 <!-- runtime editor js files-->
 <script type="text/javascript" src="js/xml2json.min.js"></script>
 <script type="text/javascript" src="js/vkbeautify.js"></script>
-<!-- export pdf js files -->
-<script type="text/javascript" src="js/html2canvas.js"></script>
-<script type="text/javascript" src="js/pdfmake.min.js"></script>
-<script type="text/javascript" src="js/vfs_fonts.js"></script>
 <script type="text/javascript" src="js/bundle.js"></script>
 <script type="text/javascript" src="js/lodash.js"></script>
-<script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
-<script src="js/canvas-toBlob.js"></script>
-<!-- upload files -->
-<script src="js/angular-file-upload.min.js"></script>
+
 <!-- app -->
 <script src="modules/app.js"></script>
 <script src="modules/router.js"></script>

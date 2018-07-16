@@ -191,7 +191,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.DailyPlan.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.DailyPlan.view.status">
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
                     <span class="nav-text" id="dailyPlan_id">
                          <img src="images/daily_plan.png" width="15" height="16">
@@ -199,7 +199,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.JobChain.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.JobChain.view.status">
                 <a class="nav-link" ui-sref="app.jobChains" ui-sref-active-eq="active">
                     <span class="nav-text " id="jobChain_id">
                         <i class="fa fa-chain text-white jobchain-icon"></i>
@@ -207,7 +207,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.Order.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.Order.view.status">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text " id="orders_id" >
                         <img src="images/order1.png" width="18" height="22" class="order-icon">
@@ -215,7 +215,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.Job.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.Job.view.status">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text " id="jobs_id">
                         <img src="images/job1.png" width="22" height="21" class="job-icon">
@@ -223,7 +223,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.YADE.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.YADE.view.status">
                 <a class="nav-link" ui-sref="app.yade" ui-sref-active="active">
                     <span class="nav-text ">
                         <i class="fa fa-exchange text-white fa-lg"></i>
@@ -248,7 +248,7 @@
                 </a>
 
             </li>
-            <li class="nav-item {{(permission.History.view.status || permission.YADE.view.status) ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.History.view.status || permission.YADE.view.status">
                 <a class="nav-link" ui-sref="app.history" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-history text-white history-icon"></i>
@@ -256,7 +256,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item {{permission.AuditLog.view.status ? 'show' : 'hide'}}">
+            <li class="nav-item" ng-if="permission.AuditLog.view.status">
                 <a class="nav-link" ui-sref="app.auditLog" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-file-text-o text-white history-icon"></i>

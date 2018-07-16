@@ -22,7 +22,7 @@
         <div class="modal-body p-a" style="min-height: 390px;">
             <div ng-hide="editor.hidePervious || editor.showHolidayTab || editor.showCalendarTab">
                 <div class="row">
-                    <div class="col-md-12 hide" ng-class="{'show': display}">
+                    <div class="col-md-12" ng-if="display">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
 
@@ -939,3 +939,5 @@
         </div>
     </form>
 </div>
+<div ui-include="'modules/core/template/period-editor-dialog.html'"></div>
+<div ui-include="'modules/core/template/assign-calendar-dialog.html'"></div>

@@ -19,7 +19,6 @@
             'ui.bootstrap',
             'ngMessages',
             'treeGrid',
-            'rzModule',
             'angularResizable',
             'mgcrea.ngStrap',
             'nvd3',
@@ -29,10 +28,8 @@
             'gantt.table',
             'ngFileSaver',
             'angular-clipboard',
-            'ngclipboard',
-            'ui.select',
             'gridster',
-            'angularFileUpload'
+            'oc.lazyLoad'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs = [];
@@ -57,7 +54,5 @@
                     $delegate(exception, cause);
                 };
             }]);
-        }])
-
-        ;
+        }]);
 })();

@@ -2251,7 +2251,7 @@
             }).then(function (res) {
                 vm.jobChain.fileOrderSources = [];
                 var temp = [];
-                temp = _.merge(vm.jobChain, res.jobChain);
+                temp = angular.merge({},vm.jobChain, res.jobChain);
                 temp.nodes = [];
                 angular.forEach(vm.jobChain.nodes, function (node1) {
                     if (node1.orders && node1.orders.length > 0) {
@@ -8854,8 +8854,8 @@
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$timeout","SOSAuth", "$q", "$interval"];
-    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $timeout, SOSAuth, $q, $interval) {
+    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "$timeout","SOSAuth", "$q", "$interval"];
+    function LogCtrl($scope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval) {
         var vm = $scope;
         vm.isLoading = false;
 

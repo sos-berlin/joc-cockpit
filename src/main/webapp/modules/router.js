@@ -65,14 +65,6 @@
             templateUrl: "modules/core/views/error.html",
             controller: "HeaderCtrl",
             title: "Error",
-            resolve: {
-                permission: function(SOSAuth) {
-                     var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-                    if(schedulerIds && schedulerIds.selected){
-                        $location.path('/');
-                    }
-                }
-            },
             ncyBreadcrumb: {skip: !0}
         }).state("client-logs", {
             url: "/client-logs",
@@ -91,9 +83,18 @@
             controller: "DashboardCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.dashboard' | translate}}"}
         }).state("app.setting", {
-            url: "/setting",
+            url: "/logging",
             templateUrl: "modules/core/views/setting.html",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.setting' | translate}}"}
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.setting' | translate}}"},
+            resolve:{
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                   return $ocLazyLoad.load([{
+                        name:'ngclipboard',
+                        files: ["bower_components/clipboard/dist/clipboard.min.js","bower_components/ngclipboard/dist/ngclipboard.min.js"],
+                        serie:true
+                    }]);
+                }]
+            }
         }).state("app.dailyPlan", {
             url: "/daily_plan",
             params: {filter: null, day: null},
@@ -102,7 +103,13 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('DailyPlan');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    $ocLazyLoad.load([{
+                        insertBefore: '#load_styles_before',
+                        files:["bower_components/angular-gantt/assets/angular-gantt.css","bower_components/angular-gantt/assets/angular-gantt-plugins.css"]
+                    }]);
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.dailyPlan' | translate}}"}
         }).state("app.jobs", {
@@ -162,7 +169,19 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('JobChain');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    $ocLazyLoad.load([{
+                        files: ["js/html2canvas.js","js/pdfmake.min.js","js/vfs_fonts.js", "bower_components/es6-promise/dist/es6-promise.auto.js", "js/canvas-toBlob.js"],
+                        serie: true
+                    },{
+                        insertBefore: '#load_styles_before',
+                        files:["bower_components/angularjs-slider/dist/rzslider.min.css"]
+                    },{
+                        name:'rzModule',
+                        files:["bower_components/angularjs-slider/dist/rzslider.min.js"]
+                    }]);
+                }]
             },
             ncyBreadcrumb: {label: "{{jobChain.name}}", parent: "app.jobChains"}
         }).state("app.jobChainDetails.orders", {
@@ -252,7 +271,13 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('Resource');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                   return $ocLazyLoad.load([{
+                        name:'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.resources' | translate}}"}
         }).state("app.resources.agentClusters", {
@@ -307,6 +332,17 @@
             url: "/calendar?path&scheduler_id",
             templateUrl: "modules/jobscheduler/views/calendar.html",
             controller: "ResourceInfoCtrl",
+            resolve: {
+                permission: function (authorizationService) {
+                    return authorizationService.permissionCheck('Resource');
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                   return $ocLazyLoad.load([{
+                        name:'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.calendar' | translate}}", parent: "app.resources.calendars"}
         }).state("app.history", {
             url: "/history",
@@ -332,14 +368,6 @@
             url: "/user/profile",
             templateUrl: "modules/user/views/profile.html",
             controller: "UserProfileCtrl as upc",
-            resolve: {
-                permission: function(SOSAuth) {
-                     var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-                    if(!(schedulerIds && schedulerIds.selected)){
-                        $location.path('/');
-                    }
-                }
-            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.userProfile' | translate}}"}
         }).state("app.users", {
             url: "/users",
@@ -348,7 +376,16 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('ManageAccount');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    $ocLazyLoad.load([{
+                        insertBefore: '#load_styles_before',
+                        files:["bower_components/angular-ui-select/dist/select.css"]
+                    },{
+                        name:'ui.select',
+                        files:["bower_components/angular-ui-select/dist/select.min.js"]
+                    }]);
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.manageUser' | translate}}"}
         }).state("app.users.user", {

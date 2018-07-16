@@ -1,8 +1,8 @@
-<div class="modal fade" id="calendar-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog modal-lg" ng-controller="CalendarAssignDialogCtrl">
-        <div class="modal-content">
+<div class="modal fade" id="calendar-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
+    <div class="modal-dialog box-shadow modal-lg" ng-controller="CalendarAssignDialogCtrl">
+        <div class="modal-content m-l m-r" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
             <div class="modal-body p-a"
-                 style="min-height: 500px;max-height: 550px; overflow: auto; vertical-align: middle;">
+                 style="min-height: 350px; overflow: auto; vertical-align: middle;">
                 <div ng-if="filterTree1 && filterTree1.length>0">
                     <a class="text" ng-click="filter_tree.expand_all();"
                        uib-tooltip="{{'tooltip.expandAll' | translate}}">
