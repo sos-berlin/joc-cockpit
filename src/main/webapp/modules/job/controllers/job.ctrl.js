@@ -888,7 +888,7 @@
                         for (let x = 0; x < vm.orders.length; x++) {
                             for (let i = 0; i < res.orders.length; i++) {
                                 if (vm.orders[x].path === res.orders[i].path) {
-                                    vm.orders[x] = angular.merge(vm.orders[x], res.orders[i]);
+                                    vm.orders[x] = _.merge(vm.orders[x], res.orders[i]);
                                     data.push(vm.orders[x]);
                                     res.orders.splice(i, 1);
                                     break;
@@ -1721,7 +1721,7 @@
                                                 jobschedulerId: vm.schedulerIds.selected,
                                                 jobs: [{job: val.job.path}]
                                             }).then(function (res1) {
-                                                vm.allJobChains[x].nodes[x].job = angular.merge(vm.allJobChains[x].nodes[x].job, res1.jobs[0]);
+                                                vm.allJobChains[x].nodes[x].job = _.merge(vm.allJobChains[x].nodes[x].job, res1.jobs[0]);
                                             });
                                         }
                                     });
@@ -1796,7 +1796,7 @@
                                 allJobChains[x].show = true;
                             for (let i = 0; i < res.jobChains.length; i++) {
                                 if (allJobChains[x].path === res.jobChains[i].path) {
-                                    allJobChains[x] = angular.merge(allJobChains[x], res.jobChains[i]);
+                                    allJobChains[x] = _.merge(allJobChains[x], res.jobChains[i]);
                                     allJobChains[x].path1 = allJobChains[x].path.substring(0, allJobChains[x].path.lastIndexOf('/')) || allJobChains[x].path.substring(0, allJobChains[x].path.lastIndexOf('/') + 1);
                                     data.push(allJobChains[x]);
                                     res.jobChains.splice(i, 1);
@@ -2281,7 +2281,7 @@
                 jobChain: jobChain.path
             }).then(function (result) {
                 jobChain.nodes = [];
-                jobChain = angular.merge(jobChain, result.jobChain);
+                jobChain = _.merge(jobChain, result.jobChain);
                 JobChainService.getJobChain({
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: jobChain.path,
@@ -2296,7 +2296,7 @@
                                     jobschedulerId: vm.schedulerIds.selected,
                                     jobs: [{job: val.job.path}]
                                 }).then(function (res1) {
-                                    jobChain.nodes[index].job = angular.merge(jobChain.nodes[index].job, res1.jobs[0]);
+                                    jobChain.nodes[index].job = _.merge(jobChain.nodes[index].job, res1.jobs[0]);
                                 });
                             }
                         });
@@ -2361,7 +2361,7 @@
                                                 jobschedulerId: vm.schedulerIds.selected,
                                                 jobs: [{job: val.job.path}]
                                             }).then(function (res1) {
-                                                vm.allJobChains[i].nodes[index].job = angular.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
+                                                vm.allJobChains[i].nodes[index].job = _.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
                                             });
                                         }
                                     });
@@ -2514,7 +2514,7 @@
                                                         jobschedulerId: vm.schedulerIds.selected,
                                                         jobs: [{job: val.job.path}]
                                                     }).then(function (res1) {
-                                                        vm.allJobChains[index].nodes[index2].job = angular.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
+                                                        vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                     });
                                                 }
                                             });
@@ -4068,7 +4068,7 @@
             obj.jobs = [];
             obj.jobs.push({job: value.path});
             JobService.getJobsP(obj).then(function (res) {
-                value = angular.merge(value, res.job);
+                value = _.merge(value, res.job);
                 JobService.get(obj).then(function (result) {
                     value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
@@ -4369,7 +4369,7 @@
                 compact: false,
                 job: vm.job.path
             }).then(function (res) {
-                vm.job = angular.merge(vm.job, res.job);
+                vm.job = _.merge(vm.job, res.job);
             });
             vm.paramObject = {};
             vm.paramObject.params = [];
@@ -5838,7 +5838,7 @@
                 compact: false,
                 job: vm.job.path
             }).then(function (res) {
-                vm.job = angular.merge(vm.job, res.job);
+                vm.job = _.merge(vm.job, res.job);
             });
             vm.paramObject = {};
             vm.paramObject.params = [];

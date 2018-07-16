@@ -1658,7 +1658,7 @@
                     angular.forEach(vm.locks, function (lock) {
                         angular.forEach(res.locks, function (lockData) {
                             if (lock.path == lockData.path) {
-                                lock = angular.merge(lock, lockData);
+                                lock = _.merge(lock, lockData);
                             }
                         });
                     });
@@ -1755,7 +1755,7 @@
                     angular.forEach(data.locks, function (lock) {
                         angular.forEach(res.locks, function (lockData) {
                             if (lock.path == lockData.path) {
-                                lock = angular.merge(lock, lockData);
+                                lock = _.merge(lock, lockData);
                             }
                         });
                     });
@@ -1809,7 +1809,7 @@
                     angular.forEach(data.locks, function (lock) {
                         angular.forEach(res.locks, function (lockData) {
                             if (lock.path == lockData.path) {
-                                lock = angular.merge(lock, lockData);
+                                lock = _.merge(lock, lockData);
                             }
                         });
                     });
@@ -2106,7 +2106,7 @@
                         angular.forEach(result.processClasses, function (jobChain, index) {
                             for (var i = 0; i < res.processClasses.length; i++) {
                                 if (result.processClasses[index].path == res.processClasses[i].path) {
-                                    result.processClasses[index] = angular.merge(result.processClasses[index], res.processClasses[i]);
+                                    result.processClasses[index] = _.merge(result.processClasses[index], res.processClasses[i]);
                                     x.push(result.processClasses[index]);
                                     res.processClasses.splice(i, 1);
                                     break;
@@ -2584,7 +2584,7 @@
                         angular.forEach(result.schedules, function (schedule) {
                             for (var i = 0; i < res.schedules.length; i++) {
                                 if (schedule.path == res.schedules[i].path) {
-                                    schedule = angular.merge(schedule, res.schedules[i]);
+                                    schedule = _.merge(schedule, res.schedules[i]);
                                     data1.push(schedule);
                                     break;
                                 }
@@ -2632,7 +2632,7 @@
                     angular.forEach(vm.schedules, function (schedule) {
                         for (var i = 0; i < res.schedules.length; i++) {
                             if (schedule.path == res.schedules[i].path) {
-                                schedule = angular.merge(schedule, res.schedules[i]);
+                                schedule = _.merge(schedule, res.schedules[i]);
                                 data.push(schedule);
                                 break;
                             }
@@ -2694,7 +2694,7 @@
                         angular.forEach(data.schedules, function (schedule) {
                             for (var i = 0; i < res.schedules.length; i++) {
                                 if (schedule.path == res.schedules[i].path) {
-                                    schedule = angular.merge(schedule, res.schedules[i]);
+                                    schedule = _.merge(schedule, res.schedules[i]);
                                     data1.push(schedule);
                                     res.schedules.splice(i, 1);
                                     break;
@@ -2758,7 +2758,7 @@
                         angular.forEach(data.schedules, function (schedule) {
                             for (var i = 0; i < res.schedules.length; i++) {
                                 if (schedule.path == res.schedules[i].path) {
-                                    schedule = angular.merge(schedule, res.schedules[i]);
+                                    schedule = _.merge(schedule, res.schedules[i]);
                                     data1.push(schedule);
                                     res.schedules.splice(i, 1);
                                     break;
@@ -4055,7 +4055,7 @@
                                     obj.folders = [{folder: value2.path, recursive: false}];
                                     ResourceService.get(obj).then(function (res) {
                                         if (res.locks) {
-                                            vm.allLocks[index] = angular.merge(vm.allLocks[index], res.locks[0]);
+                                            vm.allLocks[index] = _.merge(vm.allLocks[index], res.locks[0]);
                                         }
                                     });
                                 }
@@ -4081,7 +4081,7 @@
                                     obj.id = vm.allCalendars[x].id;
                                     CalendarService.getCalendar(obj).then(function (res) {
                                         if (res.calendar) {
-                                            vm.allCalendars[x] = angular.merge(vm.allCalendars[x], res.calendar);
+                                            vm.allCalendars[x] = _.merge(vm.allCalendars[x], res.calendar);
                                         }
                                     });
                                     break;
@@ -4225,7 +4225,7 @@
         function volatileInformationL(obj) {
             ResourceService.get(obj).then(function (res) {
                 if (vm.locks.length > 0) {
-                    vm.lock = angular.merge(vm.locks, res.locks);
+                    vm.lock = _.merge(vm.locks, res.locks);
                 } else {
                     vm.locks = res.locks;
                 }
@@ -4255,7 +4255,7 @@
         function volatileInformationS() {
             ScheduleService.getSchedule($stateParams.path, vm.schedulerIds.selected).then(function (res) {
                 if (vm.scheudule) {
-                    var schedule = angular.merge(vm.scheudule, res.scheudule);
+                    var schedule = _.merge(vm.scheudule, res.scheudule);
                     vm.allSchedules.push(schedule);
                 } else {
                     vm.allSchedules.push(res.scheudule);
@@ -4283,7 +4283,7 @@
         function volatileInformationP(obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
                 if (vm.processClasses.length > 0) {
-                    var processClass = angular.merge(vm.processClasses[0], res.processClasses[0]);
+                    var processClass = _.merge(vm.processClasses[0], res.processClasses[0]);
                     vm.allProcessClasses.push(processClass);
                 } else {
                     vm.allProcessClasses.push(res.processClasses);
@@ -5946,7 +5946,7 @@
             JobSchedulerService.getClusterMembersP({jobschedulerId: ''}).then(function (res) {
                 vm.mastersList = res.masters;
                 JobSchedulerService.getClusterMembers({jobschedulerId: ''}).then(function (result) {
-                    vm.mastersList = angular.merge(res.masters, result.masters);
+                    vm.mastersList = _.merge(res.masters, result.masters);
                     angular.forEach(vm.mastersList, function (data) {
                         data.permission = PermissionService.getPermission(data.jobschedulerId).JobschedulerMaster;
                     });

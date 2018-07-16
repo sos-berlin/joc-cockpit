@@ -76,8 +76,7 @@
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
             </div>
         </div>
-        <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
-
+        <div class="row m-b" ng-if="showSearchPanel">
             <div class="col-md-12">
                 <div class="box p-a m-b-xs">
                     <form name="form" ng-submit="search()">
@@ -288,7 +287,7 @@
                             </td>
                             <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" ng-bind="auditLog.ticketLink"></a></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="auditLog.show">
+                        <tr class="tableexport-ignore" ng-if="auditLog.show">
                             <td colspan="10">
                                 <table class="table m-a-0">
                                     <thead>
@@ -378,20 +377,9 @@
         </div>
     </div>
 </div>
-
-<script>
-$('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
-
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
-
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-    $(this).css("padding-bottom", 0);
-  });
-
-</script>
+<div ng-if="loading || !isLoading || isLoaded || reloadState == 'yes'">
+    <div class="bottom-btn" ng-click="reload()">
+        <i ng-if="reloadState == 'no'" class="fa fa-times"></i>
+        <i ng-if="reloadState == 'yes'" class="fa fa-refresh"></i>
+    </div>
+</div>

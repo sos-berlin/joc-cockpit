@@ -3563,6 +3563,7 @@ table.folder-tree-grid > tbody > tr > td {
     position: fixed;
     overflow: hidden !important;
     width: 100%;
+    bottom: 100px;
     height: 100%;
     z-index: 99999;
     background: url(../images/loader.gif) 50% 50% no-repeat rgba(0, 0, 0, .1)
@@ -3706,9 +3707,8 @@ input[type=search]:focus {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     width: 100%;
-    height: 100%;
+    height: 92%;
     z-index: 1020;
     background: url(../images/loader.gif) 50% 50% no-repeat;
     background-size: 50px
@@ -3716,6 +3716,7 @@ input[type=search]:focus {
 .loading-img2 {
     width: 100%;
     height: 100%;
+    z-index: 1020;
     background: url(../images/loader.gif) 50% 50% no-repeat;
     background-size: 50px
 }
@@ -4638,4 +4639,15 @@ div.min-ht-widget-master-status{
 }
 .download-progress{
    background: rgba(255,165,0,0.84); color: #ffff; position: fixed; top: 8px; right: 8px;z-index: 9999; border-radius: 4px;padding: 2px 6px;font-size: 12px;
+}
+.bottom-btn{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    border-radius: 50%;        /*Transform the square into rectangle, sync that value with the width/height*/
+    transition: all 300ms;      /*Animation to close the button (circle)*/
+    box-shadow:2px 2px 5px rgb(25, 73, 15)  ;
+    cursor:pointer;
+    padding: 0 10px;
+    font-size: 32px;
 }

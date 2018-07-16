@@ -923,9 +923,9 @@
                         <tr  class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" ng-click="addOrderToIgnoreList(history.orderId,history.jobChain)" translate>button.addOrderToIgnoreList</a>
                                         <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
@@ -1081,9 +1081,9 @@
                         <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter:{job:filterString}) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != jobHistory.jobschedulerId && jobHistory.jobschedulerId)}" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
@@ -1252,7 +1252,7 @@
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.end | stringToDate"></td>
                             <td ng-click="showLogWindow(null, transfer,null,null,true)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                        <tr class="tableexport-ignore" ng-if="transfer.show">
                             <td></td>
                             <td colspan="12" >
                                  <table class="table m-a-0">
@@ -1356,6 +1356,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && yadeHistorys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
+            <div ng-if="reloadState == 'yes'" class="text-center m-t-md m-b h6 text-orange text-uppercase" translate>{{abort}}</div>
         </div>
         <div  ng-if="!isLoading" class="text-center m-t-lg" >
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
@@ -1363,7 +1364,12 @@
     </div>
 </div>
 <div ng-if="loading" class="loading-img1"></div>
-
+<div ng-if="loading || !isLoading || isLoaded || reloadState == 'yes'">
+    <div class="bottom-btn" ng-click="reload()">
+        <i ng-if="reloadState == 'no'" class="fa fa-times"></i>
+        <i ng-if="reloadState == 'yes'" class="fa fa-refresh"></i>
+    </div>
+</div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1427,23 +1433,3 @@
         </div>
     </div>
 </div>
-<script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-</script>

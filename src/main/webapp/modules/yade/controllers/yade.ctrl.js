@@ -28,6 +28,20 @@
             vm.showFiles = vm.userPreferences.showFiles;
         }
 
+        $scope.reloadState = 'no';
+
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                $scope.fileTransfers = [];
+                $scope.abort = 'Process aborted';
+                $scope.reloadState = 'yes';
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                vm.isLoading = false;
+                $scope.load();
+            }
+        };
+
         vm.reset = function(){
             vm.object.files = [];
             vm.object.fileTransfers = [];
@@ -250,6 +264,7 @@
         }
 
         vm.load = function () {
+             vm.isLoaded = true;
             vm.reset();
             if (!vm.yadeFilterList) {
                 checkSharedFilters();
@@ -352,8 +367,10 @@
                 });
 
                 vm.isLoading = true;
+                vm.isLoaded = false;
             }, function () {
                 vm.isLoading = true;
+                 vm.isLoaded = false;
             });
         };
 
@@ -411,17 +428,21 @@
                     jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
                 }).then(function (res) {
                     value.files = res.files;
+                    vm.isLoaded = false;
+                },function () {
+                    vm.isLoaded = false;
                 })
             }
         }
 
         vm.showTransferFuc = function (value) {
+            vm.isLoaded = true;
             var obj = {};
             obj.jobschedulerId = value.jobschedulerId || vm.schedulerIds.selected;
             obj.transferIds = [];
             obj.transferIds.push(value.id);
             YadeService.getTransfers(obj).then(function (res) {
-                value = angular.merge(value,res.transfers[0]);
+                value = _.merge(value,res.transfers[0]);
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -1109,7 +1130,7 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
-                order = angular.merge(order, res.orders[0]);
+                order = _.merge(order, res.orders[0]);
             });
 
             vm.order = order;

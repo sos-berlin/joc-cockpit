@@ -172,7 +172,7 @@
 <script type="text/javascript" src="js/pdfmake.min.js"></script>
 <script type="text/javascript" src="js/vfs_fonts.js"></script>
 <script type="text/javascript" src="js/bundle.js"></script>
-<script type="text/javascript" src="js/Underscore.js"></script>
+<script type="text/javascript" src="js/lodash.js"></script>
 <script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
 <script src="js/canvas-toBlob.js"></script>
 <!-- upload files -->
@@ -211,11 +211,6 @@
 <!-- endbuild -->
 
 <script>
-    window.setTimeout(function () {
-        var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
-        $('body').append($fakeFrame);
-        $fakeFrame.remove();
-    }, 4000);
     $(window).on('popstate', function () {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();

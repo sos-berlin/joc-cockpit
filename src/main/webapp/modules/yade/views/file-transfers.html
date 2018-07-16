@@ -135,7 +135,7 @@
                        ng-model="filterString" style="width: 180px">
             </div>
         </div>
-        <div class="hide m-b-sm" ng-class="{'show':showSearchPanel}">
+        <div class="m-b-sm" ng-if="showSearchPanel">
              <div class="box p-a ">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
@@ -348,98 +348,98 @@
                 </div>
         </div>
         <div class="m-t-sm box p-a" ng-show="isLoading">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="yade">
-                        <thead>
-                            <tr>
-                                <th width="30" ng-if="permission.YADE.execute.transferStart">
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc()"><i class="primary"></i>
-                                    </label>
-                                </th>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'state._text' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'state._text' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('profile')"><a><span translate>label.profileName</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'profile' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'profile' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'mandator' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'mandator' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-if="!yadeView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('source.host')"><a><span translate>label.sourceHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('target.host')"><a><span translate>label.targetHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('target.protocol')"><a><span translate>label.targetProtocol</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'error.message' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('start')"><a><span translate>label.startTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('end')"><a><span translate>label.endTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('duration')">
-                                    <a><span translate>label.duration</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody ng-repeat="transfer in filtered = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+            <div class="table-responsive" ng-if="reloadState !== 'yes'">
+                <table class="table table-hover table-bordered " id="yade">
+                    <thead>
+                    <tr>
+                        <th width="30" ng-if="permission.YADE.execute.transferStart">
+                            <label class="md-check lg-check">
+                                <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc()"><i class="primary"></i>
+                            </label>
+                        </th>
+                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                        <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'state._text' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'state._text' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('profile')"><a><span translate>label.profileName</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'profile' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'profile' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'mandator' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'mandator' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-if="!yadeView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'operation' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('source.host')"><a><span translate>label.sourceHost</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'source.host' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('target.host')"><a><span translate>label.targetHost</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('target.protocol')"><a><span translate>label.targetProtocol</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'error.message' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('start')"><a><span translate>label.startTime</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'start' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'start' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('end')"><a><span translate>label.endTime</span>
+                            <i ng-show="yadeFilters.filter.sortBy == 'end' && !yadeFilters.sortReverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="yadeFilters.filter.sortBy == 'end' && yadeFilters.sortReverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortBy('duration')">
+                            <a><span translate>label.duration</span>
+                                <i ng-show="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.sortReverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="yadeFilters.filter.sortBy == 'duration' && yadeFilters.sortReverse"
+                                   class="fa fa-caret-down "></i></a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody ng-repeat="transfer in filtered = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr>
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
@@ -449,9 +449,9 @@
                             </td>
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a ng-if="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
@@ -481,7 +481,7 @@
                             <td ng-bind="transfer.end | stringToDate"></td>
                             <td ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                        <tr class="tableexport-ignore" ng-if="transfer.show">
                             <td></td>
                             <td colspan="14" >
                                  <table class="table m-a-0">
@@ -564,58 +564,47 @@
                                 <div ng-if="!transfer.files" class="text-center text-primary"><i class="fa fa-spin fa-spinner"></i></div>
                              </td>
                         </tr>
-                        </tbody>
-                    </table>
-                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
-                        <span translate ng-if="filtered.length >1">label.fileTransfersFound</span>
-                        <span translate ng-if="filtered.length ==1">label.fileTransferFound</span>
-                    </div>
-                    <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-left" ng-show="filtered.length > 10">
-                            <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
-                                </button>
-                            </div>
-                    </div>
-                    <div ng-if="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
+                    </tbody>
+                </table>
+                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                    <span translate ng-if="filtered.length >1">label.fileTransfersFound</span>
+                    <span translate ng-if="filtered.length ==1">label.fileTransferFound</span>
                 </div>
+                <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                <div class="pull-left" ng-show="filtered.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                        </button>
+                    </div>
+                </div>
+                <div ng-if="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
             </div>
+            <div ng-if="reloadState == 'yes'" class="text-center m-t-md m-b h6 text-orange text-uppercase" translate>{{abort}}</div>
+        </div>
+
         <div ng-if="!isLoading" class="text-center m-t-lg" >
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
     </div>
 </div>
-<script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
+<div ng-if="!isLoading || isLoaded || reloadState == 'yes'">
+    <div class="bottom-btn" ng-click="reload()">
+        <i ng-if="reloadState == 'no'" class="fa fa-times"></i>
+        <i ng-if="reloadState == 'yes'" class="fa fa-refresh"></i>
+    </div>
+</div>
 
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-</script>

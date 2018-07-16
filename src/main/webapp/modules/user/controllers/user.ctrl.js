@@ -541,6 +541,19 @@
             vm.adtLog.sortReverse = !vm.adtLog.sortReverse;
             vm.adtLog.filter.sortBy = propertyName;
         };
+        $scope.reloadState = 'no';
+
+        vm.reload = function() {
+            if ($scope.reloadState == 'no') {
+                $scope.auditLogs = [];
+                $scope.folderPath = 'Process aborted';
+                $scope.reloadState = 'yes';
+            } else if ($scope.reloadState == 'yes') {
+                $scope.reloadState = 'no';
+                vm.isLoading = false;
+                vm.load();
+            }
+        };
 
         function setDateRange(filter) {
 
@@ -630,6 +643,7 @@
 
         vm.filter_tree = {};
         vm.load = function () {
+            vm.isLoaded = true;
             var obj = {};
             obj.jobschedulerId = vm.adtLog.current == true ? vm.schedulerIds.selected : '';
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
@@ -648,8 +662,10 @@
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
                 vm.isLoading = true;
+                vm.isLoaded = false;
             }, function () {
                 vm.isLoading = true;
+                vm.isLoaded = false;
             });
         };
         vm.load();

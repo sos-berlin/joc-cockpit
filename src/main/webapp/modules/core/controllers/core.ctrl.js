@@ -493,7 +493,7 @@
                 } catch (e) {
                     throw new Error(e.message);
                 }
-            } else {
+            } else if(vm.userPreferences.isNewWindow === 'newTab'){
                 if (order && order.historyId && order.orderId) {
                     url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
                 } else if (task && task.taskId) {
@@ -517,6 +517,9 @@
                 }
 
                 $window.open(url, '_blank');
+            }else{
+                let data = order || task || job || transfer;
+                vm.downloadLog(data, id);
             }
         };
 
@@ -2716,9 +2719,9 @@
                                 }
                             }
                         }
-                        else if (vm.frequency.tab == 'monthDays' && vm.frequency.isUltimos != 'months' && vm.frequencyList[i].isUltimos !== 'months') {
+                        else if (vm.frequency.tab === 'monthDays' && vm.frequency.isUltimos !== 'months' && vm.frequencyList[i].isUltimos !== 'months') {
                             if (vm.frequency.months && vm.frequency.months.length>0) {
-                                if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
+                                if (vm.frequency.months === vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
                                     vm.frequencyList[i].selectedMonthsU = angular.copy(vm.frequency.selectedMonthsU);
                                     vm.frequencyList[i].startingWithM = angular.copy(vm.frequency.startingWithM);
                                     vm.frequencyList[i].endOnM = angular.copy(vm.frequency.endOnM);
@@ -2858,7 +2861,7 @@
                 el = new Date(el);
                 return (el.getFullYear());
             });
-            return _(datesObj).toArray();
+            return _.toArray(datesObj);
         }
 
         function saveFrequency() {
@@ -3394,20 +3397,20 @@
             vm.flag = data.flag;
             if (vm.temp && !vm.isEmpty(vm.temp)) {
                 vm.isRuntimeEdit = true;
-                if (vm.temp.tab == 'nationalHoliday') {
+                if (vm.temp.tab === 'nationalHoliday') {
                     vm.frequency.year = new Date(vm.temp.nationalHoliday[0]).getFullYear();
                     vm.holidayDays.checked = true;
                     vm.countryField = true;
                 }
                 for (var i = 0; i < vm.frequencyList.length; i++) {
-                    if (vm.frequencyList[i] == vm.temp || angular.equals(vm.temp, vm.frequencyList[i])) {
-                        if (vm.frequencyList[i].tab == 'monthDays') {
-                            if (vm.frequencyList[i].isUltimos == 'months')
+                    if (vm.frequencyList[i] === vm.temp || angular.equals(vm.temp, vm.frequencyList[i])) {
+                        if (vm.frequencyList[i].tab === 'monthDays') {
+                            if (vm.frequencyList[i].isUltimos === 'months')
                                 vm.frequency.selectedMonths = angular.copy(vm.frequencyList[i].selectedMonths);
                             else
                                 vm.frequency.selectedMonthsU = angular.copy(vm.frequencyList[i].selectedMonthsU);
 
-                            if (vm.frequencyList[i].isUltimos == 'months') {
+                            if (vm.frequencyList[i].isUltimos === 'months') {
                                 selectedMonths = [];
                                 angular.forEach(vm.frequencyList[i].selectedMonths, function (val) {
                                     vm.selectMonthDays(val);
@@ -3418,11 +3421,11 @@
                                     vm.selectMonthDaysU(val);
                                 });
                             }
-                        } else if (vm.frequencyList[i].tab == 'specificDays') {
+                        } else if (vm.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.frequencyList[i].dates, function (date) {
                                 vm.tempItems.push({plannedStartTime: date});
                             });
-                        } else if (vm.frequencyList[i].tab == 'nationalHoliday') {
+                        } else if (vm.frequencyList[i].tab === 'nationalHoliday') {
                             vm.frequency.nationalHoliday = vm.frequencyList[i].nationalHoliday;
                             angular.forEach(vm.temp.nationalHoliday, function (date) {
                                 vm.holidayList.push({date: date})
@@ -3599,20 +3602,20 @@
             $('.fade-modal').css('opacity', 1);
         };
         vm.save = function (form1) {
-            if (vm.period.frequency == 'single_start') {
+            if (vm.period.frequency === 'single_start') {
                 delete vm.period.period['_repeat'];
                 delete vm.period.period['_absolute_repeat'];
                 delete vm.period.period['_begin'];
                 delete vm.period.period['_end'];
             }
-            else if (vm.period.frequency == 'repeat' || vm.period.frequency == 'absolute_repeat') {
+            else if (vm.period.frequency === 'repeat' || vm.period.frequency === 'absolute_repeat') {
                 delete vm.period.period['_single_start'];
-                if (vm.period.frequency == 'repeat') {
+                if (vm.period.frequency === 'repeat') {
                     delete vm.period.period['_absolute_repeat'];
                 } else {
                     delete vm.period.period['_repeat'];
                 }
-            }else if (vm.period.frequency == 'time_slot'){
+            } else if (vm.period.frequency === 'time_slot') {
                 delete vm.period.period['_repeat'];
                 delete vm.period.period['_absolute_repeat'];
                 delete vm.period.period['_single_start'];
@@ -3765,11 +3768,11 @@
             }
             vm.sch._valid_to = undefined;
             if (vm.to.time && vm.to.date) {
-                var date = new Date(vm.to.date);
-                date.setHours(vm.to.time.substring(0, 2));
-                date.setMinutes(vm.to.time.substring(3, 5));
+                let date = new Date(vm.to.date);
+                date.setHours(parseInt(vm.to.time.substring(0, 2)));
+                date.setMinutes(parseInt(vm.to.time.substring(3, 5)));
                 if (vm.to.time.substring(6, 8)) {
-                    date.setSeconds(vm.to.time.substring(6, 8));
+                    date.setSeconds(parseInt(vm.to.time.substring(6, 8)));
                 } else {
                     date.setSeconds(0);
                 }
@@ -11587,13 +11590,13 @@
             getXml2Json(vm.xmlObj.xml);
         };
         function deleteEmptyValueFromArr(obj) {
-            for (var i = 0; i < obj.length; i++) {
+            for (let i = 0; i < obj.length; i++) {
                 deleteEmptyValue(obj[i]);
             }
         }
 
         function deleteEmptyValue(obj) {
-            for (var propName in obj) {
+            for (let propName in obj) {
                 if (typeof propName == 'string') {
                     if (angular.isArray(obj[propName])) {
                         if(obj[propName].length==0){
@@ -12140,7 +12143,7 @@
                 el = new Date(el);
                 return (el.getFullYear());
             });
-            return _(datesObj).toArray();
+            return _.toArray(datesObj);
         }
 
         function convertObjToArr(data) {
@@ -12353,7 +12356,7 @@
                     });
                 }
                 if (data.includes.holidays && data.includes.holidays.length > 0) {
-                    var arr = groupByDates(data.includes.holidays[0].dates);
+                    let arr = groupByDates(data.includes.holidays[0].dates);
 
                     angular.forEach(arr, function (holidays) {
                         obj = {};
@@ -12584,7 +12587,7 @@
                     });
                 }
                 if (data.excludes.holidays && data.excludes.holidays.length > 0) {
-                    var arr = groupByDates(data.excludes.holidays[0].dates);
+                    let arr = groupByDates(data.excludes.holidays[0].dates);
 
                     angular.forEach(arr, function (holidays) {
                         obj = {};
@@ -12620,12 +12623,12 @@
         function generateCalendarObj(data, obj) {
             var arr = [];
             var from, to;
-            if (data.type == "INCLUDE") {
+            if (data.type === "INCLUDE") {
                 if (data.months && angular.isArray(data.months) && data.months.length > 0) {
                     if (!obj.includes.months)
                         obj.includes.months = [];
 
-                    if (data.tab == 'weekDays') {
+                    if (data.tab === 'weekDays') {
                         if (data.startingWithW) {
                             from = moment(data.startingWithW).format('YYYY-MM-DD')
                         }
@@ -12634,21 +12637,23 @@
                         }
                         arr.push({days: data.days, from: from, to: to});
                         obj.includes.months.push({months: data.months, weekdays: arr});
-                    } else if (data.tab == 'monthDays') {
+                    }
+                    else if (data.tab === 'monthDays') {
                         if (data.startingWithM) {
                             from = moment(data.startingWithM).format('YYYY-MM-DD')
                         }
                         if (data.endOnM) {
                             to = moment(data.endOnM).format('YYYY-MM-DD')
                         }
-                        if (data.isUltimos == 'months') {
+                        if (data.isUltimos === 'months') {
                             arr.push({days: data.selectedMonths, from: from, to: to});
                             obj.includes.months.push({months: data.months, monthdays: arr});
                         } else {
                             arr.push({days: data.selectedMonthsU, from: from, to: to});
                             obj.includes.months.push({months: data.months, ultimos: arr});
                         }
-                    } else if (data.tab == 'specificWeekDays') {
+                    }
+                    else if (data.tab === 'specificWeekDays') {
                         if (data.startingWithS) {
                             from = moment(data.startingWithS).format('YYYY-MM-DD')
                         }
@@ -12659,7 +12664,7 @@
                             day: getDay(data.specificWeekDay),
                             weekOfMonth: Math.abs(data.which)
                         });
-                        var arrObj = [];
+                        let arrObj = [];
                         arrObj.push({weeklyDays: arr, from: from, to: to});
                         if (data.which > 0) {
                             obj.includes.months.push({months: data.months, monthdays: arrObj});
@@ -12667,8 +12672,9 @@
                             obj.includes.months.push({months: data.months, ultimos: arrObj});
                         }
                     }
-                } else {
-                    if (data.tab == 'weekDays') {
+                }
+                else {
+                    if (data.tab === 'weekDays') {
                         if (!obj.includes.weekdays)
                             obj.includes.weekdays = [];
 
@@ -12679,8 +12685,8 @@
                             to = moment(data.endOnW).format('YYYY-MM-DD')
                         }
                         obj.includes.weekdays.push({days: data.days, from: from, to: to});
-                    } else if (data.tab == 'monthDays') {
-                        if (data.isUltimos == 'months') {
+                    } else if (data.tab === 'monthDays') {
+                        if (data.isUltimos === 'months') {
                             if (!obj.includes.monthdays)
                                 obj.includes.monthdays = [];
 
@@ -12703,7 +12709,7 @@
                             }
                             obj.includes.ultimos.push({days: data.selectedMonthsU, from: from, to: to});
                         }
-                    } else if (data.tab == 'specificWeekDays') {
+                    } else if (data.tab === 'specificWeekDays') {
                         arr.push({
                             day: getDay(data.specificWeekDay),
                             weekOfMonth: Math.abs(data.which)
@@ -12734,7 +12740,7 @@
                     } else if (data.tab == 'every') {
                         if (!obj.includes.repetitions)
                             obj.includes.repetitions = [];
-                        var obj1 = {};
+                        let obj1 = {};
                         obj1.repetition = data.dateEntity;
                         obj1.step = data.interval || 1;
                         if (data.startingWith)
@@ -12747,7 +12753,7 @@
                     } else if (data.tab == 'nationalHoliday') {
                         if (!obj.includes.holidays)
                             obj.includes.holidays = [];
-                        var dates = [];
+                        let dates = [];
                         angular.forEach(data.nationalHoliday, function (value) {
                             dates.push(moment(value).format('YYYY-MM-DD'))
                         });
@@ -12865,7 +12871,7 @@
                     } else if (data.tab == 'every') {
                         if (!obj.excludes.repetitions)
                             obj.excludes.repetitions = [];
-                        var obj1 = {};
+                        let obj1 = {};
                         obj1.repetition = data.dateEntity;
                         obj1.step = data.interval || 1;
                         if (data.startingWith)
@@ -12877,7 +12883,7 @@
                     } else if (data.tab == 'nationalHoliday') {
                         if (!obj.excludes.holidays)
                             obj.excludes.holidays = [];
-                        var dates = [];
+                        let dates = [];
                         angular.forEach(data.nationalHoliday, function (value) {
                             dates.push(moment(value).format('YYYY-MM-DD'))
                         });
@@ -13490,9 +13496,9 @@
                                 }
                             }
                         }
-                        else if (vm.frequency.tab == 'monthDays' && vm.frequency.isUltimos == 'months' && vm.calendar.frequencyList[i].isUltimos == 'months') {
+                        else if (vm.frequency.tab === 'monthDays' && vm.frequency.isUltimos === 'months' && vm.calendar.frequencyList[i].isUltimos === 'months') {
                             if (vm.frequency.months) {
-                                if (vm.frequency.months == vm.calendar.frequencyList[i].months || angular.equals(vm.calendar.frequencyList[i].months, vm.frequency.months)) {
+                                if (vm.frequency.months === vm.calendar.frequencyList[i].months || angular.equals(vm.calendar.frequencyList[i].months, vm.frequency.months)) {
                                     vm.calendar.frequencyList[i].selectedMonths = angular.copy(vm.frequency.selectedMonths);
                                     vm.calendar.frequencyList[i].startingWithM = angular.copy(vm.frequency.startingWithM);
                                     vm.calendar.frequencyList[i].endOnM = angular.copy(vm.frequency.endOnM);
@@ -13522,9 +13528,9 @@
                                 }
                             }
                         }
-                        else if (vm.frequency.tab == 'monthDays' && vm.frequency.isUltimos != 'months' && vm.calendar.frequencyList[i].isUltimos !== 'months') {
+                        else if (vm.frequency.tab === 'monthDays' && vm.frequency.isUltimos !== 'months' && vm.calendar.frequencyList[i].isUltimos !== 'months') {
                             if (vm.frequency.months) {
-                                if (vm.frequency.months == vm.calendar.frequencyList[i].months || angular.equals(vm.calendar.frequencyList[i].months, vm.frequency.months)) {
+                                if (vm.frequency.months === vm.calendar.frequencyList[i].months || angular.equals(vm.calendar.frequencyList[i].months, vm.frequency.months)) {
                                     vm.calendar.frequencyList[i].selectedMonthsU = angular.copy(vm.frequency.selectedMonthsU);
                                     vm.calendar.frequencyList[i].startingWithM = angular.copy(vm.frequency.startingWithM);
                                     vm.calendar.frequencyList[i].endOnM = angular.copy(vm.frequency.endOnM);
@@ -13549,13 +13555,12 @@
                                     vm.calendar.frequencyList[i].startingWithM = angular.copy(vm.frequency.startingWithM);
                                     vm.calendar.frequencyList[i].endOnM = angular.copy(vm.frequency.endOnM);
                                     vm.calendar.frequencyList[i].str = angular.copy(vm.frequency.str);
-
                                     flag1 = true;
                                     break;
                                 }
                             }
                         }
-                        else if (vm.frequency.tab == 'specificWeekDays') {
+                        else if (vm.frequency.tab === 'specificWeekDays') {
                             if (vm.frequency.months && vm.calendar.frequencyList[i].months) {
                                 if (!angular.equals(vm.calendar.frequencyList[i].months, vm.frequency.months)) {
                                     if (angular.equals(vm.calendar.frequencyList[i].specificWeekDay, vm.frequency.specificWeekDay) && angular.equals(vm.calendar.frequencyList[i].which, vm.frequency.which)) {
@@ -13570,7 +13575,7 @@
                                 }
                             }
                         }
-                        else if (vm.frequency.tab == 'specificDays') {
+                        else if (vm.frequency.tab === 'specificDays') {
                             vm.frequency.dates = [];
                             angular.forEach(vm.tempItems, function (date) {
                                 vm.frequency.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
@@ -13585,7 +13590,7 @@
                 }
 
                 if (!flag1) {
-                    if (vm.frequency.tab == 'specificDays') {
+                    if (vm.frequency.tab === 'specificDays') {
                         vm.frequency.dates = [];
                         angular.forEach(vm.tempItems, function (date) {
                             vm.frequency.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
@@ -13597,7 +13602,7 @@
 
                 }
             } else {
-                if (vm.frequency.tab == 'specificDays') {
+                if (vm.frequency.tab === 'specificDays') {
                     vm.frequency.dates = [];
                     angular.forEach(vm.tempItems, function (date) {
                         vm.frequency.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
@@ -13608,7 +13613,7 @@
                 vm.calendar.frequencyList.push(angular.copy(vm.frequency));
 
             }
-                vm.editor.isEnable = false;
+            vm.editor.isEnable = false;
         };
 
         vm.editFrequency = function (data) {
