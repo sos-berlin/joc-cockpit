@@ -845,12 +845,12 @@
                 if(vm.main && vm.main.length>0){
                     if(vm.main.length>1){
                         for(let i =0; i< vm.main.length;i++){
-                            if((vm.main[i].entryName == 'sessionDAO' && vm.main[i].entryValue =='com.sos.auth.shiro.SOSDistributedSessionDAO') ||
-                                (vm.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue =='$sessionDAO')){
+                            if((vm.main[i].entryName === 'sessionDAO' && vm.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
+                                (vm.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue === '$sessionDAO')){
                                 vm.isJOCClusterEnable = false;
                             }
-                            if((vm.main[i].entryName == 'ldapRealm' && vm.main[i].entryValue =='com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
-                                (vm.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue =='$sessionDAO')){
+                            if((vm.main[i].entryName === 'ldapRealm' && vm.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
+                                (vm.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue === '$sessionDAO')){
                                 vm.isLdapRealmEnable = false;
                             }
                         }
@@ -882,14 +882,14 @@
         vm.checkUser = function () {
             vm.isUnique = true;
             angular.forEach(vm.users, function (usr) {
-                if (usr.user != vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user == vm.user.user))
+                if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user === vm.user.user))
                     vm.isUnique = false;
             });
         };
         vm.checkMaster = function () {
             vm.isUnique = true;
             angular.forEach(vm.masters, function (mast) {
-                if ((angular.equals(mast.master, vm.master.master) || mast.master == vm.master.master))
+                if ((angular.equals(mast.master, vm.master.master) || mast.master === vm.master.master))
                     vm.isUnique = false;
             });
         };
@@ -897,7 +897,7 @@
         vm.checkMainSection = function () {
             vm.isUnique = true;
             angular.forEach(vm.main, function (mast) {
-                if (mast.entryName != vm.temp_name && (angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName == vm.entry.entryName))
+                if (mast.entryName !== vm.temp_name && (angular.equals(mast.entryName, vm.entry.entryName) || mast.entryName === vm.entry.entryName))
                     vm.isUnique = false;
             });
         };
@@ -905,7 +905,7 @@
         vm.checkRole = function () {
             vm.isUnique = true;
             for (let j = 0; j < vm.roles.length; j++) {
-                if (vm.roles[j] != temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] == vm.role.role)) {
+                if (vm.roles[j] !== temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] === vm.role.role)) {
                     vm.isUnique = false;
                     break;
                 }
@@ -953,7 +953,6 @@
                 vm.copy = false;
             });
         };
-
         vm.editUser = function (user) {
             vm.user = angular.copy(user);
             vm.user.user = decodeURIComponent(vm.user.user);
@@ -971,7 +970,7 @@
             });
             modalInstance.result.then(function () {
                  vm.temp_name='';
-                if (vm.user.fakepassword != '00000000') {
+                if (vm.user.fakepassword !== '00000000') {
                     vm.user.password = vm.user.fakepassword || '';
                 }
                 delete vm.user['fakepassword'];
@@ -982,7 +981,7 @@
                 });
                 saveInfo();
                 vm.user = {};
-                if (vm.selectedUser && vm.selectedUser == user.user) {
+                if (vm.selectedUser && vm.selectedUser === user.user) {
                     vm.selectedUser = '';
                     selectedMasters = [];
                     selectedRoles = [];
@@ -1005,7 +1004,7 @@
                 vm.user = {};
                 vm.users.splice(vm.users.indexOf(user), 1);
                 saveInfo();
-                if (vm.selectedUser && vm.selectedUser == user.user) {
+                if (vm.selectedUser && vm.selectedUser === user.user) {
                     vm.selectedUser = '';
                     selectedMasters = [];
                     selectedRoles = [];
@@ -1299,11 +1298,13 @@
         vm.addMainSection = function () {
             vm.mainSection = [];
             vm.isUpdate = false;
+            vm.fullSection = false;
             vm.mainSection.push({
                 name:'',
                 values:[{value:''}],
                 comments:[{value:''}]
             });
+            vm.mainText = '';
 
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
@@ -1313,8 +1314,8 @@
                 size: 'lg',
                 backdrop: 'static'
             });
-            modalInstance.result.then(function () {
-                angular.forEach(vm.mainSection, function(val){
+            modalInstance.result.then(function (res) {
+                angular.forEach(res, function(val){
                    if(val.name && val.name !='') {
                        var obj = {};
                        obj.entryName = val.name;
@@ -1437,30 +1438,36 @@
             });
         };
 
-        vm.editAll  = function(){
+        vm.editAll  = function() {
             vm.mainSection = [];
             vm.isUpdate = true;
+
+            vm.mainText = '';
 
             angular.forEach(vm.main, function (entry) {
                 var values = [];
                 var comments = [];
 
-                if (entry.entryValue && entry.entryValue.length > 0) {
-                    angular.forEach(entry.entryValue, function (value) {
-                        values.push({value: value});
-                    });
-                }
-                else {
-                    values.push({value: ''});
-                }
                 if (entry.entryComment && entry.entryComment.length > 0) {
                     angular.forEach(entry.entryComment, function (comment) {
                         comments.push({value: comment});
+                        vm.mainText = vm.mainText + '#' + comment + '\n';
                     });
                 }
                 else {
                     comments.push({value: ''});
                 }
+                vm.mainText = vm.mainText + entry.entryName + ' = ';
+                if (entry.entryValue && entry.entryValue.length > 0) {
+                    angular.forEach(entry.entryValue, function (value) {
+                        values.push({value: value});
+                        vm.mainText = vm.mainText + value + '\n'
+                    });
+                }
+                else {
+                    values.push({value: ''});
+                }
+
                 vm.mainSection.push({
                     name: entry.entryName,
                     values: values,
@@ -1476,28 +1483,29 @@
                 size: 'lg',
                 backdrop: 'static'
             });
-            modalInstance.result.then(function () {
-                var main =[];
-                angular.forEach(vm.mainSection, function(val){
-                   if(val.name && val.name !='') {
-                       var obj = {};
-                       obj.entryName = val.name;
-                       obj.entryValue =[];
-                       obj.entryComment =[];
-                       angular.forEach(val.values, function(val1) {
-                           if(val1.value && val1.value !='')
-                           obj.entryValue.push(val1.value);
-                       });
-                       angular.forEach(val.comments, function(val1) {
-                           if(val1.value && val1.value !='')
-                           obj.entryComment.push(val1.value);
-                       });
+            modalInstance.result.then(function (res) {
+                var main = [];
+                angular.forEach(res, function (val) {
+                    if (val.name && val.name != '') {
+                        var obj = {};
+                        obj.entryName = val.name;
+                        obj.entryValue = [];
+                        obj.entryComment = [];
+                        angular.forEach(val.values, function (val1) {
+                            if (val1.value && val1.value != '')
+                                obj.entryValue.push(val1.value);
+                        });
+                        angular.forEach(val.comments, function (val1) {
+                            if (val1.value && val1.value != '')
+                                obj.entryComment.push(val1.value);
+                        });
 
-                       main.push(obj);
-                   }
+                        main.push(obj);
+                    }
 
                 });
-                vm.main =  main;
+
+                vm.main = main;
                 saveInfo();
                 vm.mainSection = [];
             }, function () {
@@ -1566,49 +1574,12 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 vm.main.splice(vm.main.indexOf(entry), 1);
                 saveInfo();
                 vm.entry = {};
             }, function () {
                 vm.entry = {};
             });
-        };
-
-        vm.addMainEntry = function () {
-            var param = {
-                name:'',
-                values:[{value:''}],
-                comments:[{value:''}]
-            };
-            if (vm.mainSection)
-                vm.mainSection.push(param);
-        };
-
-        vm.addEntryValueField = function (index) {
-            if (vm.mainSection[index].values)
-                vm.mainSection[index].values.push({value: ''});
-        };
-
-        vm.removeEntry = function(index){
-            vm.mainSection.splice(index, 1);
-        };
-
-        vm.removeEntryValueField = function (parentIindex,index) {
-             vm.mainSection[parentIindex].values.splice(index, 1);
-        };
-
-        vm.addEntryCommentField = function (index) {
-            if (vm.mainSection[index].comments)
-                vm.mainSection[index].comments.push({value: ''});
-        };
-
-        vm.removeEntryCommentField = function (parentIindex, index) {
-
-            if(vm.mainSection[parentIindex].comments.length==1){
-                vm.mainSection[parentIindex].comments[0].value = '';
-            }else
-            vm.mainSection[parentIindex].comments.splice(index, 1);
         };
 
         vm.addValueField = function () {

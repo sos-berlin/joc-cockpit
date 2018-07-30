@@ -8,6 +8,15 @@
     </div>
     <form name="form" ng-submit="ok(form)" novalidate>
         <div class="modal-body p-a" style="max-height: 640px;overflow: auto">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="btn-group m-b">
+                        <button type="button" class="btn btn-grey btn-sm" ng-class="{'btn-primary': !fullSection}" ng-click="toggleView(false)"><i class="fa fa-th"></i></button>
+                        <button type="button" class="btn btn-grey btn-sm" ng-class="{'btn-primary': fullSection}" ng-click="toggleView(true)"><i class="fa fa-bars"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div ng-hide="!fullSection">
             <div ng-repeat="(PIndex, entry) in mainSection" ng-class="{'b-t p-t': $index>0}" class="p-l-sm">
                 <div class="pos-abt cursor text-hover-color" style="right: 28px" ng-click="removeEntry(PIndex)"><i class="fa fa-times fa-lg"></i></div>
                 <div class="form-group row m-b-0" >
@@ -48,6 +57,10 @@
                         <a><i ng-click="removeEntryCommentField(PIndex,$index)" class="fa fa-times m-t-sm text-muted"></i></a>
                     </div>
                 </div>
+            </div>
+            </div>
+            <div ng-show="!fullSection">
+                <textarea class="form-control" rows="10" ng-attr-placeholder="{{'placeholder.enterMainSection' | translate}}" ng-model="mainText" ng-blur="generateObject()"></textarea>
             </div>
 
             </div>

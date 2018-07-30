@@ -1864,10 +1864,134 @@
 
                 });
             } else {
-                $uibModalInstance.close('ok');
+                if (vm.mainSection) {
+                    $uibModalInstance.close(vm.mainSection);
+                } else {
+                    $uibModalInstance.close('ok');
+                }
             }
         }
 
+
+
+        vm.toggleView = function(value) {
+            vm.fullSection = value;
+            if(!value) {
+               let main =[];
+                angular.forEach(vm.mainSection, function (val) {
+                    if (val.name && val.name != '') {
+                        let obj = {};
+                        obj.entryName = val.name;
+                        obj.entryValue = [];
+                        obj.entryComment = [];
+                        angular.forEach(val.values, function (val1) {
+                            if (val1.value && val1.value != '')
+                                obj.entryValue.push(val1.value);
+                        });
+                        angular.forEach(val.comments, function (val1) {
+                            if (val1.value && val1.value != '')
+                                obj.entryComment.push(val1.value);
+                        });
+                        main.push(obj);
+                    }
+                });
+                vm.mainText = '';
+                angular.forEach(main, function (entry) {
+                    if (entry.entryComment && entry.entryComment.length > 0) {
+                        angular.forEach(entry.entryComment, function (comment) {
+                            vm.mainText = vm.mainText + '#' + comment + '\n';
+                        });
+                    }
+                    vm.mainText = vm.mainText + entry.entryName + ' = ';
+                    if (entry.entryValue && entry.entryValue.length > 0) {
+                        angular.forEach(entry.entryValue, function (value) {
+                            vm.mainText = vm.mainText + value + '\n'
+                        });
+                    }
+                });
+            }
+        };
+
+        vm.generateObject = function() {
+            let main =[];
+            let obj = {entryName: '', entryValue: [], entryComment: []};
+            let arr = vm.mainText.split('\n');
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].substring(0, 1) === '#') {
+                    obj.entryComment.push(arr[i].substring(1));
+                } else {
+                    let x = arr[i].split('=');
+                    obj.entryName = x[0];
+                    obj.entryValue.push(x[1]);
+                    main.push(obj);
+                    obj = {entryValue: [], entryComment: []};
+                }
+            }
+
+            var mainSection = [];
+            angular.forEach(main, function (entry) {
+                var values = [];
+                var comments = [];
+                if (entry.entryComment && entry.entryComment.length > 0) {
+                    angular.forEach(entry.entryComment, function (comment) {
+                        comments.push({value: comment});
+                    });
+                }
+                else {
+                    comments.push({value: ''});
+                }
+                if (entry.entryValue && entry.entryValue.length > 0) {
+                    angular.forEach(entry.entryValue, function (value) {
+                        values.push({value: value});
+                    });
+                }
+                else {
+                    values.push({value: ''});
+                }
+
+                mainSection.push({
+                    name: entry.entryName,
+                    values: values,
+                    comments: comments
+                });
+            });
+            vm.mainSection = mainSection;
+        };
+        vm.addMainEntry = function () {
+            var param = {
+                name:'',
+                values:[{value:''}],
+                comments:[{value:''}]
+            };
+            if (vm.mainSection)
+                vm.mainSection.push(param);
+        };
+
+        vm.addEntryValueField = function (index) {
+            if (vm.mainSection[index].values)
+                vm.mainSection[index].values.push({value: ''});
+        };
+
+        vm.removeEntry = function(index){
+            vm.mainSection.splice(index, 1);
+        };
+
+        vm.removeEntryValueField = function (parentIindex,index) {
+             vm.mainSection[parentIindex].values.splice(index, 1);
+        };
+
+        vm.addEntryCommentField = function (index) {
+            if (vm.mainSection[index].comments)
+                vm.mainSection[index].comments.push({value: ''});
+        };
+
+        vm.removeEntryCommentField = function (parentIindex, index) {
+
+            if(vm.mainSection[parentIindex].comments.length==1){
+                vm.mainSection[parentIindex].comments[0].value = '';
+            }else
+            vm.mainSection[parentIindex].comments.splice(index, 1);
+        };
         vm.ok = function (form) {
             if (vm.user) {
                 if (/\s/.test(vm.user.user) && vm.user.fakepassword) {

@@ -1315,5 +1315,6 @@
   "label.maxLogSizeThreshold": "Seuil pour télécharger le Protocole",
   "button.downloadDebugLog": "Télécharger le Debug Log",
   "button.download": "Télécharger",
-  "button.reload": "Recharger"
+  "button.reload": "Recharger",
+  "placeholder.enterMainSection": "Enter Main Section"
 }
