@@ -272,7 +272,19 @@
                                <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="download" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>button.download</span>
                            </label>
-
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.defaultHistoryTab</div>
+                       <div class="col-sm-6">
+                           <label class="md-check w">
+                               <input type="radio" name="tab" ng-model="upc.preferences.historyTab" value="order" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.orderHistory</span>
+                           </label>
+                           <label class="md-check w">
+                               <input type="radio" name="tab" ng-model="upc.preferences.historyTab" value="task" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.taskHistory</span>
+                           </label>
                        </div>
                    </div>
                    <div class="row m-t">

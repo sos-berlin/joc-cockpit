@@ -46,7 +46,7 @@
                     $rootScope.clientLogs.push(error)
                 }
             } catch (e) {
-                console.log(e)
+                console.error(e)
             }
         });
 
@@ -238,6 +238,7 @@
                 preferences.maxEntryPerPage = '1000';
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
+                preferences.historyTab = 'order';
                 preferences.pageView = 'list';
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
@@ -302,16 +303,19 @@
                             if (preferences && !preferences.fileTransfer) {
                                 preferences.fileTransfer = 'current';
                             }
+                            if (preferences && !preferences.historyTab) {
+                                preferences.historyTab = 'order';
+                            }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
                             }
-                            if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true) && !preferences.auditLog) {
+                            if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING === true) && !preferences.auditLog) {
                                 preferences.auditLog = true;
                             }
                             $window.sessionStorage.preferences = JSON.stringify(preferences);
                             $window.localStorage.$SOS$THEME = preferences.theme;
-                            if (preferences.theme == 'lighter') {
+                            if (preferences.theme === 'lighter') {
                                 $('#orders_id img').attr("src", 'images/order.png');
                                 $('#jobs_id img').attr("src", 'images/job.png');
                                 $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
@@ -367,6 +371,8 @@
                 loadSettingConfiguration();
             if (vm.schedulerIds.selected)
                 getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
+            else
+                refreshParent();
         });
 
         function setPermission() {
@@ -436,7 +442,7 @@
                 }
             }
             catch (x) {
-                console.log(x)
+                console.error(x)
             }
         }
 
@@ -669,15 +675,16 @@
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
                         $window.localStorage.log_window_y = newWindow.screenY;
+                        return null;
                     };
                     newWindow.addEventListener("resize", function () {
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
                         $window.localStorage.log_window_y = newWindow.screenY;
-                    });
+                    }, false);
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                 }
             }
         }

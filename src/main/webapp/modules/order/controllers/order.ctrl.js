@@ -3185,6 +3185,7 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
+            vm.isExpandNode = false;
             navFullTree();
             $scope.reloadState = 'no';
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
@@ -3205,6 +3206,7 @@
             vm.reset();
             navFullTree();
             $scope.reloadState = 'no';
+            vm.isExpandNode = true;
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
                 vm.hideLogPanel();
             }
@@ -4693,8 +4695,8 @@
                              }
                          }
                      } else if (vm.events[0].eventSnapshots[m].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[m].eventId && !ordersLoaded) {
-                         var path1 = vm.events[0].eventSnapshots[m].path.substring(1, vm.events[0].eventSnapshots[m].path.lastIndexOf('/')) || '/';
-                         if (path1 === vm.folderPath) {
+                         let path1 = vm.events[0].eventSnapshots[m].path.substring(1, vm.events[0].eventSnapshots[m].path.lastIndexOf('/')) || '/';
+                         if (path1 === vm.folderPath || vm.isExpandNode) {
                              let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
                              angular.forEach(vm.tree, function (value) {
                                  if (value.expanded || value.selected1)
@@ -4718,16 +4720,12 @@
                                              }
                                          }
                                      }
-                                     vm.allOrders = vm.allOrders.concat(res.orders);
-                                     angular.forEach(vm.tree, function (node) {
-                                         insertData(node, vm.allOrders);
-                                     });
-
-                                 } else {
-                                     angular.forEach(vm.tree, function (node) {
-                                         insertData(node, res.orders);
-                                     })
                                  }
+                                 vm.allOrders = vm.allOrders.concat(res.orders);
+                                 angular.forEach(vm.tree, function (node) {
+                                     insertData(node, vm.allOrders);
+                                 });
+
                              }, function () {
                                  vm.loading = false;
                                  angular.forEach(vm.tree, function (node) {
@@ -4846,13 +4844,18 @@
 
         vm.init();
 
-        vm.showLogFuc = function (value) {
+        vm.showLogFuc = function (value, skip) {
             let orders = {
                 jobschedulerId: vm.schedulerIds.selected,
                 limit: vm.userPreferences.maxNumInOrderOverviewPerObject
             };
             vm.isAuditLog = false;
-            vm.isTaskHistory = false;
+            if(vm.userPreferences.historyTab === 'order' || skip) {
+                vm.isTaskHistory = false;
+            }else{
+                 vm.showJobHistory(value);
+                 return;
+            }
             if (value.historyId) {
                 if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
                     orders.historyIds = [value.historyId];
@@ -5592,6 +5595,7 @@
                     vm.xml = vm.runTimes.runTime;
                     vm.calendars = vm.runTimes.calendars;
                 }
+
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
