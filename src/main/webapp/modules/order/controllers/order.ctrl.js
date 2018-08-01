@@ -8862,8 +8862,17 @@
     function LogCtrl($scope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval) {
         var vm = $scope;
         vm.isLoading = false;
+        vm.object = {
+            checkBoxs : {
+                stdout: true,
+                stderr: true,
+                info: true,
+                debug: false
+            },
+            debug: 'Debug'
+        };
+        vm.debugLevels = ['Debug','Debug2','Debug3','Debug4','Debug5','Debug6','Debug7','Debug8','Debug9'];
 
- 
         function getParam(name) {
             var url = window.location.href;
             if (!url) url = location.href;
@@ -8927,9 +8936,18 @@
             vm.isLoading = true;
             if (res.data) {
                 window.document.getElementById('logs').innerHTML ='';
-                res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
+                res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
                     div.className = "log_" + ((level) ? level.toLowerCase() : "info");
+                    if (level.toLowerCase() === "stdout") {
+                        div.className += " stdout";
+                    } else if (level.toLowerCase() === "stderr") {
+                        div.className += " stderr";
+                    } else if (prefix.search(/\[stdout\]/i) > -1) {
+                        div.className += " stdout";
+                    } else if (prefix.search(/\[stderr\]/i) > -1) {
+                        div.className += " stderr";
+                    }
                     div.textContent = match.replace(/^\r?\n/, "");
                     var j = 0;
                     while (true) {
@@ -8999,13 +9017,59 @@
             }
         };
 
+        vm.checkLogLevel = function(type) {
+            let sheet = document.createElement('style');
+            if (type === 'STDOUT') {
+               if(!$scope.object.checkBoxs.stdout) {
+                   sheet.innerHTML = "div.stdout {display: none;}";
+                }else {
+                   sheet.innerHTML = "div.stdout {display: block;}";
+                }
+            } else if (type === 'STDERR') {
+               if(!$scope.object.checkBoxs.stderr) {
+                   sheet.innerHTML = "div.stderr {display: none;}";
+                }else {
+                   sheet.innerHTML = "div.stderr {display: block;}";
+                }
+            } else if (type === 'INFO') {
+               if(!$scope.object.checkBoxs.info) {
+                   sheet.innerHTML = "div.log_info {display: none;}";
+                }else {
+                   sheet.innerHTML = "div.log_info {display: block;}";
+                }
+            } else if (type === 'DEBUG') {
+                $scope.changeDebugLevel();
+            }
+            document.body.appendChild(sheet);
+        };
+
+        $scope.changeDebugLevel = function() {
+            let num = $scope.object.debug.substring(5);
+            if(!num){
+                num=1;
+            }
+            for (let x = 1; x < 10; x++) {
+               toggleDebugLog(num, x);
+            }
+        };
+
+        function toggleDebugLog(num, x) {
+            let level = x === 1 ? '' : x;
+            level = "log_debug" + level;
+            let sheet = document.createElement('style');
+            if (($scope.object.checkBoxs.debug && (x <= num))) {
+                sheet.innerHTML = "div."+level+" {display: block;}";
+            } else {
+                sheet.innerHTML = "div."+level+" {display: none;}";
+            }
+            document.body.appendChild(sheet);
+        }
+
         $scope.$on('$destroy', function () {
             if (t1)
                 $timeout.cancel(t1);
             if (interval)
                 $interval.cancel(interval);
-
         });
     }
-})
-();
+})();

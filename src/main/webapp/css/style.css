@@ -2973,28 +2973,33 @@ pre.log {
     color: tomato
 }
 
-.log_info {
+.log_info, .log_stdout {
     color: #000
 }
 
 .log_debug {
-    color: #006400
+    color: #006400;
+    display: none;
 }
 
 .log_debug2 {
-    color: #408040
+    color: #408040;
+    display: none;
 }
 
 .log_debug3 {
-    color: grey
+    color: grey;
+    display: none;
 }
 
 .log_debug4, .log_debug5, .log_debug6, .log_debug7, .log_debug8 {
-    color: #8080FF
+    color: #8080FF;
+    display: none;
 }
 
-.log_debug9 {
-    color: #a0a0a0
+.log_debug9, .log_trace {
+    color: #a0a0a0;
+    display: none;
 }
 
 span.attribute_name, span.bracket {

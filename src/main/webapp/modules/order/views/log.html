@@ -2,9 +2,22 @@
     <div class="row">
         <div class="col-md-12">
             <div class="padding">
-                <div>
-                    <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb-last></span>
-
+                <div class="text-right">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb-last></span>
+                    </div>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="isCancel || finished" ng-click="reload()">
+                        <i class="fa fa-refresh"></i>
+                        <span translate>button.reload</span>
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-if="!isCancel && !finished" ng-click="cancel()">
+                        <i class="fa fa-times"></i>
+                        <span translate>button.cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="downloadLog()">
+                        <i class="fa fa-download"></i>
+                        <span translate>button.download</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -13,32 +26,57 @@
 
 <div class="padding p-b-0">
     <div class="row m-t-xs">
-        <div class="col-md-6 ">
+        <div class="col-md-12">
             <h5 class=" _300 m-t-sm">
                 <span ng-if="orderId">{{jobChain}} - <i class="text-muted">{{orderId}}</i></span>
                 <span ng-if="taskId"><span ng-if="job">{{job}} </span> <span ng-if="!job" translate>label.taskId </span> - <i class="text-muted">{{taskId}}</i></span>
             </h5>
         </div>
-        <div class="col-md-6 ">
-            <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()" uib-tooltip="{{'tooltip.printLogFile' | translate}}" tooltip-placement="bottom"><i class="fa fa-print"></i></button>
-            <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()" uib-tooltip="{{'tooltip.saveLogFile'| translate}}" tooltip-placement="bottom"><i class="fa fa-save"></i></button>
+    </div>
+    <div class="row m-t-sm">
+        <div class="col-sm-12">
+            <div class="box m-b-sm">
+                <div class="row p-a">
+                    <div class="row col-sm-12">
+                        <label class="col-sm-2">Log Levels </label>
+                        <div class="col-sm-10">
+                            <label class="md-check m-r">
+                                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
+                                <i class="primary"></i><span translate>Info</span>
+                            </label>
+                            <label class="md-check m-r">
+                                <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
+                                <i class="primary"></i><span>Stdout</span>
+                            </label>
+                            <label class="md-check m-r">
+                                <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
+                                <i class="primary"></i><span>Stderr</span>
+                            </label>
+                            <label class="md-check m-r">
+                                <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
+                                <i class="primary"></i><span translate>Debug</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row col-sm-12" >
+                        <label class="col-sm-2">Debug Levels </label>
+                        <div class="col-sm-10" >
+                            <label class="md-check m-r" ng-repeat="level in debugLevels">
+                                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
+                                <i class="primary"></i><span ng-bind="level"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="box white">
-                <div class="box-body m-t-sm p-a p-b-xs">
-                    <div>
-                        <a class="text-primary text text-u-l cursor" ng-click="downloadLog()"><i
-                                class="fa fa-download"></i> <span translate>button.download</span></a>
-                        <a class="pull-right text m-r-sm cursor text-danger-hover" ng-if="!isCancel && !finished"
-                           ng-click="cancel()"><i class="fa fa-times"></i> <span translate>button.cancel</span></a>
-                        <a class="hide pull-right text m-r-sm cursor text-primary-hover"
-                           ng-class="{'show': isCancel || finished}" ng-click="reload()"><i class="fa fa-refresh"></i>
-                            <span translate>button.reload</span></a>
-                    </div>
-                    <div ng-if="!isLoading" class="text-center m-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
-                    <pre id="logs" class="log" style="overflow: auto"></pre>
+                <div class="box-body p-a-0">
+                    <div ng-if="!isLoading" class="text-center p-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
+                    <pre id="logs" class="log p-a" style="overflow: auto"></pre>
                     <div ng-if="error">{{error}}</div>
                 </div>
             </div>
@@ -51,7 +89,7 @@
         var $topHeader = $('.top-header-bar').height() || 16;
         var $subHeaderHt = 59;
         $(window).on('resize', function(){
-           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +124);
+           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +214);
            $('.log').height(height);
         }).trigger('resize'); //on page load
     });

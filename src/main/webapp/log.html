@@ -6,75 +6,43 @@
     <title>JobScheduler</title>
     <meta charset="utf-8"/>
     <meta name="description" content="opensource, scheduler, sos, jobscheduler"/>
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <style>
-        pre.log {
-            color: #3d464d;
-            margin-bottom: 8px;
-            font-family: Lucida Console, monospace;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-        .log_error, .log_stderr {
-            color: red !important
-        }
-        .log_warn {
-            color: tomato
-        }
-        .log_info {
-            color: #000
-        }
-        .log_debug {
-            color: #006400
-        }
-        .log_debug2 {
-            color: #408040
-        }
-        .log_debug3 {
-            color: grey
-        }
-        .log_debug4, .log_debug5, .log_debug6, .log_debug7, .log_debug8 {
-            color: #8080FF
-        }
-        .log_debug9 {
-            color: #a0a0a0
-        }
-        .p-l-sm {
-            padding-left: 8px !important
-        }
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        .loading-img {
-            position: fixed;
-            overflow: hidden !important;
-            top: 25px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1020;
-            background: url(images/loader.gif) 50% 50% no-repeat;
-            background-size: 50px
-        }
-        .link {
-            font-size: 14px;
-        }
-        a{
-            color: #007da6;
-        }
-        .show{
-            display: inline-block !important;
-        }
-    </style>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body ng-controller="LogCtrl">
-<div class="p-l-sm link">
-    <a href ng-click="download()"><i class="fa fa-download"></i> <span> Download</span></a>
-    <a href ng-if="!isCancel && !finished" ng-click="cancel()" style="float:right; margin-right: 8px;"><i class="fa fa-times"></i> <span> Cancel</span></a>
-    <a href ng-class="{'show': isCancel || finished}" ng-click="reload()" style="float:right; margin-right: 8px;display: none"><i class="fa fa-refresh"></i> <span> Reload</span></a>
+<div class="p-l-sm">
+    <label class="text- _600">Modify Log Viewing Criteria</label>
+    <a href ng-if="!isCancel && !finished" ng-click="cancel()" class="m-l m-r pull-right"><i class="fa fa-times"></i> <span> Cancel</span></a>
+    <a href ng-class="{'show-block': isCancel || finished}"  class="hide m-l m-r pull-right" ng-click="reload()"><i class="fa fa-refresh"></i> <span> Reload</span></a>
+    <a href ng-click="download()" class="text-primary text-u-l pull-right"><i class="fa fa-download"></i> <span> Download</span></a>
 </div>
-<pre id="logs" class="p-l-sm log"></pre>
+<div class="m-a-sm w-full show-block p-t-sm b-t">
+    <label class="md-check m-r">
+        <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
+        <i class="primary"></i><span translate>Info</span>
+    </label>
+    <label class="md-check m-r">
+        <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
+        <i class="primary"></i><span>Stdout</span>
+    </label>
+    <label class="md-check m-r">
+        <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
+        <i class="primary"></i><span>Stderr</span>
+    </label>
+    <label class="md-check m-r">
+        <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
+        <i class="primary"></i><span translate>Debug</span>
+    </label>
+</div>
+<div class="m-a-sm w-full show-block b-b p-b-sm">
+    <label class="md-check m-r" ng-repeat="level in debugLevels">
+        <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
+        <i class="primary"></i><span ng-bind="level"></span>
+    </label>
+</div>
+<pre id="logs" class="p-l-sm log" style="margin-top: 0"></pre>
 <div ng-if="error">
     <span class="log_error" ng-bind="error"></span>
 </div>
