@@ -501,8 +501,7 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
-                                                                    <td colspan="4">
-
+                                                                    <td colspan="7">
                                                                         <div class="text-sm"
                                                                              ng-repeat="order in jobChain.fileOrderSources">
                                                                             <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
@@ -768,8 +767,7 @@
                                                       ng-bind="node.state._text | translate"></span></td>
                                         </tr>
                                         <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
-                                            <td colspan="4">
-
+                                            <td colspan="7">
                                                 <div class="text-sm"
                                                      ng-repeat="order in jobChain.fileOrderSources">
                                                     <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>

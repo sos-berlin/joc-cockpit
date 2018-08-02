@@ -157,19 +157,44 @@
         $scope.download = function () {
             $scope.cancel();
             if (getParam("orderId")) {
-                document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id +
-                    '&accessToken=' + token;
+                $http.post('http://localhost:4446/joc/api/order/log/info',{
+                    jobschedulerId: id,
+                    orderId: getParam("orderId"),
+                    jobChain: getParam("jobChain"),
+                    historyId: getParam("historyId")
+                }, {
+                headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
+            }).then(function (res) {
+                console.log(res.data)
+                    document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
+                        '&accessToken=' + token;
+                }, function (err) {
+                    if(err.data.message) {
+                        alert(err.data.message);
+                    }else if(err.data.error.message){
+                       alert(err.data.error.message);
+                    }
+                });
             } else if (getParam("taskId")) {
-                document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + id +
-                    '&accessToken=' + token;
-            }
-            document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                alert('Download error!!');
-                return false;
+                $http.post('http://localhost:4446/joc/api/task/log/info',{
+                    jobschedulerId: id,
+                    taskId: getParam("taskId")
+                }, {
+                headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
+            }).then(function (res) {
+                    document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
+                        '&accessToken=' + token;
+                }, function (err) {
+                    if(err.data.message) {
+                        alert(err.data.message);
+                    }else if(err.data.error.message){
+                       alert(err.data.error.message);
+                    }
+                });
             }
         };
 
-        vm.checkLogLevel = function(type) {
+        $scope.checkLogLevel = function(type) {
             let sheet = document.createElement('style');
             if (type === 'STDOUT') {
                if(!$scope.object.checkBoxs.stdout) {

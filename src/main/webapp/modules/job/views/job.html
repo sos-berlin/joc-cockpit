@@ -603,7 +603,7 @@
                                 </tr>
                                 <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                                     <td></td>
-                                    <td colspan="13">
+                                    <td colspan="14">
                                      {{job.configurationStatus._text | translate}} :
                                         <span ng-if="job.configurationStatus.message" class="{{job.configurationStatus.severity==0 ? 'green' : job.configurationStatus.severity==1 ? 'gold' : job.configurationStatus.severity==2 ? 'crimson': job.configurationStatus.severity==3 ?'dimgrey':
                                               job.configurationStatus.severity==4 ? 'text-dark': job.configurationStatus.severity==5 ? 'dark-orange' : job.configurationStatus.severity==6 ? 'corn-flower-blue' :job.configurationStatus.severity==7 ? 'dark-magenta' : job.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{job.configurationStatus.message}}</span>
@@ -611,7 +611,7 @@
                                 </tr>
                                 <tr ng-if="job.error" style="background: transparent !important;">
                                     <td></td>
-                                    <td colspan="13">
+                                    <td colspan="14">
                                      {{job.error.code}} :<span ng-if="job.error.message" class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
                                               job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}">{{job.error.message}}</span>
                                     </td>
@@ -619,14 +619,14 @@
                                 <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)" style="background: transparent !important;">
                                     <td></td>
                                     <td></td>
-                                    <td colspan="12">
+                                    <td colspan="13">
                                      <span translate>message.noDataFound</span>
                                     </td>
                                 </tr>
                                 <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0" style="background: transparent !important;">
                                     <td></td>
                                     <td></td>
-                                    <td colspan="12">
+                                    <td colspan="13">
                                         <table class="table table-hover table-bordered m-t-xs m-b-sm" >
                                             <thead>
                                             <tr>
@@ -672,7 +672,7 @@
                                 <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0" style="background: transparent !important;" >
                                     <td></td>
                                     <td></td>
-                                    <td colspan="12">
+                                    <td colspan="13">
                                         <div class="p-t-xs {{$index==job.jobChains.length-1 ? 'p-b-xs' : ''}}" ng-repeat="jobChain in job.jobChains">
                                         <div ng-if="$index==0" class="text-muted p-b-xs"><span translate>label.jobChain</span> : </div>
                                         <div class="btn-group dropdown m-l-md">

@@ -76,8 +76,8 @@
             <div class="box white">
                 <div class="box-body p-a-0">
                     <div ng-if="!isLoading" class="text-center p-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
-                    <pre id="logs" class="log p-a" style="overflow: auto"></pre>
-                    <div ng-if="error">{{error}}</div>
+                    <pre id="logs" ng-if="!error" class="log p-a" style="overflow: auto"></pre>
+                    <div class="log" ng-if="error">{{error}}</div>
                 </div>
             </div>
         </div>

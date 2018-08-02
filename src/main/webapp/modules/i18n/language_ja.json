@@ -1317,5 +1317,6 @@
   "button.download": "Download",
   "button.reload": "Reload",
   "placeholder.enterMainSection": "Enter Main Section",
-  "label.defaultHistoryTab": "Default History Tab"
+  "label.defaultHistoryTab": "Default History Tab",
+  "label.headerColor" : "Header Color"
 }

@@ -250,6 +250,23 @@
                                <option value="dark" translate>label.dark</option>
                            </select>
                        </div>
+                    </div>
+                    <div class="row m-t" ng-if="upc.preferences.theme == 'light'">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.headerColor</div>
+                       <div class="col-sm-6">
+                           <select class="form-control w-xl" ng-model="upc.preferences.headerColor" ng-change="upc.changeConfiguration()">
+                               <option value="">Default</option>
+                               <option value="header-aqua-green">Aqua Green</option>
+                               <option value="header-blue">Blue</option>
+                               <option value="header-brown">Brown</option>
+                               <option value="header-green">Green</option>
+                               <option value="header-magenta">Magenta</option>
+                               <option value="header-orange">Orange</option>
+                               <option value="header-red">Red</option>
+                               <option value="header-slate-grey">Slate Grey</option>
+                               <option value="header-violet">Violet</option>
+                           </select>
+                       </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.themeTitle</div>

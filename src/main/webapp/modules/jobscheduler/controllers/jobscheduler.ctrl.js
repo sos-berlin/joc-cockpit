@@ -265,6 +265,7 @@
         };
 
         vm.treeHandlerA = function (data) {
+            data.expanded = true;
             navFullTreeA();
             data.selected1 = true;
             data.agentClusters = [];
@@ -1859,6 +1860,7 @@
         }
 
         vm.treeHandlerL = function (data) {
+             data.expanded = true;
             navFullTreeL();
             data.selected1 = true;
             data.locks = [];
@@ -2325,6 +2327,7 @@
         };
 
         vm.treeHandlerP = function (data) {
+            data.expanded = true;
             navFullTreeP();
             data.selected1 = true;
             data.processClasses = [];
@@ -2818,6 +2821,7 @@
         };
 
         vm.treeHandlerS = function (data) {
+            data.expanded = true;
             vm.reset();
             navFullTree();
             data.selected1 = true;
@@ -3284,6 +3288,7 @@
         };
 
         vm.treeHandlerC = function (data) {
+            data.expanded = true;
             navFullTreeC();
             data.selected1 = true;
             data.calendars = [];

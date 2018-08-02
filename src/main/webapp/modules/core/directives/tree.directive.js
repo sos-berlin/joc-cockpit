@@ -29,7 +29,7 @@
             },
             link: function (b, c, d) {
 
-                var ht = (window.innerHeight - 204);
+                var ht = (window.innerHeight - 175);
                 $('.max-tree-ht').css('height', ht + 'px');
 
                 var e, f, g, h, i, j, k, l, m, n, o, p;

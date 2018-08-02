@@ -3185,6 +3185,7 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
+            data.expanded = true;
             vm.isExpandNode = false;
             navFullTree();
             $scope.reloadState = 'no';
@@ -8897,7 +8898,7 @@
                renderData(res);
             }, function (err) {
                 window.document.getElementById('logs').innerHTML ='';
-                vm.error = err;
+                vm.error = err.data;
                 vm.isLoading = true;
             });
         };
@@ -8912,7 +8913,7 @@
                 renderData(res);
             }, function (err) {
                 window.document.getElementById('logs').innerHTML ='';
-                vm.error = err;
+                vm.error = err.data;
                 vm.isLoading = true;
             });
         };
@@ -9005,15 +9006,23 @@
         vm.downloadLog = function () {
             vm.cancel();
             if (getParam("orderId")) {
-                document.getElementById("tmpFrame").src = './api/order/log/download?orderId='+getParam("orderId")+'&jobChain='+getParam("jobChain")+'&historyId='+getParam("historyId")+'&jobschedulerId=' + getParam("schedulerId") +
-                     '&accessToken=' + SOSAuth.accessTokenId;
+                OrderService.info({
+                    jobschedulerId: getParam("schedulerId"),
+                    orderId: getParam("orderId"),
+                    jobChain: getParam("jobChain"),
+                    historyId: getParam("historyId")
+                }).then(function (res) {
+                    document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + getParam("schedulerId") + '&filename=' +res.log.filename +
+                        '&accessToken=' + SOSAuth.accessTokenId;
+                });
             } else if (getParam("taskId")) {
-                document.getElementById("tmpFrame").src = './api/task/log/download?taskId='+getParam("taskId")+'&jobschedulerId=' + getParam("schedulerId") +
-                     '&accessToken=' + SOSAuth.accessTokenId;
-            }
-            document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                alert('Download error!!');
-                return false;
+                TaskService.info({
+                    jobschedulerId: getParam("schedulerId"),
+                    taskId: getParam("taskId")
+                }).then(function (res) {
+                    document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + getParam("schedulerId") +'&filename=' +res.log.filename +
+                        '&accessToken=' + SOSAuth.accessTokenId;
+                });
             }
         };
 

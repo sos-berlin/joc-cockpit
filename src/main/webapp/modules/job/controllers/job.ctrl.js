@@ -292,6 +292,7 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
+            data.expanded = true;
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 !== data.path)) {
                 vm.showHistoryPanel = '';
@@ -435,7 +436,7 @@
         }
 
         function expandFolderData(data) {
-            vm.folderPath = data.name;
+            vm.folderPath = data.name || '/';
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,

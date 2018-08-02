@@ -494,7 +494,7 @@
 
                         t1 = $timeout(function () {
                             calWindowSize();
-                        }, 400);
+                        }, 500);
                     }
                 } catch (e) {
                     throw new Error(e.message);
