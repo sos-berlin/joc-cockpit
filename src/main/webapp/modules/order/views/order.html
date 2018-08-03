@@ -539,6 +539,12 @@
                                             <i ng-show="orderFilters.filter.sortBy == 'jobChain' && orderFilters.reverse"
                                                class="fa fa-caret-down "></i></a>
                                         </th>
+                                        <th ng-click="sortBy('job')"><a><span translate>label.job</span>
+                                            <i ng-show="orderFilters.filter.sortBy == 'job' && !orderFilters.reverse"
+                                               class="fa fa-caret-up "></i>
+                                            <i ng-show="orderFilters.filter.sortBy == 'job' && orderFilters.reverse"
+                                               class="fa fa-caret-down "></i></a>
+                                        </th>
                                         <th ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>
@@ -660,6 +666,7 @@
                                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                                         </td>
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:filterString"></span></td>
+                                        <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job  | highlight:filterString"></span></td>
                                         <td>
                                             <a class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}"
@@ -691,7 +698,7 @@
                                     </tr>
                                     <tr ng-show="order.show" class="tableexport-ignore">
                                         <td></td>
-                                        <td colspan="9" style="padding: 1px !important;">
+                                        <td colspan="10" style="padding: 1px !important;">
                                             <table class="table m-a-0">
                                                 <thead>
                                                 <tr class="tableexport-ignore">
@@ -794,19 +801,24 @@
                                     <div class="b-b">
                                         <ul class="nav nav-tabs">
                                             <li class="nav-item">
-                                                <a class="nav-link" ng-class="{active: !isAuditLog}"
-                                                   ng-click="showLogFuc(showLogPanel)" href data-toggle="tab"
+                                                <a class="nav-link" ng-class="{active: !isAuditLog && !isTaskHistory}"
+                                                   ng-click="showLogFuc(showLogPanel,'skip')" href data-toggle="tab"
                                                    data-target="#tab1" translate>label.orderHistory</a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" ng-class="{active: !isAuditLog && isTaskHistory}"
+                                                   ng-click="showJobHistory(showLogPanel)" href data-toggle="tab"
+                                                   data-target="#tab3" translate>label.taskHistory</a>
+                                            </li>
                                             <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                                <a class="nav-link" ng-class="{active: isAuditLog}"
+                                                <a class="nav-link" ng-class="{active: isAuditLog && !isTaskHistory}"
                                                    ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab"
                                                    data-target="#tab2" translate>label.auditLog</a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="tab-content p-a">
-                                        <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog}"
+                                        <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog && !isTaskHistory}"
                                              id="tab1">
                                             <div class="row">
                                                 <div class="table-responsive" resizable r-directions="['bottom']"
@@ -843,7 +855,48 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}" id="tab2">
+                                        <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && isTaskHistory}" id="tab3" >
+                                         <div class="row">
+                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.taskId</th>
+                                                        <th translate>label.status</th>
+                                                        <th translate>label.started</th>
+                                                        <th translate>label.ended</th>
+                                                        <th translate>label.duration</th>
+                                                        <th translate>label.exitCode</th>
+                                                        <th translate>label.errorCode</th>
+                                                        <th width="30" translate>label.errorText</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="task in showLogPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
+                                                           <td>
+                                                               <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                                <span ng-bind="task.taskId"></span>
+                                                           </td>
+                                                           <td>
+                                                               <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
+                                                           </td>
+                                                           <td>{{task.startTime | stringToDate}}</td>
+                                                           <td>{{task.endTime | stringToDate}}</td>
+                                                           <td>{{task.startTime | duration:task.endTime}}</td>
+                                                           <td>{{task.exitCode}}</td>
+                                                           <td>{{task.error.code}}</td>
+                                                           <td class="text-danger">{{task.error.message}}</td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                                 <div ng-if="showLogPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                    message.noTaskHistoryFound
+                                                </div>
+                                            </div>
+                                         </div>
+                                     </div>
+                                        <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}" id="tab2">
                                             <div class="row">
                                                 <div class="table-responsive" resizable r-directions="['bottom']"
                                                      r-height="250">

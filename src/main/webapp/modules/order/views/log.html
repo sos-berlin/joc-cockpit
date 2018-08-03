@@ -33,42 +33,30 @@
             </h5>
         </div>
     </div>
-    <div class="row m-t-sm">
+    <div class="row m-t-sm" ng-if="!error">
         <div class="col-sm-12">
-            <div class="box m-b-sm">
-                <div class="row p-a">
-                    <div class="row col-sm-12">
-                        <label class="col-sm-2">Log Levels </label>
-                        <div class="col-sm-10">
-                            <label class="md-check m-r">
-                                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
-                                <i class="primary"></i><span translate>Info</span>
-                            </label>
-                            <label class="md-check m-r">
-                                <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
-                                <i class="primary"></i><span>Stdout</span>
-                            </label>
-                            <label class="md-check m-r">
-                                <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
-                                <i class="primary"></i><span>Stderr</span>
-                            </label>
-                            <label class="md-check m-r">
-                                <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
-                                <i class="primary"></i><span translate>Debug</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row col-sm-12" >
-                        <label class="col-sm-2">Debug Levels </label>
-                        <div class="col-sm-10" >
-                            <label class="md-check m-r" ng-repeat="level in debugLevels">
-                                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
-                                <i class="primary"></i><span ng-bind="level"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
+                <i class="primary"></i><span translate>Info</span>
+            </label>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
+                <i class="primary"></i><span>Stdout</span>
+            </label>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
+                <i class="primary"></i><span>Stderr</span>
+            </label>
+            <label class="md-check m-r" ng-if="isDeBugLevel">
+                <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
+                <i class="primary"></i><span translate>Debug</span>
+            </label>
+        </div>
+        <div class="col-sm-12 m-t" ng-if="isDeBugLevel">
+            <label class="md-check m-r" ng-repeat="level in debugLevels">
+                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
+                <i class="primary"></i><span ng-bind="level"></span>
+            </label>
         </div>
     </div>
     <div class="row">
@@ -77,7 +65,11 @@
                 <div class="box-body p-a-0">
                     <div ng-if="!isLoading" class="text-center p-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
                     <pre id="logs" ng-if="!error" class="log p-a" style="overflow: auto"></pre>
-                    <div class="log" ng-if="error">{{error}}</div>
+                    <div class="log text-center" ng-if="error">
+                        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px">{{status}}</div>
+                        <div class="text-lg text-muted">Error!</div>
+                        <div class="text m-t" ng-bind="error"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,7 +81,7 @@
         var $topHeader = $('.top-header-bar').height() || 16;
         var $subHeaderHt = 59;
         $(window).on('resize', function(){
-           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +214);
+           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +174);
            $('.log').height(height);
         }).trigger('resize'); //on page load
     });

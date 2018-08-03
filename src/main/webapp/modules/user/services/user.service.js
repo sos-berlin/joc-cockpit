@@ -158,6 +158,13 @@
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
+            }, defaultConfiguration: function (t) {
+                var o = n.defer(), r = e("configuration/login");
+                return r.save(t, function (e) {
+                    o.resolve(e)
+                }, function (e) {
+                    o.reject(e)
+                }), o.promise
             }
         }
     }

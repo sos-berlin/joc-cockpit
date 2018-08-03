@@ -14,8 +14,8 @@
         .controller('HistoryCtrl', HistoryCtrl)
         .controller('LogCtrl', LogCtrl);
 
-    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location"];
-    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location) {
+    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService"];
+    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.overview = false;
@@ -110,9 +110,15 @@
             }
         });
 
-        vm.showLogFuc = function (value) {
+        vm.showLogFuc = function (value, skip) {
             var orders = {};
             vm.isAuditLog = false;
+             if(vm.userPreferences.historyTab === 'order' || skip) {
+                vm.isTaskHistory = false;
+            }else{
+                 vm.showJobHistory(value);
+                 return;
+            }
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = vm.schedulerIds.selected;
@@ -124,6 +130,27 @@
 
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        vm.showJobHistory = function (order) {
+            vm.showLogPanel = order;
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxAuditLogPerObject;
+            if (order.historyId) {
+                obj.historyIds = [];
+                obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else if (order.taskId) {
+                obj.taskIds = [order.taskId];
+            } else {
+                obj.jobs = [{job: order.job}];
+            }
+            TaskService.histories(obj).then(function (res) {
+                vm.showLogPanel.taskHistory = res.history;
+            }, function () {
+                vm.showLogPanel.taskHistory = [];
+            })
         };
 
         function loadAuditLogs(obj) {
@@ -2243,12 +2270,15 @@
             vm.object.orders = [];
         };
 
+        var isLoaded = true;
         function volatileInfo(draw) {
+            isLoaded = false;
             JobChainService.getJobChain({
                 jobschedulerId: vm.schedulerIds.selected,
                 jobChain: vm.path,
                 maxOrders: vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
+                isLoaded = true;
                 vm.jobChain.fileOrderSources = [];
                 var temp = [];
                 temp = angular.merge({},vm.jobChain, res.jobChain);
@@ -2293,6 +2323,7 @@
                 }
 
             }, function () {
+                isLoaded = true;
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
 
@@ -2315,7 +2346,6 @@
 
 
         function getPermanent() {
-
             if (object.path) {
                 vm.path = object.path;
                 if (vm.path.substring(0, 1) == '/')
@@ -2390,7 +2420,6 @@
             vm.orderFilters.filter.sortBy = propertyName;
         };
 
-
         vm.getPlan = function (calendarView, viewDate) {
             var date = '';
             if (calendarView == 'year') {
@@ -2459,7 +2488,6 @@
             openCalendar();
             vm.object.jobChains = [];
         };
-
 
         function populatePlanItems(res) {
             vm.planItemData = res.planItems;
@@ -2959,7 +2987,7 @@
                             }
                         }
 
-                        if (vm.jobChain.path === path[0] || flag) {
+                        if ((vm.jobChain.path === path[0] || flag) && isLoaded) {
                             volatileInfo();
                         }
 
@@ -3708,9 +3736,15 @@
             initTree();
         };
 
-        vm.showLogFuc = function (value) {
+        vm.showLogFuc = function (value, skip) {
             var orders = {};
             vm.isAuditLog = false;
+             if(vm.userPreferences.historyTab === 'order' || skip) {
+                vm.isTaskHistory = false;
+            }else{
+                 vm.showJobHistory(value);
+                 return;
+            }
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = vm.schedulerIds.selected;
@@ -3741,6 +3775,27 @@
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
             if (vm.permission.AuditLog.view.status)
                 loadAuditLogs(obj);
+        };
+
+        vm.showJobHistory = function (order) {
+            vm.showLogPanel = order;
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxAuditLogPerObject;
+            if (order.historyId) {
+                obj.historyIds = [];
+                obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else if (order.taskId) {
+                obj.taskIds = [order.taskId];
+            } else {
+                obj.jobs = [{job: order.job}];
+            }
+            TaskService.histories(obj).then(function (res) {
+                vm.showLogPanel.taskHistory = res.history;
+            }, function () {
+                vm.showLogPanel.taskHistory = [];
+            })
         };
 
         if (vm.orderFilters && vm.orderFilters.showLogPanel) {
@@ -8898,7 +8953,12 @@
                renderData(res);
             }, function (err) {
                 window.document.getElementById('logs').innerHTML ='';
-                vm.error = err.data;
+                if (err.data && err.data.error) {
+                    $scope.error = err.data.error.message;
+                } else {
+                    $scope.error = err.data.message;
+                }
+                $scope.status = err.status;
                 vm.isLoading = true;
             });
         };
@@ -8913,7 +8973,12 @@
                 renderData(res);
             }, function (err) {
                 window.document.getElementById('logs').innerHTML ='';
-                vm.error = err.data;
+                if (err.data && err.data.error) {
+                    $scope.error = err.data.error.message;
+                } else {
+                    $scope.error = err.data.message;
+                }
+                $scope.status = err.status;
                 vm.isLoading = true;
             });
         };
@@ -8950,6 +9015,7 @@
                         div.className += " stderr";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
+                    vm.isDeBugLevel = level.match('debug');
                     var j = 0;
                     while (true) {
                         if (offset < (j + 1) * 1024 * 512) {

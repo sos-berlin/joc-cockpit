@@ -126,6 +126,12 @@
             }
         };
 
+        function getDefaultConfiguration(){
+            UserService.defaultConfiguration().then(function(res){
+                console.log(res);
+            });
+        }
+
     }
 
     UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope', 'UserService'];

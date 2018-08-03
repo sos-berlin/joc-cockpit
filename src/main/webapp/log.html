@@ -1,53 +1,73 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="myapp" ng-strict-di>
-
 <head>
     <meta charset="utf-8"/>
     <title>JobScheduler</title>
     <meta charset="utf-8"/>
     <meta name="description" content="opensource, scheduler, sos, jobscheduler"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body{
+            background: #fff;
+            overflow-x: auto ;
+        }
+        pre.logs {
+            color: #3d464d;
+            margin-bottom: 8px;
+            font-family: Lucida Console, monospace;
+            font-size: 12px;
+            margin-top: 8px;
+            background: #fff;
+        }
+        .loading-img {
+            top: 30px;
+            background-color: #fff;
+        }
+    </style>
 </head>
 <body ng-controller="LogCtrl">
-<div class="p-l-sm">
-    <label class="text- _600">Modify Log Viewing Criteria</label>
-    <a href ng-if="!isCancel && !finished" ng-click="cancel()" class="m-l m-r pull-right"><i class="fa fa-times"></i> <span> Cancel</span></a>
-    <a href ng-class="{'show-block': isCancel || finished}"  class="hide m-l m-r pull-right" ng-click="reload()"><i class="fa fa-refresh"></i> <span> Reload</span></a>
-    <a href ng-click="download()" class="text-primary text-u-l pull-right"><i class="fa fa-download"></i> <span> Download</span></a>
-</div>
-<div class="m-a-sm w-full show-block p-t-sm b-t">
-    <label class="md-check m-r">
-        <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
-        <i class="primary"></i><span translate>Info</span>
-    </label>
-    <label class="md-check m-r">
-        <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
-        <i class="primary"></i><span>Stdout</span>
-    </label>
-    <label class="md-check m-r">
-        <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
-        <i class="primary"></i><span>Stderr</span>
-    </label>
-    <label class="md-check m-r">
-        <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
-        <i class="primary"></i><span translate>Debug</span>
-    </label>
-</div>
-<div class="m-a-sm w-full show-block b-b p-b-sm">
-    <label class="md-check m-r" ng-repeat="level in debugLevels">
-        <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
-        <i class="primary"></i><span ng-bind="level"></span>
-    </label>
-</div>
-<pre id="logs" class="p-l-sm log" style="margin-top: 0"></pre>
-<div ng-if="error" class="p-a-sm">
-    <span class="log_error" ng-bind="error"></span>
-</div>
-<div ng-if="loading" class="loading-img"></div>
-<iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
+    <div class="p-t-sm" ng-if="!error">
+        <div class="p-l-sm">
+            <label class="text- _600">Modify Log Viewing Criteria</label>
+            <a href ng-if="!isCancel && !finished" ng-click="cancel()" class="m-l m-r pull-right"><i class="fa fa-times"></i> <span> Cancel</span></a>
+            <a href ng-class="{'show-block': isCancel || finished}"  class="hide m-l m-r pull-right" ng-click="reload()"><i class="fa fa-refresh"></i> <span> Reload</span></a>
+            <a href ng-click="download()" class="text-primary text-u-l pull-right"><i class="fa fa-download"></i> <span> Download</span></a>
+        </div>
+        <div class="m-a-sm w-full show-block p-t-sm b-t">
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
+                <i class="primary"></i><span translate>Info</span>
+            </label>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
+                <i class="primary"></i><span>Stdout</span>
+            </label>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
+                <i class="primary"></i><span>Stderr</span>
+            </label>
+            <label class="md-check m-r" ng-if="isDeBugLevel">
+                <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
+                <i class="primary"></i><span translate>Debug</span>
+            </label>
+        </div>
+        <div class="m-a-sm w-full show-block b-b p-b-sm" ng-if="isDeBugLevel">
+            <label class="md-check m-r" ng-repeat="level in debugLevels">
+                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
+                <i class="primary"></i><span ng-bind="level"></span>
+            </label>
+        </div>
+        <pre id="logs" class="p-l-sm logs" style="margin-top: 0"></pre>
+    </div>
+    <div ng-if="error" class="text-center">
+        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px">{{status}}</div>
+        <div class="text-lg text-muted">Error!</div>
+        <div class="text m-t" ng-bind="error"></div>
+    </div>
+    <div ng-if="loading" class="loading-img"></div>
+    <iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="modules/log.js"></script>
 </body>

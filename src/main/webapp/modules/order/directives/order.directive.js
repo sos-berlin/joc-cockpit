@@ -172,8 +172,6 @@
             transclude: true,
 
             link: function (scope, element, attributes, _, transclude) {
-                var cloneElement;
-                var cloneScope;
                 var compiledHtml;
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {

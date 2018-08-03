@@ -120,8 +120,22 @@
                     if(vm.jobChains && vm.jobChains.length && res.nestedJobChains)
                         vm.jobChains[0].nestedJobChains = res.nestedJobChains;
                 }
-                if(vm.showHistoryImmeditaly){
 
+                if (vm.jobChains[0].show && vm.userPreferences.showTasks) {
+                    angular.forEach(vm.jobChains[0].nodes, function (val,index) {
+                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
+                            JobService.get({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                jobs: [{job: val.job.path}]
+                            }).then(function (res1) {
+                                vm.jobChains[0].nodes[index].job = _.merge(vm.jobChains[0].nodes[index].job, res1.jobs[0]);
+                            });
+                        }
+                    });
+
+                }
+
+                if (vm.showHistoryImmeditaly) {
                     vm.showHistory(vm.jobChains[0]);
                 }
             });
@@ -158,7 +172,7 @@
                     if (res.configurations && res.configurations.length > 0) {
                         vm.jobChainFilterList = vm.jobChainFilterList.concat(res.configurations);
                     }
-                    var data = [];
+                    let data = [];
                     for (let i = 0; i < vm.jobChainFilterList.length; i++) {
                         let flag = true;
                         for (let j = 0; j < data.length; j++) {
@@ -2445,6 +2459,18 @@
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                if ($location.search().scheduler_id && $location.search().path) {
+                    for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
+                        if (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" && vm.events[0].eventSnapshots[j].path == $location.search().path) {
+                            let obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.jobChains = [{jobChain: $location.search().path}];
+                            getJobChainByPathV(obj);
+                            break;
+                        }
+                    }
+                    return;
+                }
                 var arr = [];
                 var arr1 = [];
                 var callTree = false;
@@ -2860,6 +2886,7 @@
         });
 
         vm.treeHandler = function (data) {
+            data.expanded = true;
             navFullTree();
             $scope.reloadState = 'no';
             data.jobs = [];

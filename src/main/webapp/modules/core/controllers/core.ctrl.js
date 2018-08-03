@@ -371,8 +371,7 @@
                 loadSettingConfiguration();
             if (vm.schedulerIds.selected)
                 getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
-            else
-                refreshParent();
+
         });
 
         function setPermission() {

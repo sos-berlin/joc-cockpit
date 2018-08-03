@@ -17,6 +17,7 @@
             },
             debug: 'Debug'
         };
+        $scope.isDeBugLevel = false;
         $scope.debugLevels = ['Debug','Debug2','Debug3','Debug4','Debug5','Debug6','Debug7','Debug8','Debug9'];
         function getCookie(cname) {
             let name = cname + "=";
@@ -97,6 +98,7 @@
                         div.className += " stderr";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
+                    $scope.isDeBugLevel = level.match('debug');
                     var j = 0;
                     while (true) {
                         if (offset < (j + 1) * 1024 * 512) {
@@ -127,13 +129,14 @@
                 }, 50);
 
             }, function (err) {
-                document.getElementById("logs").innerHTML = "";
                 $scope.loading = false;
+                document.getElementById("logs").innerHTML = "";
                 if (err.data && err.data.error) {
-                    $scope.error = JSON.stringify(err.data.error);
+                    $scope.error = err.data.error.message;
                 } else {
-                    $scope.error = JSON.stringify(err.data);
+                    $scope.error = err.data.message;
                 }
+                $scope.status = err.status;
             });
         }
 
@@ -165,8 +168,8 @@
                 }, {
                 headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
             }).then(function (res) {
-                console.log(res.data)
-                    document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
+               
+                  document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
                         '&accessToken=' + token;
                 }, function (err) {
                     if(err.data.message) {

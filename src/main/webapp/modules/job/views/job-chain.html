@@ -906,7 +906,7 @@
                                                                         </td>
                                                                     </tr>
                                                                     <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
-                                                                        <td colspan="4">
+                                                                        <td colspan="7">
                                                                             <div class="text-sm"
                                                                                  ng-repeat="order in jobChain.fileOrderSources track by $index">
                                                                                 <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
@@ -1050,13 +1050,10 @@
                                                                         <span translate>button.showAssignedCalendar</span>
                                                                     </a>
                                                                     <div class="dropdown-divider"></div>
-                                                                    <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
-                                                                       class="dropdown-item"
-                                                                       ng-if="permission.Order.view.configuration && order._type =='PERMANENT'"
-                                                                       translate>button.showConfiguration</a>
+                                                                    <a class="dropdown-item" ng-if="permission.Order.view.configuration && order._type =='PERMANENT'"
+                                                                       ng-click="showConfiguration('order',order.jobChain,order.orderId)" translate>button.showConfiguration</a>
                                                                     <a class="dropdown-item"
-                                                                       ng-click="copyLinkToObject('order',order.path)"
-                                                                       translate>button.copyLinkToObject</a>
+                                                                       ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                                                 </div>
                                                             </div>
                                                             <span>
@@ -1163,7 +1160,7 @@
                                                           ng-bind="node.state._text | translate"></span></td>
                                             </tr>
                                             <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
-                                                <td colspan="4">
+                                                <td colspan="7">
                                                     <div class="text-sm "
                                                          ng-repeat="order in jobChain.fileOrderSources track by $index">
                                                         <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>

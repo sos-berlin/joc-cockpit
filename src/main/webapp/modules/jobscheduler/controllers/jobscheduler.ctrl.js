@@ -5004,6 +5004,9 @@
             setWidgetHeight();
         });
 
+        vm.downloadJocLog = function(){
+            $("#tmpFrame").attr('src', './api/log?accessToken='+ SOSAuth.accessTokenId);
+        };
 
         vm.editLayout = function () {
             vm._tempDashboard = angular.copy(vm.dashboard);
