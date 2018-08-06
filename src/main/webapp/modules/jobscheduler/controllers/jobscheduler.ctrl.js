@@ -265,7 +265,8 @@
         };
 
         vm.treeHandlerA = function (data) {
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTreeA();
             data.selected1 = true;
             data.agentClusters = [];
@@ -1860,7 +1861,8 @@
         }
 
         vm.treeHandlerL = function (data) {
-             data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTreeL();
             data.selected1 = true;
             data.locks = [];
@@ -2327,7 +2329,8 @@
         };
 
         vm.treeHandlerP = function (data) {
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTreeP();
             data.selected1 = true;
             data.processClasses = [];
@@ -2821,7 +2824,8 @@
         };
 
         vm.treeHandlerS = function (data) {
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             vm.reset();
             navFullTree();
             data.selected1 = true;
@@ -3288,7 +3292,8 @@
         };
 
         vm.treeHandlerC = function (data) {
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTreeC();
             data.selected1 = true;
             data.calendars = [];
@@ -5738,9 +5743,10 @@
                 if (vm.userPreferences.auditLog && action != 'downloadLog' && action != 'downloadDebugLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
-                    vm.comments.name = id + ' (' + host + ':' + port + ')';
+                    if(id && host)
+                        vm.comments.name = id + ' (' + host + ':' + port + ')';
                     vm.comments.operation = action == 'remove' ? 'Remove instance' : 'button.'+action;
-                    vm.comments.type = 'JobScheduler';
+                    vm.comments.type = objectType !== 'cluster' ? 'JobScheduler' : 'Master Cluster';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
                         controller: 'DialogCtrl',

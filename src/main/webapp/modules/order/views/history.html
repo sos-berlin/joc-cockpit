@@ -940,7 +940,7 @@
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="history.show = false;$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind-html="history.orderId | highlight:filterString"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)">
@@ -1093,7 +1093,7 @@
                                 <span ng-if="!jobHistory.jobschedulerId" ng-bind="jobSearch.jobschedulerId"></span>
                             </td>
                             <td ng-click="showLogWindow(null,jobHistory)">
-                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(jobHistory);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind-html="jobHistory.taskId | highlight:filterString"></span>
                             </td>
                             <td ng-click="showLogWindow(null,jobHistory)">

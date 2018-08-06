@@ -306,7 +306,8 @@
 
         vm.treeHandler = function (data) {
             vm.reset();
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 !== data.path)) {
                 vm.showHistoryPanel = '';
@@ -2886,7 +2887,8 @@
         });
 
         vm.treeHandler = function (data) {
-            data.expanded = true;
+            if(vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
             navFullTree();
             $scope.reloadState = 'no';
             data.jobs = [];

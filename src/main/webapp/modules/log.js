@@ -54,6 +54,7 @@
         var canceller, logElems = [], interval;
 
         function init() {
+            $scope.error = '';
             logElems = [];
             if ($scope.shareData && getParam("orderId")) {
                 let orders = {
@@ -87,6 +88,9 @@
                 document.getElementById("logs").innerHTML = "";
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
+                    if (level.toLowerCase() == "trace") {
+                        level = "debug9";
+                    }
                     div.className = "log_" + ((level) ? level.toLowerCase() : "info");
                     if (level.toLowerCase() === "stdout") {
                         div.className += " stdout";
@@ -98,7 +102,7 @@
                         div.className += " stderr";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
-                    $scope.isDeBugLevel = level.match('debug');
+                    $scope.isDeBugLevel = level.match('(debug\d?)');
                     var j = 0;
                     while (true) {
                         if (offset < (j + 1) * 1024 * 512) {
@@ -136,7 +140,7 @@
                 } else {
                     $scope.error = err.data.message;
                 }
-                $scope.status = err.status;
+                $scope.errStatus = err.status;
             });
         }
 

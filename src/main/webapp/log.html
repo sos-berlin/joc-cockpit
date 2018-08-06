@@ -61,9 +61,9 @@
         </div>
         <pre id="logs" class="p-l-sm logs" style="margin-top: 0"></pre>
     </div>
-    <div ng-if="error" class="text-center">
-        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px">{{status}}</div>
-        <div class="text-lg text-muted">Error!</div>
+    <div class="text-center hide" ng-class="{'show' : error && !loading}">
+        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px" ><span ng-bind="errStatus"></span></div>
+        <div class="text-lg text-muted hide" ng-class="{'show' : errStatus}">Error!</div>
         <div class="text m-t" ng-bind="error"></div>
     </div>
     <div ng-if="loading" class="loading-img"></div>

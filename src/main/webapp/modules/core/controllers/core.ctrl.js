@@ -239,6 +239,7 @@
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
                 preferences.historyTab = 'order';
+                preferences.expandOption = 'single';
                 preferences.pageView = 'list';
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
@@ -305,6 +306,12 @@
                             }
                             if (preferences && !preferences.historyTab) {
                                 preferences.historyTab = 'order';
+                            }
+                            if (preferences && !preferences.expandOption) {
+                                preferences.expandOption = 'single';
+                            }
+                            if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
+                                preferences.maxNumInOrderOverviewPerObject = 10;
                             }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
@@ -530,16 +537,24 @@
 
         vm.downloadLog = function (data, id) {
             if (data.orderId) {
-                document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + data.orderId + '&jobChain=' + data.jobChain + '&historyId=' + data.historyId + '&jobschedulerId=' + (id || vm.schedulerIds.selected) +
-                    '&accessToken=' + SOSAuth.accessTokenId;
+                OrderService.info({
+                    jobschedulerId: id  || vm.schedulerIds.selected,
+                    orderId: data.orderId,
+                    jobChain: data.jobChain,
+                    historyId: data.historyId
+                }).then(function (res) {
+                    document.getElementById("tmpFrame").src = './api/order/log/download?jobschedulerId=' + (id  || vm.schedulerIds.selected) + '&filename=' +res.log.filename +
+                        '&accessToken=' + SOSAuth.accessTokenId;
+                });
             } else if (data.taskId) {
-                document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + data.taskId + '&jobschedulerId=' + (id || vm.schedulerIds.selected) +
-                    '&accessToken=' + SOSAuth.accessTokenId;
+                TaskService.info({
+                    jobschedulerId: id  || vm.schedulerIds.selected,
+                    taskId: data.taskId
+                }).then(function (res) {
+                    document.getElementById("tmpFrame").src = './api/task/log/download?&jobschedulerId=' + (id  || vm.schedulerIds.selected) +'&filename=' +res.log.filename +
+                        '&accessToken=' + SOSAuth.accessTokenId;
+                });
             }
-            document.getElementById("tmpFrame").contentWindow.onerror = function () {
-                alert('Download error!!');
-                return false;
-            };
 
         };
 

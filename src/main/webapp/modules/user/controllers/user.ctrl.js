@@ -128,10 +128,18 @@
 
         function getDefaultConfiguration(){
             UserService.defaultConfiguration().then(function(res){
-                console.log(res);
+                if(res.customLogo && res.customLogo.name){
+                    let imgUrl = 'http://localhost:4446/ext/images/'+res.customLogo.name;
+                    if(res.customLogo.position && res.customLogo.position !== 'BOTTOM'){
+                        $('#logo-top').append("<img style='height: "+res.customLogo.height+"' src='"+imgUrl+"'>")
+                    }else{
+                        $('#logo-bottom').append("<img style='height: "+res.customLogo.height+"' src='"+imgUrl+"'>")
+                    }
+                }
             });
         }
 
+        getDefaultConfiguration();
     }
 
     UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope', 'UserService'];
@@ -209,8 +217,6 @@
         };
 
         vm.changeConfiguration = function (reload) {
-
-
             if (isNaN(parseInt(vm.preferences.maxRecords))) {
                 vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
             }

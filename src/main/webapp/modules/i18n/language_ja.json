@@ -1319,5 +1319,8 @@
   "placeholder.enterMainSection": "Enter Main Section",
   "label.defaultHistoryTab": "Default History Tab",
   "label.headerColor" : "Header Color",
+  "label.showContentSubFolder" : "Show Sub-folders and Content",
+  "label.showContentOnly" : "Content Only",
+  "label.showSubFolder" : "Sub-folder and Content",
   "button.downloadJocCockpitLog":"Download JOC Cockpit Log"
 }

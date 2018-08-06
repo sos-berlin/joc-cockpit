@@ -66,8 +66,8 @@
                     <div ng-if="!isLoading" class="text-center p-t-md"><i class="fa fa-spin fa-spinner fa-2x"></i></div>
                     <pre id="logs" ng-if="!error" class="log p-a" style="overflow: auto"></pre>
                     <div class="log text-center" ng-if="error">
-                        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px">{{status}}</div>
-                        <div class="text-lg text-muted">Error!</div>
+                        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px" ><span ng-bind="errStatus"></span></div>
+                        <div class="text-lg text-muted" ng-if="errStatus">Error!</div>
                         <div class="text m-t" ng-bind="error"></div>
                     </div>
                 </div>
