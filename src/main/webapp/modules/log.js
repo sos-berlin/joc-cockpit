@@ -164,7 +164,7 @@
         $scope.download = function () {
             $scope.cancel();
             if (getParam("orderId")) {
-                $http.post('http://localhost:4446/joc/api/order/log/info',{
+                $http.post('./api/order/log/info',{
                     jobschedulerId: id,
                     orderId: getParam("orderId"),
                     jobChain: getParam("jobChain"),
@@ -172,8 +172,7 @@
                 }, {
                 headers: {'X-Access-Token': token, 'Content-Type': 'application/json'}
             }).then(function (res) {
-               
-                  document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
+                    document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
                         '&accessToken=' + token;
                 }, function (err) {
                     if(err.data.message) {
@@ -183,7 +182,7 @@
                     }
                 });
             } else if (getParam("taskId")) {
-                $http.post('http://localhost:4446/joc/api/task/log/info',{
+                $http.post('./api/task/log/info',{
                     jobschedulerId: id,
                     taskId: getParam("taskId")
                 }, {

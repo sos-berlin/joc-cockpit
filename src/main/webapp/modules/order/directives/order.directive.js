@@ -415,19 +415,15 @@
                             if (item.secondParent) {
                                 var lastTop = scope.coords[index].top;
                                 angular.forEach(scope.coords, function (obj) {
-                                    if (scope.coords[index].left == obj.left && lastTop == obj.top) {
-
+                                    if (scope.coords[index].left === obj.left && lastTop === obj.top) {
                                         lastTop = obj.top + rectH + splitMargin;
                                     }
-
                                 });
                                 scope.coords[index].top = lastTop;
                             } else {
                                 var matched = false;
-
                                 angular.forEach(scope.coords, function (obj, i) {
-
-                                    if (obj.next == item.name && scope.coords[index].left <= obj.left) {
+                                    if (obj.next === item.name && scope.coords[index].left <= obj.left) {
                                         scope.coords[index].left = obj.left + margin + rectW;
                                         scope.coords[index].parent = obj.actual;
                                         if (!matched) {
@@ -436,10 +432,9 @@
                                         matched = true;
                                     }
 
-                                    if (item.nextNode == obj.name && scope.coords[index].left <= obj.left) {
+                                    if (item.nextNode === obj.name && scope.coords[index].left <= obj.left) {
                                         obj.left = scope.coords[index].left + margin + rectW;
                                     }
-
                                 });
 
 
@@ -1217,9 +1212,8 @@
                                         node.appendChild(i);
                                     }
                                 } else {
-                                    width = Math.abs(width);
                                     if (width > height) {
-                                        var i = document.createElement('i');
+                                        let i = document.createElement('i');
                                         i.style['font-size'] = '22px';
                                         i.style['color'] = '#a5a5a5';
                                         i.style['position'] = 'absolute';
@@ -1247,7 +1241,7 @@
                             node.style['left'] = left + 'px';
                             node.style['width'] = width + 'px';
                             node.style['height'] = height + 'px';
-                            var i = document.createElement('i');
+                            let i = document.createElement('i');
                             i.style['position'] = 'absolute';
                             i.style['margin-top'] = '-13px';
                             i.style['font-size'] = '22px';
@@ -1281,10 +1275,7 @@
                                 if (res.job.processClass) {
                                     vm.jobChainData.nodes[nIndex].processClass = res.job.processClass;
                                 }
-
-                            }, function (err) {
-
-                            })
+                            });
                         } else if (node.jobChain && node.jobChain.path) {
                             vm.getJobChainInfo({
                                 filter: {
@@ -1325,49 +1316,51 @@
 
                     vm.$watch("showErrorNodes", toggleErrorNodes);
 
-                    function toggleErrorNodes(val) {
-                        var errorElms = document.getElementsByClassName("error-link");
-                        var errorNodes = document.getElementsByClassName("error-node");
+                    function toggleErrorNodes() {
+                        let errorElms = document.getElementsByClassName("error-link");
+                       // var errorNodes = document.getElementsByClassName("error-node");
+                        if(!errorElms.length){
+                            return;
+                        }
                         if (vm.showErrorNodes) {
                             angular.forEach(errorElms, function (elm) {
                                 elm.style['display'] = 'block';
                             });
-                            angular.forEach(errorNodes, function (elm) {
+/*                            angular.forEach(errorNodes, function (elm) {
                                 elm.style['display'] = 'block';
-                            });
+                            });*/
                         } else {
                             angular.forEach(errorElms, function (elm) {
                                 elm.style['display'] = 'none';
                             });
-                            angular.forEach(errorNodes, function (elm) {
+/*                            angular.forEach(errorNodes, function (elm) {
                                 elm.style['display'] = 'none';
-                            });
+                            });*/
                         }
                     }
 
 
                     vm.$on('reloadJobChain', function () {
-
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
-                        if (vm.jobChainData)
-                            var temp = vm.jobChainData.nodes;
-                        vm.jobChainData = angular.copy(vm.jobChain);
-                        if (temp)
-                            vm.jobChainData.nodes = temp;
+                        if (vm.jobChainData) {
+                            let temp = vm.jobChainData.nodes;
+                            vm.jobChainData = angular.copy(vm.jobChain);
+                            if (temp) {
+                                vm.jobChainData.nodes = temp;
+                            }
+                            angular.forEach(vm.jobChain.nodes, function (item, index1) {
+                                angular.forEach(vm.jobChainData.nodes, function (item2, index2) {
+                                    if (item2 && (item.name === item2.name)) {
+                                        vm.jobChainData.nodes[index2] = item;
+                                    }
+                                    if (index1 == vm.jobChain.nodes.length - 1 && vm.jobChainData.nodes.length - 1 == index2) {
+                                        getInfo(0);
+                                        updateJobChain();
+                                    }
 
-                        angular.forEach(vm.jobChain.nodes, function (item, index1) {
-                            angular.forEach(vm.jobChainData.nodes, function (item2, index2) {
-                                if (item2 && (item.name == item2.name)) {
-                                    vm.jobChainData.nodes[index2] = item;
-                                }
-                                if (index1 == vm.jobChain.nodes.length - 1 && vm.jobChainData.nodes.length - 1 == index2) {
-                                    getInfo(0);
-                                    updateJobChain();
-                                }
-
+                                })
                             })
-                        })
-
+                        }
                     });
 
 
@@ -1447,50 +1440,62 @@
                                 blockEllipsisFlowOrder = 'block-ellipsis-flow-order1';
                             }
                             angular.forEach(orders, function (order, index) {
-                                var node = document.getElementById(name);
-
+                                var node = $('#'+name);
                                 if (node) {
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     if (container && container.childNodes.length > 0) {
                                         var label = document.createElement('div');
                                         label.setAttribute('class', 'order-cls');
                                         label.innerHTML = getOrderMenu(order, name);
-                                        var top = container.offsetTop;
                                         container.appendChild(label);
                                         if (index <= 4) {
-                                            container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
+                                            if(container.offsetTop == 0){
+                                                container.style['top'] = (parseInt(node.css('top').replace(/[^-\d\.]/g, '')) - (orders.length * 25))+ 'px';
+                                            }else {
+                                                container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
+                                            }
                                         }
                                         container.appendChild(label);
                                         if (index == 4) {
-                                            container.style['max-height'] = container.clientHeight + 'px';
+                                            if(container.clientHeight == 0) {
+                                                container.style['max-height'] = '100px';
+                                            }else{
+                                                container.style['max-height'] = container.clientHeight + 'px';
+                                            }
                                         }
 
                                         $compile(label)(vm);
                                     } else {
-                                        var label = document.createElement('div');
+                                        let wt = parseInt(node.css('width').replace(/[^-\d\.]/g, ''));
+                                        let tp = parseInt(node.css('top').replace(/[^-\d\.]/g, ''));
+                                        let lt = parseInt(node.css('left').replace(/[^-\d\.]/g, ''));
+                                        let label = document.createElement('div');
                                         label.setAttribute('id', 'lbl-order-' + order.state);
                                         label.setAttribute('class', 'orders-block-cls');
                                         label.style['position'] = 'absolute';
-                                        label.style['width'] = node.clientWidth + 'px';
+                                        label.style['width'] = wt + 18 + 'px';
                                         label.style['margin-bottom'] = '5px';
-                                        label.style['left'] = node.offsetLeft + 'px';
+                                        label.style['left'] = lt + 'px';
                                         label.style['white-space'] = 'nowrap';
                                         label.innerHTML = '<div class="order-cls" id="orderBlock-' + name + '">' + getOrderMenu(order, name) + '</div>';
                                         mainContainer.appendChild(label);
                                         $compile(label)(vm);
-                                        label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
+                                        if(label.clientHeight == 0){
+                                            label.style['top'] = tp - 40 + 'px';
+                                        }else{
+                                            label.style['top'] = tp - label.clientHeight - 5 + 'px';
+                                        }
                                         label.style['height'] = 'auto';
                                         label.style['min-height'] = '35px';
-                                        label.style['overflow'] = 'auto';
+                                        label.style['overflow-y'] = 'auto';
+                                        label.style['overflow-x'] = 'hidden';
                                     }
 
                                     if (index == (vm.limitNum - 1) && numOfOrders > orders.length) {
-                                        var container = document.getElementById('lbl-order-' + order.state);
-                                        var label = document.createElement('div');
+                                        let container = document.getElementById('lbl-order-' + order.state);
+                                        let label = document.createElement('div');
                                         label.innerHTML = '<i id="more" class="text-sm cursor text-hover-primary" ng-click="showOrderPanelFun(\'' + order.jobChain + '\')" ><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';
-                                        var top = container.offsetTop;
                                         container.appendChild(label);
-
                                         if (index == 5) {
                                             container.style['max-height'] = container.clientHeight + container.firstChild.clientHeight + 'px';
                                             container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';

@@ -4409,7 +4409,7 @@
                 try {
                     var xmlStr = x2js.json2xml_str({run_time: vm._sch});
                 } catch (e) {
-                    console.log(e);
+                    console.error(e);
                 }
                 xmlStr = xmlStr.replace(/,/g, ' ');
                 vm.xmlObj.xml = xmlStr;
@@ -6383,7 +6383,7 @@
             try {
                 var xmlStr = x2js.json2xml_str(vm.tempRuntime);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             xmlStr = xmlStr.replace(/,/g, ' ');
             getXml2Json(xmlStr);
@@ -6650,7 +6650,7 @@
 
                 getXml2Json(xmlStr);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         });
 
@@ -7185,7 +7185,7 @@
             try {
                 var xmlStr = x2js.json2xml_str(vm.run_time);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
 
             xmlStr = xmlStr.replace(/,/g, ' ');
@@ -7224,7 +7224,7 @@
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             var run_time = _xml.run_time || _xml.schedule;
             var isUpdate = false;
@@ -10226,7 +10226,7 @@
 
                 getXml2Json(xmlStr);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
 
@@ -11015,7 +11015,7 @@
                     try {
                         var _xml = x2js.xml_str2json(vm.xmlObj.xml);
                     } catch (e) {
-                        console.log(e);
+                        console.error(e);
                     }
                     run_time = _xml.run_time || _xml.schedule;
                 }
@@ -11219,7 +11219,7 @@
             try {
                 var xmlStr = x2js.json2xml_str(vm.run_time);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
 
             xmlStr = xmlStr.replace(/,/g, ' ');
@@ -11431,7 +11431,7 @@
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             var run_time = _xml.run_time || _xml.schedule || {};
 
@@ -11691,7 +11691,7 @@
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             if (!_xml) {
                 return;
@@ -11728,7 +11728,7 @@
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             if (!_xml) {
                 return;
