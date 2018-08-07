@@ -657,6 +657,17 @@
                    if (window.innerHeight > top + 240) {
                        $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'});
                        $('.list-dropdown').removeClass('arrow-down').addClass('dropdown-ac');
+                       if ($('#zoomCn') && $('#zoomCn').css('transform')) {
+                           if ($('#zoomCn').css('transform') !== 'none') {
+                               $('.list-dropdown').css({
+                                   '-webkit-transform': 'translateY(-' + (top -120) + 'px)',
+                                   '-moz-transform': 'translateY(-' + (top -120) + 'px)',
+                                   '-ms-transform': 'translateY(-' + (top -120) + 'px)',
+                                   '-o-transform': 'translateY(-' + (top -120) + 'px)',
+                                   'transform': 'translateY(-' + (top -120) + 'px)'
+                               })
+                           }
+                       }
                    } else {
                        $('.list-dropdown').css({
                            top: "auto",

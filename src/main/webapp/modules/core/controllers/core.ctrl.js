@@ -678,7 +678,52 @@
                 TaskService.terminate(jobs);
 
             }
+        };
 
+        function terminateTaskWithTimeout(job, task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            let taskIds = [];
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            jobs.auditLog = {};
+            if (vm.comments.comment) {
+                jobs.auditLog.comment = vm.comments.comment;
+            }
+            if (vm.comments.timeSpent) {
+                jobs.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+            if (vm.comments.ticketLink) {
+                jobs.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+            jobs.timeout = vm.timeObj.timeout;
+            TaskService.terminateWith(jobs);
+        }
+
+        vm.terminateTaskWithTimeout = function (job, task, path) {
+            if (job) {
+                vm.job = job;
+            } else if (task && path) {
+                vm.task = task;
+                vm.path = path;
+            }
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            vm.timeObj = {};
+            vm.timeObj.timeout = 10;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                terminateTaskWithTimeout(job, task, path);
+            }, function () {
+
+            });
         };
 
         function calWindowSize() {

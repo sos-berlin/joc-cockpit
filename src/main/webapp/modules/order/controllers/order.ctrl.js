@@ -2997,8 +2997,8 @@
         });
     }
 
-    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "$filter"];
-    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, $filter) {
+    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "TaskService"];
+    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderTab();
 
@@ -4792,46 +4792,46 @@
                             })
                         });
 
-                         }
-                     }else if (vm.events[0].eventSnapshots[m].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[m].eventId && vm.orderFilters.filter.state !== 'ALL') {
-                         for (let i = 0; vm.allOrders.length; i++) {
-                             if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path) {
-                                 vm.allOrders.splice(i,1);
-                                 break;
-                             }
-                         }
-                     }else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
-                         let orders = {};
-                         orders.orders = [];
-                         orders.orders.push({
-                             orderId: vm.showLogPanel.orderId,
-                             jobChain: vm.showLogPanel.path.split(',')[0]
-                         });
-                         orders.jobschedulerId = vm.schedulerIds.selected;
-                         orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-                         OrderService.histories(orders).then(function (res) {
-                             vm.historys = res.history;
-                         });
-                     }
-                     else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
-                         let obj = {};
-                         obj.jobschedulerId = vm.schedulerIds.selected;
-                         obj.orders = [];
-                         obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                         loadAuditLogs(obj);
-                     }
-                     else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
-                         OrderService.tree({
-                             jobschedulerId: vm.schedulerIds.selected,
-                             compact: true,
-                             types: ['ORDER']
-                         }).then(function (res) {
-                             vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
-                             vm.changeStatus();
-                         });
-                         break;
-                     }
-                 }
+                    }
+                }else if (vm.events[0].eventSnapshots[m].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[m].eventId && vm.orderFilters.filter.state !== 'ALL') {
+                    for (let i = 0; vm.allOrders.length; i++) {
+                        if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path) {
+                            vm.allOrders.splice(i,1);
+                            break;
+                        }
+                    }
+                }else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
+                    let orders = {};
+                    orders.orders = [];
+                    orders.orders.push({
+                        orderId: vm.showLogPanel.orderId,
+                        jobChain: vm.showLogPanel.path.split(',')[0]
+                    });
+                    orders.jobschedulerId = vm.schedulerIds.selected;
+                    orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+                    OrderService.histories(orders).then(function (res) {
+                        vm.historys = res.history;
+                    });
+                }
+                else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
+                    let obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.orders = [];
+                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                    loadAuditLogs(obj);
+                }
+                else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
+                    OrderService.tree({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        compact: true,
+                        types: ['ORDER']
+                    }).then(function (res) {
+                        vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
+                        vm.changeStatus();
+                    });
+                    break;
+                }
+            }}
         });
 
         $scope.$on('$destroy', function () {

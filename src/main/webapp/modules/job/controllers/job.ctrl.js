@@ -1588,8 +1588,7 @@
                     jobs.jobs.push({job: job.path});
                 }
             } else {
-                var taskIds = [];
-
+                let taskIds = [];
                 taskIds.push({taskId: task.taskId});
                 jobs.jobs.push({job: path, taskIds: taskIds});
             }
@@ -1607,10 +1606,10 @@
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
 
-            jobs.timeout = vm.timeout;
+            jobs.timeout = vm.timeObj.timeout;
             TaskService.terminateWith(jobs);
-
         }
+
         vm.terminateTaskWithTimeout = function (job, task, path) {
             if (job) {
                 vm.job = job;
@@ -1623,7 +1622,8 @@
             }
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm.timeout = 10;
+            vm.timeObj = {};
+            vm.timeObj.timeout = 10;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
@@ -4597,7 +4597,7 @@
             if (vm.comments.ticketLink) {
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            jobs.timeout = vm.timeout;
+            jobs.timeout = vm.timeObj.timeout;
             TaskService.terminateWith(jobs);
 
         }
@@ -4611,7 +4611,8 @@
             else {
                 vm.taskJobs = vm.object.jobs;
             }
-            vm.timeout = 10;
+            vm.timeObj = {};
+            vm.timeObj.timeout = 10;
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -6069,7 +6070,7 @@
             if (vm.comments.ticketLink) {
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            jobs.timeout = vm.timeout;
+            jobs.timeout = vm.timeObj.timeout;
             TaskService.terminateWith(jobs);
         }
 
@@ -6083,7 +6084,8 @@
             else {
                 vm.taskJobs = vm.object.jobs;
             }
-            vm.timeout = 10;
+            vm.timeObj = {};
+            vm.timeObj.timeout = 10;
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({

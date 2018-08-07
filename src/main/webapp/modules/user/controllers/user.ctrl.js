@@ -129,7 +129,7 @@
         function getDefaultConfiguration(){
             UserService.defaultConfiguration().then(function(res){
                 if(res.customLogo && res.customLogo.name){
-                    let imgUrl = 'http://localhost:4446/ext/images/'+res.customLogo.name;
+                    let imgUrl = '../ext/images/'+res.customLogo.name;
                     if(res.customLogo.position && res.customLogo.position !== 'BOTTOM'){
                         $('#logo-top').append("<img style='height: "+res.customLogo.height+"' src='"+imgUrl+"'>")
                     }else{

@@ -664,7 +664,6 @@
                     }
 
                     function checkHeight() {
-                        var mainContainer = document.getElementById("mainContainer");
                         var maxUTop = iTop;
                         angular.forEach(scope.coords, function (obj) {
                             if (maxUTop > obj.top) {
@@ -1421,32 +1420,19 @@
                         }
 
                         var diff;
-                        vm.calWidth = function (order, state, flag) {
+                        vm.calWidth = function (order, state) {
                             var container = document.getElementById('lbl-order-' + state);
                             diff = document.getElementById('diff-' + order);
                             if (container && diff && diff.innerHTML) {
                                 diff = diff.innerHTML;
-
                                 if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
-                                    if (flag)
-                                        return '145px';
-                                    else
-                                        return '150px';
+                                    return '170px';
                                 } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
-                                    if (flag)
-                                        return '135px';
-                                    else
-                                        return '145px';
+                                    return '165px';
                                 } else if (container.clientHeight == container.scrollHeight) {
-                                    if (flag)
-                                        return 209 - (diff.length * 5 + 147) + 'px';
-                                    else
-                                        return 214 - (diff.length * 5 + 147) + 'px';
+                                    return 252 - (diff.length * 5 + 147) + 'px';
                                 } else if (container.clientHeight !== container.scrollHeight) {
-                                    if (flag)
-                                        return 205 - (diff.length * 5 + 146 + 9) + 'px';
-                                    else
-                                        return 210 - (diff.length * 5 + 146 + 9) + 'px';
+                                    return 246 - (diff.length * 5 + 146 +9) + 'px';
                                 }
                             } else {
                                 return '30px';
@@ -1514,7 +1500,7 @@
                                     }
                                 }
 
-                                function getOrderMenu(order, nodeName) {
+                                function getOrderMenu(order) {
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
