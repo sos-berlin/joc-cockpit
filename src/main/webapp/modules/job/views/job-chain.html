@@ -746,7 +746,11 @@
                                                                                {{nestedNode.name}} </span>
                                                                         </td>
                                                                         <td>
-                                                                            <a class="text-hover-primary" ng-click="showJob(nestedNode.job.path)">{{nestedNode.job.path}}</a>
+                                                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != nestedNode.name" ng-click="showHistory(jobChain, nestedNode, null)"></i>
+                                                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == nestedNode.name" ng-click="hideHistory(jobChain, nestedNode, null)"></i>
+                                                                            <a class="text-hover-primary" ng-click="showJob(nestedNode.job.path)">
+                                                                                {{nestedNode.job.path}}
+                                                                            </a>
                                                                             <div class="p-l-sm ">
                                                                                 <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'"
                                                                                      ng-if="order.path.split(',')[0]==nestedJobChain.path || order.path.split(',')[0]==jobChain.path ">
@@ -823,7 +827,10 @@
                                                                                               </div>
                                                                                           </div>
                                                                                         <span class="text-sm">
-                                                                                            <span>{{'label.order'| translate}}:&nbsp;</span><a
+                                                                                            <span>
+                                                                                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != order.orderId" ng-click="showHistory(jobChain, null, order)"></i>
+                                                                                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == order.orderId" ng-click="hideHistory(jobChain, null, order)"></i>
+                                                                                                {{'label.order'| translate}}:&nbsp;</span><a
                                                                                                 href="" class="text-hover-primary"
                                                                                                 ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
                                                                                             <i class="text-muted text-sm" ng-if="order.title">-<span ng-bind-html="order.title | linky:'_blank'"></span></i> -
@@ -944,7 +951,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr ng-repeat="node in jobChain.nodes | orderBy:state track by $index" ng-if="node.job">
+                                            <tr ng-repeat="node in jobChain.nodes | orderBy:state track by $index" ng-if="node.job" class="{{jobChain.showHistory == node.name ? 'light-bg':''}}">
                                                  <td>
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown" dropdown>
@@ -989,13 +996,15 @@
                                                     <span ng-class="{'p-l-sm' : node.level==1,'p-l' : node.level==2,'p-l-md' : node.level==3,'p-l-lg' : node.level==4}">{{node.name}} </span>
                                                 </td>
                                                 <td>
-                                                    <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
+                                                    <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != node.name" ng-click="showHistory(jobChain,node, null)"></i>
+                                                    <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == node.name" ng-click="hideHistory(jobChain, node, null)"></i>
+                                                    <a class="text-hover-primary" ng-click="showJob(node.job.path)">
+                                                        {{node.job.path}}</a>
                                                     <div class="p-l-sm ">
-                                                        <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'">
+                                                        <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                                             <div class="btn-group dropdown ">
                                                                 <button type="button" class="btn-drop more-option-h" dropdown
-                                                                        data-toggle="dropdown"><i
-                                                                        class="fa fa-ellipsis-h"></i></button>
+                                                                        data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
                                                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                                                      role="menu">
                                                                     <a href class="dropdown-item"
@@ -1057,7 +1066,10 @@
                                                                 </div>
                                                             </div>
                                                             <span>
-                                                                <span class="text-sm"><span>{{'label.order'| translate}}:&nbsp;</span><a href="" class="text-hover-primary"
+                                                                <span class="text-sm"><span>
+                                                                    <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != order.orderId" ng-click="showHistory(jobChain, null, order)"></i>
+                                                                    <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == order.orderId" ng-click="hideHistory(jobChain, null, order)"></i>
+                                                                    {{'label.order'| translate}}:&nbsp;</span><a href="" class="text-hover-primary"
                                                                         ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
                                                                     <i class="text-muted text-sm" ng-if="order.title">-<span ng-bind-html="order.title | linky:'_blank'"></span></i> -
                                                                     <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
@@ -1232,7 +1244,7 @@
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">
                                     <li class="nav-item inline m-l-sm">
-                                        <a href="" ng-click="hideHistoryPanel()"><img src="images/remove.png"></a>
+                                        <a href="" ng-click="hideHistory()"><img src="images/remove.png"></a>
                                     </li>
                                 </ul>
                             </div>
@@ -1240,19 +1252,24 @@
                                 <div class="b-b">
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item" ng-if="permission.JobChain.view.history">
-                                            <a class="nav-link" ng-class="{active: !isAuditLog}"
-                                               ng-click="showHistory(showHistoryPanel)" href data-toggle="tab"
-                                               data-target="#tab1" translate>label.history</a>
+                                            <a class="nav-link" ng-class="{active: !isAuditLog && !isTaskHistory}"
+                                               ng-click="showHistory(showHistoryPanel, null,null,'skip')" href data-toggle="tab"
+                                               data-target="#tab1" translate>label.orderHistory</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" ng-class="{active: !isAuditLog && isTaskHistory}"
+                                               ng-click="showJobHistory(showHistoryPanel)" href data-toggle="tab"
+                                               data-target="#tab3" translate>label.taskHistory</a>
                                         </li>
                                         <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                            <a class="nav-link" ng-class="{active: isAuditLog}"
+                                            <a class="nav-link" ng-class="{active: isAuditLog && !isTaskHistory}"
                                                ng-click="showAuditLogs(showHistoryPanel)" href data-toggle="tab"
                                                data-target="#tab2" translate>label.auditLog</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content p-a">
-                                    <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog}" id="tab1">
+                                    <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && !isTaskHistory}" id="tab1">
                                         <div class="row">
                                             <div class="table-responsive" resizable r-directions="['bottom']"
                                                  r-height="250">
@@ -1291,7 +1308,48 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}" id="tab2">
+                                    <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && isTaskHistory}" id="tab3" >
+                                         <div class="row">
+                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.taskId</th>
+                                                        <th translate>label.status</th>
+                                                        <th translate>label.started</th>
+                                                        <th translate>label.ended</th>
+                                                        <th translate>label.duration</th>
+                                                        <th translate>label.exitCode</th>
+                                                        <th translate>label.errorCode</th>
+                                                        <th translate>label.errorText</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="task in showHistoryPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
+                                                           <td>
+                                                               <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                                <span ng-bind="task.taskId"></span>
+                                                           </td>
+                                                           <td>
+                                                               <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
+                                                           </td>
+                                                           <td>{{task.startTime | stringToDate}}</td>
+                                                           <td>{{task.endTime | stringToDate}}</td>
+                                                           <td>{{task.startTime | duration:task.endTime}}</td>
+                                                           <td>{{task.exitCode}}</td>
+                                                           <td>{{task.error.code}}</td>
+                                                           <td class="text-danger">{{task.error.message}}</td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                                 <div ng-if="showHistoryPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                    message.noTaskHistoryFound
+                                                </div>
+                                            </div>
+                                         </div>
+                                     </div>
+                                    <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}" id="tab2">
                                         <div class="row">
                                             <div class="table-responsive" resizable r-directions="['bottom']"
                                                  r-height="250">

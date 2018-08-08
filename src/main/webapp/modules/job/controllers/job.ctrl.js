@@ -1873,7 +1873,6 @@
                 if(!obj.job){
                     obj.job = {};
                 }
-                console.log(obj.job)
                 obj.job.folders = [];
                 for (let i = 0; i < vm.jobChainFilter.jobs.length; i++) {
                     obj.job.folders.push({folder: vm.jobChainFilter.jobs[i], recursive: true});
@@ -2403,16 +2402,58 @@
 
         vm.showHistory = showHistory;
 
-        function showHistory(jobChain) {
+        vm.historyRequestObj ={};
+        function showHistory(jobChain, node, order, skip) {
             vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = false;
-            var filter = {};
-            filter.jobChain = jobChain.path;
-            filter.jobschedulerId = $scope.schedulerIds.selected;
-            JobChainService.histories(filter).then(function (res) {
+            if (vm.userPreferences.historyTab === 'order' || skip) {
+                vm.isTaskHistory = false;
+            } else {
+                vm.showJobHistory(jobChain, node, order);
+                return;
+            }
+            let obj = {};
+            //filter.jobChain = jobChain.path;
+            obj.limit = vm.userPreferences.maxHistoryPerJobchain;
+            obj.orders =[{
+                jobChain : jobChain.path
+            }];
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+            if (node) {
+                jobChain.showHistory = node.name;
+            } else if (order) {
+                jobChain.showHistory = order.orderId;
+            }
+            vm.historyRequestObj =obj;
+            OrderService.histories(obj).then(function (res) {
                 vm.historys = res.history;
             });
         }
+
+        vm.taskHistoryRequestObj ={};
+        vm.showJobHistory = function (jobChain, node, order) {
+            vm.showHistoryPanel = angular.copy(jobChain);
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            obj.orders =[{
+                jobChain : jobChain.path
+            }];
+            if (node) {
+                jobChain.showHistory = node.name;
+                obj.orders[0].state = node.name;
+            } else if (order) {
+                jobChain.showHistory = order.orderId;
+                obj.orders[0].orderId = order.orderId;
+            }
+            vm.taskHistoryRequestObj = obj;
+            TaskService.histories(obj).then(function (res) {
+                vm.showHistoryPanel.taskHistory = res.history;
+            }, function () {
+                vm.showHistoryPanel.taskHistory = [];
+            })
+        };
 
         vm.loadAuditLogs = function (obj) {
             obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
@@ -2424,7 +2465,7 @@
         };
 
         vm.showAuditLogs = function (jobChain) {
-             vm.showHistoryPanel = angular.copy(jobChain);
+            vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -2434,8 +2475,14 @@
                 vm.loadAuditLogs(obj);
         };
 
-        vm.hideHistoryPanel = function () {
-            vm.showHistoryPanel = '';
+        vm.hideHistory = function (jobChain, node, order) {
+            if (!jobChain) {
+                vm.showHistoryPanel = '';
+            } else {
+                jobChain.showHistory = '';
+                vm.showHistory(vm.showHistoryPanel);
+            }
+
         };
 
         vm.recursiveTreeUpdate = function (scrTree, destTree) {
@@ -2462,7 +2509,7 @@
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 if ($location.search().scheduler_id && $location.search().path) {
                     for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
-                        if (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" && vm.events[0].eventSnapshots[j].path == $location.search().path) {
+                        if (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" && vm.events[0].eventSnapshots[j].path === $location.search().path) {
                             let obj = {};
                             obj.jobschedulerId = vm.schedulerIds.selected;
                             obj.jobChains = [{jobChain: $location.search().path}];
@@ -2470,7 +2517,6 @@
                             break;
                         }
                     }
-                    return;
                 }
                 var arr = [];
                 var arr1 = [];
@@ -2558,18 +2604,22 @@
                 }
                 if (vm.showHistoryPanel) {
                     for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                        if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder") {
-                            var filter = {};
-                            filter.jobChain = vm.showHistoryPanel.path;
-                            filter.jobschedulerId = $scope.schedulerIds.selected;
-                            JobChainService.histories(filter).then(function (res) {
+                        if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[i].eventId && !vm.isTaskHistory && !vm.isAuditLog) {
+                            OrderService.histories(vm.historyRequestObj).then(function (res) {
                                 vm.historys = res.history;
                             });
                         }
+                        if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[i].eventId && vm.isTaskHistory) {
+                            TaskService.histories(vm.taskHistoryRequestObj).then(function (res) {
+                                vm.showHistoryPanel.taskHistory = res.history;
+                            }, function () {
+                                vm.showHistoryPanel.taskHistory = [];
+                            })
+                        }
                         var path = vm.events[0].eventSnapshots[i].path.split(',')[0];
-                        if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType === "ORDER") && (path === vm.showHistoryPanel.path)) {
+                        if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType === "ORDER") && (path === vm.showHistoryPanel.path)  && vm.isAuditLog) {
                             if (vm.permission.AuditLog.view.status) {
-                                var obj = {};
+                                let obj = {};
                                 obj.jobschedulerId = vm.schedulerIds.selected;
                                 obj.orders = [];
                                 obj.orders.push({jobChain: vm.showHistoryPanel.path});
@@ -2577,7 +2627,6 @@
                             }
                         }
                     }
-
                 }
             }
 
@@ -6742,7 +6791,7 @@
                         $rootScope.$broadcast('reloadJobSnapshot');
                     }
 
-                    else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[i].eventId && vm.events[0].eventSnapshots[i].path === vm.showTaskPanel.path) {
+                    else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[i].eventId) {
                         var jobs = {};
                         jobs.jobschedulerId = vm.schedulerIds.selected;
                         jobs.job = vm.showTaskPanel.path;
@@ -6770,5 +6819,4 @@
             watcher4();
         });
     }
-
 })();

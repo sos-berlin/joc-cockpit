@@ -486,8 +486,8 @@
 
                         var jobName;
 
-                        var host = '<div class="text-left text-sm p-t-xs ">' +
-                            '<span  ng-if="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"><i class="fa fa-server "></i><span  class="p-l-sm" ng-bind="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"></span></span>' +
+                        var host = '<div class="text-left text-sm p-t-xs block-ellipsis-job">' +
+                            '<span ng-if="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"><i class="fa fa-server "></i><span  class="p-l-sm" ng-bind="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"></span></span>' +
                             '<span class=" hide" ng-class="{show:jobChainData.nodes[\'' + index + '\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-sm" ng-bind-html="formatLock(\'' + index + '\')"></span></span>' +
                             '</div>';
 
@@ -611,26 +611,21 @@
 
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
-
-                                rectangleTemplate = rectangleTemplate + '<div ><span  id="lb' + item.name + '" class="text-danger error-node" ' +
+                                rectangleTemplate = rectangleTemplate + '<div ><span  id="lb' + item.name + '" class="text-danger error-node error-node1" ' +
                                     'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
                                     '</div>' +
-                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
+                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node error-node1" ' +
                                     'style="position: absolute;left: ' + scope.coords[length + index].left + 'px;top: ' + scope.coords[length + index].top + 'px' + '"> </span>';
-
                             } else {
                                 endSuccessNodes++;
                                 scope.coords[length + index].top = avatarTop;
                                 if (endSuccessNodes > 1) {
                                     angular.forEach(scope.coords, function (obj) {
-
                                         if (scope.coords[length + index].top < obj.top && scope.coords[length + index].name !== obj.name) {
                                             scope.coords[length + index].top = obj.top;
                                         }
-
                                     });
                                 }
-
                                 if (scope.coords[length + index].top == avatarTop && endSuccessNodes > 1) {
                                     scope.coords[length + index].top = scope.coords[length + index].top + rectH / 2 + margin;
                                 }
@@ -967,16 +962,10 @@
                                 })
                             }
 
-                            var x1 = div1.offsetLeft;
-                            var y1 = div1.offsetTop;
                             var x2 = 0;
                             var y2 = 0;
                             var node;
 
-                            if (div2) {
-                                x2 = div2.offsetLeft;
-                                y2 = div2.offsetTop;
-                            }
                             vm.condition = true;
 
                             if (index == 0) {
@@ -1107,17 +1096,17 @@
                                     var left = div1.offsetLeft + div1.clientWidth / 2;
                                     var width = errNode.offsetLeft - left - vm.margin / 2;
                                     var height = errNode.offsetTop + errNode.clientHeight / 2 > top + vm.vSpace ? vm.vSpace : errNode.clientHeight / 2 - 2;
-                                    createErrorLine(top, left, 2, height);
+                                    createErrorLine(top, left, 2, height,index, item);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
                                     createErrorLine(top, left, width, 2);
                                     left = left + width;
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
-                                    createErrorLine(top, left, 2, height);
+                                    createErrorLine(top, left, 2, height, index,item);
                                     width = errNode.offsetLeft - left;
 
                                     top = top + (height > 0 ? height : 0 );
-                                    createErrorLine(top, left, width, 2);
+                                    createErrorLine(top, left, width, 2,index, item);
 
 
                                 } else {
@@ -1131,14 +1120,14 @@
                                     var left = node1.offsetLeft + node1.clientWidth / 2;
                                     var width = node2.offsetLeft - left - vm.margin / 2;
                                     var height = vm.vSpace + 10;
-                                    createErrorLine(top, left, 2, height);
+                                    createErrorLine(top, left, 2, height,index,item);
                                     top = top + height;
                                     width = node2.offsetLeft + node2.clientWidth / 2 - left;
-                                    createErrorLine(top, left, width, 2);
+                                    createErrorLine(top, left, width, 2,index,item);
                                     left = node2.offsetLeft + node2.clientWidth / 2;
                                     height = top - node2.offsetTop - errNode.clientHeight;
                                     top = node2.offsetTop + node2.clientHeight;
-                                    createErrorLine(top, left, 2, height);
+                                    createErrorLine(top, left, 2, height,index,item);
                                 }
                             }
 
@@ -1176,7 +1165,7 @@
 
                         function createLine(top, left, width, height, index, item) {
                             var node = document.createElement('div');
-                            node.setAttribute('class', 'h-line next-link ' + (index > 0 && item.isErrorNode && vm.jobChainData.nodes[(index - 1)].nextNode !== item.name ? 'error-node' : ''));
+                            node.setAttribute('class', 'h-line next-link ' + (index > 0 && item.isErrorNode && vm.jobChainData.nodes[(index - 1)].nextNode !== item.name ? 'error-node error-node1' : ''));
                             if (height == 2) {
                                 node.setAttribute('ng-style', '{"height":(fitToScreen?4:2)+"px"}');
                             } else {
@@ -1228,7 +1217,8 @@
                             $compile(node)(vm);
                         }
 
-                        function createErrorLine(top, left, width, height) {
+                        function createErrorLine(top, left, width, height,index,item) {
+                            console.log(item)
                             var node = document.createElement('div');
                             node.setAttribute('class', 'error-link');
                             if (height > width) {
@@ -1318,7 +1308,7 @@
 
                     function toggleErrorNodes() {
                         let errorElms = document.getElementsByClassName("error-link");
-                       // var errorNodes = document.getElementsByClassName("error-node");
+                        let errorNodes = document.getElementsByClassName("error-node1");
                         if(!errorElms.length){
                             return;
                         }
@@ -1326,16 +1316,17 @@
                             angular.forEach(errorElms, function (elm) {
                                 elm.style['display'] = 'block';
                             });
-/*                            angular.forEach(errorNodes, function (elm) {
+                            angular.forEach(errorNodes, function (elm) {
                                 elm.style['display'] = 'block';
-                            });*/
+                                elm.style['opacity'] = 1;
+                            });
                         } else {
                             angular.forEach(errorElms, function (elm) {
                                 elm.style['display'] = 'none';
                             });
-/*                            angular.forEach(errorNodes, function (elm) {
+                            angular.forEach(errorNodes, function (elm) {
                                 elm.style['display'] = 'none';
-                            });*/
+                            });
                         }
                     }
 

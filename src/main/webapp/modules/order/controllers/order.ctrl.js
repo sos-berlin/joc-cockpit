@@ -111,23 +111,27 @@
         });
 
         vm.showLogFuc = function (value, skip) {
-            var orders = {};
+            let orders = {
+                jobschedulerId: vm.schedulerIds.selected,
+                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+            };
             vm.isAuditLog = false;
-             if(vm.userPreferences.historyTab === 'order' || skip) {
+            if (vm.userPreferences.historyTab === 'order' || skip) {
                 vm.isTaskHistory = false;
-            }else{
-                 vm.showJobHistory(value);
-                 return;
+            } else {
+                vm.showJobHistory(value);
+                return;
+            }
+            if (value.historyId) {
+                if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                    orders.historyIds = [value.historyId];
+                }
             }
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = vm.schedulerIds.selected;
-            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-
+            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
-
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
@@ -137,14 +141,12 @@
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxAuditLogPerObject;
-            if (order.historyId) {
+            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
-            } else if (order.taskId) {
-                obj.taskIds = [order.taskId];
             } else {
-                obj.jobs = [{job: order.job}];
+                obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
             }
             TaskService.histories(obj).then(function (res) {
                 vm.showLogPanel.taskHistory = res.history;
@@ -190,11 +192,36 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.showLogPanel)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
-                    if (event.eventType == "ReportingChangedOrder" && !event.eventId) {
-                        vm.showLogFuc(vm.showLogPanel);
+                    if (vm.showLogPanel && event.eventType === "ReportingChangedOrder" && !event.eventId && !vm.isTaskHistory && !vm.isAuditLog) {
+                        let orders = {
+                            jobschedulerId: vm.schedulerIds.selected,
+                            limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                        };
+                        if (vm.showLogPanel.historyId) {
+                            if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                                orders.historyIds = [vm.showLogPanel.historyId];
+                            }
+                        }
+                        orders.orders = [];
+                        orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
+                        OrderService.histories(orders).then(function (res) {
+                            vm.historys = res.history;
+                        });
+                    } else if (vm.showLogPanel && event.eventType === "ReportingChangedJob" && !event.eventId && vm.isTaskHistory) {
+                        let obj = {jobschedulerId: vm.schedulerIds.selected};
+                        obj.limit = vm.userPreferences.maxHistoryPerTask;
+                        if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                            obj.historyIds = [];
+                            obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
+                        } else {
+                            obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
+                        }
+                        TaskService.histories(obj).then(function (res) {
+                            vm.showLogPanel.taskHistory = res.history;
+                        })
                     }
-                    if (vm.showLogPanel && event.eventType == "AuditLogChanged" && (event.objectType == "ORDER") && event.path == vm.showLogPanel.path) {
-                        var obj = {};
+                    else if (vm.showLogPanel && event.eventType === "AuditLogChanged" && (event.objectType === "ORDER") && event.path === vm.showLogPanel.path && vm.isAuditLog) {
+                        let obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.orders = [];
                         obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
@@ -206,9 +233,9 @@
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "$filter"];
+        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService"];
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, FileSaver, $filter) {
+                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -228,7 +255,6 @@
         vm.totalNodes = 0;
         vm.uniqueNode = 0;
         vm.totalSubNodes = 0;
-
 
         function loadJobChain() {
             if (SOSAuth.jobChain) {
@@ -3738,23 +3764,48 @@
         };
 
         vm.showLogFuc = function (value, skip) {
-            var orders = {};
+            let orders = {
+                jobschedulerId: vm.schedulerIds.selected,
+                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+            };
             vm.isAuditLog = false;
-             if(vm.userPreferences.historyTab === 'order' || skip) {
+            if (vm.userPreferences.historyTab === 'order' || skip) {
                 vm.isTaskHistory = false;
-            }else{
-                 vm.showJobHistory(value);
-                 return;
+            } else {
+                vm.showJobHistory(value);
+                return;
+            }
+            if (value.historyId) {
+                if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                    orders.historyIds = [value.historyId];
+                }
             }
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = vm.schedulerIds.selected;
-            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        vm.showJobHistory = function (order) {
+            vm.showLogPanel = order;
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
+                obj.historyIds = [];
+                obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else {
+                obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
+            }
+            TaskService.histories(obj).then(function (res) {
+                vm.showLogPanel.taskHistory = res.history;
+            }, function () {
+                vm.showLogPanel.taskHistory = [];
+            })
         };
 
         function loadAuditLogs(obj) {
@@ -3776,27 +3827,6 @@
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
             if (vm.permission.AuditLog.view.status)
                 loadAuditLogs(obj);
-        };
-
-        vm.showJobHistory = function (order) {
-            vm.showLogPanel = order;
-            vm.isTaskHistory = true;
-            vm.isAuditLog = false;
-            let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxAuditLogPerObject;
-            if (order.historyId) {
-                obj.historyIds = [];
-                obj.historyIds.push({historyId: order.historyId, state: order.state});
-            } else if (order.taskId) {
-                obj.taskIds = [order.taskId];
-            } else {
-                obj.jobs = [{job: order.job}];
-            }
-            TaskService.histories(obj).then(function (res) {
-                vm.showLogPanel.taskHistory = res.history;
-            }, function () {
-                vm.showLogPanel.taskHistory = [];
-            })
         };
 
         if (vm.orderFilters && vm.orderFilters.showLogPanel) {
@@ -4574,8 +4604,6 @@
             $('.sidebar-btn').hide();
         };
 
-
-
         vm.recursiveTreeUpdate = function (scrTree, destTree) {
             if (scrTree && destTree)
                 for (let i = 0; i < scrTree.length; i++) {
@@ -4642,7 +4670,7 @@
         }
 
         function traverseTreeForUpdateOrder(data, order) {
-            if (data.folders)
+            if (data.folders) {
                 for (let i = 0; i < data.folders.length; i++) {
                     if (data.folders[i].path !== order.path1) {
                         traverseTreeForUpdateOrder(data.folders[i], order);
@@ -4654,6 +4682,7 @@
                         }
                     }
                 }
+            }
         }
 
         function mergePermanentData(order) {
@@ -4800,20 +4829,35 @@
                             break;
                         }
                     }
-                }else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
-                    let orders = {};
+                }else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && !vm.isTaskHistory && !vm.isAuditLog) {
+                    let orders = {
+                        jobschedulerId: vm.schedulerIds.selected,
+                        limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                    };
+                    if (vm.showLogPanel.historyId) {
+                        if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                            orders.historyIds = [vm.showLogPanel.historyId];
+                        }
+                    }
                     orders.orders = [];
-                    orders.orders.push({
-                        orderId: vm.showLogPanel.orderId,
-                        jobChain: vm.showLogPanel.path.split(',')[0]
-                    });
-                    orders.jobschedulerId = vm.schedulerIds.selected;
-                    orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+                    orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
                     OrderService.histories(orders).then(function (res) {
                         vm.historys = res.history;
                     });
+                } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId && vm.isTaskHistory) {
+                    let obj = {jobschedulerId: vm.schedulerIds.selected};
+                    obj.limit = vm.userPreferences.maxHistoryPerTask;
+                    if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                        obj.historyIds = [];
+                        obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
+                    } else {
+                        obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
+                    }
+                    TaskService.histories(obj).then(function (res) {
+                        vm.showLogPanel.taskHistory = res.history;
+                    })
                 }
-                else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path) {
+                else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path && vm.isAuditLog) {
                     let obj = {};
                     obj.jobschedulerId = vm.schedulerIds.selected;
                     obj.orders = [];
@@ -4835,7 +4879,7 @@
         });
 
         $scope.$on('$destroy', function () {
-             vm.orderFilters.expand_to = vm.tree;
+            vm.orderFilters.expand_to = vm.tree;
             watcher1();
             if (t1) {
                 $timeout.cancel(t1);
@@ -4866,7 +4910,7 @@
             $rootScope.$broadcast('exportData');
         };
 
-        vm.reload = function() {
+        vm.reload = function () {
             if ($scope.reloadState == 'no') {
                 $scope.allOrders = [];
                 $scope.folderPath = 'Process aborted';
@@ -4880,8 +4924,8 @@
 
         vm.init = function () {
             var obj1 = {};
-             vm.isLoaded = true;
-             $scope.reloadState = 'no';
+            vm.isLoaded = true;
+            $scope.reloadState = 'no';
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
             obj1.processingStates = [];
@@ -4897,7 +4941,7 @@
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
-                 vm.isLoaded = false;
+                vm.isLoaded = false;
             });
         };
 
@@ -4909,11 +4953,11 @@
                 limit: vm.userPreferences.maxNumInOrderOverviewPerObject
             };
             vm.isAuditLog = false;
-            if(vm.userPreferences.historyTab === 'order' || skip) {
+            if (vm.userPreferences.historyTab === 'order' || skip) {
                 vm.isTaskHistory = false;
-            }else{
-                 vm.showJobHistory(value);
-                 return;
+            } else {
+                vm.showJobHistory(value);
+                return;
             }
             if (value.historyId) {
                 if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
@@ -4921,12 +4965,31 @@
                 }
             }
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
+            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        vm.showJobHistory = function (order) {
+            vm.showLogPanel = order;
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
+                obj.historyIds = [];
+                obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else {
+                obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
+            }
+            TaskService.histories(obj).then(function (res) {
+                vm.showLogPanel.taskHistory = res.history;
+            }, function () {
+                vm.showLogPanel.taskHistory = [];
+            })
         };
 
         function loadAuditLogs(obj) {
@@ -4949,27 +5012,6 @@
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
             if (vm.permission.AuditLog.view.status)
                 loadAuditLogs(obj);
-        };
-
-        vm.showJobHistory = function (order) {
-            vm.showLogPanel = order;
-            vm.isTaskHistory = true;
-            vm.isAuditLog = false;
-            let obj = {jobschedulerId: vm.schedulerIds.selected};
-            obj.limit = vm.userPreferences.maxAuditLogPerObject;
-            if (order.historyId) {
-                obj.historyIds = [];
-                obj.historyIds.push({historyId: order.historyId, state: order.state});
-            } else if (order.taskId) {
-                obj.taskIds = [order.taskId];
-            } else {
-                obj.jobs = [{job: order.job}];
-            }
-            TaskService.histories(obj).then(function (res) {
-                vm.showLogPanel.taskHistory = res.history;
-            }, function () {
-                vm.showLogPanel.taskHistory = [];
-            })
         };
 
         if (vm.orderFilters && vm.orderFilters.showLogPanel) {
@@ -5272,8 +5314,10 @@
                         var obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.compact = true;
-                        obj.processingStates = [];
-                        obj.processingStates.push(vm.orderFilters.filter.state);
+                        if (vm.orderFilters.filter.state !== 'ALL') {
+                            obj.processingStates = [];
+                            obj.processingStates.push(vm.orderFilters.filter.state);
+                        }
                         OrderService.get(obj).then(function (res) {
                             let flag = false;
                             angular.forEach(res.orders, function (value) {
@@ -5284,7 +5328,6 @@
                             });
                             vm.reset();
                             vm.allOrders = res.orders;
-
                             if (!flag) {
                                 vm.showLogPanel = undefined;
                             }
@@ -5294,12 +5337,42 @@
                         });
                         $rootScope.$broadcast('reloadSnapshot');
                     }
-                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.events[0].eventSnapshots[i].path === vm.showLogPanel.path) {
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.events[0].eventSnapshots[i].path === vm.showLogPanel.path && vm.isAuditLog) {
                         let obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.orders = [];
                         obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
                         loadAuditLogs(obj);
+                    }
+
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.orderFilters.filter.state === 'ALL' && !vm.isTaskHistory && !vm.isAuditLog) {
+                        let orders = {
+                            jobschedulerId: vm.schedulerIds.selected,
+                            limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                        };
+                        if (vm.showLogPanel.historyId) {
+                            if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                                orders.historyIds = [vm.showLogPanel.historyId];
+                            }
+                        }
+                        orders.orders = [];
+                        orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
+                        OrderService.histories(orders).then(function (res) {
+                            vm.historys = res.history;
+                        });
+                    }
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.orderFilters.filter.state === 'ALL' && vm.isTaskHistory) {
+                        let obj = {jobschedulerId: vm.schedulerIds.selected};
+                        obj.limit = vm.userPreferences.maxHistoryPerTask;
+                        if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                            obj.historyIds = [];
+                            obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});
+                        } else {
+                            obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
+                        }
+                        TaskService.histories(obj).then(function (res) {
+                            vm.showLogPanel.taskHistory = res.history;
+                        })
                     }
                 }
         });
@@ -5432,7 +5505,7 @@
                 order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
             }
 
-            if (order.date && order.at == 'later') {
+            if (order.date && order.at === 'later') {
                 obj.at = moment(order.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else
@@ -6182,30 +6255,6 @@
         vm.showOrderPanelFuc = function (path) {
             $location.path('/job_chain_detail/orders').search({path: path});
         };
-
-        $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.showLogPanel)
-                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[i].eventId) {
-                        var path = vm.events[0].eventSnapshots[i].path;
-                        if (vm.showLogPanel.path == path) {
-                            var orders = {};
-                            orders = {};
-                            orders.orders = [];
-                            orders.orders.push({
-                                orderId: vm.showLogPanel.orderId,
-                                jobChain: vm.showLogPanel.path.split(',')[0]
-                            });
-                            orders.jobschedulerId = vm.schedulerIds.selected;
-                            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-
-                            OrderService.histories(orders).then(function (res) {
-                                vm.historys = res.history;
-                            });
-                        }
-                    }
-                }
-        });
 
         $scope.$on('$destroy', function () {
             watcher1();
@@ -9074,7 +9123,6 @@
             vm.finished = false;
             init();
         };
-
 
         vm.downloadLog = function () {
             vm.cancel();
