@@ -37,16 +37,20 @@
         </div>
         <div class="m-a-sm w-full show-block p-t-sm b-t">
             <label class="md-check m-r">
-                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
-                <i class="primary"></i><span translate>Info</span>
+                <input type="checkbox" ng-model="object.checkBoxs.scheduler" ng-change="checkLogLevel('SCHEDULER')">
+                <i class="primary"></i><span translate>Main</span>
             </label>
             <label class="md-check m-r">
                 <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
                 <i class="primary"></i><span>Stdout</span>
             </label>
-            <label class="md-check m-r">
+            <label class="md-check m-r" ng-if="isStdErrLevel">
                 <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
                 <i class="primary"></i><span>Stderr</span>
+            </label>
+            <label class="md-check m-r">
+                <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
+                <i class="primary"></i><span translate>Info</span>
             </label>
             <label class="md-check m-r" ng-if="isDeBugLevel">
                 <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
@@ -72,8 +76,3 @@
 <script src="modules/log.js"></script>
 </body>
 </html>
-
-
-
-
-

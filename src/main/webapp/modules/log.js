@@ -10,6 +10,7 @@
 
         $scope.object = {
             checkBoxs : {
+                scheduler: true,
                 stdout: true,
                 stderr: true,
                 info: true,
@@ -18,6 +19,8 @@
             debug: 'Debug'
         };
         $scope.isDeBugLevel = false;
+		$scope.isStdErrLevel = false;
+		$scope.isDebugLevels = [false,false,false,false,false,false,false,false,false];
         $scope.debugLevels = ['Debug','Debug2','Debug3','Debug4','Debug5','Debug6','Debug7','Debug8','Debug9'];
         function getCookie(cname) {
             let name = cname + "=";
@@ -88,21 +91,41 @@
                 document.getElementById("logs").innerHTML = "";
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
-                    if (level.toLowerCase() == "trace") {
+                    level = (level) ? level.trim().toLowerCase() : "info";
+					if (level == "trace") {
                         level = "debug9";
                     }
-                    div.className = "log_" + ((level) ? level.toLowerCase() : "info");
-                    if (level.toLowerCase() === "stdout") {
+                    div.className = "log_" + level;
+                    if (level === "stdout") {
                         div.className += " stdout";
-                    } else if (level.toLowerCase() === "stderr") {
+                    } else if (level === "stderr") {
                         div.className += " stderr";
                     } else if (prefix.search(/\[stdout\]/i) > -1) {
-                        div.className += " stdout";
+                        div.className += " stdout stdout_" + level;
                     } else if (prefix.search(/\[stderr\]/i) > -1) {
-                        div.className += " stderr";
-                    }
+                        div.className += " stderr stderr_" + level;
+                    } else {
+						div.className += " scheduler scheduler_" + level;
+					}
                     div.textContent = match.replace(/^\r?\n/, "");
-                    $scope.isDeBugLevel = level.match('(debug\d?)');
+                    if (!$scope.isDeBugLevel) {
+                        $scope.isDeBugLevel = level.startsWith('debug');
+                    }
+					if ($scope.isDeBugLevel && level.startsWith('debug')) {
+						if (level == 'debug') {
+							$scope.isDebugLevels[0] = true;
+						} else {
+							for (let x = 2; x < 10; x++) {
+								if (level == 'debug'+x) {
+									$scope.isDebugLevels[x-1] = true;
+									break;
+								}
+							}
+						}
+                    }
+					if (!$scope.isStdErrLevel) {
+                        $scope.isStdErrLevel = div.className.includes('stderr');
+                    }
                     var j = 0;
                     while (true) {
                         if (offset < (j + 1) * 1024 * 512) {
@@ -116,6 +139,18 @@
                     }
                     return "";
                 });
+				if ($scope.isDeBugLevel) {
+					$scope.debugLevels = [];
+					if ($scope.isDebugLevels[0]) {
+						$scope.debugLevels.push('Debug');
+					}
+					for (let x = 2; x < 10; x++) {
+						if ($scope.isDebugLevels[x-1]) {
+							$scope.debugLevels.push('Debug'+x);
+						}
+					}
+				}
+
                 let firstLogs = logElems.shift(); //first MB of log
                 if (firstLogs !== undefined) {
                     window.document.getElementById('logs').appendChild(firstLogs);
@@ -200,53 +235,116 @@
             }
         };
 
-        $scope.checkLogLevel = function(type) {
-            let sheet = document.createElement('style');
+        $scope.sheetContent = '';
+		$scope.checkLogLevel = function(type) {
+			$scope.sheetContent = '';
             if (type === 'STDOUT') {
                if(!$scope.object.checkBoxs.stdout) {
-                   sheet.innerHTML = "div.stdout {display: none;}";
-                }else {
-                   sheet.innerHTML = "div.stdout {display: block;}";
+                   $scope.sheetContent += "div.stdout {display: none;}\n";
+                } else {
+                   $scope.sheetContent += "div.stdout {display: block;}\n";
+				   $scope.changeInfoLevel(type);
+				   $scope.changeDebugLevel(type, false);
                 }
             } else if (type === 'STDERR') {
-               if(!$scope.object.checkBoxs.stderr) {
-                   sheet.innerHTML = "div.stderr {display: none;}";
-                }else {
-                   sheet.innerHTML = "div.stderr {display: block;}";
+                if(!$scope.object.checkBoxs.stderr) {
+                   $scope.sheetContent += "div.stderr {display: none;}\n";
+                } else {
+                   $scope.sheetContent += "div.stderr {display: block;}\n";
+				   $scope.changeInfoLevel(type);
+				   $scope.changeDebugLevel(type, false);
+                }
+            } else if (type === 'SCHEDULER') {
+                if(!$scope.object.checkBoxs.scheduler) {
+                   $scope.sheetContent += "div.scheduler {display: none;}\n";
+                } else {
+                   $scope.sheetContent += "div.scheduler {display: block;}\n";
+				   $scope.changeInfoLevel(type);
+				   $scope.changeDebugLevel(type, false);
                 }
             } else if (type === 'INFO') {
-               if(!$scope.object.checkBoxs.info) {
-                   sheet.innerHTML = "div.log_info {display: none;}";
-                }else {
-                   sheet.innerHTML = "div.log_info {display: block;}";
+                if(!$scope.object.checkBoxs.info) {
+				   $scope.sheetContent += "div.scheduler_info {display: none;}\n";
+				   $scope.sheetContent += "div.stdout_info {display: none;}\n";
+				   $scope.sheetContent += "div.stderr_info {display: none;}\n";
+                } else {
+                    if($scope.object.checkBoxs.scheduler) {
+						$scope.sheetContent += "div.scheduler_info {display: block;}\n";
+					}
+					if($scope.object.checkBoxs.stdout) {
+						$scope.sheetContent += "div.stdout_info {display: block;}\n";
+					}
+					if($scope.object.checkBoxs.stderr) {
+						$scope.sheetContent += "div.stderr_info {display: block;}\n";
+					}
                 }
             } else if (type === 'DEBUG') {
-                $scope.changeDebugLevel();
+                if(!$scope.object.checkBoxs.debug) {
+					$scope.changeDebugLevel('SCHEDULER', false);
+					$scope.changeDebugLevel('STDOUT', false);
+					$scope.changeDebugLevel('STDERR', false);
+                } else {
+                    $scope.changeDebugLevel();
+					$scope.sheetContent = '';
+                }
             }
-            document.body.appendChild(sheet);
+			if ($scope.sheetContent != '') {
+				let sheet = document.createElement('style');
+				sheet.innerHTML = $scope.sheetContent;
+				document.body.appendChild(sheet);
+			}
         };
 
-        $scope.changeDebugLevel = function() {
-            let num = $scope.object.debug.substring(5);
-            if(!num){
-                num=1;
-            }
-            for (let x = 1; x < 10; x++) {
-               toggleDebugLog(num, x);
+		$scope.changeInfoLevel = function(type) {
+            if(!$scope.object.checkBoxs.info) {
+                $scope.sheetContent += "div."+type.toLowerCase()+"_info {display: none;}\n";
             }
         };
 
-        function toggleDebugLog(num, x) {
-            let level = x === 1 ? '' : x;
-            level = "log_debug" + level;
-            let sheet = document.createElement('style');
-            if (($scope.object.checkBoxs.debug && (x <= num))) {
-                sheet.innerHTML = "div."+level+" {display: block;}";
-            } else {
-                sheet.innerHTML = "div."+level+" {display: none;}";
-            }
-            document.body.appendChild(sheet);
-        }
+		$scope.changeDebugLevel = function(type, setBlock) {
+			if (type) {
+				let num = $scope.object.debug.substring(5);
+				if(!num){
+					num=1;
+				}
+				if ($scope.object.checkBoxs.debug) {
+					if (setBlock) {
+						for (let x = 1; x <= num; x++) {
+							let level = x === 1 ? '' : x;
+							$scope.sheetContent += "div."+type.toLowerCase()+"_debug"+level+" {display: block;}\n";
+						}
+					}
+					if (num < 9) {
+						for (let x = num+1; x < 10; x++) {
+							let level = x === 1 ? '' : x;
+							$scope.sheetContent += "div."+type.toLowerCase()+"_debug"+level+" {display: none;}\n";
+						}
+					}
+				} else {
+					for (let x = 1; x < 10; x++) {
+						let level = x === 1 ? '' : x;
+						$scope.sheetContent += "div."+type.toLowerCase()+"_debug"+level+" {display: none;}\n";
+					}
+				}
+			} else {
+				$scope.sheetContent = '';
+				if ($scope.object.checkBoxs.scheduler) {
+					$scope.changeDebugLevel('SCHEDULER', true);
+				}
+				if ($scope.object.checkBoxs.stdout) {
+					$scope.changeDebugLevel('STDOUT', true);
+				}
+				if ($scope.object.checkBoxs.stderr) {
+					$scope.changeDebugLevel('STDERR', true);
+				}
+				if ($scope.sheetContent != '') {
+					let sheet = document.createElement('style');
+					sheet.innerHTML = $scope.sheetContent;
+					document.body.appendChild(sheet);
+				}
+			}
+        };
+
 
     }]);
 })();
