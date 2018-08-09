@@ -455,6 +455,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            reactivate: function (filter) {
+                var deferred = $q.defer();
+                var Reactivate = $resource('jobscheduler/cluster/reactivate');
+                Reactivate.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

@@ -1322,5 +1322,7 @@
   "label.showContentSubFolder": "Visualiser sous-dossiers et contentu du dossier",
   "label.showContentOnly": "Contenu du dossier",
   "label.showSubFolder": "Sous-dossiers et contentu du dossier",
-  "button.downloadJocCockpitLog": "Télécharger le JOC Cockpit Log"
+  "button.downloadJocCockpitLog": "Télécharger le JOC Cockpit Log",
+  "button.reactivatePrimaryJobscheduler": "Reactive Primary JocScheduler",
+  "button.reactivatePrimaryJobschedulerWithIn": "Reactive Primary JocScheduler with Timeout"
 }

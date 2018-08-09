@@ -479,7 +479,7 @@
                             var startLeft = avatarW / 2 - "Start".length * 3;
                             rectangleTemplate = rectangleTemplate + '<span id="lb' + scope.startId + '" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
                                 + '" translate>label.start</span>' +
-                                '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                                '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         }
 
@@ -487,8 +487,8 @@
                         var jobName;
 
                         var host = '<div class="text-left text-sm p-t-xs block-ellipsis-job">' +
-                            '<span ng-if="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"><i class="fa fa-server "></i><span  class="p-l-sm" ng-bind="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"></span></span>' +
-                            '<span class=" hide" ng-class="{show:jobChainData.nodes[\'' + index + '\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-sm" ng-bind-html="formatLock(\'' + index + '\')"></span></span>' +
+                            '<span ng-if="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"><i class="fa fa-server "></i><span class="p-l-sm" ng-bind="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"></span></span>' +
+                            '<span class="hide m-l-sm" ng-class="{\'show-block\':jobChainData.nodes[\'' + index + '\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-sm" ng-bind-html="formatLock(\'' + index + '\')"></span></span>' +
                             '</div>';
 
                         if (item.job) {
@@ -608,13 +608,17 @@
                                     }
 
                                 });
+                                let errorNodeCls = '';
+                                if(endNode.name && endNode.name.toLowerCase() == 'error'){
+                                    errorNodeCls = 'error-node1';
+                                }
 
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
-                                rectangleTemplate = rectangleTemplate + '<div ><span  id="lb' + item.name + '" class="text-danger error-node error-node1" ' +
+                                rectangleTemplate = rectangleTemplate + '<div ><span  id="lb' + item.name + '" class="text-danger error-node '+ errorNodeCls + '" ' +
                                     'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
                                     '</div>' +
-                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node error-node1" ' +
+                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node '+ errorNodeCls + '" ' +
                                     'style="position: absolute;left: ' + scope.coords[length + index].left + 'px;top: ' + scope.coords[length + index].top + 'px' + '"> </span>';
                             } else {
                                 endSuccessNodes++;
@@ -631,10 +635,8 @@
                                 }
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
-
                                 rectangleTemplate = rectangleTemplate + getCircularNode(item, labelLeft, labelTop, scope.coords[length].left, scope.coords[length + index].top);
                             }
-
                             if (index == scope.jobChainData.endNodes.length - 1) {
                                 checkHeight();
                             }
@@ -899,7 +901,6 @@
                     };
 
                     vm.drawConnections = function () {
-
                         jobChainPath = vm.jobChainData.path;
                         mainContainer = document.getElementById('zoomCn');
 
@@ -1005,9 +1006,7 @@
 
 
                             if (div2) {
-
                                 if (pDiv && pDiv.offsetTop > div1.offsetTop) {
-
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                     width = vm.margin / 2;
@@ -1099,7 +1098,7 @@
                                     createErrorLine(top, left, 2, height,index, item);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
-                                    createErrorLine(top, left, width, 2);
+                                    createErrorLine(top, left, width, 2,index, item);
                                     left = left + width;
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
                                     createErrorLine(top, left, 2, height, index,item);
@@ -1218,7 +1217,6 @@
                         }
 
                         function createErrorLine(top, left, width, height,index,item) {
-                            console.log(item)
                             var node = document.createElement('div');
                             node.setAttribute('class', 'error-link');
                             if (height > width) {

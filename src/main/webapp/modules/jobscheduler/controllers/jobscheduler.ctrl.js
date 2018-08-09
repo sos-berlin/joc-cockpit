@@ -5696,14 +5696,16 @@
                             }
                         });
                     })
-                } else if (objectType == 'cluster' && action == 'terminate') {
+                } else if (objectType === 'cluster' && action === 'terminate') {
                     JobSchedulerService.terminateCluster(obj1);
-                } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
+                } else if (objectType === 'cluster' && action === 'terminateFailsafe') {
                     JobSchedulerService.terminateFailsafeCluster(obj1);
-                } else if (objectType == 'cluster' && action == 'restart') {
+                } else if (objectType === 'cluster' && action === 'restart') {
                     JobSchedulerService.restartCluster(obj1);
+                } else if (objectType === 'cluster' && action === 'reactivatePrimaryJobscheduler') {
+                    JobSchedulerService.reactivate(obj1);
                 }
-                else if (action == 'downloadLog') {
+                else if (action === 'downloadLog') {
                     $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
@@ -5719,7 +5721,7 @@
                         $rootScope.downloading = false;
                     });
                 }
-                else if (action == 'downloadDebugLog') {
+                else if (action === 'downloadDebugLog') {
                     $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
@@ -5737,7 +5739,7 @@
                 }
             }
 
-            if ((objectType == 'supervisor' || objectType == 'master') && (action == 'terminateAndRestartWithTimeout' || action == 'terminateWithin')) {
+            if (((objectType === 'supervisor' || objectType === 'master') && (action === 'terminateAndRestartWithTimeout' || action === 'terminateWithin')) || (objectType === 'cluster' && action === 'reactivatePrimaryJobschedulerWithIn') ) {
                 vm.getTimeout(host, port, id, action);
             } else {
                 if (vm.userPreferences.auditLog && action != 'downloadLog' && action != 'downloadDebugLog') {
@@ -5783,7 +5785,11 @@
         vm.getTimeout = function (host, port, id, action) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm._scheduleName = id + ' (' + host + ':' + port + ')';
+            vm._scheduleName = id || vm.schedulerIds.selected;
+             if (host){
+                 vm._scheduleName = vm._scheduleName + ' (' + host + ':' + port + ')';
+             }
+
             vm.action = action;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
@@ -5793,9 +5799,11 @@
             });
             modalInstance.result.then(function () {
                 var obj = {};
-                obj.jobschedulerId = id;
-                obj.host = host;
-                obj.port = port;
+                obj.jobschedulerId = id || vm.schedulerIds.selected;
+                if(host) {
+                    obj.host = host;
+                    obj.port = port;
+                }
                 obj.timeout = vm.criterion.timeout;
                 obj.auditLog = {};
                 if (vm.comments.comment) {
@@ -5808,10 +5816,14 @@
                 if (vm.comments.ticketLink) {
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 }
-                if (action == 'terminateAndRestartWithTimeout')
+                if (action === 'terminateAndRestartWithTimeout') {
                     JobSchedulerService.restartWithin(obj);
-                else
+                } else if (action === 'reactivatePrimaryJobschedulerWithIn') {
+                    JobSchedulerService.reactivate(obj);
+                } else {
                     JobSchedulerService.terminate(obj);
+                }
+
             }, function () {
 
             });

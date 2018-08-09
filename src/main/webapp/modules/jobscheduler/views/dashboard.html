@@ -130,6 +130,15 @@
                                    ng-click="clusterAction('cluster','terminateFailsafe')"
                                    ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
                                    translate>button.terminateFailsafe</a>
+                                <a class="dropdown-item"
+                                   ng-if="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'"
+                                   ng-click="clusterAction('cluster','reactivatePrimaryJobscheduler')"
+                                   ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
+                                   translate>button.reactivatePrimaryJobscheduler</a>
+                                <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.execute.restart && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'"
+                                   ng-click="clusterAction('cluster','reactivatePrimaryJobschedulerWithIn')"
+                                   ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
+                                   translate>button.reactivatePrimaryJobschedulerWithIn</a>
                             </div>
                         </div>
                     </div>
@@ -141,7 +150,7 @@
                         <div><i class="fa fa-refresh fa-lg fa-spin"></i> </div>
                     </div>
                 </div>
-                <div id="jobSchedulerStatus1" ng-if="widget.name == 'jobSchedulerStatus'"  class="box">
+                <div id="jobSchedulerStatus1" ng-if="widget.name == 'jobSchedulerStatus'" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.jobSchedulerStatus</h3>
                         <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
