@@ -608,10 +608,7 @@
                                     }
 
                                 });
-                                let errorNodeCls = '';
-                                if(endNode.name && endNode.name.toLowerCase() == 'error'){
-                                    errorNodeCls = 'error-node1';
-                                }
+                                let errorNodeCls = 'error-node1';
 
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
@@ -644,15 +641,14 @@
                     }
 
                     function getCircularNode(item, labelLeft, labelTop, left, top) {
-                        var node = '<div id="lb' + item.name + '"  class="nowrap text-success" ' +
+                        return '<div id="lb' + item.name + '"  class="nowrap text-success" ' +
                             'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </div>' +
-                            '<div   class="hide nowrap text-success" ng-class="{show:\'' + item.remove + '\'!==\'undefined\'}"' +
+                            '<div class="hide nowrap text-success" ng-class="{show:\'' + item.remove + '\'!==\'undefined\'}"' +
                             'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 15) + 'px' + '">Remove: ' + item.remove + ' </div>' +
-                            '<div   class="hide nowrap text-success" ng-class="{show:\'' + item.move + '\'!==\'undefined\'}"' +
+                            '<div class="hide nowrap text-success" ng-class="{show:\'' + item.move + '\'!==\'undefined\'}"' +
                             'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 30) + 'px' + '">Move: ' + item.move + ' </div>' +
                             '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
                             'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>';
-                        return node;
                     }
 
                     function checkHeight() {
@@ -780,101 +776,76 @@
                     };
 
                     vm.stopNode = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: jobChainPath,
                             node: item.name,
                             action: 'stop node'
                         })
-
                     };
 
                     vm.unstopNode = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: jobChainPath,
                             node: item.name,
                             action: 'unstop node'
                         })
-
                     };
 
 
                     vm.skipNode = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: jobChainPath,
                             node: item.name,
                             action: 'skip'
                         })
-
                     };
 
 
                     vm.unskipNode = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: jobChainPath,
                             node: item.name,
                             action: 'unskip'
                         })
-
                     };
 
 
                     vm.stopJob = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: item.job.path,
                             node: item.name,
                             action: 'stop job'
                         })
-
                     };
 
                     vm.unstopJob = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: item.job.path,
                             node: item.name,
                             action: 'unstop job'
                         })
-
                     };
 
-
                     vm.stopJobChain = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: item.jobChain.path,
                             action: 'stop jobChain'
                         })
-
                     };
 
                     vm.unstopJobChain = function (index) {
-
                         var item = vm.jobChainData.nodes[index];
-
                         vm.onAction({
                             path: item.jobChain.path,
                             action: 'unstop jobChain'
                         })
-
                     };
                     var jobChainPath;
                     var mainContainer;
@@ -886,18 +857,16 @@
                         if (!item) {
                             return;
                         }
-                        if (!item.orders || item.orders.length == 0) {
+                        if (!item.orders || item.orders.length === 0) {
                             running = false;
                         } else {
                             angular.forEach(item.orders, function (order) {
-                                if (order.processingState && order.processingState._text == 'RUNNING') {
+                                if (order.processingState && order.processingState._text === 'RUNNING') {
                                     running = true;
                                 }
                             })
                         }
-
                         return running;
-
                     };
 
                     vm.drawConnections = function () {
@@ -963,8 +932,6 @@
                                 })
                             }
 
-                            var x2 = 0;
-                            var y2 = 0;
                             var node;
 
                             vm.condition = true;
@@ -1066,11 +1033,9 @@
                                     if (vm.jobChainData.nodes.length - 1 > index && parallels > 0) {
 
                                     } else {
-
                                         createLine(div2.offsetTop + div2.clientHeight / 2, div1.offsetLeft + div1.clientWidth + vm.border,
                                             div2.offsetLeft - div1.offsetLeft - div1.clientWidth, 2, index, item);
                                     }
-
                                 }
                             }
 
@@ -1103,7 +1068,6 @@
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
                                     createErrorLine(top, left, 2, height, index,item);
                                     width = errNode.offsetLeft - left;
-
                                     top = top + (height > 0 ? height : 0 );
                                     createErrorLine(top, left, width, 2,index, item);
 
@@ -1163,8 +1127,18 @@
                         });
 
                         function createLine(top, left, width, height, index, item) {
+                            let errorLinkCls = '';
+                            if(vm.jobChainData.endNodes && vm.jobChainData.endNodes.length){
+                                angular.forEach(vm.jobChainData.endNodes,function(val){
+                                    console.log( item.errorNode + ' : '+ item.name + ' : '+item.nextNode + ' >> '+val.name)
+                                   if(val.name == item.errorNode && (item.nextNode == val.name)){
+                                        console.log(item);
+                                       errorLinkCls = 'error-link1';
+                                   }
+                                });
+                            }
                             var node = document.createElement('div');
-                            node.setAttribute('class', 'h-line next-link ' + (index > 0 && item.isErrorNode && vm.jobChainData.nodes[(index - 1)].nextNode !== item.name ? 'error-node error-node1' : ''));
+                            node.setAttribute('class', 'h-line next-link ' + errorLinkCls + (index > 0 && item.isErrorNode && vm.jobChainData.nodes[(index - 1)].nextNode !== item.name ? ' error-node' : ''));
                             if (height == 2) {
                                 node.setAttribute('ng-style', '{"height":(fitToScreen?4:2)+"px"}');
                             } else {
@@ -1217,8 +1191,17 @@
                         }
 
                         function createErrorLine(top, left, width, height,index,item) {
+                            let errorLinkCls = '';
+                            if(vm.jobChainData.endNodes && vm.jobChainData.endNodes.length){
+                                angular.forEach(vm.jobChainData.endNodes,function(val, index){
+                                   if(val.name == item.errorNode){
+                                       errorLinkCls = 'error-link1';
+                                   }
+                                });
+                            }
+
                             var node = document.createElement('div');
-                            node.setAttribute('class', 'error-link');
+                            node.setAttribute('class', 'error-link '+errorLinkCls);
                             if (height > width) {
                                 node.style['border-left'] = '2px dotted #f44455';
                             } else {
@@ -1246,10 +1229,7 @@
                             node.appendChild(i);
                             mainContainer.appendChild(node);
                         }
-
-
                     };
-
 
                     function getInfo(index) {
                         var node = vm.jobChainData.nodes[index];
@@ -1284,8 +1264,6 @@
                         if (index < vm.jobChainData.nodes.length) {
                             getInfo(index);
                         }
-
-
                     }
 
                     vm.formatLock = function formatLock(index) {
@@ -1298,14 +1276,12 @@
                             var extra = node.locks.length > 1 ? ' + ' + (node.locks.length - 1) + ' <a href="#!/resources/locks">more</a>' : '';
                             return node.locks[0].path + extra;
                         }
-
                     };
-
 
                     vm.$watch("showErrorNodes", toggleErrorNodes);
 
                     function toggleErrorNodes() {
-                        let errorElms = document.getElementsByClassName("error-link");
+                        let errorElms = document.getElementsByClassName("error-link1");
                         let errorNodes = document.getElementsByClassName("error-node1");
                         if(!errorElms.length){
                             return;
@@ -1327,7 +1303,6 @@
                             });
                         }
                     }
-
 
                     vm.$on('reloadJobChain', function () {
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
@@ -1352,7 +1327,6 @@
                         }
                     });
 
-
                     function updateJobChain() {
                         var nodeCount = 0;
                         if (!mainContainer) {
@@ -1372,7 +1346,6 @@
                                 addLabel(node.orders, node.name, node.numOfOrders);
                             }
                         });
-
 
                         vm.colorFunction = colorFunction;
                         function colorFunction(d) {
@@ -1683,7 +1656,6 @@
                         });
                         vm.selectedNodes = [];
                     })
-
                 }]
         }
     }

@@ -282,15 +282,12 @@
 
             getClusterMembers: function (jobschedulerId) {
                 var deferred = $q.defer();
-
-                   var JobScheduler = $resource('jobscheduler/cluster/members');
+                var JobScheduler = $resource('jobscheduler/cluster/members');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
-
-
                 return deferred.promise;
             },
 
