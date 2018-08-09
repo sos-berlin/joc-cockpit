@@ -1316,11 +1316,11 @@
   "button.downloadDebugLog": "Télécharger le Debug Log",
   "button.download": "Télécharger",
   "button.reload": "Recharger",
-  "placeholder.enterMainSection": "Enter Main Section",
-  "label.defaultHistoryTab": "Default History Tab",
-  "label.headerColor" : "Header Color",
-  "label.showContentSubFolder" : "Show Sub-folders and Content",
-  "label.showContentOnly" : "Content Only",
-  "label.showSubFolder" : "Sub-folder and Content",
-  "button.downloadJocCockpitLog":"Download JOC Cockpit Log"
+  "placeholder.enterMainSection": "Entrer la section Main",
+  "label.defaultHistoryTab": "Onglet de défaut de l'Historique",
+  "label.headerColor": "Couleur de la barre de menu",
+  "label.showContentSubFolder": "Visualiser sous-dossiers et contentu du dossier",
+  "label.showContentOnly": "Contenu du dossier",
+  "label.showSubFolder": "Sous-dossiers et contentu du dossier",
+  "button.downloadJocCockpitLog": "Télécharger le JOC Cockpit Log"
 }

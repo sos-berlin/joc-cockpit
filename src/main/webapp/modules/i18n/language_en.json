@@ -1314,13 +1314,13 @@
   "label.pleaseWait": "Please wait",
   "label.maxLogSizeThreshold": "Max. Log Size Threshold",
   "button.downloadDebugLog": "Download Debug Log",
-  "button.download":"Download",
-  "button.reload":"Reload",
-  "placeholder.enterMainSection" : "Enter Main Section",
-  "label.defaultHistoryTab" :"Default History Tab",
-  "label.headerColor" : "Header Color",
-  "label.showContentSubFolder" : "Show Sub-folders and Content",
-  "label.showContentOnly" : "Content Only",
-  "label.showSubFolder" : "Sub-folder and Content",
-  "button.downloadJocCockpitLog":"Download JOC Cockpit Log"
+  "button.download": "Download",
+  "button.reload": "Reload",
+  "placeholder.enterMainSection": "Enter Main Section",
+  "label.defaultHistoryTab": "Default History Tab",
+  "label.headerColor": "Menu Bar Color",
+  "label.showContentSubFolder": "Show Sub-folders and folder contents",
+  "label.showContentOnly": "Folder contents",
+  "label.showSubFolder": "Sub-folders and folder contents",
+  "button.downloadJocCockpitLog": "Download JOC Cockpit Log"
 }
