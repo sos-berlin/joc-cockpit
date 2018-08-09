@@ -1323,6 +1323,6 @@
   "label.showContentOnly": "Contenu du dossier",
   "label.showSubFolder": "Sous-dossiers et contentu du dossier",
   "button.downloadJocCockpitLog": "Télécharger le JOC Cockpit Log",
-  "button.reactivatePrimaryJobscheduler": "Reactive Primary JocScheduler",
-  "button.reactivatePrimaryJobschedulerWithIn": "Reactive Primary JocScheduler with Timeout"
+  "button.reactivatePrimaryJobscheduler": "Réactiver le Primary Master",
+  "button.reactivatePrimaryJobschedulerWithIn": "Réactiver le Primary Master avec un délai d'attente"
 }

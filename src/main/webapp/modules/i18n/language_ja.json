@@ -1322,5 +1322,7 @@
   "label.showContentSubFolder" : "サブフォルダ/コンテンツ表示",
   "label.showContentOnly" : "コンテンツ表示",
   "label.showSubFolder" : "サブフォルダ/コンテンツ",
-  "button.downloadJocCockpitLog":"JOCコックピットログダウンロード"
+  "button.downloadJocCockpitLog":"JOCコックピットログダウンロード",
+  "button.reactivatePrimaryJobscheduler": "Reactivate Primary Master",
+  "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout"  
 }
