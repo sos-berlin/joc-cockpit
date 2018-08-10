@@ -71,7 +71,7 @@
                                         <a href class="dropdown-item bg-hover-color"
                                            ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
-                                             <a href class="dropdown-item"
+                                        <a href class="dropdown-item"
                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
 
@@ -226,10 +226,9 @@
                                                             <th translate>label.node</th>
                                                         </tr>
                                                         </thead>
-                                                        <tbody>
-                                                        <tr ng-repeat="history in historys | orderBy: 'startTime':true"
-                                                            ng-click="showLogWindow(history,null)" class="cursor">
-                                                            <td >
+                                                        <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
+                                                        <tr ng-click="showLogWindow(history,null)" class="cursor">
+                                                            <td>
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                                                 <span ng-bind="history.orderId"></span>
                                                             </td>
@@ -240,6 +239,37 @@
                                                             <td ng-bind="history.endTime | stringToDate"></td>
                                                             <td ng-bind="history.startTime | duration:history.endTime"></td>
                                                             <td ng-bind="history.node"></td>
+                                                        </tr>
+                                                        <tr ng-if="history.children">
+                                                            <td colspan="6" >
+                                                            <table class="table m-a-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th translate>label.orderId</th>
+                                                                    <th translate>label.status</th>
+                                                                    <th translate>label.startTime</th>
+                                                                    <th translate>label.endTime</th>
+                                                                    <th translate>label.duration</th>
+                                                                    <th translate>label.node</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                                <td>
+                                                                    <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
+                                                                    <span ng-bind="child.orderId"></span>
+                                                                </td>
+                                                                <td>
+                                                                    <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                                </td>
+                                                                <td ng-bind="child.startTime | stringToDate"></td>
+                                                                <td ng-bind="child.endTime | stringToDate"></td>
+                                                                <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                                <td ng-bind="child.node"></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            </td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -257,6 +287,7 @@
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.taskId</th>
+                                                        <th translate>label.job</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.started</th>
                                                         <th translate>label.ended</th>
@@ -272,6 +303,7 @@
                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
+                                                            <td>{{task.job}}</td>
                                                            <td>
                                                                <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
                                                            </td>
@@ -353,7 +385,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                        </div>
                     </div>
                 </div>
             </div>

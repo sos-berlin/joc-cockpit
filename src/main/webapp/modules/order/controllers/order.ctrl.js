@@ -1554,10 +1554,20 @@
 
         vm.historyRequestObj ={};
         vm.showHistory = showHistory;
-        function showHistory(nestedJobChain, node, order, skip) {
+        function showHistory(nestedJobChain, node, order, skip, toggle) {
             if (vm.jobChain) {
                 vm.isAuditLog = false;
-
+                if (!toggle) {
+                    if (vm.userPreferences.historyTab === 'order' || skip) {
+                        vm.isTaskHistory = false;
+                    } else {
+                        vm.showJobHistory(nestedJobChain, node, order);
+                        return;
+                    }
+                } else {
+                    vm.showJobHistory(nestedJobChain, node, order);
+                    return;
+                }
                 if (vm.userPreferences.historyTab === 'order' || skip) {
                     vm.isTaskHistory = false;
                 } else {
@@ -1574,6 +1584,7 @@
                     vm.jobChain.showHistory = node.name;
                 } else if (order) {
                     vm.jobChain.showHistory = order.orderId;
+                    obj.orders[0].orderId = order.orderId;
                 }
                 vm.historyRequestObj = obj;
                 OrderService.histories(obj).then(function (res) {

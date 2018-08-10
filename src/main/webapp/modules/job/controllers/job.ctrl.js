@@ -2403,17 +2403,22 @@
         vm.showHistory = showHistory;
 
         vm.historyRequestObj ={};
-        function showHistory(jobChain, node, order, skip) {
+        function showHistory(jobChain, node, order, skip,toggle) {
             vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = false;
-            if (vm.userPreferences.historyTab === 'order' || skip) {
-                vm.isTaskHistory = false;
-            } else {
+
+            if(!toggle) {
+                if (vm.userPreferences.historyTab === 'order' || skip) {
+                    vm.isTaskHistory = false;
+                } else {
+                    vm.showJobHistory(jobChain, node, order);
+                    return;
+                }
+            }else{
                 vm.showJobHistory(jobChain, node, order);
                 return;
             }
             let obj = {};
-            //filter.jobChain = jobChain.path;
             obj.limit = vm.userPreferences.maxHistoryPerJobchain;
             obj.orders =[{
                 jobChain : jobChain.path
@@ -2423,6 +2428,7 @@
                 jobChain.showHistory = node.name;
             } else if (order) {
                 jobChain.showHistory = order.orderId;
+                obj.orders[0].orderId = order.orderId;
             }
             vm.historyRequestObj =obj;
             OrderService.histories(obj).then(function (res) {

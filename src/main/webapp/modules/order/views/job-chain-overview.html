@@ -256,8 +256,7 @@
                                 <span ng-class="{'p-l-sm' : node.level==1,'p-l' : node.level==2,'p-l-md' : node.level==3,'p-l-lg' : node.level==4}">{{node.name}} </span>
                             </td>
                             <td>
-                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != node.name" ng-click="showHistory(jobChain,node, null)"></i>
-                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == node.name" ng-click="hideHistory(jobChain, node, null)"></i>
+                                <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain,node, null, null, 'noToggle')"></i>
                                 <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
                                 <div class="p-l-sm">
                                     <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
@@ -309,8 +308,7 @@
                                         </div>
                                         <span>
                                             <span class="text-sm">
-                                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != order.orderId" ng-click="showHistory(jobChain, null, order)"></i>
-                                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == order.orderId" ng-click="hideHistory(jobChain, null, order)"></i>
+                                                <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, null, order, null, 'noToggle')"></i>
                                                 <span>{{'label.order'| translate}}:&nbsp;</span>
                                                 <a href="" class="text-hover-primary"
                                                        ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
@@ -610,8 +608,7 @@
                                                             {{nestedNode.name}} </span>
                                                     </td>
                                                     <td>
-                                                        <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != nestedNode.name" ng-click="showHistory(jobChain,nestedNode, null)"></i>
-                                                        <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == nestedNode.name" ng-click="hideHistory(jobChain, nestedNode, null)"></i>
+                                                        <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain,nestedNode, null, null, 'noToggle')"></i>
                                                         <a class="text-hover-primary"
                                                            ng-click="showJob(nestedNode.job.path)">{{nestedNode.job.path}}</a>
                                                         <div class="p-l-sm ">
@@ -696,8 +693,7 @@
                                                                 </div>
                                                                 <span>
                                                                     <span class="text-sm">
-                                                                        <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="jobChain.showHistory != order.orderId" ng-click="showHistory(jobChain, null, order)"></i>
-                                                                        <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.showHistory == order.orderId" ng-click="hideHistory(jobChain, null, order)"></i>
+                                                                        <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, null, order, null, 'noToggle')"></i>
                                                                         <span>{{'label.order'| translate}}:&nbsp;</span>
                                                                         <a href="" class="text-hover-primary"
                                                                            ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
@@ -882,20 +878,52 @@
                                                     <th translate>label.node</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr ng-repeat="history in historys | orderBy: 'startTime':true"
-                                                    ng-click="showLogWindow(history,null)" class="cursor">
-                                                    <td>
-                                                        <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
-                                                        <span ng-bind="history.orderId"></span>
-                                                    </td>
-                                                    <td><span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span></td>
-                                                    <td ng-bind="history.startTime | stringToDate"></td>
-                                                    <td ng-bind="history.endTime | stringToDate"></td>
-                                                    <td ng-bind="history.startTime | duration:history.endTime"></td>
-                                                    <td ng-bind="history.node"></td>
-                                                </tr>
-                                                </tbody>
+                                                <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
+                                                    <tr ng-click="showLogWindow(history,null)" class="cursor">
+                                                        <td>
+                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
+                                                            <span ng-bind="history.orderId"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span>
+                                                        </td>
+                                                        <td ng-bind="history.startTime | stringToDate"></td>
+                                                        <td ng-bind="history.endTime | stringToDate"></td>
+                                                        <td ng-bind="history.startTime | duration:history.endTime"></td>
+                                                        <td ng-bind="history.node"></td>
+                                                    </tr>
+                                                    <tr ng-if="history.children">
+                                                        <td colspan="6" >
+                                                        <table class="table m-a-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th translate>label.orderId</th>
+                                                                <th translate>label.status</th>
+                                                                <th translate>label.startTime</th>
+                                                                <th translate>label.endTime</th>
+                                                                <th translate>label.duration</th>
+                                                                <th translate>label.node</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                            <td>
+                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
+                                                                <span ng-bind="child.orderId"></span>
+                                                            </td>
+                                                            <td>
+                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                            </td>
+                                                            <td ng-bind="child.startTime | stringToDate"></td>
+                                                            <td ng-bind="child.endTime | stringToDate"></td>
+                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                            <td ng-bind="child.node"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
                                             </table>
                                             <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>
                                                 message.noOrderHistoryFound
@@ -910,6 +938,7 @@
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.taskId</th>
+                                                        <th translate>label.job</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.started</th>
                                                         <th translate>label.ended</th>
@@ -925,6 +954,7 @@
                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
+                                                            <td>{{task.job}}</td>
                                                            <td>
                                                                <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
                                                            </td>

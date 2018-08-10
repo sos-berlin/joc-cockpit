@@ -954,6 +954,96 @@
                             <td ng-click="showLogWindow(history,null)"><span ng-if="history.endTime" ng-bind="history.startTime | duration:history.endTime"></span></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.node || '-' "></td>
                         </tr>
+                        <tr ng-if="history.children">
+                            <td colspan="9" >
+                                <table class="table m-a-0">
+                                <thead>
+                                    <tr>
+                                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                        <th ng-if="!historyView.current" translate>label.jobSchedulerId</th>
+                                        <th translate>label.orderId</th>
+                                        <th translate>label.jobChain</th>
+                                        <th translate>label.status</th>
+                                        <th translate>label.startTime</th>
+                                        <th translate>label.endTime</th>
+                                        <th translate>label.duration</th>
+                                        <th translate>label.node</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody ng-repeat="child in history.children | orderBy: 'startTime':true" ng-class="{'light-bg':child.show}">
+                                    <tr>
+                                        <td class="tableexport-ignore">
+                                            <div class="btn-group dropdown"  >
+                                                <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
+                                                        class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                                    <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != child.jobschedulerId && child.jobschedulerId)}" ng-click="addOrderToIgnoreList(child.orderId,child.jobChain)" translate>button.addOrderToIgnoreList</a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != child.jobschedulerId && child.jobschedulerId)}" ng-click="addJobChainToIgnoreList(child.jobChain)" translate>button.addJobChainToIgnoreList</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                         <td ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
+                                             <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
+                                             <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                             <span ng-bind="child.jobschedulerId"></span>
+                                             <span ng-if="!child.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
+                                         </td>
+                                        <td class="nowrap" ng-click="showLogWindow(child,null)">
+                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show && historyView.current" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
+                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show && historyView.current" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
+                                            <span ng-bind-html="child.orderId | highlight:filterString"></span>
+                                        </td>
+                                        <td ng-click="showLogWindow(child,null)">
+                                            <span ng-click="showJobChain(child.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind-html="child.jobChain | highlight:filterString"></span>
+                                        </td>
+                                        <td ng-click="showLogWindow(child,null)">
+                                            <span uib-tooltip="{{child.error.message}}" class="label {{child.state.severity==0 ? 'bg-green' : child.state.severity==1 ? 'bg-gold' : child.state.severity==2 ? 'bg-crimson': child.state.severity==3 ?'bg-dimgrey':
+                                                          child.state.severity==4 ? 'bg-transparent': child.state.severity==5 ? 'bg-dark-orange' : child.state.severity==6 ? 'bg-corn-flower-blue' :child.state.severity==7 ? 'bg-dark-magenta' : child.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="child.state._text | translate"></span></td>
+                                        <td ng-click="showLogWindow(child,null)"><span  ng-bind="child.startTime | stringToDate"></span></td>
+                                        <td ng-click="showLogWindow(child,null)"><span ng-if="child.endTime" ng-bind="child.endTime | stringToDate"></span></td>
+                                        <td ng-click="showLogWindow(child,null)"><span ng-if="child.endTime" ng-bind="child.startTime | duration:child.endTime"></span></td>
+                                        <td ng-click="showLogWindow(child,null)" ng-bind="child.node || '-' "></td>
+                                    </tr>
+                                    <tr class="tableexport-ignore" ng-if="child.show">
+                                        <td></td>
+                                         <td colspan="8" >
+                                             <table class="table m-a-0">
+                                                 <thead>
+                                                 <tr class="tableexport-ignore">
+                                                     <th translate>label.step</th>
+                                                     <th translate>label.state</th>
+                                                     <th translate>label.job</th>
+                                                     <th translate>label.start</th>
+                                                     <th translate>label.end</th>
+                                                     <th translate>label.duration</th>
+                                                     <th translate>label.exitCode</th>
+                                                     <th translate>label.errorCode</th>
+                                                     <th translate>label.errorText</th>
+                                                 </tr>
+                                                 </thead>
+                                                 <tbody>
+                                                 <tr ng-repeat="step in child.steps track by $index" class="cursor">
+                                                     <td ng-click="showLogWindow(null,step)">{{step.step}}</td>
+                                                     <td ng-click="showLogWindow(null,step)">{{step.node}}</td>
+                                                     <td ng-click="showLogWindow(null,step)"><a ng-click="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
+                                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
+                                                     <td ng-click="showLogWindow(null,step)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
+                                                     <td ng-click="showLogWindow(null,step)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
+                                                     <td ng-click="showLogWindow(null,step)">{{step.exitCode}}</td>
+                                                     <td ng-click="showLogWindow(null,step)">{{step.error.code}}</td>
+                                                     <td ng-click="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
+                                                 </tr>
+                                                 </tbody>
+                                             </table>
+                                             <div ng-if="child.steps.length==0" translate>message.noDataMatched</div>
+                                             <div ng-if="!child.steps" class="text-primary text-center" translate><i class="fa fa-spin fa-spinner"></i></div>
+                                         </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                         <tr class="tableexport-ignore" ng-if="history.show">
                             <td></td>
                              <td colspan="8" >

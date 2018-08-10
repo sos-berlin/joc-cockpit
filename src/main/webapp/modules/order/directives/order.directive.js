@@ -1130,9 +1130,7 @@
                             let errorLinkCls = '';
                             if(vm.jobChainData.endNodes && vm.jobChainData.endNodes.length){
                                 angular.forEach(vm.jobChainData.endNodes,function(val){
-                                    console.log( item.errorNode + ' : '+ item.name + ' : '+item.nextNode + ' >> '+val.name)
                                    if(val.name == item.errorNode && (item.nextNode == val.name)){
-                                        console.log(item);
                                        errorLinkCls = 'error-link1';
                                    }
                                 });
