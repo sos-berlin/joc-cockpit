@@ -2404,6 +2404,11 @@
 
         vm.historyRequestObj ={};
         function showHistory(jobChain, node, order, skip,toggle) {
+            if(vm.showHistoryPanel && vm.showHistoryPanel.path !== jobChain.path){
+                vm.historyRequestObj ={};
+                vm.taskHistoryRequestObj ={};
+            }
+
             vm.showHistoryPanel = angular.copy(jobChain);
             vm.isAuditLog = false;
 
@@ -2415,6 +2420,7 @@
                     return;
                 }
             }else{
+                vm.taskHistoryRequestObj ={};
                 vm.showJobHistory(jobChain, node, order);
                 return;
             }
@@ -2437,7 +2443,7 @@
         }
 
         vm.taskHistoryRequestObj ={};
-        vm.showJobHistory = function (jobChain, node, order) {
+        vm.showJobHistory = function (jobChain, node, order,skip) {
             vm.showHistoryPanel = angular.copy(jobChain);
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
@@ -2446,6 +2452,9 @@
             obj.orders =[{
                 jobChain : jobChain.path
             }];
+            if(skip && !vm.isEmpty(vm.taskHistoryRequestObj)){
+                obj = vm.taskHistoryRequestObj;
+            }
             if (node) {
                 jobChain.showHistory = node.name;
                 obj.orders[0].state = node.name;
@@ -2484,6 +2493,8 @@
         vm.hideHistory = function (jobChain, node, order) {
             if (!jobChain) {
                 vm.showHistoryPanel = '';
+                vm.historyRequestObj ={};
+                vm.taskHistoryRequestObj ={};
             } else {
                 jobChain.showHistory = '';
                 vm.showHistory(vm.showHistoryPanel);

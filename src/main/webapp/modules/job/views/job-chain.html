@@ -1254,7 +1254,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" ng-class="{active: !isAuditLog && isTaskHistory}"
-                                               ng-click="showJobHistory(showHistoryPanel)" href data-toggle="tab"
+                                               ng-click="showJobHistory(showHistoryPanel, null,null,'skip')" href data-toggle="tab"
                                                data-target="#tab3" translate>label.taskHistory</a>
                                         </li>
                                         <li class="nav-item" ng-if="permission.AuditLog.view.status">

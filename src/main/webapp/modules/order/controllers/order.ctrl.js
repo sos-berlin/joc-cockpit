@@ -1521,7 +1521,7 @@
 
         vm.taskHistoryRequestObj ={};
         vm.showJobHistory = showJobHistory;
-        function showJobHistory(nestedJobChain, node, order) {
+        function showJobHistory(nestedJobChain, node, order, skip) {
 
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
@@ -1530,6 +1530,9 @@
             obj.orders = [{
                 jobChain: nestedJobChain ? nestedJobChain.path : vm.jobChain.path
             }];
+            if(skip && !vm.isEmpty(vm.taskHistoryRequestObj)){
+                obj = vm.taskHistoryRequestObj;
+            }
             if (node) {
                 vm.jobChain.showHistory = node.name;
                 obj.orders[0].state = node.name;
