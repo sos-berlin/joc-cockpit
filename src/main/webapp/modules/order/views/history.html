@@ -957,7 +957,7 @@
                         <tr ng-if="history.children">
                             <td colspan="9" >
                                 <table class="table m-a-0">
-                                <thead>
+                                <!--thead>
                                     <tr>
                                         <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                         <th ng-if="!historyView.current" translate>label.jobSchedulerId</th>
@@ -969,10 +969,10 @@
                                         <th translate>label.duration</th>
                                         <th translate>label.node</th>
                                     </tr>
-                                    </thead>
+                                    </thead-->
                                     <tbody ng-repeat="child in history.children | orderBy: 'startTime':true" ng-class="{'light-bg':child.show}">
-                                    <tr>
-                                        <td class="tableexport-ignore">
+                                    <tr class="cursor">
+                                        <td width="45" class="tableexport-ignore">
                                             <div class="btn-group dropdown"  >
                                                 <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -1014,8 +1014,8 @@
                                                      <th translate>label.step</th>
                                                      <th translate>label.state</th>
                                                      <th translate>label.job</th>
-                                                     <th translate>label.start</th>
-                                                     <th translate>label.end</th>
+                                                     <th translate>label.startTime</th>
+                                                     <th translate>label.endTime</th>
                                                      <th translate>label.duration</th>
                                                      <th translate>label.exitCode</th>
                                                      <th translate>label.errorCode</th>
@@ -1053,8 +1053,8 @@
                                          <th translate>label.step</th>
                                          <th translate>label.state</th>
                                          <th translate>label.job</th>
-                                         <th translate>label.start</th>
-                                         <th translate>label.end</th>
+                                         <th translate>label.startTime</th>
+                                         <th translate>label.endTime</th>
                                          <th translate>label.duration</th>
                                          <th translate>label.exitCode</th>
                                          <th translate>label.errorCode</th>

@@ -804,7 +804,7 @@
                                                     <tr ng-if="history.children">
                                                         <td colspan="6" >
                                                         <table class="table m-a-0">
-                                                           <thead>
+                                                           <!--thead>
                                                             <tr>
                                                                 <th translate>label.orderId</th>
                                                                 <th translate>label.status</th>
@@ -813,7 +813,7 @@
                                                                 <th translate>label.duration</th>
                                                                 <th translate>label.node</th>
                                                             </tr>
-                                                            </thead>
+                                                            </thead-->
                                                             <tbody>
                                                             <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
                                                             <td>
