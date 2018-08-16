@@ -36,17 +36,17 @@
                         <tbody ng-repeat="transfer in fileTransfers">
                         <tr >
                             <td ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
-                                <div class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac list-dropdown" role="menu">
                                         <a class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
                                     </div>
                                 </div>
                             </td>
-                            <td  class="nowrap " >
+                            <td  class="nowrap">
                                 <i class="cursor fa fa-caret-down fa-lg " ng-if="!transfer.show" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg " ng-if="transfer.show" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                 <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
@@ -104,15 +104,13 @@
                                  </table>
                              </td>
                         </tr>
-                        <tr ng-show="transfer.show" ng-if="permission.YADE.view.files">
+                        <tr ng-if="permission.YADE.view.files && transfer.show">
                             <td></td>
                             <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr>
-                                         <th width="30" ng-if="permission.YADE.execute.transferStart">
-                                            #
-                                        </th>
+                                         <th width="30" ng-if="permission.YADE.execute.transferStart">#</th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
@@ -131,7 +129,6 @@
                                                        data-checklist-value="file"><i class="primary"></i>
                                             </label>
                                         </td>
-
                                          <td>{{file.sourceName}}</td>
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>
@@ -148,32 +145,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered2.length > 10}" ng-if="filtered2.length >0"><span translate>label.total</span> {{filtered2.length}}
-                        <span translate ng-if="filtered2.length >1">label.fileTransfersFound</span>
-                        <span translate ng-if="filtered2.length ==1">label.fileTransferFound</span>
-                    </div>
-                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-left" ng-show="filtered2.length > 10">
-                            <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
-                                </button>
-                            </div>
-                    </div>
                     <div ng-if="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
         <div ng-if="!isLoading" class="text-center m-t-lg" >
@@ -181,23 +153,3 @@
         </div>
     </div>
 </div>
-<script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-</script>

@@ -6,11 +6,14 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <label class="md-check">
-                        <input type="checkbox" ng-model="adtLog.current" ng-change="changeJobScheduler()">
-                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
-                    </label>
-
+                    <div class="show-inline">
+                        <span class="upper-check">
+                            <label class="md-check">
+                                <input type="checkbox" ng-model="adtLog.current" ng-change="changeJobScheduler()">
+                                <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                            </label>
+                        </span>
+                    </div>
                     <div class="btn-group m-l-sm hidden-btn-group">
                         <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
                                 ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all

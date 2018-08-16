@@ -222,11 +222,14 @@
                             </div>
                         </div>
                         <div class="hide" ng-class="{'show-block': resourceFilters.state=='agentJobExecutions'}">
-                            <label class="md-check m-r-sm">
-                                <input type="checkbox" ng-model="agentJobExecutionFilters.current" ng-click="changeJobScheduler()">
-                                <i class="primary"></i><span translate>label.currentJobscheduler</span>
-                            </label>
-
+                            <div class="show-inline">
+                                <span class="upper-check">
+                                    <label class="md-check m-r-sm">
+                                        <input type="checkbox" ng-model="agentJobExecutionFilters.current" ng-click="changeJobScheduler()">
+                                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                                    </label>
+                                </span>
+                            </div>
                             <div class="inline">
                                 <div class="btn-group m-r-sm hidden-btn-group">
                                     <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"

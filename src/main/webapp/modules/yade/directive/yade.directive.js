@@ -1,10 +1,6 @@
 /**
- * Created by Vibha Yawalikar on 14-12-2017.
- */
-/**
  * Created by sourabhagrawal on 07/11/17.
  */
-
 (function () {
     'use strict';
     angular.module('app')
@@ -12,7 +8,6 @@
 
     yadeChartComponent.$inject = ['$rootScope'];
     function yadeChartComponent($rootScope) {
-        console.log("call");
         return {
             restrict: 'E',
             templateUrl: 'modules/yade/views/pie-chart.html',
@@ -22,14 +17,12 @@
             controller: ['YadeService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog', function (YadeService, $scope, CoreService, SOSAuth, gettextCatalog) {
                 var vm = $scope;
                 var transferData = [];
-
                 function preparePieData(res) {
-                     transferData = [];
-
+                    transferData = [];
                     var count = 0;
                     for (var prop in res) {
                         if (res[prop] > 0) {
-                            var obj = {};
+                            let obj = {};
                             obj.key = prop;
                             obj.y = res[prop];
                             transferData.push(obj);
@@ -43,7 +36,7 @@
 
                 function getSnapshot() {
                     if (SOSAuth.scheduleIds) {
-                        var filter = {};
+                        let filter = {};
                         vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
                         filter.jobschedulerId = vm.schedulerIds.selected;
                         YadeService.getOverview(filter).then(function (res) {
@@ -52,6 +45,7 @@
                         });
                     }
                 }
+
                 getSnapshot();
 
                 vm.width = 260;
@@ -113,13 +107,13 @@
                         showLegend: false,
                         noData: gettextCatalog.getString('message.noDataAvailable'),
                         color: function (d, i) {
-                            if (d.key == 'running') {
+                            if (d.key === 'running') {
                                 return '#7ab97a';
-                            } else if (d.key == 'suspended') {
+                            } else if (d.key === 'suspended') {
                                 return '#e86680';
-                            } else if (d.key == 'setback') {
+                            } else if (d.key === 'setback') {
                                 return '#99b2df';
-                            } else if (d.key == 'waitingForResource') {
+                            } else if (d.key === 'waitingForResource') {
                                 return '#ffa366';
                             }
                         },
@@ -130,7 +124,7 @@
                         pie: {
                             dispatch: {
                                 elementClick: function (e) {
-                                    var res = e.data.key.toUpperCase();
+                                    let res = e.data.key.toUpperCase();
                                     vm.status = res;
                                     $rootScope.$broadcast('yadeState', res);
                                 }
@@ -142,6 +136,4 @@
             }]
         };
     }
-
-
 })();

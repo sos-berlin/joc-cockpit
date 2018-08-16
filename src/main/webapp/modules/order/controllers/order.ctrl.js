@@ -7009,6 +7009,24 @@
             });
         }
 
+        function  updateDimensions () {
+            const tdElements1 = $('tr.parent-tr td');
+            const tdElements2 = $('tr.child-tr td');
+            if (tdElements2.length > 0) {
+                for (let i = 0; i < tdElements1.length; i++) {
+                    if (tdElements2[i]) {
+                        tdElements2[i].style.width = window.getComputedStyle(tdElements1[i], null)
+                            .getPropertyValue('width');
+                    }
+                }
+            }
+            if (tdElements2.length === 0) {
+                setTimeout(function () {
+                    updateDimensions();
+                }, 120);
+            }
+        }
+
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {
@@ -8938,7 +8956,11 @@
                         filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                     }
                     OrderService.histories(filter).then(function (res) {
-                        vm.historys = res.history;
+                        if (vm.historys && vm.historys.length > 0 && res.history && res.history.length > 0) {
+                            vm.historys = _.merge(vm.historys, res.history);
+                        } else {
+                            vm.historys = res.history;
+                        }
                         setDuration(vm.historys);
                         isLoaded = true;
                     }, function () {
@@ -9009,7 +9031,11 @@
                     vm.search(true);
                 } else {
                     YadeService.getTransfers(filter).then(function (res) {
-                        vm.yadeHistorys = res.transfers;
+                        if( vm.yadeHistorys &&  vm.yadeHistorys.length>0 && res.transfers && res.transfers.length>0){
+                             vm.yadeHistorys = _.merge( vm.yadeHistorys,res.transfers);
+                        }else {
+                             vm.yadeHistorys = res.transfers;
+                        }
                         vm.isLoading = true;
                         isLoaded = true;
                     }, function () {

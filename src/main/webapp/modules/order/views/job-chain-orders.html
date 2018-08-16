@@ -202,9 +202,9 @@
                                             </td>
                                              <td class="noExl">
                                                 <div class="btn-group dropdown ">
-                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list"
+                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                                          role="menu">
                                                               <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
@@ -574,25 +574,6 @@
 </div>
 
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 280 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 280 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({
             sidebarTopMargin: 170

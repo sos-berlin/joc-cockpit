@@ -72,10 +72,8 @@
         vm.checkAllFileTransfersFnc = function () {
             if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
                 vm.object.fileTransfers = [];
-
-                var data  = $filter('orderBy')($scope.filtered, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
+                let data  = $filter('orderBy')($scope.fileTransfers, vm.yadeFilters.filter.sortBy, vm.yadeFilters.sortReverse);
                 data = data.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
-
                 angular.forEach(data, function (value) {
                     if (value.state._text != 'SUCCESSFUL') {
                         vm.object.fileTransfers.push(value);
@@ -86,7 +84,6 @@
                         }
                     }
                 });
-
             } else {
                 vm.reset();
             }
@@ -104,6 +101,11 @@
 
         vm.checkALLFilesFnc = function(transfer){
             if($("#" + transfer.id) && $("#" + transfer.id).prop('checked')) {
+
+                if(transfer.numOfFiles > 0 && !transfer.files){
+                    getFiles(transfer, 'checkbox');
+                }
+
                 if (transfer && transfer.files) {
                     angular.forEach(transfer.files, function (file) {
                         var flag = false;
@@ -301,8 +303,8 @@
                     obj.targetFiles = vm.selectedFiltered.targetFileName.split(',');
                 }
                 if (vm.selectedFiltered.sourceHost || vm.selectedFiltered.sourceProtocol) {
-                    var hosts = [];
-                    var protocols = [];
+                    let hosts = [];
+                    let protocols = [];
                     if (vm.selectedFiltered.sourceHost) {
                         vm.selectedFiltered.sourceHost = vm.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
                         hosts = vm.selectedFiltered.sourceHost.split(',');
@@ -315,8 +317,8 @@
 
                 }
                 if (vm.selectedFiltered.targetHost || vm.selectedFiltered.targetProtocol) {
-                    var hosts = [];
-                    var protocols = [];
+                    let hosts = [];
+                    let protocols = [];
                     if (vm.selectedFiltered.targetHost) {
                         vm.selectedFiltered.targetHost = vm.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
                         hosts = vm.selectedFiltered.targetHost.split(',');
@@ -333,7 +335,7 @@
                 }
             }
             else {
-                if (vm.yadeFilters.filter.states && vm.yadeFilters.filter.states != 'all') {
+                if (vm.yadeFilters.filter.states && vm.yadeFilters.filter.states !== 'all') {
                     obj.states = [];
                     obj.states.push(vm.yadeFilters.filter.states);
                 }
@@ -355,10 +357,13 @@
             }
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
-                vm.fileTransfers = res.transfers;
-
+                if(vm.fileTransfers && vm.fileTransfers.length>0 && res.transfers && res.transfers.length>0){
+                    vm.fileTransfers = _.merge(vm.fileTransfers,res.transfers);
+                }else {
+                    vm.fileTransfers = res.transfers;
+                }
                 angular.forEach(vm.fileTransfers, function (transfer) {
-                    var id = transfer.jobschedulerId || vm.schedulerIds.selected;
+                    let id = transfer.jobschedulerId || vm.schedulerIds.selected;
                     transfer.permission = PermissionService.getPermission(id).YADE;
                     if (vm.showFiles) {
                         transfer.show = true;
@@ -419,7 +424,7 @@
             vm.load();
         };
 
-        function getFiles(value) {
+        function getFiles(value, checkbox) {
             if (vm.permission.YADE.view.files) {
                 var ids = [];
                 ids.push(value.id);
@@ -428,8 +433,23 @@
                     jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
                 }).then(function (res) {
                     value.files = res.files;
+
+                    if (checkbox && value.files) {
+                        angular.forEach(value.files, function (file) {
+                            var flag = false;
+                            for (var x = 0; x < vm.object.files.length; x++) {
+                                if (angular.equals(file, vm.object.files[x])) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (!flag) {
+                                vm.object.files.push(file)
+                            }
+                        });
+                    }
                     vm.isLoaded = false;
-                },function () {
+                }, function () {
                     vm.isLoaded = false;
                 })
             }
@@ -1032,12 +1052,12 @@
             obj.transfers = [];
 
             angular.forEach(vm.object.fileTransfers, function (value) {
-                var fields =[];
+                var filelds = [];
                 angular.forEach(vm.object.files, function (file) {
-                    if(value.id == file.transferId)
-                        fields.push(file.id);
+                    if (value.id == file.transferId)
+                        filelds.push(file.id);
                 });
-                obj.transfers.push({transferId: value.id,fields:fields});
+                obj.transfers.push({transferId: value.id, filelds: filelds});
             });
 
             var modalInstance = {};
@@ -1047,17 +1067,15 @@
                 vm.comments.name = '';
                 vm.comments.operation = 'Restart';
                 vm.comments.type = 'File transfer';
-                if (event) {
-                    vm.comments.name = event.id;
-                } else {
-                    angular.forEach(vm.object.fileTransfers, function (value, index) {
-                        if (index == vm.object.fileTransfers.length - 1) {
-                            vm.comments.name = vm.comments.name + ' ' + value.id;
-                        } else {
-                            vm.comments.name = value.id + ', ' + vm.comments.name;
-                        }
-                    });
-                }
+
+                angular.forEach(vm.object.fileTransfers, function (value, index) {
+                    if (index == vm.object.fileTransfers.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.id;
+                    } else {
+                        vm.comments.name = value.id + ', ' + vm.comments.name;
+                    }
+                });
+
                 modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
@@ -1087,6 +1105,14 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.transferId = transfer.id;
+            if(vm.object.files && vm.object.files.length > 0) {
+                obj.fileIds = [];
+                angular.forEach(vm.object.files, function (val) {
+                    if(transfer.id == val.transferId){
+                        obj.fileIds.push(val.id);
+                    }
+                });
+            }
             YadeService.transferOrder(obj).then(function(res){
                 vm.resumeOrderWithParam(res.order);
             });
@@ -1182,55 +1208,102 @@
         });
     }
 
-    YadeOverviewCtrl.$inject = ["$scope","$rootScope", "CoreService", "YadeService","OrderService", "$uibModal",  "$stateParams", "AuditLogService"];
-    function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal,$stateParams, AuditLogService) {
+    YadeOverviewCtrl.$inject = ["$scope","$rootScope", "CoreService", "YadeService","OrderService", "$uibModal",  "$stateParams", "AuditLogService", "TaskService"];
+    function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal, $stateParams, AuditLogService, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getYadeDetailTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
-
         vm.allOrders = [];
         vm.orderFilters.filter.state = $stateParams.name;
+        vm.isLoaded = true;
         vm.object = {};
+        $scope.reloadState = 'no';
         vm.reset = function () {
             vm.object = {};
         };
+
+        vm.reload = function () {
+            if (vm.reloadState === 'no') {
+                vm.allOrders = [];
+                vm.folderPath = 'Process aborted';
+                vm.reloadState = 'yes';
+            } else if (vm.reloadState === 'yes') {
+                vm.reloadState = 'no';
+                vm.isLoading = false;
+                vm.init();
+            }
+        };
+
         vm.init = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.processingStates = [];
-            if (vm.orderFilters.filter.state != 'ALL')
+            if (vm.orderFilters.filter.state !== 'ALL') {
                 obj.processingStates.push(vm.orderFilters.filter.state);
+            }else{
+                obj.processingStates = ["SUSPENDED","RUNNING","SETBACK","WAITINGFORRESOURCE"];
+            }
             vm.status = vm.orderFilters.filter.state;
             YadeService.yadeOrders(obj).then(function (res) {
                 angular.forEach(res.orders, function (value) {
                     value.path1 = value.jobChain.substring(1, value.jobChain.lastIndexOf('/'));
                 });
                 vm.allOrders = res.orders;
-
                 vm.isLoading = true;
+                vm.isLoaded = false;
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
+                vm.isLoaded = false;
             });
         };
         vm.init();
 
-        vm.showLogFuc = function (value) {
-            var orders = {};
+        vm.showLogFuc = function (value, skip) {
+            let orders = {
+                jobschedulerId: vm.schedulerIds.selected,
+                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+            };
             vm.isAuditLog = false;
+            if (vm.userPreferences.historyTab === 'order' || skip) {
+                vm.isTaskHistory = false;
+            } else {
+                vm.showJobHistory(value);
+                return;
+            }
+            if (value.historyId) {
+                if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                    orders.historyIds = [value.historyId];
+                }
+            }
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-
+            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
-
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        vm.showJobHistory = function (order) {
+            vm.showLogPanel = order;
+            vm.isTaskHistory = true;
+            vm.isAuditLog = false;
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj.limit = vm.userPreferences.maxHistoryPerTask;
+            if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
+                obj.historyIds = [];
+                obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else {
+                obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
+            }
+            TaskService.histories(obj).then(function (res) {
+                vm.showLogPanel.taskHistory = res.history;
+            }, function () {
+                vm.showLogPanel.taskHistory = [];
+            })
         };
 
         function loadAuditLogs(obj) {
@@ -1239,6 +1312,8 @@
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
                 }
+            }, function () {
+                vm.auditLogs = [];
             });
         }
 
@@ -1246,7 +1321,7 @@
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
             vm.isAuditLog = true;
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
@@ -1278,9 +1353,13 @@
                 var obj = {};
                 obj.jobschedulerId = $scope.schedulerIds.selected;
                 obj.compact = true;
-                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state != 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state !== 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
+                }else {
+                    if (vm.orderFilters.filter.state === 'ALL') {
+                        obj.processingStates = ["SUSPENDED", "RUNNING", "SETBACK", "WAITINGFORRESOURCE"];
+                    }
                 }
                 YadeService.yadeOrders(obj).then(function (res) {
                     angular.forEach(res.orders, function (value) {
@@ -1367,7 +1446,6 @@
                 });
             }
         };
-
         vm.suspendAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -1414,7 +1492,6 @@
             }
 
         };
-
         vm.resumeAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -1587,7 +1664,11 @@
                         obj.jobschedulerId = $scope.schedulerIds.selected;
                         obj.compact = true;
                         obj.processingStates = [];
-                        obj.processingStates.push(vm.orderFilters.filter.state);
+                        if (vm.orderFilters.filter.state !== 'ALL') {
+                            obj.processingStates.push(vm.orderFilters.filter.state);
+                        }else{
+                            obj.processingStates = ["SUSPENDED","RUNNING","SETBACK","WAITINGFORRESOURCE"];
+                        }
                         YadeService.yadeOrders(obj).then(function (res) {
                             angular.forEach(res.orders, function (value) {
                                 value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
@@ -1611,12 +1692,41 @@
                         });
                         $rootScope.$broadcast('reloadYadeSnapshot');
                     }
-                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType == "ORDER" && vm.events[0].eventSnapshots[i].path == vm.showLogPanel.path) {
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.events[0].eventSnapshots[i].path === vm.showLogPanel.path && vm.isAuditLog) {
                         var obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.orders = [];
                         obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
                         loadAuditLogs(obj);
+                    }
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.orderFilters.filter.state === 'ALL' && !vm.isTaskHistory && !vm.isAuditLog) {
+                        let orders = {
+                            jobschedulerId: vm.schedulerIds.selected,
+                            limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                        };
+                        if (vm.showLogPanel.historyId) {
+                            if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                                orders.historyIds = [vm.showLogPanel.historyId];
+                            }
+                        }
+                        orders.orders = [];
+                        orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
+                        OrderService.histories(orders).then(function (res) {
+                            vm.historys = res.history;
+                        });
+                    }
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.orderFilters.filter.state === 'ALL' && vm.isTaskHistory) {
+                        let obj = {jobschedulerId: vm.schedulerIds.selected};
+                        obj.limit = vm.userPreferences.maxHistoryPerTask;
+                        if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                            obj.historyIds = [];
+                            obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});
+                        } else {
+                            obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
+                        }
+                        TaskService.histories(obj).then(function (res) {
+                            vm.showLogPanel.taskHistory = res.history;
+                        })
                     }
                 }
         });

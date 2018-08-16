@@ -7,10 +7,14 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.fileTransfers.length>0}">
-                        <label class="md-check" >
-                            <input type="checkbox" ng-model="yadeView.current" ng-change="changeJobScheduler()">
-                            <i class="primary"></i><span translate>label.currentJobscheduler</span>
-                        </label>
+                        <div class="show-inline">
+                            <span class="upper-check">
+                                <label class="md-check" >
+                                    <input type="checkbox" ng-model="yadeView.current" ng-change="changeJobScheduler()">
+                                    <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                                </label>
+                            </span>
+                        </div>
                         <div class="btn-group m-l-sm hidden-btn-group" >
                             <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='all'}" translate>button.allStatus
@@ -448,7 +452,7 @@
                                 </label>
                             </td>
                             <td class="tableexport-ignore">
-                                <div class="btn-group dropdown"  >
+                                <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
@@ -471,10 +475,10 @@
                                  <span ng-bind="yade.jobschedulerId"></span>
                                  <span ng-if="!yade.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></td>
-                            <td ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></td>
-                            <td ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></td>
-                            <td ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></td>
+                            <td><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></span></td>
+                            <td><span ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
+                            <td><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></span></td>
+                            <td><span ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></span></td>
                             <td ng-bind="transfer.numOfFiles"></td>
                             <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
@@ -504,16 +508,16 @@
                                      </thead>
                                      <tbody>
                                      <tr>
-                                        <td  ng-bind="transfer.source.account"></td>
-                                        <td  ng-bind="transfer.source.port"></td>
-                                        <td  ng-bind="transfer.source.protocol"></td>
-                                        <td  ng-bind="transfer.target.account"></td>
-                                        <td  ng-bind="transfer.target.port"></td>
-                                        <td  ng-bind="transfer.target.protocol"></td>
-                                        <td  ng-bind="transfer.jump.host"></td>
-                                        <td  ng-bind="transfer.jump.account"></td>
-                                        <td  ng-bind="transfer.jump.port"></td>
-                                        <td  ng-bind="transfer.jump.protocol"></td>
+                                        <td ng-bind="transfer.source.account"></td>
+                                        <td ng-bind="transfer.source.port"></td>
+                                        <td ng-bind="transfer.source.protocol"></td>
+                                        <td ng-bind="transfer.target.account"></td>
+                                        <td ng-bind="transfer.target.port"></td>
+                                        <td ng-bind="transfer.target.protocol"></td>
+                                        <td ng-bind="transfer.jump.host"></td>
+                                        <td ng-bind="transfer.jump.account"></td>
+                                        <td ng-bind="transfer.jump.port"></td>
+                                        <td ng-bind="transfer.jump.protocol"></td>
                                         <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
                                         <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
                                         <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
@@ -528,9 +532,7 @@
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
-                                         <th width="30" ng-if="transfer.permission.execute.transferStart">
-                                            #
-                                        </th>
+                                         <th width="30" ng-if="transfer.permission.execute.transferStart">#</th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
