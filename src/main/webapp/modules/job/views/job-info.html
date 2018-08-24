@@ -19,7 +19,7 @@
                     <table class="table table-hover table-bordered" id="jobTableId">
                         <thead>
                         <tr>
-                             <th width="45"><span translate>label.action</span></th>
+                            <th width="45"><span translate>label.action</span></th>
                             <th><span translate>label.jobName</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.status</span></th>
@@ -149,28 +149,28 @@
                         </tr>
                         <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                             <td></td>
-                            <td colspan="12">
+                            <td colspan="13">
                                 {{job.configurationStatus._text | translate}} :<span
                                     ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                             </td>
                         </tr>
                         <tr ng-if="job.error" style="background: transparent !important;">
                             <td></td>
-                            <td colspan="12">
+                            <td colspan="13">
                                 {{job.error.code}} :<span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                             </td>
                         </tr>
                         <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="12">
+                            <td colspan="13">
                                 <span translate>message.noDataFound</span>
                             </td>
                         </tr>
                         <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="12">
+                            <td colspan="13">
                                 <table class="table table-hover table-bordered m-t-xs m-b-sm">
                                     <thead>
                                     <tr>
@@ -234,7 +234,7 @@
                         <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="12">
+                            <td colspan="13">
                                 <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}"
                                      ng-repeat="jobChain in job.jobChains">
                                     <div ng-if="$index==0" class="text-muted p-b-xs"><span

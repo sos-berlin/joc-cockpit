@@ -440,10 +440,12 @@
         function refreshParent() {
             try {
                 if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
-                    $window.localStorage.log_window_wt = newWindow.innerWidth;
-                    $window.localStorage.log_window_ht = newWindow.innerHeight;
-                    $window.localStorage.log_window_x = newWindow.screenX;
-                    $window.localStorage.log_window_y = newWindow.screenY;
+                    if(newWindow.innerWidth > 0 && newWindow.screenX > 0) {
+                        $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
+                        $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
+                        $window.localStorage.log_window_x = newWindow.screenX;
+                        $window.localStorage.log_window_y = newWindow.screenY;
+                    }
                     newWindow.close();
                 }
             }
@@ -729,13 +731,16 @@
         function calWindowSize() {
             if (newWindow) {
                 try {
-                    newWindow.onbeforeunload = function () {
-                        $window.localStorage.log_window_wt = newWindow.innerWidth;
-                        $window.localStorage.log_window_ht = newWindow.innerHeight;
-                        $window.localStorage.log_window_x = newWindow.screenX;
-                        $window.localStorage.log_window_y = newWindow.screenY;
+                    newWindow.addEventListener("beforeunload", function () {
+                      
+                        if(newWindow.innerWidth > 0 && newWindow.screenX > 0) {
+                            $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
+                            $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
+                            $window.localStorage.log_window_x = newWindow.screenX;
+                            $window.localStorage.log_window_y = newWindow.screenY;
+                        }
                         return null;
-                    };
+                    });
                     newWindow.addEventListener("resize", function () {
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
@@ -1143,6 +1148,11 @@
 
         vm.isIE = function () {
             return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
+        };
+
+        vm.isFF = function () {
+            console.log(navigator.userAgent)
+            return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         };
 
         var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
@@ -2676,7 +2686,7 @@
                 } else if (newNames.tab == 'specificDays') {
                     vm.editor.isEnable = vm.tempItems.length > 0;
                 }
-              }
+            }
         });
         var watcher2 = vm.$watchCollection('frequency.days', function (newNames) {
             if (newNames) {

@@ -6920,6 +6920,7 @@
         vm.jobHistory = jobHistory;
 
         function jobHistory(filter) {
+            vm.isUnique = true;
             if (!filter) {
                 if (!vm.jobHistoryFilterList) {
                     checkSharedTaskFilters();
@@ -6967,6 +6968,7 @@
         vm.orderHistory = orderHistory;
 
         function orderHistory(filter) {
+            vm.isUnique = true;
             if (!vm.orderHistoryFilterList) {
                 checkSharedFilters();
                 return;
@@ -7030,6 +7032,7 @@
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {
+            vm.isUnique = true;
             if (!vm.yadeHistoryFilterList) {
                 checkSharedYadeFilters();
                 return;
@@ -7155,7 +7158,7 @@
                 vm.task.filter.date = '';
                 if (vm.jobSearch.job) {
                     filter.jobs = [];
-                    var s = vm.jobSearch.job.replace(/,\s+/g, ',');
+                    let s = vm.jobSearch.job.replace(/,\s+/g, ',');
                     var jobs = s.split(',');
                     angular.forEach(jobs, function (value) {
                         filter.jobs.push({job: value})
@@ -7182,7 +7185,7 @@
                         filter.dateFrom = fromDate;
                     }
                     if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
-                        var toDate = new Date(vm.jobSearch.to);
+                        let toDate = new Date(vm.jobSearch.to);
                         if (vm.jobSearch.toTime) {
                             toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
                             toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
@@ -7819,8 +7822,7 @@
                 obj.state = vm.jobChainSearch.states;
                 obj.name = vm.jobChainSearch.name;
                 obj.planned = vm.jobChainSearch.planned;
-            }
-            else if (vm.jobChainSearch.name) {
+            } else if (vm.jobSearch.name) {
                 configObj.name = vm.jobSearch.name;
                 obj.regex = vm.jobSearch.regex;
                 obj.paths = vm.jobSearch.paths;
@@ -7828,9 +7830,7 @@
                 obj.state = vm.jobSearch.states;
                 obj.name = vm.jobSearch.name;
                 obj.planned = vm.jobSearch.planned;
-            }
-
-            else {
+            } else if (vm.yadeSearch.name){
                 configObj.name = vm.yadeSearch.name;
                 obj = vm.yadeSearch;
             }

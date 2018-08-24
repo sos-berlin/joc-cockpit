@@ -346,7 +346,7 @@
         </div>
         <div class="row m-b" ng-if="showSearchPanel">
 
-            <div class="col-md-12" ng-show="historyFilters.type == 'jobChain'">
+            <div class="col-md-12" ng-if="historyFilters.type == 'jobChain'">
                 <div class="box p-a m-b-xs">
                     <form name="form" ng-submit="saveAsFilter(form)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
@@ -498,7 +498,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-12" ng-show="historyFilters.type == 'job'">
+            <div class="col-md-12" ng-if="historyFilters.type == 'job'">
                 <div class="box p-a m-b-xs">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
@@ -645,7 +645,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-12" ng-show="historyFilters.type == 'yade'">
+            <div class="col-md-12" ng-if="historyFilters.type == 'yade'">
                 <div class="box p-a m-b-xs">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
@@ -1168,7 +1168,6 @@
                                     <i ng-show="task.filter.sortBy == 'exitCode' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th class="tableexport-ignore"></th>
                             </tr>
                         </thead>
                         <tbody >
@@ -1202,7 +1201,6 @@
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.exitCode"></td>
                         </tr>
-
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}}

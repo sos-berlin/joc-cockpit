@@ -52,8 +52,8 @@
         }
 
         if ($window.localStorage.$SOS$REMEMBER == 'true' || $window.localStorage.$SOS$REMEMBER == true) {
-            var urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
-            var pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
+            let urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
+            let pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
             vm.user.username = urs.toString(CryptoJS.enc.Utf8);
             vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
             vm.rememberMe = true;
@@ -74,8 +74,8 @@
                 } else {
                     $location.path('/');
                 }
-                $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
-                $('#loginBtn').attr("disabled", false);
+                $('#loginBtn').text(gettextCatalog.getString("button.logIn"))
+                .attr("disabled", false);
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
             });
@@ -84,45 +84,51 @@
         vm.login = function () {
             $window.sessionStorage.errorMsg = '';
             $rootScope.error = '';
+            vm.loginError = '';
             if (vm.user.username && vm.user.password) {
-                $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...');
-                $('#loginBtn').attr("disabled", true);
-
+                $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...')
+                    .attr("disabled", true);
                 SOSAuth.currentUserData = null;
-
                 UserService.authenticate(
                     vm.user.username,
                     vm.user.password
                 ).then(function (response) {
-                        if (response && response.isAuthenticated) {
-                            SOSAuth.accessTokenId = response.accessToken;
-                            SOSAuth.rememberMe = vm.rememberMe;
-                            if (vm.rememberMe) {
-                                var urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
-                                var pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
-                                $window.localStorage.$SOS$FOO = urs;
-                                $window.localStorage.$SOS$BOO = pwd;
-                                $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
-                            } else {
-                                $window.localStorage.removeItem('$SOS$FOO');
-                                $window.localStorage.removeItem('$SOS$BOO');
-                                $window.localStorage.removeItem('$SOS$REMEMBER');
-                            }
-
-                            SOSAuth.setUser(response);
-                            SOSAuth.save();
-                            getSchedulerIds(response.user);
-
+                    if (response && response.isAuthenticated) {
+                        SOSAuth.accessTokenId = response.accessToken;
+                        SOSAuth.rememberMe = vm.rememberMe;
+                        if (vm.rememberMe) {
+                            let urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
+                            let pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
+                            $window.localStorage.$SOS$FOO = urs;
+                            $window.localStorage.$SOS$BOO = pwd;
+                            $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                         } else {
-                            vm.loginError = 'message.loginError';
+                            $window.localStorage.removeItem('$SOS$FOO');
+                            $window.localStorage.removeItem('$SOS$BOO');
+                            $window.localStorage.removeItem('$SOS$REMEMBER');
                         }
 
-                    }, function () {
-                        vm.loginError = 'message.loginError';
-                        $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
-                        $('#loginBtn').attr("disabled", false);
+                        SOSAuth.setUser(response);
+                        SOSAuth.save();
+                        getSchedulerIds(response.user);
 
-                    });
+                    } else {
+                        vm.loginError = 'message.loginError';
+                    }
+
+                }, function (err) {
+                    if (err.status === 420 || err.status === 401) {
+                        vm.loginError = 'message.loginError';
+                    }else {
+                        if(err.data && err.data.error && err.data.error.message) {
+                           vm.loginError =  err.data.error.message;
+                        }else{
+                            vm.loginError = 'message.loginError';
+                        }
+                    }
+                    $('#loginBtn').text(gettextCatalog.getString("button.logIn"))
+                        .attr("disabled", false);
+                });
             }
         };
 
@@ -200,7 +206,7 @@
         vm.changeTheme = function (theme) {
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;
-            if (theme == 'lighter') {
+            if (theme === 'lighter') {
                 $('#orders_id img').attr("src", 'images/order.png');
                 $('#jobs_id img').attr("src", 'images/job.png');
                 $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
@@ -232,7 +238,6 @@
             if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject))) {
                 vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject);
             }
-
             if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain))) {
                 vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain);
             }
@@ -246,6 +251,7 @@
             if (vm.preferences.entryPerPage > 100) {
                 vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
             }
+
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             $rootScope.$broadcast('reloadPreferences');
 
