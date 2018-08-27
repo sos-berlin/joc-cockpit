@@ -293,19 +293,15 @@
 					editor.defaultEdge.style = null;
 				}
 			}
-		]]>
-		</add>
-		<add as="connect" mode="connect" icon="./assets/mxgraph/images/straight.gif"/>
-		<hr/>
-		<add as="Job" template="rounded" icon="./assets/mxgraph/images/rounded.gif"/>
-		<add as="Process" template="shape" style="ellipse" icon="./assets/mxgraph/images/ellipse.gif"/>
-		<add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
+		]]></add>
 
 		<hr/>
-		<add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
-		<add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png" icon="./assets/mxgraph/images/symbols/small_timer.gif"/>
-		<add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png" icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
-		<add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png" icon="./assets/mxgraph/images/symbols/small_fork.gif"/>
-		<add as="Join" template="Join" style="symbol;image=./assets/mxgraph/images/symbols/fork.png" icon="./assets/mxgraph/images/symbols/small_merge.gif"/>
+		<add as="Job" template="rounded" icon="./assets/mxgraph/images/rounded.gif"/>
+    <add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
+    <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png" icon="./assets/mxgraph/images/symbols/small_timer.gif"/>
+    <add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png" icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
+    <hr/>
+    <add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
+    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png" icon="./assets/mxgraph/images/symbols/small_fork.gif"/>
 	</mxDefaultToolbar>
 </mxEditor>

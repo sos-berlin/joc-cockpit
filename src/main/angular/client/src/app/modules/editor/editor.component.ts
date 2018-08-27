@@ -9,10 +9,7 @@ declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
 declare const mxObjectCodec;
-declare const mxGuide;
 declare const mxEdgeHandler;
-declare const mxImage;
-declare const mxConnectionHandler;
 declare const mxCodec;
 declare const mxAutoSaveManager;
 declare const mxGraphHandler;
@@ -23,8 +20,11 @@ declare const mxMultiplicity;
 declare const mxHierarchicalLayout;
 declare const mxImageExport;
 declare const mxXmlCanvas2D;
-declare const mxMorphing;
 declare const mxOutline;
+declare const mxDragSource;
+declare const mxConstants;
+declare const mxRectangle;
+declare const mxPoint;
 
 declare const X2JS;
 declare const $;
@@ -51,7 +51,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   isPropertyHide: boolean = false;
   json: any = {};
   options: any = {};
-
   count = 2;
 
   @ViewChild('treeCtrl') treeCtrl;
@@ -61,32 +60,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.init();
     EditorComponent.setGraphHt();
-
-    let json: any = {};
-
     this.coreService.get("workflow.json").subscribe((data) => {
-      this.appendIdInJson(data.If);
-      this.count = 2;
-      json = data.If;
-      let mxJson = {
-        mxGraphModel: {
-          root: {
-            mxCell: [
-              {_id: '0'},
-              {
-                _id: '1',
-                _parent: '0'
-              }
-            ]
-          }
-        }
-      };
-      this.jsonParser(json, mxJson.mxGraphModel.root);
       let x2js = new X2JS();
-      this.xmlTest = x2js.json2xml_str(mxJson);
+      this.xmlTest = x2js.json2xml_str(data);
     });
   }
 
@@ -101,7 +79,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     } catch (e) {
       console.log(e)
     }
-
   }
 
   init() {
@@ -135,6 +112,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }, () => this.isLoading = false);
   }
 
+  // Function to generating dynamic unique Id
   private appendIdInJson(json) {
     for (let x = 0; x < json.instructions.length; x++) {
       json.instructions[x].id = ++this.count;
@@ -190,6 +168,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  //Function to genarate flow diagram with the help of JSON
   private jsonParser(json, mxJson) {
     const self = this;
     if (json.instructions) {
@@ -458,7 +437,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       obj.jobPath = node._path;
       obj.title = node._title;
       obj.agentPath = node._agent;
-      console.log(node);
       let successArr,  failureArr;
       if (node._success) {
         successArr = node._success.split(',');
@@ -695,7 +673,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           this.findNextNode(connectors, startNode._id, objects, jsonObj.instructions);
           startNode = null;
         } else {
-          console.log('start node not found');
+         // console.log('start node not found');
         }
 
         if (this.joinId && connectors.length > 0) {
@@ -780,6 +758,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (connectors[i]._type == 'then' || connectors[i]._type == 'else') {
             for (let j = 0; j < instructions.length; j++) {
               if (instructions[j].TYPE == 'If' && instructions[j].id === id) {
+
 
                 if (connectors[i]._type == 'then') {
                   instructions[j].then = {
@@ -1010,32 +989,26 @@ export class EditorComponent implements OnInit, OnDestroy {
      * condition below is true. Default is 5.
      */
     mxAutoSaveManager.prototype.autoSaveThreshold = 1;
-
     mxGraph.prototype.cellsResizable = false;
     mxGraph.prototype.multigraph = false;
     mxGraph.prototype.allowDanglingEdges = false;
     mxGraph.prototype.disconnectOnMove = false;
-
     mxHierarchicalLayout.prototype.intraCellSpacing = 30;
     mxHierarchicalLayout.prototype.interRankCellSpacing = 60;
-
+    mxConstants.DROP_TARGET_COLOR = 'green';
 
     editor.validation = true;
-
-    mxGuide.prototype.isEnabledForEvent = function (evt) {
-      return !mxEvent.isAltDown(evt);
-    };
-
 
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
 
     // Defines an icon for creating new connections in the connection handler.
     // This will automatically disable the highlighting of the source vertex.
-    mxConnectionHandler.prototype.connectImage = new mxImage(mxClient.imageBasePath + '/connector.gif', 16, 16);
+    // mxConnectionHandler.prototype.connectImage = new mxImage(mxClient.imageBasePath + '/connector.gif', 16, 16);
 
-    graph.setConnectable(true);
-
+    graph.setConnectable(false);
+    graph.setCellsLocked(true);
+    graph.setEnabled(false);
 
     // Changes the zoom on mouseWheel events
     mxEvent.addMouseWheelListener(function (evt, up) {
@@ -1053,7 +1026,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     // Create select actions in page
     let node = document.getElementById('mainActions');
-    let buttons = ['group', 'ungroup', 'undo', 'redo', 'cut', 'copy', 'paste', 'delete'];
+    let buttons = ['undo', 'redo', 'cut', 'copy', 'paste', 'delete'];
 
     //editor.urlImage = 'http://localhost:4200/export';
     // Only adds image and SVG export if backend is available
@@ -1089,7 +1062,6 @@ export class EditorComponent implements OnInit, OnDestroy {
           const bg = '&bg=#FFFFFF';
           const blob = new Blob([xml], {type: 'text/xml'});
           saveAs(blob, name);
-
           /* new mxXmlRequest(editor.urlImage, 'filename=' + name + '&format=' + format +
              bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).simulate(document, '_blank');*/
         }
@@ -1103,15 +1075,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       let button = document.createElement('button');
       let dom = document.createElement('img');
       let icon: any;
-      if (buttons[i] == 'group') {
-        icon = './assets/mxgraph/images/group.gif';
-        button.setAttribute('class', 'btn btn-sm btn-grey');
-        button.setAttribute('title', 'Group');
-      } else if (buttons[i] == 'ungroup') {
-        icon = './assets/mxgraph/images/ungroup.gif';
-        button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-        button.setAttribute('title', 'Ungroup');
-      } else if (buttons[i] == 'undo') {
+      if (buttons[i] == 'undo') {
         icon = './assets/mxgraph/images/undo.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Undo');
@@ -1169,6 +1133,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       } else if (zoomButtons[i] == 'actualSize') {
         icon = './assets/mxgraph/images/zoomactual.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
+        button.setAttribute('id', 'actual');
         button.setAttribute('title', 'Actual');
       } else if (zoomButtons[i] == 'fit') {
         icon = './assets/mxgraph/images/zoom.gif';
@@ -1194,7 +1159,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     // Overrides method to provide a cell label in the display
     graph.convertValueToString = function (cell) {
       if (mxUtils.isNode(cell.value)) {
-        if (cell.value.nodeName.toLowerCase() == 'job') {
+        if (cell.value.nodeName.toLowerCase() == 'process') {
+          let title = cell.getAttribute('title', '');
+          if (title != null && title.length > 0) {
+            return title;
+          }
+          return '';
+        } else if (cell.value.nodeName.toLowerCase() == 'job') {
           let path = cell.getAttribute('path', '');
           let title = cell.getAttribute('title', '');
           if (title != null && title.length > 0) {
@@ -1213,9 +1184,355 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       return '';
     };
+
+
+    let dropTarget;
+
+    // Check the drop target on drop event
+    mxDragSource.prototype.drop = function (graph, evt, drpTargt, x, y) {
+
+      dropTarget = null;
+      let flag = false;
+      if (drpTargt) {
+        if (drpTargt.value.tagName !== 'Connection') {
+          if (drpTargt.value.tagName === 'Job') {
+            for (let i = 0; i < drpTargt.edges.length; i++) {
+              if (drpTargt.edges[i].target.id !== drpTargt.id) {
+                alert('Job instruction can have only one out going and one incoming Edges');
+                return;
+              }
+            }
+          } else if (drpTargt.value.tagName === 'If') {
+            if (drpTargt.edges.length > 2) {
+              alert('Cannot have more than one condition');
+              return;
+            }
+          } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf') {
+            if (drpTargt.edges.length > 1) {
+              for (let i = 0; i < drpTargt.edges.length; i++) {
+                if (drpTargt.edges[i].target.id !== drpTargt.id) {
+                  alert('Cannot have more than one out going Edge');
+                  return;
+                }
+              }
+            }
+          }
+          dropTarget = drpTargt;
+        } else {
+          if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') || (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf')) {
+            alert('Drop on Instruction');
+            return;
+          }
+          flag = true;
+        }
+      } else {
+        return;
+      }
+      this.dropHandler(graph, evt, drpTargt, x, y);
+      if (graph.container.style.visibility != 'hidden') {
+        graph.container.focus();
+      }
+      if (flag) {
+        executeLayout();
+      }
+    };
+
+    let forkMap = new Map(); //Declare Map object to store fork and join Ids
+
+    // Removes the source vertex if edges are removed
+/*
+    graph.addListener(mxEvent.REMOVE_CELLS, function(sender, evt) {
+      let cells = evt.getProperty('cells');
+
+      for (let i = 0; i < cells.length; i++) {
+        let cell = cells[i];
+        console.log(cell, i);
+        if (this.model.isEdge(cell)) {
+          let terminal = this.model.getTerminal(cell, true);
+          let parent = this.model.getParent(terminal);
+          this.model.remove(terminal);
+        }
+      }
+    });
+*/
+
+
+    /**
+     * Event to check if connector is vaild or not on drop of new instruction
+     * @param cell
+     * @param cells
+     * @param evt
+     */
+    graph.isValidDropTarget = function(cell, cells, evt) {
+      if (cell) {
+        if (cell.value && cell.value.tagName === 'Connector') {
+          graph.getModel().beginUpdate();
+          graph.getModel().remove(cells[0]);
+        } else if (cell.value && cell.value.tagName === 'Connection') {
+          if (cells && cells.length > 0) {
+            if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If') {
+              let parent = graph.getDefaultParent();
+              let v1, label = '', type = '';
+              if (cells[0].value.tagName === 'Fork') {
+                let node = doc.createElement('Join');
+                node.setAttribute('label', 'Join');
+                v1 = graph.insertVertex(parent, null, node, 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
+              } else if (cells[0].value.tagName === 'If') {
+                let node = doc.createElement('EndIf');
+                label = 'If';
+                type = 'If';
+                node.setAttribute('label', 'End-If');
+                v1 = graph.insertVertex(parent, null, node, 0, 0, 150, 70, "rhombus");
+              }
+              let connNode = doc.createElement('Connection');
+              connNode.setAttribute('label', label);
+              connNode.setAttribute('type', type);
+              graph.insertEdge(parent, null, connNode, cell.source, cells[0]);
+              let connNode1 = doc.createElement('Connection');
+              connNode1.setAttribute('label', '');
+              connNode1.setAttribute('type', '');
+              graph.insertEdge(parent, null, connNode1, cells[0], v1);
+              let connNode2 = doc.createElement('Connection');
+              connNode2.setAttribute('label', '');
+              connNode2.setAttribute('type', '');
+              graph.insertEdge(parent, null, connNode2, v1, cell.target);
+              graph.getModel().remove(cell);
+              return false;
+            }
+          }
+        }
+      }
+      if (this.isCellCollapsed(cell)) {
+        return true;
+      }
+      return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
+    };
+
+
     // Implements a properties panel that uses
     // mxCellAttributeChange to change properties
     graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
+      let cell = graph.getSelectionCell();
+      let label = '', type ='';
+
+      if (cell && dropTarget) {
+        if (cell.value.tagName === 'If') {
+          label = 'if';
+        } else if (dropTarget.value.tagName === 'If') {
+          label = 'true';
+          type = 'then';
+          for (let i = 0; i < dropTarget.edges.length; i++) {
+            if (dropTarget.edges[i].target.id !== dropTarget.id && dropTarget.edges[i].target.value.tagName !== 'EndIf') {
+              label = 'false';
+               type = 'else';
+              break;
+            }
+          }
+        }
+        graph.getModel().beginUpdate();
+        try {
+          let parent = graph.getDefaultParent();
+          if (cell.value.tagName === 'Fork') {
+            let node = doc.createElement('Join');
+            node.setAttribute('label', 'Join');
+            let v1 = graph.insertVertex(parent, null, node, 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
+            let connNode = doc.createElement('Connection');
+            connNode.setAttribute('label', '');
+            connNode.setAttribute('type', '');
+            graph.insertEdge(parent, null, connNode, cell, v1);
+          } else if (cell.value.tagName === 'If') {
+            let node = doc.createElement('EndIf');
+            node.setAttribute('label', 'End-If');
+            let v1 = graph.insertVertex(parent, null, node, 0, 0, 150, 70, "rhombus");
+            let connNode = doc.createElement('Connection');
+            connNode.setAttribute('label', '');
+            connNode.setAttribute('type', '');
+            graph.insertEdge(parent, null, connNode, cell, v1);
+          }
+
+          if (dropTarget.value.tagName === 'Process') {
+            let flag = false;
+            for (let i = 0; i < dropTarget.edges.length; i++) {
+              let connNode = doc.createElement('Connection');
+              connNode.setAttribute('label', label);
+              connNode.setAttribute('type', type);
+              if (dropTarget.edges[i].source.id !== dropTarget.id) {
+                if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If') {
+                  for (let j = 0; j < cell.edges.length; j++) {
+                    if (cell.edges[j].target.id !== cell.id) {
+                      if (cell.edges[j].target.value.tagName === 'Join' || cell.edges[j].target.value.tagName === 'EndIf') {
+                        if(flag) {
+                          graph.insertEdge(parent, null, connNode, cell.edges[j].target, dropTarget.edges[i].target);
+                        }else{
+                          graph.insertEdge(parent, null, connNode, dropTarget.edges[i].source, cell.edges[j].source);
+                        }
+                        flag = true;
+                        break;
+                      }
+                    }
+                  }
+                }else {
+                  graph.insertEdge(parent, null, connNode, dropTarget.edges[i].source, cell);
+                }
+              } else {
+                if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If') {
+                  for (let j = 0; j < cell.edges.length; j++) {
+                    if (cell.edges[j].target.id !== cell.id) {
+                      if (cell.edges[j].target.value.tagName === 'Join' || cell.edges[j].target.value.tagName === 'EndIf') {
+                        graph.insertEdge(parent, null, connNode, cell.edges[j].target, dropTarget.edges[i].target);
+                        break;
+                      }
+                    }
+                  }
+                } else {
+                  graph.insertEdge(parent, null, connNode, cell, dropTarget.edges[i].target);
+                }
+              }
+            }
+
+            graph.removeCells([dropTarget]);
+          } else {
+            if (dropTarget.value.tagName === 'Fork') {
+              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
+                let target1, target2;
+                if (!forkMap.has(dropTarget.id)) {
+                  for (let i = 0; i < dropTarget.edges.length; i++) {
+                    if (dropTarget.edges[i].target.id !== dropTarget.id) {
+                      if (dropTarget.edges[i].target.value.tagName === 'Join') {
+                        forkMap.set(dropTarget.id, dropTarget.edges[i].target.id);
+                        target1 = dropTarget.edges[i];
+                      }
+                      break;
+                    }
+                  }
+                }
+                if (!forkMap.has(cell.id)) {
+                  for (let i = 0; i < cell.edges.length; i++) {
+                    if (cell.edges[i].target.id !== cell.id) {
+                      if (cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf') {
+                        forkMap.set(cell.id, cell.edges[i].target.id);
+                        target2 = cell.edges[i].target;
+                      }
+                      break;
+                    }
+                  }
+                }
+                if (target1 && target2) {
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', '');
+                  connNode.setAttribute('type', '');
+                  graph.insertEdge(parent, null, connNode, target2, target1.target);
+                  graph.getModel().remove(target1);
+                } else if (forkMap.has(dropTarget.id)) {
+                  let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', '');
+                  connNode.setAttribute('type', '');
+                  graph.insertEdge(parent, null, connNode, target2, target);
+                }
+              } else {
+                let flag = false;
+                for (let i = 0; i < dropTarget.edges.length; i++) {
+                  if (dropTarget.edges[i].target.id !== dropTarget.id) {
+                    if (dropTarget.edges[i].target.value.tagName === 'Join') {
+                      flag = true;
+                      if (!forkMap.has(dropTarget.id)) {
+                        forkMap.set(dropTarget.id, dropTarget.edges[i].target.id);
+                      }
+                      let connNode = doc.createElement('Connection');
+                      connNode.setAttribute('label', label);
+                      connNode.setAttribute('type', type);
+                      graph.insertEdge(parent, null, connNode, cell, dropTarget.edges[i].target);
+                      graph.getModel().remove(dropTarget.edges[i]);
+                    }
+                    break;
+                  }
+                }
+                if (!flag && forkMap.has(dropTarget.id)) {
+                  let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', label);
+                  connNode.setAttribute('type', type);
+                  graph.insertEdge(parent, null, connNode, cell, target);
+                }
+              }
+            } else if (dropTarget.value.tagName === 'If') {
+              if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
+                let target1, target2;
+                if (!forkMap.has(dropTarget.id)) {
+                  for (let i = 0; i < dropTarget.edges.length; i++) {
+                    if (dropTarget.edges[i].target.id !== dropTarget.id) {
+                      if (dropTarget.edges[i].target.value.tagName === 'EndIf') {
+                        forkMap.set(dropTarget.id, dropTarget.edges[i].target.id);
+                        target1 = dropTarget.edges[i];
+                      }
+                      break;
+                    }
+                  }
+                }
+                if (!forkMap.has(cell.id)) {
+                  for (let i = 0; i < cell.edges.length; i++) {
+                    if (cell.edges[i].target.id !== cell.id) {
+                      if (cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf') {
+                        forkMap.set(cell.id, cell.edges[i].target.id);
+                        target2 = cell.edges[i].target;
+                      }
+                      break;
+                    }
+                  }
+                }
+                if (target1 && target2) {
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', '');
+                  connNode.setAttribute('type', '');
+                  graph.insertEdge(parent, null, connNode, target2, target1.target);
+                  graph.getModel().remove(target1);
+                } else if (forkMap.has(dropTarget.id)) {
+                  let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', '');
+                  connNode.setAttribute('type', '');
+                  graph.insertEdge(parent, null, connNode, target2, target);
+                }
+              } else {
+                let flag = false;
+                for (let i = 0; i < dropTarget.edges.length; i++) {
+                  if (dropTarget.edges[i].target.id !== dropTarget.id) {
+                    if (dropTarget.edges[i].target.value.tagName === 'EndIf') {
+                      flag = true;
+                      if (!forkMap.has(dropTarget.id)) {
+                        forkMap.set(dropTarget.id, dropTarget.edges[i].target.id);
+                      }
+                      let connNode = doc.createElement('Connection');
+                      connNode.setAttribute('label', '');
+                      connNode.setAttribute('type', '');
+                      graph.insertEdge(parent, null, connNode, cell, dropTarget.edges[i].target);
+                      graph.getModel().remove(dropTarget.edges[i]);
+                    }
+                    break;
+                  }
+                }
+                if (!flag && forkMap.has(dropTarget.id)) {
+                  let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
+                  let connNode = doc.createElement('Connection');
+                  connNode.setAttribute('label', '');
+                  connNode.setAttribute('type', '');
+                  graph.insertEdge(parent, null, connNode, cell, target);
+                }
+              }
+            }
+
+            let connNode = doc.createElement('Connection');
+            connNode.setAttribute('label', label);
+            connNode.setAttribute('type', type);
+            graph.insertEdge(parent, null, connNode, dropTarget, cell);
+          }
+        } finally {
+          graph.getModel().endUpdate();
+          dropTarget = null;
+        }
+        executeLayout();
+      }
       selectionChanged(graph);
     });
 
@@ -1240,41 +1557,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
       else {
         if (cell.source && cell.target) {
-          if (cell.source.value.nodeName === 'If') {
-            if (cell.source.getEdgeCount() > 0) {
-              if (!cell.value.attributes[0].nodeValue) {
-                let outGoingEdges = 0;
-                for (let i = 0; i < cell.source.getEdgeCount(); i++) {
-                  if (cell.source.id == cell.source.edges[i].source.id) {
-                    outGoingEdges = outGoingEdges + 1;
-                  }
-                }
-                let label = '', type = '';
-                if (outGoingEdges == 1) {
-                  label = 'true';
-                  type = 'then';
-                } else if (outGoingEdges == 2) {
-                  label = 'false';
-                  type = 'else';
-                }
-                graph.getModel().beginUpdate();
-                try {
-                  let edit = new mxCellAttributeChange(
-                    cell, 'label',
-                    label);
-                  let edit1 = new mxCellAttributeChange(
-                    cell, 'type',
-                    type);
-                  graph.getModel().execute(edit);
-                  graph.getModel().execute(edit1);
-
-                }
-                finally {
-                  graph.getModel().endUpdate();
-                }
-              }
-            }
-          } else if (cell.source.value.nodeName === 'Fork') {
+          if (cell.source.value.nodeName === 'Fork') {
             if (cell.source.getEdgeCount() > 0) {
               graph.getModel().beginUpdate();
               try {
@@ -1310,7 +1593,6 @@ export class EditorComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (outGoingEdges == 1) {
-
                   graph.getModel().beginUpdate();
                   try {
                     let edit = new mxCellAttributeChange(
@@ -1327,7 +1609,6 @@ export class EditorComponent implements OnInit, OnDestroy {
                   }
                 }
               }
-
             }
           }
           return;
@@ -1336,21 +1617,23 @@ export class EditorComponent implements OnInit, OnDestroy {
         let form = new mxForm('property-table');
         let attrs = cell.value.attributes;
         let flg1 = false, flg2 = false;
-        for (let i = 0; i < attrs.length; i++) {
-          createTextField(graph, form, cell, attrs[i]);
-          if (attrs[i].nodeName == 'success') {
-            flg1 = true;
+        if (attrs) {
+          for (let i = 0; i < attrs.length; i++) {
+            createTextField(graph, form, cell, attrs[i]);
+            if (attrs[i].nodeName == 'success') {
+              flg1 = true;
+            }
+            if (attrs[i].nodeName == 'failure') {
+              flg2 = true;
+            }
           }
-          if (attrs[i].nodeName == 'failure') {
-            flg2 = true;
+          if (cell.value.nodeName == 'Job') {
+            if (!flg1)
+              createTextField(graph, form, cell, {nodeName: 'success', nodeValue: ''});
+            if (!flg2)
+              createTextField(graph, form, cell, {nodeName: 'failure', nodeValue: ''});
+            createTextAreaField(graph, form, cell, 'Script', '');
           }
-        }
-        if (cell.value.nodeName == 'Job') {
-          if (!flg1)
-            createTextField(graph, form, cell, {nodeName: 'success', nodeValue: ''});
-          if (!flg2)
-            createTextField(graph, form, cell, {nodeName: 'failure', nodeValue: ''});
-          createTextAreaField(graph, form, cell, 'Script', '');
         }
         div.appendChild(form.getTable());
         mxUtils.br(div);
@@ -1365,11 +1648,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       let applyHandler = function () {
         let newValue = input.value || '';
-
         let oldValue = cell.getAttribute(attribute.nodeName, '');
         if (newValue != oldValue) {
           graph.getModel().beginUpdate();
-
           try {
             let edit = new mxCellAttributeChange(
               cell, attribute.nodeName,
@@ -1392,8 +1673,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       if (mxClient.IS_IE) {
         mxEvent.addListener(input, 'focusout', applyHandler);
-      }
-      else {
+      } else {
         mxEvent.addListener(input, 'blur', applyHandler);
       }
     }
@@ -1403,14 +1683,12 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     function createTextAreaField(graph, form, cell, name, value) {
       let input = form.addTextarea(name + ':', value, 10);
-
       let applyHandler = function () {
         let newValue = input.value || '';
 
         let oldValue = cell.getAttribute(name, '');
         if (newValue != oldValue) {
           graph.getModel().beginUpdate();
-
           try {
             let edit = new mxCellAttributeChange(
               cell, name,
@@ -1439,15 +1717,27 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     }
 
-
     // if (sessionStorage.getItem('$JOE$XML')) {
     // let doc = mxUtils.parseXml(sessionStorage.getItem('$JOE$XML'));
     let doc = mxUtils.parseXml(this.xmlTest);
     let codec = new mxCodec(doc);
     codec.decode(doc.documentElement, graph.getModel());
-
     let layout = new mxHierarchicalLayout(graph);
     layout.execute(graph.getDefaultParent());
+
+    /**
+     * Function to centered the flow diagram
+     */
+    function makeCenter() {
+      setTimeout(() => {
+        $('#actual').click();
+        let gh = $('#graph');
+        let bounds = graph.getGraphBounds();
+        graph.view.setTranslate(-bounds.x - (bounds.width - gh.width()) / 2,
+          -bounds.y - (bounds.height - (gh.height() / 2)) / 2);
+      }, 5);
+    }
+    makeCenter();
 
     function executeLayout() {
       graph.getModel().beginUpdate();
@@ -1459,13 +1749,37 @@ export class EditorComponent implements OnInit, OnDestroy {
         throw e;
       }
       finally {
-        // New API for animating graph layout results asynchronously
-        let morph = new mxMorphing(graph);
-        morph.addListener(mxEvent.DONE, mxUtils.bind(this, function () {
-          graph.getModel().endUpdate();
-        }));
-        morph.startAnimation();
+        graph.getModel().endUpdate();
       }
+    }
+
+    /**
+     * Reload dummy xml
+     */
+    function reloadDummyXml(dummyXml) {
+      let enc = new mxCodec();
+      let node = enc.encode(graph.getModel());
+      let xml = mxUtils.getXml(node);
+      let x2js = new X2JS();
+      let json = x2js.xml_str2json(xml);
+
+      if (!json.mxGraphModel.root.Connector) {
+        forkMap.clear();
+        graph.getModel().beginUpdate();
+        try {
+          let doc = mxUtils.parseXml(dummyXml);
+          let codec = new mxCodec(doc);
+          let model = codec.decode(doc.documentElement);
+          let parent = graph.getDefaultParent();
+          // Merges the old model with the dummy model
+          graph.getModel().mergeChildren(model.getRoot().getChildAt(0), parent);
+        } finally {
+          graph.getModel().endUpdate();
+          let layout = new mxHierarchicalLayout(graph);
+          layout.execute(graph.getDefaultParent());
+        }
+      }
+      makeCenter();
     }
 
     graph.connectionHandler.addListener(mxEvent.CONNECT, function () {
@@ -1474,8 +1788,15 @@ export class EditorComponent implements OnInit, OnDestroy {
     let mgr = new mxAutoSaveManager(graph);
     mgr.save = function () {
       self.xmlToJsonParser();
+      if (self.json && self.json.instructions && self.json.instructions.length > 0) {
+        graph.setEnabled(true);
+      } else if (self.json && self.json.instructions && self.json.instructions.length == 0) {
+        graph.setEnabled(false);
+        reloadDummyXml(self.xmlTest);
+      }
     };
   }
+
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -1527,12 +1848,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.initEditorConf(editor);
         mxObjectCodec.allowEval = false;
 
-       // if (!this.outline) {
-          let outln = document.getElementById('outlineContainer');
-          outln.style["border"] = "1px solid lightgray";
-          outln.style["background"] = "#FFFFFF";
-           new mxOutline(this.editor.graph, outln);
-      //  }
+        // if (!this.outline) {
+        let outln = document.getElementById('outlineContainer');
+        outln.style["border"] = "1px solid lightgray";
+        outln.style["background"] = "#FFFFFF";
+        new mxOutline(this.editor.graph, outln);
+        //  }
 
         editor.graph.allowAutoPanning = true;
         editor.graph.timerAutoScroll = true;
@@ -1543,8 +1864,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         // current root of the graph changes (drilling).
         editor.addListener(mxEvent.ROOT);
       }
-    }
-    catch (e) {
+    } catch (e) {
       // Shows an error message if the editor cannot start
       mxUtils.alert('Cannot start application: ' + e.message);
       throw e; // for debugging

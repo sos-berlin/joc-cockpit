@@ -44,7 +44,7 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.router.url === '/users') {
+    if (this.router.url === '/users' || this.router.url === '#/users') {
       this.router.navigate(['/users/account']);
     }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};

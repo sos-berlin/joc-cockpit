@@ -10,9 +10,6 @@
 		<add as="delete" action="delete" icon="./assets/mxgraph/images/delete.gif" if="cell"/>
 		<hr/>
 		<add as="shape" if="cell">
-			<add as="group" action="group" icon="./assets/mxgraph/images/group.gif" if="ncells"/>
-			<add as="ungroup" action="ungroup" icon="./assets/mxgraph/images/ungroup.gif" if="cell"/>
-			<hr/>
 			<add as="removeFromParent" action="removeFromParent" if="cell"/>
 			<hr/>
 			<add as="collapse" action="collapse" icon="./assets/mxgraph/images/collapse.gif" if="expandable"/>
