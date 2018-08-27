@@ -196,8 +196,8 @@
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
 
-            if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+            if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
 
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
@@ -209,30 +209,30 @@
                 toDate = '0d';
             } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
                 fromDate = '-1d';
-                toDate = '0d';
+                toDate = '-1d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
@@ -601,7 +601,7 @@
                         fromDate.setSeconds(0);
                     }
                     fromDate.setMilliseconds(0);
-                    filter.dateFrom = fromDate;
+                    filter.dateFrom = moment.utc(fromDate);
                 }
                 if (vm.yadeSearch.date == 'date' && vm.yadeSearch.to) {
                     var toDate = new Date(vm.yadeSearch.to);
@@ -615,7 +615,7 @@
                         toDate.setSeconds(0);
                     }
                     toDate.setMilliseconds(0);
-                    filter.dateTo = toDate;
+                    filter.dateTo = moment.utc(toDate);
                 }
             }
 

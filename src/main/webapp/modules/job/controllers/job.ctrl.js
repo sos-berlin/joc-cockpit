@@ -969,9 +969,17 @@
                 obj.title = order.title;
 
             if (order.fromDate && order.fromTime) {
-                order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
-                order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
-                order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
+                if(order.fromTime !== '24:00' || order.fromTime !== '24:00:00') {
+                    order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                    order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                    order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
+                }else {
+                    order.fromDate.setDate(order.fromDate.getDate() + 1);
+                    order.fromDate.setHours(0);
+                    order.fromDate.setMinutes(0);
+                    order.fromDate.setSeconds(0);
+                    order.fromDate.setMilliseconds(0);
+                }
             }
 
             if (order.fromDate && order.at === 'later') {
@@ -2174,6 +2182,9 @@
                 vm.filterTree1 = res.folders;
                 angular.forEach(vm.filterTree1, function (value) {
                     value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
                 });
             }, function () {
                 if (type == 'job') {
@@ -3236,7 +3247,7 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
@@ -3244,24 +3255,24 @@
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                     date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                     arr = date[0].split('to');
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
@@ -3375,7 +3386,7 @@
                     angular.forEach(vm.tree, function (node) {
                         insertData(node, vm.allJobs);
                     });
-                }else {
+                } else {
                     startTraverseNode(expandNode);
                 }
             });
@@ -3654,9 +3665,17 @@
             if (vm.jobFilter.fromDate) {
                 fromDate = new Date(vm.jobFilter.fromDate);
                 if (vm.jobFilter.fromTime) {
-                    fromDate.setHours(moment(vm.jobFilter.fromTime, 'HH:mm:ss').hours());
-                    fromDate.setMinutes(moment(vm.jobFilter.fromTime, 'HH:mm:ss').minutes());
-                    fromDate.setSeconds(moment(vm.jobFilter.fromTime, 'HH:mm:ss').seconds());
+                    if (vm.jobFilter.fromTime !== '24:00' || vm.jobFilter.fromTime !== '24:00:00') {
+                        fromDate.setHours(moment(vm.jobFilter.fromTime, 'HH:mm:ss').hours());
+                        fromDate.setMinutes(moment(vm.jobFilter.fromTime, 'HH:mm:ss').minutes());
+                        fromDate.setSeconds(moment(vm.jobFilter.fromTime, 'HH:mm:ss').seconds());
+                    } else {
+                        fromDate.setDate(fromDate.getDate() + 1);
+                        fromDate.setHours(0);
+                        fromDate.setMinutes(0);
+                        fromDate.setSeconds(0);
+                        
+                    }
                 } else {
                     fromDate.setHours(0);
                     fromDate.setMinutes(0);
@@ -3668,9 +3687,17 @@
             if (vm.jobFilter.toDate) {
                 toDate = new Date(vm.jobFilter.toDate);
                 if (vm.jobFilter.toTime) {
-                    toDate.setHours(moment(vm.jobFilter.toTime, 'HH:mm:ss').hours());
-                    toDate.setMinutes(moment(vm.jobFilter.toTime, 'HH:mm:ss').minutes());
-                    toDate.setSeconds(moment(vm.jobFilter.toTime, 'HH:mm:ss').seconds());
+                    if (vm.jobFilter.toTime !== '24:00' || vm.jobFilter.toTime !== '24:00:00') {
+                        toDate.setHours(moment(vm.jobFilter.toTime, 'HH:mm:ss').hours());
+                        toDate.setMinutes(moment(vm.jobFilter.toTime, 'HH:mm:ss').minutes());
+                        toDate.setSeconds(moment(vm.jobFilter.toTime, 'HH:mm:ss').seconds());
+                    } else {
+                        toDate.setDate(vm.jobFilter.toDate.getDate() + 1);
+                        toDate.setHours(0);
+                        toDate.setMinutes(0);
+                        toDate.setSeconds(0);
+                        
+                    }
                 } else {
                     toDate.setHours(0);
                     toDate.setMinutes(0);
@@ -3681,8 +3708,8 @@
             }
 
             if (fromDate && toDate) {
-                obj.dateFrom = fromDate;
-                obj.dateTo = toDate;
+                obj.dateFrom = moment.utc(fromDate);
+                obj.dateTo = moment.utc(toDate);
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
                 obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -4095,6 +4122,9 @@
                 vm.filterTree1 = res.folders;
                 angular.forEach(vm.filterTree1, function (value) {
                     value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
                 });
             }, function () {
                 $('#treeModal').modal('hide');
@@ -4425,11 +4455,18 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
-                job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
-                job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
+                if (job.time !== '24:00' || job.time !== '24:00:00') {
+                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
+                } else {
+                    job.date.setDate(job.date.getDate() + 1);
+                    job.date.setHours(0);
+                    job.date.setMinutes(0);
+                    job.date.setSeconds(0);
+                    job.date.setMilliseconds(0);
+                }
             }
-
             if (job.date && job.at === 'later') {
                 obj.at = moment(job.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = job.timeZone;
@@ -5895,11 +5932,18 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
-                job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
-                job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
+                if (job.time !== '24:00' || job.time !== '24:00:00') {
+                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
+                } else {
+                    job.date.setDate(job.date.getDate() + 1);
+                    job.date.setHours(0);
+                    job.date.setMinutes(0);
+                    job.date.setSeconds(0);
+                    job.date.setMilliseconds(0);
+                }
             }
-
             if (job.date && job.at === 'later') {
                 obj.at = moment(job.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = job.timeZone;
