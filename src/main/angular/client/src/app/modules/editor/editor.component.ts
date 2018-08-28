@@ -3,6 +3,8 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {saveAs} from 'file-saver/FileSaver';
 import * as _ from 'underscore';
+import {TranslateService} from "@ngx-translate/core";
+import {ToasterService} from "angular2-toaster";
 
 declare const mxEditor;
 declare const mxUtils;
@@ -16,7 +18,6 @@ declare const mxGraphHandler;
 declare const mxCellAttributeChange;
 declare const mxGraph;
 declare const mxForm;
-declare const mxMultiplicity;
 declare const mxHierarchicalLayout;
 declare const mxImageExport;
 declare const mxXmlCanvas2D;
@@ -55,7 +56,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   @ViewChild('treeCtrl') treeCtrl;
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
 
   }
 
@@ -1185,12 +1186,119 @@ export class EditorComponent implements OnInit, OnDestroy {
       return '';
     };
 
+    /**
+     * Function: dragOver
+     *
+     * Implements autoscroll, updates the <currentPoint>, highlights any drop
+     * targets and updates the preview.
+     */
+    mxDragSource.prototype.dragOver = function(graph, evt)
+    {
+      let offset = mxUtils.getOffset(graph.container);
+      let origin = mxUtils.getScrollOrigin(graph.container);
+      let x = mxEvent.getClientX(evt) - offset.x + origin.x - graph.panDx;
+      let y = mxEvent.getClientY(evt) - offset.y + origin.y - graph.panDy;
+
+      if (graph.autoScroll && (this.autoscroll == null || this.autoscroll))
+      {
+        graph.scrollPointToVisible(x, y, graph.autoExtend);
+      }
+
+      // Highlights the drop target under the mouse
+      if (this.currentHighlight != null && graph.isDropEnabled()) {
+        this.currentDropTarget = this.getDropTarget(graph, x, y, evt);
+        let state = graph.getView().getState(this.currentDropTarget);
+        this.currentHighlight.highlightColor = 'green';
+        if (state && state.cell) {
+
+          if (state.cell.value.tagName == 'Connector') {
+            return;
+          } else if (state.cell.value.tagName === 'Job') {
+            for (let i = 0; i < state.cell.edges.length; i++) {
+              if (state.cell.edges[i].target.id !== state.cell.id) {
+                this.currentHighlight.highlightColor = '#ff0000';
+              }
+            }
+          }else if (state.cell.value.tagName == 'If') {
+            if (state.cell.edges.length > 2) {
+              this.currentHighlight.highlightColor = '#ff0000';
+            }
+          } else if (state.cell.value.tagName == 'Join' || state.cell.value.tagName == 'EndIf') {
+            if (state.cell.edges.length > 1) {
+              for (let i = 0; i < state.cell.edges.length; i++) {
+                if (state.cell.edges[i].target.id !== state.cell.id) {
+                  this.currentHighlight.highlightColor = '#ff0000';
+                }
+              }
+            }
+          } else if (state.cell.value.tagName == 'Connection') {
+            if ((state.cell.source.value.tagName === 'Fork' && state.cell.target.value.tagName === 'Join') || (state.cell.source.value.tagName === 'If' && state.cell.target.value.tagName === 'EndIf')) {
+              return;
+            }
+          }
+        }
+        this.currentHighlight.highlight(state);
+      }
+
+      // Updates the location of the preview
+      if (this.previewElement != null)
+      {
+        if (this.previewElement.parentNode == null)
+        {
+          graph.container.appendChild(this.previewElement);
+
+          this.previewElement.style.zIndex = '3';
+          this.previewElement.style.position = 'absolute';
+        }
+
+        let gridEnabled = this.isGridEnabled() && graph.isGridEnabledEvent(evt);
+        let hideGuide = true;
+
+        // Grid and guides
+        if (this.currentGuide != null && this.currentGuide.isEnabledForEvent(evt))
+        {
+          // LATER: HTML preview appears smaller than SVG preview
+          let w = parseInt(this.previewElement.style.width);
+          let h = parseInt(this.previewElement.style.height);
+          let bounds = new mxRectangle(0, 0, w, h);
+          let delta = new mxPoint(x, y);
+          delta = this.currentGuide.move(bounds, delta, gridEnabled);
+          hideGuide = false;
+          x = delta.x;
+          y = delta.y;
+        }
+        else if (gridEnabled)
+        {
+          let scale = graph.view.scale;
+          let tr = graph.view.translate;
+          let off = graph.gridSize / 2;
+          x = (graph.snap(x / scale - tr.x - off) + tr.x) * scale;
+          y = (graph.snap(y / scale - tr.y - off) + tr.y) * scale;
+        }
+
+        if (this.currentGuide != null && hideGuide)
+        {
+          this.currentGuide.hide();
+        }
+
+        if (this.previewOffset != null)
+        {
+          x += this.previewOffset.x;
+          y += this.previewOffset.y;
+        }
+
+        this.previewElement.style.left = Math.round(x) + 'px';
+        this.previewElement.style.top = Math.round(y) + 'px';
+        this.previewElement.style.visibility = 'visible';
+      }
+
+      this.currentPoint = new mxPoint(x, y);
+    };
 
     let dropTarget;
 
     // Check the drop target on drop event
     mxDragSource.prototype.drop = function (graph, evt, drpTargt, x, y) {
-
       dropTarget = null;
       let flag = false;
       if (drpTargt) {
@@ -1198,20 +1306,20 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (drpTargt.value.tagName === 'Job') {
             for (let i = 0; i < drpTargt.edges.length; i++) {
               if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                alert('Job instruction can have only one out going and one incoming Edges');
+                self.toasterService.pop('error', 'Invalid target!!', 'Job instruction can have only one out going and one incoming Edges');
                 return;
               }
             }
           } else if (drpTargt.value.tagName === 'If') {
             if (drpTargt.edges.length > 2) {
-              alert('Cannot have more than one condition');
+              self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one condition');
               return;
             }
           } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf') {
             if (drpTargt.edges.length > 1) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                  alert('Cannot have more than one out going Edge');
+                  self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
                   return;
                 }
               }
@@ -1219,10 +1327,6 @@ export class EditorComponent implements OnInit, OnDestroy {
           }
           dropTarget = drpTargt;
         } else {
-          if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') || (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf')) {
-            alert('Drop on Instruction');
-            return;
-          }
           flag = true;
         }
       } else {
@@ -1238,24 +1342,27 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     let forkMap = new Map(); //Declare Map object to store fork and join Ids
+    let isProgrammaticallyDelete = false;
 
-    // Removes the source vertex if edges are removed
-/*
+    // Removes the target vertex if edges are removed
     graph.addListener(mxEvent.REMOVE_CELLS, function(sender, evt) {
       let cells = evt.getProperty('cells');
-
-      for (let i = 0; i < cells.length; i++) {
-        let cell = cells[i];
-        console.log(cell, i);
-        if (this.model.isEdge(cell)) {
-          let terminal = this.model.getTerminal(cell, true);
-          let parent = this.model.getParent(terminal);
-          this.model.remove(terminal);
+      if(!isProgrammaticallyDelete) {
+        for (let i = 0; i < cells.length; i++) {
+          let cell = cells[i];
+          if (cell.value.tagName === 'Connection' && cell.source) {
+            graph.getModel().beginUpdate();
+            try {
+              graph.removeCells([cell.target]);
+            } finally {
+              graph.getModel().endUpdate();
+            }
+          }
         }
+      }else{
+        isProgrammaticallyDelete = false;
       }
     });
-*/
-
 
     /**
      * Event to check if connector is vaild or not on drop of new instruction
@@ -1265,10 +1372,8 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     graph.isValidDropTarget = function(cell, cells, evt) {
       if (cell) {
-        if (cell.value && cell.value.tagName === 'Connector') {
-          graph.getModel().beginUpdate();
-          graph.getModel().remove(cells[0]);
-        } else if (cell.value && cell.value.tagName === 'Connection') {
+        if (cell.value && cell.value.tagName === 'Connection') {
+          graph.clearSelection();
           if (cells && cells.length > 0) {
             if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If') {
               let parent = graph.getDefaultParent();
@@ -1296,18 +1401,21 @@ export class EditorComponent implements OnInit, OnDestroy {
               connNode2.setAttribute('label', '');
               connNode2.setAttribute('type', '');
               graph.insertEdge(parent, null, connNode2, v1, cell.target);
+              isProgrammaticallyDelete = true;
               graph.getModel().remove(cell);
               return false;
             }
+
           }
+          graph.setSelectionCells(cells);
         }
       }
       if (this.isCellCollapsed(cell)) {
         return true;
       }
+
       return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
     };
-
 
     // Implements a properties panel that uses
     // mxCellAttributeChange to change properties
@@ -1389,7 +1497,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-
+            isProgrammaticallyDelete = true;
             graph.removeCells([dropTarget]);
           } else {
             if (dropTarget.value.tagName === 'Fork') {
@@ -1422,6 +1530,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                   connNode.setAttribute('label', '');
                   connNode.setAttribute('type', '');
                   graph.insertEdge(parent, null, connNode, target2, target1.target);
+                  isProgrammaticallyDelete = true;
                   graph.getModel().remove(target1);
                 } else if (forkMap.has(dropTarget.id)) {
                   let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
@@ -1443,7 +1552,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                       connNode.setAttribute('label', label);
                       connNode.setAttribute('type', type);
                       graph.insertEdge(parent, null, connNode, cell, dropTarget.edges[i].target);
+                      isProgrammaticallyDelete = true;
                       graph.getModel().remove(dropTarget.edges[i]);
+                      isProgrammaticallyDelete = false;
                     }
                     break;
                   }
@@ -1486,6 +1597,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                   connNode.setAttribute('label', '');
                   connNode.setAttribute('type', '');
                   graph.insertEdge(parent, null, connNode, target2, target1.target);
+                  isProgrammaticallyDelete = true;
                   graph.getModel().remove(target1);
                 } else if (forkMap.has(dropTarget.id)) {
                   let target = graph.getModel().getCell(forkMap.get(dropTarget.id));
@@ -1507,7 +1619,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                       connNode.setAttribute('label', '');
                       connNode.setAttribute('type', '');
                       graph.insertEdge(parent, null, connNode, cell, dropTarget.edges[i].target);
+                      isProgrammaticallyDelete = true;
                       graph.getModel().remove(dropTarget.edges[i]);
+                      isProgrammaticallyDelete = false;
                     }
                     break;
                   }
@@ -1730,7 +1844,7 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     function makeCenter() {
       setTimeout(() => {
-        $('#actual').click();
+        graph.zoomActual();
         let gh = $('#graph');
         let bounds = graph.getGraphBounds();
         graph.view.setTranslate(-bounds.x - (bounds.width - gh.width()) / 2,
@@ -1812,52 +1926,17 @@ export class EditorComponent implements OnInit, OnDestroy {
         let node = mxUtils.load(config).getDocumentElement();
         editor = new mxEditor(node);
         this.editor = editor;
-        // Source nodes needs 1..2 connected Targets
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          true, 'Job', null, null, 0, 1, ['Job', 'Process', 'If', 'Fork', 'Join', 'Await', 'Exit', 'Retry'],
-          'Job can have only one out going Edge',
-          'Job can only Connect to Instructions', true));
-
-        // Source node does not want any incoming connections
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          false, 'Job', null, null, 0, 1, null,
-          'Job can have only one incoming Edge',
-          null)); // Type does not matter
-
-        // Source node does not want any incoming connections
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          true, 'If', null, null, 1, 3, ['Job', 'Process', 'If', 'Fork', 'Join', 'Await', 'Exit', 'Retry'],
-          'If instruction can have only 3 out going Edge',
-          null));
-
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          false, 'If', null, null, 0, 1, null,
-          'If instruction can have only one incoming Edge',
-          null)); // Type does not matter
-
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          false, 'Fork', null, null, 0, 1, null,
-          'Fork instruction can have only one incoming Edge',
-          null)); // Type does not matter
-
-        editor.graph.multiplicities.push(new mxMultiplicity(
-          true, 'Join', null, null, 1, 1, ['Job', 'Process', 'If', 'Fork', 'Await', 'Exit', 'Retry'],
-          'Join instruction can have only 1 out going Edge',
-          null));
 
         this.initEditorConf(editor);
         mxObjectCodec.allowEval = false;
 
-        // if (!this.outline) {
         let outln = document.getElementById('outlineContainer');
         outln.style["border"] = "1px solid lightgray";
         outln.style["background"] = "#FFFFFF";
         new mxOutline(this.editor.graph, outln);
-        //  }
 
         editor.graph.allowAutoPanning = true;
         editor.graph.timerAutoScroll = true;
-        // editor.graph.panningHandler.useLeftButtonForPanning = true;
 
         editor.addListener(mxEvent.OPEN);
         // Prints the current root in the window title if the
