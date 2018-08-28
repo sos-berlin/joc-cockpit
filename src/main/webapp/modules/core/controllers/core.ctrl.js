@@ -2573,7 +2573,7 @@
         };
 
         vm.getDateFormat = function (date) {
-            return $filter('date')(new Date(date), vm.dataFormat);
+            return moment(date).format(vm.dataFormat.toUpperCase());
         };
 
         vm.loadHolidayList = function () {
@@ -3221,7 +3221,7 @@
                 str = 'On ';
                 if (period.dates)
                     angular.forEach(period.dates.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.dates.length - 1) {
                             str = str + ', ';
                         }
@@ -3257,7 +3257,7 @@
                 }
                 var repetitions = period.dateEntity == 'DAILY' ? 'day' : period.dateEntity == 'WEEKLY' ? 'week' : period.dateEntity == 'MONTHLY' ? 'month' : 'year';
                 if (period.startingWith) {
-                    return 'Every ' + str + repetitions + ' starting with day ' + $filter('date')(period.startingWith, vm.dataFormat);
+                    return 'Every ' + str + repetitions + ' starting with day ' + moment(period.startingWith).format(vm.dataFormat.toUpperCase());
                 } else {
                     return 'Every ' + str + repetitions;
                 }
@@ -3268,7 +3268,7 @@
                     str = new Date(period.nationalHoliday[0]).getFullYear() + ' national holidays ';
 
                     angular.forEach(period.nationalHoliday.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.nationalHoliday.length - 1) {
                             str = str + ', ';
                         }
@@ -11840,7 +11840,7 @@
                 str = 'On ';
                 if (period.dates)
                     angular.forEach(period.dates.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.dates.length - 1) {
                             str = str + ', ';
                         }
@@ -12255,32 +12255,32 @@
             if (period.months && angular.isArray(period.months)) {
                 str = vm.getMonths(period.months);
             }
-            if (period.tab == 'weekDays') {
+            if (period.tab === 'weekDays') {
                 if (str) {
                     return vm.getWeekDays(period.days) + ' on ' + str;
                 } else {
                     return vm.getWeekDays(period.days);
                 }
-            } else if (period.tab == 'specificWeekDays') {
+            } else if (period.tab === 'specificWeekDays') {
                 if (str) {
                     return vm.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of ' + str;
                 } else {
                     return vm.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of month';
                 }
             }
-            else if (period.tab == 'specificDays') {
+            else if (period.tab === 'specificDays') {
                 str = 'On ';
                 if (period.dates)
                     angular.forEach(period.dates.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.dates.length - 1) {
                             str = str + ', ';
                         }
                     });
                 return str;
             }
-            else if (period.tab == 'monthDays') {
-                if (period.isUltimos != 'months') {
+            else if (period.tab === 'monthDays') {
+                if (period.isUltimos !== 'months') {
                     if (str) {
                         return '- ' + vm.getMonthDays(period.selectedMonthsU, period.isUltimos) + ' of ' + str;
                     } else {
@@ -12294,7 +12294,7 @@
                     }
                 }
             }
-            else if (period.tab == 'every') {
+            else if (period.tab === 'every') {
                 if (period.interval == 1) {
                     str = period.interval + 'st ';
                 }
@@ -12306,10 +12306,10 @@
                 } else {
                     str = period.interval + 'th ';
                 }
-                var repetitions = period.dateEntity == 'DAILY' ? 'day' : period.dateEntity == 'WEEKLY' ? 'week' : period.dateEntity == 'MONTHLY' ? 'month' : 'year';
+                var repetitions = period.dateEntity === 'DAILY' ? 'day' : period.dateEntity === 'WEEKLY' ? 'week' : period.dateEntity === 'MONTHLY' ? 'month' : 'year';
                 if (period.startingWith) {
 
-                    return 'Every ' + str + repetitions + ' starting with day ' + $filter('date')(period.startingWith, vm.dataFormat);
+                    return 'Every ' + str + repetitions + ' starting with day ' + moment(period.startingWith).format(vm.dataFormat.toUpperCase());
                 } else {
                     return 'Every ' + str + repetitions;
                 }
@@ -12318,9 +12318,8 @@
             else if (period.tab == 'nationalHoliday') {
                 if (period.nationalHoliday) {
                     str = new Date(period.nationalHoliday[0]).getFullYear() + ' national holidays ';
-
                     angular.forEach(period.nationalHoliday.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.nationalHoliday.length - 1) {
                             str = str + ', ';
                         }
@@ -13875,7 +13874,7 @@
                 str = 'On ';
                 if (period.dates)
                     angular.forEach(period.dates.sort(), function (date, index) {
-                        str = str + $filter('date')(new Date(date), vm.dataFormat);
+                        str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.dates.length - 1) {
                             str = str + ', ';
                         }
