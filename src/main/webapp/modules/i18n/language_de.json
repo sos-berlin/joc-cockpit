@@ -571,7 +571,6 @@
   "label.maxTask": "Max. Anzahl Prozesse",
   "label.may": "Mai",
   "label.menu": "Menü",
-  "label.midnightBlue": "Mitternachtsblau",
   "label.minuteAgo": "Minuten zuvor",
   "label.modifyLogViewingCriteria": "Kriterien für Protokollanzeige ändern",
   "label.monday": "Montag",
@@ -1324,5 +1323,6 @@
   "label.showSubFolder": "Unterordner und Ordnerinhalt",
   "button.downloadJocCockpitLog": "JOC Cockpit Log herunterladen",
   "button.reactivatePrimaryJobscheduler": "Primary Master reaktivieren",
-  "button.reactivatePrimaryJobschedulerWithIn": "Primary Master mit Wartezeit reaktivieren"
+  "button.reactivatePrimaryJobschedulerWithIn": "Primary Master mit Wartezeit reaktivieren",
+  "label.midnightBlue": "Blue-gray"
 }

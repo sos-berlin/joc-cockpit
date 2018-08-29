@@ -571,7 +571,6 @@
   "label.maxTask": "Max. Tasks",
   "label.may": "May",
   "label.menu": "Menu",
-  "label.midnightBlue": "Midnight Blue",
   "label.minuteAgo": "minutes ago",
   "label.modifyLogViewingCriteria": "Modify Log Viewing Criteria",
   "label.monday": "Monday",
@@ -1324,5 +1323,6 @@
   "label.showSubFolder": "Sub-folders and folder contents",
   "button.downloadJocCockpitLog": "Download JOC Cockpit Log",
   "button.reactivatePrimaryJobscheduler": "Reactivate Primary Master",
-  "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout"
+  "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout",
+  "label.midnightBlue": "Blue-gray"
 }

@@ -569,7 +569,6 @@
   "label.maxTask": "最大タスク数",
   "label.may": "5月",
   "label.menu": "メニュー",
-  "label.midnightBlue": "Midnight Blue",
   "label.minuteAgo": "分前",
   "label.modifyLogViewingCriteria": "ログ表示選択",
   "label.monday": "月曜",
@@ -1324,5 +1323,6 @@
   "label.showSubFolder" : "サブフォルダ/コンテンツ",
   "button.downloadJocCockpitLog":"JOCコックピットログダウンロード",
   "button.reactivatePrimaryJobscheduler": "Reactivate Primary Master",
-  "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout"  
+  "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout",
+  "label.midnightBlue": "Blue-gray"
 }
