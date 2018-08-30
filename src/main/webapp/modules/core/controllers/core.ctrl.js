@@ -275,79 +275,71 @@
             configObj.account = user;
             configObj.configurationType = "PROFILE";
             var preferences = {};
-            UserService.configurations(configObj).then(function (res1) {
+            UserService.configurations(configObj).then(function (res) {
                 $window.sessionStorage.preferenceId = 0;
 
-                if (res1.configurations && res1.configurations.length > 0) {
-                    $window.sessionStorage.preferenceId = res1.configurations[0].id;
-                    UserService.configuration({
-                        jobschedulerId: id,
-                        id: $window.sessionStorage.preferenceId
-                    }).then(function (res) {
-
-                        if (res.configuration && res.configuration.configurationItem) {
-                            $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
-                            document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
-                            preferences = JSON.parse($window.sessionStorage.preferences);
-                            if (preferences && !preferences.pageView) {
-                                preferences.pageView = 'grid';
-                            }
-                            if (preferences && !preferences.historyView) {
-                                preferences.historyView = 'current';
-                            }
-                            if (preferences && !preferences.adtLog) {
-                                preferences.adtLog = 'current';
-                            }
-                            if (preferences && !preferences.agentTask) {
-                                preferences.agentTask = 'current';
-                            }
-                            if (preferences && !preferences.fileTransfer) {
-                                preferences.fileTransfer = 'current';
-                            }
-                            if (preferences && !preferences.historyTab) {
-                                preferences.historyTab = 'order';
-                            }
-                            if (preferences && !preferences.expandOption) {
-                                preferences.expandOption = 'single';
-                            }
-                            if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
-                                preferences.maxNumInOrderOverviewPerObject = 10;
-                            }
-                            if (!preferences.entryPerPage) {
-                                preferences.entryPerPage = '10';
-                                $window.sessionStorage.preferences = JSON.stringify(preferences);
-                            }
-                            if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING === true) && !preferences.auditLog) {
-                                preferences.auditLog = true;
-                            }
-                            $window.sessionStorage.preferences = JSON.stringify(preferences);
-                            $window.localStorage.$SOS$THEME = preferences.theme;
-                            if (preferences.theme === 'lighter') {
-                                $('#orders_id img').attr("src", 'images/order.png');
-                                $('#jobs_id img').attr("src", 'images/job.png');
-                                $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
-                                $('#resources_id img').attr("src", 'images/resources1.png');
-                            } else {
-                                $('#orders_id img').attr("src", 'images/order1.png');
-                                $('#jobs_id img').attr("src", 'images/job1.png');
-                                $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
-                                $('#resources_id img').attr("src", 'images/resources.png');
-                            }
-                            $window.localStorage.$SOS$LANG = preferences.locale;
-
-                            $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
-                                gettextCatalog.setCurrentLanguage(preferences.locale);
-                                gettextCatalog.setStrings(preferences.locale, data);
-                            });
-                        } else {
-                            setUserPrefrences(preferences, configObj);
+                if (res.configurations && res.configurations.length > 0) {
+                    let conf = res.configurations[0];
+                    $window.sessionStorage.preferenceId = conf.id;
+                    if (conf.configurationItem) {
+                        $window.sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
+                        document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
+                        preferences = JSON.parse($window.sessionStorage.preferences);
+                        if (preferences && !preferences.pageView) {
+                            preferences.pageView = 'grid';
                         }
+                        if (preferences && !preferences.historyView) {
+                            preferences.historyView = 'current';
+                        }
+                        if (preferences && !preferences.adtLog) {
+                            preferences.adtLog = 'current';
+                        }
+                        if (preferences && !preferences.agentTask) {
+                            preferences.agentTask = 'current';
+                        }
+                        if (preferences && !preferences.fileTransfer) {
+                            preferences.fileTransfer = 'current';
+                        }
+                        if (preferences && !preferences.historyTab) {
+                            preferences.historyTab = 'order';
+                        }
+                        if (preferences && !preferences.expandOption) {
+                            preferences.expandOption = 'single';
+                        }
+                        if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
+                            preferences.maxNumInOrderOverviewPerObject = 10;
+                        }
+                        if (!preferences.entryPerPage) {
+                            preferences.entryPerPage = '10';
+                            $window.sessionStorage.preferences = JSON.stringify(preferences);
+                        }
+                        if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING === true) && !preferences.auditLog) {
+                            preferences.auditLog = true;
+                        }
+                        $window.sessionStorage.preferences = JSON.stringify(preferences);
+                        $window.localStorage.$SOS$THEME = preferences.theme;
+                        if (preferences.theme === 'lighter') {
+                            $('#orders_id img').attr("src", 'images/order.png');
+                            $('#jobs_id img').attr("src", 'images/job.png');
+                            $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
+                            $('#resources_id img').attr("src", 'images/resources1.png');
+                        } else {
+                            $('#orders_id img').attr("src", 'images/order1.png');
+                            $('#jobs_id img').attr("src", 'images/job1.png');
+                            $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
+                            $('#resources_id img').attr("src", 'images/resources.png');
+                        }
+                        $window.localStorage.$SOS$LANG = preferences.locale;
 
-                        $rootScope.$broadcast('reloadPreferences');
-                    }, function () {
+                        $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
+                            gettextCatalog.setCurrentLanguage(preferences.locale);
+                            gettextCatalog.setStrings(preferences.locale, data);
+                        });
+                    } else {
                         setUserPrefrences(preferences, configObj);
-                        $rootScope.$broadcast('reloadPreferences');
-                    });
+                    }
+
+                    $rootScope.$broadcast('reloadPreferences');
                 } else {
                     setUserPrefrences(preferences, configObj);
                     $rootScope.$broadcast('reloadPreferences');
@@ -446,6 +438,10 @@
                         $window.localStorage.log_window_x = newWindow.screenX;
                         $window.localStorage.log_window_y = newWindow.screenY;
                     }
+                    if(newWindow.sessionStorage.changedPreferences) {
+                        $window.sessionStorage.preferences = newWindow.sessionStorage.changedPreferences;
+                        $rootScope.$broadcast('reloadPreferences');
+                    }
                     newWindow.close();
                 }
             }
@@ -473,9 +469,7 @@
 
         vm.openLog = function(order, task, job, id, transfer) {
             let url = null;
-
             if (vm.userPreferences.isNewWindow === 'newWindow') {
-
                 try {
                     if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
                         if (order && order.historyId && order.orderId) {
@@ -497,6 +491,7 @@
                             document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
                         }
                         document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
+                        document.cookie = "$SOS$accountName=" + vm.username + ";path=/";
 
                         newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
 
@@ -732,12 +727,15 @@
             if (newWindow) {
                 try {
                     newWindow.addEventListener("beforeunload", function () {
-                      
-                        if(newWindow.innerWidth > 0 && newWindow.screenX > 0) {
+                        if (newWindow.innerWidth > 0 && newWindow.screenX > 0) {
                             $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
                             $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
                             $window.localStorage.log_window_x = newWindow.screenX;
                             $window.localStorage.log_window_y = newWindow.screenY;
+                        }
+                        if (newWindow.sessionStorage.changedPreferences) {
+                            $window.sessionStorage.preferences = newWindow.sessionStorage.changedPreferences;
+                            $rootScope.$broadcast('reloadPreferences');
                         }
                         return null;
                     });
@@ -1151,7 +1149,6 @@
         };
 
         vm.isFF = function () {
-            console.log(navigator.userAgent)
             return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         };
 

@@ -9192,29 +9192,34 @@
     function LogCtrl($scope, $rootScope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval, $window, UserService) {
         var vm = $scope;
         vm.isLoading = false;
-        $scope.errStatus = '';
-        vm.object = {
-            checkBoxs: {
+        vm.errStatus = '';
+        vm.preferences = JSON.parse($window.sessionStorage.preferences);
+        if(!vm.preferences.logFilter) {
+            vm.preferences.logFilter = {
                 scheduler: true,
                 stdout: true,
                 stderr: true,
                 info: true,
                 debug: false
-            },
+            };
+        }
+
+        vm.object = {
+            checkBoxs: vm.preferences.logFilter,
             debug: 'Debug'
         };
-        $scope.isDeBugLevel = false;
-        $scope.isStdErrLevel = false;
-        $scope.isDebugLevels = [false, false, false, false, false, false, false, false, false];
+        vm.isDeBugLevel = false;
+        vm.isStdErrLevel = false;
+        vm.isDebugLevels = [false, false, false, false, false, false, false, false, false];
         vm.debugLevels = ['Debug', 'Debug2', 'Debug3', 'Debug4', 'Debug5', 'Debug6', 'Debug7', 'Debug8', 'Debug9'];
 
         function getParam(name) {
             var url = window.location.href;
             if (!url) url = location.href;
             name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-            var regexS = "[\\?&]" + name + "=([^&]*)";
-            var regex = new RegExp(regexS);
-            var results = regex.exec(url);
+            let regexS = "[\\?&]" + name + "=([^&]*)";
+            let regex = new RegExp(regexS);
+            let results = regex.exec(url);
             return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ""));
         }
 
@@ -9222,7 +9227,7 @@
         var t1, canceller, logElems = [], interval;
         vm.loadOrderLog = function () {
             vm.jobChain = getParam("jobChain");
-            var orders = {};
+            let orders = {};
             orders.jobschedulerId = getParam("schedulerId");
             orders.jobChain = vm.jobChain;
             orders.orderId = vm.orderId;
@@ -9233,11 +9238,11 @@
             }, function (err) {
                 window.document.getElementById('logs').innerHTML = '';
                 if (err.data && err.data.error) {
-                    $scope.error = err.data.error.message;
+                    vm.error = err.data.error.message;
                 } else {
-                    $scope.error = err.data.message;
+                    vm.error = err.data.message;
                 }
-                $scope.errStatus = err.status;
+                vm.errStatus = err.status;
                 vm.isLoading = true;
             });
         };
@@ -9253,11 +9258,11 @@
             }, function (err) {
                 window.document.getElementById('logs').innerHTML = '';
                 if (err.data && err.data.error) {
-                    $scope.error = err.data.error.message;
+                    vm.error = err.data.error.message;
                 } else {
-                    $scope.error = err.data.message;
+                    vm.error = err.data.message;
                 }
-                $scope.errStatus = err.status;
+                vm.errStatus = err.status;
                 vm.isLoading = true;
             });
         };
@@ -9284,41 +9289,62 @@
                 res.data = ("\n" + res.data).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, function (match, prefix, level, suffix, offset) {
                     var div = window.document.createElement("div"); //Now create a div element and append it to a non-appended span.
                     level = (level) ? level.trim().toLowerCase() : "info";
-                    if (level == "trace") {
+                    if (level === "trace") {
                         level = "debug9";
                     }
                     div.className = "log_" + level;
-                    if (level === "stdout") {
+                    if (level === "info" && !vm.object.checkBoxs.info) {
+                        div.className += " hide-block";
+                    } else if (level === "stdout") {
                         div.className += " stdout";
+                        if (!vm.object.checkBoxs.stdout) {
+                            div.className += " hide-block";
+                        }
                     } else if (level === "stderr") {
                         div.className += " stderr";
+                        if (!vm.object.checkBoxs.stderr) {
+                            div.className += " hide-block";
+                        }
                     } else if (prefix.search(/\[stdout\]/i) > -1) {
                         div.className += " stdout stdout_" + level;
+                         if (!vm.object.checkBoxs.stdout) {
+                            div.className += " hide-block";
+                        }
                     } else if (prefix.search(/\[stderr\]/i) > -1) {
                         div.className += " stderr stderr_" + level;
+                        if (!vm.object.checkBoxs.stderr) {
+                            div.className += " hide-block";
+                        }
                     } else {
                         div.className += " scheduler scheduler_" + level;
+                        if (!vm.object.checkBoxs.scheduler) {
+                            div.className += " hide-block";
+                        }
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
-                    if (!$scope.isDeBugLevel) {
-                        $scope.isDeBugLevel = level.startsWith('debug');
+                    if (!vm.isDeBugLevel) {
+                        vm.isDeBugLevel = level.startsWith('debug');
                     }
-                    if ($scope.isDeBugLevel && level.startsWith('debug')) {
-                        if (level == 'debug') {
-                            $scope.isDebugLevels[0] = true;
+                    if (vm.isDeBugLevel && level.startsWith('debug')) {
+                        if (level === 'debug') {
+                            vm.isDebugLevels[0] = true;
                         } else {
                             for (let x = 2; x < 10; x++) {
                                 if (level == 'debug' + x) {
-                                    $scope.isDebugLevels[x - 1] = true;
+                                    vm.isDebugLevels[x - 1] = true;
                                     break;
                                 }
                             }
                         }
+                        if (!vm.object.checkBoxs.debug) {
+                            div.className += " hide-block";
+                        }
                     }
-                    if (!$scope.isStdErrLevel) {
-                        $scope.isStdErrLevel = div.className.includes('stderr');
+                    if (!vm.isStdErrLevel) {
+                        vm.isStdErrLevel = div.className.includes('stderr');
                     }
-                    var j = 0;
+
+                    let j = 0;
                     while (true) {
                         if (offset < (j + 1) * 1024 * 512) {
                             if (logElems.length == j) {
@@ -9331,14 +9357,14 @@
                     }
                     return "";
                 });
-                if ($scope.isDeBugLevel) {
-                    $scope.debugLevels = [];
-                    if ($scope.isDebugLevels[0]) {
-                        $scope.debugLevels.push('Debug');
+                if (vm.isDeBugLevel) {
+                    vm.debugLevels = [];
+                    if (vm.isDebugLevels[0]) {
+                        vm.debugLevels.push('Debug');
                     }
                     for (let x = 2; x < 10; x++) {
-                        if ($scope.isDebugLevels[x - 1]) {
-                            $scope.debugLevels.push('Debug' + x);
+                        if (vm.isDebugLevels[x - 1]) {
+                            vm.debugLevels.push('Debug' + x);
                         }
                     }
                 }
@@ -9354,7 +9380,7 @@
                     if (nextLogs !== undefined) {
                         window.document.getElementById('logs').appendChild(nextLogs);
                     } else {
-                        $scope.finished = true;
+                        vm.finished = true;
                         $interval.cancel(interval)
                     }
                 }, 50);
@@ -9405,114 +9431,135 @@
             }
         };
 
-        $scope.sheetContent = '';
-        $scope.checkLogLevel = function (type) {
-            $scope.sheetContent = '';
+        vm.sheetContent = '';
+        vm.checkLogLevel = function (type) {
+            vm.sheetContent = '';
             if (type === 'STDOUT') {
-                if (!$scope.object.checkBoxs.stdout) {
-                    $scope.sheetContent += "div.stdout {display: none;}\n";
+                if (!vm.object.checkBoxs.stdout) {
+                    vm.sheetContent += "div.stdout {display: none;}\n";
                 } else {
-                    $scope.sheetContent += "div.stdout {display: block;}\n";
-                    $scope.changeInfoLevel(type);
-                    $scope.changeDebugLevel(type, false);
+                    vm.sheetContent += "div.stdout {display: block;}\n";
+                    vm.changeInfoLevel(type);
+                    vm.changeDebugLevel(type, false);
                 }
             } else if (type === 'STDERR') {
-                if (!$scope.object.checkBoxs.stderr) {
-                    $scope.sheetContent += "div.stderr {display: none;}\n";
+                if (!vm.object.checkBoxs.stderr) {
+                    vm.sheetContent += "div.stderr {display: none;}\n";
                 } else {
-                    $scope.sheetContent += "div.stderr {display: block;}\n";
-                    $scope.changeInfoLevel(type);
-                    $scope.changeDebugLevel(type, false);
+                    vm.sheetContent += "div.stderr {display: block;}\n";
+                    vm.changeInfoLevel(type);
+                    vm.changeDebugLevel(type, false);
                 }
             } else if (type === 'SCHEDULER') {
-                if (!$scope.object.checkBoxs.scheduler) {
-                    $scope.sheetContent += "div.scheduler {display: none;}\n";
+                if (!vm.object.checkBoxs.scheduler) {
+                    vm.sheetContent += "div.scheduler {display: none;}\n";
                 } else {
-                    $scope.sheetContent += "div.scheduler {display: block;}\n";
-                    $scope.changeInfoLevel(type);
-                    $scope.changeDebugLevel(type, false);
+                    vm.sheetContent += "div.scheduler {display: block;}\n";
+                    vm.changeInfoLevel(type);
+                    vm.changeDebugLevel(type, false);
                 }
             } else if (type === 'INFO') {
-                if (!$scope.object.checkBoxs.info) {
-                    $scope.sheetContent += "div.scheduler_info {display: none;}\n";
-                    $scope.sheetContent += "div.stdout_info {display: none;}\n";
-                    $scope.sheetContent += "div.stderr_info {display: none;}\n";
+                if (!vm.object.checkBoxs.info) {
+                    vm.sheetContent += "div.log_info {display: none;}\n";
+                    vm.sheetContent += "div.scheduler_info {display: none;}\n";
+                    vm.sheetContent += "div.stdout_info {display: none;}\n";
+                    vm.sheetContent += "div.stderr_info {display: none;}\n";
                 } else {
-                    if ($scope.object.checkBoxs.scheduler) {
-                        $scope.sheetContent += "div.scheduler_info {display: block;}\n";
+                    vm.sheetContent += "div.log_info {display: block;}\n";
+                    if (vm.object.checkBoxs.scheduler) {
+                        vm.sheetContent += "div.scheduler_info {display: block;}\n";
                     }
-                    if ($scope.object.checkBoxs.stdout) {
-                        $scope.sheetContent += "div.stdout_info {display: block;}\n";
+                    if (vm.object.checkBoxs.stdout) {
+                        vm.sheetContent += "div.stdout_info {display: block;}\n";
                     }
-                    if ($scope.object.checkBoxs.stderr) {
-                        $scope.sheetContent += "div.stderr_info {display: block;}\n";
+                    if (vm.object.checkBoxs.stderr) {
+                        vm.sheetContent += "div.stderr_info {display: block;}\n";
                     }
                 }
             } else if (type === 'DEBUG') {
-                if (!$scope.object.checkBoxs.debug) {
-                    $scope.changeDebugLevel('SCHEDULER', false);
-                    $scope.changeDebugLevel('STDOUT', false);
-                    $scope.changeDebugLevel('STDERR', false);
+                if (!vm.object.checkBoxs.debug) {
+                    vm.changeDebugLevel('SCHEDULER', false);
+                    vm.changeDebugLevel('STDOUT', false);
+                    vm.changeDebugLevel('STDERR', false);
                 } else {
-                    $scope.changeDebugLevel();
-                    $scope.sheetContent = '';
+                    vm.changeDebugLevel();
+                    vm.sheetContent = '';
                 }
             }
-            if ($scope.sheetContent != '') {
+            if (vm.sheetContent != '') {
                 let sheet = document.createElement('style');
-                sheet.innerHTML = $scope.sheetContent;
+                sheet.innerHTML = vm.sheetContent;
                 document.body.appendChild(sheet);
             }
+            vm.saveUserPreference();
         };
 
-        $scope.changeInfoLevel = function (type) {
-            if (!$scope.object.checkBoxs.info) {
-                $scope.sheetContent += "div." + type.toLowerCase() + "_info {display: none;}\n";
+        vm.changeInfoLevel = function (type) {
+            if (!vm.object.checkBoxs.info) {
+                vm.sheetContent += "div." + type.toLowerCase() + "_info {display: none;}\n";
             }
         };
 
-        $scope.changeDebugLevel = function (type, setBlock) {
+        vm.changeDebugLevel = function (type, setBlock) {
             if (type) {
-                let num = $scope.object.debug.substring(5);
+                let num = vm.object.debug.substring(5);
                 if (!num) {
                     num = 1;
                 }
-                if ($scope.object.checkBoxs.debug) {
+                if (vm.object.checkBoxs.debug) {
                     if (setBlock) {
                         for (let x = 1; x <= num; x++) {
                             let level = x === 1 ? '' : x;
-                            $scope.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: block;}\n";
+                            vm.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: block;}\n";
                         }
                     }
                     if (num < 9) {
                         for (let x = num + 1; x < 10; x++) {
                             let level = x === 1 ? '' : x;
-                            $scope.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: none;}\n";
+                            vm.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: none;}\n";
                         }
                     }
                 } else {
                     for (let x = 1; x < 10; x++) {
                         let level = x === 1 ? '' : x;
-                        $scope.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: none;}\n";
+                        vm.sheetContent += "div." + type.toLowerCase() + "_debug" + level + " {display: none;}\n";
                     }
                 }
             } else {
-                $scope.sheetContent = '';
-                if ($scope.object.checkBoxs.scheduler) {
-                    $scope.changeDebugLevel('SCHEDULER', true);
+                vm.sheetContent = '';
+                if (vm.object.checkBoxs.scheduler) {
+                    vm.changeDebugLevel('SCHEDULER', true);
                 }
-                if ($scope.object.checkBoxs.stdout) {
-                    $scope.changeDebugLevel('STDOUT', true);
+                if (vm.object.checkBoxs.stdout) {
+                    vm.changeDebugLevel('STDOUT', true);
                 }
-                if ($scope.object.checkBoxs.stderr) {
-                    $scope.changeDebugLevel('STDERR', true);
+                if (vm.object.checkBoxs.stderr) {
+                    vm.changeDebugLevel('STDERR', true);
                 }
-                if ($scope.sheetContent != '') {
+                if (vm.sheetContent != '') {
                     let sheet = document.createElement('style');
-                    sheet.innerHTML = $scope.sheetContent;
+                    sheet.innerHTML = vm.sheetContent;
                     document.body.appendChild(sheet);
                 }
             }
+            
+        };
+
+        /**
+         * Save the user preference of log filter
+         *
+         */
+        vm.saveUserPreference = function () {
+            vm.preferences.logFilter = vm.object.checkBoxs;
+            let configObj = {};
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "PROFILE";
+            configObj.id = parseInt($window.sessionStorage.preferenceId);
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $rootScope.$broadcast('reloadPreferences');
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
         };
 
         $scope.$on('$destroy', function () {
