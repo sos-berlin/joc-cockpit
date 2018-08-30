@@ -3169,7 +3169,7 @@
         vm.filterTree1 = [];
         vm.object.paths = [];
 
-        $scope.reloadState = 'no';
+        vm.reloadState = 'no';
 
         vm.selectedFiltered;
         vm.temp_filter = {};
@@ -3308,14 +3308,14 @@
         };
 
         vm.reload = function() {
-            if ($scope.reloadState == 'no') {
-                $scope.allOrders = [];
-                $scope.folderPath = 'Process aborted';
-                $scope.reloadState = 'yes';
+            if (vm.reloadState == 'no') {
+                vm.allOrders = [];
+                vm.folderPath = 'Process aborted';
+                vm.reloadState = 'yes';
                 vm.orderFilters.expand_to = vm.tree;
-            } else if ($scope.reloadState == 'yes') {
-                $scope.reloadState = 'no';
-                $scope.load();
+            } else if (vm.reloadState == 'yes') {
+                vm.reloadState = 'no';
+                vm.load();
             }
         };
 
@@ -3323,7 +3323,7 @@
          * Function to initialized tree view
          */
         function initTree() {
-            $scope.reloadState = 'no';
+            vm.reloadState = 'no';
             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                 var folders = [];
                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -3371,7 +3371,7 @@
                 data.expanded = true;
             vm.isExpandNode = false;
             navFullTree();
-            $scope.reloadState = 'no';
+            vm.reloadState = 'no';
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
                 vm.hideLogPanel();
             }
@@ -3389,7 +3389,7 @@
         vm.expandNode = function (data) {
             vm.reset();
             navFullTree();
-            $scope.reloadState = 'no';
+            vm.reloadState = 'no';
             vm.isExpandNode = true;
             if (vm.showLogPanel && (vm.showLogPanel.path1 !== data.path)) {
                 vm.hideLogPanel();
@@ -3670,10 +3670,7 @@
         }
 
         function parseDate(obj) {
-            var fromDate;
-            var toDate;
-            var date;
-            var arr;
+            var fromDate, toDate, date, arr;
             if (vm.selectedFiltered.type) {
                 obj.types = vm.selectedFiltered.type;
             }
@@ -3682,18 +3679,16 @@
             }
             if (vm.selectedFiltered.planned) {
                 if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                    fromDate = '+'+seconds+'s';
                 } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
                     toDate = '0d';
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
+                    fromDate = moment.utc(new Date());
+                    toDate = fromDate;
                 } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
                     arr = date[0].split('to');
@@ -3723,6 +3718,7 @@
                         fromDate.setHours(parseInt(time[1]));
                     }
                     fromDate.setMinutes(parseInt(time[2]));
+                    fromDate = moment.utc(fromDate);
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
                         toDate.setHours(parseInt(time[4]) + 12);
@@ -3730,6 +3726,7 @@
                         toDate.setHours(parseInt(time[4]));
                     }
                     toDate.setMinutes(parseInt(time[5]));
+                    toDate = moment.utc(toDate);
                 }
             }
 
@@ -3817,7 +3814,7 @@
 
         vm.changeStatus = function () {
             vm.hideLogPanel();
-            $scope.reloadState = 'no';
+            vm.reloadState = 'no';
             vm.allOrders = [];
             vm.loading = true;
             var obj = {jobschedulerId : vm.schedulerIds.selected, folders: [], compact : true};
@@ -4833,7 +4830,7 @@
 
         function mergePermanentData(order) {
             var obj = {};
-            obj.jobschedulerId = $scope.schedulerIds.selected;
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
             OrderService.getOrdersP(obj).then(function (res) {
@@ -5044,7 +5041,7 @@
         vm.isLoaded = true;
         vm.object = {};
         vm.object.orders = [];
-        $scope.reloadState = 'no';
+        vm.reloadState = 'no';
 
         vm.reset = function () {
             vm.object.orders = [];
@@ -5055,21 +5052,21 @@
         };
 
         vm.reload = function () {
-            if ($scope.reloadState == 'no') {
-                $scope.allOrders = [];
-                $scope.folderPath = 'Process aborted';
-                $scope.reloadState = 'yes';
-            } else if ($scope.reloadState == 'yes') {
-                $scope.reloadState = 'no';
+            if (vm.reloadState == 'no') {
+                vm.allOrders = [];
+                vm.folderPath = 'Process aborted';
+                vm.reloadState = 'yes';
+            } else if (vm.reloadState == 'yes') {
+                vm.reloadState = 'no';
                 vm.isLoading = false;
-                $scope.init();
+                vm.init();
             }
         };
 
         vm.init = function () {
             var obj1 = {};
             vm.isLoaded = true;
-            $scope.reloadState = 'no';
+            vm.reloadState = 'no';
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
             obj1.processingStates = [];
@@ -6430,19 +6427,19 @@
             vm.init();
         };
 
-        $scope.reloadState = 'no';
+        vm.reloadState = 'no';
 
         vm.reload = function() {
-            if ($scope.reloadState == 'no') {
-                $scope.historys = [];
-                $scope.jobHistorys = [];
-                $scope.yadeHistorys = [];
-                $scope.folderPath = 'Process aborted';
-                $scope.reloadState = 'yes';
-            } else if ($scope.reloadState == 'yes') {
-                $scope.reloadState = 'no';
+            if (vm.reloadState == 'no') {
+                vm.historys = [];
+                vm.jobHistorys = [];
+                vm.yadeHistorys = [];
+                vm.folderPath = 'Process aborted';
+                vm.reloadState = 'yes';
+            } else if (vm.reloadState == 'yes') {
+                vm.reloadState = 'no';
                 vm.isLoading = false;
-                $scope.init();
+                vm.init();
             }
         };
 
@@ -6529,12 +6526,9 @@
 
             if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
-
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
-                fromDate.setSeconds(toDate.getSeconds() - seconds);
+                let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                fromDate = '-'+seconds+'s';
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
                 toDate = '0d';
@@ -6542,8 +6536,8 @@
                 fromDate = '-1d';
                 toDate = '-1d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
+                fromDate = moment.utc(new Date());
+                toDate = fromDate;
             } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                 arr = date[0].split('to');
@@ -6576,8 +6570,9 @@
                 } else {
                     fromDate.setHours(parseInt(time[1]));
                 }
-
                 fromDate.setMinutes(parseInt(time[2]));
+                fromDate = moment.utc(fromDate);
+
                 toDate = new Date();
                 if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
                     toDate.setHours(parseInt(time[4]) - 12);
@@ -6585,6 +6580,7 @@
                     toDate.setHours(parseInt(time[4]));
                 }
                 toDate.setMinutes(parseInt(time[5]));
+                toDate = moment.utc(toDate);
             }
 
             if (fromDate) {
@@ -6947,7 +6943,6 @@
         }
 
         function setYadeDateRange(filter) {
-
             if (vm.yade.filter.date == 'today') {
                 filter.dateFrom = '0d';
                 filter.dateTo = '0d';
@@ -8641,7 +8636,7 @@
             if (data.expanded) {
                 if (vm.historyFilters.type == 'jobChain') {
                     data.jobChains = [];
-                    var obj = {};
+                    let obj = {};
                     obj.jobschedulerId = vm.schedulerIds.selected;
                     obj.compact = true;
                     obj.folders = [{folder: data.path, recursive: false}];
@@ -8651,12 +8646,12 @@
                             if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
                                 $('.order_img').attr("src", 'images/order.png');
                             }
-                        }, 100);
+                        }, 30);
 
                     });
                 } else if (vm.historyFilters.type == 'job') {
                     data.jobs = [];
-                    var obj = {};
+                    let obj = {};
                     obj.jobschedulerId = vm.schedulerIds.selected;
                     obj.compact = true;
                     obj.folders = [{folder: data.path, recursive: false}];
@@ -8666,7 +8661,7 @@
                             if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
                                 $('.job_img').attr("src", 'images/job.png');
                             }
-                        }, 100);
+                        }, 30);
                     });
                 }
             } else {
@@ -9193,8 +9188,8 @@
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "$timeout","SOSAuth", "$q", "$interval"];
-    function LogCtrl($scope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval) {
+    LogCtrl.$inject = ["$scope", "$rootScope", "OrderService", "TaskService", "$location", "$timeout","SOSAuth", "$q", "$interval", "$window", "UserService"];
+    function LogCtrl($scope, $rootScope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval, $window, UserService) {
         var vm = $scope;
         vm.isLoading = false;
         $scope.errStatus = '';

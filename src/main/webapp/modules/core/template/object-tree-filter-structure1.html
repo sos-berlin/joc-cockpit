@@ -25,26 +25,24 @@
                         </td>
                     </tr>
                     <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)">
-
                         <td></td>
                         <td>
-                            <div class="p-l-md p-t-xs" ng-repeat="(key, value) in row.branch.jobChains  | groupBy: 'jobChain'">
-                                 <span class="cursor" ng-click="on_user_click({jobChain:key})">
-                                     <i class="fa fa-chain"></i> {{key.substring(key.lastIndexOf('/')+1,key.length)}}
+                            <div class="p-l-md p-t-xs" ng-repeat="value in row.branch.jobChains  | groupBy: 'jobChain' | toArray: true | orderBy: '$key'">
+                                 <span class="cursor" ng-click="on_user_click({jobChain:value.$key})">
+                                     <i class="fa fa-chain"></i> {{value.$key.substring(value.$key.lastIndexOf('/')+1,value.$key.length)}}
                                  </span>
-                                  <div class="cursor" class="m-l p-t-xs" ng-repeat="order in value" ng-click="on_user_click({order:order})">
+                                  <div class="cursor m-l p-t-xs" ng-repeat="order in value | orderBy: 'orderId'" ng-click="on_user_click({order:order})">
 
                                       <img class="order_img" src="images/order1.png" width="13" height="14">
                                       <span>{{order.orderId}}</span> <span ng-if="order.title" class="text-sm text-muted">&nbsp;-&nbsp;{{order.title}}</span>
                                   </div>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.jobs" ng-click="on_user_click({job:job.path})">
+                            <div class="p-l-md p-t-xs" ng-repeat="job in row.branch.jobs  | orderBy: 'name'" ng-click="on_user_click({job:job.path})">
                                 <span class="cursor">
                                     <img class="job_img" src="images/job1.png" width="15" height="15" style="margin-top: -2px">
                                     <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
                                  </span>
                             </div>
-
                         </td>
                     </tr>
                 </table>

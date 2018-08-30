@@ -3228,9 +3228,7 @@
         }
 
         function parseDate(obj) {
-            var fromDate;
-            var toDate;
-
+            var fromDate, toDate;
             if (vm.selectedFiltered.state && vm.selectedFiltered.state.length > 0) {
                 obj.states = vm.selectedFiltered.state;
             }
@@ -3241,20 +3239,18 @@
                 }
             }
             if (vm.selectedFiltered.planned) {
-                var date,arr;
+                var date, arr;
                 if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                    fromDate = '+' + seconds + 's';
                 } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
                     toDate = '0d';
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
+                    fromDate = moment.utc(new Date());
+                    toDate = fromDate;
                 } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
                     arr = date[0].split('to');
@@ -3284,6 +3280,7 @@
                         fromDate.setHours(parseInt(time[1]));
                     }
                     fromDate.setMinutes(parseInt(time[2]));
+                    fromDate = moment.utc(fromDate);
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
                         toDate.setHours(parseInt(time[4]) + 12);
@@ -3291,6 +3288,7 @@
                         toDate.setHours(parseInt(time[4]));
                     }
                     toDate.setMinutes(parseInt(time[5]));
+                    toDate = moment.utc(toDate);
                 }
             }
 

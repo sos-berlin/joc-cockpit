@@ -168,9 +168,9 @@
         if ($window.sessionStorage.preferences)
             vm.preferences = JSON.parse($window.sessionStorage.preferences);
         var timezone = jstz.determine();
-        if(timezone)
+        if(timezone) {
             vm.timezone = timezone.name() || $scope.selectedJobScheduler.timeZone;
-        else{
+        }else{
             vm.timezone = $scope.selectedJobScheduler.timeZone;
         }
 
@@ -587,26 +587,21 @@
         }
 
         function parseProcessExecuted(regex, obj) {
-            var fromDate;
-            var toDate;
-
+            var fromDate, toDate;
             if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
-
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
                 let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
-                fromDate.setSeconds(toDate.getSeconds() - seconds);
+                fromDate = '-' + seconds + 's';
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
                 toDate = '0d';
-            }else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
                 fromDate = '-1d';
                 toDate = '-1d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
+                fromDate = moment.utc(new Date());
+                toDate = fromDate;
             } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 let date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
                let arr = date[0].split('to');
@@ -641,6 +636,7 @@
                 }
 
                 fromDate.setMinutes(parseInt(time[2]));
+                fromDate = moment.utc(fromDate);
                 toDate = new Date();
                 if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
                     toDate.setHours(parseInt(time[4]) - 12);
@@ -648,6 +644,7 @@
                     toDate.setHours(parseInt(time[4]));
                 }
                 toDate.setMinutes(parseInt(time[5]));
+                toDate = moment.utc(toDate);
             }
 
             if (fromDate) {
@@ -774,15 +771,15 @@
             if (vm.auditSearch.jobschedulerId) {
                 filter.jobschedulerId = vm.auditSearch.jobschedulerId;
             }
-               if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                   delete filter["timeZone"];
-                }
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-                    filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
-                }
-                if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
-                }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter["timeZone"];
+            }
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+                filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
+            }
+            if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
+            }
 
             AuditLogService.getLogs(filter).then(function (result) {
                 vm.auditLogs = result.auditLog;

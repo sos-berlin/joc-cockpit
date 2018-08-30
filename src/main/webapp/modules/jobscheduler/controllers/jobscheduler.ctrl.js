@@ -525,6 +525,7 @@
         };
         vm.agentJobSearch = {};
         vm.advancedSearch = function () {
+            vm.agentJobSearch = {};
             vm.showSearchPanel = true;
             vm.agentJobSearch.from = new Date();
             vm.agentJobSearch.fromTime = '00:00';
@@ -876,13 +877,14 @@
 
         vm.eventSearch = {};
         vm.advancedEventSearch = function () {
+            vm.eventSearch = {};
             vm.isUnique = true;
-            vm.showSearchPanel = true;
+            vm.showSearchEventPanel = true;
             vm.eventSearch.date = 'date';
         };
         vm.cancelEventSearch = function (form) {
             vm.eventSearch = {};
-            vm.showSearchPanel = false;
+            vm.showSearchEventPanel = false;
             if (form)
                 form.$setPristine();
             getEvents();
@@ -1019,7 +1021,7 @@
                             if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
                                 $('.order_img').attr("src", 'images/order.png');
                             }
-                        }, 100);
+                        }, 30);
 
                     });
                 } else {
@@ -1034,7 +1036,7 @@
                             if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
                                 $('.job_img').attr("src", 'images/job.png');
                             }
-                        }, 100);
+                        }, 30);
                     });
                 }
             } else {
@@ -1507,17 +1509,15 @@
         function parseProcessExecuted(regex) {
             var date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
-                date = new Date();
-                var fromDate = new Date();
-                var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
-                date.setSeconds(fromDate.getSeconds() - seconds);
-
+                let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+                let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
+                date= sign.trim() + seconds+'s';
             } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
-                date = new Date();
+                date = moment.utc(new Date());
             } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             }
@@ -1579,7 +1579,6 @@
 
                     obj.dateTo = moment.utc(toDate);
                 }
-
             }
             if (vm.eventSearch.jobs) {
                 obj.jobs = [];
@@ -6714,16 +6713,15 @@
         function parseProcessExecuted(regex) {
             var date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
-                var fromDate = new Date();
-                date = new Date();
-                var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
-                date.setSeconds(fromDate.getSeconds() - seconds);
+                let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+                let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
+                date= sign.trim() + seconds+'s';
             } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
-                date = new Date();
+                date = moment.utc(new Date());
             } else if (/^\s*[-,+](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             }
