@@ -18,7 +18,7 @@
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text!='SUCCESSFUL'" width="45"><span translate>label.action</span></th>
+                                <th width="45"><span translate>label.action</span></th>
                                 <th><span translate>label.status</span></th>
                                 <th><span translate>label.profileName</span></th>
                                 <th><span translate>label.mandator</span></th>
@@ -35,14 +35,16 @@
                         </thead>
                         <tbody ng-repeat="transfer in fileTransfers">
                         <tr >
-                            <td ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
+                            <td>
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-menu-list dropdown-ac list-dropdown" role="menu">
-                                        <a class="dropdown-item"
+                                        <a ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text!='SUCCESSFUL'" class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
+                                        <a class="dropdown-item"
+                                               ng-click="showLogWindow(null, transfer)" translate>button.viewLog</a>
                                     </div>
                                 </div>
                             </td>
@@ -86,19 +88,19 @@
                                      </thead>
                                      <tbody>
                                      <tr>
-                                        <td  ng-bind="transfer.source.account"></td>
-                                        <td  ng-bind="transfer.source.port"></td>
-                                        <td  ng-bind="transfer.source.protocol"></td>
-                                        <td  ng-bind="transfer.target.account"></td>
-                                        <td  ng-bind="transfer.target.port"></td>
-                                        <td  ng-bind="transfer.target.protocol"></td>
-                                        <td  ng-bind="transfer.jump.host"></td>
-                                        <td  ng-bind="transfer.jump.account"></td>
-                                        <td  ng-bind="transfer.jump.port"></td>
-                                        <td  ng-bind="transfer.jump.protocol"></td>
-                                        <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
-                                        <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td ng-bind="transfer.source.account"></td>
+                                        <td ng-bind="transfer.source.port"></td>
+                                        <td ng-bind="transfer.source.protocol"></td>
+                                        <td ng-bind="transfer.target.account"></td>
+                                        <td ng-bind="transfer.target.port"></td>
+                                        <td ng-bind="transfer.target.protocol"></td>
+                                        <td ng-bind="transfer.jump.host"></td>
+                                        <td ng-bind="transfer.jump.account"></td>
+                                        <td ng-bind="transfer.jump.port"></td>
+                                        <td ng-bind="transfer.jump.protocol"></td>
+                                        <td><span ng-click="showJobChain(transfer.jobChain,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.jobChain"></span></td>
+                                        <td><span ng-click="showJob(transfer.job,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.job"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>

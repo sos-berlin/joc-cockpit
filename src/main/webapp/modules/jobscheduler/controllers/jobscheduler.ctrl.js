@@ -4991,28 +4991,28 @@
                 }];
             }
 
-            for (var i = 0; i < vm.dashboardLayout.length; i++) {
-                if (vm.dashboardLayout[i].name == 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
+            for (let i = 0; i < vm.dashboardLayout.length; i++) {
+                if (vm.dashboardLayout[i].name === 'agentClusterStatus' && vm.permission.JobschedulerUniversalAgent.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'agentClusterRunningTasks' && vm.permission.ProcessClass.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'jobSchedulerStatus') {
+                } else if (vm.dashboardLayout[i].name === 'jobSchedulerStatus') {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'masterClusterStatus') {
+                } else if (vm.dashboardLayout[i].name === 'masterClusterStatus') {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'dailyPlanOverview' && vm.permission.DailyPlan.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'ordersOverview' && vm.permission.Order.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'ordersOverview' && vm.permission.Order.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'ordersSummary' && vm.permission.Order.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'ordersSummary' && vm.permission.Order.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'tasksOverview' && vm.permission.Job.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'tasksOverview' && vm.permission.Job.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'tasksSummary' && vm.permission.Job.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'tasksSummary' && vm.permission.Job.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'fileTransferOverview' && vm.permission.YADE.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'fileTransferOverview' && vm.permission.YADE.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
-                } else if (vm.dashboardLayout[i].name == 'fileTransferSummary' && vm.permission.YADE.view.status) {
+                } else if (vm.dashboardLayout[i].name === 'fileTransferSummary' && vm.permission.YADE.view.status) {
                     vm.widgetWithPermission.push(vm.dashboardLayout[i]);
                 }
             }
@@ -5024,26 +5024,9 @@
                 return parseInt(a.row) - parseInt(b.row);
             });
 
-            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
+            for (let i = 0; i < vm.widgetWithPermission.length; i++) {
                 if (vm.widgetWithPermission[i].visible) {
                     vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
-                    if (i > 0) {
-                        if (vm.widgetWithPermission[i].row == vm.widgetWithPermission[i - 1].row && vm.widgetWithPermission[i].col == vm.widgetWithPermission[i - 1].col) {
-                            if (vm.widgetWithPermission[i - 1].sizeX == 4 && vm.widgetWithPermission[i].sizeX == 2 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
-                                vm.widgetWithPermission[i - 1].col = 0;
-                                vm.widgetWithPermission[i].col = 4;
-                            } else if (vm.widgetWithPermission[i - 1].sizeX == 2 && vm.widgetWithPermission[i].sizeX == 4 && vm.widgetWithPermission[i - 1].sizeY == vm.widgetWithPermission[i].sizeY) {
-                                vm.widgetWithPermission[i].col = 0;
-                                vm.widgetWithPermission[i - 1].col = 4;
-                            } else {
-                                vm.widgetWithPermission[i].row = vm.widgetWithPermission[i].row + 1;
-                            }
-                        } else if (vm.widgetWithPermission[i].row > vm.widgetWithPermission[i - 1].row + 1) {
-
-                            if (vm.widgetWithPermission[i - 1].name != 'masterClusterStatus')
-                                vm.widgetWithPermission[i].row = vm.widgetWithPermission[i - 1].row + 1;
-                        }
-                    }
                 }
                 restrictRestCall(vm.widgetWithPermission[i].name, vm.widgetWithPermission[i].visible);
             }
@@ -5238,65 +5221,75 @@
                 }
                 return parseInt(a.row) - parseInt(b.row);
             });
-            for (var i = 0; i < vm.dashboard.widgets.length; i++) {
+            for (let i = 0; i < vm.dashboard.widgets.length; i++) {
 
                 if (vm.dashboard.widgets[i].row > 0) {
+
                     if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
                         $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).css('top'))
                     } else {
                         var ht = 0, ht2 = 0, top = 0, top2 = 0, widgt = '', widgt2 = '';
                         if (i - 2 > 0 && (vm.dashboard.widgets[i - 3].row == vm.dashboard.widgets[i].row - 1)) {
                             widgt = $('#' + vm.dashboard.widgets[i - 3].name);
-                            if (!widgt || !widgt.css('height')) {
-                                break;
-                            }
-                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-                            if ((vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 2].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                widgt2 = $('#' + vm.dashboard.widgets[i - 2].name);
-                                ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                if ((ht + top) < (ht2 + top2)) {
-                                    widgt = widgt2;
-                                }
-                            } else if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
-                                ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                if ((ht + top) < (ht2 + top2)) {
-                                    widgt = widgt2;
+                            if (widgt && widgt.css('height')) {
+                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+                                if ((vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 2].sizeY == vm.dashboard.widgets[i].sizeY)) {
+                                    widgt2 = $('#' + vm.dashboard.widgets[i - 2].name);
+                                    ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                    top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                    if ((ht + top) < (ht2 + top2)) {
+                                        widgt = widgt2;
+                                    }
+                                } else if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
+                                    widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
+                                    if (widgt2 && widgt2.css('height')) {
+                                        ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                        top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                    }
+                                    if ((ht + top) < (ht2 + top2)) {
+                                        widgt = widgt2;
+                                    }
                                 }
                             }
 
                         } else if (i - 1 > 0 && (vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1)) {
                             widgt = $('#' + vm.dashboard.widgets[i - 2].name);
-                            if (!widgt || !widgt.css('height')) {
-                                break;
-                            }
-                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-
-                            if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
-                                ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                if ((ht + top) < (ht2 + top2)) {
-
-                                    widgt = widgt2;
+                            if (widgt && widgt.css('height')) {
+                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+                                if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
+                                    widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
+                                    ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
+                                    top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
+                                    if ((ht + top) < (ht2 + top2)) {
+                                        widgt = widgt2;
+                                    }
                                 }
                             }
 
                         } else {
                             widgt = $('#' + vm.dashboard.widgets[i - 1].name);
-                            if (!widgt || !widgt.css('height')) {
-                                break;
+                            if (widgt && widgt.css('height')) {
+                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+                            }
+                            if(i-1>0) {
+                                let widget2 = $('#' + vm.dashboard.widgets[i - 2].name);
+                                if(widget2 && widget2.css('height')) {
+                                    let ht2 = parseInt(widget2.css('height').substring(0, widget2.css('height').length - 2));
+                                    let top2 = parseInt(widget2.css('top').substring(0, widget2.css('top').length - 2));
+                                    if ((ht + top) < (ht2 + top2)) {
+                                        widgt = widget2;
+                                    }
+                                }
                             }
                         }
-
-                        ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                        top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-
-                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                        if (widgt && widgt.css('height')) {
+                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
+                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
+                            $('#' + vm.dashboard.widgets[i].name).css('top', (ht + top) + 'px');
+                        }
                     }
                 } else {
                     $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
@@ -5579,7 +5572,6 @@
                     clusterStatusData.members = res;
 
                     if (clusterStatusData.members.masters && clusterStatusData.members.masters.length > 1) {
-
                         clusterStatusData.members.masters.sort(function (a, b) {
                             return a.clusterType.precedence - b.clusterType.precedence;
                         });

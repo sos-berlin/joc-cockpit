@@ -460,6 +460,8 @@
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
                                          <a class="dropdown-item"
+                                               ng-click="showLogWindow(null, transfer)" translate>button.viewLog</a>
+                                         <a class="dropdown-item"
                                                ng-click="copyLinkToObject('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -518,9 +520,9 @@
                                         <td ng-bind="transfer.jump.account"></td>
                                         <td ng-bind="transfer.jump.port"></td>
                                         <td ng-bind="transfer.jump.protocol"></td>
-                                        <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
-                                        <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td><span ng-click="showJobChain(transfer.jobChain,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.jobChain"></span></td>
+                                        <td><span ng-click="showJob(transfer.job,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.job"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId,transfer.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>

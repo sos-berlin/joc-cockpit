@@ -159,8 +159,6 @@
         configObj.jobschedulerId = $scope.schedulerIds.selected;
         configObj.account = $scope.permission.user;
         configObj.configurationType = "PROFILE";
-        configObj.id = parseInt($window.sessionStorage.preferenceId);
-
 
         vm.zones = moment.tz.names();
         vm.locales = $rootScope.locales;
@@ -193,6 +191,7 @@
                 gettextCatalog.setCurrentLanguage(vm.preferences.locale);
                 gettextCatalog.setStrings(vm.preferences.locale, data);
             });
+            configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
@@ -217,6 +216,7 @@
                 $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
                 $('#resources_id img').attr("src", 'images/resources.png');
             }
+            configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
@@ -257,6 +257,7 @@
 
             if (reload)
                 $rootScope.$broadcast('reloadDate');
+            configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
@@ -528,6 +529,7 @@
                 vm.preferences.events.negativeOrderCount = $scope.negativeOrders.count;
                 $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
                 $rootScope.$broadcast('reloadPreferences');
+                configObj.id = parseInt($window.sessionStorage.preferenceId);
                 configObj.configurationItem = JSON.stringify(vm.preferences);
                 UserService.saveConfiguration(configObj);
             }
@@ -840,7 +842,11 @@
         $scope.$on('event-started', function () {
             for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                 if (vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged") {
-                    vm.load();
+                    if (!vm.isEmpty(vm.auditSearch)) {
+                        vm.search();
+                    } else {
+                        vm.load();
+                    }
                     break;
                 }
             }

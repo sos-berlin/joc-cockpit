@@ -46,7 +46,7 @@
                             <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
                                ng-class="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
                             </a>
-                            <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-12h'"
                                ng-class="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
                             </a>
                             <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-24h'"
@@ -277,10 +277,10 @@
                                 <span ng-bind="auditLog.created | stringToDate"></span></td>
                             <td><span ng-bind-html="auditLog.account | highlight:filterString"></span></td>
                             <td><span ng-bind-html="auditLog.request | highlight:filterString"></span></td>
-                            <td><span ng-click="showJobChain(auditLog.jobChain);" class="text-hover-primary" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:filterString"></span></td>
-                            <td><span ng-click="showOrderLink(auditLog.jobChain);" class="text-hover-primary" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:filterString"></span></td>
-                            <td><span ng-click="showJob(auditLog.job);" class="text-hover-primary" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:filterString"></span></td>
-                            <td><span ng-click="showCalendarLink(auditLog.calendar);" class="text-hover-primary" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:filterString"></span></td>
+                            <td><span ng-click="showJobChain(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:filterString"></span></td>
+                            <td><span ng-click="showOrderLink(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:filterString"></span></td>
+                            <td><span ng-click="showJob(auditLog.job, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:filterString"></span></td>
+                            <td><span ng-click="showCalendarLink(auditLog.calendar, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:filterString"></span></td>
                             <td><span ng-if="auditLog.comment" ng-bind-html="auditLog.comment | highlight:filterString"></span></td>
                             <td>
                                 <span ng-if="auditLog.timeSpent">
