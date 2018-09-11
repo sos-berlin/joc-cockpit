@@ -3403,7 +3403,8 @@
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
             if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
-                obj.regex = vm.selectedFiltered.regex;
+                firstVolatileCall(obj, data);
+                return
             }else {
                 if (vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -3465,8 +3466,10 @@
         function expandFolderData(data) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true};
             obj.folders = [{folder: data.path, recursive: false}];
-            if (vm.selectedFiltered) {
-                obj.regex = vm.selectedFiltered.regex;
+            if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
+              
+                firstVolatileCall(obj, null);
+                return
             } else {
                 if (vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -3790,9 +3793,14 @@
         }
 
         function firstVolatileCall(obj, expandNode) {
-            if (vm.orderFilters.filter.state !== 'ALL') {
-                obj.processingStates = [];
-                obj.processingStates.push(vm.orderFilters.filter.state);
+            if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
+                obj.regex = vm.selectedFiltered.regex;
+                obj = parseDate(obj);
+            }else {
+                if (vm.orderFilters.filter.state !== 'ALL') {
+                    obj.processingStates = [];
+                    obj.processingStates.push(vm.orderFilters.filter.state);
+                }
             }
             OrderService.get(obj).then(function (res) {
                 vm.allOrders = res.orders;
@@ -5557,8 +5565,6 @@
                         if (value._type === 'PERMANENT') {
                             $rootScope.deletedSelected = true;
 
-                        } else {
-                            $rootScope.resetSelected = true;
                         }
                     }
                 });
@@ -6421,7 +6427,7 @@
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.isUnique = true;
         vm.historyView = {};
-        vm.historyView.current = vm.userPreferences.historyView == 'current';
+        vm.historyView.current = vm.userPreferences.historyView === 'current';
 
         vm.changeJobScheduler = function () {
             vm.init();
@@ -6472,9 +6478,9 @@
         vm.tree1 = [];
         var isLoaded = true;
 
-        vm.selectedFiltered1;
-        vm.selectedFiltered2;
-        vm.selectedFiltered3;
+        vm.selectedFiltered1 = null;
+        vm.selectedFiltered2 = null;
+        vm.selectedFiltered3 = null;
         vm.temp_filter1 = {};
         vm.temp_filter2 = {};
         vm.temp_filter3 = {};

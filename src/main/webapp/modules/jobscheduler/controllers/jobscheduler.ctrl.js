@@ -4838,34 +4838,34 @@
                     enabled: flag,
                     stop: function () {
                         vm.loadingImg = true;
-                        var count = 0;
+                        let count = 0;
                         interval = $interval(function () {
                             setClusterWidgetHeight();
                             count = count + 1;
-                            if (count > 2) {
+                            if (count > 0) {
                                 vm.loadingImg = false;
                                 $interval.cancel(interval)
                             }
-                        }, 250);
+                        }, 450);
                     }
                 },
                 draggable: {
                     enabled: flag,
                     stop: function () {
                         vm.loadingImg = true;
-                        var count = 0;
+                        let count = 0;
                         if (vm.isMasterClusterVisible) {
                             prepareClusterStatusData();
                         }
                         interval = $interval(function () {
                             setClusterWidgetHeight();
                             count = count + 1;
-                            if (count > 2) {
+                            if (count > 0) {
                                 vm.loadingImg = false;
                                 $interval.cancel(interval);
 
                             }
-                        }, 250);
+                        }, 450);
                     }
                 }
             };

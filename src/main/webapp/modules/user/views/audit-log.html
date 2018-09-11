@@ -57,6 +57,31 @@
                             </a>
                         </div>
                     </div>
+                    <div class="btn-group dropdown m-l-sm">
+                        <button class="btn btn-grey btn-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item" href ng-click="createFilter()" translate>label.createFilter</a>
+                            <a class="dropdown-item" href ng-click="editFilters()" ng-if="auditLogFilterList.length>0" translate>label.editExistingFilters</a>
+                            <div class="dropdown-divider" ng-if="auditLogFilterList.length>0"></div>
+                            <a class="dropdown-item" ng-class="{orange: (savedAuditLogFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in auditLogFilterList | orderBy: 'name'">
+                                <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedAuditLogFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                            </a>
+                        </div>
+                    </div>
+<!--                    <div class="btn-group dropdown m-l-sm">
+                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
+                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item" ng-if="savedIgnoreList.auditLog.length > 0" href
+                               ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()"
+                               ng-if="!savedIgnoreList.isEnable" translate>button.enableIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()"
+                               ng-if="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="resetIgnoreList()"
+                               translate>button.resetIgnoreList</a>
+                        </div>
+                    </div>-->
                     <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()" tooltip-placement="left"><i>.</i></button>
                 </div>
             </div>
@@ -82,7 +107,23 @@
         <div class="row m-b" ng-if="showSearchPanel">
             <div class="col-md-12">
                 <div class="box p-a m-b-xs">
-                    <form name="form" ng-submit="search()">
+                    <form name="form" ng-submit="saveAsFilter(form)">
+                        <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+                            <div class=" col-sm-6">
+                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
+                                       class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
+                                       ng-maxlength="25" ng-model="auditSearch.name" ng-blur="checkFilterName()">
+                                <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                                     ng-messages="form.filterName.$error">
+                                    <div ng-message="required" translate>message.requiredError</div>
+                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                                <div class="help-block text-danger" ng-if="!isUnique">
+                                    <div translate>message.uniqueError</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="m-b-sm row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
                             <div class="col-md-6">
@@ -97,19 +138,14 @@
                             </div>
                         </div>
                         <div class="form-group row"  ng-if="auditSearch.date == 'process'">
-                                <label class="col-md-2 col-sm-4 form-control-label"
-                                       translate>label.processExecuted</label>
-
-                                <div class=" col-sm-6"
-                                     ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                                           placeholder="{{'placeholder.processExecuted' | translate}}"
-                                           ng-model="auditSearch.planned">
-
-                                    <div class="help-block text-danger" ng-messages="form.planned.$error">
-                                        <div ng-message="invalid" translate>message.invalid</div>
-                                    </div>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
+                            <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                                <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                       placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="auditSearch.planned">
+                                <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
+                            </div>
                         </div>
                         <div class="form-group row " ng-if="auditSearch.date == 'date'">
                             <label class="col-sm-2 form-control-label" translate>label.from</label>
@@ -141,7 +177,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="auditSearch.jobschedulerId">
-                                    <option value="" translate="">label.selectJobScheduler</option>
+                                   <option value="" translate="">label.selectJobScheduler</option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>
@@ -177,7 +213,10 @@
                             </div>
                         </div>
                         <div class="form-group m-t m-b-xs">
-                            <button type="submit" class="btn btn-primary btn-sm" translate>button.search</button>
+                            <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>button.search</button>
+                            <button type="submit" class="btn orange btn-sm m-l-sm"
+                                    ng-disabled="form.$invalid || !auditSearch.name" translate>button.saveAsFilter
+                            </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
                         </div>
                     </form>

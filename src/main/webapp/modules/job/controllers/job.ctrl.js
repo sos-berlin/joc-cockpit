@@ -33,7 +33,7 @@
 
         var modalInstance;
         $scope.reloadState = 'no';
-        vm.selectedFiltered;
+        vm.selectedFiltered = null;
 
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;

@@ -306,6 +306,7 @@
         tempTabs._auditLog.filter.sortBy = "created";
         tempTabs._auditLog.sortReverse = true;
         tempTabs._auditLog.currentPage = '1';
+        tempTabs._auditLog.selectedView = true;
 
         tempTabs._resource = {};
         tempTabs._resource.agents = {};
@@ -481,7 +482,7 @@
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
 
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'ignoreList', 'dailyPlanFilters'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'dailyPlanFilters','auditLogFilters'];
 
         var propsPrefix = '$SOS$';
 
@@ -490,7 +491,6 @@
             props.forEach(function (name) {
                 self[name] = load(name);
             });
-
         }
 
         SavedFilter.prototype.save = function () {
@@ -525,8 +525,8 @@
         SavedFilter.prototype.setEvent = function (event) {
             this.eventFilters = JSON.stringify(event);
         };
-        SavedFilter.prototype.setIgnoreList = function (list) {
-            this.ignoreList = JSON.stringify(list);
+        SavedFilter.prototype.setAuditLog = function (filter) {
+            this.auditLogFilters = JSON.stringify(filter);
         };
 
         SavedFilter.prototype.clearStorage = function () {

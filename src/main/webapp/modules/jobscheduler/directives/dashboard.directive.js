@@ -158,6 +158,7 @@
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
 
                                             supervisor.masters[index].state = nMaster.state;
+                                            supervisor.masters[index].url = nMaster.url;
                                             supervisor.masters[index].startedAt = nMaster.startedAt;
                                             if (master.state && refresh) {
                                                 refreshMasterState(master);
@@ -189,6 +190,7 @@
                                 angular.forEach(res.masters, function (nMaster, rIndex) {
                                     if (nMaster.host == master.host && nMaster.port == master.port) {
                                         scope.clusterStatusData.members.masters[index].state = nMaster.state;
+                                        scope.clusterStatusData.members.masters[index].url = nMaster.url;
                                         scope.clusterStatusData.members.masters[index].startedAt = nMaster.startedAt;
                                         if (master.state && refresh) {
                                             refreshMasterState(master);
@@ -334,7 +336,7 @@
                                 template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
                                 '</span></div>';
                             }
-                            template = template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + supervisor.host + ':' + supervisor.port +
+                            template = template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + supervisor.url +
                             '</span></div>';
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
                                 template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" >{{clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text | translate}}</span></div>';
@@ -419,7 +421,7 @@
                                     masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
                                     '</span></div>';
                                 }
-                                masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.host + ':' + master.port + '</div>' +
+                                masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.url + '</div>' +
                                 '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text | translate"></span></div>' +
                                 '</div>';
 
@@ -524,7 +526,7 @@
                                     masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
                                     '</span></div>';
                                 }
-                                masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.host + ':' + master.port + '</div>' +
+                                masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.url  + '</div>' +
                                 '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm text-warn" id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-danger\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-danger1\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\' \'}">{{clusterStatusData.members.masters[\'' + index + '\'].state._text | translate}}</span></div>' +
                                 '</div>';
 
