@@ -5453,10 +5453,11 @@
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
         };
-        var waitForResponse = true;
+        var waitForResponse = true, isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
+            orderPaths = [];
 
         $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && !isOperationGoingOn) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].path && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
                         waitForResponse = false;
@@ -5524,7 +5525,75 @@
                         })
                     }
                 }
+            } else {
+                for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
+                    if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
+                        if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
+                            orderPaths.push(vm.events[0].eventSnapshots[j].path);
+                        }
+                    }
+                }
+            }
         });
+
+        $scope.$on('stopEvents', function () {
+            isOperationGoingOn = true;
+            isAnyFileEventOnHold = false;
+            isFuncCalled = false;
+            orderPaths = [];
+        });
+
+        $scope.$on('startEvents', function () {
+            isOperationGoingOn = false;
+            if (!isFuncCalled) {
+                refreshUIWithHoldEvents();
+            }
+        });
+
+        function refreshUIWithHoldEvents() {
+            isFuncCalled = true;
+            let arr = [];
+            for (let i = 0; i < vm.allOrders.length; i++) {
+                for (let j = 0; j < orderPaths.length; j++) {
+                    if (orderPaths[j] === vm.allOrders[i].path) {
+                        arr.push({jobChain: orderPaths[j]});
+                        orderPaths.splice(j, 1);
+                        break;
+                    }
+                }
+            }
+
+            if (arr.length == 0) {
+                return;
+            }
+
+            waitForResponse = false;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (vm.orderFilters.filter.state !== 'ALL') {
+                obj.processingStates = [];
+                obj.processingStates.push(vm.orderFilters.filter.state);
+            }
+            OrderService.get(obj).then(function (res) {
+                let flag = false;
+                angular.forEach(res.orders, function (value) {
+                    value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                    if (vm.showLogPanel && vm.showLogPanel.path === value.path) {
+                        flag = true;
+                    }
+                });
+                vm.reset();
+                vm.allOrders = res.orders;
+                if (!flag) {
+                    vm.showLogPanel = undefined;
+                }
+                waitForResponse = true;
+            }, function () {
+                waitForResponse = true;
+            });
+            $rootScope.$broadcast('reloadSnapshot');
+        }
     }
 
     OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];

@@ -117,11 +117,11 @@
                     }
 
                 }, function (err) {
-                    if (err.status === 420 || err.status === 401) {
+                    if (err.status === 401) {
                         vm.loginError = 'message.loginError';
                     }else {
                         if(err.data && err.data.error && err.data.error.message) {
-                           vm.loginError =  err.data.error.message;
+
                         }else{
                             vm.loginError = 'message.loginError';
                         }

@@ -650,21 +650,22 @@
    function dd () {
        return {
            restrict: 'A',
+           scope: {},
            link: function (scope, element) {
                element.bind("click", function (e) {
                    const top = e.clientY + 8;
                    const left = e.clientX - 20;
                    if (window.innerHeight > top + 240) {
-                       $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'});
-                       $('.list-dropdown').removeClass('arrow-down').addClass('dropdown-ac');
+                       $('.list-dropdown').css({top: top + "px", left: left + "px", bottom: 'auto'})
+                           .removeClass('arrow-down').addClass('dropdown-ac');
                        if ($('#zoomCn') && $('#zoomCn').css('transform')) {
                            if ($('#zoomCn').css('transform') !== 'none') {
                                $('.list-dropdown').css({
-                                   '-webkit-transform': 'translateY(-' + (top -120) + 'px)',
-                                   '-moz-transform': 'translateY(-' + (top -120) + 'px)',
-                                   '-ms-transform': 'translateY(-' + (top -120) + 'px)',
-                                   '-o-transform': 'translateY(-' + (top -120) + 'px)',
-                                   'transform': 'translateY(-' + (top -120) + 'px)'
+                                   '-webkit-transform': 'translateY(-' + (top - 120) + 'px)',
+                                   '-moz-transform': 'translateY(-' + (top - 120) + 'px)',
+                                   '-ms-transform': 'translateY(-' + (top - 120) + 'px)',
+                                   '-o-transform': 'translateY(-' + (top - 120) + 'px)',
+                                   'transform': 'translateY(-' + (top - 120) + 'px)'
                                })
                            }
                        }
@@ -673,11 +674,18 @@
                            top: "auto",
                            left: left + "px",
                            bottom: (window.innerHeight - top + 14) + "px"
-                       });
-                       $('.list-dropdown').addClass('arrow-down').removeClass('dropdown-ac');
+                       }).addClass('arrow-down').removeClass('dropdown-ac');
                    }
                });
-           }
+           },
+           controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
+               $(".dropdown").on("shown.bs.dropdown", function () {
+                   $rootScope.$broadcast('stopEvents');
+               });
+               $(".dropdown").on("hide.bs.dropdown", function () {
+                   $rootScope.$broadcast('startEvents');
+               });
+           }]
        };
    }
     angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).constant("defaultAvatarSettings", {

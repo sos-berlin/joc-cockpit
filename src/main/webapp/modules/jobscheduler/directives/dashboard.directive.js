@@ -531,7 +531,7 @@
                                 '</div>';
 
                                 if (index == 0) {
-                                    template = template + '<div   id="masterContainer">' + masterTemplate;
+                                    template = template + '<div id="masterContainer">' + masterTemplate;
                                 }
                                 else {
                                     template = template + masterTemplate;
