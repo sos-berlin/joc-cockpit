@@ -16,7 +16,7 @@
         vm.yadeView.current = vm.userPreferences.fileTransfer == 'current';
         vm.yadeFilters = CoreService.getYadeTab();
         vm.yadeSearch = {};
-        vm.selectedFiltered;
+        vm.selectedFiltered = null;
         vm.temp_filter = {};
         vm.object = {};
         vm.object.files = [];
@@ -412,7 +412,11 @@
             vm.checkSchedulerId();
             getFileTransferById($location.search().id);
         } else {
-            checkSharedFilters();
+            if(vm.schedulerIds.selected) {
+                checkSharedFilters();
+            }else{
+                vm.load();
+            }
         }
 
         vm.loadYadeFiles = function () {

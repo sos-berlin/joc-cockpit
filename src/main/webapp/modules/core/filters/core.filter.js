@@ -15,6 +15,8 @@
                     return;
                 }
                 return moment(t).tz(n.zone).format(n.dateFormat)
+            }else{
+                return moment(t).format('DD.MM.YYYY HH:mm:ss')
             }
         }
     }
@@ -83,13 +85,15 @@
                 if (!n || !r)return "-";
                 var o = JSON.parse(e.sessionStorage.preferences);
                 n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
-                var i = moment(r).diff(n);
-                if (i >= 1e3) {
-                    var a = parseInt(i / 1e3 % 60), s = parseInt(i / 6e4 % 60), f = parseInt(i / 36e5 % 24), u = parseInt(i / 864e5);
-                    return 0 == u && 0 != f ? f + "h " + s + "m " + a + "s" : 0 == f && 0 != s ? s + "m " + a + "s" : 0 == u && 0 == f && 0 == s ? a + " sec" : u + "d " + f + "h " + s + "m " + a + "s"
-                }
-                return t.getString("label.lessThanSec")
             }
+            var i = moment(r).diff(n);
+            if (i >= 1e3) {
+                var a = parseInt(i / 1e3 % 60), s = parseInt(i / 6e4 % 60), f = parseInt(i / 36e5 % 24),
+                    u = parseInt(i / 864e5);
+                return 0 == u && 0 != f ? f + "h " + s + "m " + a + "s" : 0 == f && 0 != s ? s + "m " + a + "s" : 0 == u && 0 == f && 0 == s ? a + " sec" : u + "d " + f + "h " + s + "m " + a + "s"
+            }
+
+            return t.getString("label.lessThanSec")
         }
     }
 

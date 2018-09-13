@@ -22,12 +22,7 @@
                 if(t.localStorage.$SOS$URLRESET){
                     t.localStorage.removeItem('$SOS$URLRESET');
                 }
-
-                var schedulerIds = JSON.parse(l.scheduleIds);
-                if(!(schedulerIds && schedulerIds.selected))
-                    s.reject("error");
-                else
-                    s.resolve()
+                s.resolve()
             } else {
                 if(t.localStorage.$SOS$URLRESET){
                     t.localStorage.removeItem('$SOS$URL');

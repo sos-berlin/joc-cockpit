@@ -1484,6 +1484,7 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParam, fromState) {
             vm.currentState = toState.name;
+            if (vm.schedulerIds.selected)
             if (toState.name != 'app.dashboard' && fromState.name == 'login') {
                 getScheduleDetail();
             }

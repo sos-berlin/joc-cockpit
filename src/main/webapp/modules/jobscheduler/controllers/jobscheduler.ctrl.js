@@ -4831,6 +4831,9 @@
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, $interval, UserService, $window, YadeService, JobService, PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
+        if(!vm.schedulerIds.selected){
+            vm.loadingImg = false;
+        }
 
         function initConfig(flag) {
             vm.gridsterOpts = {
@@ -5120,11 +5123,6 @@
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-
-            }, function () {
-
             });
         };
 
@@ -5987,7 +5985,6 @@
             isLoadedFileSummary = false;
             var obj = {};
             obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
-            obj.dateTo = vm.dashboardFilters.filter.fileSummaryfrom;
             obj.timeZone = vm.userPreferences.zone;
             obj.jobschedulerId = $scope.schedulerIds.selected;
             YadeService.getSummary(obj).then(function (res) {

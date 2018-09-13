@@ -32,15 +32,7 @@
                 getComments();
                 getPermissions();
             }, function (err) {
-                $rootScope.$broadcast('reloadUser');
-                if (err.data && err.data.message)
-                    $window.sessionStorage.errorMsg = err.data.message;
-                else if (err.data.error)
-                    $window.sessionStorage.errorMsg = err.data.error.message;
-                else
-                    $window.sessionStorage.errorMsg = 'Internal server error';
-                $rootScope.error = $window.sessionStorage.errorMsg;
-                $location.path('/error');
+                getPermissions();
             });
         }
 
@@ -64,7 +56,11 @@
             UserService.getPermissions().then(function (permissions) {
                 SOSAuth.setPermissions(permissions);
                 SOSAuth.save();
-                PermissionService.savePermission(vm.schedulerIds.selected);
+                if(vm.schedulerIds) {
+                    PermissionService.savePermission(vm.schedulerIds.selected);
+                }else{
+                    PermissionService.savePermission('');
+                }
 
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
 
@@ -676,10 +672,12 @@
          * Customization
          */
 
-        if (!vm.savedAuditLogFilter.selected) {
+        if (!vm.savedAuditLogFilter.selected || !vm.schedulerIds.selected) {
             load();
         }
-        checkSharedFilters();
+        if(vm.schedulerIds.selected) {
+            checkSharedFilters();
+        }
 
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
@@ -2404,8 +2402,6 @@
             saveInfo();
             selectPermissionObj(permissionNodes[0][0], vm.permission.path, vm.permission.excluded);
             updateDiagramData(permissionNodes[0][0]);
-
-            //unSelectPermissionObj(permissionNodes[0][0], vm.permission.path,vm.permission.excluded);
         };
 
         vm.$on('addPermission', function () {

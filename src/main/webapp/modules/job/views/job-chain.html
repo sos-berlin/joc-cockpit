@@ -748,7 +748,7 @@
                                                                         <td>
                                                                             <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, nestedNode, null, null, 'noToggle')"></i>
                                                                             <a class="text-hover-primary" ng-click="showJob(nestedNode.job.path)">
-                                                                                {{nestedNode.job.path}}
+                                                                                <span ng-bind-html="nestedNode.job.path | highlight:filterString"></span>
                                                                             </a>
                                                                             <div class="p-l-sm ">
                                                                                 <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'"
@@ -996,7 +996,7 @@
                                                 <td>
                                                     <i class="cursor fa fa-history tableexport-ignore " ng-click="showHistory(jobChain,node, null, null, 'noToggle')"></i>
                                                     <a class="text-hover-primary" ng-click="showJob(node.job.path)">
-                                                        {{node.job.path}}</a>
+                                                        <span ng-bind-html="node.job.path | highlight:filterString"></span></a>
                                                     <div class="p-l-sm ">
                                                         <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                                             <div class="btn-group dropdown ">
