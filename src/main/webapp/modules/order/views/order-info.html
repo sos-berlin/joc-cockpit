@@ -126,11 +126,11 @@
                                     class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                             <td ng-bind="order.historyId || '-'"></td>
                             <td>
-                            <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                            <span class="hide" ng-class="{'show-inline':order.nextStartTime}">
                                  {{order.nextStartTime | stringToDate}}
                                 <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                 <span class="hide noExl"
-                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                                      ng-class="{'show-inline':order.nextStartNever}" translate>label.never</span>
                             </td>
                         </tr>
                         <tr ng-show="order.show" class="noExl">

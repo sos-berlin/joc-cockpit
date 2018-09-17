@@ -165,6 +165,13 @@
                 }, function (e) {
                     o.reject(e)
                 }), o.promise
+            }, deleteProfile: function (t) {
+                var o = n.defer(), r = e("configurations/delete");
+                return r.save(t, function (e) {
+                    o.resolve(e)
+                }, function (e) {
+                    o.reject(e)
+                }), o.promise
             }
         }
     }

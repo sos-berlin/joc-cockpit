@@ -12,6 +12,8 @@
                         <tr>
                             <th><span translate>label.action</span></th>
                             <th><span translate>label.orderId</span></th>
+                            <th><span translate>label.jobChain</span></th>
+                            <th><span translate>label.job</span></th>
                             <th><span translate>label.processingStatus</span></th>
                             <th><span translate>label.state</span></th>
                             <th><span translate>label.startedAt</span></th>
@@ -77,7 +79,6 @@
                                            ng-click="showAssignedCalendar(order)">
                                             <span translate>button.showAssignedCalendar</span>
                                         </a>
-
                                         <div class="dropdown-divider"></div>
                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                            class="hide dropdown-item"
@@ -92,6 +93,8 @@
                                 <span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                 <i class="text-muted">{{order.title}}</i>
                             </td>
+                            <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
+                            <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job"></span></td>
                             <td>
                                 <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
                                 <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
@@ -104,10 +107,11 @@
                             </td>
                             <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                             <td  class="text-muted">
-                                <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                <span class="hide" ng-class="{'show-inline':order.nextStartTime}">
                                      {{order.nextStartTime | stringToDate}}
-                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
+                                </span>
+                                <span class="hide " ng-class="{'show-inline': order.nextStartNever}" translate>label.never</span>
                             </td>
                         </tr>
                         </tbody>

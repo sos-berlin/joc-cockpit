@@ -757,9 +757,9 @@
                                                                 <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                                             </td>
-                                                            <td> <span ng-if="order.nextStartTime && !order.startedAt">{{order.nextStartTime | stringToDate}}
+                                                            <td> <span ng-if="order.nextStartTime">{{order.nextStartTime | stringToDate}}
                                                                 <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span></td>
+                                                                <span class="hide " ng-class="{'show-inline':order.nextStartNever}" translate>label.never</span></td>
                                                             <td>{{order.state}}</td>
                                                         </tr>
                                                     </tbody>

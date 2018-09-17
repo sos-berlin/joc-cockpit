@@ -76,6 +76,12 @@
                                         timeout: 10000
                                     });
                             }
+                        }else {
+                            toasty.error({
+                                title: rejection.data.error.code || rejection.status,
+                                msg: rejection.data.error.message || 'API exception',
+                                timeout: 10000
+                            });
                         }
 
                         if ($rootScope.clientLogFilter.isEnable) {

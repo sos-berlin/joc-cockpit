@@ -318,10 +318,10 @@
                                                       ng-class="bgColorFunction(order.processingState.severity)"
                                                       ng-bind="order.processingState._text | translate"></span>
                                                 <span class="hide text-success text-xs"
-                                                      ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}}:  {{order.nextStartTime | stringToDate}}
+                                                      ng-class="{'show-inline':order.nextStartTime}">{{'label.nextStart' | translate}}:  {{order.nextStartTime | stringToDate}}
                                                     (<span time="{{order.nextStartTime}}"></span>)
                                                 </span>
-                                                <span class="hide text-success text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                <span class="hide text-success text-xs" ng-class="{'show-inline':order.nextStartNever}"
                                                       translate>label.nextStartNever</span>
                                                 <span class="hide text-success text-xs"
                                                       ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}
@@ -704,10 +704,10 @@
                                                                                      ng-class="bgColorFunction(order.processingState.severity)"
                                                                                      ng-bind="order.processingState._text | translate"></span>
                                                                         <span class="hide text-success text-xs"
-                                                                              ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}}:  {{order.nextStartTime | stringToDate}}
+                                                                              ng-class="{'show-inline':order.nextStartTime}">{{'label.nextStart' | translate}}:  {{order.nextStartTime | stringToDate}}
                                                                             (<span time="{{order.nextStartTime}}"></span>)</span>
                                                                         <span class="hide text-success text-xs"
-                                                                              ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                                              ng-class="{'show-inline':order.nextStartTime}"
                                                                               translate>label.nextStartNever</span>
                                                                         <span class="hide text-success text-xs"
                                                                               ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span

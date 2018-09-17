@@ -478,12 +478,12 @@
                                               order.processingState.severity==4 ? 'text-dark': order.processingState.severity==5 ? 'dark-orange' : order.processingState.severity==6 ? 'corn-flower-blue' :order.processingState.severity==7 ? 'dark-magenta' : order.processingState.severity==8 ? 'chocolate' : ''}}" ng-bind="order.processingState._text | translate"></span>
                                             </div>
                                             <div class="text-left text-muted text-sm p-t-sm">
-                                                <span ng-if="order.nextStartTime && !order.startedAt">
+                                                <span ng-if="order.nextStartTime">
                                                     {{'label.nextStart' | translate}}:
                                                     {{order.nextStartTime | stringToDate}}
                                                     <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
                                                 </span>
-                                                <span ng-if="!order.nextStartTime && !order.startedAt" translate>label.nextStartNever</span>
+                                                <span ng-if="order.nextStartNever" translate>label.nextStartNever</span>
                                                 <span ng-if="order.startedAt">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}
                                                     <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span>
                                                 </span>
@@ -666,7 +666,7 @@
                                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                                         </td>
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:filterString"></span></td>
-                                        <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job  | highlight:filterString"></span></td>
+                                        <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind-html="order.job  | highlight:filterString"></span></td>
                                         <td>
                                             <a class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}"
@@ -689,10 +689,11 @@
                                                 time="{{order.startedAt}}"></span>)</span></span></td>
                                         <td ng-bind="order.historyId || '-'"></td>
                                         <td>
-                                            <span ng-if="order.nextStartTime && !order.startedAt">
+                                            <span ng-if="order.nextStartTime">
                                                 {{order.nextStartTime | stringToDate}}
-                                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                            <span class="hide tableexport-ignore" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
+                                            </span>
+                                            <span class="hide tableexport-ignore" ng-class="{'show-inline': order.nextStartNever}"
                                                   translate>label.never</span>
                                         </td>
                                     </tr>

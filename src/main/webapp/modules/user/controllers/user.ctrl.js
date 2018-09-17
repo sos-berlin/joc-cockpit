@@ -1254,6 +1254,7 @@
                 vm.users = res.users;
                 vm.masters = res.masters;
                 vm.main = res.main;
+                vm.profiles = res.profiles;
                 if(vm.main && vm.main.length>0){
                     if(vm.main.length>1){
                         for(let i =0; i< vm.main.length;i++){
@@ -1703,7 +1704,35 @@
                 return true;
             }
         };
+       /* ------------- Delete profile -------------------*/
+      
 
+        vm.deleteProfile = function (profile) {
+            vm.profile = angular.copy(profile);
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                //delete profile
+                let obj = {accounts: []};
+                obj.accounts.push(profile.account);
+                UserService.deleteProfile(obj).then(function (res) {
+                    vm.profile = {};
+                    for (let i = 0; i < vm.profiles.length; i++) {
+                        if (vm.profiles[i].account === profile.account) {
+                            vm.profiles.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                });
+            }, function () {
+                vm.profile = {};
+            });
+        };
         /* ------------- Begin Main Section -------------------*/
 
         vm.addMainSection = function () {
@@ -2029,6 +2058,8 @@
                 vm.masterName = toParams.master;
             } else if (toState.name == 'app.users.main') {
                 vm.state = 'main';
+            }else if (toState.name == 'app.users.profiles') {
+                vm.state = 'profile';
             }
         });
 

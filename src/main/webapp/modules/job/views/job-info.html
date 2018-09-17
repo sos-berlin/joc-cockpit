@@ -432,12 +432,12 @@
                                                     <td><span class="label"
                                                               ng-class="bgColorFunction(order.processingState.severity)">{{order.processingState._text | translate}}</span>
                                                     </td>
-                                                    <td> <span class="hide"
-                                                               ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                                                <span class="text-success">(<span
-                                                                        time="{{order.nextStartTime}}"></span>)</span></span>
+                                                    <td>
+                                                        <span class="hide" ng-class="{'show-inline':order.nextStartTime}">{{order.nextStartTime | stringToDate}}
+                                                            <span class="text-success">(<span
+                                                                    time="{{order.nextStartTime}}"></span>)</span></span>
                                                         <span class="hide "
-                                                              ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                              ng-class="{'show-inline':order.nextStartNever}"
                                                               translate>label.never</span></td>
                                                     <td>{{order.state}}</td>
                                                 </tr>

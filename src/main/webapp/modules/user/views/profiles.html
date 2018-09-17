@@ -1,0 +1,88 @@
+<div class="box p-a">
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered ">
+            <thead>
+            <tr>
+                <th width="30">
+                     <label class="md-check lg-check">
+                         <input type="checkbox" ng-model="checkAll.checkbox" ng-change="checkAllProfileFnc()"><i class="primary"></i>
+                     </label>
+                </th>
+                <th width="60"><span translate>label.action</span></th>
+                <th><span translate>label.user</span></th>
+                <th><span translate>label.lastAccess</span></th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="profile in profiles | orderBy:'account' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+            <tr>
+                <td>
+                    <label class="md-check">
+                        <input type="checkbox" data-checklist-model="object.profiles"
+                               data-checklist-value="profile"><i class="primary"></i>
+                    </label>
+                </td>
+                <td>
+                    <div class="btn-group dropdown pull-left m-r-sm">
+                      <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+                      <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list " role="menu">
+                          <a class="dropdown-item" ng-class="{'disable-link' :username==profile.account}" ng-click="deleteProfile(profile)" translate="">button.delete</a>
+                      </div>
+                  </div>
+                </td>
+                <td><a ng-click="showMaster(profile.account)" class="text-hover-primary" ng-bind-html="profile.account  | decodeSpace"></a></td>
+                <td><span ng-bind="profile.lastLogin | stringToDate"></span></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': profiles.length > 10}"
+             ng-if="profiles.length >0"><span translate>label.total</span> {{profiles.length}}
+            <span translate ng-if="profiles.length >1">label.profilesFound</span>
+            <span translate ng-if="profiles.length ==1">label.profileFound</span>
+        </div>
+        <ul ng-show="profiles.length > userPreferences.entryPerPage" uib-pagination total-items="profiles.length"
+            ng-model="usr.currentPage" items-per-page='userPreferences.entryPerPage'
+            class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"
+            previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+        <div class="pull-left" ng-show="profiles.length > 10">
+            <div class="btn-group m-r-xxs">
+                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                        uib-btn-radio="'10'"
+                        ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
+                </button>
+                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                        uib-btn-radio="'25'"
+                        ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
+                </button>
+                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                        uib-btn-radio="'50'"
+                        ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
+                </button>
+                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                        uib-btn-radio="'100'"
+                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                </button>
+                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                        uib-btn-radio="{{maxEntryPerPage}}"
+                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px').removeClass('dropdown-ac').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown').css('left', $menu.offset().left + 'px');
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.dropdown-menu-list').removeClass('list-dropdown dropdown-list').addClass('dropdown-ac');
+    });
+</script>
+

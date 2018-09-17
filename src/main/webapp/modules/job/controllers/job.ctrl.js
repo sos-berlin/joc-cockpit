@@ -231,7 +231,22 @@
             let tempArr = [];
             vm.reset();
             if (vm.filterString) {
-                tempArr = $filter('filter')(vm.allJobChains, {path:vm.filterString},false);
+                tempArr = $filter('filter')(vm.allJobChains,{path : vm.filterString}, false);
+                let tempArr1 = $filter('filter')(vm.allJobChains,{nodes: {$: vm.filterString}}, false);
+                if(tempArr1.length>0){
+                    angular.forEach(tempArr1, function(val, index){
+                        let flag = true;
+                        for(let i=0; i< tempArr.length;i++){
+                            if(tempArr[i].path === val.path){
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if(flag && val.show){
+                            tempArr.push(val);
+                        }
+                    })
+                }
             } else {
                 tempArr = vm.allJobChains;
             }

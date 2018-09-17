@@ -6107,7 +6107,7 @@
             vm.arrayWidth[5] = vm.lateError;
 
             var totalLessWidth = 0, totalGreaterWidth = 0, flag = false;
-            for (var i = 0; i <= 5; i++) {
+            for (let i = 0; i <= 5; i++) {
                 if (vm.arrayWidth[i] > 0) {
                     if (vm.arrayWidth[i] <= 28) {
                         vm.arrayWidth[i] = 14;
@@ -6119,7 +6119,7 @@
                     }
                 }
             }
-            for (var i = 0; i <= 5; i++) {
+            for (let i = 0; i <= 5; i++) {
                 if (vm.arrayWidth[i] > 28) {
                     vm.arrayWidth[i] = (100 - totalLessWidth) * vm.arrayWidth[i] / totalGreaterWidth;
                 }
@@ -6133,7 +6133,7 @@
                 vm.arrayWidth[4] = vm.error;
                 vm.arrayWidth[5] = vm.lateError;
                 var totalLessWidth = 0, totalGreaterWidth = 0;
-                for (var i = 0; i <= 5; i++) {
+                for (let i = 0; i <= 5; i++) {
                     if (vm.arrayWidth[i] > 0) {
 
                         if (vm.arrayWidth[i] <= 14) {
@@ -6145,7 +6145,7 @@
                         }
                     }
                 }
-                for (var i = 0; i <= 5; i++) {
+                for (let i = 0; i <= 5; i++) {
                     if (vm.arrayWidth[i] > 14) {
                         vm.arrayWidth[i] = (100 - totalLessWidth) * vm.arrayWidth[i] / totalGreaterWidth;
                     }

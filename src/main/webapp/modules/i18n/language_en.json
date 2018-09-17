@@ -1324,5 +1324,11 @@
   "button.downloadJocCockpitLog": "Download JOC Cockpit Log",
   "button.reactivatePrimaryJobscheduler": "Reactivate Primary Master",
   "button.reactivatePrimaryJobschedulerWithIn": "Reactivate Primary Master with Timeout",
-  "label.midnightBlue": "Blue-gray"
+  "label.midnightBlue": "Blue-gray",
+  "label.profiles": "Profiles",
+  "label.lastAccess": "Last access date",
+  "label.profileFound": "Profile Found",
+  "label.profilesFound": "Profiles Found",
+  "breadcrumb.profiles": "Profiles",
+  "message.deleteProfiles": "Are you sure you want to delete the selected profile?"
 }

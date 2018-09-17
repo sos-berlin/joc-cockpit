@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span ng-if="!entry && !calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
-                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}}?
+                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
                 <span class="text-capitalize" translate>label.update</span> {{calendar.name}} ?
@@ -26,6 +26,7 @@
     <div class="modal-body p-a" style="max-height: 600px; overflow: auto">
         <div class="row">
             <div class=" col-sm-12 text-center m-t">
+                <span ng-if="profile" translate class="text">message.deleteProfiles</span>
                 <span ng-if="entry" translate class="text">message.deleteMainSection</span>
                 <span ng-if="user.user" translate class="text">message.deleteUser</span>
                 <span ng-if="role.role" translate class="text">message.deleteRole</span>

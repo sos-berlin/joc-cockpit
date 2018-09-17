@@ -61,7 +61,7 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
-        <div class="row m-b m-t-xs" ng-if="state == 'user' || state == 'role' || state == 'main'">
+        <div class="row m-b m-t-xs" ng-if="state == 'user' || state == 'role' || state == 'main' || state == 'profile'">
             <div class="col-md-6 col-sm-4">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
@@ -83,6 +83,14 @@
                     <li class="nav-item" ng-if="!permission.JobschedulerMaster.administration.editMainSection">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.users.main">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.users.profiles">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.profiles</span></span>
                         </a>
                     </li>
                 </ul>

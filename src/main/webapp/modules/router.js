@@ -400,6 +400,10 @@
             url: "/main-section",
             templateUrl: "modules/user/views/main.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.main' | translate}}", parent: "app.users.user"}
+        }).state("app.users.profiles", {
+            url: "/profiles",
+            templateUrl: "modules/user/views/profiles.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.profiles' | translate}}", parent: "app.users.user"}
         })
 
     }

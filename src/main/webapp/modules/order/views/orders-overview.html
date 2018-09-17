@@ -251,12 +251,12 @@
                                               order.processingState.severity==4 ? 'text-dark': order.processingState.severity==5 ? 'dark-orange' : order.processingState.severity==6 ? 'corn-flower-blue' :order.processingState.severity==7 ? 'dark-magenta' : order.processingState.severity==8 ? 'chocolate' : ''}}" ng-bind="order.processingState._text | translate"></span>
                                         </div>
                                         <div class="text-left text-muted text-sm p-t-sm">
-                                        <span ng-if="order.nextStartTime && !order.startedAt">
+                                        <span ng-if="order.nextStartTime">
                                             {{'label.nextStart' | translate}}:
                                             {{order.nextStartTime | stringToDate}}
                                            <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
                                         </span>
-                                            <span ng-if="!order.nextStartTime && !order.startedAt" translate>label.nextStartNever</span>
+                                            <span ng-if="order.nextStartNever" translate>label.nextStartNever</span>
                                             <span ng-if="order.startedAt">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}
                                             <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span>
                                         </span>
@@ -461,9 +461,9 @@
                                     </td>
                                     <td ng-bind="order.historyId || '-'"></td>
                                     <td>
-                                        <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
+                                        <span class="hide" ng-class="{'show-inline':order.nextStartTime}">{{order.nextStartTime | stringToDate}}
                                             <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                        <span class="hide tableexport-ignore" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                                        <span class="hide tableexport-ignore" ng-class="{'show-inline':order.nextStartNever}" translate>label.never</span>
                                     </td>
                                 </tr>
                                 <tr ng-if="order.show" class="tableexport-ignore">
