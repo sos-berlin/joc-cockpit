@@ -107,7 +107,7 @@
         <div class="row m-b" ng-if="showSearchPanel">
             <div class="col-md-12">
                 <div class="box p-a m-b-xs">
-                    <form name="form" ng-submit="saveAsFilter(form)">
+                    <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                             <label class="col-sm-2 form-control-label" translate>label.filterName</label>
                             <div class=" col-sm-6">

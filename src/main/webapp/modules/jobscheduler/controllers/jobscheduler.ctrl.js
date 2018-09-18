@@ -4836,45 +4836,11 @@
         }
 
         function initConfig(flag) {
-            vm.gridsterOpts = {
-                resizable: {
-                    enabled: flag,
-                    stop: function () {
-                        vm.loadingImg = true;
-                        let count = 0;
-                        interval = $interval(function () {
-                            setClusterWidgetHeight();
-                            count = count + 1;
-                            if (count > 0) {
-                                vm.loadingImg = false;
-                                $interval.cancel(interval)
-                            }
-                        }, 450);
-                    }
-                },
-                draggable: {
-                    enabled: flag,
-                    stop: function () {
-                        vm.loadingImg = true;
-                        let count = 0;
-                        if (vm.isMasterClusterVisible) {
-                            prepareClusterStatusData();
-                        }
-                        interval = $interval(function () {
-                            setClusterWidgetHeight();
-                            count = count + 1;
-                            if (count > 0) {
-                                vm.loadingImg = false;
-                                $interval.cancel(interval);
-
-                            }
-                        }, 450);
-                    }
-                }
-            };
+           let grid = $('.grid-stack').data('gridstack');
+            grid.movable('.grid-stack-item', flag);
+            grid.resizable('.grid-stack-item', flag);
         }
 
-        initConfig(false);
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
@@ -4900,94 +4866,101 @@
         function initWidgets() {
             vm.dashboard = {widgets: []};
             vm.widgetWithPermission = [];
+
+            if(vm.userPreferences.dashboard && vm.userPreferences.dashboard.length > 0) {
+                if (vm.userPreferences.dashboard[0].sizeX) {
+                    vm.userPreferences.dashboard = undefined;
+                }
+            }
+
             if (vm.userPreferences.dashboard) {
                 vm.dashboardLayout = vm.userPreferences.dashboard;
             } else {
                 vm.dashboardLayout = [{
                     row: 0,
                     col: 0,
-                    sizeX: 2,
-                    sizeY: 1,
+                    width: 4,
+                    height: 3,
                     name: "agentClusterStatus",
                     visible: true,
                     message: gettextCatalog.getString('message.agentClusterStatus')
                 }, {
-                    row: 1,
-                    col: 0,
-                    sizeX: 2,
-                    sizeY: 1,
+                    row: 0,
+                    col: 3,
+                    width: 4,
+                    height: 3,
                     name: "agentClusterRunningTasks",
                     visible: true,
                     message: gettextCatalog.getString('message.agentClusterRunningTasks')
                 }, {
-                    row: 0,
-                    col: 2,
-                    sizeX: 4,
-                    sizeY: 2,
+                    row: 4,
+                    col: 0,
+                    width: 8,
+                    height: 6,
                     name: "masterClusterStatus",
                     visible: true,
                     message: gettextCatalog.getString('message.masterClusterStatus')
                 }, {
-                    row: 2,
-                    col: 0,
-                    sizeX: 6,
-                    sizeY: 1,
+                    row: 0,
+                    col: 6,
+                    width: 12,
+                    height: 3,
                     name: "jobSchedulerStatus",
                     visible: true,
                     message: gettextCatalog.getString('message.jobSchedulerStatus')
                 }, {
-                    row: 3,
-                    col: 0,
-                    sizeX: 4,
-                    sizeY: 1,
+                    row: 0,
+                    col: 9,
+                    width: 8,
+                    height: 2,
                     name: "ordersOverview",
                     visible: true,
                     message: gettextCatalog.getString('message.ordersOverview')
                 }, {
-                    row: 3,
-                    col: 4,
-                    sizeX: 2,
-                    sizeY: 1,
+                    row: 8,
+                    col: 9,
+                    width: 4,
+                    height: 2,
                     name: "ordersSummary",
                     visible: true,
                     message: gettextCatalog.getString('message.ordersSummary')
                 }, {
-                    row: 4,
-                    col: 0,
-                    sizeX: 4,
-                    sizeY: 1,
+                    row: 0,
+                    col: 11,
+                    width: 8,
+                    height: 2,
                     name: "tasksOverview",
                     visible: true,
                     message: gettextCatalog.getString('message.tasksOverview')
                 }, {
-                    row: 4,
-                    col: 4,
-                    sizeX: 2,
-                    sizeY: 1,
+                    row: 8,
+                    col: 11,
+                    width: 4,
+                    height: 2,
                     name: "tasksSummary",
                     visible: true,
                     message: gettextCatalog.getString('message.tasksSummary')
                 }, {
-                    row: 5,
-                    col: 0,
-                    sizeX: 4,
-                    sizeY: 1,
+                    row: 0,
+                    col: 13,
+                    width: 8,
+                    height: 2,
                     name: "fileTransferOverview",
                     visible: true,
                     message: gettextCatalog.getString('message.fileTransferOverview')
                 }, {
-                    row: 5,
-                    col: 4,
-                    sizeX: 2,
-                    sizeY: 1,
+                    row: 8,
+                    col: 13,
+                    width: 4,
+                    height: 2,
                     name: "fileTransferSummary",
                     visible: true,
                     message: gettextCatalog.getString('message.fileTransferSummary')
                 }, {
-                    row: 6,
-                    col: 0,
-                    sizeX: 6,
-                    sizeY: 1,
+                    row: 0,
+                    col: 15,
+                    width: 12,
+                    height: 2,
                     name: "dailyPlanOverview",
                     visible: true,
                     message: gettextCatalog.getString('message.dailyPlanOverview')
@@ -5020,26 +4993,15 @@
                 }
             }
 
-            vm.widgetWithPermission.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
-
             for (let i = 0; i < vm.widgetWithPermission.length; i++) {
                 if (vm.widgetWithPermission[i].visible) {
                     vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
                 }
                 restrictRestCall(vm.widgetWithPermission[i].name, vm.widgetWithPermission[i].visible);
             }
-            setWidgetHeight();
 
+            setWidgetHeight();
         }
-
-        $(window).resize(function () {
-            setWidgetHeight();
-        });
 
         vm.downloadJocLog = function(){
             $("#tmpFrame").attr('src', './api/log?accessToken='+ SOSAuth.accessTokenId);
@@ -5049,63 +5011,80 @@
             vm._tempDashboard = angular.copy(vm.dashboard);
             vm.editLayoutObj = true;
             initConfig(true);
-            if (t2) {
-                $timeout.cancel(t2);
-            }
-            t2 = $timeout(function () {
-                setClusterWidgetHeight();
-            }, 50);
         };
         vm.resetLayout = function () {
             vm.userPreferences.dashboard = undefined;
             initWidgets();
-            setWidgetPreference();
+            setWidgetPreference(true);
+            $state.reload('app.dashboard');
         };
 
         vm.saveWidget = function () {
             vm.editLayoutObj = false;
             initConfig(false);
-            if (t2) {
-                $timeout.cancel(t2);
-            }
-            t2 = $timeout(function () {
-                setClusterWidgetHeight();
-            }, 50);
             setWidgetPreference();
         };
 
         vm.cancelWidget = function () {
             vm.editLayoutObj = false;
             vm.dashboard = angular.copy(vm._tempDashboard);
+            reloadWidgets();
             initConfig(false);
-            if (t2) {
-                $timeout.cancel(t2);
-            }
-            t2 = $timeout(function () {
-                setClusterWidgetHeight();
-            }, 50);
         };
         var interval;
 
         function setWidgetHeight() {
             var count = 0;
             interval = $interval(function () {
-                setClusterWidgetHeight();
                 count = count + 1;
                 if (count > 2) {
                     vm.loadingImg = false;
+                    $('.grid-stack').gridstack({
+                        resizable: {
+                            handles: 'e, se, s'
+                        }, cellHeight: 55,
+                        verticalMargin: 22
+                    });
+                    initConfig(false);
                     $interval.cancel(interval)
                 }
-            }, 850);
+            }, 300);
         }
 
-        function setWidgetPreference() {
+        function setWidgetPreference(reset) {
             if (!vm.userPreferences.theme) {
                 return;
             }
+            if(!reset) {
+                let serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
+                    el = $(el);
+                    var node = el.data('_gridstack_node');
+                    return {
+                        row: node.x,
+                        col: node.y,
+                        width: node.width,
+                        height: node.height,
+                        name: node.id
+                    };
+                });
+
+                for (let i = 0; i < vm.widgetWithPermission.length; i++) {
+                    for (let j = 0; j < serializedData.length; j++) {
+                        if (vm.widgetWithPermission[i].name === serializedData[j].name) {
+                            vm.widgetWithPermission[i].row = serializedData[j].row;
+                            vm.widgetWithPermission[i].col = serializedData[j].col;
+                            vm.widgetWithPermission[i].width = serializedData[j].width;
+                            vm.widgetWithPermission[i].height = serializedData[j].height;
+                            serializedData.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+
             vm.userPreferences.dashboard = vm.widgetWithPermission;
             $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
-            var configObj = {};
+            let configObj = {};
             configObj.jobschedulerId = $scope.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "PROFILE";
@@ -5117,7 +5096,7 @@
         }
 
         vm.addWidgetDialog = function () {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/add-widget-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -5126,174 +5105,52 @@
             });
         };
 
+        function reloadWidgets() {
+            setTimeout(function () {
+                $('.grid-stack').gridstack({
+                    resizable: {
+                        handles: 'e, se, s'
+                    }, cellHeight: 55,
+                    verticalMargin: 22
+                });
+                $rootScope.$broadcast('clusterStatusDataChanged');
+            }, 100)
+        }
+
         vm.addWidget = function (widget) {
-            vm.dashboard.widgets.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
-
-            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
-                if (vm.widgetWithPermission[i].name == widget.name) {
+            for (let i = 0; i < vm.widgetWithPermission.length; i++) {
+                if (vm.widgetWithPermission[i].name === widget.name) {
                     vm.widgetWithPermission[i].visible = true;
-                    if (vm.dashboard.widgets.length == 0) {
+                    if (vm.dashboard.widgets.length !== 0) {
+                        let item = vm.dashboard.widgets[vm.dashboard.widgets.length - 1];
                         vm.widgetWithPermission[i].row = 0;
-
-                    } else {
-                        vm.widgetWithPermission[i].row = vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row + 1
+                        vm.widgetWithPermission[i].col = item.col + item.height;
                     }
-                    vm.widgetWithPermission[i].col = 0;
                     vm.dashboard.widgets.push(vm.widgetWithPermission[i]);
                     break;
                 }
             }
-
             restrictRestCall(widget.name, true);
-            setWidgetHeight();
-            setWidgetPreference();
+            reloadWidgets();
         };
 
         vm.removeWidget = function (widget) {
-            vm.loadingImg = true;
             widget.visible = false;
-            for (var i = 0; i < vm.widgetWithPermission.length; i++) {
-                if (vm.widgetWithPermission[i].name == widget.name) {
+            for (let i = 0; i < vm.widgetWithPermission.length; i++) {
+                if (vm.widgetWithPermission[i].name === widget.name) {
                     vm.widgetWithPermission[i].visible = false;
                     break;
                 }
             }
-            for (var j = 0; j < vm.dashboard.widgets.length; j++) {
-                if (vm.dashboard.widgets[j].name == widget.name) {
+            for (let j = 0; j < vm.dashboard.widgets.length; j++) {
+                if (vm.dashboard.widgets[j].name === widget.name) {
                     vm.dashboard.widgets.splice(j, 1);
                     break;
                 }
             }
+            reloadWidgets();
 
-            var count = 0;
-            interval = $interval(function () {
-                setClusterWidgetHeight();
-                count = count + 1;
-                if (count > 2) {
-                    vm.loadingImg = false;
-                    $interval.cancel(interval)
-                }
-            }, 250);
         };
-        vm.refreshLayout = function () {
-            vm.dashboard.widgets.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
-
-            for (var i = 0; i < vm.dashboard.widgets.length; i++) {
-                if (i > 0) {
-                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row && vm.dashboard.widgets[i].col == vm.dashboard.widgets[i - 1].col) {
-                        if (vm.dashboard.widgets[i - 1].sizeX == 4 && vm.dashboard.widgets[i].sizeX == 2 && vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY) {
-                            vm.dashboard.widgets[i - 1].col = 0;
-                            vm.dashboard.widgets[i].col = 4;
-                        } else if (vm.dashboard.widgets[i - 1].sizeX == 2 && vm.dashboard.widgets[i].sizeX == 4 && vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY) {
-                            vm.dashboard.widgets[i].col = 0;
-                            vm.dashboard.widgets[i - 1].col = 4;
-                        } else {
-                            vm.dashboard.widgets[i].row = vm.dashboard.widgets[i].row + 1;
-                        }
-                    } else if (vm.dashboard.widgets[i].row > vm.dashboard.widgets[i - 1].row + 1) {
-
-                        if (vm.dashboard.widgets[i - 1].name != 'masterClusterStatus')
-                            vm.dashboard.widgets[i].row = vm.dashboard.widgets[i - 1].row + 1;
-                    }
-                }
-
-                restrictRestCall(vm.dashboard.widgets[i].name, vm.dashboard.widgets[i].visible);
-            }
-            setWidgetHeight();
-        };
-
-        function setClusterWidgetHeight() {
-            vm.dashboard.widgets.sort(function (a, b) {
-                if (parseInt(a.row) == parseInt(b.row)) {
-                    return parseInt(a.col) - parseInt(b.col);
-                }
-                return parseInt(a.row) - parseInt(b.row);
-            });
-            for (let i = 0; i < vm.dashboard.widgets.length; i++) {
-
-                if (vm.dashboard.widgets[i].row > 0) {
-
-                    if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
-                        $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).css('top'))
-                    } else {
-                        var ht = 0, ht2 = 0, top = 0, top2 = 0, widgt = '', widgt2 = '';
-                        if (i - 2 > 0 && (vm.dashboard.widgets[i - 3].row == vm.dashboard.widgets[i].row - 1)) {
-                            widgt = $('#' + vm.dashboard.widgets[i - 3].name);
-                            if (widgt && widgt.css('height')) {
-                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-                                if ((vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 2].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                    widgt2 = $('#' + vm.dashboard.widgets[i - 2].name);
-                                    ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                    top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                    if ((ht + top) < (ht2 + top2)) {
-                                        widgt = widgt2;
-                                    }
-                                } else if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                    widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
-                                    if (widgt2 && widgt2.css('height')) {
-                                        ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                        top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                    }
-                                    if ((ht + top) < (ht2 + top2)) {
-                                        widgt = widgt2;
-                                    }
-                                }
-                            }
-
-                        } else if (i - 1 > 0 && (vm.dashboard.widgets[i - 2].row == vm.dashboard.widgets[i].row - 1)) {
-                            widgt = $('#' + vm.dashboard.widgets[i - 2].name);
-                            if (widgt && widgt.css('height')) {
-                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-                                if ((vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row - 1) && (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i].sizeY)) {
-                                    widgt2 = $('#' + vm.dashboard.widgets[i - 1].name);
-                                    ht2 = parseInt(widgt2.css('height').substring(0, widgt2.css('height').length - 2));
-                                    top2 = parseInt(widgt2.css('top').substring(0, widgt2.css('top').length - 2));
-                                    if ((ht + top) < (ht2 + top2)) {
-                                        widgt = widgt2;
-                                    }
-                                }
-                            }
-
-                        } else {
-                            widgt = $('#' + vm.dashboard.widgets[i - 1].name);
-                            if (widgt && widgt.css('height')) {
-                                ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                                top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-                            }
-                            if(i-1>0) {
-                                let widget2 = $('#' + vm.dashboard.widgets[i - 2].name);
-                                if(widget2 && widget2.css('height')) {
-                                    let ht2 = parseInt(widget2.css('height').substring(0, widget2.css('height').length - 2));
-                                    let top2 = parseInt(widget2.css('top').substring(0, widget2.css('top').length - 2));
-                                    if ((ht + top) < (ht2 + top2)) {
-                                        widgt = widget2;
-                                    }
-                                }
-                            }
-                        }
-                        if (widgt && widgt.css('height')) {
-                            ht = parseInt(widgt.css('height').substring(0, widgt.css('height').length - 2));
-                            top = parseInt(widgt.css('top').substring(0, widgt.css('top').length - 2));
-                            $('#' + vm.dashboard.widgets[i].name).css('top', (ht + top) + 'px');
-                        }
-                    }
-                } else {
-                    $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
-                }
-            }
-        }
 
         vm.agentClusters = {};
         if (SOSAuth.jobChain) {
@@ -5357,7 +5214,7 @@
         vm.barOptions = {
             chart: {
                 type: 'discreteBarChart',
-                height: 180,
+                height: 160,
                 margin: {
                     top: 20,
                     right: 20,
@@ -5388,9 +5245,7 @@
                         elementClick: function (e) {
                             var key = '';
                             angular.forEach(vm.agentClusters, function (value) {
-
                                 if (e.data.label == value.path) {
-
                                     if (value.state._text.toLowerCase() == "label.healthyAgentCluster") {
                                         key = 'healthy';
                                     } else if (value.state._text.toLowerCase() == "label.unhealthyAgentCluster") {
@@ -5600,8 +5455,6 @@
                             $(this).find('.dropdown-menu').css("top", "auto");
                             $(this).find('.dropdown-menu').css("left", "auto");
                         });
-
-
                     }, 60);
 
                 }, function () {
@@ -6026,7 +5879,6 @@
         };
 
         /*----------------- Daily plan overview -----------------*/
-
         vm.getDailyPlans = function () {
             if (!vm.isDailPlanVisible) {
                 return;

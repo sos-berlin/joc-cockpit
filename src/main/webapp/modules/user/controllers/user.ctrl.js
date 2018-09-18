@@ -774,7 +774,7 @@
 
             if (!_.isEmpty(vm.selectedFiltered)) {
                 isCustomizationSelected(true);
-                obj = generateRequestObj(vm.auditSearch, obj);
+                obj = generateRequestObj(vm.selectedFiltered, obj);
             } else {
                 obj = setDateRange(obj);
                 obj.timeZone = vm.userPreferences.zone;
@@ -934,24 +934,24 @@
 
         /** <<<<<<<<<<<<<<<<<<<<<<<<<<<< Begin Customization actions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
          vm.saveAsFilter = function (form) {
-            var configObj = {};
-            configObj.jobschedulerId = vm.schedulerIds.selected;
-            configObj.account = vm.permission.user;
-            configObj.configurationType = "CUSTOMIZATION";
-            configObj.objectType = "AUDITLOG";
-            configObj.name = vm.auditLogFilter.name;
-            configObj.id = 0;
+             var configObj = {};
+             configObj.jobschedulerId = vm.schedulerIds.selected;
+             configObj.account = vm.permission.user;
+             configObj.configurationType = "CUSTOMIZATION";
+             configObj.objectType = "AUDITLOG";
+             configObj.name = vm.auditSearch.name;
+             configObj.id = 0;
 
-            configObj.configurationItem = JSON.stringify(vm.auditLogFilter);
-            UserService.saveConfiguration(configObj).then(function (res) {
-                configObj.id = res.id;
-                vm.auditLogFilter.name = '';
-                if (form)
-                    form.$setPristine();
+             configObj.configurationItem = JSON.stringify(vm.auditSearch);
+             UserService.saveConfiguration(configObj).then(function (res) {
+                 configObj.id = res.id;
+                 vm.auditSearch.name = '';
+                 if (form)
+                     form.$setPristine();
 
-                vm.auditLogFilter.push(configObj);
-            })
-        };
+                 vm.auditLogFilterList.push(configObj);
+             })
+         };
         vm.createFilter = function () {
             vm.cancel();
             vm.auditLogFilter = {};
@@ -1415,6 +1415,18 @@
             modalInstance.result.then(function () {
                 vm.user = {};
                 vm.users.splice(vm.users.indexOf(user), 1);
+                let obj = {accounts: []};
+                obj.accounts.push(user.user);
+                UserService.deleteProfile(obj).then(function (res) {
+                    vm.profile = {};
+                    for (let i = 0; i < vm.profiles.length; i++) {
+                        if (vm.profiles[i].account === user.user) {
+                            vm.profiles.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                });
                 saveInfo();
                 if (vm.selectedUser && vm.selectedUser === user.user) {
                     vm.selectedUser = '';
@@ -1704,9 +1716,8 @@
                 return true;
             }
         };
-       /* ------------- Delete profile -------------------*/
-      
 
+        /* ------------- Delete profile -------------------*/
         vm.deleteProfile = function (profile) {
             vm.profile = angular.copy(profile);
             let modalInstance = $uibModal.open({

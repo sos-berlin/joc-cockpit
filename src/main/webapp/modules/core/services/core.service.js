@@ -135,6 +135,7 @@
         tabs._auditLog.filter.sortBy = "created";
         tabs._auditLog.sortReverse = true;
         tabs._auditLog.currentPage = '1';
+        tabs._auditLog.selectedView = true;
 
         tabs._resource = {};
         tabs._resource.agents = {};
@@ -481,25 +482,20 @@
 
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
-
         var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'dailyPlanFilters','auditLogFilters'];
-
         var propsPrefix = '$SOS$';
 
         function SavedFilter() {
-            var self = this;
+            let self = this;
             props.forEach(function (name) {
                 self[name] = load(name);
             });
         }
 
         SavedFilter.prototype.save = function () {
-            var self = this;
-            var storage = $window.localStorage;
-
+            let self = this;
             props.forEach(function (name) {
-
-                save(storage, name, self[name]);
+                save($window.localStorage, name, self[name]);
             });
         };
 
@@ -528,7 +524,6 @@
         SavedFilter.prototype.setAuditLog = function (filter) {
             this.auditLogFilters = JSON.stringify(filter);
         };
-
         SavedFilter.prototype.clearStorage = function () {
             props.forEach(function (name) {
                 save($window.localStorage, name, null);
@@ -540,14 +535,13 @@
         // Note: LocalStorage converts the value to string
         // We are using empty string as a marker for null/undefined values.
         function save(storage, name, value) {
-            var key = propsPrefix + name;
+            let key = propsPrefix + name;
             if (value == null) value = '';
             storage[key] = value;
         }
 
         function load(name) {
-            var key = propsPrefix + name;
-
+            let key = propsPrefix + name;
             return $window.localStorage[key] || null;
         }
     }

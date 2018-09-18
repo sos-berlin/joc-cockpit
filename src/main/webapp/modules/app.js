@@ -28,7 +28,6 @@
             'gantt.table',
             'ngFileSaver',
             'angular-clipboard',
-            'gridster',
             'oc.lazyLoad'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
