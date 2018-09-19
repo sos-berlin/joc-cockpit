@@ -5897,6 +5897,7 @@
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
                 angular.forEach(res.jobChain.endNodes, function (value) {
+                    value.isEndNode = true;
                     vm._jobChain.nodes.push(value);
                 });
             });

@@ -420,6 +420,9 @@
             setDefaultTab: function () {
                 tabs = tempTabs;
             },
+            setTabs: function (tempTabs) {
+                tabs = tempTabs;
+            },
             getTabs: function () {
                 return tabs;
             },

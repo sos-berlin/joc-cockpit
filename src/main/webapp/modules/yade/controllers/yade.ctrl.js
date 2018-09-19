@@ -420,6 +420,7 @@
         }
 
         vm.loadYadeFiles = function () {
+            vm.fileTransfers = [];
             vm.load();
         };
 

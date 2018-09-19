@@ -106,9 +106,9 @@
             <div class="form-group row">
                 <div class="col-sm-4" translate>label.newOrderState</div>
                 <div class="col-sm-6">
-                     <select class="form-control" ng-model="order.state"
-                            ng-options="node.name as node.name for node in _jobChain.nodes">
-                        <option value="" translate>label.chooseStartingStep</option>
+                     <select class="form-control" ng-model="order.state">
+                        <option value="" selected translate>label.chooseStartingStep</option>
+                        <option value="{{node.name}}" ng-repeat="node in _jobChain.nodes" ng-if="!node.isEndNode" translate>{{node.name}}</option>
                     </select>
                 </div>
             </div>

@@ -1444,15 +1444,24 @@
 
         loadScheduleDetail();
 
+        let tabsMap = new Map();
 
         vm.changeScheduler = function (jobScheduler) {
             vm.switchScheduler = true;
+            let key = angular.copy(vm.schedulerIds.selected);
+            tabsMap.set(key , JSON.stringify(CoreService.getTabs()));
             vm.schedulerIds.selected = jobScheduler;
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
-
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res) {
-                        CoreService.setDefaultTab();
+                        let previousData = tabsMap.get(jobScheduler);
+                        if(previousData){
+                            previousData = JSON.parse(previousData);
+                            CoreService.setTabs(previousData);
+                        }else {
+                            CoreService.setDefaultTab();
+                        }
+
                         SOSAuth.setIds(res);
                         PermissionService.savePermission(jobScheduler);
 

@@ -58,11 +58,13 @@
                                 $location.path('/login');
                             } else if(rejection.status < 500){
                                 if ((rejection.data && rejection.data.error && rejection.status != 434)) {
-                                    toasty.error({
-                                        title: rejection.data.error.code || rejection.status,
-                                        msg: rejection.data.error.message || 'API exception',
-                                        timeout: 10000
-                                    });
+                                    if(!rejection.data.error.message.match('Duplicate entry')) {
+                                        toasty.error({
+                                            title: rejection.data.error.code || rejection.status,
+                                            msg: rejection.data.error.message || 'API exception',
+                                            timeout: 10000
+                                        });
+                                    }
                                 }
                                 if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
                                     toasty.error({
