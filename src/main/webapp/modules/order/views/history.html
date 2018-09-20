@@ -661,7 +661,7 @@
                            </div>
                         </div>
                         <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                             ng-class="{ 'has-error' : form1.profileId.$invalid && form1.profileId.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
 
                             <div class=" col-sm-6">
@@ -671,7 +671,7 @@
                             </div>
                         </div>
                         <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                             ng-class="{ 'has-error' : form1.mandator.$invalid && form1.mandator.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.mandator</label>
 
                             <div class=" col-sm-6">
@@ -737,7 +737,6 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-
                             <div class=" col-sm-6">
                                 <select class="form-control" ng-model="yadeSearch.jobschedulerId">
                                     <option value="" translate="">label.selectJobScheduler</option>
@@ -748,7 +747,6 @@
 
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 " translate>label.status</label>
-
                             <div class="col-sm-9">
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'SUCCESSFUL'">
@@ -793,7 +791,7 @@
                         </div>
 
                         <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                             ng-class="{ 'has-error' : form1.sourceFileName.$invalid && form1.sourceFileName.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
 
                             <div class=" col-sm-6">
@@ -802,20 +800,34 @@
                                        ng-model="yadeSearch.sourceFileName">
                             </div>
                         </div>
-
                         <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
+                             ng-class="{ 'has-error' : form1.sourceFilesRegex.$invalid && form1.sourceFilesRegex.$dirty }">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileRegex</label>
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.sourceFilesRegex' | translate}}"
+                                       name="sourceFilesRegex"
+                                       ng-model="yadeSearch.sourceFileRegex">
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-class="{ 'has-error' : form1.targetFileName.$invalid && form1.targetFileName.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
                                        name="targetFileName"
                                        ng-model="yadeSearch.targetFileName">
                             </div>
                         </div>
+                        <div class="form-group row"
+                             ng-class="{ 'has-error' : form1.targetFilesRegex.$invalid && form1.targetFilesRegex.$dirty }">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileRegex</label>
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.targetFilesRegex' | translate}}"
+                                       name="targetFilesRegex"
+                                       ng-model="yadeSearch.targetFileRegex">
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}"
                                        name="sourceHost"
@@ -824,7 +836,6 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceProtocol</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceProtocol' | translate}}"
                                        name="sourceProtocol"
@@ -1334,11 +1345,11 @@
                             </td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.profile | highlight:filterString"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.mandator | highlight:filterString"></td>
-                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></span></td>
-                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.numOfFiles"></td>
+                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.numOfFiles"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.error.message" class="text-danger" ng-bind-html="transfer.error.message | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.start | stringToDate"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.end | stringToDate"></td>

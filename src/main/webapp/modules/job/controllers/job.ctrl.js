@@ -5737,9 +5737,10 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.states = [];
-            if(vm.jobFilters.filter.state !== 'ALL') {
+            vm.status = vm.jobFilters.filter.state;
+            if (vm.jobFilters.filter.state !== 'ALL') {
                 obj.states.push(vm.jobFilters.filter.state);
-                vm.status = vm.jobFilters.filter.state;
+
                 JobService.get(obj).then(function (res) {
                     obj.jobs = [];
                     angular.forEach(res.jobs, function (value) {

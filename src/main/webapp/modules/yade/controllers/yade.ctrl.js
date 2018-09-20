@@ -293,10 +293,16 @@
                     vm.selectedFiltered.sourceFileName = vm.selectedFiltered.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                     obj.sourceFiles = vm.selectedFiltered.sourceFileName.split(',');
                 }
+                if(vm.selectedFiltered.sourceFileRegex) {
+                    obj.sourceFilesRegex = vm.selectedFiltered.sourceFileRegex;
+                }
                 if (vm.selectedFiltered.targetFileName) {
                     vm.selectedFiltered.targetFileName = vm.selectedFiltered.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                     obj.targetFiles = vm.selectedFiltered.targetFileName.split(',');
                 }
+                 if(vm.selectedFiltered.targetFileRegex) {
+                     obj.targetFilesRegex = vm.selectedFiltered.targetFileRegex;
+                 }
                 if (vm.selectedFiltered.sourceHost || vm.selectedFiltered.sourceProtocol) {
                     let hosts = [];
                     let protocols = [];
@@ -480,7 +486,7 @@
                             if (protocols.length == 1) {
                                 arr.push({host: value, protocol: protocols[0]});
                             } else {
-                                for (var x = 0; x < protocols.length; x++) {
+                                for (let x = 0; x < protocols.length; x++) {
                                     if (protocols.length >= index) {
                                         arr.push({host: value, protocol: protocols[index]});
                                     }
@@ -500,7 +506,7 @@
                             if (hosts.length == 1) {
                                 arr.push({protocol: value, host: hosts[0]});
                             } else {
-                                for (var x = 0; x < hosts.length; x++) {
+                                for (let x = 0; x < hosts.length; x++) {
                                     if (hosts.length >= index) {
                                         arr.push({protocol: value, host: hosts[index]});
                                     }
@@ -516,7 +522,7 @@
                 })
             }else {
                 angular.forEach(hosts, function (value, index) {
-                    for (var x = 0; x < protocols.length; x++) {
+                    for (let x = 0; x < protocols.length; x++) {
                         arr.push({host: value, protocol: protocols[x]});
                         protocols.splice(index,1);
                         break;
@@ -549,22 +555,26 @@
                 vm.yadeSearch.profileId = vm.yadeSearch.profileId.replace(/\s*(,|^|$)\s*/g, "$1");
                 filter.profiles = vm.yadeSearch.profileId.split(',');
             }
-
             if (vm.yadeSearch.mandator) {
                 filter.mandator = vm.yadeSearch.mandator;
             }
-
             if (vm.yadeSearch.sourceFileName) {
                 vm.yadeSearch.sourceFileName = vm.yadeSearch.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 filter.sourceFiles = vm.yadeSearch.sourceFileName.split(',');
+            }
+            if(vm.yadeSearch.sourceFileRegex) {
+                filter.sourceFilesRegex = vm.yadeSearch.sourceFileRegex;
             }
             if (vm.yadeSearch.targetFileName) {
                 vm.yadeSearch.targetFileName = vm.yadeSearch.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 filter.targetFiles = vm.yadeSearch.targetFileName.split(',');
             }
+            if(vm.yadeSearch.targetFileRegex) {
+                filter.targetFilesRegex = vm.yadeSearch.targetFileRegex;
+            }
             if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
-                var hosts = [];
-                var protocols =[];
+                let hosts = [];
+                let protocols =[];
                 if(vm.yadeSearch.sourceHost){
                     vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
                     hosts = vm.yadeSearch.sourceHost.split(',');
@@ -578,8 +588,12 @@
             }
             if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
                 vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                var hosts =vm.yadeSearch.targetHost.split(',');
-                var protocols =[];
+                let hosts = [];
+                let protocols =[];
+                if(vm.yadeSearch.targetHost){
+                    vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = vm.yadeSearch.targetHost.split(',');
+                }
                 if(vm.yadeSearch.targetProtocol){
                     vm.yadeSearch.targetProtocol = vm.yadeSearch.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                     protocols = vm.yadeSearch.targetProtocol.split(',');
@@ -590,7 +604,7 @@
                 filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
             } else {
                 if (vm.yadeSearch.date == 'date' && vm.yadeSearch.from) {
-                    var fromDate = new Date(vm.yadeSearch.from);
+                    let fromDate = new Date(vm.yadeSearch.from);
                     if (vm.yadeSearch.fromTime) {
                         fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
                         fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
@@ -604,7 +618,7 @@
                     filter.dateFrom = moment.utc(fromDate);
                 }
                 if (vm.yadeSearch.date == 'date' && vm.yadeSearch.to) {
-                    var toDate = new Date(vm.yadeSearch.to);
+                    let toDate = new Date(vm.yadeSearch.to);
                     if (vm.yadeSearch.toTime) {
                         toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
                         toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
@@ -642,7 +656,6 @@
                 vm.loading = false;
                 isLoaded = true;
             });
-
         };
 
         vm.advancedSearch = function () {

@@ -1966,6 +1966,7 @@
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
                     angular.forEach(res.jobChain.endNodes, function (value) {
+                        value.isEndNode = true;
                         vm._jobChain.nodes.push(value);
                     });
                 });
@@ -5174,7 +5175,7 @@
             obj1.compact = true;
             obj1.processingStates = [];
             obj1.processingStates.push(vm.orderFilters.filter.state);
-
+            vm.status = vm.orderFilters.filter.state;
             OrderService.get(obj1).then(function (res) {
                 angular.forEach(res.orders, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
@@ -7614,9 +7615,15 @@
                     vm.yadeSearch.sourceFileName = vm.yadeSearch.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                     filter.sourceFiles = vm.yadeSearch.sourceFileName.split(',');
                 }
+                if(vm.yadeSearch.sourceFileRegex) {
+                    filter.sourceFilesRegex = vm.yadeSearch.sourceFileRegex;
+                }
                 if (vm.yadeSearch.targetFileName) {
                     vm.yadeSearch.targetFileName = vm.yadeSearch.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                     filter.targetFiles = vm.yadeSearch.targetFileName.split(',');
+                }
+                if(vm.yadeSearch.targetFileRegex) {
+                    filter.targetFilesRegex = vm.yadeSearch.targetFileRegex;
                 }
                 if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
                     let hosts = [];
@@ -7862,13 +7869,19 @@
                 vm.selectedFiltered3.sourceFileName = vm.selectedFiltered3.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.sourceFiles = vm.selectedFiltered3.sourceFileName.split(',');
             }
+            if(vm.selectedFiltered3.sourceFileRegex) {
+                obj.sourceFilesRegex = vm.selectedFiltered3.sourceFileRegex;
+            }
             if (vm.selectedFiltered3.targetFileName) {
                 vm.selectedFiltered3.targetFileName = vm.selectedFiltered3.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.targetFiles = vm.selectedFiltered3.targetFileName.split(',');
             }
+            if(vm.selectedFiltered3.targetFileRegex) {
+                obj.targetFilesRegex = vm.selectedFiltered3.targetFileRegex;
+            }
             if (vm.selectedFiltered3.sourceHost || vm.selectedFiltered3.sourceProtocol) {
-                var hosts = [];
-                var protocols = [];
+                let hosts = [];
+                let protocols = [];
                 if (vm.selectedFiltered3.sourceHost) {
                     vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
                     hosts = vm.selectedFiltered3.sourceHost.split(',');
@@ -7881,8 +7894,8 @@
 
             }
             if (vm.selectedFiltered3.targetHost || vm.selectedFiltered3.targetProtocol) {
-                var hosts = [];
-                var protocols = [];
+                let hosts = [];
+                let protocols = [];
                 if (vm.selectedFiltered3.targetHost) {
                     vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
                     hosts = vm.selectedFiltered3.targetHost.split(',');
@@ -8218,17 +8231,15 @@
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
                     vm.yadeHistoryFilterList.push(configObj);
-
-
                     if (vm.yadeHistoryFilterList.length == 1) {
-                        vm.savedHistoryFilter.selected = res.id;
+                        vm.savedYadeHistoryFilter.selected = res.id;
                         vm.yadeFilter.yade.selectedView = true;
                         vm.selectedFiltered3 = vm.yadeFilter;
                         vm.selectedFiltered3.account = vm.permission.user;
                         vm.init();
                         isCustomizationSelected3(true);
                     }
-                    vm.historyFilterObj.yade = vm.savedHistoryFilter;
+                    vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
 
                     SavedFilter.setHistory(vm.historyFilterObj);
                     SavedFilter.save();
@@ -8309,13 +8320,13 @@
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
                 } else if (vm.historyFilters.type == 'yade') {
-                    if (vm.savedHistoryFilter.selected == filter.id) {
+                    if (vm.savedYadeHistoryFilter.selected == filter.id) {
                         vm.selectedFiltered3 = vm.yadeFilter;
                         vm.historyFilters.yade.selectedView = true;
                         vm.init();
                         isCustomizationSelected3(true);
                     }
-                    vm.historyFilterObj.yade = vm.savedHistoryFilter;
+                    vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
 
                 }
                 var configObj = {};
@@ -8597,8 +8608,7 @@
             } else if (vm.historyFilters.type == 'job') {
                 vm.savedJobHistoryFilter.favorite = '';
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-            }
-            else {
+            } else {
                 vm.savedYadeHistoryFilter.favorite = '';
                 vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
             }

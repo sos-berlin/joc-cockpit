@@ -285,21 +285,30 @@
 
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}"
-                                       name="sourceFileName"
-                                       ng-model="yadeSearch.sourceFileName">
+                                       name="sourceFileName" ng-model="yadeSearch.sourceFileName">
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileRegex</label>
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.sourceFilesRegex' | translate}}"
+                                       name="sourceFilesRegex" ng-model="yadeSearch.sourceFileRegex">
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
-                                       name="targetFileName"
-                                       ng-model="yadeSearch.targetFileName">
+                                       name="targetFileName" ng-model="yadeSearch.targetFileName">
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileRegex</label>
+                            <div class=" col-sm-6">
+                                <input class="form-control" placeholder="{{'placeholder.targetFilesRegex' | translate}}"
+                                       name="targetFilesRegex" ng-model="yadeSearch.targetFileRegex">
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
 

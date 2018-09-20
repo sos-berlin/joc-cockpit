@@ -1330,5 +1330,9 @@
   "label.profileFound": "Profile Found",
   "label.profilesFound": "Profiles Found",
   "breadcrumb.profiles": "Profiles",
-  "message.deleteProfiles": "Are you sure you want to delete the selected profile?"
+  "message.deleteProfiles": "Are you sure you want to delete the selected profile?",
+  "label.sourceFileRegex" : "Source File Regex",
+  "label.targetFileRegex" : "Target File Regex",
+  "placeholder.sourceFilesRegex" : "Enter source file regex",
+  "placeholder.targetFilesRegex" : "Enter target file regex"
 }

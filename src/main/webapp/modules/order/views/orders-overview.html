@@ -8,23 +8,21 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm button-group-ellipsis"
-                                    ng-model="orderFilters.filter.state"
-                                    uib-btn-radio="'PENDING'"
-                                    ng-class="{'btn-primary': orderFilters.filter.state=='PENDING'}"
-                                    ng-click="changeStatus()" translate>button.pending
+                             <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                    ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                             </button>
                             <button class="btn btn-grey btn-sm button-group-ellipsis"
-                                    ng-model="orderFilters.filter.state"
-                                    uib-btn-radio="'RUNNING'"
-                                    ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}"
-                                    ng-click="changeStatus()" translate>button.running
+                                    ng-model="orderFilters.filter.state" uib-btn-radio="'PENDING'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
                             </button>
                             <button class="btn btn-grey btn-sm button-group-ellipsis"
-                                    ng-model="orderFilters.filter.state"
-                                    uib-btn-radio="'SUSPENDED'"
-                                    ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}"
-                                    ng-click="changeStatus()" translate>button.suspended
+                                    ng-model="orderFilters.filter.state" uib-btn-radio="'RUNNING'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
+                            </button>
+                            <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                    ng-model="orderFilters.filter.state" uib-btn-radio="'SUSPENDED'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                             </button>
 
                             <button class="btn btn-grey btn-sm button-group-ellipsis"
@@ -51,6 +49,11 @@
                                 label.status
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
+                                   uib-btn-radio="'ALL'"
+                                   ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}"
+                                   ng-click="changeStatus()" translate>button.allOrders
+                                </a>
                                 <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                    uib-btn-radio="'PENDING'"
                                    ng-class="{'btn-primary': orderFilters.filter.state=='PENDING'}"
