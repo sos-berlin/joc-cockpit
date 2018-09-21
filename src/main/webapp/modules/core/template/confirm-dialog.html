@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!entry && !calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
+            <span ng-if="!entry && !calendar && !calendarArr && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
@@ -13,6 +13,9 @@
             </span>
             <span ng-if="calendarArr">
                 <span class="text-capitalize" translate>label.deleteAllCalendar</span>?
+            </span>
+            <span ng-if="_profiles">
+                <span class="text-capitalize" translate>label.deleteAllProfiles</span>?
             </span>
             <span ng-if="importCalendars && importCalendars.length>0">
                 <span class="text-capitalize" translate>label.importAllCalendar</span>?
@@ -160,6 +163,23 @@
                                             {{$index+1}} - {{schedule}}
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="_profiles && _profiles.length>0">
+                    <div class="row form-group">
+                        <span  translate class="text">message.deleteAllProfiles</span>
+                    </div>
+                    <div class="text-left row" >
+                        <div class="col-sm-12">
+                            <label class="col-md-3 col-md-offset-3" translate="">
+                                label.account
+                            </label>
+                            <div class="col-md-6">
+                                <div ng-repeat="_profile in _profiles">
+                                    {{$index+1}} - {{_profile.account}}
                                 </div>
                             </div>
                         </div>

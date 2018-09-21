@@ -485,7 +485,7 @@
 
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'dailyPlanFilters','auditLogFilters'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'dailyPlanFilters','auditLogFilters','resizerHeight'];
         var propsPrefix = '$SOS$';
 
         function SavedFilter() {
@@ -498,7 +498,8 @@
         SavedFilter.prototype.save = function () {
             let self = this;
             props.forEach(function (name) {
-                save($window.localStorage, name, self[name]);
+                let storage = name === 'resizerHeight' ? $window.sessionStorage : $window.localStorage;
+                save(storage, name, self[name]);
             });
         };
 
@@ -527,9 +528,13 @@
         SavedFilter.prototype.setAuditLog = function (filter) {
             this.auditLogFilters = JSON.stringify(filter);
         };
+        SavedFilter.prototype.setResizerHeight = function (resizer) {
+            this.resizerHeight = JSON.stringify(resizer);
+        };
         SavedFilter.prototype.clearStorage = function () {
             props.forEach(function (name) {
-                save($window.localStorage, name, null);
+                let storage = name === 'resizerHeight' ? $window.sessionStorage : $window.localStorage;
+                save(storage, name, null);
             });
         };
 
@@ -545,7 +550,8 @@
 
         function load(name) {
             let key = propsPrefix + name;
-            return $window.localStorage[key] || null;
+            let storage = name === 'resizerHeight' ? $window.sessionStorage : $window.localStorage;
+            return storage[key] || null;
         }
     }
 

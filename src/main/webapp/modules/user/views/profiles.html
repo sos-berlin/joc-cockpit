@@ -13,7 +13,7 @@
                 <th><span translate>label.lastAccess</span></th>
             </tr>
             </thead>
-            <tbody ng-repeat="profile in profiles | orderBy:'account' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+            <tbody ng-repeat="profile in profiles | orderBy:'account' | startFrom:(prof.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
                 <td>
                     <label class="md-check">
@@ -40,7 +40,7 @@
             <span translate ng-if="profiles.length ==1">label.profileFound</span>
         </div>
         <ul ng-show="profiles.length > userPreferences.entryPerPage" uib-pagination total-items="profiles.length"
-            ng-model="usr.currentPage" items-per-page='userPreferences.entryPerPage'
+            ng-model="prof.currentPage" items-per-page='userPreferences.entryPerPage'
             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"
             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
         <div class="pull-left" ng-show="profiles.length > 10">

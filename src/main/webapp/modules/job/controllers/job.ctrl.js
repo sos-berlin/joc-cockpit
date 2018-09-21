@@ -646,7 +646,26 @@
                     insertData(node, vm.allJobChains);
                 })
             }
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.jobChain && !_.isEmpty(rsHt.jobChain)) {
+                if (rsHt.jobChain[vm.folderPath]) {
+                    vm.resizerHeight = rsHt.jobChain[vm.folderPath];
+                } else {
+                    let ht = (parseInt($('#jobChainTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                }
+            } else {
+                let ht = (parseInt($('#jobChainTableId').height()) + 50);
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
 
+            }
+            $('#jobChainDivId').css('height', vm.resizerHeight);
             vm.isLoaded = false;
         }
 
@@ -1690,9 +1709,24 @@
 
         };
 
-        vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
-        $rootScope.$on('angular-resizable.resizeEnd', function (event, args) {
-            $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT = args.height;
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if(!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.jobChain;
+        }else{
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if(rsHt.jobChain && typeof rsHt.jobChain === 'object') {
+                rsHt.jobChain[vm.folderPath] = args.height;
+            }else{
+                rsHt.jobChain ={};
+            }
+            rsHt.jobChain[vm.folderPath] = args.height;
+            console.log(rsHt)
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+            vm.resizerHeight = args.height;
         });
 
         vm.reset = function () {
@@ -5670,6 +5704,19 @@
             }
         });
 
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if(!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.job;
+        }else{
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.job = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
+
         $scope.$on('$destroy', function () {
             vm.jobFilters.expand_to = vm.tree;
             watcher1();
@@ -5685,8 +5732,8 @@
         });
     }
 
-    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams","$filter"];
-    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal,  TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams,$filter) {
+    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter"];
+    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -7162,6 +7209,19 @@
                 isFuncCalled = false;
             });
         }
+
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.jobOverview;
+        } else {
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.jobOverview = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
 
         $scope.$on('$destroy', function () {
             watcher1();

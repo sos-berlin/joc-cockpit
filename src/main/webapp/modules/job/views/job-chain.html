@@ -394,7 +394,7 @@
                          translate>message.noDataMatched</div>
                 </div>
                 <div class="box p-a" ng-if="pageView=='list' && allJobChains.length>0">
-                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
+                    <div class="table-responsive" id="jobChainDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                         <table class="table table-hover table-bordered " id="jobChainTableId"
                                ng-controller="OrderFunctionCtrl">
                             <thead>

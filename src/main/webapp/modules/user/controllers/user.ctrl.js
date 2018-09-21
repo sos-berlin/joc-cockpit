@@ -1239,11 +1239,16 @@
 
         vm.usr = {};
         vm.usr.currentPage = 1;
+        vm.prof = {};
+        vm.prof.currentPage = 1;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.state = '';
         vm.editor = {};
         vm.editor.edit = false;
         vm.view = {};
+        vm.object = {
+            profiles: []
+        };
         vm.filterString = {};
         vm.filterString.q = '';
         vm.isJOCClusterEnable = true;
@@ -1255,11 +1260,11 @@
                 vm.masters = res.masters;
                 vm.main = res.main;
                 vm.profiles = res.profiles;
-                if(vm.main && vm.main.length>0){
-                    if(vm.main.length>1){
-                        for(let i =0; i< vm.main.length;i++){
-                            if((vm.main[i].entryName === 'sessionDAO' && vm.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
-                                (vm.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue === '$sessionDAO')){
+                if (vm.main && vm.main.length > 0) {
+                    if (vm.main.length > 1) {
+                        for (let i = 0; i < vm.main.length; i++) {
+                            if ((vm.main[i].entryName === 'sessionDAO' && vm.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
+                                (vm.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && vm.main[i].entryValue === '$sessionDAO')) {
                                 vm.isJOCClusterEnable = false;
                             }
                             if((vm.main[i].entryName === 'ldapRealm' && vm.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
@@ -1718,6 +1723,73 @@
         };
 
         /* ------------- Delete profile -------------------*/
+        vm.checkAll = {
+            checkbox: false
+        };
+
+        vm.checkAllProfileFnc = function () {
+            if(vm.checkAll.checkbox && vm.profiles.length > 0) {
+                vm.object.profiles = vm.profiles.slice((vm.userPreferences.entryPerPage * (vm.prof.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.prof.currentPage));
+            }else{
+                vm.object.profiles =[];
+            }
+        };
+
+        var watcher = $scope.$watchCollection('object.profiles', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.checkAll.checkbox = newNames.length === vm.profiles.slice((vm.userPreferences.entryPerPage * (vm.prof.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.prof.currentPage)).length;
+            } else {
+                vm.object.profiles = [];
+                vm.checkAll.checkbox = false;
+            }
+        });
+
+        var watcher2 = vm.$watch('userPreferences.entryPerPage', function (newNames) {
+            if (newNames) {
+                vm.object.profiles = [];
+                vm.checkAll.checkbox = false;
+            }
+        });
+
+        var watcher3 = $scope.$watchCollection('prof.currentPage', function (newNames) {
+            if (newNames) {
+                vm.object.profiles = [];
+                vm.checkAll.checkbox = false;
+            }
+        });
+
+        vm.deleteProfiles = function() {
+            vm._profiles = vm.object.profiles;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                let obj = {accounts: []};
+                for (let i = 0; i < vm.object.profiles.length; i++) {
+                    obj.accounts.push(vm.object.profiles[i].account);
+                }
+                UserService.deleteProfile(obj).then(function (res) {
+                    vm._profiles = null;
+                    for (let i = 0; i < vm.object.profiles.length; i++) {
+                        for (let j = 0; j < vm.profiles.length; j++) {
+                            if (vm.profiles[j].account === vm.object.profiles[i].account) {
+                                vm.profiles.splice(j, 1);
+                                break;
+                            }
+                        }
+                    }
+                    vm.object.profiles = [];
+
+                });
+            }, function () {
+                vm.object.profiles = [];
+                vm._profiles = null;
+            });
+        };
+
         vm.deleteProfile = function (profile) {
             vm.profile = angular.copy(profile);
             let modalInstance = $uibModal.open({
@@ -1742,6 +1814,7 @@
                 });
             }, function () {
                 vm.profile = {};
+                vm.object.profiles = [];
             });
         };
         /* ------------- Begin Main Section -------------------*/
@@ -2080,6 +2153,12 @@
         vm.addPermission = function () {
             $rootScope.$broadcast('addPermission');
         };
+
+        $scope.$on('$destroy', function () {
+            watcher();
+            watcher2();
+            watcher3();
+        });
     }
 
     PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout'];

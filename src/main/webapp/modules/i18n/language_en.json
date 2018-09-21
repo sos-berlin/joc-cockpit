@@ -1334,5 +1334,8 @@
   "label.sourceFileRegex" : "Source File Regex",
   "label.targetFileRegex" : "Target File Regex",
   "placeholder.sourceFilesRegex" : "Enter source file regex",
-  "placeholder.targetFilesRegex" : "Enter target file regex"
+  "placeholder.targetFilesRegex" : "Enter target file regex",
+  "button.deleteProfile": "Delete Profile",
+  "label.deleteAllProfiles": "Delete selected Profiles",
+  "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?"
 }

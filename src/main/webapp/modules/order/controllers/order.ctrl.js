@@ -14,8 +14,8 @@
         .controller('HistoryCtrl', HistoryCtrl)
         .controller('LogCtrl', LogCtrl);
 
-    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService"];
-    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService) {
+    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService", "SavedFilter"];
+    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService, SavedFilter) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.overview = false;
@@ -230,12 +230,25 @@
                 });
         });
 
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.jobChainOrder;
+        } else {
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.jobChainOrder = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
+
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService"];
+        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService", "SavedFilter"];
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService) {
+                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService, SavedFilter) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -2397,6 +2410,19 @@
             }
         });
 
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.jobChainDetail;
+        } else {
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.jobChainDetail = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
+
         $scope.$on('$destroy', function () {
             watcher1();
             if (promise1)
@@ -2404,7 +2430,6 @@
             if (promise2)
                 $timeout.cancel(promise2);
         });
-
     }
 
     JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService", "$timeout"];
@@ -5123,6 +5148,19 @@
             }
         }
 
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.order;
+        } else {
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.order = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
+
         $scope.$on('$destroy', function () {
             vm.orderFilters.expand_to = vm.tree;
             watcher1();
@@ -5133,8 +5171,8 @@
 
     }
 
-    OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService", "TaskService"];
-    function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService, TaskService) {
+    OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService", "TaskService","SavedFilter"];
+    function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService, TaskService, SavedFilter) {
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab1();
@@ -5156,11 +5194,11 @@
         };
 
         vm.reload = function () {
-            if (vm.reloadState == 'no') {
+            if (vm.reloadState === 'no') {
                 vm.allOrders = [];
                 vm.folderPath = 'Process aborted';
                 vm.reloadState = 'yes';
-            } else if (vm.reloadState == 'yes') {
+            } else if (vm.reloadState === 'yes') {
                 vm.reloadState = 'no';
                 vm.isLoading = false;
                 vm.init();
@@ -5690,6 +5728,19 @@
             });
             $rootScope.$broadcast('reloadSnapshot');
         }
+
+        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(resizerHeight)) {
+            vm.resizerHeight = resizerHeight.orderOverview;
+        } else {
+            vm.resizerHeight = 450;
+        }
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            rsHt.orderOverview = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+        });
     }
 
     OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location", "$filter"];
