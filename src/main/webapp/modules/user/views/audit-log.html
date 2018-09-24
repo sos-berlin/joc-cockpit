@@ -15,22 +15,22 @@
                         </span>
                     </div>
                     <div class="btn-group m-l-sm hidden-btn-group">
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
                                 ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
                         </button>
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'today'" ng-click="load()"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'today'" ng-click="load()"
                                 ng-class="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
                         </button>
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
                                 ng-class="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
                         </button>
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
                                 ng-class="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
                         </button>
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-24h'"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-24h'"
                                 ng-class="{'btn-primary': adtLog.filter.date=='-24h'}" translate>button.last24
                         </button>
-                        <button class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-7d'"
+                        <button ng-disabled="selectedFiltered.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-7d'"
                                 ng-class="{'btn-primary': adtLog.filter.date=='-7d'}" translate>button.lastWeak
                         </button>
                     </div>
@@ -38,7 +38,7 @@
                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
-                               ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
+                               ng-class="{'btn-primary': adtLog.filter.date=='all', 'disable-link':selectedFiltered.selected}" translate>button.all
                             </a>
                             <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'today'"
                                ng-class="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div class="btn-group dropdown m-l-sm">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                        <button class="btn btn-grey btn-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered.name"></span></button>
                         <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" href ng-click="createFilter()" translate>label.createFilter</a>
                             <a class="dropdown-item" href ng-click="editFilters()" ng-if="auditLogFilterList.length>0" translate>label.editExistingFilters</a>
@@ -70,7 +70,7 @@
                         </div>
                     </div>
 <!--                    <div class="btn-group dropdown m-l-sm">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
+                        <button class="btn btn-grey btn-sm dropdown-toggle" ng-class="{'btn-primary': savedIgnoreList.isEnable}" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
                         <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" ng-if="savedIgnoreList.auditLog.length > 0" href
                                ng-click="editIgnoreList()" translate>button.editIgnoreList</a>

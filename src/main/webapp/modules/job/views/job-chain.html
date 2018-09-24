@@ -73,10 +73,10 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}"
                                     uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
                                 {{'label.filters' | translate}}
-                                <span class="text-primary" ng-bind="selectedFiltered.name"></span>
+                                <span ng-bind="selectedFiltered.name"></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>

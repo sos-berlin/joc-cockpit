@@ -1709,12 +1709,8 @@
 
         };
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if(!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.jobChain;
-        }else{
-            vm.resizerHeight = 450;
-        }
+
+        vm.resizerHeight = 450;
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if(rsHt.jobChain && typeof rsHt.jobChain === 'object') {
@@ -1723,7 +1719,6 @@
                 rsHt.jobChain ={};
             }
             rsHt.jobChain[vm.folderPath] = args.height;
-            console.log(rsHt)
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
             vm.resizerHeight = args.height;
@@ -2883,7 +2878,7 @@
         vm.filterTree1 = [];
         vm.object.paths = [];
 
-        vm.selectedFiltered = '';
+        vm.selectedFiltered = null;
         vm.reloadState = 'no';
         vm.temp_filter = {};
 
@@ -3047,6 +3042,7 @@
                 vm.filtered = tempArr;
             }
             tempArr = [];
+            updatePanelHeight();
         }
 
         vm.reload = function() {
@@ -3146,7 +3142,7 @@
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
 
-            if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
+            if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                  obj = parseDate(obj);
             }else {
@@ -3468,6 +3464,29 @@
             vm.isLoaded = false;
         }
 
+        function updatePanelHeight() {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.job && !_.isEmpty(rsHt.job)) {
+                if (rsHt.job[vm.folderPath]) {
+                    vm.resizerHeight = rsHt.job[vm.folderPath];
+                } else {
+                    let ht = (parseInt($('#jobTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                }
+            } else {
+                let ht = (parseInt($('#jobTableId').height()) + 50);
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+
+            }
+            $('#jobDivId').css('height', vm.resizerHeight);
+        }
+
         function volatileInformation(obj, expandNode, treeUpdate) {
             if (vm.scheduleState === 'UNREACHABLE') {
                 updateTreeData(expandNode, treeUpdate);
@@ -3491,21 +3510,24 @@
                 return;
             }
             JobService.get(obj).then(function (res) {
-                for (let x = 0; x < vm.allJobs.length; x++) {
-                    for (let i = 0; i < res.jobs.length; i++) {
-                        if (vm.allJobs[x].path === res.jobs[i].path) {
-                            vm.allJobs[x] = mergePermanentAndVolatile(res.jobs[i], vm.allJobs[x]);
-                            if (vm.allJobs[x].state && vm.allJobs[x].state._text === 'RUNNING' && vm.userPreferences.showTasks) {
-                                vm.allJobs[x].showJobChains = true;
+                if(res.jobs.length>0) {
+                    for (let x = 0; x < vm.allJobs.length; x++) {
+                        for (let i = 0; i < res.jobs.length; i++) {
+                            if (vm.allJobs[x].path === res.jobs[i].path) {
+                                vm.allJobs[x] = mergePermanentAndVolatile(res.jobs[i], vm.allJobs[x]);
+                                if (vm.allJobs[x].state && vm.allJobs[x].state._text === 'RUNNING' && vm.userPreferences.showTasks) {
+                                    vm.allJobs[x].showJobChains = true;
+                                }
+                                res.jobs.splice(i, 1);
+                                break;
                             }
-                            res.jobs.splice(i, 1);
-                            break;
                         }
                     }
+                }else{
+                   vm.allJobs = res.jobs;
                 }
 
                 updateTreeData(expandNode, treeUpdate);
-
             }, function () {
                 updateTreeData(expandNode, treeUpdate);
             });
@@ -5704,17 +5726,19 @@
             }
         });
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if(!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.job;
-        }else{
-            vm.resizerHeight = 450;
-        }
+
+        vm.resizerHeight = 450;
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.job = args.height;
+            if (rsHt.job && typeof rsHt.job === 'object') {
+                rsHt.job[vm.folderPath] = args.height;
+            } else {
+                rsHt.job = {};
+            }
+            rsHt.job[vm.folderPath] = args.height;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
+            vm.resizerHeight = args.height;
         });
 
         $scope.$on('$destroy', function () {

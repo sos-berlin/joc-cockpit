@@ -3291,7 +3291,7 @@
                     var data = [];
                     for (let i = 0; i < vm.orderFilterList.length; i++) {
                         var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].account === vm.orderFilterList[i].account && data[j].name === vm.orderFilterList[i].name) {
                                 flag = false;
                             }
@@ -3493,15 +3493,14 @@
             let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true};
             obj.folders = [{folder: data.path, recursive: false}];
             if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
-              
-                firstVolatileCall(obj, null);
+                firstVolatileCall(obj, null, data);
                 return
             } else {
                 if (vm.orderFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
                         return;
                     }
-                    firstVolatileCall(obj, null);
+                    firstVolatileCall(obj, null, data);
                     return
                 }
             }
@@ -3510,6 +3509,7 @@
                 data.orders = result.orders;
                 vm.allOrders = result.orders;
                 vm.loading = false;
+                updatePanelHeight();
                 volatileFolderData(data, obj);
             }, function () {
                 volatileFolderData(data, obj);
@@ -3530,10 +3530,11 @@
                 if (flag)
                     vm.allOrders.push(data.orders[x]);
             }
-
             vm.folderPath = data.name || '/';
             vm.loading = false;
             vm.isLoaded = false;
+            updatePanelHeight();
+
         }
 
         function volatileFolderData(data1, obj) {
@@ -3696,6 +3697,7 @@
                 if (value.expanded || value.selected1)
                     insertData(value, x);
             });
+            updatePanelHeight();
         }
 
         function parseDate(obj) {
@@ -3776,6 +3778,29 @@
             return obj;
         }
 
+        function updatePanelHeight() {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.order && !_.isEmpty(rsHt.order)) {
+                if (rsHt.order[vm.folderPath]) {
+                    vm.resizerHeight = rsHt.order[vm.folderPath];
+                } else {
+                    let ht = (parseInt($('#orderTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                }
+            } else {
+                let ht = (parseInt($('#orderTableId').height()) + 50);
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+
+            }
+            $('#orderDivId').css('height', vm.resizerHeight);
+        }
+
         function volatileInformation(obj, expandNode) {
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
@@ -3818,7 +3843,8 @@
             });
         }
 
-        function firstVolatileCall(obj, expandNode) {
+        function firstVolatileCall(obj, expandNode, data) {
+            vm.folderPath = data.name || '/';
             if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
@@ -3841,6 +3867,7 @@
                 } else {
                     startTraverseNode(expandNode);
                 }
+                updatePanelHeight();
             }, function () {
                 vm.loading = false;
             });
@@ -3874,6 +3901,7 @@
             OrderService.getOrdersP(obj1).then(function (result) {
                 vm.allOrders = result.orders;
                 vm.loading = false;
+                updatePanelHeight();
                 OrderService.get(obj).then(function (res) {
                     if (vm.allOrders && vm.allOrders.length > 0) {
                         for(let m=0; m < vm.allOrders.length;m++) {
@@ -5148,17 +5176,18 @@
             }
         }
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if (!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.order;
-        } else {
-            vm.resizerHeight = 450;
-        }
+        vm.resizerHeight = 450;
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.order = args.height;
+            if (rsHt.order && typeof rsHt.order === 'object') {
+                rsHt.order[vm.folderPath] = args.height;
+            } else {
+                rsHt.order = {};
+            }
+            rsHt.order[vm.folderPath] = args.height;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
+            vm.resizerHeight = args.height;
         });
 
         $scope.$on('$destroy', function () {
@@ -8284,7 +8313,7 @@
                     vm.yadeHistoryFilterList.push(configObj);
                     if (vm.yadeHistoryFilterList.length == 1) {
                         vm.savedYadeHistoryFilter.selected = res.id;
-                        vm.yadeFilter.yade.selectedView = true;
+                        vm.historyFilters.yade.selectedView = true;
                         vm.selectedFiltered3 = vm.yadeFilter;
                         vm.selectedFiltered3.account = vm.permission.user;
                         vm.init();

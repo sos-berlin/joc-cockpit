@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeFilterList.length>0" translate>label.editExistingFilters</a>

@@ -105,10 +105,8 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
-                                    uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters'
-                                | translate}}
-                                <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}}
+                                <span ng-bind="selectedFiltered.name"></span></button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()" ng-if="orderFilterList.length>0"
@@ -514,7 +512,7 @@
                             <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
                         </div>
                         <div class="box p-a " ng-if="pageView=='list' && allOrders.length >0">
-                            <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
+                            <div class="table-responsive" id="orderDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>

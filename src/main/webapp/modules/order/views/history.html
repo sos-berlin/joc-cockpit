@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered1.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered1.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered1.name}" uib-tooltip="{{selectedFiltered1.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered1.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
@@ -178,7 +178,7 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered2.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered2.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered2.name}" uib-tooltip="{{selectedFiltered2.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered2.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
@@ -266,7 +266,7 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered3.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered3.name}" uib-tooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered3.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter1()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
@@ -280,7 +280,7 @@
 
                     </div>
                     <div class="btn-group dropdown m-r-sm" ng-if="historyFilters.type != 'yade'">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
+                        <button class="btn btn-grey btn-sm dropdown-toggle" ng-class="{'btn-primary': savedIgnoreList.isEnable}" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
                         <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item"
                                ng-if="(savedIgnoreList.jobChains.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'jobChain'"
@@ -294,7 +294,6 @@
                                ng-if="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
                             <a class="dropdown-item" href ng-click="resetIgnoreList()"
                                translate>button.resetIgnoreList</a>
-
                         </div>
                     </div>
                     <button class="btn btn-grey btn-sm " uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()" tooltip-placement="left"><i>.</i></button>
