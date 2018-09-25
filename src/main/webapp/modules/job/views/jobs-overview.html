@@ -54,6 +54,10 @@
                                 <a class="dropdown-item" href ng-click="sortBy('state._text')" translate>label.state</a>
                             </div>
                         </div>
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-if="isSizeChange" ng-click="resetPanel()">
+                            <i class="fa fa fa-refresh"></i>
+                            <span translate>button.resetPanel</span>
+                        </button>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || allJobs.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
                        <toggle-view></toggle-view>
                     </div>
@@ -221,7 +225,7 @@
                         </div>
                     </div>
                     <div class="box p-a " ng-if="pageView=='list' && allJobs.length >0">
-                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
+                        <div class="table-responsive" id="jobDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
                             <tr>

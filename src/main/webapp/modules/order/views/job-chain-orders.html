@@ -8,7 +8,7 @@
     <div id="rightPanel">
         <div ng-controller="OrderFunctionCtrl">
             <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
-                <div class="hide" ng-class="{'show': pageView=='grid'}">
+                <div ng-if="pageView=='grid'">
                     <div class="row">
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 " ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" >
                             <div class="box card" ng-class="colorBorderFunction(order.processingState.severity)">
@@ -128,71 +128,73 @@
                         </div>
                     </div>
                 </div>
-                <div class="hide box p-a " ng-class="{'show': pageView=='list'}" ng-show="orders.length >0">
-                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
-                                <table class="table table-hover table-bordered " id="orderTableId">
-                                    <thead>
-                                    <tr>
-                                        <th width="40" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
-                                            <label class="md-check lg-check">
-                                                <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i
-                                                    class="primary"></i>
-                                            </label>
-                                        </th>
-                                        <th width="45" ><span translate>label.action</span></th>
-                                        <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'orderId' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'jobChain' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'jobChain' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('state')"><a><span translate>label.state</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'state' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'state' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th   ng-click="sortBy('startedAt')"><a><span translate>label.startedAt</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'startedAt' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'startedAt' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th  ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th  ng-click="sortBy('historyId')"><a><span translate>label.historyId</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'historyId' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'historyId' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('nextStartTime')"><a>
-                                            <span translate>label.nextStartTime</span>
-                                            <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && !orderFilters.reverse"
-                                               class="fa fa-caret-up "></i>
-                                            <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && orderFilters.reverse"
-                                               class="fa fa-caret-down "></i></a>
-                                        </th>
+                <div class="box p-a " ng-if="pageView=='list' && orders.length >0">
+                    <div class="table-responsive" id="orderDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
+                        <table class="table table-hover table-bordered " id="orderTableId">
+                            <thead>
+                            <tr>
+                                <th width="40"
+                                    ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
+                                    <label class="md-check lg-check">
+                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i
+                                            class="primary"></i>
+                                    </label>
+                                </th>
+                                <th width="45"><span translate>label.action</span></th>
+                                <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'orderId' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'jobChain' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'jobChain' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('processingState._text')"><a><span
+                                        translate>label.processingStatus</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('state')"><a><span translate>label.state</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'state' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'state' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('startedAt')"><a><span translate>label.startedAt</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'startedAt' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'startedAt' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('historyId')"><a><span translate>label.historyId</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'historyId' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'historyId' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('nextStartTime')"><a>
+                                    <span translate>label.nextStartTime</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && !orderFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && orderFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
 
-                                    </tr>
-                                    </thead>
-                                    <tbody ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':showLogPanel == order}">
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':showLogPanel == order}">
                                         <tr>
                                             <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                                 <label class="md-check">
@@ -209,7 +211,6 @@
                                                               <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
-
                                                     <a href class="dropdown-item"
                                                        ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
                                                        ng-click="start(order)" translate>button.startOrderNow</a>
@@ -232,7 +233,6 @@
                                                     <a href class="dropdown-item"
                                                        ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                                        ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
-
                                                     <a href class="dropdown-item bg-hover-color"
                                                        ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
                                                        ng-click="removeOrder(order)" translate>button.removeOrder</a>
@@ -321,33 +321,33 @@
                                                 </table>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}" ng-if="orders.length >0"><span translate>label.total</span> {{orders.length}}
-                                     <span translate ng-if="orders.length >1">label.ordersFound</span>
-                                     <span translate ng-if="orders.length ==1">label.orderFound</span>
-                                 </div>
-                                 <ul ng-show="orders.length > userPreferences.entryPerPage" uib-pagination total-items="orders.length" ng-model="orderFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                                 <div class="pull-left" ng-show="orders.length > 10">
-                                    <div class="btn-group m-r-xxs">
-                                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
-                                                ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
-                                        </button>
-                                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
-                                                ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
-                                        </button>
-                                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
-                                                ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
-                                        </button>
-                                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
-                                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                                        </button>
-                                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
-                                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
-                                        </button>
-                                    </div>
-                                </div>
+                            </tbody>
+                        </table>
+                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}" ng-if="orders.length >0"><span translate>label.total</span> {{orders.length}}
+                            <span translate ng-if="orders.length >1">label.ordersFound</span>
+                            <span translate ng-if="orders.length ==1">label.orderFound</span>
+                        </div>
+                        <ul ng-show="orders.length > userPreferences.entryPerPage" uib-pagination total-items="orders.length" ng-model="orderFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <div class="pull-left" ng-show="orders.length > 10">
+                            <div class="btn-group m-r-xxs">
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                                </button>
                             </div>
+                        </div>
+                    </div>
                 </div>
                  <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
             </div>

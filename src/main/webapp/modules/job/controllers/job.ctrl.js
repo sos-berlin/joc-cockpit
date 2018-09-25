@@ -1710,20 +1710,6 @@
         };
 
 
-        vm.resizerHeight = 450;
-        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if(rsHt.jobChain && typeof rsHt.jobChain === 'object') {
-                rsHt.jobChain[vm.folderPath] = args.height;
-            }else{
-                rsHt.jobChain ={};
-            }
-            rsHt.jobChain[vm.folderPath] = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
-            vm.resizerHeight = args.height;
-        });
-
         vm.reset = function () {
             vm.jobChainCheckAll.checkbox = false;
             vm.object.jobChains = [];
@@ -2841,6 +2827,38 @@
             }
         });
 
+        vm.resizerHeight = 450;
+
+        vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.jobChain && typeof rsHt.jobChain === 'object') {
+                if (rsHt.jobChain[vm.folderPath]) {
+                    delete rsHt.jobChain[vm.folderPath];
+                    SavedFilter.setResizerHeight(rsHt);
+                    SavedFilter.save();
+                    let ht = (parseInt($('#jobChainTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                    $('#jobChainDivId').css('height', vm.resizerHeight);
+                }
+            }
+        };
+
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.jobChain && typeof rsHt.jobChain === 'object') {
+                rsHt.jobChain[vm.folderPath] = args.height;
+            } else {
+                rsHt.jobChain = {};
+            }
+            rsHt.jobChain[vm.folderPath] = args.height;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+            vm.resizerHeight = args.height;
+        });
+
         $scope.$on('$destroy', function () {
             vm.jobChainFilters.expand_to = vm.tree;
             watcher1();
@@ -3465,26 +3483,28 @@
         }
 
         function updatePanelHeight() {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.job && !_.isEmpty(rsHt.job)) {
-                if (rsHt.job[vm.folderPath]) {
-                    vm.resizerHeight = rsHt.job[vm.folderPath];
+            setTimeout(function () {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.job && !_.isEmpty(rsHt.job)) {
+                    if (rsHt.job[vm.folderPath]) {
+                        vm.resizerHeight = rsHt.job[vm.folderPath];
+                    } else {
+                        let ht = (parseInt($('#jobTableId').height()) + 50);
+                        if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                    }
                 } else {
                     let ht = (parseInt($('#jobTableId').height()) + 50);
                     if (ht > 450) {
                         ht = 450;
                     }
                     vm.resizerHeight = ht + 'px';
-                }
-            } else {
-                let ht = (parseInt($('#jobTableId').height()) + 50);
-                if (ht > 450) {
-                    ht = 450;
-                }
-                vm.resizerHeight = ht + 'px';
 
-            }
-            $('#jobDivId').css('height', vm.resizerHeight);
+                }
+                $('#jobDivId').css('height', vm.resizerHeight);
+            }, 0);
         }
 
         function volatileInformation(obj, expandNode, treeUpdate) {
@@ -3825,68 +3845,6 @@
 
         };
 
-        function parseDateForSearch(obj) {
-            var fromDate;
-            var toDate;
-            if (vm.jobFilter.fromDate) {
-                fromDate = new Date(vm.jobFilter.fromDate);
-                if (vm.jobFilter.fromTime) {
-                    if (vm.jobFilter.fromTime !== '24:00' || vm.jobFilter.fromTime !== '24:00:00') {
-                        fromDate.setHours(moment(vm.jobFilter.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.jobFilter.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.jobFilter.fromTime, 'HH:mm:ss').seconds());
-                    } else {
-                        fromDate.setDate(fromDate.getDate() + 1);
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        fromDate.setSeconds(0);
-                        
-                    }
-                } else {
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                }
-                fromDate.setMilliseconds(0);
-
-            }
-            if (vm.jobFilter.toDate) {
-                toDate = new Date(vm.jobFilter.toDate);
-                if (vm.jobFilter.toTime) {
-                    if (vm.jobFilter.toTime !== '24:00' || vm.jobFilter.toTime !== '24:00:00') {
-                        toDate.setHours(moment(vm.jobFilter.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.jobFilter.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.jobFilter.toTime, 'HH:mm:ss').seconds());
-                    } else {
-                        toDate.setDate(vm.jobFilter.toDate.getDate() + 1);
-                        toDate.setHours(0);
-                        toDate.setMinutes(0);
-                        toDate.setSeconds(0);
-                        
-                    }
-                } else {
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-
-                }
-                toDate.setMilliseconds(0);
-            }
-
-            if (fromDate && toDate) {
-                obj.dateFrom = moment.utc(fromDate);
-                obj.dateTo = moment.utc(toDate);
-            }
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
-            }
-            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
-            }
-            return obj;
-        }
-
-
         vm.saveAsFilter = function (form) {
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
@@ -3909,10 +3867,6 @@
             vm.jobFilter = {};
             vm.isUnique = true;
             vm.showSearchPanel = true;
-            vm.jobFilter.fromDate = new Date();
-            vm.jobFilter.fromTime = moment().format("HH:mm");
-            vm.jobFilter.toDate = new Date();
-            vm.jobFilter.toTime = "24:00";
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -3921,11 +3875,11 @@
                 form.$setPristine();
         };
 
-        function searchV(obj,allJobs) {
+        function searchV(obj, allJobs) {
             if (vm.jobFilter && vm.jobFilter.state) {
                 obj.states = vm.jobFilter.state;
             }
-            obj = parseDateForSearch(obj);
+
             JobService.get(obj).then(function (res) {
                 let data = [];
                 if (allJobs && allJobs.length > 0) {
@@ -4045,7 +3999,6 @@
         vm.applyFilter = function () {
             vm.cancel();
             vm.jobFilter = {};
-            vm.jobFilter.planned = 'today';
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/job-filter-dialog.html',
@@ -5728,6 +5681,24 @@
 
 
         vm.resizerHeight = 450;
+
+        vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.job && typeof rsHt.job === 'object') {
+                if (rsHt.job[vm.folderPath]) {
+                    delete rsHt.job[vm.folderPath];
+                    SavedFilter.setResizerHeight(rsHt);
+                    SavedFilter.save();
+                    let ht = (parseInt($('#jobTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                    $('#jobDivId').css('height', vm.resizerHeight);
+                }
+            }
+        };
+
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.job && typeof rsHt.job === 'object') {
@@ -5834,6 +5805,7 @@
                     }
                     vm.isLoading = true;
                     vm.isLoaded = false;
+                    updatePanelHeight();
                 }, function () {
                     vm.isLoading = true;
                     vm.isLoaded = false;
@@ -5857,7 +5829,8 @@
                             }
                         }
                     });
-                },function(){
+                    updatePanelHeight();
+                }, function () {
                     vm.isLoading = true;
                 });
             }
@@ -7234,15 +7207,50 @@
             });
         }
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if (!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.jobOverview;
-        } else {
-            vm.resizerHeight = 450;
+        vm.isSizeChange = false;
+        let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(rsHt) && rsHt.jobOverview) {
+            vm.resizerHeight = rsHt.jobOverview;
+            vm.isSizeChange = true;
         }
+
+        function updatePanelHeight() {
+            if (!vm.isSizeChange) {
+                setTimeout(function () {
+                    let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                    if (!_.isEmpty(rsHt) && rsHt.jobOverview) {
+                        vm.resizerHeight = rsHt.jobOverview;
+                    } else {
+                        let ht = (parseInt($('#jobTableId').height()) + 50);
+                        if(ht < 51) {
+                            ht = 450;
+                        }else if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                        $('#jobDivId').css('height', vm.resizerHeight);
+                    }
+                }, 0);
+            }
+        }
+
+        vm.resetPanel = function () {
+            rsHt.jobOverview = undefined;
+            vm.isSizeChange = false;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+            let ht = (parseInt($('#jobTableId').height()) + 50);
+            if (ht > 450) {
+                ht = 450;
+            }
+            vm.resizerHeight = ht + 'px';
+            $('#jobDivId').css('height', vm.resizerHeight);
+        };
+
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             rsHt.jobOverview = args.height;
+            vm.isSizeChange = true;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
         });

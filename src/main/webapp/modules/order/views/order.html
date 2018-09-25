@@ -202,6 +202,10 @@
                             <i class="fa fa fa-caret-up"></i>
                             <span translate>button.collapseDetails</span>
                         </button>
+                        <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allOrders.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                            <i class="fa fa fa-refresh"></i>
+                            <span translate>button.resetPanel</span>
+                        </button>
                         <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()"
                                 ng-show="!showSearchPanel">
                             <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>

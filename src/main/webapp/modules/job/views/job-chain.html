@@ -155,6 +155,10 @@
                         <i class="fa fa fa-caret-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
+                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa fa-refresh"></i>
+                        <span translate>button.resetPanel</span>
+                    </button>
                     <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                     </button>
@@ -216,12 +220,6 @@
                                             <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove1(job)"></i>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                               <label class="col-md-3 col-sm-4 form-control-label" translate>label.runningOn</label>
-                               <div class=" col-md-6 col-sm-8">
-                                   <input type="text" class="form-control" placeholder="{{'placeholder.agentName' | translate}}" ng-model="jobChainFilter.agentName">
-                               </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-3 col-sm-4 " translate>label.jobChainState</label>
@@ -742,8 +740,7 @@
                                                                             </div>
                                                                         </td>
                                                                         <td>
-                                                                            <span ng-class="{'p-l-sm' : nestedNode.level==1,'p-l' : nestedNode.level==2,'p-l-md' : nestedNode.level==3,'p-l-lg' : nestedNode.level==4}">
-                                                                               {{nestedNode.name}} </span>
+                                                                            <span ng-class="{'p-l-sm' : nestedNode.level==1,'p-l' : nestedNode.level==2,'p-l-md' : nestedNode.level==3,'p-l-lg' : nestedNode.level==4}" ng-bind-html="nestedNode.name | highlight:filterString"></span>
                                                                         </td>
                                                                         <td>
                                                                             <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, nestedNode, null, null, 'noToggle')"></i>
@@ -991,7 +988,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span ng-class="{'p-l-sm' : node.level==1,'p-l' : node.level==2,'p-l-md' : node.level==3,'p-l-lg' : node.level==4}">{{node.name}} </span>
+                                                    <span ng-class="{'p-l-sm' : node.level==1,'p-l' : node.level==2,'p-l-md' : node.level==3,'p-l-lg' : node.level==4}" ng-bind-html="node.name | highlight:filterString"></span>
                                                 </td>
                                                 <td>
                                                     <i class="cursor fa fa-history tableexport-ignore " ng-click="showHistory(jobChain,node, null, null, 'noToggle')"></i>

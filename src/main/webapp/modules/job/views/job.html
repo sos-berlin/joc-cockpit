@@ -132,6 +132,10 @@
                         <i class="fa fa fa-caret-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
+                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa fa-refresh"></i>
+                        <span translate>button.resetPanel</span>
+                    </button>
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                     </button>
@@ -162,38 +166,6 @@
                                 <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
                                     <div translate>message.uniqueError</div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-sm-4 form-control-label" translate>label.from</label>
-
-                            <div class="col-md-8 col-sm-8">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobFilter.fromDate"
-                                       ng-disabled="jobFilter.planned"
-                                       data-date-format="{{dataFormat}}" data-autoclose="1"
-                                       placeholder="{{dataFormat | uppercase}}" bs-datepicker
-                                       type="text">
-                                <input valid-time maxlength="8" ng-disabled="!jobFilter.fromDate" class="form-control input-time"
-                                       ng-model="jobFilter.fromTime"
-                                       placeholder="HH:MM:SS"
-                                       type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="jobFilter.fromDate || jobFilter.fromTime" ng-click="jobFilter.fromDate='';jobFilter.fromTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-sm-4 form-control-label" translate>label.to</label>
-
-                            <div class="col-md-8 col-sm-8">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobFilter.toDate"
-                                       ng-disabled="jobFilter.planned"
-                                       data-date-format="{{dataFormat}}" data-autoclose="1"
-                                       data-min-date="{{jobFilter.fromDate}}"
-                                       placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!jobFilter.toDate" class="form-control input-time"
-                                       ng-model="jobFilter.toTime"
-                                       placeholder="HH:MM:SS"
-                                       type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="jobFilter.toDate || jobFilter.toTime" ng-click="jobFilter.toDate='';jobFilter.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">

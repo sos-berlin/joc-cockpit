@@ -47,6 +47,7 @@
                 }
                 vm.isLoading = true;
                 loadFinished = true;
+                updatePanelHeight();
             }, function () {
                 vm.isLoading = true;
                 loadFinished = true;
@@ -58,6 +59,7 @@
             OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
                 vm.isLoading = true;
+                updatePanelHeight();
                 loadJobOrderV(obj);
             }, function () {
                 vm.isLoading = true;
@@ -230,11 +232,18 @@
                 });
         });
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if (!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.jobChainOrder;
-        } else {
-            vm.resizerHeight = 450;
+        function updatePanelHeight() {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (!_.isEmpty(rsHt) && rsHt.jobChainOrder) {
+                vm.resizerHeight = rsHt.jobChainOrder;
+            } else {
+                let ht = (parseInt($('#orderTableId').height()) + 50);
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+                $('#orderDivId').css('height', vm.resizerHeight);
+            }
         }
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
@@ -3844,7 +3853,8 @@
         }
 
         function firstVolatileCall(obj, expandNode, data) {
-            vm.folderPath = data.name || '/';
+            if(data)
+                vm.folderPath = data.name || '/';
             if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
@@ -4152,8 +4162,7 @@
                     }
                 }
 
-                vm.allOrders = vm.allOrders.concat(res.jobs);
-
+                vm.allOrders = vm.allOrders.concat(res.orders);
                 traverseTreeForSearchData();
             }, function () {
                if (vm.allOrders && vm.allOrders.length > 0) {
@@ -5177,6 +5186,22 @@
         }
 
         vm.resizerHeight = 450;
+        vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.order && typeof rsHt.order === 'object') {
+                if (rsHt.order[vm.folderPath]) {
+                    delete rsHt.order[vm.folderPath];
+                    SavedFilter.setResizerHeight(rsHt);
+                    SavedFilter.save();
+                    let ht = (parseInt($('#orderTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                    $('#orderDivId').css('height', vm.resizerHeight);
+                }
+            }
+        };
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.order && typeof rsHt.order === 'object') {
@@ -5250,6 +5275,7 @@
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
                 vm.isLoaded = false;
+                updatePanelHeight();
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
@@ -5758,15 +5784,50 @@
             $rootScope.$broadcast('reloadSnapshot');
         }
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if (!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.orderOverview;
-        } else {
-            vm.resizerHeight = 450;
+        vm.isSizeChange = false;
+        let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(rsHt) && rsHt.orderOverview) {
+            vm.resizerHeight = rsHt.orderOverview;
+            vm.isSizeChange = true;
         }
+
+        function updatePanelHeight() {
+            if (!vm.isSizeChange) {
+                setTimeout(function () {
+                    let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                    if (!_.isEmpty(rsHt) && rsHt.orderOverview) {
+                        vm.resizerHeight = rsHt.orderOverview;
+                    } else {
+                        let ht = (parseInt($('#orderTableId').height()) + 50);
+                        if(ht < 51){
+                             ht = 450;
+                        }else if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                        $('#orderDivId').css('height', vm.resizerHeight);
+                    }
+                }, 0);
+            }
+        }
+
+         vm.resetPanel = function () {
+            rsHt.orderOverview = undefined;
+            vm.isSizeChange = false;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+            let ht = (parseInt($('#orderTableId').height()) + 50);
+            if (ht > 450) {
+                ht = 450;
+            }
+            vm.resizerHeight = ht + 'px';
+            $('#orderDivId').css('height', vm.resizerHeight);
+        };
+
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             rsHt.orderOverview = args.height;
+            vm.isSizeChange = true;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
         });

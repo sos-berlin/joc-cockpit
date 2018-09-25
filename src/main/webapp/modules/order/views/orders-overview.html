@@ -112,6 +112,10 @@
                                 <a class="dropdown-item" href ng-click="sortBy('nextStartTime')" translate>label.nextStartTime</a>
                             </div>
                         </div>
+                        <button class="btn btn-sm btn-grey m-l-sm" ng-if="isSizeChange" ng-click="resetPanel()">
+                            <i class="fa fa fa-refresh"></i>
+                            <span translate>button.resetPanel</span>
+                        </button>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}"
                                 ng-disabled="pageView=='grid' || allOrders.length===0" id="exportToExcelBtn"
                                 ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
@@ -289,7 +293,7 @@
                         </div>
                     </div>
                     <div class="box p-a" ng-if="pageView=='list' && allOrders.length >0">
-                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
+                        <div class="table-responsive" id="orderDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                             <table class="table table-hover table-bordered " id="orderTableId">
                                 <thead>
                                 <tr>
