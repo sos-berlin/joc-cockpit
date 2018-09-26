@@ -600,15 +600,22 @@
                 }
                 filter.targets = mergeHostAndProtocol(hosts,protocols);
             }
-            if (vm.yadeSearch.date == 'process') {
+            if (vm.yadeSearch.date === 'process') {
                 filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
             } else {
-                if (vm.yadeSearch.date == 'date' && vm.yadeSearch.from) {
+                if (vm.yadeSearch.date === 'date' && vm.yadeSearch.from) {
                     let fromDate = new Date(vm.yadeSearch.from);
                     if (vm.yadeSearch.fromTime) {
-                        fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').seconds());
+                        if (vm.yadeSearch.fromTime === '24:00' || vm.yadeSearch.fromTime === '24:00:00') {
+                            fromDate.setDate(fromDate.getDate() + 1);
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        } else {
+                            fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').seconds());
+                        }
                     } else {
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
@@ -617,12 +624,19 @@
                     fromDate.setMilliseconds(0);
                     filter.dateFrom = moment.utc(fromDate);
                 }
-                if (vm.yadeSearch.date == 'date' && vm.yadeSearch.to) {
+                if (vm.yadeSearch.date === 'date' && vm.yadeSearch.to) {
                     let toDate = new Date(vm.yadeSearch.to);
                     if (vm.yadeSearch.toTime) {
-                        toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.yadeSearch.toTime, 'HH:mm:ss').seconds());
+                        if (vm.yadeSearch.toTime === '24:00' || vm.yadeSearch.toTime === '24:00:00') {
+                            toDate.setDate(toDate.getDate() + 1);
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        } else {
+                            toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.yadeSearch.toTime, 'HH:mm:ss').seconds());
+                        }
                     } else {
                         toDate.setHours(0);
                         toDate.setMinutes(0);

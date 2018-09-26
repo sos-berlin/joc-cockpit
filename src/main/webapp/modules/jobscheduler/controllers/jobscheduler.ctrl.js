@@ -578,16 +578,16 @@
             if (vm.agentJobSearch.from) {
                 var fromDate = new Date(vm.agentJobSearch.from);
                 if (vm.agentJobSearch.fromTime) {
-                    if (vm.agentJobSearch.fromTime !== '24:00' || vm.agentJobSearch.fromTime !== '24:00:00') {
-                        fromDate.setHours(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').seconds());
-                    } else {
+                    if (vm.agentJobSearch.fromTime === '24:00' || vm.agentJobSearch.fromTime === '24:00:00') {
                         fromDate.setDate(fromDate.getDate() + 1);
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
                         fromDate.setSeconds(0);
-                        
+                        fromDate.setMilliseconds(0);
+                    } else {
+                        fromDate.setHours(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').hours());
+                        fromDate.setMinutes(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').minutes());
+                        fromDate.setSeconds(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').seconds());
                     }
                 } else {
                     fromDate.setHours(0);
@@ -600,15 +600,15 @@
             if (vm.agentJobSearch.to) {
                 var toDate = new Date(vm.agentJobSearch.to);
                 if (vm.agentJobSearch.toTime) {
-                    if (vm.agentJobSearch.toTime !== '24:00' || vm.agentJobSearch.toTime !== '24:00:00') {
-                        toDate.setHours(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').seconds());
-                    } else {
+                    if (vm.agentJobSearch.toTime === '24:00' || vm.agentJobSearch.toTime === '24:00:00') {
                         toDate.setDate(toDate.getDate() + 1);
                         toDate.setHours(0);
                         toDate.setMinutes(0);
                         toDate.setSeconds(0);
+                    } else {
+                        toDate.setHours(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').hours());
+                        toDate.setMinutes(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').minutes());
+                        toDate.setSeconds(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').seconds());
                     }
                 } else {
                     toDate.setHours(0);
@@ -1539,36 +1539,36 @@
                 if (vm.eventSearch.from) {
                     var fromDate = new Date(vm.eventSearch.from);
                     if (vm.eventSearch.fromTime) {
-                        if (vm.eventSearch.fromTime !== '24:00' || vm.eventSearch.fromTime !== '24:00:00') {
-                            fromDate.setHours(moment(vm.eventSearch.fromTime, 'HH:mm:ss').hours());
-                            fromDate.setMinutes(moment(vm.eventSearch.fromTime, 'HH:mm:ss').minutes());
-                            fromDate.setSeconds(moment(vm.eventSearch.fromTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (vm.eventSearch.fromTime === '24:00' || vm.eventSearch.fromTime === '24:00:00') {
                             fromDate.setDate(fromDate.getDate() + 1);
                             fromDate.setHours(0);
                             fromDate.setMinutes(0);
                             fromDate.setSeconds(0);
-                            fromDate.setMilliseconds(0);
+                        } else {
+                            fromDate.setHours(moment(vm.eventSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.eventSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.eventSearch.fromTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
                         fromDate.setSeconds(0);
                     }
+                    fromDate.setMilliseconds(0);
                     obj.dateFrom = moment.utc(fromDate);
                 }
                 if (vm.eventSearch.to) {
                     var toDate = new Date(vm.eventSearch.to);
                     if (vm.eventSearch.toTime) {
-                        if (vm.eventSearch.toTime !== '24:00' || vm.eventSearch.toTime !== '24:00:00') {
-                            toDate.setHours(moment(vm.eventSearch.toTime, 'HH:mm:ss').hours());
-                            toDate.setMinutes(moment(vm.eventSearch.toTime, 'HH:mm:ss').minutes());
-                            toDate.setSeconds(moment(vm.eventSearch.toTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (vm.eventSearch.toTime === '24:00' || vm.eventSearch.toTime === '24:00:00') {
                             toDate.setDate(toDate.getDate() + 1);
                             toDate.setHours(0);
                             toDate.setMinutes(0);
                             toDate.setSeconds(0);
+                        } else {
+                            toDate.setHours(moment(vm.eventSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.eventSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.eventSearch.toTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         toDate.setHours(0);
@@ -6607,16 +6607,15 @@
                 if (vm.searchDailyPlanFilter.from) {
                     fromDate = new Date(vm.searchDailyPlanFilter.from);
                     if (vm.searchDailyPlanFilter.fromTime) {
-                        if(vm.searchDailyPlanFilter.fromTime !== '24:00' || vm.searchDailyPlanFilter.fromTime !== '24:00:00') {
-                            fromDate.setHours(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').hours());
-                            fromDate.setMinutes(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').minutes());
-                            fromDate.setSeconds(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').seconds());
-
-                        }else {
+                        if (vm.searchDailyPlanFilter.fromTime === '24:00' || vm.searchDailyPlanFilter.fromTime === '24:00:00') {
                             fromDate.setDate(fromDate.getDate() + 1);
                             fromDate.setHours(0);
                             fromDate.setMinutes(0);
                             fromDate.setSeconds(0);
+                        } else {
+                            fromDate.setHours(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.searchDailyPlanFilter.fromTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         fromDate.setHours(0);
@@ -6630,15 +6629,15 @@
                 if (vm.searchDailyPlanFilter.to) {
                     toDate = new Date(vm.searchDailyPlanFilter.to);
                     if (vm.searchDailyPlanFilter.toTime) {
-                        if(vm.searchDailyPlanFilter.toTime !== '24:00' || vm.searchDailyPlanFilter.toTime !== '24:00:00') {
-                            toDate.setHours(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').hours());
-                            toDate.setMinutes(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').minutes());
-                            toDate.setSeconds(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').seconds());
-                        }else {
+                        if (vm.searchDailyPlanFilter.toTime === '24:00' || vm.searchDailyPlanFilter.toTime === '24:00:00') {
                             toDate.setDate(toDate.getDate() + 1);
                             toDate.setHours(0);
                             toDate.setMinutes(0);
                             toDate.setSeconds(0);
+                        } else {
+                            toDate.setHours(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.searchDailyPlanFilter.toTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         toDate.setHours(0);

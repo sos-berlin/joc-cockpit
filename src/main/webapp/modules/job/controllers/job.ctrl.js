@@ -135,9 +135,7 @@
 
                 }
 
-                if (vm.showHistoryImmeditaly) {
-                    vm.showHistory(vm.jobChains[0]);
-                }
+                vm.showHistory(vm.jobChains[0]);
             });
         }
 
@@ -1030,17 +1028,17 @@
                 obj.title = order.title;
 
             if (order.fromDate && order.fromTime) {
-                if(order.fromTime !== '24:00' || order.fromTime !== '24:00:00') {
-                    order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
-                    order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
-                    order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
-                }else {
+                if (order.fromTime === '24:00' || order.fromTime === '24:00:00') {
                     order.fromDate.setDate(order.fromDate.getDate() + 1);
                     order.fromDate.setHours(0);
                     order.fromDate.setMinutes(0);
                     order.fromDate.setSeconds(0);
-                    order.fromDate.setMilliseconds(0);
+                } else {
+                    order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                    order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                    order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
                 }
+                order.fromDate.setMilliseconds(0);
             }
 
             if (order.fromDate && order.at === 'later') {
@@ -2603,6 +2601,7 @@
                                 break;
                             }
                         }
+                        return;
                     }
                     let arr = [];
                     let arr1 = [];
@@ -2828,6 +2827,13 @@
         });
 
         vm.resizerHeight = 450;
+        vm.infoSizerHt;
+        if ($location.search().scheduler_id && $location.search().path) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.jobChainInfo) {
+                vm.infoSizerHt = rsHt.jobChainInfo;
+            }
+        }
 
         vm.resetPanel = function () {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
@@ -2847,16 +2853,24 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.jobChain && typeof rsHt.jobChain === 'object') {
+            if(args.id === 'jobChainDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.jobChain && typeof rsHt.jobChain === 'object') {
+                    rsHt.jobChain[vm.folderPath] = args.height;
+                } else {
+                    rsHt.jobChain = {};
+                }
                 rsHt.jobChain[vm.folderPath] = args.height;
-            } else {
-                rsHt.jobChain = {};
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+                vm.resizerHeight = args.height;
+            }else if(args.id === 'jobChainInfoDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                vm.infoSizerHt = args.height;
+                rsHt.jobChainInfo = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
             }
-            rsHt.jobChain[vm.folderPath] = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
-            vm.resizerHeight = args.height;
         });
 
         $scope.$on('$destroy', function () {
@@ -2951,6 +2965,7 @@
             JobService.getJobsP(obj).then(function (result) {
                 vm.jobs = result.jobs;
                 getJobByPathV(obj);
+                vm.showTaskFuc(vm.jobs[0]);
                 vm.isLoading = true;
             }, function () {
                 getJobByPathV(obj);
@@ -2964,6 +2979,7 @@
                     vm.jobs[0] = mergePermanentAndVolatile(res.jobs[0], vm.jobs[0]);
                 } else {
                     vm.jobs = res.jobs;
+                    vm.showTaskFuc(vm.jobs[0]);
                 }
             });
         }
@@ -4574,17 +4590,17 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                if (job.time !== '24:00' || job.time !== '24:00:00') {
-                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
-                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
-                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
-                } else {
+                if (job.time === '24:00' || job.time === '24:00:00') {
                     job.date.setDate(job.date.getDate() + 1);
                     job.date.setHours(0);
                     job.date.setMinutes(0);
                     job.date.setSeconds(0);
-                    job.date.setMilliseconds(0);
+                } else {
+                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
                 }
+                job.date.setMilliseconds(0);
             }
             if (job.date && job.at === 'later') {
                 obj.at = moment(job.date).format("YYYY-MM-DD HH:mm:ss");
@@ -5487,7 +5503,10 @@
                                 }
                                 if ($location.search().path) {
                                     if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
-                                        getJobByPath($location.search().path);
+                                        let obj = {};
+                                        obj.jobschedulerId = vm.schedulerIds.selected;
+                                        obj.jobs = [{job: $location.search().path}];
+                                        getJobByPathV(obj);
                                     }
                                 } else {
                                     var obj = {};
@@ -5681,7 +5700,13 @@
 
 
         vm.resizerHeight = 450;
-
+        vm.infoSizerHt;
+        if ($location.search().scheduler_id && $location.search().path) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.jobInfo) {
+                vm.infoSizerHt = rsHt.jobInfo;
+            }
+        }
         vm.resetPanel = function () {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.job && typeof rsHt.job === 'object') {
@@ -5700,16 +5725,24 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.job && typeof rsHt.job === 'object') {
+            if(args.id === 'jobDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.job && typeof rsHt.job === 'object') {
+                    rsHt.job[vm.folderPath] = args.height;
+                } else {
+                    rsHt.job = {};
+                }
                 rsHt.job[vm.folderPath] = args.height;
-            } else {
-                rsHt.job = {};
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+                vm.resizerHeight = args.height;
+            }else if(args.id === 'jobInfoDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                vm.infoSizerHt = args.height;
+                rsHt.jobInfo = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
             }
-            rsHt.job[vm.folderPath] = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
-            vm.resizerHeight = args.height;
         });
 
         $scope.$on('$destroy', function () {
@@ -6188,17 +6221,17 @@
             obj.job = job.path;
 
             if (job.date && job.time) {
-                if (job.time !== '24:00' || job.time !== '24:00:00') {
-                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
-                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
-                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
-                } else {
+                if (job.time === '24:00' || job.time === '24:00:00') {
                     job.date.setDate(job.date.getDate() + 1);
                     job.date.setHours(0);
                     job.date.setMinutes(0);
                     job.date.setSeconds(0);
-                    job.date.setMilliseconds(0);
+                } else {
+                    job.date.setHours(moment(job.time, 'HH:mm:ss').hours());
+                    job.date.setMinutes(moment(job.time, 'HH:mm:ss').minutes());
+                    job.date.setSeconds(moment(job.time, 'HH:mm:ss').seconds());
                 }
+                job.date.setMilliseconds(0);
             }
             if (job.date && job.at === 'later') {
                 obj.at = moment(job.date).format("YYYY-MM-DD HH:mm:ss");
@@ -7223,7 +7256,7 @@
                     } else {
                         let ht = (parseInt($('#jobTableId').height()) + 50);
                         if(ht < 51) {
-                            ht = 450;
+                            ht = undefined;
                         }else if (ht > 450) {
                             ht = 450;
                         }
@@ -7248,11 +7281,13 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.jobOverview = args.height;
-            vm.isSizeChange = true;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
+            if(args.id === 'jobDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                rsHt.jobOverview = args.height;
+                vm.isSizeChange = true;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+            }
         });
 
         $scope.$on('$destroy', function () {

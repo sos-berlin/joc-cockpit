@@ -445,7 +445,9 @@
                                         </span>
                                     </td>
                                     <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
-                                    <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job"></span></td>
+                                    <td>
+                                        <i class="cursor fa fa-history" ng-click="showLogFuc(order, null, 'toggle')"></i>
+                                        <span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job"></span></td>
                                     <td>
                                         <a class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}" ng-click="showLogWindow(order)"

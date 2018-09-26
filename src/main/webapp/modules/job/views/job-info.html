@@ -15,7 +15,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="box p-a">
-                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                <div class="table-responsive" id="orderInfoDivId" resizable r-directions="['bottom']" r-height="infoSizerHt">
                     <table class="table table-hover table-bordered" id="jobTableId">
                         <thead>
                         <tr>
@@ -39,9 +39,9 @@
                         <tr title="{{job.configurationStatus._text | translate}}">
                             <td ng-if="permission.Job.view.configuration || permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                 <div class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                            <a class="dropdown-item"
                                                ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
                                                ng-click="start(job)"

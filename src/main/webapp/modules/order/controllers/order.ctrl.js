@@ -246,10 +246,12 @@
             }
         }
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.jobChainOrder = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
+            if(args.id === 'orderDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                rsHt.jobChainOrder = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+            }
         });
 
     }
@@ -1731,17 +1733,17 @@
             obj.endState = vm.order.endState;
 
             if (order.date && order.time) {
-                if(order.time !== '24:00' || order.time !== '24:00:00') {
-                    order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
-                    order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
-                    order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
-                }else{
+                if (order.time === '24:00' || order.time === '24:00:00') {
                     order.date.setDate(order.date.getDate() + 1);
                     order.date.setHours(0);
                     order.date.setMinutes(0);
                     order.date.setSeconds(0);
-                    order.date.setMilliseconds(0);
+                } else {
+                    order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
+                    order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
+                    order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
                 }
+                order.date.setMilliseconds(0);
             }
 
             if (order.date && order.at == 'later') {
@@ -2426,10 +2428,12 @@
             vm.resizerHeight = 450;
         }
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.jobChainDetail = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
+            if(args.id === 'jobChainDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                rsHt.jobChainDetail = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+            }
         });
 
         $scope.$on('$destroy', function () {
@@ -2713,18 +2717,18 @@
                 obj.title = order.title;
 
              if (order.fromDate && order.fromTime) {
-                if(order.fromTime !== '24:00' || order.fromTime !== '24:00:00') {
-                    order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
-                    order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
-                    order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
-                }else {
-                    order.fromDate.setDate(order.fromDate.getDate() + 1);
-                    order.fromDate.setHours(0);
-                    order.fromDate.setMinutes(0);
-                    order.fromDate.setSeconds(0);
-                }
-                order.fromDate.setMilliseconds(0);
-            }
+                 if (order.fromTime === '24:00' || order.fromTime === '24:00:00') {
+                     order.fromDate.setDate(order.fromDate.getDate() + 1);
+                     order.fromDate.setHours(0);
+                     order.fromDate.setMinutes(0);
+                     order.fromDate.setSeconds(0);
+                 } else {
+                     order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                     order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                     order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
+                 }
+                 order.fromDate.setMilliseconds(0);
+             }
             if (order.fromDate && order.at == 'later') {
                 obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
@@ -3249,6 +3253,7 @@
             obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
             OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
+                vm.showLogFuc(vm.orders[0]);
                 getOrderByPathV(obj);
                 vm.isLoading = true;
             }, function () {
@@ -3263,6 +3268,7 @@
                     vm.orders = _.merge(vm.orders, res.orders)
                 } else {
                     vm.orders = res.orders;
+                    vm.showLogFuc(vm.orders[0]);
                 }
             });
         }
@@ -3342,13 +3348,13 @@
             $rootScope.$broadcast('exportData');
         };
 
-        vm.reload = function() {
-            if (vm.reloadState == 'no') {
+        vm.reload = function () {
+            if (vm.reloadState === 'no') {
                 vm.allOrders = [];
                 vm.folderPath = 'Process aborted';
                 vm.reloadState = 'yes';
                 vm.orderFilters.expand_to = vm.tree;
-            } else if (vm.reloadState == 'yes') {
+            } else if (vm.reloadState === 'yes') {
                 vm.reloadState = 'no';
                 vm.load();
             }
@@ -3710,79 +3716,11 @@
         }
 
         function parseDate(obj) {
-            var fromDate, toDate, date, arr;
             if (vm.selectedFiltered.type) {
                 obj.types = vm.selectedFiltered.type;
             }
             if (vm.selectedFiltered.processingState) {
                 obj.processingState = vm.selectedFiltered.processingState;
-            }
-            if (vm.selectedFiltered.planned) {
-                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
-                    fromDate = '+'+seconds+'s';
-                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    obj.dateFrom = vm.selectedFiltered.planned;
-                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = '0d';
-                    toDate = '0d';
-                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = moment.utc(new Date());
-                    toDate = fromDate;
-                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    arr = date[0].split('to');
-                    fromDate = arr[0].trim();
-                    toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    arr = date[0].split('to');
-                    fromDate = arr[0].trim();
-                    toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    arr = date[0].split('to');
-                    fromDate = arr[0].trim();
-                    toDate = arr[1].trim();
-                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    arr = date[0].split('to');
-                    fromDate = arr[0].trim();
-                    toDate = arr[1].trim();
-                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
-                    fromDate = new Date();
-                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) + 12);
-                    } else {
-                        fromDate.setHours(parseInt(time[1]));
-                    }
-                    fromDate.setMinutes(parseInt(time[2]));
-                    fromDate = moment.utc(fromDate);
-                    toDate = new Date();
-                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) + 12);
-                    } else {
-                        toDate.setHours(parseInt(time[4]));
-                    }
-                    toDate.setMinutes(parseInt(time[5]));
-                    toDate = moment.utc(toDate);
-                }
-            }
-
-            if (fromDate && toDate) {
-                obj.dateFrom = fromDate;
-                obj.dateTo = toDate;
-            }
-            obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj["timeZone"];
-            }
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
-            }
-            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
             return obj;
         }
@@ -3827,7 +3765,7 @@
                                 res.orders[i].title = vm.allOrders[x].title;
                                 res.orders[i].path1 = vm.allOrders[x].path1;
                                 res.orders[i].show = vm.allOrders[x].show;
-                                vm.allOrders[x]= res.orders[i];
+                                vm.allOrders[x] = res.orders[i];
                                 res.orders.splice(i, 1);
                                 break;
                             }
@@ -4042,69 +3980,6 @@
             vm.orderFilters.filter.sortBy = propertyName;
         };
 
-        function parseDateForSearch(obj) {
-            var fromDate;
-            var toDate;
-            if (vm.orderFilter1.type) {
-                obj.types = vm.orderFilter1.type;
-            }
-
-            if (vm.orderFilter1.fromDate) {
-                fromDate = new Date(vm.orderFilter1.fromDate);
-                if (vm.orderFilter1.fromTime) {
-                    if (vm.orderFilter1.fromTime !== '24:00' || vm.orderFilter1.fromTime !== '24:00:00') {
-                        fromDate.setHours(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').seconds());
-                    } else {
-                        fromDate.setDate(fromDate.getDate() + 1);
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        fromDate.setSeconds(0);
-                    }
-
-                } else {
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                }
-                fromDate.setMilliseconds(0);
-            }
-            if (vm.orderFilter1.toDate) {
-                toDate = new Date(vm.orderFilter1.toDate);
-                if (vm.orderFilter1.toTime) {
-                    if (vm.orderFilter1.toTime !== '24:00' || vm.orderFilter1.toTime !== '24:00:00') {
-                        toDate.setHours(moment(vm.orderFilter1.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.orderFilter1.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.orderFilter1.toTime, 'HH:mm:ss').seconds());
-                    } else {
-                        toDate.setDate(toDate.getDate() + 1);
-                        toDate.setHours(0);
-                        toDate.setMinutes(0);
-                        toDate.setSeconds(0);
-                    }
-                } else {
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                }
-                toDate.setMilliseconds(0);
-            }
-
-            if (fromDate && toDate) {
-                obj.dateFrom = moment.utc(fromDate);
-                obj.dateTo = moment.utc(toDate);
-            }
-
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
-                obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
-            }
-            if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
-            }
-            return obj;
-        }
-
         vm.saveAsFilter = function (form) {
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
@@ -4127,10 +4002,6 @@
             vm.isUnique = true;
             vm.showSearchPanel = true;
             vm.orderFilter1 = {};
-            vm.orderFilter1.fromDate = new Date();
-            vm.orderFilter1.fromTime = moment().format("HH:mm");
-            vm.orderFilter1.toDate = new Date();
-            vm.orderFilter1.toTime = '24:00';
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -4143,7 +4014,9 @@
             if (vm.orderFilter1.processingState) {
                 obj.processingStates = vm.orderFilter1.processingState;
             }
-            obj = parseDateForSearch(obj);
+            if (vm.orderFilter1.type) {
+                obj.types = vm.orderFilter1.type;
+            }
             OrderService.get(obj).then(function (res) {
                 if (vm.allOrders && vm.allOrders.length > 0) {
                     for(let x=0; x < vm.allOrders.length; x++) {
@@ -4245,7 +4118,6 @@
             vm.cancel();
             vm.orderFilter1 = {};
             vm.isUnique = true;
-            vm.orderFilter1.planned = 'today';
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/order-filter-dialog.html',
@@ -4928,8 +4800,18 @@
                                  path[0] = vm.events[0].eventSnapshots[m].path;
                              }
                              if ($location.search().path) {
-                                 if (vm.events[0].eventSnapshots[m].path === $location.search().path)
-                                     getOrderByPath($location.search().path);
+                                 if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
+                                    let jobChain = [];
+                                    if ($location.search().path.indexOf(",") > -1) {
+                                        jobChain = path.split(",");
+                                    }
+
+                                    let obj = {};
+                                    obj.jobschedulerId = vm.schedulerIds.selected;
+                                    obj.compact = true;
+                                    obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
+                                    getOrderByPathV(obj);
+                                }
                              } else {
                                  if (vm.orderFilters.filter.state === 'ALL') {
                                      angular.forEach(vm.allOrders, function (val, i) {
@@ -5186,6 +5068,13 @@
         }
 
         vm.resizerHeight = 450;
+        vm.infoSizerHt;
+        if ($location.search().scheduler_id && $location.search().path) {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.orderInfo) {
+                vm.infoSizerHt = rsHt.orderInfo;
+            }
+        }
         vm.resetPanel = function () {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.order && typeof rsHt.order === 'object') {
@@ -5203,16 +5092,24 @@
             }
         };
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.order && typeof rsHt.order === 'object') {
+            if(args.id === 'orderDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.order && typeof rsHt.order === 'object') {
+                    rsHt.order[vm.folderPath] = args.height;
+                } else {
+                    rsHt.order = {};
+                }
                 rsHt.order[vm.folderPath] = args.height;
-            } else {
-                rsHt.order = {};
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+                vm.resizerHeight = args.height;
+            }else if(args.id === 'orderInfoDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                vm.infoSizerHt = args.height;
+                rsHt.orderInfo = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
             }
-            rsHt.order[vm.folderPath] = args.height;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
-            vm.resizerHeight = args.height;
         });
 
         $scope.$on('$destroy', function () {
@@ -5285,16 +5182,21 @@
 
         vm.init();
 
-        vm.showLogFuc = function (value, skip) {
+        vm.showLogFuc = function (value, skip, toggle) {
             let orders = {
                 jobschedulerId: vm.schedulerIds.selected,
                 limit: vm.userPreferences.maxNumInOrderOverviewPerObject
             };
             vm.isAuditLog = false;
-            if (vm.userPreferences.historyTab === 'order' || skip) {
-                vm.isTaskHistory = false;
-            } else {
-                vm.showJobHistory(value);
+            if (!toggle) {
+                if (vm.userPreferences.historyTab === 'order' || skip) {
+                    vm.isTaskHistory = false;
+                } else {
+                    vm.showJobHistory(value);
+                    return;
+                }
+            }else {
+                vm.showJobHistory(value,toggle);
                 return;
             }
             if (value.historyId) {
@@ -5311,7 +5213,7 @@
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
-        vm.showJobHistory = function (order) {
+        vm.showJobHistory = function (order,toggle) {
             vm.showLogPanel = order;
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
@@ -5320,7 +5222,9 @@
             if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
-            } else {
+            } else if(toggle){
+                obj.orders = [{jobChain: order.jobChain, state: order.state}];
+            }else{
                 obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
             }
             TaskService.histories(obj).then(function (res) {
@@ -5800,7 +5704,7 @@
                     } else {
                         let ht = (parseInt($('#orderTableId').height()) + 50);
                         if(ht < 51){
-                             ht = 450;
+                             ht = undefined;
                         }else if (ht > 450) {
                             ht = 450;
                         }
@@ -5825,11 +5729,13 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            rsHt.orderOverview = args.height;
-            vm.isSizeChange = true;
-            SavedFilter.setResizerHeight(rsHt);
-            SavedFilter.save();
+            if(args.id === 'orderDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                rsHt.orderOverview = args.height;
+                vm.isSizeChange = true;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+            }
         });
     }
 
@@ -5953,17 +5859,17 @@
             obj.state = vm.order.state;
             obj.endState = vm.order.endState;
             if (order.date && order.time) {
-                if(order.time !== '24:00' || order.time !== '24:00:00') {
-                    order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
-                    order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
-                    order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
-                }else{
+                if (order.time === '24:00' || order.time === '24:00:00') {
                     order.date.setDate(order.date.getDate() + 1);
                     order.date.setHours(0);
                     order.date.setMinutes(0);
                     order.date.setSeconds(0);
-                    order.date.setMilliseconds(0);
+                } else {
+                    order.date.setHours(moment(order.time, 'HH:mm:ss').hours());
+                    order.date.setMinutes(moment(order.time, 'HH:mm:ss').minutes());
+                    order.date.setSeconds(moment(order.time, 'HH:mm:ss').seconds());
                 }
+                order.date.setMilliseconds(0);
             }
             if (order.date && order.at === 'later') {
                 obj.at = moment(order.date).format("YYYY-MM-DD HH:mm:ss");
@@ -7286,7 +7192,6 @@
             } else if (vm.yade.filter.date && vm.yade.filter.date != 'all') {
                 filter.dateFrom = vm.yade.filter.date;
             }
-
             return filter;
         }
 
@@ -7531,15 +7436,15 @@
                     if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
                         var fromDate = new Date(vm.jobSearch.from);
                         if (vm.jobSearch.fromTime) {
-                            if (vm.jobSearch.fromTime !== '24:00' || vm.jobSearch.fromTime !== '24:00:00') {
-                                fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
-                                fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
-                                fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
-                            }else {
+                            if (vm.jobSearch.fromTime === '24:00' || vm.jobSearch.fromTime === '24:00:00') {
                                 fromDate.setDate(fromDate.getDate() + 1);
                                 fromDate.setHours(0);
                                 fromDate.setMinutes(0);
                                 fromDate.setSeconds(0);
+                            } else {
+                                fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
+                                fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
+                                fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
                             }
                         } else {
                             fromDate.setHours(0);
@@ -7552,15 +7457,15 @@
                     if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
                         let toDate = new Date(vm.jobSearch.to);
                         if (vm.jobSearch.toTime) {
-                            if (vm.jobSearch.toTime !== '24:00' || vm.jobSearch.toTime !== '24:00:00') {
-                                toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
-                                toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
-                                toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
-                            } else {
+                            if (vm.jobSearch.toTime === '24:00' || vm.jobSearch.toTime === '24:00:00') {
                                 toDate.setDate(toDate.getDate() + 1);
                                 toDate.setHours(0);
                                 toDate.setMinutes(0);
                                 toDate.setSeconds(0);
+                            } else {
+                                toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
+                                toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
+                                toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
                             }
                         } else {
                             toDate.setHours(0);
@@ -7636,15 +7541,15 @@
                 if (vm.jobChainSearch.date === 'date' && vm.jobChainSearch.from) {
                     let fromDate = new Date(vm.jobChainSearch.from);
                     if (vm.jobChainSearch.fromTime) {
-                        if (vm.jobChainSearch.fromTime !== '24:00' || vm.jobChainSearch.fromTime !== '24:00:00') {
-                            fromDate.setHours(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').hours());
-                            fromDate.setMinutes(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').minutes());
-                            fromDate.setSeconds(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (vm.jobChainSearch.fromTime === '24:00' || vm.jobChainSearch.fromTime === '24:00:00') {
                             fromDate.setDate(fromDate.getDate() + 1);
                             fromDate.setHours(0);
                             fromDate.setMinutes(0);
                             fromDate.setSeconds(0);
+                        } else {
+                            fromDate.setHours(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         fromDate.setHours(0);
@@ -7657,15 +7562,15 @@
                 if (vm.jobChainSearch.date === 'date' && vm.jobChainSearch.to) {
                     let toDate = new Date(vm.jobChainSearch.to);
                     if (vm.jobChainSearch.toTime) {
-                        if (vm.jobChainSearch.toTime !== '24:00' || vm.jobChainSearch.toTime !== '24:00:00') {
-                            toDate.setHours(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').hours());
-                            toDate.setMinutes(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').minutes());
-                            toDate.setSeconds(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (vm.jobChainSearch.toTime === '24:00' || vm.jobChainSearch.toTime === '24:00:00') {
                             toDate.setDate(toDate.getDate() + 1);
                             toDate.setHours(0);
                             toDate.setMinutes(0);
                             toDate.setSeconds(0);
+                        } else {
+                            toDate.setHours(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         toDate.setHours(0);
@@ -7793,21 +7698,21 @@
                     filter.targets = mergeHostAndProtocol(hosts, protocols);
                 }
 
-                if (vm.yadeSearch.date == 'process') {
+                if (vm.yadeSearch.date === 'process') {
                     filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
                 } else {
-                    if (vm.yadeSearch.date == 'date' && vm.yadeSearch.from) {
+                    if (vm.yadeSearch.date === 'date' && vm.yadeSearch.from) {
                         var fromDate = new Date(vm.yadeSearch.from);
                         if (vm.yadeSearch.fromTime) {
-                            if (vm.yadeSearch.fromTime !== '24:00' || vm.yadeSearch.fromTime !== '24:00:00') {
-                                fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
-                                fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
-                                fromDate.setSeconds(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').seconds());
-                            }else {
+                            if (vm.yadeSearch.fromTime === '24:00' || vm.yadeSearch.fromTime === '24:00:00') {
                                 fromDate.setDate(fromDate.getDate() + 1);
                                 fromDate.setHours(0);
                                 fromDate.setMinutes(0);
                                 fromDate.setSeconds(0);
+                            } else {
+                                fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
+                                fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
+                                fromDate.setSeconds(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').seconds());
                             }
                         } else {
                             fromDate.setHours(0);
@@ -7820,15 +7725,15 @@
                     if (vm.yadeSearch.date == 'date' && vm.yadeSearch.to) {
                         var toDate = new Date(vm.yadeSearch.to);
                         if (vm.yadeSearch.toTime) {
-                            if (vm.yadeSearch.toTime !== '24:00' || vm.yadeSearch.toTime !== '24:00:00') {
-                                toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
-                                toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
-                                toDate.setSeconds(moment(vm.yadeSearch.toTime, 'HH:mm:ss').seconds());
-                            } else {
+                            if (vm.yadeSearch.toTime === '24:00' || vm.yadeSearch.toTime === '24:00:00') {
                                 toDate.setDate(toDate.getDate() + 1);
                                 toDate.setHours(0);
                                 toDate.setMinutes(0);
                                 toDate.setSeconds(0);
+                            } else {
+                                toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
+                                toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
+                                toDate.setSeconds(moment(vm.yadeSearch.toTime, 'HH:mm:ss').seconds());
                             }
                         }else {
                             toDate.setHours(0);

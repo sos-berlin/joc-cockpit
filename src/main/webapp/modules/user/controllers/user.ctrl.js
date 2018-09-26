@@ -851,15 +851,15 @@
                 if (object.date == 'date' && object.from) {
                     var fromDate = new Date(object.from);
                     if (object.fromTime) {
-                        if (object.fromTime !== '24:00' || object.fromTime !== '24:00:00') {
-                            fromDate.setHours(moment(object.fromTime, 'HH:mm:ss').hours());
-                            fromDate.setMinutes(moment(object.fromTime, 'HH:mm:ss').minutes());
-                            fromDate.setSeconds(moment(object.fromTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (object.fromTime === '24:00' || object.fromTime === '24:00:00') {
                             fromDate.setDate(fromDate.getDate() + 1);
                             fromDate.setHours(0);
                             fromDate.setMinutes(0);
                             fromDate.setSeconds(0);
+                        } else {
+                            fromDate.setHours(moment(object.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(object.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(object.fromTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         fromDate.setHours(0);
@@ -872,15 +872,15 @@
                 if (object.date == 'date' && object.to) {
                     let toDate = new Date(object.to);
                     if (object.toTime) {
-                        if (object.toTime !== '24:00' || object.toTime !== '24:00:00') {
-                            toDate.setHours(moment(object.toTime, 'HH:mm:ss').hours());
-                            toDate.setMinutes(moment(object.toTime, 'HH:mm:ss').minutes());
-                            toDate.setSeconds(moment(object.toTime, 'HH:mm:ss').seconds());
-                        } else {
+                        if (object.toTime === '24:00' || object.toTime === '24:00:00') {
                             toDate.setDate(toDate.getDate() + 1);
                             toDate.setHours(0);
                             toDate.setMinutes(0);
                             toDate.setSeconds(0);
+                        } else {
+                            toDate.setHours(moment(object.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(object.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(object.toTime, 'HH:mm:ss').seconds());
                         }
                     } else {
                         toDate.setHours(0);
