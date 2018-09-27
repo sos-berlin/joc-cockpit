@@ -1335,9 +1335,9 @@
   "label.targetFileRegex": "Expression regulière pour le fichier cible",
   "placeholder.sourceFilesRegex": "Expression regulière pour le fichier source",
   "placeholder.targetFilesRegex": "Expression regulière pour le fichier cible",
-  "button.deleteProfile": "Delete Profile",
-  "label.deleteAllProfiles": "Delete selected Profiles",
-  "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?",
-  "button.resetPanel": "Resize Panel",
-  "message.noSchedulerInstalled": "No Jobscheduler master is installed"
+  "button.deleteProfile": "Supprimer le Profil",
+  "label.deleteAllProfiles": "Supprimer les Profils sélectionnés",
+  "message.deleteAllProfiles": "Êtes-vous sûr de vouloir supprimer les Profils sélectionnés?",
+  "button.resetPanel": "Redimensionner le panneau",
+  "message.noSchedulerInstalled": "Aucun JobScheduler Master connecté"
 }

@@ -1339,5 +1339,5 @@
   "label.deleteAllProfiles": "Delete selected Profiles",
   "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?",
   "button.resetPanel": "Resize Panel",
-  "message.noSchedulerInstalled": "No Jobscheduler master is installed"
+  "message.noSchedulerInstalled": "No JobScheduler Master connected"
 }
