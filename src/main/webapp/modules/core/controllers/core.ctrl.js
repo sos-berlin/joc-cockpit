@@ -1609,7 +1609,7 @@
         }
 
         function filterdEvents() {
-            var eventFilter = vm.userPreferences.events.filter;
+            var eventFilter = vm.userPreferences.events ? vm.userPreferences.events.filter : null;
             if (eventFilter && angular.isArray(eventFilter) && eventFilter.length > 0) {
                 for (var i = 0; i < vm.allEvents.length; i++) {
 

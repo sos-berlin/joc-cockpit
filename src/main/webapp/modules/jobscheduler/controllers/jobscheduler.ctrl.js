@@ -43,6 +43,12 @@
         vm.filterTree1 = [];
         vm.object.paths = [];
 
+        if (!vm.schedulerIds.selected) {
+            vm.resourceFilters.state = '';
+            vm.isLoading = true;
+            return;
+        }
+
         vm.collapseNode = function (data) {
             function recursive(data) {
                 data.expanded = !1;
@@ -1076,46 +1082,46 @@
 
         vm.addObjectPaths = function () {
             if (vm.clickOn == 'jobChain') {
-                if (vm.eventSearch && vm.showSearchPanel) {
+                if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.orders = vm.orders;
                     vm.eventSearch.jobChains = vm.jobChains;
                 }
-                else if (vm.eventFilter && !vm.showSearchPanel) {
+                else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.orders = vm.orders;
                     vm.eventFilter.jobChains = vm.jobChains;
                 }
             } else {
-                if (vm.eventSearch && vm.showSearchPanel) {
+                if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.jobs = vm.jobs;
                 }
-                else if (vm.eventFilter && !vm.showSearchPanel) {
+                else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.jobs = vm.jobs;
                 }
             }
         };
         vm.addObjectPath = function () {
             if (vm.clickOn == 'jobChain') {
-                if (vm.eventSearch && vm.showSearchPanel) {
+                if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.orders = vm.orders;
                     vm.eventSearch.jobChains = vm.jobChains;
                 }
-                else if (vm.eventFilter && !vm.showSearchPanel) {
+                else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.orders = vm.orders;
                     vm.eventFilter.jobChains = vm.jobChains;
                 }
             } else {
-                if (vm.eventSearch && vm.showSearchPanel) {
+                if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.jobs = vm.jobs;
                 }
-                else if (vm.eventFilter && !vm.showSearchPanel) {
+                else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.jobs = vm.jobs;
                 }
             }
         };
         vm.remove = function (object, type) {
             if (type == 'jobChain') {
-                if (vm.eventFilter && vm.eventFilter.jobChains && !vm.showSearchPanel) {
-                    for (var i = 0; i < vm.eventFilter.jobChains.length; i++) {
+                if (vm.eventFilter && vm.eventFilter.jobChains && !vm.showSearchEventPanel) {
+                    for (let i = 0; i < vm.eventFilter.jobChains.length; i++) {
                         if (angular.equals(vm.eventFilter.jobChains[i], object)) {
                             vm.eventFilter.jobChains.splice(i, 1);
                             break;
@@ -1132,8 +1138,8 @@
 
                 }
             } else if (type == 'job') {
-                if (vm.eventFilter && vm.eventFilter.jobs && !vm.showSearchPanel) {
-                    for (var i = 0; i < vm.eventFilter.jobs.length; i++) {
+                if (vm.eventFilter && vm.eventFilter.jobs && !vm.showSearchEventPanel) {
+                    for (let i = 0; i < vm.eventFilter.jobs.length; i++) {
                         if (angular.equals(vm.eventFilter.jobs[i], object)) {
                             vm.eventFilter.jobs.splice(i, 1);
                             break;
@@ -1149,7 +1155,7 @@
                 }
 
             } else if (type == 'order') {
-                if (vm.eventFilter && vm.eventFilter.orders && !vm.showSearchPanel) {
+                if (vm.eventFilter && vm.eventFilter.orders && !vm.showSearchEventPanel) {
                     for (var i = 0; i < vm.eventFilter.orders.length; i++) {
                         if (angular.equals(vm.eventFilter.orders[i], object)) {
                             vm.eventFilter.orders.splice(i, 1);
@@ -1256,7 +1262,7 @@
 
         vm.advanceFilter = function () {
             vm.eventSearch = {};
-            vm.showSearchPanel = false;
+            vm.showSearchEventPanel = false;
             vm.isUnique = true;
             vm.action = 'add';
             vm.eventFilter = {};
@@ -1313,7 +1319,7 @@
 
         vm.editFilter = function (filter) {
             vm.eventSearch = {};
-            vm.showSearchPanel = false;
+            vm.showSearchEventPanel = false;
             vm.action = 'edit';
             vm.isUnique = true;
             temp_name = angular.copy(filter.name);
@@ -1481,7 +1487,7 @@
 
         vm.changeFilter = function (filter) {
             vm.eventSearch = {};
-            vm.showSearchPanel = false;
+            vm.showSearchEventPanel = false;
 
             if (filter) {
                 vm.savedEventFilter.selected = filter.id;
@@ -1576,7 +1582,6 @@
                         toDate.setSeconds(0);
                     }
                     toDate.setMilliseconds(0);
-
                     obj.dateTo = moment.utc(toDate);
                 }
             }
@@ -4194,14 +4199,12 @@
         }
 
         vm.hidePanel = function () {
-            $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('m-l-0 fade-in col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
         vm.showLeftPanel = function () {
-            $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('fade-in m-l-0 col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 
@@ -4831,9 +4834,6 @@
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, $interval, UserService, $window, YadeService, JobService, PermissionService) {
         var vm = $scope;
         vm.loadingImg = true;
-        if(!vm.schedulerIds.selected){
-            vm.loadingImg = false;
-        }
 
         function initConfig(flag) {
            let grid = $('.grid-stack').data('gridstack');
@@ -5197,18 +5197,23 @@
             if (!vm.agentClusters) {
                 vm.isLoadedAgentCluster = false;
             }
-            JobSchedulerService.getAgentCluster({
-                jobschedulerId: $scope.schedulerIds.selected
-            }).then(function (res) {
-                if (res.agentClusters) {
-                    vm.agentClusters = res.agentClusters;
-                    prepareAgentClusterData(vm.agentClusters);
-                }
-                vm.isLoadedAgentCluster = true;
-            }, function () {
-                vm.agentClusterData = [];
-                vm.isLoadedAgentCluster = true;
-            });
+            if (vm.schedulerIds.selected) {
+                JobSchedulerService.getAgentCluster({
+                    jobschedulerId: vm.schedulerIds.selected
+                }).then(function (res) {
+                    if (res.agentClusters) {
+                        vm.agentClusters = res.agentClusters;
+                        prepareAgentClusterData(vm.agentClusters);
+                    }
+                    vm.isLoadedAgentCluster = true;
+                }, function () {
+                    vm.agentClusterData = [];
+                    vm.isLoadedAgentCluster = true;
+                });
+            }else{
+               vm.agentClusterData = [];
+               vm.isLoadedAgentCluster = true;
+            }
         };
 
         vm.barOptions = {
@@ -5333,32 +5338,36 @@
                 agentClusterRunningTaskGraph(agentArray);
                 return;
             }
-            ResourceService.getProcessClass({
-                jobschedulerId: $scope.schedulerIds.selected,
-                isAgentCluster: true
-            }).then(function (res) {
-                if (res.processClasses) {
-                    vm.processClasses = res.processClasses;
-                    angular.forEach(vm.processClasses, function (value) {
-                        agentArray.push({label: value.path, value: value.numOfProcesses});
-                    });
+            if (vm.schedulerIds.selected) {
+                ResourceService.getProcessClass({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    isAgentCluster: true
+                }).then(function (res) {
+                    if (res.processClasses) {
+                        vm.processClasses = res.processClasses;
+                        angular.forEach(vm.processClasses, function (value) {
+                            agentArray.push({label: value.path, value: value.numOfProcesses});
+                        });
 
-                    t1 = $timeout(function () {
-                        vm.agentStatusChart = [{
-                            "key": "Agents",
-                            "values": agentArray
-                        }];
-                        if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
-                            vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
-                        }
+                        t1 = $timeout(function () {
+                            vm.agentStatusChart = [{
+                                "key": "Agents",
+                                "values": agentArray
+                            }];
+                            if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
+                                vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
+                            }
 
-                    }, 0);
-                }
+                        }, 0);
+                    }
 
-                vm.isLoadedRunningTask = true;
-            }, function () {
+                    vm.isLoadedRunningTask = true;
+                }, function () {
+                    agentClusterRunningTaskGraph(agentArray);
+                });
+            }else{
                 agentClusterRunningTaskGraph(agentArray);
-            });
+            }
         };
 
         function prepareAgentClusterData(result) {
@@ -5419,52 +5428,58 @@
                 return;
             }
             clusterStatusData = {};
-            getDatabase().then(function (res) {
-                clusterStatusData.database = res;
-                getClusterMembersP().then(function (res) {
-                    clusterStatusData.members = res;
+            if (vm.schedulerIds.selected) {
+                getDatabase().then(function (res) {
+                    clusterStatusData.database = res;
+                    getClusterMembersP().then(function (res) {
+                        clusterStatusData.members = res;
 
-                    if (clusterStatusData.members.masters && clusterStatusData.members.masters.length > 1) {
-                        clusterStatusData.members.masters.sort(function (a, b) {
-                            return a.clusterType.precedence - b.clusterType.precedence;
-                        });
-                    }
-                    vm.clusterStatusData = clusterStatusData;
-                    t2 = $timeout(function () {
+                        if (clusterStatusData.members.masters && clusterStatusData.members.masters.length > 1) {
+                            clusterStatusData.members.masters.sort(function (a, b) {
+                                return a.clusterType.precedence - b.clusterType.precedence;
+                            });
+                        }
                         vm.clusterStatusData = clusterStatusData;
-                        $rootScope.$broadcast('clusterStatusDataChanged');
-                        vm.isLoadedMasterCluster = true;
-                        $('#masterClusterStatus1').on('shown.bs.dropdown', function (e) {
-                            var $menu = $(e.target).find('.more-option');
-                            if ($menu && $menu.offset()) {
-                                $(this).find('.dropdown-menu').css("top", $menu.offset().top + 27);
-                                if (window.localStorage.$SOS$LANG == 'fr') {
-                                    $(this).find('.dropdown-menu').css("left", $menu.offset().left - 260);
-                                } else if (window.localStorage.$SOS$LANG == 'ja') {
-                                    $(this).find('.dropdown-menu').css("left", $menu.offset().left - 125);
-                                } else if (window.localStorage.$SOS$LANG == 'de') {
-                                    $(this).find('.dropdown-menu').css("left", $menu.offset().left - 230);
-                                } else {
-                                    $(this).find('.dropdown-menu').css("left", $menu.offset().left - 210);
+                        t2 = $timeout(function () {
+                            vm.clusterStatusData = clusterStatusData;
+                            $rootScope.$broadcast('clusterStatusDataChanged');
+                            vm.isLoadedMasterCluster = true;
+                            $('#masterClusterStatus1').on('shown.bs.dropdown', function (e) {
+                                var $menu = $(e.target).find('.more-option');
+                                if ($menu && $menu.offset()) {
+                                    $(this).find('.dropdown-menu').css("top", $menu.offset().top + 27);
+                                    if (window.localStorage.$SOS$LANG == 'fr') {
+                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 260);
+                                    } else if (window.localStorage.$SOS$LANG == 'ja') {
+                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 125);
+                                    } else if (window.localStorage.$SOS$LANG == 'de') {
+                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 230);
+                                    } else {
+                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 210);
+                                    }
+                                    $(this).find('.dropdown-menu').css("position", "fixed");
+                                    $(this).find('.dropdown-menu').css("z-index", "9999");
                                 }
-                                $(this).find('.dropdown-menu').css("position", "fixed");
-                                $(this).find('.dropdown-menu').css("z-index", "9999");
-                            }
-                        });
-                        $('#masterClusterStatus1').on('hide.bs.dropdown', function () {
-                            $(this).find('.dropdown-menu').css("top", "auto");
-                            $(this).find('.dropdown-menu').css("left", "auto");
-                        });
-                    }, 60);
+                            });
+                            $('#masterClusterStatus1').on('hide.bs.dropdown', function () {
+                                $(this).find('.dropdown-menu').css("top", "auto");
+                                $(this).find('.dropdown-menu').css("left", "auto");
+                            });
+                        }, 60);
 
+                    }, function () {
+                        vm.clusterStatusData = [];
+                        vm.isLoadedMasterCluster = true;
+
+                    });
                 }, function () {
-                    vm.clusterStatusData = [];
                     vm.isLoadedMasterCluster = true;
-
                 });
-            }, function () {
+            } else {
+                vm.clusterStatusData = [];
                 vm.isLoadedMasterCluster = true;
-            });
+                vm.notPermissionForMasterCluster = {};
+            }
         }
 
         vm.getSupervisor = getSupervisorDetails;
@@ -5533,7 +5548,7 @@
             $state.go('app.resources.agentClusters', {type: 'all'});
         };
 
-        var states = [];
+
         vm.clusterAction = function (objectType, action, host, port, id) {
             function performAction() {
                 var obj = {};
@@ -5727,41 +5742,47 @@
                 vm.snapshot = {};
                 return;
             }
-            isLoadedSnapshot = false;
-            OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                vm.snapshot = res.orders;
-                vm.notPermissionForSnapshot = '';
-                isLoadedSnapshot = true;
+            if (vm.schedulerIds.selected) {
+                isLoadedSnapshot = false;
+                OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    vm.snapshot = res.orders;
+                    vm.notPermissionForSnapshot = '';
+                    isLoadedSnapshot = true;
 
-            }, function (err) {
-                if (err.data)
-                    vm.notPermissionForSnapshot = !err.data.isPermitted;
-                isLoadedSnapshot = true;
+                }, function (err) {
+                    if (err.data)
+                        vm.notPermissionForSnapshot = !err.data.isPermitted;
+                    isLoadedSnapshot = true;
 
-            });
+                });
+            } else {
+                isLoadedSnapshot = true;
+                vm.notPermissionForSnapshot = {};
+            }
         };
-
 
         vm.getOrderSummary = function () {
             if (!vm.isOrderSummaryVisible) {
                 return;
             }
             isLoadedSummary = false;
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
-
             obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
-
             obj.timeZone = vm.userPreferences.zone;
-            OrderService.getSummary(obj).then(function (res) {
-                vm.orderSummary = res.orders;
-                isLoadedSummary = true;
+             if (vm.schedulerIds.selected) {
+                 OrderService.getSummary(obj).then(function (res) {
+                     vm.orderSummary = res.orders;
+                     isLoadedSummary = true;
 
-            }, function (err) {
-                vm.notPermissionForSummary = !err.data.isPermitted;
-                isLoadedSummary = true;
-
-            })
+                 }, function (err) {
+                     vm.notPermissionForSummary = !err.data.isPermitted;
+                     isLoadedSummary = true;
+                 })
+             }else {
+                 vm.notPermissionForSummary = {};
+                 isLoadedSummary = true;
+             }
         };
 
         vm.loadTaskSnapshot = function (flag) {
@@ -5773,18 +5794,22 @@
                 vm.jobSnapshot = {};
                 return;
             }
-            isLoadedTaskSnapshot = false;
-            JobService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                vm.jobSnapshot = res.jobs;
-                vm.notPermissionForTaskSnapshot = '';
-                isLoadedTaskSnapshot = true;
+             if (vm.schedulerIds.selected) {
+                 isLoadedTaskSnapshot = false;
+                 JobService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                     vm.jobSnapshot = res.jobs;
+                     vm.notPermissionForTaskSnapshot = '';
+                     isLoadedTaskSnapshot = true;
 
-            }, function (err) {
-                if (err.data)
-                    vm.notPermissionForTaskSnapshot = !err.data.isPermitted;
-                isLoadedTaskSnapshot = true;
-
-            });
+                 }, function (err) {
+                     if (err.data)
+                         vm.notPermissionForTaskSnapshot = !err.data.isPermitted;
+                     isLoadedTaskSnapshot = true;
+                 });
+             }else{
+                 isLoadedTaskSnapshot = true;
+                vm.notPermissionForTaskSnapshot = {};
+             }
         };
 
         vm.getTaskSummary = function () {
@@ -5795,17 +5820,19 @@
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
             obj.dateFrom = vm.dashboardFilters.filter.taskSummaryfrom;
-
             obj.timeZone = vm.userPreferences.zone;
-            JobService.getSummary(obj).then(function (res) {
-                vm.taskSummary = res.jobs;
-                isLoadedTaskSummary = true;
-
-            }, function (err) {
-                vm.notPermissionForTaskSummary = !err.data.isPermitted;
-                isLoadedTaskSummary = true;
-
-            })
+            if (vm.schedulerIds.selected) {
+                JobService.getSummary(obj).then(function (res) {
+                    vm.taskSummary = res.jobs;
+                    isLoadedTaskSummary = true;
+                }, function (err) {
+                    vm.notPermissionForTaskSummary = !err.data.isPermitted;
+                    isLoadedTaskSummary = true;
+                })
+            }else{
+                 isLoadedTaskSummary = false;
+                 vm.notPermissionForTaskSummary = {};
+            }
         };
 
         vm.getFileOverview = function (flag) {
@@ -5817,18 +5844,21 @@
                 vm.yadeOverview = {};
                 return;
             }
-            isLoadedFileOverview = false;
-            YadeService.getOverview({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                vm.yadeOverview = res.transfers;
-                vm.notPermissionForSnapshot = '';
+            if (vm.schedulerIds.selected) {
+                isLoadedFileOverview = false;
+                YadeService.getOverview({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    vm.yadeOverview = res.transfers;
+                    vm.notPermissionForSnapshot = '';
+                    isLoadedFileOverview = true;
+                }, function (err) {
+                    if (err.data)
+                        vm.notPermissionForFileOverview = !err.data.isPermitted;
+                    isLoadedFileOverview = true;
+                });
+            }else{
                 isLoadedFileOverview = true;
-
-            }, function (err) {
-                if (err.data)
-                    vm.notPermissionForFileOverview = !err.data.isPermitted;
-                isLoadedFileOverview = true;
-
-            });
+                vm.notPermissionForFileOverview = {};
+            }
         };
 
         vm.getFileSummary = function () {
@@ -5836,22 +5866,24 @@
                 return;
             }
             isLoadedFileSummary = false;
-            var obj = {};
+            let obj = {};
             obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
             obj.timeZone = vm.userPreferences.zone;
             obj.jobschedulerId = $scope.schedulerIds.selected;
-            YadeService.getSummary(obj).then(function (res) {
-                vm.yadeSummary = res;
+            if (vm.schedulerIds.selected) {
+                YadeService.getSummary(obj).then(function (res) {
+                    vm.yadeSummary = res;
+                    isLoadedFileSummary = true;
+                }, function (err) {
+                    if (err.data)
+                        vm.notPermissionForFileSummary = !err.data.isPermitted;
+                    isLoadedFileSummary = true;
+                })
+            }else{
+                vm.notPermissionForFileSummary = {};
                 isLoadedFileSummary = true;
-
-            }, function (err) {
-                if (err.data)
-                    vm.notPermissionForFileSummary = !err.data.isPermitted;
-                isLoadedFileSummary = true;
-
-            })
+            }
         };
-
 
         vm.loadScheduleStatus = function () {
             if (!vm.isJobscheduleStatusVisible) {
@@ -5900,17 +5932,19 @@
                 obj.dateTo = '0d';
                 obj.timeZone = vm.userPreferences.zone;
             }
-
-            DailyPlanService.getPlans(obj).then(function (res) {
-                vm.planItemData = res.planItems;
-                filterData();
+            if (vm.schedulerIds.selected) {
+                DailyPlanService.getPlans(obj).then(function (res) {
+                    vm.planItemData = res.planItems;
+                    filterData();
+                    isLoadedDailyPlan = true;
+                }, function () {
+                    isLoadedDailyPlan = true;
+                    vm.totalPlanData = 0;
+                })
+            } else {
                 isLoadedDailyPlan = true;
-
-            }, function () {
-                isLoadedDailyPlan = true;
-
                 vm.totalPlanData = 0;
-            })
+            }
         };
 
 
@@ -6097,7 +6131,10 @@
                 if (vm.userPreferences && !vm.userPreferences.dashboard) {
                     setWidgetPreference();
                 }
-            })
+            });
+            if (!vm.schedulerIds.selected) {
+                initWidgets();
+            }
         }
 
 
@@ -6206,6 +6243,13 @@
         };
 
         $scope.reloadState = 'no';
+
+        if (!vm.schedulerIds.selected) {
+            vm.isLoading = true;
+            isLoaded = true;
+            vm.showSpinner = false;
+            return;
+        }
 
         vm.reload = function() {
             if ($scope.reloadState == 'no') {

@@ -1277,9 +1277,15 @@
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy2('source.host')"><a><span translate>label.sourceHost</span>
-                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && !yade.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'source.host' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && yade.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'source.host' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy2('source.protocol')"><a><span translate>label.sourceProtocol</span>
+                                    <i ng-show="yade.filter.sortBy == 'source.protocol' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'source.protocol' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy2('target.host')"><a><span translate>label.targetHost</span>
@@ -1345,7 +1351,8 @@
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.profile | highlight:filterString"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.mandator | highlight:filterString"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></span></td>
-                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
+                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
+                            <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.source.protocol" ng-bind-html="transfer.source.protocol | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)"><span ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></span></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.numOfFiles"></td>
@@ -1356,7 +1363,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="transfer.show">
                             <td></td>
-                            <td colspan="12" >
+                            <td colspan="13" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1397,7 +1404,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
                              <td></td>
-                             <td colspan="12" >
+                             <td colspan="13" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">

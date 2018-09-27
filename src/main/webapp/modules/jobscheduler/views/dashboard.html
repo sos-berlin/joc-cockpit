@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline" ng-if="!editLayoutObj">
+                    <div class="inline" ng-if="!editLayoutObj && schedulerIds.selected">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="downloadJocLog()" >
                             <i class="fa fa-download"></i>&nbsp;
                             <span translate>button.downloadJocCockpitLog</span>
@@ -118,7 +118,7 @@
                     <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                 </div>
                 <div class="box-tool hide"
-                     ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
+                     ng-class="{'show': selectedJobScheduler.clusterType._type && selectedJobScheduler.clusterType._type != 'STANDALONE'}">
                     <div class="btn-group dropdown pull-right">
                         <button class="btn btn-sm btn-grey dropdown-toggle" data-toggle="dropdown" translate>
                             label.menu
@@ -161,6 +161,11 @@
                 <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}"
                      style="padding: 140px 0 155px 0">
                     <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+                </div>
+                <div ng-if="notPermissionForMasterCluster">
+                    <div class="text-u-c text-center text-md" style="margin-top: 10%">
+                        {{'message.noInformationAvailable' | translate}}
+                    </div>
                 </div>
             </div>
             <div id="jobSchedulerStatus" ng-if="widget.name == 'jobSchedulerStatus'"
@@ -575,7 +580,7 @@
                     <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                 </div>
                 <div class="box-body">
-                    <div class="table-responsive" ng-if="!notPermissionForFileOverview">
+                    <div class="table-responsive" ng-if="!notPermissionForFileOverview && yadeOverview">
                         <table style="width: 100%">
                             <tr class="text-center">
                                 <td width="25%">
@@ -591,7 +596,7 @@
                                     <div translate>label.waitingForResource</div>
                                 </td>
                             </tr>
-                            <tr class="text-center" ng-if="yadeOverview">
+                            <tr class="text-center">
                                 <td width="25%">
                                     <a href="#!/file_transfer_overview/RUNNING" class="text-lg _600 "
                                        ng-bind="yadeOverview.running || 0"></a>
@@ -676,7 +681,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <table style="width: 100%" ng-if="!notPermissionForFileSummary">
+                    <table style="width: 100%" ng-if="!notPermissionForFileSummary && yadeSummary">
                         <tr class="text-center">
                             <td width="50%">
                                 <div translate>label.successful</div>
@@ -685,7 +690,7 @@
                                 <div translate>label.failed</div>
                             </td>
                         </tr>
-                        <tr class="text-center" ng-if="yadeSummary">
+                        <tr class="text-center">
                             <td width="50%">
                                 <a class="text-lg _600 " ng-click="showYadeSummary('SUCCESSFUL')"
                                    ng-class="{'text-success':yadeSummary.successful >0}"
@@ -713,7 +718,7 @@
                     <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
                     <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                 </div>
-                <div class="box-tool">
+                <div class="box-tool" ng-if="totalPlanData > 0">
                     <div class="btn-group m-l-sm">
                         <button class="btn btn-grey btn-sm" ng-model="dashboardFilters.filter.range"
                                 uib-btn-radio="'today'"

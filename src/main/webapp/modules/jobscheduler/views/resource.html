@@ -322,7 +322,7 @@
         </div>
     </div>
 </div>
-<div class="padding">
+<div class="padding" ng-if="schedulerIds.selected">
     <div class="row">
         <div class="col-md-8">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
@@ -412,8 +412,11 @@
     </div>
 </div>
 <div class="scroll-y max-ht2">
-    <div class="padding p-b-0 p-t-0">
+    <div class="padding p-b-0 p-t-0" ng-if="schedulerIds.selected">
         <div ui-view></div>
+    </div>
+    <div ng-if="!schedulerIds.selected" class="text-center m-t-md text-md text-orange">
+        <span>{{'message.noSchedulerInstalled' | translate}}</span>
     </div>
 </div>
 

@@ -390,7 +390,7 @@
                                     <i class="cursor fa fa-caret-down tableexport-ignore fa-lg"
                                        ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                     <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="job.showJobChains"
-                                       ng-click="job.showJobChains = false;job.runningTasks=[]"></i>
+                                       ng-click="hideJobChains(job)"></i>
                                     <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                           ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                           ng-bind="job.name"></span>

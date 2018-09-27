@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
+                    <div class="inline" ng-class="{'hide':object.jobChains.length>0 || !schedulerIds.selected}">
                         <div class="btn-group hidden-btn-group">
                             <button ng-disabled="savedJobChainFilter.selected" class="btn btn-grey btn-sm"
                                     ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
@@ -118,7 +118,7 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0">
+    <div class="padding p-b-0" ng-if="schedulerIds.selected">
         <div class="hide-block sidebar-btn resize-cursor">
             <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
         </div>
@@ -825,9 +825,9 @@
                                                                                         <span class="text-sm">
                                                                                             <span>
                                                                                                 <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, null, order, null, 'noToggle')"></i>
-                                                                                                {{'label.order'| translate}}:&nbsp;</span><a
-                                                                                                href="" class="text-hover-primary"
-                                                                                                ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
+                                                                                                {{'label.order'| translate}}:&nbsp;</span>
+                                                                                            <a href="" class="text-hover-primary"
+                                                                                                ng-click="viewOrders(jobChain)" ng-bind-html="order.orderId | highlight:filterString"></a>
                                                                                             <i class="text-muted text-sm" ng-if="order.title">-<span ng-bind-html="order.title | linky:'_blank'"></span></i> -
                                                                                             <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                                                                     order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}" ng-if="order.processingState._text" ng-bind="order.processingState._text | translate"></span>
@@ -1062,8 +1062,8 @@
                                                             <span>
                                                                 <span class="text-sm"><span>
                                                                     <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain, null, order, null, 'noToggle')"></i>
-                                                                    {{'label.order'| translate}}:&nbsp;</span><a href="" class="text-hover-primary"
-                                                                        ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
+                                                                    {{'label.order'| translate}}:&nbsp;</span>
+                                                                    <a href="" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind-html="order.orderId | highlight:filterString"></a>
                                                                     <i class="text-muted text-sm" ng-if="order.title">-<span ng-bind-html="order.title | linky:'_blank'"></span></i> -
                                                                     <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                                         order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}" ng-if="order.processingState._text" ng-bind="order.processingState._text | translate"></span>
@@ -1448,7 +1448,9 @@
             </div>
         </div>
     </div>
-
+    <div ng-if="!schedulerIds.selected" class="text-center m-t-md text-md text-orange">
+        <span>{{'message.noSchedulerInstalled' | translate}}</span>
+    </div>
 </div>
 <div class="{{isLoaded ? loading-img1 :''}}"></div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">

@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline  {{object.jobs.length>0 ? 'hide' : ''}}">
+                    <div class="inline  {{object.jobs.length>0 || !schedulerIds.selected ? 'hide' : ''}}">
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
                                      ng-click="changeStatus()" translate>button.allJobTypes
@@ -103,7 +103,7 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0">
+    <div class="padding p-b-0" ng-if="schedulerIds.selected">
         <div class="hide-block sidebar-btn resize-cursor">
             <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
         </div>
@@ -525,7 +525,7 @@
                                         <i class="cursor fa fa-caret-down tableexport-ignore fa-lg"
                                            ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                         <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="job.showJobChains"
-                                           ng-click="job.showJobChains = false;job.runningTasks=[]"></i>
+                                           ng-click="hideJobChains(job)"></i>
                                         <span ng-click="showTaskFuc(job)"
                                               class="text-dark text-hover-primary {{(job.isOrderJob != undefined && job.isOrderJob!=true) ? 'text-u-l' :''}} {{job.configurationStatus.severity==2 ? 'crimson': ''}}"
                                               ng-bind-html="job.name | highlight:filterString"></span>
@@ -982,6 +982,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div ng-if="!schedulerIds.selected" class="text-center m-t-md text-md text-orange">
+        <span>{{'message.noSchedulerInstalled' | translate}}</span>
     </div>
 </div>
 <div ng-if="loading || !isLoading || isLoaded || reloadState == 'yes'">

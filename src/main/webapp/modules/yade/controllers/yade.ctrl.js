@@ -1235,8 +1235,8 @@
         });
     }
 
-    YadeOverviewCtrl.$inject = ["$scope","$rootScope", "CoreService", "YadeService","OrderService", "$uibModal",  "$stateParams", "AuditLogService", "TaskService"];
-    function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal, $stateParams, AuditLogService, TaskService) {
+    YadeOverviewCtrl.$inject = ["$scope","$rootScope", "CoreService", "YadeService","OrderService", "$uibModal",  "$stateParams", "AuditLogService", "TaskService", "SavedFilter"];
+    function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal, $stateParams, AuditLogService, TaskService, SavedFilter) {
         var vm = $scope;
         vm.orderFilters = CoreService.getYadeDetailTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -1280,6 +1280,7 @@
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
                 vm.isLoaded = false;
+                updatePanelHeight();
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
@@ -1288,16 +1289,21 @@
         };
         vm.init();
 
-        vm.showLogFuc = function (value, skip) {
+        vm.showLogFuc = function (value, skip, toggle) {
             let orders = {
                 jobschedulerId: vm.schedulerIds.selected,
                 limit: vm.userPreferences.maxNumInOrderOverviewPerObject
             };
             vm.isAuditLog = false;
-            if (vm.userPreferences.historyTab === 'order' || skip) {
-                vm.isTaskHistory = false;
+            if (!toggle) {
+                if (vm.userPreferences.historyTab === 'order' || skip) {
+                    vm.isTaskHistory = false;
+                } else {
+                    vm.showJobHistory(value);
+                    return;
+                }
             } else {
-                vm.showJobHistory(value);
+                vm.showJobHistory(value, toggle);
                 return;
             }
             if (value.historyId) {
@@ -1314,7 +1320,7 @@
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
-        vm.showJobHistory = function (order) {
+        vm.showJobHistory = function (order, toggle) {
             vm.showLogPanel = order;
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
@@ -1323,6 +1329,8 @@
             if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
+            } else if (toggle) {
+                obj.orders = [{jobChain: order.jobChain, state: order.state}];
             } else {
                 obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
             }
@@ -1757,6 +1765,57 @@
                     }
                 }
         });
+
+        vm.isSizeChange = false;
+        let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+        if (!_.isEmpty(rsHt) && rsHt.yadeOrderOverview) {
+            vm.resizerHeight = rsHt.yadeOrderOverview;
+            vm.isSizeChange = true;
+        }
+
+        function updatePanelHeight() {
+            if (!vm.isSizeChange) {
+                setTimeout(function () {
+                    let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                    if (!_.isEmpty(rsHt) && rsHt.yadeOrderOverview) {
+                        vm.resizerHeight = rsHt.yadeOrderOverview;
+                    } else {
+                        let ht = (parseInt($('#orderTableId').height()) + 50);
+                        if(ht < 51){
+                             ht = undefined;
+                        }else if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                        $('#orderDivId').css('height', vm.resizerHeight);
+                    }
+                }, 0);
+            }
+        }
+        vm.resetPanel = function () {
+            rsHt.yadeOrderOverview = undefined;
+            vm.isSizeChange = false;
+            SavedFilter.setResizerHeight(rsHt);
+            SavedFilter.save();
+            let ht = (parseInt($('#orderTableId').height()) + 50);
+            if (ht > 450) {
+                ht = 450;
+            }
+            vm.resizerHeight = ht + 'px';
+            $('#orderDivId').css('height', vm.resizerHeight);
+        };
+
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            if (args.id === 'orderDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                rsHt.yadeOrderOverview = args.height;
+                vm.isSizeChange = true;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+            }
+        });
+
+
     }
 
 })();

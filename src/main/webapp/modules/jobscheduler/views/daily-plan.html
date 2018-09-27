@@ -6,8 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline m-l-sm">
-
+                    <div class="inline m-l-sm" ng-if="schedulerIds.selected">
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="dailyPlanFilters.filter.state='';getPlans()" translate>button.allStatus
@@ -135,7 +134,7 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
-        <div class="row m-b-sm m-t-xs">
+        <div class="row m-b-sm m-t-xs" ng-if="schedulerIds.selected">
             <div class="col-lg-12">
                 <span ng-if="maxPlannedTime" class="text">{{'label.dailyPlanCreated' | translate}} : <span class="text-muted">{{maxPlannedTime|stringToDate}}</span></span>
                 <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
@@ -506,6 +505,9 @@
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
+    </div>
+    <div ng-if="!schedulerIds.selected" class="text-center m-t-md text-md text-orange">
+        <span>{{'message.noSchedulerInstalled' | translate}}</span>
     </div>
 </div>
 <div ng-if="!isLoading || showSpinner || reloadState == 'yes'">

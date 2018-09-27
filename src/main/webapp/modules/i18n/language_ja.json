@@ -1338,5 +1338,6 @@
   "button.deleteProfile": "Delete Profile",
   "label.deleteAllProfiles": "Delete selected Profiles",
   "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?",
-  "button.resetPanel": "Resize Panel"
+  "button.resetPanel": "Resize Panel",
+  "message.noSchedulerInstalled": "No Jobscheduler master is installed"
 }

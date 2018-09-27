@@ -34,7 +34,10 @@
         var modalInstance;
         $scope.reloadState = 'no';
         vm.selectedFiltered = null;
-
+        if (!vm.schedulerIds.selected) {
+            vm.isLoading = true;
+            return;
+        }
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;
             dest.numOfNodes = sour.numOfNodes;
@@ -471,6 +474,7 @@
                     mergePermanentRes(jobChainPath, obj, data);
                 vm.loading = false;
                 getFilteredData();
+                updatePanelHeight();
             }, function () {
                 vm.loading = false;
             });
@@ -635,7 +639,7 @@
             });
         }
 
-        function updateTreeData(expandNode, treeUpdate) {
+        function updateTreeData(expandNode, treeUpdate, wait) {
             if (expandNode) {
                 startTraverseNode(expandNode);
             }
@@ -644,6 +648,17 @@
                     insertData(node, vm.allJobChains);
                 })
             }
+            if(wait) {
+                setTimeout(function () {
+                    updatePanelHeight();
+                }, 10);
+            }else {
+                updatePanelHeight();
+            }
+            vm.isLoaded = false;
+        }
+
+        function updatePanelHeight() {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.jobChain && !_.isEmpty(rsHt.jobChain)) {
                 if (rsHt.jobChain[vm.folderPath]) {
@@ -664,7 +679,6 @@
 
             }
             $('#jobChainDivId').css('height', vm.resizerHeight);
-            vm.isLoaded = false;
         }
 
         function volatileInformation(obj, expandNode, treeUpdate) {
@@ -724,8 +738,7 @@
                     }
                 }
 
-
-                updateTreeData(expandNode, treeUpdate);
+                updateTreeData(expandNode, treeUpdate, 'wait');
             }, function () {
                 updateTreeData(expandNode, treeUpdate);
             });
@@ -2368,11 +2381,10 @@
                     jobChain: jobChain.path,
                     maxOrders: vm.userPreferences.maxOrderPerJobchain
                 }).then(function (res) {
-                    jobChain  = mergePermanentAndVolatile(res.jobChain, jobChain,res.nestedJobChains);
-                    if (vm.userPreferences.showTasks)
+                    jobChain = mergePermanentAndVolatile(res.jobChain, jobChain, res.nestedJobChains);
+                    if (vm.userPreferences.showTasks) {
                         angular.forEach(jobChain.nodes, function (val, index) {
                             if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-
                                 JobService.get({
                                     jobschedulerId: vm.schedulerIds.selected,
                                     jobs: [{job: val.job.path}]
@@ -2381,7 +2393,10 @@
                                 });
                             }
                         });
+                    }
+                    updatePanelHeight();
                 });
+
             });
 
             for (let i = 0; i < vm.tree.length; i++) {
@@ -2398,6 +2413,9 @@
                     traverseToSelectedJobChain(vm.tree[i], jobChain);
                 }
             }
+            setTimeout(function () {
+              updatePanelHeight();
+            },10)
         };
 
 
@@ -2452,27 +2470,32 @@
 
                         }
                     }
+                    updatePanelHeight();
                 });
                 vm.isLoaded = false;
+
             }, function () {
                 vm.isLoaded = false;
             });
         };
 
-
         vm.collapseDetails = function () {
             for (let i = 0; i < vm.allJobChains.length; i++) {
                 vm.allJobChains[i].show = false;
             }
+            setTimeout(function () {
+              updatePanelHeight();
+            },10)
         };
 
         vm.showHistory = showHistory;
 
-        vm.historyRequestObj ={};
-        function showHistory(jobChain, node, order, skip,toggle) {
-            if(vm.showHistoryPanel && vm.showHistoryPanel.path !== jobChain.path){
-                vm.historyRequestObj ={};
-                vm.taskHistoryRequestObj ={};
+        vm.historyRequestObj = {};
+
+        function showHistory(jobChain, node, order, skip, toggle) {
+            if (vm.showHistoryPanel && vm.showHistoryPanel.path !== jobChain.path) {
+                vm.historyRequestObj = {};
+                vm.taskHistoryRequestObj = {};
             }
 
             vm.showHistoryPanel = angular.copy(jobChain);
@@ -2928,7 +2951,10 @@
         vm.expanding_property = {
             field: "name"
         };
-
+        if (!vm.schedulerIds.selected) {
+            vm.isLoading = true;
+            return;
+        }
         if ($location.search().scheduler_id && $location.search().path) {
             vm.checkSchedulerId();
             getJobByPath($location.search().path);
@@ -3496,6 +3522,9 @@
             }
 
             vm.isLoaded = false;
+            setTimeout(function () {
+                updatePanelHeight();
+            }, 5);
         }
 
         function updatePanelHeight() {
@@ -4385,9 +4414,16 @@
                 job.showJobChains = true;
                 JobService.get(jobs).then(function (result) {
                     job = mergePermanentAndVolatile(result.jobs[0], job);
+                    updatePanelHeight();
                 });
             });
 
+        };
+
+        vm.hideJobChains = function (job) {
+            job.showJobChains = false;
+            job.runningTasks = [];
+            updatePanelHeight();
         };
 
         vm.hideTaskPanel = function () {
@@ -4429,15 +4465,18 @@
                     }
                 }
 
-            },function () {
+                updatePanelHeight();
+
+            }, function () {
                 vm.isLoaded = false;
             });
         };
 
         vm.collapseDetails = function () {
-            for(let i = 0; i < vm.allJobs.length; i++) {
+            for (let i = 0; i < vm.allJobs.length; i++) {
                 vm.allJobs[i].showJobChains = false;
             }
+            updatePanelHeight();
         };
 
         /**--------------- Actions -----------------------------*/
@@ -6084,9 +6123,15 @@
                 job.showJobChains = true;
                 JobService.get(jobs).then(function (res) {
                     job = mergePermanentAndVolatile(res.jobs[0], job);
+                    updatePanelHeight();
                 });
             });
+        };
 
+        vm.hideJobChains = function (job) {
+            job.showJobChains = false;
+            job.runningTasks = [];
+            updatePanelHeight();
         };
 
         vm.hideTaskPanel = function () {

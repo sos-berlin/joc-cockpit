@@ -3230,7 +3230,10 @@
         vm.expanding_property = {
             field: "name"
         };
-
+       if (!vm.schedulerIds.selected) {
+            vm.isLoading = true;
+            return;
+        }
         if ($location.search().scheduler_id && $location.search().path) {
             vm.checkSchedulerId();
             getOrderByPath($location.search().path);
@@ -3726,26 +3729,28 @@
         }
 
         function updatePanelHeight() {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.order && !_.isEmpty(rsHt.order)) {
-                if (rsHt.order[vm.folderPath]) {
-                    vm.resizerHeight = rsHt.order[vm.folderPath];
+            setTimeout(function () {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.order && !_.isEmpty(rsHt.order)) {
+                    if (rsHt.order[vm.folderPath]) {
+                        vm.resizerHeight = rsHt.order[vm.folderPath];
+                    } else {
+                        let ht = (parseInt($('#orderTableId').height()) + 50);
+                        if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                    }
                 } else {
                     let ht = (parseInt($('#orderTableId').height()) + 50);
                     if (ht > 450) {
                         ht = 450;
                     }
                     vm.resizerHeight = ht + 'px';
-                }
-            } else {
-                let ht = (parseInt($('#orderTableId').height()) + 50);
-                if (ht > 450) {
-                    ht = 450;
-                }
-                vm.resizerHeight = ht + 'px';
 
-            }
-            $('#orderDivId').css('height', vm.resizerHeight);
+                }
+                $('#orderDivId').css('height', vm.resizerHeight);
+            }, 0)
         }
 
         function volatileInformation(obj, expandNode) {
@@ -3781,6 +3786,7 @@
                 }
                 vm.loading = false;
                 vm.isLoaded = false;
+                updatePanelHeight();
             }, function () {
                 if (expandNode) {
                     startTraverseNode(expandNode);
@@ -4727,15 +4733,19 @@
                     }
                 }
                 vm.isLoaded = false;
+                updatePanelHeight();
             }, function () {
                 vm.isLoaded = false;
             });
         };
 
         vm.collapseDetails = function () {
-            for(let x = 0; x < vm.allOrders.length;x++) {
+            for (let x = 0; x < vm.allOrders.length; x++) {
                 vm.allOrders[x].show = false;
             }
+            setTimeout(function(){
+                updatePanelHeight();
+            },5);
         };
 
         function checkCurrentSelectedFolders(order) {
@@ -4784,9 +4794,29 @@
             });
         }
 
+        vm.showPanelFuc1 = function (order) {
+            order.show = true;
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = vm.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = _.merge(order, res.orders[0]);
+                updatePanelHeight();
+            });
+        };
+
+        vm.hidePanelFuc = function (order) {
+            order.show = false;
+            setTimeout(function(){
+                updatePanelHeight();
+            },5);
+        };
+
         var t1 = '';
         var mapObj = {};
-        var loadFileBasedObj = true, isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false, orderPaths =[];
+        var isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
+            orderPaths = [];
         $scope.$on('event-started', function () {
              if (!isOperationGoingOn) {
                  if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
@@ -6423,15 +6453,14 @@
                     vm.showLogPanel = '';
                 }
                 if (vm.allOrders && vm.allOrders.length > 0) {
-                    for (var j = 0; j < vm.allOrders.length; j++) {
+                    for (let j = 0; j < vm.allOrders.length; j++) {
                         if (vm.allOrders[j].path == order.path) {
                             vm.allOrders.splice(j, 1);
                             break;
                         }
                     }
-
                 } else if (vm.orders && vm.orders.length > 0) {
-                    for (var j = 0; j < vm.orders.length; j++) {
+                    for (let j = 0; j < vm.orders.length; j++) {
                         if (vm.orders[j].path == order.path) {
                             vm.orders.splice(j, 1);
                             break;
@@ -7200,7 +7229,7 @@
         function jobHistory(filter) {
             vm.isUnique = true;
             if (!filter) {
-                if (!vm.jobHistoryFilterList) {
+                if (!vm.jobHistoryFilterList && vm.schedulerIds.selected) {
                     checkSharedTaskFilters();
                     return;
                 }
@@ -7247,7 +7276,7 @@
 
         function orderHistory(filter) {
             vm.isUnique = true;
-            if (!vm.orderHistoryFilterList) {
+            if (!vm.orderHistoryFilterList && vm.schedulerIds.selected) {
                 checkSharedFilters();
                 return;
             }
@@ -7311,7 +7340,7 @@
 
         function yadeHistory(filter) {
             vm.isUnique = true;
-            if (!vm.yadeHistoryFilterList) {
+            if (!vm.yadeHistoryFilterList && vm.schedulerIds.selected) {
                 checkSharedYadeFilters();
                 return;
             }
