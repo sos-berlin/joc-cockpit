@@ -686,7 +686,24 @@
                         obj.jobs.push({job: job});
                     });
                 }
-                if (vm.selectedFiltered.orders) {
+                if (vm.selectedFiltered.jobChains) {
+                    obj.orders = [];
+                    let jobChainsArr = angular.copy(vm.selectedFiltered.jobChains);
+                    if(vm.selectedFiltered.orders) {
+                        angular.forEach(vm.selectedFiltered.orders, function (order) {
+                            let index = jobChainsArr.indexOf(order.jobChain);
+                            if (index > -1) {
+                                jobChainsArr.splice(index, 1);
+                            }
+                        });
+                    }
+                    angular.forEach(jobChainsArr, function (jobChain) {
+                        obj.orders.push({jobChain: jobChain});
+                    });
+                    if(vm.selectedFiltered.orders) {
+                        obj.orders = obj.orders.concat(vm.selectedFiltered.orders);
+                    }
+                } else if (vm.selectedFiltered.orders) {
                     obj.orders = vm.selectedFiltered.orders;
                 }
                 if (vm.selectedFiltered.eventIds) {
@@ -1591,7 +1608,24 @@
                     obj.jobs.push({job: job});
                 });
             }
-            if (vm.eventSearch.orders) {
+            if (vm.eventSearch.jobChains) {
+                obj.orders = [];
+                let jobChainsArr = angular.copy(vm.eventSearch.jobChains);
+                if(vm.eventSearch.orders) {
+                    angular.forEach(vm.eventSearch.orders, function (order) {
+                        let index = jobChainsArr.indexOf(order.jobChain);
+                        if (index > -1) {
+                            jobChainsArr.splice(index, 1);
+                        }
+                    });
+                }
+                angular.forEach(jobChainsArr, function (jobChain) {
+                    obj.orders.push({jobChain: jobChain});
+                });
+                if(vm.eventSearch.orders) {
+                    obj.orders = obj.orders.concat(vm.eventSearch.orders);
+                }
+            } else if (vm.eventSearch.orders) {
                 obj.orders = vm.eventSearch.orders;
             }
             if (vm.eventSearch.eventIds) {
@@ -3326,6 +3360,8 @@
                     vm.showPanel = undefined;
                 }
 
+                updatePanelHeight();
+
             }, function () {
                 vm.loading = false;
             });
@@ -3379,6 +3415,7 @@
                 vm.allCalendars = result.calendars;
                 startTraverseNode1(data);
                 vm.loading = false;
+                updatePanelHeight()
             }, function () {
                 vm.loading = false;
             });
@@ -3402,6 +3439,7 @@
             }
 
             recursive(data);
+            updatePanelHeight();
         }
 
 
@@ -3461,6 +3499,7 @@
                     insertCalendar(value, data);
                 });
                 vm.loading = false;
+                updatePanelHeight();
             }, function () {
                 vm.loading = false;
             });
@@ -3942,6 +3981,63 @@
         vm.hideAuditPanel = function () {
             vm.showPanel = undefined;
         };
+        vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.calendar && typeof rsHt.calendar === 'object') {
+                if (rsHt.calendar[vm.folderPathC]) {
+                    delete rsHt.calendar[vm.folderPathC];
+                    SavedFilter.setResizerHeight(rsHt);
+                    SavedFilter.save();
+                    let ht = (parseInt($('#calendarTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+                    $('#calendarDivId').css('height', vm.resizerHeight);
+                }
+            }
+        };
+        vm.resizerHeight = 450;
+
+        function updatePanelHeight() {
+            setTimeout(function () {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.calendar && !_.isEmpty(rsHt.calendar)) {
+                    if (rsHt.calendar[vm.folderPathC]) {
+                        vm.resizerHeight = rsHt.calendar[vm.folderPathC];
+                    } else {
+                        let ht = (parseInt($('#calendarTableId').height()) + 50);
+                        if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                    }
+                } else {
+                    let ht = (parseInt($('#calendarTableId').height()) + 50);
+                    if (ht > 450) {
+                        ht = 450;
+                    }
+                    vm.resizerHeight = ht + 'px';
+
+                }
+                $('#calendarDivId').css('height', vm.resizerHeight);
+            }, 5)
+        }
+
+        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
+            if(args.id === 'calendarDivId') {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.calendar && typeof rsHt.calendar === 'object') {
+                    rsHt.calendar[vm.folderPathC] = args.height;
+                } else {
+                    rsHt.calendar = {};
+                }
+                rsHt.calendar[vm.folderPathC] = args.height;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+                vm.resizerHeight = args.height;
+            }
+        });
 
         /** <<<<<<<<<<<<< End Calendars >>>>>>>>>>>>>>> */
 

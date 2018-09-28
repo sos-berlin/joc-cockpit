@@ -220,11 +220,9 @@ body > .ui-select-bootstrap.open {
 .ui-select-multiple.ui-select-bootstrap {
   height: auto;
   padding: 3px 3px 0 3px;
-    background: transparent !important;
 }
 
 .ui-select-multiple.ui-select-bootstrap input.ui-select-search {
-  background-color: transparent !important; /* To prevent double background when disabled */
   border: none;
   outline: none;
   height: 1.666666em;
@@ -313,7 +311,6 @@ body > .ui-select-bootstrap.open {
 /* Handle up direction Bootstrap */
 .ui-select-container[theme="bootstrap"].direction-up .ui-select-dropdown {
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.25);
-    background: transparent !important;
 }
 
 .ui-select-bootstrap .ui-select-match-text {

@@ -829,6 +829,13 @@
                 } else {
                     filter.orders.push({jobChain: object.jobChain})
                 }
+            }else if(object.orderIds) {
+                filter.orders = [];
+                let s = object.orderIds.replace(/\s*(,|^|$)\s*/g, "$1");
+                let orderIds = s.split(',');
+                angular.forEach(orderIds, function (value) {
+                    filter.orders.push({jobChain: '%', orderId: value})
+                });
             }
             if (object.job) {
                 filter.jobs = [];

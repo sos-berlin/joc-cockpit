@@ -81,8 +81,8 @@
             </div>
         </div>
         <div class="box p-a" ng-show="pageView=='list' && allCalendars.length>0">
-            <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
-                <table class="table table-hover table-bordered  ">
+            <div class="table-responsive" id="calendarDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
+                <table class="table table-hover table-bordered" id="calendarTableId">
                     <thead>
                     <tr>
                         <th width="30" ng-if="permission.Calendar.edit.delete">

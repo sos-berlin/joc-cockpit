@@ -442,7 +442,7 @@
                                     <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind-html="plan.jobChain | highlight:q"></span>
                                     <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind-html="plan.job | highlight:q"></span>
                                 </td>
-                                <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain,plan.orderId);$event.stopPropagation()" ng-bind-html="plan.orderId | highlight:q"></span></td>
+                                <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain);$event.stopPropagation()" ng-bind-html="plan.orderId | highlight:q"></span></td>
                                 <td>
                                     <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>

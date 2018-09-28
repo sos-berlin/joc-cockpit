@@ -22,6 +22,7 @@
             'angularResizable',
             'mgcrea.ngStrap',
             'nvd3',
+            'ui.select',
             'ncy-angular-breadcrumb',
             'gantt',
             'gantt.tooltips',

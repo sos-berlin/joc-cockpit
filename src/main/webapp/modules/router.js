@@ -371,16 +371,7 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('ManageAccount');
-                },
-                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                    $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files:["bower_components/angular-ui-select/dist/select.css"]
-                    },{
-                        name:'ui.select',
-                        files:["bower_components/angular-ui-select/dist/select.min.js"]
-                    }]);
-                }]
+                }
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.manageUser' | translate}}"}
         }).state("app.users.user", {

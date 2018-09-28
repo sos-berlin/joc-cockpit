@@ -623,7 +623,7 @@
                                                ng-click="showPanelFuc1(order)"></i>
                                             <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show"
                                                ng-click="hidePanelFuc(order);"></i>
-                                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark "
+                                            <span ng-click="showLogFuc(order)"><span class="text-dark text-hover-primary"
                                              ng-class="{'crimson':order.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:filterString"></span>
                                                 <span ng-if="order.title">-</span>
                                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>

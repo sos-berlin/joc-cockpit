@@ -82,7 +82,7 @@
                                         <span ng-if="jobChain.title"> - </span>
                                         <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
-                                    <td ng-bind-html="jobChain.path | highlight:filterString"></td>
+                                    <td><span class="text-hover-primary" ng-click="showJobChain1(jobChain.path)" ng-bind-html="jobChain.path | highlight:filterString"></span></td>
                                     <td><span class="label {{jobChain.state.severity==0 ? 'bg-green' : jobChain.state.severity==1 ? 'bg-gold' : jobChain.state.severity==2 ? 'bg-crimson': jobChain.state.severity==3 ?'bg-dimgrey':
                                               jobChain.state.severity==4 ? 'bg-transparent': jobChain.state.severity==5 ? 'bg-dark-orange' : jobChain.state.severity==6 ? 'bg-corn-flower-blue' :jobChain.state.severity==7 ? 'bg-dark-magenta' : jobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="jobChain.state._text  | translate"></span></td>
                                     <td ng-bind="jobChain.numOfNodes || 0"></td>

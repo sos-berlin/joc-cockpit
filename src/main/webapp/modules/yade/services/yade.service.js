@@ -99,6 +99,8 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },getProtocols : function () {
+                return ['LOCAL', 'FTP','FTPS','SFTP','HTTP','HTTPS','WEBDAV','WEBDAVS','SMB'];
             }
         }
     }

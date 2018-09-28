@@ -311,8 +311,7 @@
                         hosts = vm.selectedFiltered.sourceHost.split(',');
                     }
                     if (vm.selectedFiltered.sourceProtocol) {
-                        vm.selectedFiltered.sourceProtocol = vm.selectedFiltered.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                        protocols = vm.selectedFiltered.sourceProtocol.split(',');
+                        protocols = vm.selectedFiltered.sourceProtocol;
                     }
                     obj.sources = mergeHostAndProtocol(hosts, protocols);
 
@@ -325,8 +324,7 @@
                         hosts = vm.selectedFiltered.targetHost.split(',');
                     }
                     if (vm.selectedFiltered.targetProtocol) {
-                        vm.selectedFiltered.targetProtocol = vm.selectedFiltered.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                        protocols = vm.selectedFiltered.targetProtocol.split(',');
+                        protocols = vm.selectedFiltered.targetProtocol;
                     }
                     obj.targets = mergeHostAndProtocol(hosts, protocols);
                 }
@@ -580,14 +578,12 @@
                     hosts = vm.yadeSearch.sourceHost.split(',');
                 }
                 if(vm.yadeSearch.sourceProtocol){
-                    vm.yadeSearch.sourceProtocol = vm.yadeSearch.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                    protocols = vm.yadeSearch.sourceProtocol.split(',');
+                    protocols = vm.yadeSearch.sourceProtocol;
                 }
                 filter.sources = mergeHostAndProtocol(hosts,protocols);
 
             }
             if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
-                vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
                 let hosts = [];
                 let protocols =[];
                 if(vm.yadeSearch.targetHost){
@@ -595,8 +591,7 @@
                     hosts = vm.yadeSearch.targetHost.split(',');
                 }
                 if(vm.yadeSearch.targetProtocol){
-                    vm.yadeSearch.targetProtocol = vm.yadeSearch.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                    protocols = vm.yadeSearch.targetProtocol.split(',');
+                    protocols = vm.yadeSearch.targetProtocol;
                 }
                 filter.targets = mergeHostAndProtocol(hosts,protocols);
             }
@@ -672,6 +667,8 @@
             });
         };
 
+        vm.protocols = YadeService.getProtocols();
+
         vm.advancedSearch = function () {
             vm.isUnique = true;
             vm.showSearchPanel = true;
@@ -679,7 +676,7 @@
             vm.yadeSearch.from = new Date();
             vm.yadeSearch.fromTime = '00:00';
             vm.yadeSearch.to = new Date();
-            vm.yadeSearch.toTime =  moment().format("HH:mm")
+            vm.yadeSearch.toTime =  moment().format("HH:mm");
         };
 
         vm.cancel = function (form) {

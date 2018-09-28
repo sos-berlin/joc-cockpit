@@ -251,13 +251,12 @@
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
                     preferences.auditLog = true;
                 preferences.events = {};
-
-                preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
+                preferences.events.filter = [];
                 preferences.events.taskCount = 0;
                 preferences.events.jobCount = 0;
-                preferences.events.jobChainCount = 1;
-                preferences.events.positiveOrderCount = 1;
-                preferences.events.negativeOrderCount = 2;
+                preferences.events.jobChainCount = 0;
+                preferences.events.positiveOrderCount = 0;
+                preferences.events.negativeOrderCount = 0;
                 configObj.configurationItem = JSON.stringify(preferences);
 
                 configObj.id = 0;
@@ -801,7 +800,6 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-            vm.showHistoryImmeditaly = true;
             $location.path('/job_chain').search({path: path,scheduler_id:(id || vm.schedulerIds.selected)});
         };
         vm.showOrderLink1 = function (jobChain, orderId,id) {
@@ -1599,8 +1597,9 @@
         vm.allSessionEvent = {group: [], eventUnReadCount: 0};
 
 
-        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length > 0)
+        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length > 0) {
             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+        }
 
         if ($window.sessionStorage.$SOS$ALLEVENT != "null" && $window.sessionStorage.$SOS$ALLEVENT != null) {
             if ($window.sessionStorage.$SOS$ALLEVENT.length != 0) {
@@ -3106,8 +3105,7 @@
 
         function groupByDates(arrayOfDates) {
             let datesObj = _.groupBy(arrayOfDates, function (el) {
-                el = new Date(el);
-                return (el.getFullYear());
+                return moment(el).format('YYYY');
             });
             return _.toArray(datesObj);
         }
@@ -3313,8 +3311,7 @@
             }
             else if (period.tab == 'nationalHoliday') {
                 if (period.nationalHoliday) {
-                    str = new Date(period.nationalHoliday[0]).getFullYear() + ' national holidays ';
-
+                    str = moment(period.nationalHoliday[0]).format('YYYY') + ' national holidays ';
                     angular.forEach(period.nationalHoliday.sort(), function (date, index) {
                         str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.nationalHoliday.length - 1) {
@@ -12365,7 +12362,7 @@
             }
             else if (period.tab == 'nationalHoliday') {
                 if (period.nationalHoliday) {
-                    str = new Date(period.nationalHoliday[0]).getFullYear() + ' national holidays ';
+                    str = moment(period.nationalHoliday[0]).format('YYYY') + ' national holidays ';
                     angular.forEach(period.nationalHoliday.sort(), function (date, index) {
                         str = str + moment(date).format(vm.dataFormat.toUpperCase());
                         if (index != period.nationalHoliday.length - 1) {
@@ -12379,8 +12376,7 @@
 
         function groupByDates(arrayOfDates) {
             var datesObj = _.groupBy(arrayOfDates, function (el) {
-                el = new Date(el);
-                return (el.getFullYear());
+                return moment(el).format('YYYY');
             });
             return _.toArray(datesObj);
         }

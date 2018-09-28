@@ -217,6 +217,10 @@
                                         <a class="dropdown-item" href ng-click="sortByC('type')" translate>label.type</a>
                                     </div>
                                 </div>
+                                <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allCalendars.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                                    <i class="fa fa fa-refresh"></i>
+                                    <span translate>button.resetPanel</span>
+                                </button>
                                 <button ng-if="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm" ng-click="importCalendar()"><i class="fa fa-upload"></i> {{'button.importCalendar' | translate}}</button>
                                 <button ng-if="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm" ng-click="addCalendar()"><i class="fa fa-plus"></i> {{'button.addCalendar' | translate}}</button>
                             </div>

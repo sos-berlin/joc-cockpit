@@ -4025,22 +4025,25 @@
             }
             OrderService.get(obj).then(function (res) {
                 if (vm.allOrders && vm.allOrders.length > 0) {
-                    for(let x=0; x < vm.allOrders.length; x++) {
-                        for (let i = 0; i < res.orders.length; i++) {
-                            if (vm.allOrders[x].path == res.orders[i].path) {
-                                vm.allOrders[x] = _.merge(vm.allOrders[x], res.orders[i]);
-                                vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/'));
-                                res.orders.splice(i, 1);
-                                break;
+                    if (res.orders && res.orders.length > 0) {
+                        for (let x = 0; x < vm.allOrders.length; x++) {
+                            for (let i = 0; i < res.orders.length; i++) {
+                                if (vm.allOrders[x].path === res.orders[i].path) {
+                                    vm.allOrders[x] = _.merge(vm.allOrders[x], res.orders[i]);
+                                    vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/'));
+                                    res.orders.splice(i, 1);
+                                    break;
+                                }
                             }
                         }
+                    }else{
+                        vm.allOrders=[];
                     }
                 } else {
                     for (let i = 0; i < res.orders.length; i++) {
                         res.orders[i].path1 = res.orders[i].path.substring(0, res.orders[i].path.lastIndexOf('/'));
                     }
                 }
-
                 vm.allOrders = vm.allOrders.concat(res.orders);
                 traverseTreeForSearchData();
             }, function () {
@@ -6670,6 +6673,7 @@
         vm.isUnique = true;
         vm.historyView = {};
         vm.historyView.current = vm.userPreferences.historyView === 'current';
+        vm.protocols = YadeService.getProtocols();
 
         vm.changeJobScheduler = function () {
             vm.init();
@@ -7708,8 +7712,7 @@
                         hosts = vm.yadeSearch.sourceHost.split(',');
                     }
                     if (vm.yadeSearch.sourceProtocol) {
-                        vm.yadeSearch.sourceProtocol = vm.yadeSearch.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                        protocols = vm.yadeSearch.sourceProtocol.split(',');
+                        protocols = vm.yadeSearch.sourceProtocol;
                     }
                     filter.sources = mergeHostAndProtocol(hosts, protocols);
                 }
@@ -7721,8 +7724,7 @@
                         hosts = vm.yadeSearch.targetHost.split(',');
                     }
                     if (vm.yadeSearch.targetProtocol) {
-                        vm.yadeSearch.targetProtocol = vm.yadeSearch.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                        protocols = vm.yadeSearch.targetProtocol.split(',');
+                        protocols = vm.yadeSearch.targetProtocol;
                     }
                     filter.targets = mergeHostAndProtocol(hosts, protocols);
                 }
@@ -7962,8 +7964,7 @@
                     hosts = vm.selectedFiltered3.sourceHost.split(',');
                 }
                 if (vm.selectedFiltered3.sourceProtocol) {
-                    vm.selectedFiltered3.sourceProtocol = vm.selectedFiltered3.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                    protocols = vm.selectedFiltered3.sourceProtocol.split(',');
+                    protocols = vm.selectedFiltered3.sourceProtocol;
                 }
                 obj.sources = mergeHostAndProtocol(hosts, protocols);
 
@@ -7976,8 +7977,7 @@
                     hosts = vm.selectedFiltered3.targetHost.split(',');
                 }
                 if (vm.selectedFiltered3.targetProtocol) {
-                    vm.selectedFiltered3.targetProtocol = vm.selectedFiltered3.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                    protocols = vm.selectedFiltered3.targetProtocol.split(',');
+                    protocols = vm.selectedFiltered3.targetProtocol;
                 }
                 obj.targets = mergeHostAndProtocol(hosts, protocols);
             }

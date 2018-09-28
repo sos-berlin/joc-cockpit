@@ -104,7 +104,7 @@
                                 <span ng-if="job.title">-</span><i class="text-muted"
                                                                    ng-bind-html="job.title | linky:'_blank'"></i>
                             </td>
-                            <td ng-click="showJob1(job.path)" ><a class="text-hover-primary" ng-bind="job.path"></a></td>
+                            <td><a class="text-hover-primary" ng-click="showJob1(job.path)" ng-bind="job.path"></a></td>
                             <td>
                                 <span class="label" ng-class="bgColorFunction(job.state.severity)"
                                       ng-bind="job.state._text  | translate"></span>
@@ -553,10 +553,10 @@
                                                     <td><span ng-bind="auditLog.request"></span></td>
                                                     <td><span ng-bind="auditLog.comment"></span></td>
                                                     <td>
-                                                            <span ng-if="auditLog.timeSpent">
-                                                                <span ng-bind="auditLog.timeSpent"></span>
-                                                                <span>m</span>
-                                                            </span>
+                                                        <span ng-if="auditLog.timeSpent">
+                                                            <span ng-bind="auditLog.timeSpent"></span>
+                                                            <span>m</span>
+                                                        </span>
                                                     </td>
                                                     <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
                                                            target="_blank" ng-bind="auditLog.ticketLink"></a></td>
