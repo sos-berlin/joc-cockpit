@@ -24,9 +24,7 @@
                                 <th><span translate>label.mandator</span></th>
                                 <th><span translate>label.operation</span></th>
                                 <th><span translate>label.sourceHost</span></th>
-                                <th><span translate>label.sourceProtocol</span></th>
                                 <th><span translate>label.targetHost</span></th>
-                                <th><span translate>label.targetProtocol</span></th>
                                 <th><span translate>label.totalNumberOfFiles</span></th>
                                 <th><span translate>label.lastErrorMessage</span></th>
                                 <th><span translate>label.startTime</span></th>
@@ -58,9 +56,7 @@
                             <td ng-bind="transfer.mandator"></td>
                             <td ng-bind="transfer._operation"></td>
                             <td ng-bind="transfer.source.host"></td>
-                            <td ng-bind="transfer.source.protocol"></td>
                             <td ng-bind="transfer.target.host"></td>
-                            <td ng-bind="transfer.target.protocol"></td>
                             <td ng-bind="transfer.numOfFiles"></td>
                             <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
@@ -69,7 +65,7 @@
                         </tr>
                         <tr ng-show="transfer.show">
                             <td></td>
-                            <td colspan="14" >
+                            <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr>
@@ -110,7 +106,7 @@
                         </tr>
                         <tr ng-if="permission.YADE.view.files && transfer.show">
                             <td></td>
-                            <td colspan="14" >
+                            <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr>

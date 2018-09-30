@@ -6,6 +6,10 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-if="isInfoResize" ng-click="resetPanel()">
+                        <i class="fa fa fa-refresh"></i>
+                        <span translate>button.resetPanel</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -15,7 +19,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="hide box p-a" ng-class="{'show':jobChains.length>0}">
-                <div class="table-responsive" id="jobChainInfoDivId" resizable r-directions="['bottom']" r-height="infoSizerHt">
+                <div class="table-responsive" id="jobChainInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                     <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                         <thead>
                         <tr>
@@ -106,7 +110,7 @@
                                     <td>
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist"></a>
                                     </td>
-                                </tr>
+                        </tr>
                         <tr ng-if="jobChain.show" class="light-bg tableexport-ignore">
                                     <td></td>
                                     <td colspan="12" style="padding: 1px 2px 0 2px !important">

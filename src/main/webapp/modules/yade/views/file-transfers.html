@@ -409,22 +409,10 @@
                             <i ng-show="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.sortReverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortBy('source.protocol')"><a><span translate>label.sourceProtocol</span>
-                            <i ng-show="yadeFilters.filter.sortBy == 'source.protocol' && !yadeFilters.sortReverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="yadeFilters.filter.sortBy == 'source.protocol' && yadeFilters.sortReverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
                         <th ng-click="sortBy('target.host')"><a><span translate>label.targetHost</span>
                             <i ng-show="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.sortReverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.sortReverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortBy('target.protocol')"><a><span translate>label.targetProtocol</span>
-                            <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && !yadeFilters.sortReverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && yadeFilters.sortReverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
@@ -496,9 +484,7 @@
                              </td>
                             <td><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></span></td>
                             <td><span ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
-                            <td><span ng-if="transfer.source.protocol" ng-bind-html="transfer.source.protocol | highlight:filterString"></span></td>
                             <td><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></span></td>
-                            <td><span ng-if="transfer.target.protocol" ng-bind-html="transfer.target.protocol | highlight:filterString"></span></td>
                             <td ng-bind="transfer.numOfFiles"></td>
                             <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
@@ -507,7 +493,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="transfer.show">
                             <td></td>
-                            <td colspan="15" >
+                            <td colspan="13" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -548,7 +534,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
                             <td></td>
-                            <td colspan="15" >
+                            <td colspan="13" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">

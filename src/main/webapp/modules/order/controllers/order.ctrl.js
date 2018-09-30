@@ -2154,6 +2154,7 @@
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
                     angular.forEach(res.jobChain.endNodes, function (value) {
+                        value.isEndNode = true;
                         vm._jobChain.nodes.push(value);
                     });
                 });
@@ -2168,6 +2169,7 @@
                 }).then(function (res) {
                     vm._jobChain = res.jobChain;
                     angular.forEach(res.jobChain.endNodes, function (value) {
+                        value.isEndNode = true;
                         vm._jobChain.nodes.push(value);
                     });
                 });
@@ -3273,6 +3275,7 @@
                     vm.orders = res.orders;
                     vm.showLogFuc(vm.orders[0]);
                 }
+                updatePanelHeight();
             });
         }
 
@@ -3579,6 +3582,9 @@
                                 break;
                             }
                         }
+                        if (vm.orderFilters && vm.orderFilters.showLogPanel && vm.orderFilters.showLogPanel.path === data1.orders[x].path ) {
+                            vm.showLogFuc(vm.orderFilters.showLogPanel);
+                        }
                     }
                     data = data.concat(res.orders);
                     data1.orders = data;
@@ -3729,27 +3735,42 @@
         }
 
         function updatePanelHeight() {
+              let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             setTimeout(function () {
-                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                if (rsHt.order && !_.isEmpty(rsHt.order)) {
-                    if (rsHt.order[vm.folderPath]) {
-                        vm.resizerHeight = rsHt.order[vm.folderPath];
+                if ($location.search().scheduler_id && $location.search().path) {
+                    if (rsHt.orderInfo) {
+                        vm.resizerHeight = rsHt.orderInfo;
+                        vm.isInfoResize = true;
+                    } else {
+                        let ht = (parseInt($('#orderTableId').height()) + 20);
+                        if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                        $('#orderInfoDivId').css('height', vm.resizerHeight);
+                    }
+                } else {
+
+                    if (rsHt.order && !_.isEmpty(rsHt.order)) {
+                        if (rsHt.order[vm.folderPath]) {
+                            vm.resizerHeight = rsHt.order[vm.folderPath];
+                        } else {
+                            let ht = (parseInt($('#orderTableId').height()) + 50);
+                            if (ht > 450) {
+                                ht = 450;
+                            }
+                            vm.resizerHeight = ht + 'px';
+                        }
                     } else {
                         let ht = (parseInt($('#orderTableId').height()) + 50);
                         if (ht > 450) {
                             ht = 450;
                         }
                         vm.resizerHeight = ht + 'px';
-                    }
-                } else {
-                    let ht = (parseInt($('#orderTableId').height()) + 50);
-                    if (ht > 450) {
-                        ht = 450;
-                    }
-                    vm.resizerHeight = ht + 'px';
 
+                    }
+                    $('#orderDivId').css('height', vm.resizerHeight);
                 }
-                $('#orderDivId').css('height', vm.resizerHeight);
             }, 0)
         }
 
@@ -3868,6 +3889,9 @@
                                     break;
                                 }
                             }
+                            if (vm.orderFilters && vm.orderFilters.showLogPanel && vm.orderFilters.showLogPanel.path === vm.allOrders[m].path) {
+                                vm.showLogFuc(vm.orderFilters.showLogPanel);
+                            }
                         }
 
                         vm.allOrders = vm.allOrders.concat(res.orders);
@@ -3927,7 +3951,6 @@
                 vm.historys = res.history;
             });
             vm.showLogPanel = value;
-            vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
         vm.showJobHistory = function (order) {
@@ -3960,7 +3983,6 @@
 
         vm.showAuditLogs = function (value) {
             vm.showLogPanel = value;
-            vm.orderFilters.showLogPanel = vm.showLogPanel;
             vm.isAuditLog = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -3970,13 +3992,8 @@
                 loadAuditLogs(obj);
         };
 
-        if (vm.orderFilters && vm.orderFilters.showLogPanel) {
-            vm.showLogFuc(vm.orderFilters.showLogPanel);
-        }
-
         vm.hideLogPanel = function () {
             vm.showLogPanel = undefined;
-            vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
         /**---------------filter, sorting and pagination -------------------*/
@@ -4016,47 +4033,6 @@
                 form.$setPristine();
         };
 
-        function searchV(obj) {
-            if (vm.orderFilter1.processingState) {
-                obj.processingStates = vm.orderFilter1.processingState;
-            }
-            if (vm.orderFilter1.type) {
-                obj.types = vm.orderFilter1.type;
-            }
-            OrderService.get(obj).then(function (res) {
-                if (vm.allOrders && vm.allOrders.length > 0) {
-                    if (res.orders && res.orders.length > 0) {
-                        for (let x = 0; x < vm.allOrders.length; x++) {
-                            for (let i = 0; i < res.orders.length; i++) {
-                                if (vm.allOrders[x].path === res.orders[i].path) {
-                                    vm.allOrders[x] = _.merge(vm.allOrders[x], res.orders[i]);
-                                    vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/'));
-                                    res.orders.splice(i, 1);
-                                    break;
-                                }
-                            }
-                        }
-                    }else{
-                        vm.allOrders=[];
-                    }
-                } else {
-                    for (let i = 0; i < res.orders.length; i++) {
-                        res.orders[i].path1 = res.orders[i].path.substring(0, res.orders[i].path.lastIndexOf('/'));
-                    }
-                }
-                vm.allOrders = vm.allOrders.concat(res.orders);
-                traverseTreeForSearchData();
-            }, function () {
-               if (vm.allOrders && vm.allOrders.length > 0) {
-                    for (let x = 0; x < vm.allOrders.length; x++) {
-                        vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/')) || vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/') + 1);
-                    }
-                }
-                traverseTreeForSearchData();
-            });
-
-        }
-
         vm.search = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -4070,11 +4046,40 @@
                     obj.folders.push({folder: vm.orderFilter1.paths[i], recursive: true});
                 }
             }
-            OrderService.getOrdersP(obj).then(function (result) {
-                vm.allOrders = result.orders;
-                searchV(obj);
-            }, function () {
-                searchV(obj);
+            if (vm.orderFilter1.processingState) {
+                obj.processingStates = vm.orderFilter1.processingState;
+            }
+            if (vm.orderFilter1.type) {
+                obj.types = vm.orderFilter1.type;
+            }
+            OrderService.get(obj).then(function (res) {
+                vm.allOrders = res.orders;
+                let obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.compact = true;
+                obj.orders = [];
+                if (vm.allOrders && vm.allOrders.length > 0) {
+                    for (let x = 0; x < vm.allOrders.length; x++) {
+                        obj.orders.push({order:vm.allOrders[x].orderId, jobChain: vm.allOrders[x].jobChain});
+                        vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/')) || vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/') + 1);
+                    }
+                }
+                traverseTreeForSearchData();
+
+                OrderService.getOrdersP(obj).then(function (result) {
+
+                    if (result.orders && result.orders.length > 0) {
+                        for (let x = 0; x < vm.allOrders.length; x++) {
+                            for (let i = 0; i < result.orders.length; i++) {
+                                if (vm.allOrders[x].path === result.orders[i].path) {
+                                    vm.allOrders[x].title = result.orders[i].title;
+                                    result.orders.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
             });
         };
 
@@ -4173,7 +4178,6 @@
             vm.filters = {};
             vm.filters.list = vm.orderFilterList;
             vm.filters.favorite = vm.savedOrderFilter.favorite;
-
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -5101,26 +5105,41 @@
         }
 
         vm.resizerHeight = 450;
-        vm.infoSizerHt;
+        vm.isInfoResize = false;
+
         if ($location.search().scheduler_id && $location.search().path) {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if (rsHt.orderInfo) {
-                vm.infoSizerHt = rsHt.orderInfo;
+                vm.resizerHeight = rsHt.orderInfo;
+                vm.isInfoResize = true;
             }
         }
         vm.resetPanel = function () {
             let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.order && typeof rsHt.order === 'object') {
-                if (rsHt.order[vm.folderPath]) {
-                    delete rsHt.order[vm.folderPath];
-                    SavedFilter.setResizerHeight(rsHt);
-                    SavedFilter.save();
-                    let ht = (parseInt($('#orderTableId').height()) + 50);
-                    if (ht > 450) {
-                        ht = 450;
+            if ($location.search().scheduler_id && $location.search().path) {
+                rsHt.orderInfo = undefined;
+                vm.isInfoResize = false;
+                SavedFilter.setResizerHeight(rsHt);
+                SavedFilter.save();
+                let ht = (parseInt($('#orderTableId').height()) + 20);
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+                $('#orderInfoDivId').css('height', vm.resizerHeight);
+            } else {
+                if (rsHt.order && typeof rsHt.order === 'object') {
+                    if (rsHt.order[vm.folderPath]) {
+                        delete rsHt.order[vm.folderPath];
+                        SavedFilter.setResizerHeight(rsHt);
+                        SavedFilter.save();
+                        let ht = (parseInt($('#orderTableId').height()) + 50);
+                        if (ht > 450) {
+                            ht = 450;
+                        }
+                        vm.resizerHeight = ht + 'px';
+                        $('#orderDivId').css('height', vm.resizerHeight);
                     }
-                    vm.resizerHeight = ht + 'px';
-                    $('#orderDivId').css('height', vm.resizerHeight);
                 }
             }
         };
@@ -5138,15 +5157,17 @@
                 vm.resizerHeight = args.height;
             }else if(args.id === 'orderInfoDivId') {
                 let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                vm.infoSizerHt = args.height;
+                vm.resizerHeight = args.height;
                 rsHt.orderInfo = args.height;
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
+                vm.isInfoResize = true;
             }
         });
 
         $scope.$on('$destroy', function () {
             vm.orderFilters.expand_to = vm.tree;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
             watcher1();
             if (t1) {
                 $timeout.cancel(t1);
@@ -6259,6 +6280,7 @@
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
                 angular.forEach(res.jobChain.endNodes, function (value) {
+                    value.isEndNode = true;
                     vm._jobChain.nodes.push(value);
                 });
             });
@@ -6368,6 +6390,7 @@
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
                 angular.forEach(res.jobChain.endNodes, function (value) {
+                    value.isEndNode = true;
                     vm._jobChain.nodes.push(value);
                 });
             });

@@ -6,6 +6,10 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-if="isInfoResize" ng-click="resetPanel()">
+                        <i class="fa fa fa-refresh"></i>
+                        <span translate>button.resetPanel</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -15,7 +19,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="box p-a">
-                <div class="table-responsive" id="orderInfoDivId" resizable r-directions="['bottom']" r-height="infoSizerHt">
+                <div class="table-responsive" id="jobInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                     <table class="table table-hover table-bordered" id="jobTableId">
                         <thead>
                         <tr>
@@ -71,12 +75,10 @@
                                                ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
                                                ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" ng-click="setRunTime(job)"
-                                               ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.change.runTime"><span
-                                                    translate>button.setRunTime</span></a>
-                                            <a class="dropdown-item"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
+                                            <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                               ng-if="permission.Job.change.runTime">
+                                                <span translate>button.setRunTime</span></a>
+                                            <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
                                                ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
                                             <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
                                                     ng-class="{'disable-link':job.configurationStatus.severity==2}"
@@ -97,17 +99,15 @@
                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!job.showJobChains"
                                    ng-click="showJobChains(job)"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains"
-                                   ng-click="job.showJobChains = false"></i>
+                                   ng-click="hideJobChains(job)"></i>
                                     <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                           ng-class="{'text-u-l':job.isOrderJob!=true, 'crimson':job.configurationStatus.severity==2}"
                                           ng-bind="job.name"></span>
-                                <span ng-if="job.title">-</span><i class="text-muted"
-                                                                   ng-bind-html="job.title | linky:'_blank'"></i>
+                                <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                             </td>
                             <td><a class="text-hover-primary" ng-click="showJob1(job.path)" ng-bind="job.path"></a></td>
                             <td>
-                                <span class="label" ng-class="bgColorFunction(job.state.severity)"
-                                      ng-bind="job.state._text  | translate"></span>
+                                <span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                             </td>
                             <td>
                                 <span ng-bind-html="job.stateText | linky:'_blank'"></span>
@@ -118,28 +118,25 @@
                                 <span ng-if="!job.usedInJobChains">0</span>
                             </td>
                             <td>
-                                <a class="text-hover-primary"
-                                   ng-click="showProcessClass(job.processClass)">
-                                    {{job.processClass || '-'}}</a>
+                                <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                             </td>
                             <td>
-                                    <span ng-if="job.numOfRunningTasks" class="text-hover-primary"
-                                          ng-click="showTaskFuc(job, true)" href="">
-                                        <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
-                                        <i class="text-black " translate>label.of</i>
-                                        <span class="text-black _600" ng-bind="job.maxTasks || 1"></span>
-                                    </span>
-                                    <span ng-if="!job.numOfRunningTasks">
-                                        <span ng-bind="job.numOfRunningTasks || 0"></span>
-                                        <i class="text-black" translate>label.of</i>
-                                        <span ng-bind="job.maxTasks || 1"></span>
-                                    </span>
+                                <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
+                                    <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
+                                    <i class="text-black " translate>label.of</i>
+                                    <span class="text-black _600" ng-bind="job.maxTasks || 1"></span>
+                                </span>
+                                <span ng-if="!job.numOfRunningTasks">
+                                    <span ng-bind="job.numOfRunningTasks || 0"></span>
+                                    <i class="text-black" translate>label.of</i>
+                                    <span ng-bind="job.maxTasks || 1"></span>
+                                </span>
                             </td>
                             <td>
-                                    <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
-                                        {{job.nextStartTime | stringToDate}}
-                                        <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
-                                    </span>
+                                <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
+                                    {{job.nextStartTime | stringToDate}}
+                                    <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
+                                </span>
                             </td>
                             <td ng-bind="job.ordersSummary.pending"></td>
                             <td ng-bind="job.ordersSummary.running"></td>
@@ -225,7 +222,6 @@
                                         <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob!=true">
                                             {{task.enqueued | stringToDate}} <span class="text-success">(<span
                                                 time="{{task.enqueued}}"></span>)</span></td>
-
                                     </tr>
                                     </tbody>
                                 </table>
