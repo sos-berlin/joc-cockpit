@@ -4825,214 +4825,262 @@
         var isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
             orderPaths = [];
         $scope.$on('event-started', function () {
-             if (!isOperationGoingOn) {
-                 if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
-                     for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
+            if ($location.search().path) {
+                if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+                    for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
+                        if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
+                            let jobChain = [];
+                            let path = [];
+                            if (vm.events[0].eventSnapshots[m].path.indexOf(",") > -1) {
+                                jobChain = vm.events[0].eventSnapshots[m].path.split(",");
+                            }
+                            let obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.compact = true;
+                            obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
+                            getOrderByPathV(obj);
 
-                         if (vm.events[0].eventSnapshots[m].path && (vm.events[0].eventSnapshots[m].eventType === "OrderStateChanged") && !vm.events[0].eventSnapshots[m].eventId) {
-                             let path = [];
-                             if (vm.events[0].eventSnapshots[m].path.indexOf(",") > -1) {
-                                 path = vm.events[0].eventSnapshots[m].path.split(",");
-                             } else {
-                                 path[0] = vm.events[0].eventSnapshots[m].path;
-                             }
-                             if ($location.search().path) {
-                                 if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
-                                    let jobChain = [];
-                                    if ($location.search().path.indexOf(",") > -1) {
-                                        jobChain = path.split(",");
+                            if (vm.showLogPanel  && !vm.isTaskHistory && !vm.isAuditLog) {
+                                let orders = {
+                                    jobschedulerId: vm.schedulerIds.selected,
+                                    limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                                };
+                                if (vm.showLogPanel.historyId) {
+                                    if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                                        orders.historyIds = [vm.showLogPanel.historyId];
+                                    }
+                                }
+                                orders.orders = [];
+                                orders.orders.push({
+                                    orderId: vm.showLogPanel.orderId,
+                                    jobChain: vm.showLogPanel.jobChain
+                                });
+                                OrderService.histories(orders).then(function (res) {
+                                    vm.historys = res.history;
+                                });
+                            } else if (vm.showLogPanel && vm.isTaskHistory) {
+                                let obj = {jobschedulerId: vm.schedulerIds.selected};
+                                obj.limit = vm.userPreferences.maxHistoryPerTask;
+                                if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                                    obj.historyIds = [];
+                                    obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
+                                } else {
+                                    obj.orders = [{
+                                        jobChain: vm.showLogPanel.jobChain,
+                                        orderId: vm.showLogPanel.orderId
+                                    }];
+                                }
+                                TaskService.histories(obj).then(function (res) {
+                                    vm.showLogPanel.taskHistory = res.history;
+                                })
+                            }
+                            else if (vm.showLogPanel && vm.isAuditLog) {
+                                let obj = {};
+                                obj.jobschedulerId = vm.schedulerIds.selected;
+                                obj.orders = [];
+                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                                loadAuditLogs(obj);
+                            }
+                        }
+                    }
+                }
+                return;
+            }
+
+            if (!isOperationGoingOn) {
+                if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+                    for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
+                        if (vm.events[0].eventSnapshots[m].path && (vm.events[0].eventSnapshots[m].eventType === "OrderStateChanged") && !vm.events[0].eventSnapshots[m].eventId) {
+                            let path = [];
+                            if (vm.events[0].eventSnapshots[m].path.indexOf(",") > -1) {
+                                path = vm.events[0].eventSnapshots[m].path.split(",");
+                            } else {
+                                path[0] = vm.events[0].eventSnapshots[m].path;
+                            }
+
+                            if (vm.orderFilters.filter.state === 'ALL') {
+                                angular.forEach(vm.allOrders, function (val, i) {
+                                    if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path && !vm.loading && (!mapObj[vm.allOrders[i].path])) {
+                                        mapObj[vm.events[0].eventSnapshots[m].path] = vm.events[0].eventSnapshots[m].path;
+                                        let obj = {};
+                                        obj.jobschedulerId = vm.schedulerIds.selected;
+                                        obj.orderId = vm.allOrders[i].orderId;
+                                        obj.jobChain = vm.allOrders[i].path.split(',')[0];
+                                        obj.compact = true;
+                                        OrderService.getOrder(obj).then(function (res) {
+                                            delete mapObj[vm.events[0].eventSnapshots[m].path];
+                                            if (res.order && res.order.path === vm.allOrders[i].path) {
+                                                res.order.title = angular.copy(vm.allOrders[i].title);
+                                                res.order.path1 = angular.copy(vm.allOrders[i].path1);
+                                                res.order.params = angular.copy(vm.allOrders[i].params);
+                                                res.order.show = angular.copy(vm.allOrders[i].show);
+                                                vm.allOrders[i] = res.order;
+                                            }
+                                        }, function () {
+                                            delete mapObj[vm.events[0].eventSnapshots[m].path];
+                                        });
+
+                                    }
+                                });
+                            } else {
+                                let obj = {};
+                                obj.jobschedulerId = vm.schedulerIds.selected;
+                                obj.orderId = path[1];
+                                obj.jobChain = path[0];
+                                obj.compact = true;
+                                OrderService.getOrder(obj).then(function (res) {
+                                    if (res.order) {
+                                        let flag = false;
+                                        for (let i = 0; i < vm.allOrders.length; i++) {
+                                            if (vm.allOrders[i].path === res.order.path) {
+                                                flag = true;
+                                                if (res.order.processingState._text === vm.orderFilters.filter.state) {
+                                                    res.order.title = angular.copy(vm.allOrders[i].title);
+                                                    res.order.path1 = angular.copy(vm.allOrders[i].path1);
+                                                    res.order.params = angular.copy(vm.allOrders[i].params);
+                                                    res.order.show = angular.copy(vm.allOrders[i].show);
+                                                    vm.allOrders[i] = res.order;
+                                                } else {
+                                                    for (let j = 0; j < vm.allOrders.length; j++) {
+                                                        if (vm.allOrders[j].path === res.order.path) {
+                                                            vm.allOrders.splice(j, 1);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        if (!flag) {
+                                            if (res.order.processingState._text === vm.orderFilters.filter.state) {
+                                                checkCurrentSelectedFolders(res.order);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+                        } else if (vm.events[0].eventSnapshots[m].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[m].eventId) {
+                            let path1 = vm.events[0].eventSnapshots[m].path.substring(1, vm.events[0].eventSnapshots[m].path.lastIndexOf('/')) || '/';
+                            if (path1 === vm.folderPath || vm.isExpandNode) {
+                                let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
+                                angular.forEach(vm.tree, function (value) {
+                                    if (value.expanded || value.selected1)
+                                        checkExpandTreeForUpdates(value, obj, obj);
+                                });
+                                if (vm.selectedFiltered) {
+                                    obj = parseDate(obj);
+                                }
+
+                                OrderService.get(obj).then(function (res) {
+                                    if (vm.allOrders && vm.allOrders.length > 0) {
+                                        for (let m = 0; m < vm.allOrders.length; m++) {
+                                            for (let i = 0; i < res.orders.length; i++) {
+                                                if (vm.allOrders[m].path === res.orders[i].path) {
+                                                    res.orders[i].title = angular.copy(vm.allOrders[m].title);
+                                                    res.orders[i].show = angular.copy(vm.allOrders[m].show);
+                                                    res.orders[i].path1 = angular.copy(vm.allOrders[m].path1);
+                                                    vm.allOrders[m] = res.orders[i];
+                                                    res.orders.splice(i, 1);
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     }
 
-                                    let obj = {};
-                                    obj.jobschedulerId = vm.schedulerIds.selected;
-                                    obj.compact = true;
-                                    obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
-                                    getOrderByPathV(obj);
+                                    vm.allOrders = vm.allOrders.concat(res.orders);
+                                    angular.forEach(vm.tree, function (node) {
+                                        insertData(node, vm.allOrders);
+                                    });
+
+                                }, function () {
+                                    vm.loading = false;
+                                    angular.forEach(vm.tree, function (node) {
+                                        insertData(node, vm.allOrders);
+                                    })
+                                });
+
+                            }
+                        } else if (vm.events[0].eventSnapshots[m].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[m].eventId) {
+                            for (let i = 0; vm.allOrders.length; i++) {
+                                if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path) {
+                                    vm.allOrders.splice(i, 1);
+                                    break;
                                 }
-                             } else {
-                                 if (vm.orderFilters.filter.state === 'ALL') {
-                                     angular.forEach(vm.allOrders, function (val, i) {
-                                         if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path && !vm.loading && (!mapObj[vm.allOrders[i].path])) {
-                                             mapObj[vm.events[0].eventSnapshots[m].path] = vm.events[0].eventSnapshots[m].path;
-                                             let obj = {};
-                                             obj.jobschedulerId = vm.schedulerIds.selected;
-                                             obj.orderId = vm.allOrders[i].orderId;
-                                             obj.jobChain = vm.allOrders[i].path.split(',')[0];
-                                             obj.compact = true;
-                                             OrderService.getOrder(obj).then(function (res) {
-                                                 delete mapObj[vm.events[0].eventSnapshots[m].path];
-                                                 if (res.order && res.order.path === vm.allOrders[i].path) {
-                                                     res.order.title = angular.copy(vm.allOrders[i].title);
-                                                     res.order.path1 = angular.copy(vm.allOrders[i].path1);
-                                                     res.order.params = angular.copy(vm.allOrders[i].params);
-                                                     res.order.show = angular.copy(vm.allOrders[i].show);
-                                                     vm.allOrders[i] = res.order;
-                                                 }
-                                             }, function () {
-                                                 delete mapObj[vm.events[0].eventSnapshots[m].path];
-                                             });
-
-                                         }
-                                     });
-                                 } else {
-                                     let obj = {};
-                                     obj.jobschedulerId = vm.schedulerIds.selected;
-                                     obj.orderId = path[1];
-                                     obj.jobChain = path[0];
-                                     obj.compact = true;
-                                     OrderService.getOrder(obj).then(function (res) {
-                                         if (res.order) {
-                                             let flag = false;
-                                             for (let i = 0; i < vm.allOrders.length; i++) {
-                                                 if (vm.allOrders[i].path === res.order.path) {
-                                                     flag = true;
-                                                     if (res.order.processingState._text === vm.orderFilters.filter.state) {
-                                                         res.order.title = angular.copy(vm.allOrders[i].title);
-                                                         res.order.path1 = angular.copy(vm.allOrders[i].path1);
-                                                         res.order.params = angular.copy(vm.allOrders[i].params);
-                                                         res.order.show = angular.copy(vm.allOrders[i].show);
-                                                         vm.allOrders[i] = res.order;
-                                                     } else {
-                                                         for (let j = 0; j < vm.allOrders.length; j++) {
-                                                             if (vm.allOrders[j].path === res.order.path) {
-                                                                 vm.allOrders.splice(j, 1);
-                                                                 break;
-                                                             }
-                                                         }
-                                                     }
-                                                     break;
-                                                 }
-                                             }
-                                             if (!flag) {
-                                                 if (res.order.processingState._text === vm.orderFilters.filter.state) {
-                                                     checkCurrentSelectedFolders(res.order);
-                                                 }
-                                             }
-                                         }
-                                     });
-                                 }
-                             }
-                         } else if (vm.events[0].eventSnapshots[m].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[m].eventId) {
-                             let path1 = vm.events[0].eventSnapshots[m].path.substring(1, vm.events[0].eventSnapshots[m].path.lastIndexOf('/')) || '/';
-                             if (path1 === vm.folderPath || vm.isExpandNode) {
-                                 let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
-                                 angular.forEach(vm.tree, function (value) {
-                                     if (value.expanded || value.selected1)
-                                         checkExpandTreeForUpdates(value, obj, obj);
-                                 });
-                                 if (vm.selectedFiltered) {
-                                     obj = parseDate(obj);
-                                 }
-
-                                 OrderService.get(obj).then(function (res) {
-                                     if (vm.allOrders && vm.allOrders.length > 0) {
-                                         for (let m = 0; m < vm.allOrders.length; m++) {
-                                             for (let i = 0; i < res.orders.length; i++) {
-                                                 if (vm.allOrders[m].path === res.orders[i].path) {
-                                                     res.orders[i].title = angular.copy(vm.allOrders[m].title);
-                                                     res.orders[i].show = angular.copy(vm.allOrders[m].show);
-                                                     res.orders[i].path1 = angular.copy(vm.allOrders[m].path1);
-                                                     vm.allOrders[m] = res.orders[i];
-                                                     res.orders.splice(i, 1);
-                                                     break;
-                                                 }
-                                             }
-                                         }
-                                     }
-
-                                     vm.allOrders = vm.allOrders.concat(res.orders);
-                                     angular.forEach(vm.tree, function (node) {
-                                         insertData(node, vm.allOrders);
-                                     });
-
-                                 }, function () {
-                                     vm.loading = false;
-                                     angular.forEach(vm.tree, function (node) {
-                                         insertData(node, vm.allOrders);
-                                     })
-                                 });
-
-                             }
-                         } else if (vm.events[0].eventSnapshots[m].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[m].eventId) {
-                             for (let i = 0; vm.allOrders.length; i++) {
-                                 if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path) {
-                                     vm.allOrders.splice(i, 1);
-                                     break;
-                                 }
-                             }
-                         } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && !vm.isTaskHistory && !vm.isAuditLog) {
-                             let orders = {
-                                 jobschedulerId: vm.schedulerIds.selected,
-                                 limit: vm.userPreferences.maxNumInOrderOverviewPerObject
-                             };
-                             if (vm.showLogPanel.historyId) {
-                                 if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
-                                     orders.historyIds = [vm.showLogPanel.historyId];
-                                 }
-                             }
-                             orders.orders = [];
-                             orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
-                             OrderService.histories(orders).then(function (res) {
-                                 vm.historys = res.history;
-                             });
-                         } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId && vm.isTaskHistory) {
-                             let obj = {jobschedulerId: vm.schedulerIds.selected};
-                             obj.limit = vm.userPreferences.maxHistoryPerTask;
-                             if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
-                                 obj.historyIds = [];
-                                 obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
-                             } else {
-                                 obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
-                             }
-                             TaskService.histories(obj).then(function (res) {
-                                 vm.showLogPanel.taskHistory = res.history;
-                             })
-                         }
-                         else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path && vm.isAuditLog) {
-                             let obj = {};
-                             obj.jobschedulerId = vm.schedulerIds.selected;
-                             obj.orders = [];
-                             obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                             loadAuditLogs(obj);
-                         }
-                         else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
-                              if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
-                                  var folders = [];
-                                  angular.forEach(vm.selectedFiltered.paths, function (v) {
-                                      folders.push({folder: v});
-                                  });
-                              }
-                             OrderService.tree({
-                                 jobschedulerId: vm.schedulerIds.selected,
-                                 compact: true,
-                                 folders: folders,
-                                 types: ['ORDER']
-                             }).then(function (res) {
-                                 vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
-                                 vm.changeStatus();
-                             });
-                             break;
-                         }
-                     }
-                 }
-             }else {
-                 for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
-                     if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
-                         if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
-                             orderPaths.push(vm.events[0].eventSnapshots[j].path);
-                         }
-                     } else if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "ORDER") {
-                         isAnyFileEventOnHold = true;
-                         break;
-                     }else if(vm.events[0].eventSnapshots[j].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[j].eventId){
-                         isAnyFileEventOnHold = true;
-                         break;
-                     }else if (vm.events[0].eventSnapshots[j].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[j].eventId) {
-                         isAnyFileEventOnHold = true;
-                         break;
-                     }
-                 }
-             }
+                            }
+                        } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[m].eventId && !vm.isTaskHistory && !vm.isAuditLog) {
+                            let orders = {
+                                jobschedulerId: vm.schedulerIds.selected,
+                                limit: vm.userPreferences.maxNumInOrderOverviewPerObject
+                            };
+                            if (vm.showLogPanel.historyId) {
+                                if (vm.userPreferences.maxNumInOrderOverviewPerObject < 2) {
+                                    orders.historyIds = [vm.showLogPanel.historyId];
+                                }
+                            }
+                            orders.orders = [];
+                            orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
+                            OrderService.histories(orders).then(function (res) {
+                                vm.historys = res.history;
+                            });
+                        } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId && vm.isTaskHistory) {
+                            let obj = {jobschedulerId: vm.schedulerIds.selected};
+                            obj.limit = vm.userPreferences.maxHistoryPerTask;
+                            if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
+                                obj.historyIds = [];
+                                obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
+                            } else {
+                                obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
+                            }
+                            TaskService.histories(obj).then(function (res) {
+                                vm.showLogPanel.taskHistory = res.history;
+                            })
+                        }
+                        else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path && vm.isAuditLog) {
+                            let obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.orders = [];
+                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                            loadAuditLogs(obj);
+                        }
+                        else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
+                            if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
+                                var folders = [];
+                                angular.forEach(vm.selectedFiltered.paths, function (v) {
+                                    folders.push({folder: v});
+                                });
+                            }
+                            OrderService.tree({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                compact: true,
+                                folders: folders,
+                                types: ['ORDER']
+                            }).then(function (res) {
+                                vm.tree = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.tree);
+                                vm.changeStatus();
+                            });
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
+                    if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
+                        if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
+                            orderPaths.push(vm.events[0].eventSnapshots[j].path);
+                        }
+                    } else if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "ORDER") {
+                        isAnyFileEventOnHold = true;
+                        break;
+                    } else if (vm.events[0].eventSnapshots[j].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[j].eventId) {
+                        isAnyFileEventOnHold = true;
+                        break;
+                    } else if (vm.events[0].eventSnapshots[j].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[j].eventId) {
+                        isAnyFileEventOnHold = true;
+                        break;
+                    }
+                }
+            }
         });
 
         $scope.$on('stopEvents', function(){
@@ -7344,25 +7392,7 @@
                 isLoaded = true;
             });
         }
-
-        function  updateDimensions () {
-            const tdElements1 = $('tr.parent-tr td');
-            const tdElements2 = $('tr.child-tr td');
-            if (tdElements2.length > 0) {
-                for (let i = 0; i < tdElements1.length; i++) {
-                    if (tdElements2[i]) {
-                        tdElements2[i].style.width = window.getComputedStyle(tdElements1[i], null)
-                            .getPropertyValue('width');
-                    }
-                }
-            }
-            if (tdElements2.length === 0) {
-                setTimeout(function () {
-                    updateDimensions();
-                }, 120);
-            }
-        }
-
+        
         vm.yadeHistory = yadeHistory;
 
         function yadeHistory(filter) {

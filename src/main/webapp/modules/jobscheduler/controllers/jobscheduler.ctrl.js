@@ -1032,7 +1032,7 @@
             }
             data.expanded = !data.expanded;
             if (data.expanded) {
-                if (vm.clickOn == 'jobChain') {
+                if (vm.clickOn === 'jobChain') {
                     data.jobChains = [];
                     let obj = {};
                     obj.jobschedulerId = vm.schedulerIds.selected;
@@ -5537,31 +5537,9 @@
                         }
                         vm.clusterStatusData = clusterStatusData;
                         t2 = $timeout(function () {
-                            vm.clusterStatusData = clusterStatusData;
                             $rootScope.$broadcast('clusterStatusDataChanged');
                             vm.isLoadedMasterCluster = true;
-                            $('#masterClusterStatus1').on('shown.bs.dropdown', function (e) {
-                                var $menu = $(e.target).find('.more-option');
-                                if ($menu && $menu.offset()) {
-                                    $(this).find('.dropdown-menu').css("top", $menu.offset().top + 27);
-                                    if (window.localStorage.$SOS$LANG == 'fr') {
-                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 260);
-                                    } else if (window.localStorage.$SOS$LANG == 'ja') {
-                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 125);
-                                    } else if (window.localStorage.$SOS$LANG == 'de') {
-                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 230);
-                                    } else {
-                                        $(this).find('.dropdown-menu').css("left", $menu.offset().left - 210);
-                                    }
-                                    $(this).find('.dropdown-menu').css("position", "fixed");
-                                    $(this).find('.dropdown-menu').css("z-index", "9999");
-                                }
-                            });
-                            $('#masterClusterStatus1').on('hide.bs.dropdown', function () {
-                                $(this).find('.dropdown-menu').css("top", "auto");
-                                $(this).find('.dropdown-menu').css("left", "auto");
-                            });
-                        }, 60);
+                        }, 50);
 
                     }, function () {
                         vm.clusterStatusData = [];

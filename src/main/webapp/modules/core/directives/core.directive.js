@@ -679,11 +679,20 @@
                });
            },
            controller: ['$scope', '$rootScope', function ($scope, $rootScope) {
-               $(".dropdown").on("shown.bs.dropdown", function () {
+               $(".dropdown").on("shown.bs.dropdown", function (e) {
                    $rootScope.$broadcast('stopEvents');
+                   if($(e.target).context.className && $(e.target).context.className.match('status-dropdown')){
+
+                   }else {
+                       $(e.target).parents('.grid-stack-item-content').css({
+                           'overflow-x': 'inherit',
+                           'overflow-y': 'inherit'
+                       });
+                   }
                });
-               $(".dropdown").on("hide.bs.dropdown", function () {
+               $(".dropdown").on("hide.bs.dropdown", function (e) {
                    $rootScope.$broadcast('startEvents');
+                   $(e.target).parents('.grid-stack-item-content').css({'overflow-x': 'hidden','overflow-y':'auto'});
                });
            }]
        };

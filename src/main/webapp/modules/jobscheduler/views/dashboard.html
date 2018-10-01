@@ -180,10 +180,10 @@
                         <table class="w-full">
                             <tr ng-repeat="master in mastersList">
                                 <td>
-                                    <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                    <div class="btn-group dropdown status-dropdown">
+                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
                                                 class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list"
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                              role="menu">
                                             <a class="dropdown-item bg-hover-color"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
@@ -229,10 +229,12 @@
                                                ng-click="clusterAction('master', 'remove', master.host, master.port, master.jobschedulerId)"
                                                translate>button.removeInstance</a>
                                             <a class="dropdown-item"
+                                               ng-if="master.permission.JobschedulerMaster.view.mainlog"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadLog</a>
                                             <a class="dropdown-item"
+                                               ng-if="master.permission.JobschedulerMaster.view.mainlog"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadDebugLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadDebugLog</a>

@@ -2623,19 +2623,19 @@
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
-                if (!isOperationGoingOn) {
-                    if ($location.search().scheduler_id && $location.search().path) {
-                        for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
-                            if (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" && vm.events[0].eventSnapshots[j].path === $location.search().path) {
-                                let obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.jobChains = [{jobChain: $location.search().path}];
-                                getJobChainByPathV(obj);
-                                break;
-                            }
+                if ($location.search().scheduler_id && $location.search().path) {
+                    for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
+                        if (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" && vm.events[0].eventSnapshots[j].path === $location.search().path) {
+                            let obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.jobChains = [{jobChain: $location.search().path}];
+                            getJobChainByPathV(obj);
+                            break;
                         }
-                        return;
                     }
+                    return;
+                }
+                if (!isOperationGoingOn) {
                     let arr = [];
                     let arr1 = [];
                     let callTree = false;
