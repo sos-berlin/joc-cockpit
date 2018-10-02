@@ -14,8 +14,8 @@
         .controller('HistoryCtrl', HistoryCtrl)
         .controller('LogCtrl', LogCtrl);
 
-    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService", "SavedFilter"];
-    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService, SavedFilter) {
+    JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService"];
+    function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.overview = false;
@@ -28,8 +28,8 @@
                 var data = [];
                 if (vm.orders && vm.orders.length > 0) {
                     angular.forEach(vm.orders, function (order) {
-                        for (var i = 0; i < res.orders.length; i++) {
-                            if (order.path == res.orders[i].path) {
+                        for (let i = 0; i < res.orders.length; i++) {
+                            if (order.path === res.orders[i].path) {
                                 res.orders[i].title = angular.copy(order.title);
                                 res.orders[i].params = angular.copy(order.params);
                                 res.orders[i].show = angular.copy(order.show);
@@ -178,7 +178,6 @@
                 loadAuditLogs(obj);
         };
 
-
         vm.hideLogPanel = function () {
             vm.showLogPanel = undefined;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
@@ -189,6 +188,25 @@
             $('#rightPanel').removeClass('fade-in m-l-0');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
+        };
+
+        vm.showPanelFuc1 = function (order) {
+            order.show = true;
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = vm.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = _.merge(order, res.orders[0]);
+                updatePanelHeight();
+            });
+        };
+
+        vm.hidePanelFuc = function (order) {
+            order.show = false;
+            setTimeout(function () {
+                updatePanelHeight();
+            }, 1)
         };
 
         $scope.$on('event-started', function () {
@@ -232,35 +250,43 @@
                 });
         });
 
+        vm.resizerHeight;
+        vm.isInfoResize = false;
+
         function updatePanelHeight() {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (!_.isEmpty(rsHt) && rsHt.jobChainOrder) {
-                vm.resizerHeight = rsHt.jobChainOrder;
-            } else {
+            if (!vm.isInfoResize) {
+                _updatePanelHeight();
+            }
+        }
+
+        function _updatePanelHeight() {
+            setTimeout(function () {
                 let ht = (parseInt($('#orderTableId').height()) + 50);
+                let el = document.getElementById('orderDivId');
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 10;
+                }
                 if (ht > 450) {
                     ht = 450;
                 }
                 vm.resizerHeight = ht + 'px';
                 $('#orderDivId').css('height', vm.resizerHeight);
-            }
+            }, 5);
         }
+
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'orderDivId') {
-                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                rsHt.jobChainOrder = args.height;
-                SavedFilter.setResizerHeight(rsHt);
-                SavedFilter.save();
+            if (args.id === 'orderDivId') {
+                vm.resizerHeight = args.height;
+                vm.isInfoResize = true;
             }
         });
-
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService", "SavedFilter"];
-    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService, SavedFilter) {
+        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "TaskService"];
 
+    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
+                                  CoreService, $uibModal, AuditLogService, FileSaver, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.pageView = 'grid';
@@ -305,26 +331,26 @@
 
         $scope.$on("reloadJobChain", function () {
             loadJobChain();
-            if(!vm.isAuditLog) {
+            if (!vm.isAuditLog) {
                 if (!vm.isTaskHistory) {
                     vm.historyRequestObj.jobschedulerId = vm.schedulerIds.selected;
-                     vm.historyRequestObj.limit = vm.userPreferences.maxHistoryPerJobchain;
-                     if(!vm.historyRequestObj.orders) {
-                         vm.historyRequestObj.orders = [{
-                             jobChain: vm.jobChain.path
-                         }];
-                     }
+                    vm.historyRequestObj.limit = vm.userPreferences.maxHistoryPerJobchain;
+                    if (!vm.historyRequestObj.orders) {
+                        vm.historyRequestObj.orders = [{
+                            jobChain: vm.jobChain.path
+                        }];
+                    }
                     OrderService.histories(vm.historyRequestObj).then(function (res) {
                         vm.historys = res.history;
                     });
-                }else{
+                } else {
                     vm.taskHistoryRequestObj.jobschedulerId = vm.schedulerIds.selected;
                     vm.taskHistoryRequestObj.limit = vm.userPreferences.maxHistoryPerTask;
-                    if(!vm.taskHistoryRequestObj.orders) {
-                         vm.taskHistoryRequestObj.orders = [{
-                             jobChain: vm.jobChain.path
-                         }];
-                     }
+                    if (!vm.taskHistoryRequestObj.orders) {
+                        vm.taskHistoryRequestObj.orders = [{
+                            jobChain: vm.jobChain.path
+                        }];
+                    }
                     TaskService.histories(vm.taskHistoryRequestObj).then(function (res) {
                         vm.showHistoryPanel.taskHistory = res.history;
                     }, function () {
@@ -1543,8 +1569,9 @@
 
         vm.isLoading1 = false;
 
-        vm.taskHistoryRequestObj ={};
+        vm.taskHistoryRequestObj = {};
         vm.showJobHistory = showJobHistory;
+
         function showJobHistory(nestedJobChain, node, order, skip) {
 
             vm.isTaskHistory = true;
@@ -1554,7 +1581,7 @@
             obj.orders = [{
                 jobChain: nestedJobChain ? nestedJobChain.path : vm.jobChain.path
             }];
-            if(skip && !vm.isEmpty(vm.taskHistoryRequestObj)){
+            if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
                 obj = vm.taskHistoryRequestObj;
             }
             if (node) {
@@ -1579,8 +1606,9 @@
             })
         }
 
-        vm.historyRequestObj ={};
+        vm.historyRequestObj = {};
         vm.showHistory = showHistory;
+
         function showHistory(nestedJobChain, node, order, skip, toggle) {
             if (vm.jobChain) {
                 vm.isAuditLog = false;
@@ -2423,20 +2451,6 @@
             }
         });
 
-        let resizerHeight = JSON.parse(SavedFilter.resizerHeight) || {};
-        if (!_.isEmpty(resizerHeight)) {
-            vm.resizerHeight = resizerHeight.jobChainDetail;
-        } else {
-            vm.resizerHeight = 450;
-        }
-        $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'jobChainDivId') {
-                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                rsHt.jobChainDetail = args.height;
-                SavedFilter.setResizerHeight(rsHt);
-                SavedFilter.save();
-            }
-        });
 
         $scope.$on('$destroy', function () {
             watcher1();
@@ -2448,6 +2462,7 @@
     }
 
     JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService", "$timeout"];
+
     function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService, $timeout) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -2458,6 +2473,7 @@
         };
 
         var isLoaded = true;
+
         function volatileInfo(draw) {
             isLoaded = false;
             JobChainService.getJobChain({
@@ -2931,12 +2947,12 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.deleteOrder(orders).then(function (res) {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
+                        for (let i = 0; i < vm.object.orders.length; i++) {
                             if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
                                 vm.showLogPanel = undefined;
                             }
-                            for (var j = 0; j < vm.orders.length; j++) {
-                                if (vm.object.orders[i].path == vm.orders[j].path) {
+                            for (let j = 0; j < vm.orders.length; j++) {
+                                if (vm.object.orders[i].path === vm.orders[j].path) {
                                     vm.orders.splice(j, 1);
                                     break;
                                 }
@@ -2949,11 +2965,11 @@
                 });
             } else {
                 OrderService.deleteOrder(orders).then(function (res) {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
+                    for (let i = 0; i < vm.object.orders.length; i++) {
                         if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
                             vm.showLogPanel = undefined;
                         }
-                        for (var j = 0; j < vm.orders.length; j++) {
+                        for (let j = 0; j < vm.orders.length; j++) {
                             if (vm.object.orders[i].path == vm.orders[j].path) {
                                 vm.orders.splice(j, 1);
                                 break;
@@ -3154,7 +3170,7 @@
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].path == vm.jobChain.path && vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") {
                         $location.path('/job_chains');
                         break;
@@ -3735,43 +3751,43 @@
         }
 
         function updatePanelHeight() {
-              let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            setTimeout(function () {
-                if ($location.search().scheduler_id && $location.search().path) {
-                    if (rsHt.orderInfo) {
-                        vm.resizerHeight = rsHt.orderInfo;
-                        vm.isInfoResize = true;
+            if ($location.search().scheduler_id && $location.search().path) {
+                if (!vm.isInfoResize) {
+                    _updatePanelHeight('info');
+                }
+            } else {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (rsHt.order && !_.isEmpty(rsHt.order)) {
+                    if (rsHt.order[vm.folderPath]) {
+                        vm.resizerHeight = rsHt.order[vm.folderPath];
+                        $('#orderDivId').css('height', vm.resizerHeight);
                     } else {
-                        let ht = (parseInt($('#orderTableId').height()) + 20);
-                        if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-                        $('#orderInfoDivId').css('height', vm.resizerHeight);
+                        _updatePanelHeight();
                     }
                 } else {
+                    _updatePanelHeight();
+                }
+            }
+        }
 
-                    if (rsHt.order && !_.isEmpty(rsHt.order)) {
-                        if (rsHt.order[vm.folderPath]) {
-                            vm.resizerHeight = rsHt.order[vm.folderPath];
-                        } else {
-                            let ht = (parseInt($('#orderTableId').height()) + 50);
-                            if (ht > 450) {
-                                ht = 450;
-                            }
-                            vm.resizerHeight = ht + 'px';
-                        }
-                    } else {
-                        let ht = (parseInt($('#orderTableId').height()) + 50);
-                        if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-
-                    }
+        function _updatePanelHeight(info) {
+            setTimeout(function () {
+                let num = info ? 20 : 50;
+                let ht = (parseInt($('#orderTableId').height()) + num);
+                let el = info ? document.getElementById('orderInfoDivId') : document.getElementById('orderDivId');
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 10;
+                }
+                if (ht > 450) {
+                    ht = 450;
+                }
+                if (info) {
+                    $('#orderInfoDivId').css('height', ht + 'px');
+                } else {
+                    vm.resizerHeight = ht + 'px';
                     $('#orderDivId').css('height', vm.resizerHeight);
                 }
-            }, 0)
+            }, 5);
         }
 
         function volatileInformation(obj, expandNode) {
@@ -4465,11 +4481,11 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.deleteOrder(orders).then(function (res) {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
+                        for (let i = 0; i < vm.object.orders.length; i++) {
                             if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
                                 vm.showLogPanel = undefined;
                             }
-                            for (var j = 0; j < vm.allOrders.length; j++) {
+                            for (let j = 0; j < vm.allOrders.length; j++) {
                                 if (vm.object.orders[i].path == vm.allOrders[j].path) {
                                     vm.allOrders.splice(j, 1);
                                     break;
@@ -4484,11 +4500,11 @@
                 });
             } else {
                 OrderService.deleteOrder(orders).then(function (res) {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
+                    for (let i = 0; i < vm.object.orders.length; i++) {
                         if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
                             vm.showLogPanel = undefined;
                         }
-                        for (var j = 0; j < vm.allOrders.length; j++) {
+                        for (let j = 0; j < vm.allOrders.length; j++) {
                             if (vm.object.orders[i].path == vm.allOrders[j].path) {
                                 vm.allOrders.splice(j, 1);
                                 break;
@@ -4752,7 +4768,7 @@
             }
             setTimeout(function(){
                 updatePanelHeight();
-            },5);
+            }, 1)
         };
 
         function checkCurrentSelectedFolders(order) {
@@ -4794,7 +4810,7 @@
             OrderService.getOrdersP(obj).then(function (res) {
                 for (let i = 0; i < vm.allOrders.length; i++) {
                     if (vm.allOrders[i].path === res.orders[0].path) {
-                        vm.allOrders[i] = _.merge(vm.allOrders[i],res.orders[0] );
+                        vm.allOrders[i] = _.merge(vm.allOrders[i], res.orders[0]);
                         break;
                     }
                 }
@@ -4815,9 +4831,9 @@
 
         vm.hidePanelFuc = function (order) {
             order.show = false;
-            setTimeout(function(){
+            setTimeout(function () {
                 updatePanelHeight();
-            },5);
+            }, 1)
         };
 
         var t1 = '';
@@ -4825,7 +4841,8 @@
         var isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
             orderPaths = [];
         $scope.$on('event-started', function () {
-            if ($location.search().path) {
+            if (!isOperationGoingOn) {
+                if ($location.search().path) {
                 if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                     for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                         if (vm.events[0].eventSnapshots[m].path === $location.search().path) {
@@ -4840,7 +4857,7 @@
                             obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
                             getOrderByPathV(obj);
 
-                            if (vm.showLogPanel  && !vm.isTaskHistory && !vm.isAuditLog) {
+                            if (vm.showLogPanel && !vm.isTaskHistory && !vm.isAuditLog) {
                                 let orders = {
                                     jobschedulerId: vm.schedulerIds.selected,
                                     limit: vm.userPreferences.maxNumInOrderOverviewPerObject
@@ -4886,8 +4903,6 @@
                 }
                 return;
             }
-
-            if (!isOperationGoingOn) {
                 if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                     for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                         if (vm.events[0].eventSnapshots[m].path && (vm.events[0].eventSnapshots[m].eventType === "OrderStateChanged") && !vm.events[0].eventSnapshots[m].eventId) {
@@ -5002,7 +5017,7 @@
 
                             }
                         } else if (vm.events[0].eventSnapshots[m].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[m].eventId) {
-                            for (let i = 0; vm.allOrders.length; i++) {
+                            for (let i = 0; i < vm.allOrders.length; i++) {
                                 if (vm.allOrders[i].path === vm.events[0].eventSnapshots[m].path) {
                                     vm.allOrders.splice(i, 1);
                                     break;
@@ -5083,16 +5098,16 @@
             }
         });
 
-        $scope.$on('stopEvents', function(){
+        $scope.$on('stopEvents', function () {
             isOperationGoingOn = true;
             isAnyFileEventOnHold = false;
             isFuncCalled = false;
-            orderPaths= [];
+            orderPaths = [];
         });
 
-        $scope.$on('startEvents', function(){
+        $scope.$on('startEvents', function () {
             isOperationGoingOn = false;
-            if(!isFuncCalled) {
+            if (!isFuncCalled) {
                 refreshUIWithHoldEvents();
             }
         });
@@ -5109,12 +5124,28 @@
                     }
                 }
             }
+            if(vm.orders && $location.search().path) {
+                for (let i = 0; i < vm.orders.length; i++) {
+                    for (let j = 0; j < orderPaths.length; j++) {
+                        if (orderPaths[j] === vm.orders[i].path) {
+                            let obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.compact = true;
+                            obj.orders = [{jobChain: vm.orders[i].jobChain, orderId: vm.orders[i].orderId}];
+                            getOrderByPathV(obj);
+                            vm.showLogFuc(vm.orders[i]);
+                            break;
+                        }
+                    }
+                }
+                return;
+            }
             if (!isAnyFileEventOnHold) {
                 if (arr.length == 0) {
                     return;
                 }
                 let obj = {jobschedulerId: vm.schedulerIds.selected};
-                obj.orders =arr;
+                obj.orders = arr;
 
                 OrderService.get(obj).then(function (res) {
                     if (vm.allOrders && vm.allOrders.length > 0) {
@@ -5134,6 +5165,9 @@
 
                 });
             } else {
+                if ($location.search().path){
+                    return;
+                }
                 if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                     var folders = [];
                     angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -5153,46 +5187,27 @@
         }
 
         vm.resizerHeight = 450;
+        vm.resizerHeightInfo;
         vm.isInfoResize = false;
 
-        if ($location.search().scheduler_id && $location.search().path) {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-            if (rsHt.orderInfo) {
-                vm.resizerHeight = rsHt.orderInfo;
-                vm.isInfoResize = true;
-            }
-        }
         vm.resetPanel = function () {
-            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             if ($location.search().scheduler_id && $location.search().path) {
-                rsHt.orderInfo = undefined;
                 vm.isInfoResize = false;
-                SavedFilter.setResizerHeight(rsHt);
-                SavedFilter.save();
-                let ht = (parseInt($('#orderTableId').height()) + 20);
-                if (ht > 450) {
-                    ht = 450;
-                }
-                vm.resizerHeight = ht + 'px';
-                $('#orderInfoDivId').css('height', vm.resizerHeight);
+                _updatePanelHeight('info');
             } else {
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
                 if (rsHt.order && typeof rsHt.order === 'object') {
                     if (rsHt.order[vm.folderPath]) {
                         delete rsHt.order[vm.folderPath];
                         SavedFilter.setResizerHeight(rsHt);
                         SavedFilter.save();
-                        let ht = (parseInt($('#orderTableId').height()) + 50);
-                        if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-                        $('#orderDivId').css('height', vm.resizerHeight);
+                        _updatePanelHeight();
                     }
                 }
             }
         };
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'orderDivId') {
+            if (args.id === 'orderDivId') {
                 let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
                 if (rsHt.order && typeof rsHt.order === 'object') {
                     rsHt.order[vm.folderPath] = args.height;
@@ -5203,12 +5218,8 @@
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
                 vm.resizerHeight = args.height;
-            }else if(args.id === 'orderInfoDivId') {
-                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                vm.resizerHeight = args.height;
-                rsHt.orderInfo = args.height;
-                SavedFilter.setResizerHeight(rsHt);
-                SavedFilter.save();
+            } else if (args.id === 'orderInfoDivId') {
+                vm.resizerHeightInfo = args.height;
                 vm.isInfoResize = true;
             }
         });
@@ -5224,7 +5235,8 @@
 
     }
 
-    OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService", "TaskService","SavedFilter"];
+    OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService", "TaskService", "SavedFilter"];
+
     function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService, TaskService, SavedFilter) {
         var vm = $scope;
 
@@ -5274,7 +5286,9 @@
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
                 vm.isLoaded = false;
-                updatePanelHeight();
+                setTimeout(function () {
+                    updatePanelHeight();
+                },0);
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
@@ -5297,8 +5311,8 @@
                     vm.showJobHistory(value);
                     return;
                 }
-            }else {
-                vm.showJobHistory(value,toggle);
+            } else {
+                vm.showJobHistory(value, toggle);
                 return;
             }
             if (value.historyId) {
@@ -5315,7 +5329,7 @@
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
-        vm.showJobHistory = function (order,toggle) {
+        vm.showJobHistory = function (order, toggle) {
             vm.showLogPanel = order;
             vm.isTaskHistory = true;
             vm.isAuditLog = false;
@@ -5324,9 +5338,9 @@
             if (order.processingState._text === 'RUNNING' || order.processingState._text === 'SUSPENDED' || order.processingState._text === 'SETBACK') {
                 obj.historyIds = [];
                 obj.historyIds.push({historyId: order.historyId, state: order.state});
-            } else if(toggle){
+            } else if (toggle) {
                 obj.orders = [{jobChain: order.jobChain, state: order.state}];
-            }else{
+            } else {
                 obj.orders = [{jobChain: order.jobChain, orderId: order.orderId}];
             }
             TaskService.histories(obj).then(function (res) {
@@ -5379,6 +5393,24 @@
             }
         });
 
+        vm.showPanelFuc1 = function (order) {
+            order.show = true;
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = vm.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = _.merge(order, res.orders[0]);
+                updatePanelHeight();
+            });
+        };
+
+        vm.hidePanelFuc = function (order) {
+            order.show = false;
+            setTimeout(function () {
+                updatePanelHeight();
+            }, 1)
+        };
         /**---------------filter, sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
             vm.reset();
@@ -5799,44 +5831,47 @@
 
         function updatePanelHeight() {
             if (!vm.isSizeChange) {
-                setTimeout(function () {
-                    let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                    if (!_.isEmpty(rsHt) && rsHt.orderOverview) {
-                        vm.resizerHeight = rsHt.orderOverview;
-                    } else {
-                        let ht = (parseInt($('#orderTableId').height()) + 50);
-                        if(ht < 51){
-                             ht = undefined;
-                        }else if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-                        $('#orderDivId').css('height', vm.resizerHeight);
-                    }
-                }, 0);
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (!_.isEmpty(rsHt) && rsHt.orderOverview) {
+                    vm.resizerHeight = rsHt.orderOverview;
+                } else {
+                    _updatePanelHeight();
+                }
             }
         }
 
-         vm.resetPanel = function () {
+        function _updatePanelHeight() {
+            setTimeout(function () {
+                let ht = (parseInt($('#orderTableId').height()) + 50);
+                let el = document.getElementById('orderDivId');
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 10;
+                }
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+                $('#orderDivId').css('height', vm.resizerHeight);
+            }, 5);
+        }
+
+        vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             rsHt.orderOverview = undefined;
             vm.isSizeChange = false;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
-            let ht = (parseInt($('#orderTableId').height()) + 50);
-            if (ht > 450) {
-                ht = 450;
-            }
-            vm.resizerHeight = ht + 'px';
-            $('#orderDivId').css('height', vm.resizerHeight);
+            _updatePanelHeight();
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'orderDivId') {
+            if (args.id === 'orderDivId') {
                 let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
                 rsHt.orderOverview = args.height;
                 vm.isSizeChange = true;
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
+                vm.resizerHeight = args.height;
             }
         });
     }
@@ -6752,7 +6787,7 @@
 
         vm.reloadState = 'no';
 
-        vm.reload = function() {
+        vm.reload = function () {
             if (vm.reloadState == 'no') {
                 vm.historys = [];
                 vm.jobHistorys = [];
@@ -6851,7 +6886,7 @@
                 fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
-                fromDate = '-'+seconds+'s';
+                fromDate = '-' + seconds + 's';
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
                 toDate = '0d';
@@ -7119,9 +7154,9 @@
                     }
                     var data = [];
 
-                    for (var i = 0; i < vm.yadeHistoryFilterList.length; i++) {
+                    for (let i = 0; i < vm.yadeHistoryFilterList.length; i++) {
                         var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.yadeHistoryFilterList[i].account && data[j].name == vm.yadeHistoryFilterList[i].name) {
                                 flag = false;
                             }
@@ -7691,8 +7726,8 @@
                         });
                     } else {
                         if (vm.jobChainSearch.jobChains)
-                            for (var i = 0; i < vm.jobChainSearch.jobChains.length; i++) {
-                                for (var j = 0; j < filter.orders.length; j++) {
+                            for (let i = 0; i < vm.jobChainSearch.jobChains.length; i++) {
+                                for (let j = 0; j < filter.orders.length; j++) {
                                     var flag = true;
                                     if (filter.orders[j].jobChain == vm.jobChainSearch.jobChains[i]) {
                                         flag = false;

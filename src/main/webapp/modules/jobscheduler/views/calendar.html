@@ -19,13 +19,10 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
-                            <th class="hide"  ng-class="{show:permission.Calendar.edit.change && permission.Calendar.edit.delete}" width="45"><span translate>label.action</span></th>
-                            <th><span translate>label.name</span>
-                            </th>
-                            <th><span translate>label.path</span>
-                            </th>
-                            <th><span translate>label.type</span>
-                            </th>
+                            <th width="45"><span translate>label.action</span></th>
+                            <th><span translate>label.name</span></th>
+                            <th><span translate>label.path</span></th>
+                            <th><span translate>label.type</span></th>
                             <th><span translate>label.category</span></th>
                             <th><span translate>label.validityFrom</span></th>
                             <th><span translate>label.validityTo</span></th>
@@ -47,7 +44,7 @@
                              </td>
                             <td>
                              <span>
-                                 <span class="text-dark ">{{calendar.name}}</span>
+                                 <span class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)">{{calendar.name}}</span>
                                  <span ng-if="calendar.title">-</span>
                                  <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
                              </span>
@@ -58,7 +55,6 @@
                             <td ng-bind="calendar.from | stringToDate1"></td>
                             <td ng-bind="calendar.to | stringToDate1"></td>
                         </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -67,6 +63,101 @@
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
+        <div class="row" ng-show="showPanel">
+             <div class="col-md-12" ng-hide="loading">
+                        <div class="box white">
+                            <div class="box-header">
+                                <span class="text">{{showPanel.path}}: {{showPanel.name}} <i
+                                        ng-if="showPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showPanel.title | linky:'_blank'"></i></span>
+                            </div>
+                            <div class="box-tool">
+                                <ul class="nav text-muted text-md">
+                                    <li class="nav-item inline m-l-sm">
+                                        <a href="" ng-click="hideAuditPanel()"><img src="images/remove.png"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box-body p-t b-t">
+                                <div class="b-b">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href data-toggle="tab"
+                                               data-target="#tab" translate>label.auditLog</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content p-a">
+                                    <div class="tab-pane animated fadeIn active" id="tab">
+                                        <div class="row">
+                                            <div class="table-responsive" resizable r-directions="['bottom']"
+                                                 r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.calendar</th>
+                                                        <th translate>label.comment</th>
+                                                        <th translate>label.timeSpend</th>
+                                                        <th translate>label.ticketLink</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                    <tr>
+                                                        <td >
+                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                               ng-if="!auditLog.show"
+                                                               ng-click="auditLog.show =true"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                               ng-if="auditLog.show"
+                                                               ng-click="auditLog.show =false"></i>
+                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </td>
+
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td><span ng-bind="auditLog.calendar"></span></td>
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                        <td>
+                                                            <span ng-if="auditLog.timeSpent">
+                                                                <span ng-bind="auditLog.timeSpent"></span>
+                                                                <span>m</span>
+                                                            </span>
+                                                        </td>
+                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
+                                                               target="_blank" ng-bind="auditLog.ticketLink"></a></td>
+                                                    </tr>
+                                                    <tr class="tableexport-ignore" ng-show="auditLog.show">
+                                                        <td colspan="7">
+                                                            <table class="table m-a-0">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th translate>label.parameters</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td><span ng-bind="auditLog.parameters"></span></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div ng-if="auditLogs.length==0"
+                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                    message.noAuditLogFound
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+         </div>
     </div>
 </div>
 

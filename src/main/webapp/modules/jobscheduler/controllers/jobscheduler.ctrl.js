@@ -3439,7 +3439,6 @@
             }
 
             recursive(data);
-            updatePanelHeight();
         }
 
 
@@ -3988,40 +3987,39 @@
                     delete rsHt.calendar[vm.folderPathC];
                     SavedFilter.setResizerHeight(rsHt);
                     SavedFilter.save();
-                    let ht = (parseInt($('#calendarTableId').height()) + 50);
-                    if (ht > 450) {
-                        ht = 450;
-                    }
-                    vm.resizerHeight = ht + 'px';
-                    $('#calendarDivId').css('height', vm.resizerHeight);
+                    _updatePanelHeight();
                 }
             }
         };
-        vm.resizerHeight = 450;
+        vm.resizerHeight;
 
         function updatePanelHeight() {
-            setTimeout(function () {
-                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                if (rsHt.calendar && !_.isEmpty(rsHt.calendar)) {
-                    if (rsHt.calendar[vm.folderPathC]) {
-                        vm.resizerHeight = rsHt.calendar[vm.folderPathC];
-                    } else {
-                        let ht = (parseInt($('#calendarTableId').height()) + 50);
-                        if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-                    }
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+            if (rsHt.calendar && !_.isEmpty(rsHt.calendar)) {
+                if (rsHt.calendar[vm.folderPathC]) {
+                    vm.resizerHeight = rsHt.order[vm.folderPathC];
+                    $('#calendarDivId').css('height', vm.resizerHeight);
                 } else {
-                    let ht = (parseInt($('#calendarTableId').height()) + 50);
-                    if (ht > 450) {
-                        ht = 450;
-                    }
-                    vm.resizerHeight = ht + 'px';
-
+                    _updatePanelHeight();
                 }
+            } else {
+                _updatePanelHeight();
+            }
+        }
+
+        function _updatePanelHeight() {
+            setTimeout(function () {
+                let ht = (parseInt($('#calendarTableId').height()) + 50);
+                let el = document.getElementById('calendarDivId');
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 10;
+                }
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
                 $('#calendarDivId').css('height', vm.resizerHeight);
-            }, 5)
+            }, 5);
         }
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
@@ -4322,9 +4320,9 @@
         });
     }
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver'];
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver', 'AuditLogService'];
 
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver) {
+    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver, AuditLogService) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -4918,6 +4916,23 @@
                 vm.calendar.usedIn = res;
             });
             deleteCalendarFn(obj, calendar);
+        };
+
+        vm.loadAuditLogs = function (value) {
+            vm.showPanel = value;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.calendars = [];
+            obj.calendars.push(value.path);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            AuditLogService.getLogs(obj).then(function (result) {
+                if (result && result.auditLog) {
+                    vm.auditLogs = result.auditLog;
+                }
+            });
+        };
+        vm.hideAuditPanel = function () {
+            vm.showPanel = undefined;
         };
 
         $scope.$on('$destroy', function () {

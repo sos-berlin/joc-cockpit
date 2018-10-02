@@ -1339,5 +1339,7 @@
   "label.deleteAllProfiles": "Supprimer les Profils sélectionnés",
   "message.deleteAllProfiles": "Êtes-vous sûr de vouloir supprimer les Profils sélectionnés?",
   "button.resetPanel": "Redimensionner le panneau",
-  "message.noSchedulerInstalled": "Aucun JobScheduler Master connecté"
+  "message.noSchedulerInstalled": "Aucun JobScheduler Master connecté",
+  "label.joc": "Joc",
+  "label.downloadLog": "Download Log"
 }

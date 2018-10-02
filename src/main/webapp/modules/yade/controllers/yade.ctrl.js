@@ -1277,7 +1277,9 @@
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
                 vm.isLoaded = false;
-                updatePanelHeight();
+                setTimeout(function () {
+                    updatePanelHeight();
+                },0);
             }, function () {
                 vm.isLoading = true;
                 vm.isError = true;
@@ -1376,6 +1378,25 @@
         vm.changeStatus = function () {
             vm.hideLogPanel();
             vm.init();
+        };
+
+        vm.showPanelFuc1 = function (order) {
+            order.show = true;
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = vm.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = _.merge(order, res.orders[0]);
+                updatePanelHeight();
+            });
+        };
+
+        vm.hidePanelFuc = function (order) {
+            order.show = false;
+            setTimeout(function () {
+                updatePanelHeight();
+            }, 1)
         };
 
         $scope.$on("yadeState", function (evt, state) {
@@ -1772,34 +1793,37 @@
 
         function updatePanelHeight() {
             if (!vm.isSizeChange) {
-                setTimeout(function () {
-                    let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
-                    if (!_.isEmpty(rsHt) && rsHt.yadeOrderOverview) {
-                        vm.resizerHeight = rsHt.yadeOrderOverview;
-                    } else {
-                        let ht = (parseInt($('#orderTableId').height()) + 50);
-                        if(ht < 51){
-                             ht = undefined;
-                        }else if (ht > 450) {
-                            ht = 450;
-                        }
-                        vm.resizerHeight = ht + 'px';
-                        $('#orderDivId').css('height', vm.resizerHeight);
-                    }
-                }, 0);
+                let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
+                if (!_.isEmpty(rsHt) && rsHt.yadeOrderOverview) {
+                    vm.resizerHeight = rsHt.yadeOrderOverview;
+                } else {
+                    _updatePanelHeight();
+                }
             }
         }
+
+        function _updatePanelHeight() {
+            setTimeout(function () {
+                let ht = (parseInt($('#orderTableId').height()) + 50);
+                let el = document.getElementById('orderDivId');
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 10;
+                }
+                if (ht > 450) {
+                    ht = 450;
+                }
+                vm.resizerHeight = ht + 'px';
+                $('#orderDivId').css('height', vm.resizerHeight);
+            }, 5);
+        }
+
         vm.resetPanel = function () {
+            let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
             rsHt.yadeOrderOverview = undefined;
             vm.isSizeChange = false;
             SavedFilter.setResizerHeight(rsHt);
             SavedFilter.save();
-            let ht = (parseInt($('#orderTableId').height()) + 50);
-            if (ht > 450) {
-                ht = 450;
-            }
-            vm.resizerHeight = ht + 'px';
-            $('#orderDivId').css('height', vm.resizerHeight);
+            _updatePanelHeight();
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
@@ -1809,10 +1833,9 @@
                 vm.isSizeChange = true;
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
+                vm.resizerHeight = args.height;
             }
         });
-
-
     }
 
 })();

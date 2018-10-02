@@ -7,7 +7,7 @@
     </aside>
     <div id="rightPanel">
         <div ng-controller="OrderFunctionCtrl">
-            <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
+            <div class="hide" ng-class="{'show': isLoading  && permission.Order.view.status}">
                 <div ng-if="pageView=='grid'">
                     <div class="row">
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 " ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" >
@@ -269,9 +269,9 @@
                                             </td>
                                             <td>
                                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
-                                                   ng-click="showPanelFuc(order)"></i>
-                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
-                                                <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                                   ng-click="showPanelFuc1(order)"></i>
+                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
+                                                <span><span class="text-dark text-hover-primary" ng-click="showLogFuc(order)">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                                             </td>
                                             <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>

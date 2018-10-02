@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-if="!editLayoutObj && schedulerIds.selected">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="downloadJocLog()" >
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="downloadJocLog()" ng-if="permission.Joc.view.log">
                             <i class="fa fa-download"></i>&nbsp;
                             <span translate>button.downloadJocCockpitLog</span>
                         </button>

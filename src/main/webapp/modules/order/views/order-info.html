@@ -19,7 +19,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="box p-a ">
-                <div class="table-responsive" id="orderInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
+                <div class="table-responsive" id="orderInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeightInfo">
                     <table class="table table-hover table-bordered " id="orderTableId">
                         <thead>
                         <tr>
@@ -108,7 +108,7 @@
                                    ng-click="showPanelFuc1(order)"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show"
                                    ng-click="hidePanelFuc(order)"></i>
-                            <span ng-click="showLogFuc(order)"><span class="text-dark text-hover-primary">{{order.orderId}}</span> <span
+                                <span ng-click="showLogFuc(order)"><span class="text-dark text-hover-primary">{{order.orderId}}</span> <span
                                     ng-if="order.title">-</span>
                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                             </td>

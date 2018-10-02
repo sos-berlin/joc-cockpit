@@ -19,7 +19,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="box p-a">
-                <div class="table-responsive" id="jobInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
+                <div class="table-responsive" id="jobInfoDivId" resizable r-directions="['bottom']" r-height="resizerHeightInfo">
                     <table class="table table-hover table-bordered" id="jobTableId">
                         <thead>
                         <tr>
@@ -216,9 +216,7 @@
                                             {{task.order.orderId}}
                                         </td>
                                         <td ng-click="showLogWindow(null,task,job.path)">{{task.steps}}</td>
-                                        <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt |
-                                            stringToDate}} <span class="text-success">(<span
-                                                    time="{{task.startedAt}}"></span>)</span></td>
+                                        <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
                                         <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob!=true">
                                             {{task.enqueued | stringToDate}} <span class="text-success">(<span
                                                 time="{{task.enqueued}}"></span>)</span></td>
