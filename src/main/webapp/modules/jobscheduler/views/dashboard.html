@@ -227,14 +227,15 @@
                                             <a class="dropdown-item"
                                                ng-if="master.permission.administration.removeOldInstances"
                                                ng-click="clusterAction('master', 'remove', master.host, master.port, master.jobschedulerId)"
-                                               translate>button.removeInstance</a>
+                                               translate>button.removeInstance
+                                            </a>
                                             <a class="dropdown-item"
-                                               ng-if="master.permission.JobschedulerMaster.view.mainlog"
+                                               ng-if="master.permission.view.mainlog"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadLog</a>
                                             <a class="dropdown-item"
-                                               ng-if="master.permission.JobschedulerMaster.view.mainlog"
+                                               ng-if="master.permission.view.mainlog"
                                                ng-class="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
                                                ng-click="clusterAction('master', 'downloadDebugLog', master.host, master.port, master.jobschedulerId)"
                                                translate>button.downloadDebugLog</a>
