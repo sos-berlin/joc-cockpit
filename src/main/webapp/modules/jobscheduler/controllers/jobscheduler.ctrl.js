@@ -3359,9 +3359,9 @@
                 if (!flag) {
                     vm.showPanel = undefined;
                 }
-
-                updatePanelHeight();
-
+                setTimeout(function () {
+                    updatePanelHeight();
+                },0);
             }, function () {
                 vm.loading = false;
             });
@@ -3498,7 +3498,10 @@
                     insertCalendar(value, data);
                 });
                 vm.loading = false;
-                updatePanelHeight();
+                setTimeout(function () {
+                   updatePanelHeight();
+                },0);
+
             }, function () {
                 vm.loading = false;
             });
@@ -4293,12 +4296,14 @@
         }
 
         vm.hidePanel = function () {
-            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('m-l-0 fade-in col-xxl-2 col-lg-3');
+            $('#rightPanel1').addClass('m-l-0 fade-in');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
         vm.showLeftPanel = function () {
-            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('fade-in m-l-0 col-xxl-2 col-lg-3');
+            $('#rightPanel1').removeClass('m-l-0 fade-in');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 

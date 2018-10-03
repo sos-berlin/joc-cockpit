@@ -49,7 +49,7 @@
         tabs._daliyPlan.filter = {};
         tabs._daliyPlan.filter.status = 'ALL';
         tabs._daliyPlan.filter.state = '';
-        tabs._daliyPlan.filter.sortBy = 'processedPlanned';
+        tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tabs._daliyPlan.filter.range = "today";
         tabs._daliyPlan.range = 'period';
         tabs._daliyPlan.reverse = false;
@@ -222,7 +222,7 @@
         tempTabs._daliyPlan.filter = {};
         tempTabs._daliyPlan.filter.status = 'ALL';
         tempTabs._daliyPlan.filter.state = '';
-        tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
+        tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tempTabs._daliyPlan.filter.range = "today";
         tempTabs._daliyPlan.range = 'period';
         tempTabs._daliyPlan.reverse = false;

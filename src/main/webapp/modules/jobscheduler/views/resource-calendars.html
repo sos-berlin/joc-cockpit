@@ -139,9 +139,9 @@
                         </td>
                         <td>
                              <div class="btn-group dropdown">
-                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                 <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
@@ -153,7 +153,7 @@
                          </td>
                         <td>
                          <span>
-                             <a class="text-dark text-primary-hover" ng-click="loadAuditLogs(calendar)">{{calendar.name}}</a>
+                             <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)">{{calendar.name}}</a>
                              <span ng-if="calendar.title">-</span>
                              <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
                          </span>
@@ -340,25 +340,6 @@
 </div>
 
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190

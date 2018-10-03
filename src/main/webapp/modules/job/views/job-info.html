@@ -96,13 +96,13 @@
                                 </div>
                             </td>
                             <td>
-                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!job.showJobChains"
-                                   ng-click="showJobChains(job)"></i>
-                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains"
-                                   ng-click="hideJobChains(job)"></i>
+                                <span class="show-in-single-line">
+                                    <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
+                                    <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains" ng-click="hideJobChains(job)"></i>
                                     <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
-                                          ng-class="{'text-u-l':job.isOrderJob!=true, 'crimson':job.configurationStatus.severity==2}"
-                                          ng-bind="job.name"></span>
+                                          ng-class="{'text-u-l':job.isOrderJob!=true, 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name">
+                                    </span>
+                                </span>
                                 <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                             </td>
                             <td><a class="text-hover-primary" ng-click="showJob1(job.path)" ng-bind="job.path"></a></td>
@@ -114,14 +114,14 @@
                             </td>
                             <td>
                                 <span ng-if="job.usedInJobChains" class="text-hover-primary"
-                                      ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
+                                      ng-click="showJobChains(job)" ng-bind="job.usedInJobChains"></span>
                                 <span ng-if="!job.usedInJobChains">0</span>
                             </td>
                             <td>
                                 <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                             </td>
                             <td>
-                                <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
+                                <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
                                     <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
                                     <i class="text-black " translate>label.of</i>
                                     <span class="text-black _600" ng-bind="job.maxTasks || 1"></span>
@@ -210,16 +210,12 @@
                                         </td>
                                         <td ng-click="showLogWindow(null,task,job.path)">{{task.pid}}</td>
                                         <td ng-click="showLogWindow(null,task,job.path)">{{task.taskId}}</td>
-                                        <td ng-click="showLogWindow(null,task,job.path)">{{task._cause | translate}}
-                                        </td>
-                                        <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob==true">
-                                            {{task.order.orderId}}
-                                        </td>
+                                        <td ng-click="showLogWindow(null,task,job.path)">{{task._cause | translate}}</td>
+                                        <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob==true">{{task.order.orderId}}</td>
                                         <td ng-click="showLogWindow(null,task,job.path)">{{task.steps}}</td>
                                         <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
                                         <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob!=true">
-                                            {{task.enqueued | stringToDate}} <span class="text-success">(<span
-                                                time="{{task.enqueued}}"></span>)</span></td>
+                                            {{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -248,7 +244,6 @@
                             </td>
                         </tr>
                         </tbody>
-
                     </table>
                 </div>
             </div>
@@ -535,13 +530,12 @@
                                                 </thead>
                                                 <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                 <tr>
-
                                                     <td>
-                                                        <i class="cursor fa fa-caret-down fa-lg noExl"
-                                                           ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                        <i class="cursor fa fa-caret-up fa-lg noExl"
-                                                           ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
-                                                        <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        <span class="show-in-single-line">
+                                                            <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </span>
                                                     </td>
                                                     <td><span ng-bind="auditLog.account"></span></td>
                                                     <td><span ng-bind="auditLog.request"></span></td>

@@ -1426,6 +1426,9 @@
 
                                         $compile(label)(vm);
                                     } else {
+                                        if(!node.css('width')){
+                                            return;
+                                        }
                                         let wt = parseInt(node.css('width').replace(/[^-\d\.]/g, ''));
                                         let tp = parseInt(node.css('top').replace(/[^-\d\.]/g, ''));
                                         let lt = parseInt(node.css('left').replace(/[^-\d\.]/g, ''));

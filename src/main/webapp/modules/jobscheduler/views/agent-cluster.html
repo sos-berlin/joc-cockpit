@@ -41,8 +41,8 @@
                             <tbody ng-repeat="cluster in agentClusters" ng-class="{'light-bg':cluster.show}">
                             <tr>
                                 <td>
-                                    <i class="cursor fa fa-caret-down noExl" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
-                                    <i class="cursor fa fa-caret-up noExl" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
+                                    <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
                                     {{cluster.path}}
                                 </td>
                                 <td><span class="label" ng-class="bgColorFunction(cluster.state.severity)">
@@ -90,9 +90,9 @@
                     </div>
                 </div>
         </div>
-                    <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-            </div>
+        <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
     </div>
 </div>
 

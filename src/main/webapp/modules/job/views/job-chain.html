@@ -522,13 +522,16 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!jobChain.show"
-                                           ng-click="showNodePanelFuc(jobChain)"></i>
-                                        <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.show"
-                                           ng-click="hideNodePanelFuc(jobChain)"></i>
-                                        <span class="text-hover-primary" ng-click="showHistory(jobChain)"
-                                              ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
-                                              ng-bind-html="jobChain.name | highlight:filterString"></span>
+                                        <span class="show-in-single-line">
+                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!jobChain.show"
+                                               ng-click="showNodePanelFuc(jobChain)"></i>
+                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.show"
+                                               ng-click="hideNodePanelFuc(jobChain)"></i>
+                                            <span class="text-hover-primary" ng-click="showHistory(jobChain)"
+                                                  ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
+                                                  ng-bind-html="jobChain.name | highlight:filterString">
+                                            </span>
+                                        </span>
                                         <span ng-if="jobChain.title"> - </span>
                                         <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
@@ -539,7 +542,7 @@
                                     <td>
                                         <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass"></a></td>
                                     <td>
-                                        <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
+                                        <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending"></a>
                                     </td>
                                     <td>
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running"></a>
@@ -632,14 +635,16 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="!nestedJobChain.hide"
-                                                                   ng-click="nestedJobChain.hide =true"></i>
-                                                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="nestedJobChain.hide"
-                                                                   ng-click="nestedJobChain.hide = false"></i>
-                                                                <span class="text-hover-primary"
-                                                                      ng-click="showHistory(nestedJobChain)"
-                                                                      ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
-                                                                      ng-bind="nestedJobChain.name"></span>
+                                                                <span class="show-in-single-line">
+                                                                    <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="!nestedJobChain.hide"
+                                                                       ng-click="nestedJobChain.hide =true"></i>
+                                                                    <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="nestedJobChain.hide"
+                                                                       ng-click="nestedJobChain.hide = false"></i>
+                                                                    <span class="text-hover-primary"
+                                                                          ng-click="showHistory(nestedJobChain)"
+                                                                          ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
+                                                                          ng-bind="nestedJobChain.name"></span>
+                                                                </span>
                                                                 <span ng-if="nestedJobChain.title"> - </span>
                                                                 <i class="text-muted"><span ng-bind-html="nestedJobChain.title | linky:'_blank'"></span></i>
                                                             </td>
@@ -656,7 +661,7 @@
                                                             </td>
                                                             <td><a class="text-hover-primary"
                                                                    ng-click="viewOrders(nestedJobChain,'PENDING')"
-                                                                   ng-bind="nestedJobChain.ordersSummary.pending || 0"></a>
+                                                                   ng-bind="nestedJobChain.ordersSummary.pending"></a>
                                                             </td>
                                                             <td><a class="text-hover-primary"
                                                                    ng-click="viewOrders(nestedJobChain,'RUNNING')"
@@ -1392,16 +1397,17 @@
                                                     </thead>
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
-                                                        <td >
-                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                               ng-if="!auditLog.show"
-                                                               ng-click="auditLog.show =true"></i>
-                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                               ng-if="auditLog.show"
-                                                               ng-click="auditLog.show =false"></i>
-                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        <td>
+                                                            <span class="show-in-single-line">
+                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                                   ng-if="!auditLog.show"
+                                                                   ng-click="auditLog.show =true"></i>
+                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                                   ng-if="auditLog.show"
+                                                                   ng-click="auditLog.show =false"></i>
+                                                                <span ng-bind="auditLog.created | stringToDate"></span>
+                                                            </span>
                                                         </td>
-
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
                                                         <td><span ng-bind="auditLog.orderId"></span></td>

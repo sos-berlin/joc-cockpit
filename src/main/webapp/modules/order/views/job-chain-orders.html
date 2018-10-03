@@ -172,10 +172,10 @@
                                     <i ng-show="orderFilters.filter.sortBy == 'startedAt' && orderFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
-                                    <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && !orderFilters.reverse"
+                                <th ng-click="sortBy('startedAt')"><a><span translate>label.runningSince</span>
+                                    <i ng-show="orderFilters.filter.sortBy == 'startedAt' && !orderFilters.reverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="orderFilters.filter.sortBy == 'inProcessSince' && orderFilters.reverse"
+                                    <i ng-show="orderFilters.filter.sortBy == 'startedAt' && orderFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('historyId')"><a><span translate>label.historyId</span>
@@ -191,7 +191,6 @@
                                     <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && orderFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-
                             </tr>
                             </thead>
                             <tbody ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':showLogPanel == order}">

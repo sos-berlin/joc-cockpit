@@ -34,9 +34,9 @@
                         <tr >
                             <td>
                                 <div class="btn-group dropdown">
-                                    <a class="more-option-h" href data-toggle="dropdown"><i
+                                    <a class="more-option-h" href dropdown data-toggle="dropdown"><i
                                             class="fa fa-ellipsis-h"></i></a>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)"
                                            translate>button.addSubstitute</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
@@ -54,8 +54,7 @@
                                 <i class="text-muted" ng-bind-html="schedule.title | linky:'_blank'" ></i>
                             </td>
                             <td><a ng-click="showScheduleLink1(schedule.path)" class="text-hover-primary" ng-bind="schedule.path"></a></td>
-                            <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
-                                      ng-bind="schedule.state._text  | translate"></span></td>
+                            <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)" ng-bind="schedule.state._text  | translate"></span></td>
                             <td><span ng-bind="schedule.usedByOrders.length || 0"></span></td>
                             <td><span ng-bind="schedule.usedByJobs.length || 0"></span></td>
                             <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
@@ -88,25 +87,25 @@
                         </tr>
                         <tr ng-if="schedule.show && schedule.substitutedBy">
                         <td></td>
-                                <td colspan="9" style="padding: 1px !important;">
-                                    <table class="table m-a-0">
-                                        <thead>
-                                        <tr>
-                                            <th translate>label.substituteBy</th>
-                                            <th translate>label.validFrom</th>
-                                            <th translate>label.validTo</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody ng-repeat="substitutedBy in schedule.substitutedBy">
-                                        <tr>
-                                            <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{substitutedBy.path}}</td>
-                                            <td>{{substitutedBy.validFrom | stringToDate}}</td>
-                                            <td>{{substitutedBy.validTo | stringToDate}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            <td colspan="9" style="padding: 1px !important;">
+                                <table class="table m-a-0">
+                                    <thead>
+                                    <tr>
+                                        <th translate>label.substituteBy</th>
+                                        <th translate>label.validFrom</th>
+                                        <th translate>label.validTo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody ng-repeat="substitutedBy in schedule.substitutedBy">
+                                    <tr>
+                                        <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{substitutedBy.path}}</td>
+                                        <td>{{substitutedBy.validFrom | stringToDate}}</td>
+                                        <td>{{substitutedBy.validTo | stringToDate}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

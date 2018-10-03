@@ -103,16 +103,14 @@
                         <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                             <td>
                                 <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                            <i class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                            <a ng-click="showConfiguration('lock',lock.path,lock.name)" ng-if="permission.Lock.view.configuration"
-                                               class="dropdown-item"
-                                               translate>button.showConfiguration</a>
-                                            <a ng-click="copyLinkToObject('lock',lock.path)"
-                                               class="dropdown-item"
-                                               translate>button.copyLinkToObject</a>
-                                        </div>
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a ng-click="showConfiguration('lock',lock.path,lock.name)" ng-if="permission.Lock.view.configuration"
+                                           class="dropdown-item" translate>button.showConfiguration</a>
+                                        <a ng-click="copyLinkToObject('lock',lock.path)"
+                                           class="dropdown-item" translate>button.copyLinkToObject</a>
+                                    </div>
                                 </div>
                             </td>
                             <td ng-bind="lock.name || '-'"></td>
@@ -121,10 +119,9 @@
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>
-
                         </tr>
                         </tbody>
-                    </table>
+                </table>
                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allLocks.length > 10}" ng-if="allLocks.length >0"><span translate>label.total</span> {{allLocks.length}}
                     <span translate ng-if="allLocks.length >1">label.locksFound</span>
                     <span translate ng-if="allLocks.length ==1">label.lockFound</span>
@@ -165,25 +162,6 @@
 </div>
 <div ng-class="{'show':isLoading && treeLock.length==0}" ng-hide="loading" class="hide text-center m-t h6 text-uppercase" translate>message.noLocksFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190

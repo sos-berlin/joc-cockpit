@@ -95,23 +95,22 @@
                     <tr >
                         <td>
                              <div class="btn-group dropdown">
-                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                 <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                      <a ng-if="permission.ProcessClass.view.configuration" ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
-                                        class="dropdown-item"
-                                        translate>button.showConfiguration</a>
+                                        class="dropdown-item" translate>button.showConfiguration</a>
                                      <a ng-click="copyLinkToObject('processClass',processClass.path)"
-                                        class="dropdown-item"
-                                        translate>button.copyLinkToObject</a>
-
+                                        class="dropdown-item" translate>button.copyLinkToObject</a>
                                  </div>
                              </div>
                          </td>
-                        <td >
-                            <i class="cursor fa fa-caret-down noExl" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
-                                <i class="cursor fa fa-caret-up noExl" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
-                                <a class="text-hover-primary" ng-class="{'text-success': processClass.numOfProcesses>0 }"  ng-bind="processClass.name" ></a>
+                        <td>
+                            <span class="show-in-single-line">
+                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
+                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
+                                <span ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name" ></span>
+                            </span>
                         </td>
                         <td ng-bind="processClass.path"></td>
                         <td ng-bind="processClass.maxProcesses"></td>
@@ -120,10 +119,10 @@
                             <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
                         </td>
                     </tr>
-                    <tr ng-if="processClass.show && processClass.processes.length>0">
+                    <tr ng-if="processClass.show">
                         <td></td>
                             <td colspan="4" style="padding: 1px !important;">
-                                <table class="table m-a-0">
+                                <table class="table m-a-0" ng-if="processClass.processes.length >0">
                                     <thead>
                                     <tr>
                                         <th width="45" translate>label.action</th>
@@ -157,6 +156,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                                <div ng-if="!processClass.processes || processClass.processes.length === 0" translate>message.noDataFound</div>
                             </td>
                         </tr>
                     </tbody>
@@ -201,25 +201,6 @@
 
 <div ng-if="isLoading && treeProcess.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190

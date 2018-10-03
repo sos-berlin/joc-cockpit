@@ -25,7 +25,7 @@
 
         function loadJobOrderV(obj) {
             OrderService.get(obj).then(function (res) {
-                var data = [];
+                let data = [];
                 if (vm.orders && vm.orders.length > 0) {
                     angular.forEach(vm.orders, function (order) {
                         for (let i = 0; i < res.orders.length; i++) {
@@ -70,7 +70,7 @@
         vm.orders = [];
 
         function loadJobChain() {
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.orders = [];
@@ -99,7 +99,7 @@
             vm.orderFilters.filter.state = state;
             vm.status = state;
             if (state) {
-                var obj = {};
+                let obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.compact = true;
                 obj.orders = [];
@@ -3327,7 +3327,7 @@
                     }
                     var data = [];
                     for (let i = 0; i < vm.orderFilterList.length; i++) {
-                        var flag = true;
+                        let flag = true;
                         for (let j = 0; j < data.length; j++) {
                             if (data[j].account === vm.orderFilterList[i].account && data[j].name === vm.orderFilterList[i].name) {
                                 flag = false;
@@ -3342,7 +3342,7 @@
                     vm.orderFilterList = res.configurations;
                 }
                 if (vm.savedOrderFilter.selected) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach(vm.orderFilterList, function (value) {
                         if (value.id == vm.savedOrderFilter.selected) {
                             flag = false;
@@ -3460,7 +3460,7 @@
             vm.allOrders = [];
             vm.loading = true;
             vm.folderPath = data.name || '/';
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             obj.folders = [];
@@ -4706,13 +4706,15 @@
 
         };
         vm.hidePanel = function () {
-            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('m-l-0 fade-in col-xxl-2 col-lg-3');
+            $('#rightPanel1').addClass('m-l-0 fade-in');
+            $('#rightPanel1').find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
 
         vm.showLeftPanel = function () {
-            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('fade-in m-l-0 col-xxl-2 col-lg-3');
+            $('#rightPanel1').removeClass('m-l-0 fade-in');
+            $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
         };
@@ -4736,11 +4738,12 @@
         };
 
         vm.expandDetails = function () {
-            var obj = {};
+            let obj = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             vm.isLoaded = true;
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.orders = [];
-            angular.forEach(vm.allOrders, function (value, index) {
+            angular.forEach(vm.allOrders, function (value) {
                 obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
             });
 
@@ -6448,10 +6451,9 @@
             orders.jobschedulerId = vm.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
-                order = _.merge(order, res.orders[0]);
+                vm.order = res.orders[0];
             });
-
-            vm.order = order;
+            vm.order = angular.copy(order);
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.comments = {};

@@ -434,6 +434,9 @@
             try {
                 if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
                     if(newWindow.innerWidth > 0 && newWindow.screenX > 0) {
+                        if($window.localStorage.log_window_ht  == (newWindow.innerHeight-3)){
+                            newWindow.innerHeight = newWindow.innerHeight -3;
+                        }
                         $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
                         $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
                         $window.localStorage.log_window_x = newWindow.screenX;
@@ -725,6 +728,9 @@
                 try {
                     newWindow.addEventListener("beforeunload", function () {
                         if (newWindow.innerWidth > 0 && newWindow.screenX > 0) {
+                            if($window.localStorage.log_window_ht  == (newWindow.innerHeight-3)){
+                                newWindow.innerHeight = newWindow.innerHeight -3;
+                            }
                             $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
                             $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
                             $window.localStorage.log_window_x = newWindow.screenX;

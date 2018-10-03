@@ -248,9 +248,9 @@
                     </td>
                     <td>
                         <div class="btn-group dropdown">
-                            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                            <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                 <i class="fa fa-ellipsis-h"></i></button>
-                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                            <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                 <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}"
                                    ng-click="deleteEvent(event)" translate>button.deleteEvent</a>
                             </div>
@@ -318,8 +318,6 @@
 <div ng-if="!isLoading" class="text-center m-t-lg">
     <div class="cssload-loading">{{'label.loading' | translate}}...</div>
 </div>
-
-
 <div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -383,23 +381,4 @@
         </div>
     </div>
 </div>
-<script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
 
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-</script>

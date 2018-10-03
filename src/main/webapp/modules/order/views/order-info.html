@@ -104,13 +104,13 @@
                                 </div>
                             </td>
                             <td>
-                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
-                                   ng-click="showPanelFuc1(order)"></i>
-                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show"
-                                   ng-click="hidePanelFuc(order)"></i>
-                                <span ng-click="showLogFuc(order)"><span class="text-dark text-hover-primary">{{order.orderId}}</span> <span
-                                    ng-if="order.title">-</span>
-                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
+                                <span class="show-in-single-line">
+                                    <i class="cursor fa fa-caret-down fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
+                                    <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)">{{order.orderId}}</span>
+                                </span>
+                                <span ng-if="order.title">-</span>
+                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i>
                             </td>
                             <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
                             <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job"></span></td>

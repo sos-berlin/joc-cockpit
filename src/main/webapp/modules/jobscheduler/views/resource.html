@@ -25,7 +25,6 @@
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='2'}" ng-click="loadAgents()" translate>button.unreachableAgentCluster
                                 </button>
                             </div>
-
                             <div class="btn-group dropdown hidden-dropdown">
                                 <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -53,12 +52,10 @@
                                     <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state" uib-btn-radio="'all'"
                                             ng-class="{'btn-primary': scheduleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state"
-                                            uib-btn-radio="'ACTIVE'"
+                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state" uib-btn-radio="'ACTIVE'"
                                             ng-class="{'btn-primary': scheduleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state"
-                                            uib-btn-radio="'INACTIVE'"
+                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state" uib-btn-radio="'INACTIVE'"
                                             ng-class="{'btn-primary': scheduleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
                                     </button>
                                 </div>
@@ -68,12 +65,10 @@
                                         <a class="dropdown-item" ng-model="scheduleFilters.filter.state" uib-btn-radio="'all'"
                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
                                         </a>
-                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state"
-                                           uib-btn-radio="'ACTIVE'"
+                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state" uib-btn-radio="'ACTIVE'"
                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
                                         </a>
-                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state"
-                                           uib-btn-radio="'INACTIVE'"
+                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state" uib-btn-radio="'INACTIVE'"
                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
                                         </a>
                                     </div>
@@ -84,11 +79,11 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
                                     <span ng-show="agentsFilters.filter.sortBy =='path'">
-                                    {{'label.path' | translate}}
-                                    <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                        {{'label.path' | translate}}
+                                        <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                    <span ng-show="agentsFilters.filter.sortBy =='status'">
+                                    <span ng-show="agentsFilters.filter.sortBy =='state._text'">
                                          {{'label.status' | translate}}
                                         <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
                                         <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
@@ -96,23 +91,22 @@
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-
                                 <a class="dropdown-item" href ng-click="sortByA('path')" translate>label.path</a>
-                                <a class="dropdown-item" href ng-click="sortByA('status')" translate>label.status</a>
+                                <a class="dropdown-item" href ng-click="sortByA('state._text')" translate>label.status</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown" ng-if="resourceFilters.state=='lock'">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
                                     <span ng-show="processFilters.filter.sortBy =='name'">
-                                         {{'label.name' | translate}}
+                                        {{'label.name' | translate}}
                                         <i ng-show="!locksFilters.reverse" class="fa fa-caret-up"></i>
                                         <i ng-show="locksFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                     <span ng-show="processFilters.filter.sortBy =='path'">
-                                    {{'label.path' | translate}}
-                                    <i ng-show="!locksFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i ng-show="locksFilters.reverse" class="fa fa-caret-down"></i>
+                                        {{'label.path' | translate}}
+                                        <i ng-show="!locksFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="locksFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span>
                             </a>
@@ -125,14 +119,14 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
                                     <span ng-show="scheduleFilters.filter.sortBy =='name'">
-                                         {{'label.name' | translate}}
+                                        {{'label.name' | translate}}
                                         <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
                                         <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                     <span ng-show="scheduleFilters.filter.sortBy =='path'">
-                                    {{'label.path' | translate}}
-                                    <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
+                                        {{'label.path' | translate}}
+                                        <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span>
                             </a>
@@ -145,14 +139,14 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
                                     <span ng-show="processFilters.filter.sortBy =='name'">
-                                         {{'label.name' | translate}}
+                                        {{'label.name' | translate}}
                                         <i ng-show="!processFilters.reverse" class="fa fa-caret-up"></i>
                                         <i ng-show="processFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                     <span ng-show="processFilters.filter.sortBy =='path'">
-                                    {{'label.path' | translate}}
-                                    <i ng-show="!processFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i ng-show="processFilters.reverse" class="fa fa-caret-down"></i>
+                                        {{'label.path' | translate}}
+                                        <i ng-show="!processFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="processFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span>
                             </a>
@@ -166,18 +160,14 @@
                             <button ng-if="object.calendars.length>0 && permission.Calendar.edit.delete" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteCalendar()"><i class="fa fa-trash"></i> {{'button.deleteCalendar' | translate}}</button>
                             <div class="inline" ng-class="{'hide':object.calendars.length>0}">
                                 <div class="btn-group ">
-                                    <button class="btn btn-grey btn-sm "
-                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'ALL'"
-                                            ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>
-                                        label.all
+                                    <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'ALL'"
+                                            ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>label.all
                                     </button>
-                                    <button class="btn btn-grey btn-sm "
-                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
+                                    <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
                                             ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
                                             translate>button.workingDays
                                     </button>
-                                    <button class="btn btn-grey btn-sm "
-                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                    <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
                                             ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
                                             translate>button.nonWorkingDays
                                     </button>
@@ -200,9 +190,9 @@
                                     <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                         <span class="text-primary">
                                             <span ng-show="calendarFilters.filter.sortBy =='path'">
-                                            {{'label.path' | translate}}
-                                            <i ng-show="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                                            <i ng-show="calendarFilters.reverse" class="fa fa-caret-down"></i>
+                                                {{'label.path' | translate}}
+                                                <i ng-show="!calendarFilters.reverse" class="fa fa-caret-up"></i>
+                                                <i ng-show="calendarFilters.reverse" class="fa fa-caret-down"></i>
                                             </span>
                                             <span ng-show="calendarFilters.filter.sortBy =='type'">
                                                  {{'label.type' | translate}}
@@ -212,7 +202,6 @@
                                         </span>
                                     </a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-
                                         <a class="dropdown-item" href ng-click="sortByC('path')" translate>label.path</a>
                                         <a class="dropdown-item" href ng-click="sortByC('type')" translate>label.type</a>
                                     </div>
@@ -286,25 +275,18 @@
                             <div class="inline" ng-class="{'hide':object.events.length>0}">
                                 <div class="btn-group dropdown">
                                     <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}"
-                                            uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
-                                        {{'label.filters' | translate}} <span ng-bind="selectedFiltered.name"></span>
+                                            uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}}
+                                        <span ng-bind="selectedFiltered.name"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
-                                        <a class="dropdown-item" href ng-click="editFilters()"
-                                           ng-if="eventFilterList.length>0" translate>label.editExistingFilters</a>
-
+                                        <a class="dropdown-item" href ng-click="editFilters()" ng-if="eventFilterList.length>0" translate>label.editExistingFilters</a>
                                         <div class="dropdown-divider" ng-if="eventFilterList.length>0"></div>
-                                        <a class="dropdown-item"
-                                           ng-class="{orange: savedEventFilter.selected == filter.id}"
-                                           ng-click="changeFilter(filter)"
-                                           ng-repeat="filter in eventFilterList | orderBy:'name'">
-                                            <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i
-                                                ng-click="changeFilter();$event.stopPropagation();"
-                                                ng-if="savedEventFilter.selected == filter.id"
-                                                class="fa fa-times-circle-o remove"
-                                                uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}"
-                                                tooltip-placement="right"></i>
+                                        <a class="dropdown-item" ng-class="{orange: savedEventFilter.selected == filter.id}"
+                                           ng-click="changeFilter(filter)" ng-repeat="filter in eventFilterList | orderBy:'name'">
+                                            <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                            <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedEventFilter.selected == filter.id"
+                                                class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -423,4 +405,3 @@
         <span>{{'message.noSchedulerInstalled' | translate}}</span>
     </div>
 </div>
-

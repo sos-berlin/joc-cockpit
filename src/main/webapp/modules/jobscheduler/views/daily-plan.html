@@ -70,7 +70,7 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
                                 <span translate>label.sortBy</span>
                                 <span class="text-primary">
-                                <span ng-show="dailyPlanFilters.filter.sortBy =='processedPlanned'">
+                                <span ng-show="dailyPlanFilters.filter.sortBy =='jobChain'">
                                     {{'label.path' | translate}}
                                     <i ng-show="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                                     <i ng-show="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
@@ -92,16 +92,13 @@
                                 </span>
                                 </span>
                             </a>
-
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-click="sortBy('processedPlanned')" translate>label.path</a>
+                                <a class="dropdown-item" ng-click="sortBy('jobChain')" translate>label.path</a>
                                 <a class="dropdown-item" ng-click="sortBy('orderId')" translate>label.orderId</a>
                                 <a class="dropdown-item" ng-click="sortBy('plannedStartTime')" translate>label.plannedStart</a>
                                 <a class="dropdown-item" ng-click="sortBy('state._text')" translate>label.status</a>
                             </div>
                         </div>
-
-
                         <div class="btn-group dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
                                 {{'label.filters' | translate}}
@@ -111,7 +108,6 @@
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()"
                                    ng-if="dailyPlanFilterList.length>0" translate>label.editExistingFilters</a>
-
                                 <div class="dropdown-divider" ng-if="dailyPlanFilterList.length>0"></div>
                                 <a class="dropdown-item"
                                    ng-class="{orange: (savedDailyPlanFilter.selected == filter.id)}"
@@ -125,7 +121,6 @@
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length==0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                     </div>
-
                     <toggle-view></toggle-view>
                 </div>
             </div>
@@ -147,7 +142,7 @@
             </div>
         </div>
         <div class="row" ng-if="showSearchPanel">
-                <div class="col-md-12">
+            <div class="col-md-12">
                 <div class="box p-a m-b-sm m-t-sm">
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
@@ -315,7 +310,7 @@
                     </form>
                 </div>
             </div>
-            </div>
+        </div>
         <div class="hide p-t-sm" ng-class="{'show': isLoading }">
             <div ng-if="pageView=='grid' && plans.length>0">
                 <div class="box p-a">
@@ -362,10 +357,10 @@
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
                             <tr>
-                                <th ng-click="sortBy('processedPlanned')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
-                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlanned' && !dailyPlanFilters.reverse"
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'jobChain' && !dailyPlanFilters.reverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlanned' && dailyPlanFilters.reverse"
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'jobChain' && dailyPlanFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
@@ -455,13 +450,11 @@
                                 <td><span ng-if="plan.period.repeat">{{plan.period.repeat | convertTime}}</span></td>
                                 <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
-
                                 <td><span ng-bind="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
                                 <td><span ng-bind="plan.startTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.endTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.startTime | duration:plan.endTime"></span></td>
                             </tr>
-
                             </tbody>
                         </table>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
@@ -530,7 +523,6 @@
                        uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
-
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
