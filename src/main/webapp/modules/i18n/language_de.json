@@ -1340,6 +1340,6 @@
   "message.deleteAllProfiles": "Sind Sie sicher, dass Sie die ausgewählten Profile löschen möchten?",
   "button.resetPanel": "Anzeigegröße zurücksetzen",
   "message.noSchedulerInstalled": "Keine JobScheduler Master Instanz verbunden",
-  "label.joc": "Joc",
-  "label.downloadLog": "Download Log"
+  "label.joc": "JOC",
+  "label.downloadLog": "Protokoll herunterladen"
 }

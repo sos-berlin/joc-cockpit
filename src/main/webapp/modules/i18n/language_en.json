@@ -715,7 +715,7 @@
   "label.resumeOrder": "Resume Order",
   "label.role": "Role",
   "label.roles": "Roles",
-  "label.runTime": "RunTime",
+  "label.runTime": "Run-Time",
   "label.runatUltimo": "Run at Ultimo",
   "label.running": "Running",
   "label.runningAgents": "Running Agents",
@@ -1340,6 +1340,6 @@
   "message.deleteAllProfiles": "Are you sure you want to delete the selected Profiles?",
   "button.resetPanel": "Resize Panel",
   "message.noSchedulerInstalled": "No JobScheduler Master connected",
-  "label.joc": "Joc",
+  "label.joc": "JOC",
   "label.downloadLog": "Download Log"
 }

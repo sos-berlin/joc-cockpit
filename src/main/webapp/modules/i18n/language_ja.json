@@ -1339,7 +1339,7 @@
   "label.deleteAllProfiles": "選択プロファイルを削除",
   "message.deleteAllProfiles": "本当に選択したプロファイルを削除しますか？",
   "button.resetPanel": "パネルリサイズ",
-  "message.noSchedulerInstalled": "Jobschedulerマスターはインストールされていません",
-  "label.joc": "Joc",
-  "label.downloadLog": "Download Log"
+  "message.noSchedulerInstalled": "JobSchedulerマスターはインストールされていません",
+  "label.joc": "JOC",
+  "label.downloadLog": "ダウンロード"
 }
