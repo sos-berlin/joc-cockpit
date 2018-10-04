@@ -678,7 +678,7 @@
                 let ht = (parseInt($('#jobChainTableId').height()) + num);
                 let el = info ? document.getElementById('jobChainInfoDivId') : document.getElementById('jobChainDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;
@@ -3571,7 +3571,7 @@
                 let ht = (parseInt($('#jobTableId').height()) + num);
                 let el = info ? document.getElementById('jobInfoDivId') : document.getElementById('jobDivId');
                 if(el && el.scrollWidth > el.clientWidth){
-                    ht =  ht + 10;
+                    ht =  ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;
@@ -7357,7 +7357,7 @@
                 let ht = (parseInt($('#jobTableId').height()) + 50);
                 let el = document.getElementById('jobDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;

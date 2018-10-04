@@ -265,7 +265,7 @@
                     <td>
                         <span ng-if="event.expires && !event.expires.match('2999-01-01')" ng-bind="event.expires | stringToDate"></span>
                         <span ng-if="!event.expires">-</span>
-                        <span ng-if="event.expires && event.expires.match('2999-01-01')">never</span>
+                        <span ng-if="event.expires && event.expires.indexOf('2999-01-01') > -1">never</span>
                     </td>
                     <td>
                         <span ng-bind="event.remoteJobSchedulerHost"></span>

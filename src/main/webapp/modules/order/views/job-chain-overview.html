@@ -494,6 +494,7 @@
                                             </div>
                                         </td>
                                         <td>
+                                            <span class="show-in-single-line">
                                             <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="!nestedJobChain.hide"
                                                ng-click="nestedJobChain.hide =true"></i>
                                             <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="nestedJobChain.hide"
@@ -502,13 +503,13 @@
                                                   ng-click="showHistory(nestedJobChain)"
                                                   ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
                                                   ng-bind="nestedJobChain.name"></span>
+                                            </span>
                                             <span ng-if="nestedJobChain.title"> - </span>
-                                            <i class="text-muted"><span
-                                                    ng-bind-html="nestedJobChain.title | linky:'_blank'"></span></i>
+                                            <i class="text-muted"><span ng-bind-html="nestedJobChain.title | linky:'_blank'"></span></i>
                                         </td>
                                         <td ng-bind="nestedJobChain.path"></td>
-                                        <td><span class="label"
-                                                  ng-class="bgColorFunction(nestedJobChain.state.severity)"
+                                        <td>
+                                            <span class="label" ng-class="bgColorFunction(nestedJobChain.state.severity)"
                                                   ng-bind="nestedJobChain.state._text  | translate"></span>
                                         </td>
                                         <td ng-bind="nestedJobChain.numOfNodes || 0"></td>
@@ -518,7 +519,7 @@
                                                 ng-if="!nestedJobChain.processClass">-</i></td>
                                         <td><a class="text-hover-primary"
                                                ng-click="viewOrders(nestedJobChain,'PENDING')"
-                                               ng-bind="nestedJobChain.ordersSummary.pending || 0"></a>
+                                               ng-bind="nestedJobChain.ordersSummary.pending"></a>
                                         </td>
                                         <td><a class="text-hover-primary"
                                                ng-click="viewOrders(nestedJobChain,'RUNNING')"
@@ -993,9 +994,11 @@
                                                 <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                 <tr>
                                                     <td>
-                                                        <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
-                                                        <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        <span class="show-in-single-line">
+                                                            <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </span>
                                                     </td>
                                                     <td><span ng-bind="auditLog.account"></span></td>
                                                     <td><span ng-bind="auditLog.request"></span></td>

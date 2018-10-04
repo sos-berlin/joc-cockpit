@@ -343,11 +343,11 @@
                                                         <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                         <tr>
                                                             <td>
-                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                                   ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                                   ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
-                                                                <span ng-bind="auditLog.created | stringToDate"></span>
+                                                                <span class="show-in-single-line">
+                                                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                                    <span ng-bind="auditLog.created | stringToDate"></span>
+                                                                </span>
                                                             </td>
                                                             <td><span ng-bind="auditLog.account"></span></td>
                                                             <td><span ng-bind="auditLog.request"></span></td>

@@ -4015,7 +4015,7 @@
                 let ht = (parseInt($('#calendarTableId').height()) + 50);
                 let el = document.getElementById('calendarDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;

@@ -264,7 +264,7 @@
                 let ht = (parseInt($('#orderTableId').height()) + 50);
                 let el = document.getElementById('orderDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;
@@ -3776,7 +3776,7 @@
                 let ht = (parseInt($('#orderTableId').height()) + num);
                 let el = info ? document.getElementById('orderInfoDivId') : document.getElementById('orderDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;
@@ -5848,7 +5848,7 @@
                 let ht = (parseInt($('#orderTableId').height()) + 50);
                 let el = document.getElementById('orderDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
-                    ht = ht + 10;
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;

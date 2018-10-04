@@ -619,14 +619,13 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show"
-                                               ng-click="showPanelFuc1(order)"></i>
-                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show"
-                                               ng-click="hidePanelFuc(order);"></i>
-                                            <span ng-click="showLogFuc(order)"><span class="text-dark text-hover-primary"
-                                             ng-class="{'crimson':order.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:filterString"></span>
-                                                <span ng-if="order.title">-</span>
-                                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
+                                            <span class="show-in-single-line">
+                                                <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
+                                                <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order);"></i>
+                                                <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)" ng-class="{'crimson':order.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:filterString"></span>
+                                            </span>
+                                            <span ng-if="order.title">-</span>
+                                            <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i>
                                         </td>
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:filterString"></span></td>
                                         <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind-html="order.job  | highlight:filterString"></span></td>
@@ -910,13 +909,13 @@
                                                         <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                         <tr>
                                                             <td>
-                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                                   ng-if="!auditLog.show"
-                                                                   ng-click="auditLog.show =true"></i>
-                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                                   ng-if="auditLog.show"
-                                                                   ng-click="auditLog.show =false"></i>
-                                                                <span ng-bind="auditLog.created | stringToDate"></span>
+                                                                <span class="show-in-single-line">
+                                                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                                       ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                                       ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                                    <span ng-bind="auditLog.created | stringToDate"></span>
+                                                                </span>
                                                             </td>
                                                             <td><span ng-bind="auditLog.account"></span></td>
                                                             <td><span ng-bind="auditLog.request"></span></td>

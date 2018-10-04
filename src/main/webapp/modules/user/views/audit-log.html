@@ -301,12 +301,14 @@
                         <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict)  | orderBy:adtLog.filter.sortBy:adtLog.sortReverse | startFrom:(adtLog.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                         <tr>
                             <td ng-if="!adtLog.current">
+                                <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show"
                                    ng-click="auditLog.show =true"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show"
                                    ng-click="auditLog.show = false"></i>
                                 <span ng-bind="auditLog.jobschedulerId"></span>
                                 <span ng-if="!auditLog.jobschedulerId" ng-bind="auditSearch.jobschedulerId"></span>
+                                </span>
                             </td>
                             <td nowrap>
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
