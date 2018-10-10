@@ -211,7 +211,7 @@ export class CalendarService {
       str = 'On ';
       if (data.dates) {
         data.dates.forEach(function (date, index) {
-          str = str + self.datePipe.transform(date, dataFormat);
+          str = str + moment(date).format(dataFormat.toUpperCase());
           if (index != data.dates.length - 1) {
             str = str + ', ';
           }
@@ -260,7 +260,7 @@ let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
         str = new Date(data.nationalHoliday[0]).getFullYear() + ' national holidays ';
 
         data.nationalHoliday.forEach(function (date, index) {
-          str = str + self.datePipe.transform(date, dataFormat);
+          str = str + moment(date).format(dataFormat.toUpperCase());
           if (index != data.nationalHoliday.length - 1) {
             str = str + ', ';
           }

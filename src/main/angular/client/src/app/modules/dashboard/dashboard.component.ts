@@ -162,9 +162,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.widgets.push(this.dashboardLayout[i]);
       } else if (this.dashboardLayout[i].name == 'tasksSummary' && this.permission.Job.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'fileTransferOverview' && this.permission.YADE.view.transfers) {
+      } else if (this.dashboardLayout[i].name == 'fileTransferOverview' && this.permission.YADE.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'fileTransferSummary' && this.permission.YADE.view.transfers) {
+      } else if (this.dashboardLayout[i].name == 'fileTransferSummary' && this.permission.YADE.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
       }
     }

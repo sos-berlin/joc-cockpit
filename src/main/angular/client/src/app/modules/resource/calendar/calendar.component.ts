@@ -232,7 +232,6 @@ export class FrequencyModal implements OnInit, OnDestroy {
   isRuntimeEdit: boolean;
   countryField: boolean;
   isCalendarDisplay: boolean = false;
-  showMonthRange: boolean = false;
 
   excludedDates: any = [];
   includedDates: any = [];
@@ -366,7 +365,6 @@ export class FrequencyModal implements OnInit, OnDestroy {
           endDate: new Date(x[0], x[1] - 1, x[2] - 1),
           color: '#007da6'
         });
-
       }
 
       if (this.frequencyList[i].startingWithS)
@@ -824,7 +822,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
   }
 
   getDateFormat(date) {
-    return this.datePipe.transform(date, this.dateFormat);
+    return moment(date).format(this.dateFormatM);
   }
 
   private freqObj(data, obj) {
@@ -906,18 +904,18 @@ export class FrequencyModal implements OnInit, OnDestroy {
         color = '#eb8814';
       }
       for (let m = 0; m < result.dates.length; m++) {
-        let x = result.dates[m].split('-');
+        let x = result.dates[m];
         self.planItems.push({
-          startDate: new Date(x[0], x[1] - 1, x[2] - 1),
-          endDate: new Date(x[0], x[1] - 1, x[2] - 1),
+          startDate: moment(x),
+          endDate: moment(x),
           color: color
         });
       }
       for (let m = 0; m < result.withExcludes.length; m++) {
-        let x = result.withExcludes[m].split('-');
+        let x = result.withExcludes[m];
         self.planItems.push({
-          startDate: new Date(x[0], x[1] - 1, x[2] - 1),
-          endDate: new Date(x[0], x[1] - 1, x[2] - 1),
+          startDate: moment(x),
+          endDate: moment(x),
           color: '#eb8814'
         });
       }
@@ -1421,19 +1419,20 @@ export class FrequencyModal implements OnInit, OnDestroy {
           color = '#eb8814';
         }
         for (let i = 0; i < result.dates.length; i++) {
-          let x = result.dates[i].split('-');
+          let x = result.dates[i];
           let obj = {
-            startDate: new Date(x[0], x[1] - 1, x[2] - 1),
-            endDate: new Date(x[0], x[1] - 1, x[2] - 1),
+            startDate: moment(x),
+            endDate: moment(x),
             color: color
           };
+
           self.planItems.push(obj);
         }
         for (let i = 0; i < result.withExcludes.length; i++) {
-          let x = result.withExcludes[i].split('-');
+          let x = result.withExcludes[i];
           self.planItems.push({
-            startDate: new Date(x[0], x[1] - 1, x[2] - 1),
-            endDate: new Date(x[0], x[1] - 1, x[2] - 1),
+            startDate: moment(x),
+            endDate: moment(x),
             color: '#eb8814'
           });
         }
