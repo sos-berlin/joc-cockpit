@@ -48,10 +48,9 @@ export class EditorComponent implements OnInit, OnDestroy {
   editor: any;
   xmlTest: any;
   workFlows: any = [];
+  nextNode: any = [];
   object: any = {checkbox: false, workflows: []};
   lastId: any;
-  joinId: any =[];
-  endIfId: any = [];
   isPropertyHide: boolean = false;
   json: any = {};
   options: any = {};
@@ -515,8 +514,6 @@ export class EditorComponent implements OnInit, OnDestroy {
         instructions: []
       };
       let startNode: any = {};
-      this.joinId = [];
-      this.endIfId = [];
 
       if (objects.Connection) {
         if (!_.isArray(objects.Connection)) {
@@ -631,7 +628,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('Job', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
         else {
@@ -646,7 +643,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('ForkJoin', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
         else {
@@ -661,7 +658,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('Retry', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
         else {
@@ -676,7 +673,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('Await', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
         else {
@@ -691,7 +688,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('If', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
         else {
@@ -706,25 +703,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (!_.isEmpty(startNode)) {
           jsonObj.instructions.push(this.createObject('Exit', startNode));
-          this.findNextNode(connection, startNode._id, objects, jsonObj.instructions);
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         } else {
           // console.log('start node not found');
         }
 
-        if (this.joinId && this.joinId.length > 0 && connection.length > 0) {
-          for (let i = 0; i < this.joinId.length; i++) {
-            this.findNextNode(connection, this.joinId[i], objects, jsonObj.instructions);
-          }
-        } else if (this.endIfId && this.endIfId.length > 0 && connection.length > 0) {
-          for (let i = 0; i < this.endIfId.length; i++) {
-            this.findNextNode(connection, this.endIfId[i], objects, jsonObj.instructions);
-          }
-        } else {
-          if (this.lastId && connection.length > 0) {
-            this.findNextNode(connection, this.lastId, objects, jsonObj.instructions);
-          }
+        if (this.lastId && connection.length > 0) {
+          this.findNextNode(connection, this.lastId, objects, jsonObj.instructions, jsonObj);
         }
+       
       } else {
         let job = objects.Job;
         let ifIns = objects.If;
@@ -791,7 +779,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private findNextNode(connection, id, objects, instructions: Array<any>) {
+  private findNextNode(connection, node, objects, instructions: Array<any>, jsonObj) {
+    let id = node._id || node;
     if (_.isArray(connection)) {
       for (let i = 0; i < connection.length; i++) {
         if (!connection[i].skip && connection[i].mxCell._source && connection[i].mxCell._source === id) {
@@ -845,30 +834,91 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
           }
           connection[i].skip = true;
+          this.nextNode = [];
           if (connection[i]._type == 'join') {
-            if (!this.joinId.includes(_id)) {
-              this.joinId.push(_id);
+            let joinInstructions = objects.Join;
+            let _node: any = {};
+            if (joinInstructions) {
+              if (_.isArray(joinInstructions)) {
+                for (let i = 0; i < joinInstructions.length; i++) {
+                  if (joinInstructions[i]._id === _id) {
+                    _node = joinInstructions[i];
+                    break;
+                  }
+                }
+              } else {
+                if (joinInstructions._id === _id) {
+                  _node = joinInstructions;
+                }
+              }
+            }
+
+          
+            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if(this.nextNode && this.nextNode.length > 0) {
+              instructionArr = this.nextNode
             }
           } else if (connection[i]._type == 'endIf') {
-            if (!this.endIfId.includes(_id)) {
-              this.endIfId.push(_id);
+            let endIfInstructions = objects.EndIf;
+            let _node: any = {};
+            if (endIfInstructions) {
+              if (_.isArray(endIfInstructions)) {
+                for (let i = 0; i < endIfInstructions.length; i++) {
+                  if (endIfInstructions[i]._id === _id) {
+                    _node = endIfInstructions[i];
+                    break;
+                  }
+                }
+              } else {
+                if (endIfInstructions._id === _id) {
+                  _node = endIfInstructions;
+                }
+              }
             }
-          } else {
-            this.getNextNode(_id, objects, instructionArr);
+        
+            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if(this.nextNode && this.nextNode.length > 0) {
+              instructionArr = this.nextNode;
+            }
           }
+
+          this.getNextNode(_id, objects, instructionArr, jsonObj);
         }
       }
     } else {
       if (connection.mxCell._source && connection.mxCell._source === id) {
         let _id = _.clone(connection.mxCell._target);
         connection = null;
-        this.getNextNode(_id, objects, instructions);
+        this.getNextNode(_id, objects, instructions, jsonObj);
       }
     }
     this.lastId = id;
   }
 
-  private getNextNode(id, objects, instructionsArr: Array<any>) {
+  private recursiveFindParentCell(id, instructionsArr: Array<any>) {
+    for (let i = 0; i < instructionsArr.length; i++) {
+      if (instructionsArr[i].id === id) {
+        this.nextNode = instructionsArr;
+      
+        break;
+      } else {
+        if (instructionsArr[i].TYPE === 'ForkJoin') {
+          for (let j = 0; j < instructionsArr[i].branches.length; j++) {
+            this.recursiveFindParentCell(id, instructionsArr[i].branches[j].instructions);
+          }
+        } else if (instructionsArr[i].TYPE === 'If') {
+          if (instructionsArr[i].then) {
+            this.recursiveFindParentCell(id, instructionsArr[i].then.instructions);
+          }
+          if (instructionsArr[i].else) {
+            this.recursiveFindParentCell(id, instructionsArr[i].else.instructions);
+          }
+        }
+      }
+    }
+  }
+
+  private getNextNode(id, objects, instructionsArr: Array<any>, jsonObj) {
     let jobs = objects.Job;
     let ifInstructions = objects.If;
     let endIfInstructions = objects.EndIf;
@@ -908,7 +958,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('Job', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -930,7 +980,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('ForkJoin', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -951,7 +1001,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     if (nextNode && !_.isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -973,7 +1023,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('Retry', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -995,7 +1045,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('Await', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -1017,7 +1067,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('If', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -1038,7 +1088,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     if (nextNode && !_.isEmpty(nextNode)) {
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     }
     else {
@@ -1060,10 +1110,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('Exit', nextNode));
-      this.findNextNode(connection, nextNode._id, objects, instructionsArr);
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
-      this.findNextNode(connection, id, objects, instructionsArr);
+      this.findNextNode(connection, id, objects, instructionsArr, jsonObj);
     }
   }
 
@@ -1262,10 +1312,12 @@ export class EditorComponent implements OnInit, OnDestroy {
      * @param name
      * @param label
      */
-    function getCellNode(name: string, label: string): Object {
+    function getCellNode(name: string, label: string, id): Object {
       // Create new node object
       let node = doc.createElement(name);
       node.setAttribute('label', label);
+      if (id)
+        node.setAttribute('targetId', id);
       return node;
     }
 
@@ -1559,13 +1611,11 @@ export class EditorComponent implements OnInit, OnDestroy {
               let parent = graph.getDefaultParent();
               let v1, label = '', type = '';
               if (cells[0].value.tagName === 'Fork') {
-                label = 'branch';
+                label = '';
                 type = 'branch';
-                v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join'), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
+                v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
               } else if (cells[0].value.tagName === 'If') {
-                label = 'If';
-                type = 'If';
-                v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'EndIf'), 0, 0, 150, 70, "rhombus");
+                v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'EndIf', null), 0, 0, 150, 70, "rhombus");
               }
               graph.insertEdge(parent, null, getConnectionNode(label, type), cell.source, cells[0]);
               graph.insertEdge(parent, null, getConnectionNode('', ''), cells[0], v1);
@@ -1574,7 +1624,17 @@ export class EditorComponent implements OnInit, OnDestroy {
               isProgrammaticallyDelete = true;
               graph.getModel().remove(cell);
               setTimeout(() => {
-                checkConnectionLabel(cells[0], cell, false );
+                graph.getModel().beginUpdate();
+                try {
+                  let targetId = new mxCellAttributeChange(
+                    v1, 'targetId',
+                    cells[0].id);
+                  graph.getModel().execute(targetId);
+                }
+                finally {
+                  graph.getModel().endUpdate();
+                }
+                checkConnectionLabel(cells[0], cell, false);
               }, 0);
               return false;
             }
@@ -1619,9 +1679,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
       let label = '', type = '';
       if (cell && dropTarget) {
-        if (cell.value.tagName === 'If') {
-          label = 'if';
-        } else if (dropTarget.value.tagName === 'If') {
+        if (dropTarget.value.tagName === 'If') {
           let flag = false;
           label = 'true';
           type = 'then';
@@ -1648,11 +1706,31 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         let parent = dropTarget.parent || graph.getDefaultParent();
         if (cell.value.tagName === 'Fork') {
-          let v1 = graph.insertVertex(parent, null, getCellNode('Join','Join'), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
+          let v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/fork.png");
           graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
+          if (dropTarget.value.tagName === 'If') {
+            setTimeout(() => {
+              for (let i = 0; i < v1.edges.length; i++) {
+                if (v1.edges[i].target.id !== v1.id) {
+                  changeLabelOfConnection(v1.edges[i], 'endIf');
+                  break;
+                }
+              }
+            }, 0);
+          }
         } else if (cell.value.tagName === 'If') {
-          let v1 = graph.insertVertex(parent, null, getCellNode('EndIf','EndIf'), 0, 0, 150, 70, "rhombus");
+          let v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'EndIf', cell.id), 0, 0, 150, 70, "rhombus");
           graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
+          if (dropTarget.value.tagName === 'Fork') {
+            setTimeout(() => {
+              for (let i = 0; i < v1.edges.length; i++) {
+                if (v1.edges[i].target.id !== v1.id) {
+                  changeLabelOfConnection(v1.edges[i], 'join');
+                  break;
+                }
+              }
+            }, 0);
+          }
         }
 
         if (dropTarget.value.tagName === 'Process') {
@@ -1695,7 +1773,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           graph.removeCells([dropTarget]);
         } else {
           if (dropTarget.value.tagName === 'Fork') {
-            label = 'branch';
+            label = '';
             type = 'branch';
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
               let target1, target2;
@@ -1756,7 +1834,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             if (cell.edges) {
               for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.value.tagName === "Join") {
-                  cell.edges[i].value.attributes[0].nodeValue = 'join';
+                  cell.edges[i].value.attributes[0].nodeValue = '';
                   cell.edges[i].value.attributes[1].nodeValue = 'join';
                 }
               }
@@ -1820,8 +1898,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
             if (cell.edges) {
               for (let i = 0; i < cell.edges.length; i++) {
-                 if (cell.edges[i].target.value.tagName === "EndIf") {
-                  cell.edges[i].value.attributes[0].nodeValue = 'endIf';
+                if (cell.edges[i].target.value.tagName === "EndIf") {
+                  cell.edges[i].value.attributes[0].nodeValue = '';
                   cell.edges[i].value.attributes[1].nodeValue = 'endIf';
                 }
               }
@@ -1845,7 +1923,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       try {
         let label = new mxCellAttributeChange(
           cell, 'label',
-          data);
+          '');
         let type = new mxCellAttributeChange(
           cell, 'type',
           data);
@@ -1859,13 +1937,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     function checkConnectionLabel(cell, dropTarget, isChange) {
       if (!isChange) {
-        if(dropTarget.value.attributes[0].nodeValue === 'join') {
+        if (dropTarget.value.attributes[0].nodeValue === 'join') {
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
               if ((cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf')) {
-                if(cell.edges[i].target.edges) {
+                if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
-                    if(cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id ){
+                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id) {
                       changeLabelOfConnection(cell.edges[i].target.edges[j], 'join');
                       break;
                     }
@@ -1878,6 +1956,42 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
 
           }
+        } else if (dropTarget.value.attributes[0].nodeValue === 'branch') {
+          for (let i = 0; i < cell.edges.length; i++) {
+            if (cell.edges[i].target !== cell.id) {
+              if ((cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf')) {
+                if (cell.edges[i].target.edges) {
+                  for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
+                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id) {
+                      changeLabelOfConnection(cell.edges[i].target.edges[j], 'branch');
+                      break;
+                    }
+                  }
+                }
+              }
+              if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If') {
+                changeLabelOfConnection(cell.edges[i], 'branch');
+              }
+            }
+          }
+        } else if (dropTarget.value.attributes[0].nodeValue === 'endIf') {
+          for (let i = 0; i < cell.edges.length; i++) {
+            if (cell.edges[i].target !== cell.id) {
+              if ((cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf')) {
+                if (cell.edges[i].target.edges) {
+                  for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
+                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id) {
+                      changeLabelOfConnection(cell.edges[i].target.edges[j], 'endIf');
+                      break;
+                    }
+                  }
+                }
+              }
+              if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If') {
+                changeLabelOfConnection(cell.edges[i], 'endIf');
+              }
+            }
+          }
         }
       } else {
         if (cell.edges) {
@@ -1889,8 +2003,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                   changeLabelOfConnection(_tempCell, 'branch');
                   changeLabelOfConnection(cell.edges[i], 'join');
                 } else if (cell.edges[i].target.value.tagName === 'EndIf') {
-                  //changeLabelOfConnection(cell.edges[i], 'endIf');
-                  console.log('>>>>>>> endIf >>>>>>>>')
+                  changeLabelOfConnection(cell.edges[i], 'endIf');
                 }
               }
             }
@@ -1898,7 +2011,6 @@ export class EditorComponent implements OnInit, OnDestroy {
               if (cell.edges[i].source.value.tagName === 'Join' || cell.edges[i].source.value.tagName === 'EndIf') {
                 _tempCell = cell.edges[i];
               }
-
             }
 
             if (((dropTarget.value.attributes[0].nodeValue === 'join' || dropTarget.value.attributes[1].nodeValue === 'join') && cell.edges[i].id !== dropTarget.id)) {
@@ -2181,13 +2293,15 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     let mgr = new mxAutoSaveManager(graph);
     mgr.save = function () {
-      self.xmlToJsonParser();
-      if (self.json && self.json.instructions && self.json.instructions.length > 0) {
-        graph.setEnabled(true);
-      } else if (self.json && self.json.instructions && self.json.instructions.length == 0) {
-        graph.setEnabled(false);
-        reloadDummyXml(self.xmlTest);
-      }
+      setTimeout(() => {
+        self.xmlToJsonParser();
+        if (self.json && self.json.instructions && self.json.instructions.length > 0) {
+          graph.setEnabled(true);
+        } else if (self.json && self.json.instructions && self.json.instructions.length == 0) {
+          graph.setEnabled(false);
+          reloadDummyXml(self.xmlTest);
+        }
+      }, 0)
     };
   }
 
