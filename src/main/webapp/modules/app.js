@@ -35,7 +35,35 @@
             $rootScope.clientLogs = [];
             $resource("version.json").get(function (data) {
                 $rootScope.versionData = data;
+                localStorage.setItem("JOC-Version", data.version);
             });
+
+
+            function clearCache(cacheName) {
+                return caches.open(cacheName).then(function (cache) {
+                    cache.keys().then(function (keys) {
+                        keys.forEach(function (request) {
+                            cache.delete(request);
+                        });
+                    });
+                })
+            }
+
+            var updated = localStorage.getItem("JOC-Version");
+            if (!updated) {
+                console.log(updated)
+                localStorage.setItem('v2-update', true);
+                caches.keys().then(function (keyList) {
+                    for (var i = 0; i < keyList.length; i++) {
+                        var cacheKeyName = keyList[i];
+                        if (cacheKeyName !== "images") {
+                            clearCache(cacheKeyName);
+                        }
+                    }
+                    return;
+                })
+            }
+
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {
             toastyConfigProvider.setConfig({

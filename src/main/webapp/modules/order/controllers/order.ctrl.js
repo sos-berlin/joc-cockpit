@@ -2983,9 +2983,10 @@
         };
 
         vm.suspendAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -3030,9 +3031,10 @@
         };
 
         vm.resumeAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -3076,9 +3078,10 @@
 
         };
         vm.resetAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -3122,9 +3125,10 @@
 
         };
         vm.startAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
@@ -3267,14 +3271,16 @@
             if (path.indexOf(",") > -1) {
                 jobChain = path.split(",");
             }
-
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
+            let obj = {
+                jobschedulerId: vm.schedulerIds.selected
+            };
             obj.compact = true;
             obj.orders = [{jobChain: jobChain[0], orderId: jobChain[1]}];
+
             OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
-                vm.showLogFuc(vm.orders[0]);
+                if (vm.orders.length > 0)
+                    vm.showLogFuc(vm.orders[0]);
                 getOrderByPathV(obj);
                 vm.isLoading = true;
             }, function () {
@@ -3285,11 +3291,12 @@
 
         function getOrderByPathV(obj) {
             OrderService.get(obj).then(function (res) {
-                if (vm.orders) {
+                if (vm.orders && vm.orders.length > 0) {
                     vm.orders = _.merge(vm.orders, res.orders)
                 } else {
                     vm.orders = res.orders;
-                    vm.showLogFuc(vm.orders[0]);
+                    if (vm.orders.length > 0)
+                        vm.showLogFuc(vm.orders[0]);
                 }
                 updatePanelHeight();
             });
@@ -3297,7 +3304,7 @@
 
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
-                var obj = {};
+                let obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.configurationType = "CUSTOMIZATION";
                 obj.objectType = "ORDER";
@@ -3916,6 +3923,7 @@
                         });
 
                     } else {
+                        vm.allOrders = res.orders;
                         angular.forEach(vm.tree, function (node) {
                             insertData(node, res.orders);
                         })
@@ -4050,7 +4058,7 @@
         };
 
         vm.search = function () {
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
             if (vm.orderFilter1.regex) {
@@ -4157,8 +4165,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
-                var configObj = {};
+                let configObj = {};
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "CUSTOMIZATION";
@@ -4166,12 +4173,10 @@
                 configObj.id = 0;
                 configObj.name = vm.orderFilter1.name;
                 configObj.shared = vm.orderFilter1.shared;
-
                 configObj.configurationItem = JSON.stringify(vm.orderFilter1);
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
                     vm.orderFilterList.push(configObj);
-
                     if (vm.orderFilterList.length == 1) {
                         vm.savedOrderFilter.selected = res.id;
                         vm.orderFilters.selectedView = true;
@@ -4517,9 +4522,10 @@
 
         };
         vm.suspendAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4564,9 +4570,10 @@
 
         };
         vm.resumeAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4610,9 +4617,10 @@
 
         };
         vm.resetAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -4658,9 +4666,10 @@
 
         };
         vm.startAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
@@ -5493,9 +5502,10 @@
             }
         };
         vm.suspendAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5539,9 +5549,10 @@
 
         };
         vm.resumeAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5585,9 +5596,10 @@
 
         };
         vm.resetAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
@@ -5631,9 +5643,10 @@
 
         };
         vm.startAllOrder = function () {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            let orders = {
+                orders: [],
+                jobschedulerId: vm.schedulerIds.selected
+            };
             angular.forEach(vm.object.orders, function (value) {
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });

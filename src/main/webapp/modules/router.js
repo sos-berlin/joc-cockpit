@@ -17,7 +17,7 @@
                         path: o.path
                     }, r.path("/job_chains")), t.sessionStorage.$SOS$NAVIGATEOBJ = null)
                 } catch (c) {
-                    console.log(c)
+                    console.error(c)
                 }
                 if(t.localStorage.$SOS$URLRESET){
                     t.localStorage.removeItem('$SOS$URLRESET');

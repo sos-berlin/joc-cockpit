@@ -1207,21 +1207,21 @@
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
                         if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
                            vm.load();
                             break;
                         }else if(vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated'){
-                            for(var x=0; x<vm.fileTransfers.length;x++){
+                            for(let x=0; x<vm.fileTransfers.length;x++){
                                 if(vm.fileTransfers[x].id ==vm.events[0].eventSnapshots[i].path ){
                                     getTransfer(vm.fileTransfers[x]);
                                     break;
                                 }
                             }
                         }else if(vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged'){
-                            for(var x=0; x<vm.fileTransfers.length;x++){
-                                if(vm.fileTransfers[x].id ==vm.events[0].eventSnapshots[i].path && vm.fileTransfers[x].show ){
+                            for(let x=0; x<vm.fileTransfers.length;x++){
+                                if(vm.fileTransfers[x].id == vm.events[0].eventSnapshots[i].path && vm.fileTransfers[x].show ){
                                     getFiles(vm.fileTransfers[x]);
                                     break;
                                 }

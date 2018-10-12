@@ -477,14 +477,14 @@
                 try {
                     if (typeof newWindow === 'undefined' || newWindow == null || newWindow.closed === true) {
                         if (order && order.historyId && order.orderId) {
-                            url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+                            url = 'log.html#!/?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain);
                         } else if (task && task.taskId) {
                             if (task.job)
-                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job;
+                                url = 'log.html#!/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job);
                             else if (job)
-                                url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job;
+                                url = 'log.html#!/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job);
                             else
-                                url = 'log.html#!/?taskId=' + task.taskId;
+                                url = 'log.html#!/?taskId=' + encodeURIComponent(task.taskId);
                         } else {
                             return;
                         }
@@ -504,22 +504,22 @@
                 }
             } else if(vm.userPreferences.isNewWindow === 'newTab'){
                 if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                    url = '#!/order/log?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                 } else if (task && task.taskId) {
                     if (transfer) {
                         if (task.job)
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/file_transfer/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                         else if (job)
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/file_transfer/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                         else
-                            url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/file_transfer/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                     } else {
                         if (task.job)
-                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/job/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                         else if (job)
-                            url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/job/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                         else
-                            url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || vm.schedulerIds.selected);
+                            url = '#!/job/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || vm.schedulerIds.selected);
                     }
                 } else {
                     return;
@@ -922,23 +922,23 @@
             host = host + '/#!/';
 
             if (objType == 'jobChain' && path) {
-                link = host + 'job_chain?path=' + path;
+                link = host + 'job_chain?path=' + encodeURIComponent(path);
             } else if (objType == 'job' && path) {
-                link = host + 'job?path=' + path;
+                link = host + 'job?path=' + encodeURIComponent(path);
             } else if (objType == 'order' && path) {
-                link = host + 'order?path=' + path;
+                link = host + 'order?path=' + encodeURIComponent(path);
             } else if (objType == 'agentCluster' && path) {
-                link = host + 'agent_cluster?path=' + path;
+                link = host + 'agent_cluster?path=' + encodeURIComponent(path);
             } else if (objType == 'lock' && path) {
-                link = host + 'lock?path=' + path;
+                link = host + 'lock?path=' + encodeURIComponent(path);
             } else if (objType == 'processClass' && path) {
-                link = host + 'process_class?path=' + path;
+                link = host + 'process_class?path=' + encodeURIComponent(path);
             } else if (objType == 'schedule' && path) {
-                link = host + 'schedule?path=' + path;
-            }else if(objType == 'fileTransfer' && path){
-                 link = host + 'file_transfer?id=' + path;
-            }else if (objType == 'calendar' && path) {
-                 link = host + 'calendar?path=' + path;
+                link = host + 'schedule?path=' + encodeURIComponent(path);
+            } else if (objType == 'fileTransfer' && path) {
+                link = host + 'file_transfer?id=' + encodeURIComponent(path);
+            } else if (objType == 'calendar' && path) {
+                link = host + 'calendar?path=' + encodeURIComponent(path);
             }
             if (link !== '') {
                 clipboard.copyText(link + '&scheduler_id=' + vm.schedulerIds.selected);
@@ -1468,7 +1468,6 @@
 
                         SOSAuth.setIds(res);
                         PermissionService.savePermission(jobScheduler);
-
                         $rootScope.$broadcast('reloadUser');
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
