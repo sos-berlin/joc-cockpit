@@ -5055,7 +5055,7 @@
                             obj.limit = vm.userPreferences.maxHistoryPerTask;
                             if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
                                 obj.historyIds = [];
-                                obj.historyIds.push({historyId: order.historyId, state: vm.showLogPanel.state});
+                                obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});
                             } else {
                                 obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
                             }

@@ -917,7 +917,7 @@
                             if (args.otherEvents[j].eventSnapshots && args.otherEvents[j].eventSnapshots.length > 0)
                                 for (var x = 0; x < args.otherEvents[j].eventSnapshots.length; x++) {
                                     if (args.otherEvents[j].eventSnapshots[x].eventType === "SchedulerStateChanged") {
-                                        vm.getSupervisor();
+                                        vm.$broadcast('clusterStatusDataChanged');
                                         flag = true;
                                         break;
                                     }

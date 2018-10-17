@@ -1538,38 +1538,44 @@
                 CoreService.getEvents(obj).then(function (res) {
                     if (!vm.switchScheduler && !logout) {
                         vm.eventsRequest = [];
-                        for (let i = 0; i < res.events.length; i++) {
-                            if (res.events[i].jobschedulerId === vm.schedulerIds.selected) {
-                                vm.events = [];
-                                vm.events.push(res.events[i]);
+                        if(res.events) {
+                            for (let i = 0; i < res.events.length; i++) {
+                                if (res.events[i].jobschedulerId === vm.schedulerIds.selected) {
+                                    vm.events = [];
+                                    vm.events.push(res.events[i]);
 
-                                $rootScope.$broadcast('event-started', {
-                                    events: vm.events,
-                                    otherEvents: res.events
-                                });
+                                    $rootScope.$broadcast('event-started', {
+                                        events: vm.events,
+                                        otherEvents: res.events
+                                    });
 
-                                vm.eventsRequest.push({
-                                    jobschedulerId: res.events[i].jobschedulerId,
-                                    eventId: res.events[i].eventId
-                                });
-
-                                angular.forEach(res.events[i].eventSnapshots, function (value1) {
-                                    if (value1.eventType === "SchedulerStateChanged") {
-                                        loadScheduleDetail();
-                                    } else if (value1.eventType === "CurrentJobSchedulerChanged") {
-                                        getScheduleDetail();
-                                        $state.reload(vm.currentState);
-                                    }
-                                });
-                                break;
+                                    vm.eventsRequest.push({
+                                        jobschedulerId: res.events[i].jobschedulerId,
+                                        eventId: res.events[i].eventId
+                                    });
+                                    angular.forEach(res.events[i].eventSnapshots, function (value1) {
+                                        if (value1) {
+                                            if (value1.eventType === "SchedulerStateChanged") {
+                                              
+                                                loadScheduleDetail();
+                                            } else if (value1.eventType === "CurrentJobSchedulerChanged") {
+                                                
+                                                getScheduleDetail();
+                                                $state.reload(vm.currentState);
+                                            }
+                                        }
+                                    });
+                                    break;
+                                }
                             }
-                        }
-                        for (let i = 0; i < res.events.length; i++) {
-                            if (res.events[i].jobschedulerId !== vm.schedulerIds.selected) {
-                                vm.eventsRequest.push({
-                                    jobschedulerId: res.events[i].jobschedulerId,
-                                    eventId: res.events[i].eventId
-                                });
+
+                            for (let i = 0; i < res.events.length; i++) {
+                                if (res.events[i].jobschedulerId !== vm.schedulerIds.selected) {
+                                    vm.eventsRequest.push({
+                                        jobschedulerId: res.events[i].jobschedulerId,
+                                        eventId: res.events[i].eventId
+                                    });
+                                }
                             }
                         }
                         vm.allEvents = res.events;
