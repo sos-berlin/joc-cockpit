@@ -4,7 +4,7 @@
         <h4 class="modal-title"><span translate> label.addNewOrderTo</span> {{_jobChain.path}}</h4>
     </div>
      <form name="form" ng-submit="ok()" novalidate>
-        <div class="modal-body p-a">
+        <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.orderId</label>
                 <div class="col-sm-6">
@@ -145,14 +145,10 @@
                     <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()" translate>button.addParameter</a>
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submitOrder</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
-            </div>
         </div>
+         <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submitOrder</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+         </div>
      </form>
 </div>

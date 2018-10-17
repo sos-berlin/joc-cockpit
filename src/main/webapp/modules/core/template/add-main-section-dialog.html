@@ -7,7 +7,7 @@
         </h4>
     </div>
     <form name="form" ng-submit="ok(form)" novalidate>
-        <div class="modal-body p-a" style="max-height: 640px;overflow: auto">
+        <div class="modal-body p-a" style="max-height: 70vh;overflow: auto">
             <div class="row">
                 <div class="col-md-12 text-center">
                     <div class="btn-group m-b">
@@ -64,10 +64,9 @@
             </div>
 
             </div>
-           <div class="modal-footer text-left">
-                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid || !isUnique" translate>button.submit</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
-            </div>
-
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid || !isUnique" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
+        </div>
     </form>
 </div>

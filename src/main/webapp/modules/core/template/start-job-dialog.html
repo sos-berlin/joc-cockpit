@@ -118,8 +118,7 @@
             </div>
             <div class="form-group row m-b-sm " ng-repeat="param in job.params">
                 <div class="col-sm-12 m-b-sm _600" ng-if="$index==0" translate>label.changeParameters</div>
-                <label class="col-sm-4 form-control-label">{{param.name}}</label>
-
+                <label class="col-sm-4 form-control-label" style="white-space: normal;word-wrap: break-word;">{{param.name}}</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control " ng-model="param.value"
                            placeholder="{{'placeholder.value' | translate}}">

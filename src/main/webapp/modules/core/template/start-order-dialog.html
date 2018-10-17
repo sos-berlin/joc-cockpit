@@ -4,7 +4,7 @@
         <h4 class="modal-title" ><span translate>label.startOrder</span> : {{order.path}}</h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
-        <div class="modal-body p-a">
+        <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
             <div class="form-group row">
                 <label class="col-sm-4" translate>label.orderId</label>
                 <label class="col-sm-8">{{order.orderId}} <span ng-if="order.title" class="text-muted"> - {{order.title}}</span></label>
@@ -123,13 +123,14 @@
             </div>
             <div class="form-group row m-b-sm" ng-repeat="param in order.params">
                 <div class="col-sm-12 m-b-sm _600" ng-if="$index==0" translate>label.changeParameters</div>
-
-                <label class="col-sm-4 form-control-label">{{param.name}}</label>
+                <label class="col-sm-4 form-control-label" style="white-space: normal;word-wrap: break-word;">
+                    {{param.name}}
+                </label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control " ng-model="param.value" placeholder="{{'placeholder.value' | translate}}" ng-readonly="!permission.Order.change.parameter">
                 </div>
             </div>
-            <div class="form-group row m-b-sm m-t _600" ng-if="order.params.length>0" ng-if="permission.Order.change.parameter">
+            <div class="form-group row m-b-sm m-t _600" ng-if="order.params.length>0 && permission.Order.change.parameter">
                 <div class="col-md-12" translate>label.declareNewParameters</div>
             </div>
             <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index" ng-if="permission.Order.change.parameter">
@@ -151,13 +152,10 @@
                     <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()" translate>button.addParameter</a>
                 </div>
             </div>
-            <div class="row m-t-md">
-                <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
-            </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </form>
 </div>
