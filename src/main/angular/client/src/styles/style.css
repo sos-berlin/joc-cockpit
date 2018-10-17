@@ -5032,6 +5032,7 @@ div.bar-chart div canvas {
 .node-wrapper {
   display: flex;
   align-items: flex-start;
+  width: max-content;
 }
 
 .node-content-wrapper:after {

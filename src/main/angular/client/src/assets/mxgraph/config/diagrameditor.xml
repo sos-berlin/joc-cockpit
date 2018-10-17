@@ -46,14 +46,14 @@
       </If>
     </add>
     <add as="Retry">
-      <Retry predicate="returnCode > 0" maxSteps="10" delay="0">
+      <Retry repeat="10" delay="0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="200" height="90"/>
+          <mxGeometry as="geometry" width="180" height="70"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Exit">
-      <Exit label="Exit" returnCode="">
+      <Exit label="Exit" message="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="60" height="60"/>
         </mxCell>
@@ -72,6 +72,13 @@
           <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </Await>
+    </add>
+    <add as="Try">
+      <Try label="Try">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Try>
     </add>
     <add as="symbol">
       <Symbol label="Instruction" description="">
@@ -183,6 +190,11 @@
         <add as="imageWidth" value="16"/>
         <add as="imageHeight" value="16"/>
       </add>
+      <add as="triangle" extend="rhombus">
+	<add as="shape" value="triangle"/>
+	<add as="perimeter" value="trianglePerimeter"/>
+	<add as="align" value="center"/>
+      </add>
       <add as="ellipse">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
@@ -212,14 +224,7 @@
   <mxDefaultToolbar as="toolbar">
     <add as="show" action="show" icon="./assets/mxgraph/images/preview.gif"/>
     <hr/>
-    <add as="connect" mode="connect" icon="./assets/mxgraph/images/connect.gif"><![CDATA[
-		function (editor)
-		{
-			if (editor.defaultEdge != null){
-				editor.defaultEdge.style = null;
-			}
-		}
-	]]></add>
+    <add as="connect" mode="connect" icon="./assets/mxgraph/images/connect.gif"/>
     <hr/>
     <add as="Job" template="rounded" icon="./assets/mxgraph/images/rounded.gif"/>
     <add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
@@ -228,6 +233,7 @@
     <add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png"
          icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
     <hr/>
+    <add as="Try" template="Try" style="triangle" icon="./assets/mxgraph/images/symbols/small_triangle.gif"/>
     <add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png"
          icon="./assets/mxgraph/images/symbols/small_fork.gif"/>
