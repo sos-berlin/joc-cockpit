@@ -728,11 +728,11 @@
                     if (res.configurations && res.configurations.length > 0) {
                         vm.yadeFilterList = vm.yadeFilterList.concat(res.configurations);
                     }
-                    var data = [];
+                    let data = [];
 
                     for (var i = 0; i < vm.yadeFilterList.length; i++) {
-                        var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                        let flag = true;
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.yadeFilterList[i].account && data[j].name == vm.yadeFilterList[i].name) {
                                 flag = false;
                             }
@@ -1709,7 +1709,7 @@
         var waitForResponse = true;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
 
                     if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
                         waitForResponse = false;
@@ -1746,7 +1746,7 @@
                         $rootScope.$broadcast('reloadYadeSnapshot');
                     }
                     if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "ORDER" && vm.events[0].eventSnapshots[i].path === vm.showLogPanel.path && vm.isAuditLog) {
-                        var obj = {};
+                        let obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.orders = [];
                         obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});

@@ -226,8 +226,7 @@
         var count = 1, splitPath = [];
 
         function filteredTreeDataA(type) {
-
-            for (var i = 0; i < vm.treeAgent.length; i++) {
+            for (let i = 0; i < vm.treeAgent.length; i++) {
                 if ($rootScope.agent_cluster_expand_to) {
                     vm.expand_to = angular.copy($rootScope.agent_cluster_expand_to);
                     splitPath = vm.expand_to.path.split('/');
@@ -310,7 +309,7 @@
             }
             if (data.folders && data.folders.length > 0) {
                 data.folders = orderBy(data.folders, 'name');
-                for (var x = 0; x < data.folders.length; x++) {
+                for (let x = 0; x < data.folders.length; x++) {
                     if (vm.expand_to) {
                         if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[count] && count < splitPath.length) {
                             count = count + 1;
@@ -354,7 +353,7 @@
         function pollCheckExpandTreeForUpdates(data) {
             if (data.selected1) {
                 obj1.folders.push({folder: data.path, recursive: false});
-                vm.folderPath = data.name || '/';
+                vm.folderPathA = data.name || '/';
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
@@ -412,7 +411,7 @@
         }
 
         function loadAgentsV(data, type) {
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
             if (vm.agentsFilters.filter.state != 'all') {

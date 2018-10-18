@@ -21,6 +21,7 @@
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = [];
         tabs._jobChain.selectedView = true;
+        tabs._jobChain.showHistoryPanel = undefined;
 
 
         tabs._job = {};
@@ -195,6 +196,7 @@
         tempTabs._jobChain.currentPage = '1';
         tempTabs._jobChain.expand_to = [];
         tempTabs._jobChain.selectedView = true;
+        tempTabs._jobChain.showHistoryPanel = undefined;
 
         tempTabs._job = {};
         tempTabs._job.filter = {};

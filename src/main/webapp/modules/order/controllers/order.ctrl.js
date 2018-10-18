@@ -3173,14 +3173,13 @@
         };
 
         $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path == vm.jobChain.path && vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") {
+                    if (vm.events[0].eventSnapshots[i].path === vm.jobChain.path && vm.events[0].eventSnapshots[i].eventType === "FileBasedRemoved") {
                         $location.path('/job_chains');
                         break;
                     }
-                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || vm.events[0].eventSnapshots[i].eventType === "OrderAdded" || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
-
+                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType === 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType === 'JobStateChanged' || vm.events[0].eventSnapshots[i].eventType === "OrderAdded" || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
                             path = vm.events[0].eventSnapshots[i].path.split(",");
@@ -3201,14 +3200,12 @@
                                 }
                             }
                         }
-
                         if ((vm.jobChain.path === path[0] || flag) && isLoaded) {
                             volatileInfo();
                         }
-
                     }
-                   
                 }
+            }
         });
     }
 
@@ -4008,6 +4005,7 @@
         vm.showAuditLogs = function (value) {
             vm.showLogPanel = value;
             vm.isAuditLog = true;
+            vm.isTaskHistory = false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
@@ -4076,6 +4074,7 @@
             if (vm.orderFilter1.type) {
                 obj.types = vm.orderFilter1.type;
             }
+            vm.folderPath = '/';
             OrderService.get(obj).then(function (res) {
                 vm.allOrders = res.orders;
                 let obj = {};
@@ -4087,9 +4086,10 @@
                         obj.orders.push({order:vm.allOrders[x].orderId, jobChain: vm.allOrders[x].jobChain});
                         vm.allOrders[x].path1 = vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/')) || vm.allOrders[x].path.substring(0, vm.allOrders[x].path.lastIndexOf('/') + 1);
                     }
+                }else{
+                     vm.hideLogPanel();
                 }
                 traverseTreeForSearchData();
-
                 OrderService.getOrdersP(obj).then(function (result) {
 
                     if (result.orders && result.orders.length > 0) {
@@ -4104,6 +4104,8 @@
                         }
                     }
                 });
+                updatePanelHeight();
+
             });
         };
 
@@ -4136,7 +4138,6 @@
                     }
                 }
             }
-
             navFullTree();
         }
 
@@ -5091,20 +5092,22 @@
                     }
                 }
             } else {
-                for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
-                    if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
-                        if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
-                            orderPaths.push(vm.events[0].eventSnapshots[j].path);
+                if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+                    for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
+                        if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
+                            if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
+                                orderPaths.push(vm.events[0].eventSnapshots[j].path);
+                            }
+                        } else if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "ORDER") {
+                            isAnyFileEventOnHold = true;
+                            break;
+                        } else if (vm.events[0].eventSnapshots[j].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[j].eventId) {
+                            isAnyFileEventOnHold = true;
+                            break;
+                        } else if (vm.events[0].eventSnapshots[j].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[j].eventId) {
+                            isAnyFileEventOnHold = true;
+                            break;
                         }
-                    } else if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "ORDER") {
-                        isAnyFileEventOnHold = true;
-                        break;
-                    } else if (vm.events[0].eventSnapshots[j].eventType === "OrderRemoved" && vm.events[0].eventSnapshots[j].eventId) {
-                        isAnyFileEventOnHold = true;
-                        break;
-                    } else if (vm.events[0].eventSnapshots[j].eventType === "OrderAdded" && !vm.events[0].eventSnapshots[j].eventId) {
-                        isAnyFileEventOnHold = true;
-                        break;
                     }
                 }
             }
@@ -5768,7 +5771,7 @@
                         })
                     }
                 }
-            } else {
+            } else if(vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
                     if (vm.events[0].eventSnapshots[j].eventType === 'OrderStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                         if (orderPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
