@@ -1149,7 +1149,7 @@
   "label.targetPath": "Target Path",
   "label.size": "Size",
   "label.progress": "progress",
-  "label.agentJobExecution": "Agent Job Execution",
+  "label.agentJobExecution": "Agent Job Executions",
   "breadcrumb.agentJobsExecution": "Agent Jobs Executed",
   "breadcrumb.agentJobExecution": "Agent Job Executed",
   "label.agentUrl": "Agent URL",
