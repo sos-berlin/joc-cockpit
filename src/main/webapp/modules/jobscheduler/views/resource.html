@@ -225,22 +225,22 @@
                             </div>
                             <div class="inline">
                                 <div class="btn-group m-r-sm hidden-btn-group">
-                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"
+                                    <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
                                     </button>
-                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'today'" ng-click="loadAgentTasks()"
+                                    <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'today'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
                                     </button>
-                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-1h'" ng-click="loadAgentTasks()"
+                                    <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-1h'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
                                     </button>
-                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadAgentTasks()"
+                                    <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
                                     </button>
-                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-24h'" ng-click="loadAgentTasks()"
+                                    <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-24h'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-24h'}" translate>button.last24
                                     </button>
-                                     <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-7d'" ng-click="loadAgentTasks()"
+                                     <button ng-disabled="savedAgentFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-7d'" ng-click="loadAgentTasks()"
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-7d'}" translate>button.lastWeak
                                     </button>
                                 </div>
@@ -248,22 +248,34 @@
                                     <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='all', 'disable-link':savedAgentFilter.selected}" translate>button.all
                                         </a>
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'today'"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='today', 'disable-link':savedAgentFilter.selected}" translate>button.today
                                         </a>
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-1h'"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h', 'disable-link':savedAgentFilter.selected}" translate>button.last1
                                         </a>
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadAgentTasks()"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h', 'disable-link':savedAgentFilter.selected}" translate>button.last12
                                         </a>
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-24h'"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-24h'}" translate>button.last24
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-24h', 'disable-link':savedAgentFilter.selected}" translate>button.last24
                                         </a>
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-7d'"
-                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-7d'}" translate>button.lastWeak
+                                                ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-7d', 'disable-link':savedAgentFilter.selected}" translate>button.lastWeak
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="btn-group dropdown m-r-sm">
+                                    <button class="btn btn-grey btn-sm dropdown-toggle" ng-class="{'btn-primary': selectedFilteredAgent.name}" uib-tooltip="{{selectedFilteredAgent.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFilteredAgent.name"></span></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
+                                        <a class="dropdown-item" href ng-click="editFilters()" ng-if="agentFilterList.length>0" translate>label.editExistingFilters</a>
+                                        <div class="dropdown-divider" ng-if="agentFilterList.length>0"></div>
+                                        <a class="dropdown-item" ng-class="{orange: (savedAgentFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in agentFilterList | orderBy: 'name'">
+                                            <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                            <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedAgentFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                         </a>
                                     </div>
                                 </div>

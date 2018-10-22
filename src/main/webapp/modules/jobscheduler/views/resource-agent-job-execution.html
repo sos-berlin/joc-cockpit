@@ -2,8 +2,49 @@
     <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
         <div class="col-md-12">
             <div class="box p-a m-b-xs m-t-xs">
-                <form name="form" ng-submit="search()" novalidate>
-                    <div class="form-group row m-t-sm" >
+                <form name="form" ng-submit="saveAsFilter(from)" novalidate>
+                    <div class="form-group row"
+                         ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
+
+                        <div class=" col-sm-6">
+                            <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control"
+                                   placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"
+                                   ng-model="agentJobSearch.name" ng-blur="checkFilterName()">
+
+                            <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                                 ng-messages="form.filterName.$error">
+                                <div ng-message="maxlength" translate>message.tooLongError</div>
+                            </div>
+                            <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
+                                <div translate>message.uniqueError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-b-sm row ">
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+                        <div class="col-md-6">
+                            <label class="md-check w-sm">
+                                <input type="radio" name="radio" ng-model="agentJobSearch.date" value="date">
+                                <i class="primary"></i> <span translate>label.specificDate</span>
+                            </label>
+                            <label class="md-check">
+                                <input type="radio" name="radio" ng-model="agentJobSearch.date" value="process">
+                                <i class="primary"></i> <span translate>label.manualDate</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row"  ng-if="agentJobSearch.date == 'process'">
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
+                        <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                            <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                   placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="agentJobSearch.planned">
+                            <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                <div ng-message="invalid" translate>message.invalid</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="agentJobSearch.date == 'date'">
                         <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                         <div class="col-sm-6">
                             <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="agentJobSearch.from"
@@ -14,9 +55,8 @@
                             <a class="text-sm text-primary" ng-show="agentJobSearch.from || agentJobSearch.fromTime" ng-click="agentJobSearch.from='';agentJobSearch.fromTime=''; " translate>button.clear</a>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" ng-if="agentJobSearch.date == 'date'">
                         <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-
                         <div class="col-sm-6">
                             <input class="form-control input-date"
                                    style="width: 225px;background-position: 200px"
@@ -49,7 +89,8 @@
                         </div>
                     </div>
                     <div class="form-group m-t m-b-xs">
-                        <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.search</button>
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>button.search</button>
+                        <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !agentJobSearch.name" translate>button.saveAsFilter</button>
                         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
                     </div>
                 </form>

@@ -7044,10 +7044,10 @@
                     if (res.configurations && res.configurations.length > 0) {
                         vm.orderHistoryFilterList = vm.orderHistoryFilterList.concat(res.configurations);
                     }
-                    var data = [];
-                    for (var i = 0; i < vm.orderHistoryFilterList.length; i++) {
-                        var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                    let data = [];
+                    for (let i = 0; i < vm.orderHistoryFilterList.length; i++) {
+                        let flag = true;
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].id == vm.orderHistoryFilterList[i].id) {
                                 flag = false;
                             }
@@ -7107,11 +7107,10 @@
                     if (res.configurations && res.configurations.length > 0) {
                         vm.jobHistoryFilterList = vm.jobHistoryFilterList.concat(res.configurations);
                     }
-                    var data = [];
-
-                    for (var i = 0; i < vm.jobHistoryFilterList.length; i++) {
-                        var flag = true;
-                        for (var j = 0; j < data.length; j++) {
+                    let data = [];
+                    for (let i = 0; i < vm.jobHistoryFilterList.length; i++) {
+                        let flag = true;
+                        for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.jobHistoryFilterList[i].account && data[j].name == vm.jobHistoryFilterList[i].name) {
                                 flag = false;
                             }
@@ -7170,10 +7169,10 @@
                     if (res.configurations && res.configurations.length > 0) {
                         vm.yadeHistoryFilterList = vm.yadeHistoryFilterList.concat(res.configurations);
                     }
-                    var data = [];
+                    let data = [];
 
                     for (let i = 0; i < vm.yadeHistoryFilterList.length; i++) {
-                        var flag = true;
+                        let flag = true;
                         for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.yadeHistoryFilterList[i].account && data[j].name == vm.yadeHistoryFilterList[i].name) {
                                 flag = false;

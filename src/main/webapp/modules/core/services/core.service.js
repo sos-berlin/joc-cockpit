@@ -151,6 +151,7 @@
         tabs._resource.agentJobExecution.filter.sortBy = 'agent';
         tabs._resource.agentJobExecution.reverse = false;
         tabs._resource.agentJobExecution.currentPage = '1';
+        tabs._resource.agentJobExecution.selectedView = true;
         tabs._resource.locks = {};
         tabs._resource.locks.filter = {};
         tabs._resource.locks.filter.state = 'all';
@@ -323,6 +324,7 @@
         tempTabs._resource.agentJobExecution.filter.sortBy = 'agent';
         tempTabs._resource.agentJobExecution.reverse = false;
         tempTabs._resource.agentJobExecution.currentPage = '1';
+        tempTabs._resource.agentJobExecution.selectedView = true;
         tempTabs._resource.locks = {};
         tempTabs._resource.locks.filter = {};
         tempTabs._resource.locks.filter.state = 'all';
@@ -485,7 +487,7 @@
 
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'dailyPlanFilters','auditLogFilters','resizerHeight'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters', 'eventFilters', 'agentFilters', 'historyFilters', 'dailyPlanFilters', 'auditLogFilters', 'resizerHeight'];
         var propsPrefix = '$SOS$';
 
         function SavedFilter() {
@@ -524,6 +526,9 @@
         };
         SavedFilter.prototype.setEvent = function (event) {
             this.eventFilters = JSON.stringify(event);
+        };
+        SavedFilter.prototype.setAgent = function (agent) {
+            this.agentFilters = JSON.stringify(agent);
         };
         SavedFilter.prototype.setAuditLog = function (filter) {
             this.auditLogFilters = JSON.stringify(filter);
