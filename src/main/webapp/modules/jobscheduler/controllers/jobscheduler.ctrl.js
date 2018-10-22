@@ -6345,11 +6345,11 @@
         }
 
         vm.reload = function() {
-            if ($scope.reloadState == 'no') {
+            if ($scope.reloadState === 'no') {
                 $scope.plans = [];
                 $scope.folderPath = 'Process aborted';
                 $scope.reloadState = 'yes';
-            } else if ($scope.reloadState == 'yes') {
+            } else if ($scope.reloadState === 'yes') {
                 $scope.reloadState = 'no';
                 vm.isLoading = false;
                 vm.getPlans();
@@ -6417,14 +6417,13 @@
             obj.configurationType = "CUSTOMIZATION";
             obj.objectType = "DAILYPLAN";
             UserService.configurations(obj).then(function (res) {
-
                 if (vm.dailyPlanFilterList && vm.dailyPlanFilterList.length > 0) {
                     if (res.configurations && res.configurations.length > 0) {
                         vm.dailyPlanFilterList = vm.dailyPlanFilterList.concat(res.configurations);
                     }
-                    var data = [];
-                    for (var i = 0; i < vm.dailyPlanFilterList.length; i++) {
-                        var flag = true;
+                    let data = [];
+                    for (let i = 0; i < vm.dailyPlanFilterList.length; i++) {
+                        let flag = true;
                         for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.dailyPlanFilterList[i].account && data[j].name == vm.dailyPlanFilterList[i].name) {
                                 flag = false;
@@ -6436,12 +6435,11 @@
                         }
                     }
                     vm.dailyPlanFilterList = data;
-
                 } else {
                     vm.dailyPlanFilterList = res.configurations;
                 }
                 if (vm.savedDailyPlanFilter.selected) {
-                    var flag = true;
+                    let flag = true;
                     angular.forEach(vm.dailyPlanFilterList, function (value) {
                         if (value.id == vm.savedDailyPlanFilter.selected) {
                             flag = false;
@@ -6574,7 +6572,7 @@
         };
 
         $(window).resize(function () {
-            var ht = $('.app-header').height()
+            let ht = $('.app-header').height()
                 + $('.app-footer').height()
                 + $('.top-header-bar').height()
                 + $('.sub-header').height()
@@ -6617,7 +6615,7 @@
         vm.search = function () {
             hitSearch = true;
             isLoaded = false;
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj = applySearchFilter(obj);
             if (!obj.dateFrom) {
@@ -6649,6 +6647,11 @@
             if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 obj.dateTo = moment(obj.dateTo).tz(vm.userPreferences.zone)._d;
             }
+
+            vm.dailyPlanFilters.filter.status = '';
+            vm.dailyPlanFilters.filter.state = '';
+            vm.dailyPlanFilters.filter.range = '';
+
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
@@ -6682,14 +6685,28 @@
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
-            hitSearch = false;
             vm.searchDailyPlanFilter = undefined;
+
+            if (!vm.dailyPlanFilters.filter.status) {
+                vm.dailyPlanFilters.filter.status = 'ALL';
+            }
+            if (!vm.dailyPlanFilters.filter.state) {
+                vm.dailyPlanFilters.filter.state = '';
+            }
+            if (!vm.dailyPlanFilters.filter.range) {
+                vm.dailyPlanFilters.filter.range = 'today';
+            }
+
             if (form)
                 form.$setPristine();
+             if(hitSearch) {
+                 hitSearch = false;
+                 vm.getPlans();
+             }
         };
 
         function parseProcessExecuted(regex) {
-            var date;
+            let date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
                 let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 let sign = /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[1].substring(3);
@@ -6733,7 +6750,7 @@
             }
             if (vm.searchDailyPlanFilter.paths && vm.searchDailyPlanFilter.paths.length > 0) {
                 obj.folders = [];
-                for (var i = 0; i < vm.searchDailyPlanFilter.paths.length; i++) {
+                for (let i = 0; i < vm.searchDailyPlanFilter.paths.length; i++) {
                     obj.folders.push({folder: vm.searchDailyPlanFilter.paths[i], recursive: true});
                 }
             }
@@ -7649,9 +7666,9 @@
 
         var isLoaded = true;
         vm.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'DailyPlanChanged' && isLoaded) {
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0)
+                for (let i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
+                    if (vm.events[0].eventSnapshots[i].eventType === 'DailyPlanChanged' && isLoaded) {
                         vm.getPlansByEvents();
                         break;
                     }

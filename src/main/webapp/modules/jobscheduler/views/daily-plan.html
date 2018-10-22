@@ -46,12 +46,12 @@
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}"
-                                    ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
+                                    ng-click="getPlans()" translate>button.today
                             </button>
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.range"
                                     uib-btn-radio="'next-24-hours'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours'}"
-                                    ng-click="dailyPlanFilters.range='period';getPlans();setDateRange('next-24-hours');"
+                                    ng-click="getPlans();setDateRange('next-24-hours');"
                                     translate>button.next24
                             </button>
                         </div>
@@ -59,10 +59,10 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today', 'disable-link':savedDailyPlanFilter.selected}" ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours', 'disable-link':savedDailyPlanFilter.selected}" ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.next24
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.next24
                                 </a>
                             </div>
                         </div>

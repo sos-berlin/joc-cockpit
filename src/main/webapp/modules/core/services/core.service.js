@@ -52,7 +52,6 @@
         tabs._daliyPlan.filter.state = '';
         tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tabs._daliyPlan.filter.range = "today";
-        tabs._daliyPlan.range = 'period';
         tabs._daliyPlan.reverse = false;
         tabs._daliyPlan.currentPage = '1';
         tabs._daliyPlan.selectedView = true;
@@ -226,7 +225,6 @@
         tempTabs._daliyPlan.filter.state = '';
         tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tempTabs._daliyPlan.filter.range = "today";
-        tempTabs._daliyPlan.range = 'period';
         tempTabs._daliyPlan.reverse = false;
         tempTabs._daliyPlan.currentPage = '1';
         tempTabs._daliyPlan.selectedView = true;

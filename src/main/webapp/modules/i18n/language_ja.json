@@ -1341,5 +1341,6 @@
   "button.resetPanel": "パネルリサイズ",
   "message.noSchedulerInstalled": "JobSchedulerマスターはインストールされていません",
   "label.joc": "JOC",
-  "label.downloadLog": "ダウンロード"
+  "label.downloadLog": "ダウンロード",
+  "label.failedIncomplete": "Failed / Incomplete"
 }

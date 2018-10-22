@@ -552,7 +552,7 @@
             field: "name"
         };
         vm.auditSearch = {};
-        var auditSearch = false;
+        var hitSearch = false;
         vm.selectedFiltered = null;
         vm.savedIgnoreList = {};
 
@@ -807,7 +807,7 @@
 
             vm.adtLog.filter.date = '';
             filter = generateRequestObj(vm.auditSearch, filter);
-
+            hitSearch = true;
             AuditLogService.getLogs(filter).then(function (result) {
                 vm.auditLogs = result.auditLog;
                 vm.loading = false;
@@ -935,8 +935,10 @@
             }
             vm.showSearchPanel = false;
             vm.auditSearch = {};
-            auditSearch = false;
-            vm.load();
+            if(hitSearch) {
+                hitSearch = false;
+                vm.load();
+            }
         };
 
         /** <<<<<<<<<<<<<<<<<<<<<<<<<<<< Begin Customization actions >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */

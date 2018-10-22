@@ -7938,7 +7938,55 @@
             if (form)
                 form.$setPristine();
             vm.showSearchPanel = false;
-            vm.loadHistory();
+            if (!vm.order.filter.historyStates) {
+                vm.order.filter.historyStates = 'all';
+            }
+            if (!vm.order.filter.date) {
+                vm.order.filter.date = 'today';
+            }
+            if (!vm.task.filter.historyStates) {
+                vm.task.filter.historyStates = 'all';
+            }
+            if (!vm.task.filter.date) {
+                vm.task.filter.date = 'today';
+            }
+            if (!vm.yade.filter.historyStates) {
+                vm.yade.filter.historyStates = 'all';
+            }
+            if (!vm.yade.filter.date) {
+                vm.yade.filter.date = 'today';
+            }
+
+            if (vm.historyFilters.type == 'job') {
+                vm.jobSearch = {};
+                vm.jobSearch.date = 'date';
+            } else if (vm.historyFilters.type == 'jobChain') {
+                vm.jobChainSearch = {};
+                vm.jobChainSearch.date = 'date';
+            } else {
+                vm.yadeSearch = {};
+                vm.yadeSearch.date = 'date';
+            }
+            let filter = {};
+            filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
+            if (jobChainSearch) {
+                jobChainSearch = false;
+                if (vm.historyFilters.type === 'jobChain') {
+                    orderHistory(filter);
+                }
+            }
+            if (jobSearch) {
+                jobSearch = false;
+                if (vm.historyFilters.type === 'job') {
+                    jobHistory(filter);
+                }
+            }
+            if (yadeSearch) {
+                yadeSearch = false;
+                if (vm.historyFilters.type === 'yade') {
+                    yadeHistory(filter);
+                }
+            }
         };
 
 

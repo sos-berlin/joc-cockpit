@@ -1341,5 +1341,6 @@
   "button.resetPanel": "Resize Panel",
   "message.noSchedulerInstalled": "No JobScheduler Master connected",
   "label.joc": "JOC",
-  "label.downloadLog": "Download Log"
+  "label.downloadLog": "Download Log",
+  "label.failedIncomplete": "Failed / Incomplete"
 }
