@@ -7377,8 +7377,8 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
 
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                delete filter["timeZone"];
+            if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                filter.timeZone = 'UTC';
             }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                 filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7423,8 +7423,8 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                delete filter["timeZone"];
+            if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                filter.timeZone = 'UTC';
             }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                 filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7469,8 +7469,8 @@
             }
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             filter.timeZone = vm.userPreferences.zone;
-            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                delete filter["timeZone"];
+            if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                filter.timeZone = 'UTC';
             }
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                 filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7636,8 +7636,8 @@
 
                 }
                 filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    delete filter["timeZone"];
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7759,8 +7759,8 @@
 
                 }
                 filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    delete filter["timeZone"];
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function'  || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7885,8 +7885,8 @@
                     filter.jobschedulerId = vm.yadeSearch.jobschedulerId;
                 }
                 filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    delete filter["timeZone"];
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -9450,8 +9450,8 @@
                     vm.search(true);
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
-                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        delete filter["timeZone"];
+                    if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                        filter.timeZone = 'UTC';
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                         filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -9488,8 +9488,8 @@
                     vm.search(true);
                 } else {
                     filter.timeZone = vm.userPreferences.zone;
-                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                        delete filter["timeZone"];
+                    if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                        filter.timeZone = 'UTC';
                     }
                     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                         filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -9521,8 +9521,8 @@
                 }
                 filter.limit = parseInt(vm.userPreferences.maxRecords);
                 filter.timeZone = vm.userPreferences.zone;
-                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                    delete filter["timeZone"];
+                if ((filter.dateFrom && (typeof filter.dateFrom.getMonth === 'function' || typeof filter.dateFrom === 'object')) || (filter.dateTo && (typeof filter.dateTo.getMonth === 'function' || typeof filter.dateTo === 'object'))) {
+                    filter.timeZone = 'UTC';
                 }
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
                     filter.dateFrom = moment(filter.dateFrom).tz(vm.userPreferences.zone)._d;

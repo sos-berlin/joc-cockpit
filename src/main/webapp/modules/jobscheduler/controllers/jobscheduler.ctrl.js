@@ -31,7 +31,6 @@
 
         vm.selectedFilteredAgent = '';
         vm.savedAgentFilter = JSON.parse(SavedFilter.agentFilters) || {};
-        console.log(vm.savedAgentFilter)
 
         vm.eventFilterList = [];
         vm.agentFilterList = [];
@@ -7042,8 +7041,8 @@
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
 
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj["timeZone"];
+            if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function'  || typeof obj.dateTo === 'object'))) {
+                obj.timeZone = 'UTC';
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
                 obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -7510,8 +7509,8 @@
             }
             vm.showSpinner = true;
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj["timeZone"];
+            if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function'  || typeof obj.dateTo === 'object'))) {
+                obj.timeZone = 'UTC';
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
                 obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
@@ -8078,7 +8077,7 @@
             isLoaded = false;
 
             setDateRange();
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.searchDailyPlanFilter && hitSearch) {
                 obj = applySearchFilter(obj);
@@ -8120,8 +8119,8 @@
                 obj.dateTo = moment.utc(obj.dateTo);
             }
             obj.timeZone = vm.userPreferences.zone;
-            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-                delete obj["timeZone"];
+            if ((obj.dateFrom && (typeof obj.dateFrom.getMonth === 'function' || typeof obj.dateFrom === 'object')) || (obj.dateTo && (typeof obj.dateTo.getMonth === 'function'  || typeof obj.dateTo === 'object'))) {
+                obj.timeZone = 'UTC';
             }
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
                 obj.dateFrom = moment(obj.dateFrom).tz(vm.userPreferences.zone)._d;
