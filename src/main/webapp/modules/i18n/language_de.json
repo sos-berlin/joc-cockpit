@@ -1342,5 +1342,5 @@
   "message.noSchedulerInstalled": "Keine JobScheduler Master Instanz verbunden",
   "label.joc": "JOC",
   "label.downloadLog": "Protokoll herunterladen",
-  "label.failedIncomplete": "Failed / Incomplete"
+  "label.failedIncomplete": "Fehlgeschlagen / unvollständig"
 }
