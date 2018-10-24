@@ -195,6 +195,14 @@
 	<add as="perimeter" value="trianglePerimeter"/>
 	<add as="align" value="center"/>
       </add>
+      <add as="dashtriangle" extend="rhombus">
+	<add as="shape" value="triangle"/>
+	<add as="perimeter" value="trianglePerimeter"/>
+	<add as="align" value="center"/>
+	<add as="dashed" value="1"/>
+	<add as="shadow" value="0"/>
+	<add as="opacity" value="70"/>
+      </add>
       <add as="ellipse">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
