@@ -11,7 +11,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(comments,obj)">
     <div class="modal-body container">
-        <div class="form-group row" *ngIf="action === 'terminateAndRestartWithin' || action === 'terminateWithin'" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
+        <div class="form-group row" *ngIf="action === 'terminateAndRestartWithin' || action === 'terminateWithin' || action === 'reactivatePrimaryJobschedulerWithIn'" [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}">
             <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
             <div class=" col-sm-6">
                 <input type="text" pattern="[1-9[0-9]*" class="form-control" placeholder="60" name="timeout" required #timeout="ngModel"

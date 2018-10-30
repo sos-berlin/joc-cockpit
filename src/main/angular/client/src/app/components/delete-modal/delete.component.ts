@@ -18,6 +18,8 @@ export class DeleteModal implements OnInit, OnDestroy {
   @Input() entry:any;
   @Input() folder:any;
   @Input() permission:any;
+  @Input() object:any;
+  profiles = 'profiles';
   constructor(public activeModal: NgbActiveModal) {
   }
 

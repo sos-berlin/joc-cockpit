@@ -15,11 +15,14 @@
                                 <li  routerLink = "account" routerLinkActive = "active" [ngClass] = "{'cursor' : route != '/users/account'}" >
                                     <span>{{'label.manageUser' | translate }}</span>
                                 </li>
-                                 <li *ngIf = "route.match('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
+                                 <li *ngIf = "route ===('/users/master') || route.match('/users/permissions')" routerLink = "master" routerLinkActive = "active" [ngClass] = "{'cursor' : route.match('/users/permissions')}">
                                     <span>{{'label.masters' | translate }}</span>
                                 </li>
                                 <li *ngIf = "route == '/users/main_section'"  routerLink = "main_section" routerLinkActive = "active">
-                                    <span>{{'label.mainSection' | translate }}</span>
+                                    <span>{{'label.mainSetting' | translate }}</span>
+                                </li>
+                                <li *ngIf = "route == '/users/profiles'"  routerLink = "profiles" routerLinkActive = "active">
+                                    <span>{{'label.profiles' | translate }}</span>
                                 </li>
                                 <li *ngIf = "route.match('/users/permissions')"  class = "active" >
                                     <span>{{'label.permissions' | translate }}</span>
@@ -69,6 +72,10 @@
                             <i class="fa fa-plus"></i>
                             <span translate>button.addEntry</span>
                         </button>
+                        <button *ngIf="route === '/users/profiles'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="deleteProfiles()">
+                            <i class="fa fa-trash"></i>
+                            <span translate>button.deleteProfile</span>
+                        </button>
                         <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
                             <i class="fa fa-plus"></i>
                             {{'button.addFolder' | translate}}
@@ -111,6 +118,14 @@
                     <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
                         <a class="nav-link" routerLink = "main_section" routerLinkActive="active">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.mainSetting</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+                            <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" *ngIf="!permission.JobschedulerMaster.administration.editMainSection">
+                        <a class="nav-link" routerLink = "profiles" routerLinkActive="active">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.profiles</span></span>
                         </a>
                     </li>
                 </ul>

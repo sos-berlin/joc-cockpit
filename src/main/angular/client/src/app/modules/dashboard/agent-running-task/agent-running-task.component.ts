@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 import { DataService } from '../../../services/data.service';
 import { Subscription }   from 'rxjs/Subscription';
@@ -18,7 +18,7 @@ export class AgentRunningTaskComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   data = [];
   view: any[] = [600, 200];
-
+  @Input('sizeY') ybody: number;
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };

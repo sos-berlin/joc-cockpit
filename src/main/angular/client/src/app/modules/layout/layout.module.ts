@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LayoutRoutingModule } from './layout-routing.module';
 import { LayoutComponent } from './layout.component';
@@ -33,7 +34,8 @@ import {ErrorModule} from "../error/error.module";
         AuditLogModule,
         ResourceModule,
         UserModule,
-        AdminModule
+        AdminModule,
+	CommonModule
     ],
     declarations: [
         LayoutComponent,

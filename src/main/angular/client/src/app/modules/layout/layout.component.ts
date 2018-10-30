@@ -1,12 +1,12 @@
-import { Component, OnInit,OnDestroy, ViewChild} from '@angular/core';
-import { CoreService } from '../../services/core.service';
-import { DataService } from '../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
-import { AuthService } from '../../components/guard';
-import { HeaderComponent } from '../../components/header/header.component';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {CoreService} from '../../services/core.service';
+import {DataService} from '../../services/data.service';
+import {Subscription} from 'rxjs/Subscription';
+import {AuthService} from '../../components/guard';
+import {HeaderComponent} from '../../components/header/header.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ToasterService} from "angular2-toaster";
+import {ToasterService} from 'angular2-toaster';
 import * as jstz from 'jstz';
 declare const $;
 
@@ -63,16 +63,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (args[i].jobschedulerId == this.schedulerIds.selected) {
           if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
             for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-              if (args[i].eventSnapshots[j].eventType === "SchedulerStateChanged") {
+              if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
                 this.loadScheduleDetail();
                 break;
-              } else if (args[i].eventSnapshots[j].eventType === "CurrentJobSchedulerChanged") {
+              } else if (args[i].eventSnapshots[j].eventType === 'CurrentJobSchedulerChanged') {
                 this.getScheduleDetail(true);
                 break;
               }
             }
           }
-          break
+          break;
         }
       }
     }
@@ -88,15 +88,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    if(sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData);
     this.count = parseInt(this.authService.sessionTimeout) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
     LayoutComponent.calculateHeight();
-
   }
 
   ngOnDestroy() {
@@ -106,12 +106,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight() {
-    let headerHt = $('.fixed-top').height() || 70;
+    const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
   }
 
   static checkNavHeader() {
-    let dom = $('#navbar1');
+    const dom = $('#navbar1');
     if (dom && dom.hasClass('in')) {
       dom.removeClass('in');
       $('a.navbar-item').addClass('collapsed');
@@ -124,8 +124,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   onClick() {
-    if (!this.isLogout)
+    if (!this.isLogout) {
       this.refreshSession();
+    }
   }
 
   private refreshSession() {
@@ -133,8 +134,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.isTouch = true;
       this.coreService.post('touch', {}).subscribe(res => {
         this.isTouch = false;
-        if (res)
+        if (res) {
           this.count = parseInt(this.authService.sessionTimeout) / 1000 - 1;
+        }
       }, () => {
         this.isTouch = false;
       });
@@ -145,14 +147,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       --this.count;
       this.currentTime = new Date();
-      let s = Math.floor((this.count) % 60),
+      const s = Math.floor((this.count) % 60),
         m = Math.floor((this.count / (60)) % 60),
         h = Math.floor((this.count / (60 * 60)) % 24),
         d = Math.floor(this.count / (60 * 60 * 24));
 
 
-      let x = m > 9 ? m : '0' + m;
-      let y = s > 9 ? s : '0' + s;
+      const x = m > 9 ? m : '0' + m;
+      const y = s > 9 ? s : '0' + s;
 
       if (d == 0 && h != 0) {
         this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
@@ -176,10 +178,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   private setUserPreferences(preferences, configObj) {
     if (sessionStorage.preferenceId == 0) {
-      let timezone = jstz.determine();
-      if (timezone)
+      const timezone = jstz.determine();
+      if (timezone) {
         preferences.zone = timezone.name() || this.selectedJobScheduler.timeZone;
-      else {
+      } else {
         preferences.zone = this.selectedJobScheduler.timeZone;
       }
       preferences.locale = 'en';
@@ -202,8 +204,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences.fileTransfer = 'current';
       preferences.showTasks = true;
       preferences.showOrders = false;
-      if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING == true)
+      if (sessionStorage.$SOS$FORCELOGING === 'true' || sessionStorage.$SOS$FORCELOGING === true) {
         preferences.auditLog = true;
+      }
       preferences.events = {};
 
       preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
@@ -218,7 +221,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       sessionStorage.preferences = configObj.configurationItem;
       this.coreService.post('configuration/save', configObj).subscribe(res => {
         sessionStorage.preferenceId = res;
-      })
+      });
     }
   }
 
@@ -228,15 +231,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
       preferences = JSON.parse(sessionStorage.preferences);
       $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
       localStorage.$SOS$THEME = preferences.theme;
-      if($('#dailyPlan_id img')) {
-        if (preferences.theme == 'lighter') {
-          $('#jobs_id img').attr("src", './assets/images/job.png');
-          $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
-          $('#resources_id img').attr("src", './assets/images/resources1.png');
+      $('#headerColor').addClass(preferences.headerColor);
+      localStorage.$SOS$MENUTHEME = preferences.headerColor;
+      $('#avatarBg').addClass(preferences.avatarColor);
+      localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
+      if ($('#dailyPlan_id img')) {
+        if (preferences.theme === 'lighter') {
+          $('#jobs_id img').attr('src', './assets/images/job.png');
+          $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
+          $('#resources_id img').attr('src', './assets/images/resources1.png');
         } else {
-          $('#jobs_id img').attr("src", './assets/images/job1.png');
-          $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
-          $('#resources_id img').attr("src", './assets/images/resources.png');
+          $('#jobs_id img').attr('src', './assets/images/job1.png');
+          $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
+          $('#resources_id img').attr('src', './assets/images/resources.png');
         }
       }
       localStorage.$SOS$LANG = preferences.locale;
@@ -265,12 +272,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private getUserProfileConfiguration(id, user) {
-    let configObj = {
+    const configObj = {
       jobschedulerId: id,
       account: user,
-      configurationType: "PROFILE"
+      configurationType: 'PROFILE'
     };
-    let preferences = {};
+    const preferences = {};
     this.coreService.post('configurations', configObj).subscribe(res1 => {
       sessionStorage.preferenceId = 0;
       this.setUserProfileConfiguration(configObj, preferences, res1, id);
@@ -292,13 +299,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.selectedJobScheduler = result.jobscheduler;
     }
     this.selectedScheduler.scheduler = this.selectedJobScheduler;
-    if (this.selectedScheduler && this.selectedScheduler.scheduler)
+    if (this.selectedScheduler && this.selectedScheduler.scheduler) {
       document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+    }
     sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedJobScheduler);
-    if (this.selectedJobScheduler && this.selectedJobScheduler.state)
+    if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
       this.scheduleState = this.selectedJobScheduler.state._text;
-    if (this.selectedJobScheduler && this.selectedJobScheduler.clusterType)
+    }
+    if (this.selectedJobScheduler && this.selectedJobScheduler.clusterType) {
       this.permission.precedence = this.selectedJobScheduler.clusterType.precedence;
+    }
   }
 
   private getVolatileData(result: any, flag: boolean): void {
@@ -326,11 +336,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   loadScheduleDetail() {
     if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE != 'null') {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
-      if (this.selectedJobScheduler && this.selectedJobScheduler.state)
+      if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
         this.scheduleState = this.selectedJobScheduler.state._text;
+      }
       this.selectedScheduler.scheduler = this.selectedJobScheduler;
-      if (this.selectedScheduler && this.selectedScheduler.scheduler)
+      if (this.selectedScheduler && this.selectedScheduler.scheduler) {
         document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+      }
     } else if (this.schedulerIds && this.schedulerIds.selected) {
       this.getScheduleDetail(false);
     }
@@ -370,7 +382,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.toasterService.pop('error', title, msg);
         }
       });
-    })
+    });
   }
 
   logout(timeout) {

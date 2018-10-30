@@ -154,11 +154,11 @@
                     <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                     <div class="col-sm-3">
-                        <dp-date-picker srtle [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setStartDate' | translate}}" [(ngModel)]="calendar.from" name="from" [config]="config"> </dp-date-picker>
+                        <dp-date-picker srtle [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setStartDate' | translate}}" [(ngModel)]="calendar.from" name="from" required=true [config]="config"> </dp-date-picker>
                     </div>
                     <label class="col-sm-3 form-control-label text-center" translate>label.validTo</label>
                     <div class="col-sm-3" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
-                        <dp-date-picker id = "to" [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setEndDate' | translate}}" [(ngModel)]="calendar.to" required [minDate]="calendar.from" name="to"  #to="ngModel" [config]="config"> </dp-date-picker>
+                        <dp-date-picker id = "to" [theme]="'dp-material dp-main calendar'" placeholder="{{'placeholder.setEndDate' | translate}}" [(ngModel)]="calendar.to" required=true [minDate]="calendar.from" name="to"  #to="ngModel" [config]="config"> </dp-date-picker>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@
                         button.excludedFrequencies
                     </button>
                 </div>
-                <button type="button" class="btn btn-sm pull-right btn-grey" [disabled]="!calendar.to"
+                <button type="button" class="btn btn-sm pull-right btn-grey" [disabled]="!(calendar.to)"
                         (click)="createNewFrequency()" translate>button.addNewFrequency
                 </button>
                 <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"

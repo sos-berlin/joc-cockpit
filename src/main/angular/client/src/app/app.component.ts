@@ -10,7 +10,6 @@ declare const $;
   styleUrls: ['./app.component.css']
 })
 
-
 export class AppComponent {
 
   public config: ToasterConfig = new ToasterConfig({
@@ -22,14 +21,19 @@ export class AppComponent {
     this.getTranslate();
     AppComponent.themeInit();
     if (window.location.href) {
-      this.router.navigate([window.location.href.substring(window.location.href.lastIndexOf('/'))]);
+      const index = window.location.href.lastIndexOf('#/');
+      if (index > 0) {
+        this.router.navigate([window.location.href.substring(index + 1)]);
+      }
     }
   }
 
   private getTranslate() {
     const locales = ['en', 'fr', 'de', 'ja'];
     let lang = localStorage.$SOS$LANG || navigator.language;
-    if (locales.indexOf(lang) <= -1) lang = 'en';
+    if (locales.indexOf(lang) <= -1) {
+      lang = 'en';
+    }
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
   }
@@ -37,7 +41,12 @@ export class AppComponent {
   static themeInit() {
     if (localStorage.$SOS$THEME != null) {
       $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
+      if (localStorage.$SOS$MENUTHEME != null) {
+        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
+        if (localStorage.$SOS$AVATARTHEME != null) {
+          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
+        }
+      }
     }
   }
-
 }

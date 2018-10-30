@@ -80,7 +80,10 @@ export class SearchComponent implements OnInit {
   existingName: any;
   submitted: boolean = false;
   isUnique: boolean = true;
-
+  allhosts: any;
+  sourceProtocol: any= [];
+  targetProtocol: any= [];
+  
   constructor(public coreService: CoreService) {}
 
   ngOnInit() {
@@ -89,6 +92,7 @@ export class SearchComponent implements OnInit {
     this.config = {
       format: this.dateFormatM
     };
+    this.allhosts = this.coreService.getProtocols();
   }
 
   checkFilterName() {
@@ -99,8 +103,29 @@ export class SearchComponent implements OnInit {
       }
     }
   }
-
-  onSubmit(result): void {
+  
+  selectedTargetProtocol(value:any):void {
+    if(!this.filter.targetProtocol){
+      this.filter.targetProtocol =[]
+    }
+    this.filter.targetProtocol.push(value.text);
+  }
+  removedTargetProtocol(value:any):void {
+    this.filter.targetProtocol.splice(this.filter.targetProtocol.indexOf(value.text), 1);
+  }
+  selectedSourceProtocol(value:any):void {
+    if(!this.filter.targetProtocol){
+      this.filter.sourceProtocol =[]
+    }
+    this.filter.sourceProtocol.push(value.text);
+  }
+  removedSourceProtocol(value:any):void {
+    this.filter.sourceProtocol.splice(this.filter.sourceProtocol.indexOf(value.text), 1);
+  }
+  
+  onSubmit(result): void {   
+    console.log(result);
+     
     this.submitted = true;
     let configObj = {
       jobschedulerId: this.schedulerIds.selected,
@@ -177,7 +202,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   yadeFilters: any = {};
-  yadeView: any = {};
+  yadeView: any = {current: false};
   object: any = {files:[], fileTransfers: []};
   searchFilter: any = {};
   savedFilter: any = {};
@@ -252,7 +277,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.yadeFilters = this.coreService.getYadeTab();
-    this.yadeView = this.preferences.fileTransfer == 'current';
+    this.yadeView.current = this.preferences.fileTransfer == 'current';
     this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
@@ -287,6 +312,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   loadYadeFiles(type, value) {
     if (type === 'DATE') {
       this.yadeFilters.filter.date = value;
+      
     }else if(type === 'STATE'){
       this.yadeFilters.filter.states = value;
     }
@@ -299,6 +325,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   load() {
+    this.isLoaded = true;
     const self = this;
     this.reset();
     if (!this.filterList) {
@@ -309,9 +336,12 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(true);
     }
     let obj: any = {};
+    
     obj.jobschedulerId = this.yadeView.current == true ? this.schedulerIds.selected : '';
 
-    if (this.selectedFiltered) {
+    if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
+      
+      
       if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
         obj.states = this.selectedFiltered.states;
       }
@@ -554,7 +584,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   }
 
   private setDateRange(filter) {
-    if (this.yadeFilters.filter.date == 'ALL') {
+    if (this.yadeFilters.filter.date == 'all') {
 
     } else if (this.yadeFilters.filter.date == 'today') {
       filter.dateFrom = '0d';
@@ -711,19 +741,23 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         hosts = this.searchFilter.sourceHost.split(',');
       }
       if (this.searchFilter.sourceProtocol) {
-        this.searchFilter.sourceProtocol = this.searchFilter.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-        protocols = this.searchFilter.sourceProtocol.split(',');
+        
+        protocols = this.searchFilter.sourceProtocol;
       }
       filter.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
 
     }
     if (this.searchFilter.targetHost || this.searchFilter.targetProtocol) {
-      this.searchFilter.targetHost = this.searchFilter.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-      let hosts = this.searchFilter.targetHost.split(',');
+  
+      let hosts = [];
       let protocols = [];
+      if (this.searchFilter.targetHost) {
+        this.searchFilter.targetHost = this.searchFilter.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+        hosts = this.searchFilter.targetHost.split(',');
+      }
       if (this.searchFilter.targetProtocol) {
-        this.searchFilter.targetProtocol = this.searchFilter.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
-        protocols = this.searchFilter.targetProtocol.split(',');
+       
+        protocols = this.searchFilter.targetProtocol;
       }
       filter.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
     }

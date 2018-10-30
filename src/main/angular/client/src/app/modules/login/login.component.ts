@@ -100,7 +100,7 @@ export class LoginComponent implements OnInit {
             this.getSchedulerIds();
         }, () => {
             this.submitted = false;
-            this.errorMsg = 'message.loginError'
+            this.errorMsg = 'message.loginError';
         });
     }
 }

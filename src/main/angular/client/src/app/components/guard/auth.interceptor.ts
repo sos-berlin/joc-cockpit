@@ -15,7 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.method == 'POST' || req.url.match('jobscheduler/log?')) {
+    if (req.method === 'POST' || req.url.match('jobscheduler/log?')) {
       req = req.clone({
         url: './api/' + req.url,
         headers: req.headers.set('Content-Type', 'application/json')
@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
       if (req.url.match('security/login')) {
         const user = req.body;
         req = req.clone({
-          headers: req.headers.set('Authorization', "Basic " + btoa(user.userName + ":" + user.password)),
+          headers: req.headers.set('Authorization', 'Basic ' + btoa(user.userName + ':' + user.password)),
           body: {}
         });
       } else {
@@ -50,8 +50,9 @@ export class AuthInterceptor implements HttpInterceptor {
             this.authService.clearStorage();
             return this.router.navigate(['/login']);
           } else if (err.status && err.status !== 434) {
-            if (err.error.error)
+            if (err.error.error) {
               this.toasterService.pop('error', '', err.error.error.message);
+            }
           }
         }));
     } else {

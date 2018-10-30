@@ -105,6 +105,15 @@
                [(ngModel)]="filter.account" name="account">
       </div>
     </div>
+    <div class="form-group row" *ngIf="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+        <label class="col-sm-4" translate>label.sharedFilter</label>
+        <div class="col-sm-8">
+            <label class="md-check">
+                <input type="checkbox" [(ngModel)]="filter.shared" name="shared">
+                <i class="primary"></i>
+            </label>
+        </div>
+    </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">
       <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
         button.search

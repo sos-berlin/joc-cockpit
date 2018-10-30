@@ -248,7 +248,7 @@ export class CalendarService {
       }
       let repetitions = data.dateEntity == 'DAILY' ? 'day' : data.dateEntity == 'WEEKLY' ? 'week' : data.dateEntity == 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
-let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
+        let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
         return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(formattedDate, dataFormat);
       } else {
         return 'Every ' + str + repetitions;
@@ -257,7 +257,7 @@ let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
     }
     else if (data.tab == 'nationalHoliday') {
       if (data.nationalHoliday) {
-        str = new Date(data.nationalHoliday[0]).getFullYear() + ' national holidays ';
+        str = moment(data.nationalHoliday[0]).format('YYYY') + ' national holidays ';
 
         data.nationalHoliday.forEach(function (date, index) {
           str = str + moment(date).format(dataFormat.toUpperCase());
@@ -555,8 +555,7 @@ let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
 
   groupByDates(arrayOfDates) {
     let datesObj = _.groupBy(arrayOfDates, function (el) {
-      let d = new Date(el.toString());
-      return (d.getFullYear());
+      return moment(el.toString()).format('YYYY');
     });
     return _(datesObj).toArray();
   }

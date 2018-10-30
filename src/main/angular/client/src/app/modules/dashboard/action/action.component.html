@@ -50,6 +50,10 @@
            [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
            (click)="clusterAction('downloadLog', master)"
            translate>button.downloadLog</a>
+        <a class="dropdown-item"
+            [ngClass]="{'disable-link':master.state._text!='RUNNING' && master.state._text!='PAUSED' && master.state._text!='WAITING_FOR_ACTIVATION'}"
+            (click)="clusterAction('downloadDebugLog', master)"
+           translate>button.downloadDebugLog</a>
     </div>
 </div>
 

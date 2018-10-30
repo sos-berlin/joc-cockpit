@@ -75,22 +75,22 @@ export class RegexValidator implements Validator {
 
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
-    if (v != null)
+    if (v != null) {
       if ((!v || /^\s*$/i.test(v)
-          || /^\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
-          || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(v)
-          || /^\s*(now)\s*$/i.test(v)
-          || /^\s*(Today)\s*$/i.test(v)
-          || /^\s*(Yesterday)\s*$/i.test(v)
-          || /^\s*[-](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
-          || /^\s*[-](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
-          || /^\s*[-](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
-          || /^\s*[-](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*[-,+]\s*(\d+)(h|d|w|M|y)\s*$/.test(v)
-          || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(v)
-        )) {
-
+        || /^\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
+        || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(v)
+        || /^\s*(now)\s*$/i.test(v)
+        || /^\s*(Today)\s*$/i.test(v)
+        || /^\s*(Yesterday)\s*$/i.test(v)
+        || /^\s*[-](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
+        || /^\s*[-](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
+        || /^\s*[-](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*$/.test(v)
+        || /^\s*[-](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*[-](\d+)(h|d|w|M|y)\s*[-,+]\s*(\d+)(h|d|w|M|y)\s*$/.test(v)
+        || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(v)
+      )) {
         return null;
       }
+    }
     return {
       validateReqex: true
     }
@@ -110,7 +110,7 @@ export class DailyPlanRegexValidator implements Validator {
 
   validate(c: AbstractControl): { [key: string]: any } {
     let v = c.value;
-    if (v != null)
+    if (v != null) {
       if (/^\s*$/i.test(v)
         || /^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(v)
         || /^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(v)
@@ -120,6 +120,7 @@ export class DailyPlanRegexValidator implements Validator {
       ) {
         return null;
       }
+    }
 
     return {
       validateDailyPlanReqex: true
@@ -141,7 +142,7 @@ export class DropdownDirective implements  OnDestroy {
     if ($(event.target).attr('class') != 'dropdown-backdrop') {
       const top = event.clientY + 8;
       const left = event.clientX - 20;
-      $('.list-dropdown').css({top: top + "px", left: left + "px"});
+      $('.list-dropdown').css({top: top + 'px', left: left + 'px'});
       window.addEventListener('scroll', this.scroll, true);
     } else {
       window.removeEventListener('scroll', this.scroll, true);
@@ -204,8 +205,9 @@ export class ResizableDirective implements OnInit {
           minWidth: 10,
           resize: function () {
             $('#centerPanel').css({'margin-left': dom.width() + 20 + 'px'});
-            if (dom.width() > 250)
+            if (dom.width() > 250) {
               $('.angular-tree-component').css({'width': dom.width() + 'px', 'heigth': dom.height() + 'px'});
+            }
           }
         });
       }

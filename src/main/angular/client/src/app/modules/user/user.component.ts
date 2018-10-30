@@ -31,7 +31,8 @@ export class UserComponent implements OnInit {
   timeZone: any = {};
   locales: any = [];
   forceLoging:boolean=false;
-
+  prevMenuTheme: string;
+  prevMenuAvatorColor: string;
   jobs: any = [
     {value: 'JobStopped', label: "label.jobStopped"},
     {value: 'JobPending', label: "label.jobPending"}
@@ -62,9 +63,8 @@ export class UserComponent implements OnInit {
     this.configObj.configurationItem = JSON.stringify(this.preferences);
     sessionStorage.preferences = JSON.stringify(this.preferences);
     this.coreService.post('configuration/save', this.configObj).subscribe(res => {
-      console.log(res)
     }, (err) => {
-      console.log(err)
+      console.log(err);
     })
   }
 
@@ -113,13 +113,15 @@ export class UserComponent implements OnInit {
     this.configObj.account = this.permission.user;
     this.configObj.configurationType = "PROFILE";
     this.configObj.id = parseInt(sessionStorage.preferenceId);
-    if (this.preferences.events.filter) {
+    if (this.preferences.events && this.preferences.events.filter) {
       this.eventFilter = this.preferences.events.filter;
     } else {
+      if(this.preferences.events)
       this.eventFilter = JSON.parse(this.preferences.events.filter);
     }
 
     let self = this;
+    if(this.eventFilter)
     this.eventFilter.forEach(function (name) {
       if(name) {
         if (name.match('JobChain')) {
@@ -161,7 +163,7 @@ export class UserComponent implements OnInit {
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }
-
+    sessionStorage.preferences = JSON.stringify(this.preferences);
     // $rootScope.$broadcast('reloadPreferences');
     if (reload){
       // $rootScope.$broadcast('reloadDate');
@@ -196,6 +198,86 @@ export class UserComponent implements OnInit {
   changeTheme(theme) {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage.$SOS$THEME = theme;
+    if (theme == 'lighter') {
+      $('#orders_id img').attr("src", './assets/images/workflow.png');
+      $('#jobs_id img').attr("src", './assets/images/job.png');
+      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
+      $('#resources_id img').attr("src", './assets/images/resources1.png');
+    } else {
+      $('#orders_id img').attr("src", './assets/images/order1.png');
+      $('#jobs_id img').attr("src", './assets/images/job1.png');
+      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
+      $('#resources_id img').attr("src", './assets/images/resources.png');
+    }
+    this.savePreferences();
+  }
+
+  changeMenuTheme(theme) {
+    for(let i=0;i<$('#headerColor')[0].classList.length;i++) {
+      let temp = $('#headerColor')[0].classList[i].split('-');
+      if(temp[0]==='header') {
+        this.prevMenuTheme = $('#headerColor')[0].classList[i];
+        break;
+      }
+    }
+    $('#headerColor').removeClass(this.prevMenuTheme);
+    $('#headerColor').addClass(theme);
+    
+    for(let i=0;i<$('#avatarBg')[0].classList.length;i++) {
+      let temp = $('#avatarBg')[0].classList[i].split('-');
+      if(temp[0]==='avatarbg') {
+        this.prevMenuAvatorColor = $('#avatarBg')[0].classList[i];
+        break;
+      }
+    }
+    $('#avatarBg').removeClass(this.prevMenuAvatorColor);
+    if($('#headerColor').hasClass('header-prussian-blue'))
+    {
+      $('#avatarBg').addClass('avatarbg-prussian-blue');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-prussian-blue';
+      this.preferences.avatarColor = "avatarbg-prussian-blue";
+    } else if($('#headerColor').hasClass('header-eggplant'))
+    {
+      $('#avatarBg').addClass('avatarbg-eggplant');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-eggplant';
+      this.preferences.avatarColor = "avatarbg-eggplant";
+    } else if($('#headerColor').hasClass('header-blackcurrant'))
+    {
+      $('#avatarBg').addClass('avatarbg-blackcurrant');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-blackcurrant';
+      this.preferences.avatarColor = "avatarbg-blackcurrant";
+    } else if($('#headerColor').hasClass('header-Dodger-Blue'))
+    {
+      $('#avatarBg').addClass('avatarbg-Dodger-Blue');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-Dodger-Blue';
+      this.preferences.avatarColor = "avatarbg-Dodger-Blue";
+    } else if($('#headerColor').hasClass('header-nordic'))
+    {
+      $('#avatarBg').addClass('avatarbg-nordic');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-nordic';
+      this.preferences.avatarColor = "avatarbg-nordic";
+    } else if($('#headerColor').hasClass('header-light-sea-green'))
+    {
+      $('#avatarBg').addClass('avatarbg-light-sea-green');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-light-sea-green';
+      this.preferences.avatarColor = "avatarbg-light-sea-green";
+    } else if($('#headerColor').hasClass('header-toledo'))
+    {
+      $('#avatarBg').addClass('avatarbg-toledo');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-toledo';
+      this.preferences.avatarColor = "avatarbg-toledo";
+    } else if($('#headerColor').hasClass('header-Pine-Green'))
+    {
+      $('#avatarBg').addClass('avatarbg-Pine-Green');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-Pine-Green';
+      this.preferences.avatarColor = "avatarbg-Pine-Green";
+    } else if($('#headerColor').hasClass('header-radical-red'))
+    {
+      $('#avatarBg').addClass('avatarbg-radical-red');
+      localStorage.$SOS$AVATARTHEME = 'avatarbg-radical-red';
+      this.preferences.avatarColor = "avatarbg-radical-red";
+    }
+    localStorage.$SOS$MENUTHEME = theme;
     if (theme == 'lighter') {
       $('#orders_id img').attr("src", './assets/images/workflow.png');
       $('#jobs_id img').attr("src", './assets/images/job.png');

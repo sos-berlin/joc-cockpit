@@ -443,6 +443,9 @@ export class CoreService {
   }
 
   getDateFormat(dateFormat): string {
+    if(!dateFormat) {
+      return "";
+    }
     dateFormat = dateFormat.replace('YY', 'yy');
     dateFormat = dateFormat.replace('YY', 'yy');
     dateFormat = dateFormat.replace('D', 'd');
@@ -584,53 +587,52 @@ export class CoreService {
         if (typeof this.newWindow == 'undefined' || this.newWindow == null || this.newWindow.closed == true) {
 
           if (order && order.historyId && order.orderId) {
-            url = 'log.html#!/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+            url = 'log.html/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + encodeURIComponent(order.jobChain);
           } else if (task && task.taskId) {
             if (task.job)
-              url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job;
+              url = 'log.html/?taskId=' + task.taskId + '&job=' + task.job;
             else if (job)
-              url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job;
+              url = 'log.html/?taskId=' + task.taskId + '&job=' + job;
             else
-              url = 'log.html#!/?taskId=' + task.taskId;
-
+              url = 'log.html/?taskId=' + task.taskId;
           } else {
             return;
           }
-
-          if (id) {
-            document.cookie = "$SOS$scheduleId=" + id + ";path=/";
-          } else {
-            document.cookie = "$SOS$scheduleId=" + schedulerId + ";path=/";
-          }
+          document.cookie = "$SOS$scheduleId=" + (id || schedulerId) + ";path=/";
           document.cookie = "$SOS$accessTokenId=" + this.authService.accessTokenId + ";path=/";
+          document.cookie = "$SOS$accountName=" + this.authService.currentUserData + ";path=/";
+          console.log(url);
+          
           this.newWindow = window.open(url, "Log", 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
+          
           const self = this;
           setTimeout(() => {
             self.calWindowSize();
-          }, 400);
+          }, 500);
         }
       } catch (e) {
         throw new Error(e.message);
       }
     } else {
       if (order && order.historyId && order.orderId) {
-        url = '#!/workflow/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || schedulerId);
+        
+        url = '/workflow/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || schedulerId);
       } else if (task && task.taskId) {
 
         if (transfer) {
           if (task.job)
-            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
+            url = '/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
           else if (job)
-            url = '#!/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
+            url = '/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
           else
-            url = '#!/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
+            url = '/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
         } else {
           if (task.job)
-            url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
+            url = '/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
           else if (job)
-            url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
+            url = '/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
           else
-            url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
+            url = '/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
         }
 
       } else {
@@ -867,6 +869,10 @@ export class CoreService {
   toMomentDateFormat(date){
     let formattedDate = moment(date, 'DD.MM.YYYY');
     return formattedDate;
+  }
+
+  getProtocols() {
+    return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
   }
 
 }

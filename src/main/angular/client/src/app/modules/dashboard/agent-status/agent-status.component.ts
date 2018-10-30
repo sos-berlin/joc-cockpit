@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
+import { Component, OnInit,OnDestroy, Input } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { DataService } from '../../../services/data.service';
   styleUrls: ['./agent-status.component.css']
 })
 export class AgentStatusComponent implements OnInit, OnDestroy {
-
+  @Input('sizeY') ybody: number;
   schedulerIds: any ={};
   agentClusters: any ={};
   subscription: Subscription;

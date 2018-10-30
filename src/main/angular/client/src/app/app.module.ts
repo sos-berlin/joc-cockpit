@@ -11,7 +11,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AboutModal} from "./components/about-modal/about.component";
+import {AboutModal} from './components/about-modal/about.component';
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 
@@ -22,8 +22,6 @@ export function createTranslateLoader(http: HttpClient) {
 
 @Injectable()
 export class ErrorLogService {
-    private name: String = 'ErrorLogService';
-
     logError(error: any) {
         if (error instanceof HttpErrorResponse) {
             console.error('There was an HTTP error.', error.message, 'Status code:', (<HttpErrorResponse>error).status);

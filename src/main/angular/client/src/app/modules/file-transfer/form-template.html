@@ -17,6 +17,18 @@
         </div>
       </div>
     </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.profileId</label>
+      <div class=" col-sm-6">
+        <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.mandator</label>
+      <div class=" col-sm-6">
+        <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}" name="mandator" [(ngModel)]="filter.mandator">
+      </div>
+    </div>
     <div class="form-group m-b-sm row " *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
       <div class="col-md-6">
@@ -51,27 +63,15 @@
       </div>
     </div>
     <div class="form-group row" *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
-      <div class=" col-sm-6" >
-        <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
-               placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
-        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-          <div translate *ngIf="!processExc1.valid">message.invalid</div>
+        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.processExecuted</label>
+        <div class=" col-sm-6" >
+          <input validateReqex type="text" name="planned" #processExc1="ngModel" class="form-control"
+                 placeholder="{{'placeholder.processExecuted' | translate}}" [(ngModel)]="filter.planned">
+          <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
+            <div translate *ngIf="!processExc1.valid">message.invalid</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.profileId</label>
-      <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}" name="profileId" [(ngModel)]="filter.profileId">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.mandator</label>
-      <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}" name="mandator" [(ngModel)]="filter.mandator">
-      </div>
-    </div>
     <div class="form-group row" *ngIf="isSearch">
       <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
       <div class=" col-sm-6">
@@ -126,11 +126,25 @@
       </div>
     </div>
     <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.sourceFileRegex</label>
+         <div class="col-sm-6">
+             <input class="form-control" placeholder="{{'placeholder.sourceFilesRegex' | translate}}" name="sourceFilesRegex"
+                    [(ngModel)]="filter.sourceFileRegex">
+         </div>
+     </div>
+    <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.targetFileName</label>
       <div class=" col-sm-6">
         <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}" name="targetFileName" [(ngModel)]="filter.targetFileName">
       </div>
     </div>
+    <div class="form-group row">
+        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.targetFileRegex</label>
+         <div class="col-sm-6">
+             <input class="form-control" placeholder="{{'placeholder.targetFilesRegex' | translate}}" name="targetFilesRegex"
+                    [(ngModel)]="filter.targetFileRegex">
+         </div>
+     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.sourceHost</label>
       <div class=" col-sm-6">
@@ -140,7 +154,8 @@
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.sourceProtocol</label>
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'placeholder.sourceProtocol' | translate}}" name="sourceProtocol" [(ngModel)]="filter.sourceProtocol">
+          <ng-select [multiple]="true" [items]="allhosts" [active]="filter.sourceProtocol" (selected)="selectedSourceProtocol($event)"
+          (removed)="removedSourceProtocol($event)" placeholder="{{'placeholder.sourceProtocol' | translate}}"></ng-select>
       </div>
     </div>
     <div class="form-group row">
@@ -151,11 +166,10 @@
     </div>
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.targetProtocol</label>
-
       <div class=" col-sm-6">
-        <input class="form-control" placeholder="{{'placeholder.targetProtocol' | translate}}"
-               name="targetProtocol"
-               [(ngModel)]="filter.targetProtocol">
+        <ng-select [multiple]="true" [items]="allhosts" [active]="filter.targetProtocol" (selected)="selectedTargetProtocol($event)"
+          (removed)="removedTargetProtocol($event)" placeholder="{{'placeholder.targetProtocol' | translate}}"></ng-select>
+        
       </div>
     </div>
     <div class="form-group m-t m-b-xs" *ngIf="isSearch">
@@ -168,7 +182,7 @@
     </div>
   </div>
   <div class="modal-footer" *ngIf="!isSearch">
-    <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+    <button type="submit" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
       {{'button.submit' | translate}}
     </button>

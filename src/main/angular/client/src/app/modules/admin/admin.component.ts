@@ -31,7 +31,7 @@ export class AdminComponent implements OnInit {
   private checkUrl(val) {
     if (val.url) {
       this.route = val.url;
-      this.showTabs = !!(this.route === '/users/account' || this.route.search('/users/master') > -1 || this.route === '/users/main_section');
+      this.showTabs = !!(this.route === '/users/account' || this.route.search('/users/master') > -1 || this.route === '/users/main_section' || this.route === '/users/profiles');
       if(this.route.match('/users')) {
         this.dataService.announceData(this.userObj);
         this.activeRoute.queryParams
@@ -126,6 +126,10 @@ export class AdminComponent implements OnInit {
 
   searchBar(searchKey) {
     this.dataService.announceSearchKey(searchKey);
+  }
+
+  deleteProfiles() {
+    this.dataService.announceFunction('DELETE_PROFILES')
   }
 
   receiveMessage($event) {

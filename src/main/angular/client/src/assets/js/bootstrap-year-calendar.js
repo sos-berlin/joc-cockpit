@@ -316,10 +316,9 @@
                                             dayData.push(monthData[i]);
                                         }
                                     }
-
-                                    if (dayData.length > 0) {
+								
+                                    
                                         _this._renderDataSourceDay($(this), currentDate, dayData);
-                                    }
                                 }
                             });
                         }
@@ -331,7 +330,10 @@
 			switch(this.options.style)
 			{
 				case 'border':
+					if(events.length>0)
 					elt.parent().css('box-shadow', 'inset 0 -3px 0 0 '+events[0].color);
+					else
+					elt.parent().css('box-shadow', 'inset 0 0 0 0');
 					break;
 
 				case 'background':

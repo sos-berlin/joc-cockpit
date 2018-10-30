@@ -2,8 +2,9 @@
     <div class="box-header b-b remove">
         <h3 translate>label.jobSchedulerStatus</h3>
     </div>
-    <div class="box-body">
-        <div class="table-responsive">
+    <div class="box-body" style="overflow-y: auto;"
+        [ngStyle]="{'max-height':(ybody * 105 -25) +'px'}">
+        <div class="table-responsive status-table">
             <table class="w-full">
                 <tr *ngFor="let master of mastersList">
                     <td>

@@ -7,7 +7,7 @@
 <a class="text resize-cursor" ngbTooltip="{{'tooltip.hideTree' | translate}}"
    style="position: absolute; right: 22px;">
   <i class="fa fa-angle-double-left fa-lg" (click)="coreService.hidePanel()"></i></a>
-<div class="tree-block">
+<div class="tree-block" id="tre">
   <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
     <ng-template #treeNodeWrapperTemplate let-node let-index="index">
       <div class="node-wrapper">

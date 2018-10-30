@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard';
 import { DataService } from '../../../services/data.service';
@@ -14,6 +14,8 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
   mastersList: any = [];
   isLoaded: boolean = false;
   subscription: Subscription;
+  // tslint:disable-next-line:no-input-rename
+  @Input('sizeY') ybody: number;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {

@@ -284,6 +284,24 @@
               </select>
             </div>
           </div>
+          <div class="row m-t" *ngIf="this.preferences.theme === 'light'">
+            <div class="col-sm-3 text-dark form-control-label" translate>label.MenuBartheme</div>
+            <div class="col-sm-6">
+              <select class="form-control w-xl" [(ngModel)]="preferences.headerColor"
+                      (change)="changeMenuTheme(preferences.headerColor)">
+                      <option value="">Default</option>
+                      <option value="header-blackcurrant">Blackcurrant</option>
+                      <option value="header-Dodger-Blue">Dodger-Blue</option>
+                      <option value="header-eggplant">Eggplant</option>
+                      <option value="header-Pine-Green">Pine Green</option>
+                      <option value="header-light-sea-green">Light Sea Green</option>
+                      <option value="header-nordic">Nordic</option>
+                      <option value="header-prussian-blue">Prussian Blue</option>
+                      <option value="header-radical-red">Radical Red</option>
+                      <option value="header-toledo">Toledo</option>
+              </select>
+            </div>
+          </div>
           <div class="row m-t">
             <div class="col-sm-3 text-dark form-control-label" translate>label.themeTitle</div>
             <div class="col-sm-6">
@@ -303,6 +321,21 @@
                 <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="newTab"
                        (change)="changeConfiguration(false)">
                 <i class="primary"></i> <span translate>label.newTab</span>
+              </label>
+            </div>
+          </div>
+          <div class="row m-t">
+            <div class="col-sm-3 text-dark" translate>label.showSubFolderAndFolderContents</div>
+            <div class="col-sm-6">
+              <label class="md-check w">
+                <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="single"
+                       (change)="changeConfiguration(false)">
+                <i class="primary"></i> <span translate>label.folderContents</span>
+              </label>
+              <label class="md-check w">
+                <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="both"
+                       (change)="changeConfiguration(false)">
+                <i class="primary"></i> <span translate>label.subFolderAndFolderContents</span>
               </label>
             </div>
           </div>
@@ -856,9 +889,19 @@
           <div class="row m-t">
             <div class="col-sm-3"><span class="text-dark" translate>label.runTime</span></div>
             <div class="row col-sm-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Runtime.execute.editXml}"></i> <span
-                translate>label.edit</span></span></div>
+              <span class="col-sm-3 text-black-lt">
+                <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Runtime.execute.editXml}"></i>
+                <span translate>label.edit</span>
+              </span>
+            </div>
+          </div>
+          <div class="row m-t">
+              <div class="col-sm-3"><span class="text-dark" translate>label.joc</span></div>
+              <div class="row col-sm-9">
+
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Joc.view.log}"></i> <span translate>label.downloadLog</span></span>
+
+              </div>
           </div>
         </div>
       </div>

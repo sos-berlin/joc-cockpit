@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription }   from 'rxjs/Subscription';
+import { Subscription } from 'rxjs/Subscription';
 import { CoreService } from '../../../services/core.service';
 import { AuthService } from '../../../components/guard';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,8 +18,8 @@ export class AccountModal implements OnInit {
     currentUser:any={};
     roles:any= [];
 
-    @Input() newUser:boolean = false;
-    @Input() copy:boolean = false;
+    @Input() newUser = false;
+    @Input() copy = false;
     @Input() userDetail:any;
     @Input() oldUser:any;
 
@@ -110,8 +110,8 @@ export class AccountsComponent implements OnInit, OnDestroy {
   preferences: any = {};
   users: any = [];
   roles: any = [];
-  order: string = 'user';
-  reverse: boolean = false;
+  order = 'user';
+  reverse = false;
   usr: any = {};
   userDetail: any = {};
   temp: any = 0;
@@ -217,11 +217,11 @@ export class AccountsComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteUser(user) {
-    const modalRef = this.modalService.open(DeleteModal, {backdrop: "static"});
+  deleteUser(user, i) {
+    const modalRef = this.modalService.open(DeleteModal);
     modalRef.componentInstance.user = user;
     modalRef.result.then((result) => {
-      this.users.splice(this.users.indexOf(user), 1);
+      this.users.splice(i, 1);
       this.saveInfo();
     }, (reason) => {
       console.log('close...', reason)

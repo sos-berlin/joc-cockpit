@@ -1,10 +1,13 @@
 import {Component, OnInit, Input, ViewChild, Output, EventEmitter} from '@angular/core';
 import { CoreService } from '../../services/core.service';
 
-
+declare const $;
 @Component({
     selector: 'app-tree-nagivation',
-    templateUrl: './tree.component.html'
+    templateUrl: './tree.component.html',
+    host: {
+      '(window:resize)': 'onResize()'
+    }
 })
 export class TreeComponent implements OnInit {
 
@@ -18,6 +21,7 @@ export class TreeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.onResize();
     let self = this;
     let interval = setInterval(function () {
       if (self.treeCtrl && self.treeCtrl.treeModel) {
@@ -78,5 +82,16 @@ export class TreeComponent implements OnInit {
   getNodeById(id): any {
     return this.treeCtrl.treeModel.getNodeById(id);
   }
+
+  onResize() {
+    TreeComponent.setGraphHt();
+  }
+
+  static setGraphHt() {
+    let ht = window.innerHeight - $('.navbar').height() - $('.top-header-bar').height() - $('.sub-header').height() - $('.sub-link').height() - 60;
+    if (ht > 400)
+      $('#tre').height(ht+'px');      
+  }
+
 
 }

@@ -19,7 +19,7 @@ declare const $;
   styleUrls: ['./master-cluster.component.css']
 })
 export class MasterClusterComponent implements OnInit, OnDestroy {
-
+  @Input('sizeY') ybody: number;
   @Input() permission: any;
   isLoaded: boolean = false;
   rWidth: number = 200;
@@ -245,7 +245,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     let labelState: any, status: any, terminateBtn: any, terminateWithinBtn: any, abortBtn: any,
       abortAndRestartBtn: any,
       terminateAndRestartBtn: any, terminateAndRestartWithinBtn: any, pauseBtn: any, continueBtn: any,
-      removeInstanceBtn: any, downloadLogBtn: any, labelDatabase: any, labelArchitecture: any
+      removeInstanceBtn: any, downloadLogBtn: any, downloadDebugLogBtn: any , labelDatabase: any, labelArchitecture: any
       , labelDistribution: any, labelSurveyDate: any, labelVersion: any, labelStartedAt: any;
 
     self.translate.get('label.state').subscribe(translatedValue => {
@@ -285,7 +285,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     self.translate.get('button.downloadLog').subscribe(translatedValue => {
       downloadLogBtn = translatedValue;
     });
-
+    self.translate.get('button.downloadDebugLog').subscribe(translatedValue => {
+      downloadDebugLogBtn = translatedValue;
+    });
     self.translate.get('label.architecture').subscribe(translatedValue => {
       labelArchitecture = translatedValue;
     });
@@ -521,7 +523,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a href class="hide more-option ' + permissionClass + '" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
           '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
           '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminate-' + i + '">' + terminateBtn + '</a>' +
-          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWith-' + i + '">' + terminateWithinBtn + '</a>' +
+          '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__supervisor-terminateWithin-' + i + '">' + terminateWithinBtn + '</a>' +
           '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__supervisor-abort-' + i + '">' + abortBtn + '</a>' +
           '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__supervisor-abortAndRestart-' + i + '">' + abortAndRestartBtn + '</a>' +
           '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__supervisor-terminateAndRestart-' + i + '">' + terminateAndRestartBtn + '</a>' +
@@ -530,6 +532,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           '<a class="hide dropdown-item ' + continueClass + '" id="' + '__supervisor-continue-' + i + '">' + continueBtn + '</a>' +
           '<a class="hide dropdown-item ' + removeClass + '" id="' + '__supervisor-remove-' + i + '">' + removeInstanceBtn + '</a>' +
           '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-download-' + i + '">' + downloadLogBtn + '</a>' +
+          '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__supervisor-debugdownload-' + i + '">' + downloadDebugLogBtn + '</a>' +
           '</div>' +
           '</div></span></div>';
 
@@ -676,15 +679,16 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         '<a class="more-option ' + permissionClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
         '<div class="dropdown-menu dropdown-ac dropdown-more cluster-dropdown">' +
         '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + ' "  id="' + '__master-terminate-' + index + '-' + pIndex + '">' + terminateBtn + '</a>' +
-        '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__master-terminateWith-' + index + '-' + pIndex + '">' + terminateWithinBtn + '</a>' +
+        '<a class="hide dropdown-item bg-hover-color ' + terminateClass + ' ' + disableLink + '" id="' + '__master-terminateWithin-' + index + '-' + pIndex + '">' + terminateWithinBtn + '</a>' +
         '<a class="hide dropdown-item ' + abortClass + ' ' + disableLink + ' " id="' + '__master-abort-' + index + '-' + pIndex + '">' + abortBtn + '</a>' +
         '<a class="hide dropdown-item ' + restartAbortClass + ' ' + disableLink + ' " id="' + '__master-abortAndRestart-' + index + '-' + pIndex + '">' + abortAndRestartBtn + '</a>' +
         '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestart-' + index + '-' + pIndex + '">' + terminateAndRestartBtn + '</a>' +
-        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWith-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
+        '<a class="hide dropdown-item ' + restartTerminateClass + ' ' + disableLink + ' " id="' + '__master-terminateAndRestartWithin-' + index + '-' + pIndex + '">' + terminateAndRestartWithinBtn + '</a>' +
         '<a class="hide dropdown-item ' + pauseClass + '" id="' + '__master-pause-' + index + '-' + pIndex + '">' + pauseBtn + '</a>' +
         '<a class="hide dropdown-item ' + continueClass + '" id="' + '__master-continue-' + index + '-' + pIndex + '">' + continueBtn + '</a>' +
         '<a class="hide dropdown-item ' + removeClass + '" id="' + '__master-remove-' + index + '-' + pIndex + '">' + removeInstanceBtn + '</a>' +
         '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-download-' + index + '-' + pIndex + '">' + downloadLogBtn + '</a>' +
+        '<a class="hide dropdown-item ' + mainlogClass + ' ' + disableLink + ' " id="' + '__master-debugdownload-' + index + '-' + pIndex + '">' + downloadDebugLogBtn + '</a>' +
         '</div></div>' +
         '</span></div>';
 
@@ -1015,14 +1019,18 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         node2.style.setProperty('height', mTop - dLTop + 'px');
         node2.style.setProperty('border', border);
         clusterStatusContainer.appendChild(node2);
-
       }
     }
   }
 
   /*  ------------------ Actions -----------------------*/
   clusterAction(action, obj) {
-    if (action === 'terminateAndRestartWith' || action === 'terminateWithin') {
+    if (action === 'terminateAndRestartWithin' || action === 'terminateWithin' || action ==='reactivatePrimaryJobschedulerWithIn') {
+      if(obj == null) {
+        obj = {};
+        obj.jobschedulerId = this.schedulerIds.selected;
+        obj.auditLog = {};
+        }
       this.getTimeout(action, obj);
     } else if (this.preferences.auditLog && (action !== 'download')) {
       let comments = {
@@ -1075,6 +1083,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   performAction(action, obj): void {
     if (action === 'terminate') {
+      if(obj == null) {
+        obj = {};
+        obj.jobschedulerId = this.schedulerIds.selected;
+        obj.auditLog = {};
+      }
       this.postCall('jobscheduler/terminate', obj);
     } else if (action === 'abort') {
       this.postCall('jobscheduler/abort', obj);
@@ -1096,12 +1109,51 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           }
         });
       })
-    } else if (action === 'download') {
-      this.coreService.get('jobscheduler/log?host=' + obj.host + '&jobschedulerId=' + obj.jobschedulerId + '&port=' + obj.port).subscribe((res) => {
-        this.saveToFileSystem(res, obj);
-      }, err => {
+    } else if (action === 'terminateFailsafe') {
+ 
+        if(obj == null) {
+          obj = {};
+          obj.jobschedulerId = this.schedulerIds.selected;
+          obj.auditLog = {};
+        }
+        console.log(obj);
+        this.postCall('jobscheduler/cluster/terminate_failsafe', obj);
+  } else if (action === 'restart') {
+    if(obj == null) {
+      obj = {};
+      obj.jobschedulerId = this.schedulerIds.selected;
+      obj.auditLog = {};
+    }
+    this.postCall('jobscheduler/cluster/restart', obj);
+  } else if (action === 'reactivatePrimaryJobscheduler') {
+    if(obj == null) {
+      obj = {};
+      obj.jobschedulerId = this.schedulerIds.selected;
+      obj.auditLog = {};
+    }
+    this.postCall('jobscheduler/cluster/reactivate', obj);      
+  }else if (action === 'download') {
+      let result: any = {};
+      this.coreService.post('jobscheduler/debuglog/info',obj).subscribe(res => {
+        result = res;
+        if(result && result.log) {
+          this.coreService.get('jobscheduler/log?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
+          this.saveToFileSystem(res, obj);
+        }, () => {
         console.log('err in download')
-      });
+      });}
+    });
+    } else if (action === 'debugdownload') {
+      let result: any = {};
+      this.coreService.post('jobscheduler/debuglog/info',obj).subscribe(res => {
+        result = res;
+        if(result && result.log) {
+          this.coreService.get('./api/jobscheduler/debuglog?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
+          this.saveToFileSystem(res, obj);
+        }, () => {
+        console.log('err in download')
+      });}
+    });
     }
   }
 

@@ -3,8 +3,8 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {saveAs} from 'file-saver/FileSaver';
 import * as _ from 'underscore';
-import {TranslateService} from "@ngx-translate/core";
-import {ToasterService} from "angular2-toaster";
+import {TranslateService} from '@ngx-translate/core';
+import {ToasterService} from 'angular2-toaster';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -43,29 +43,28 @@ declare const $;
 export class EditorComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   tree: any = [];
-  isLoading: boolean = true;
+  isLoading = true;
   view: string;
   editor: any;
   xmlTest: any;
   workFlows: any = [];
-  nextNode: any = [];
   object: any = {checkbox: false, workflows: []};
-  isPropertyHide: boolean = false;
+  isPropertyHide = false;
   json: any = {};
   options: any = {};
   count = 2;
-  nodeMap = new Map(); //Declare Map object to store fork and join Ids
+  // Declare Map object to store fork and join Ids
+  nodeMap = new Map();
 
   @ViewChild('treeCtrl') treeCtrl;
 
   constructor(private authService: AuthService, public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
-
   }
 
   ngOnInit() {
     this.init();
     EditorComponent.setGraphHt();
-    this.coreService.get("workflow.json").subscribe((data) => {
+    this.coreService.get('workflow.json').subscribe((data) => {
       let x2js = new X2JS();
       this.xmlTest = x2js.json2xml_str(data);
     });
@@ -80,7 +79,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.editor = null;
       }
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 
@@ -103,7 +102,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       this.tree = this.coreService.prepareTree(res);
       const self = this;
-      let interval = setInterval(function () {
+      const interval = setInterval(function () {
         if (self.treeCtrl && self.treeCtrl.treeModel) {
           const node = self.treeCtrl.treeModel.getNodeById(1);
           node.expand();
@@ -120,13 +119,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     for (let x = 0; x < json.instructions.length; x++) {
       json.instructions[x].id = ++this.count;
       if (json.instructions[x].instructions) {
-        this.appendIdInJson(json.instructions[x])
+        this.appendIdInJson(json.instructions[x]);
       }
       if (json.instructions[x].then) {
-        this.appendIdInJson(json.instructions[x].then)
+        this.appendIdInJson(json.instructions[x].then);
       }
       if (json.instructions[x].else) {
-        this.appendIdInJson(json.instructions[x].else)
+        this.appendIdInJson(json.instructions[x].else);
       }
       if (json.instructions[x].branches) {
         for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -141,7 +140,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (eventObj.TYPE === 'OfferedOrder') {
         if (mxJson.OfferedOrder) {
           if (!_.isArray(mxJson.OfferedOrder)) {
-            let _tempOfferedOrder = _.clone(mxJson.OfferedOrder);
+            const _tempOfferedOrder = _.clone(mxJson.OfferedOrder);
             mxJson.OfferedOrder = [];
             mxJson.OfferedOrder.push(_tempOfferedOrder);
           }
@@ -171,7 +170,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  //Function to generate flow diagram with the help of JSON
+  // Function to generate flow diagram with the help of JSON
   private jsonParser(json, mxJson, type) {
     const self = this;
     if (json.instructions) {
@@ -260,7 +259,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         } else if (json.instructions[x].TYPE === 'Retry') {
           if (mxJson.Retry) {
             if (!_.isArray(mxJson.Retry)) {
-              let _tempRetry = _.clone(mxJson.Retry);
+              const _tempRetry = _.clone(mxJson.Retry);
               mxJson.Retry = [];
               mxJson.Retry.push(_tempRetry);
             }
@@ -280,32 +279,110 @@ export class EditorComponent implements OnInit, OnDestroy {
           }
           self.endRetry(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id);
           mxJson.Retry.push(obj);
-        }else if (json.instructions[x].TYPE === 'Try') {
+        } else if (json.instructions[x].TYPE === 'Try') {
           if (mxJson.Try) {
             if (!_.isArray(mxJson.Try)) {
-              let _tempRetry = _.clone(mxJson.Try);
+              const _tempRetry = _.clone(mxJson.Try);
               mxJson.Try = [];
               mxJson.Try.push(_tempRetry);
             }
           } else {
             mxJson.Try = [];
           }
+          if (mxJson.Catch) {
+            if (!_.isArray(mxJson.Catch)) {
+              const _tempRetry = _.clone(mxJson.Catch);
+              mxJson.Catch = [];
+              mxJson.Catch.push(_tempRetry);
+            }
+          } else {
+            mxJson.Catch = [];
+          }
           obj._id = json.instructions[x].id;
           obj._label = 'Try';
-          obj.mxCell._style = 'triangle';
-          obj.mxCell.mxGeometry._width = '70';
+          obj.mxCell._style = 'rhombus';
+          obj.mxCell.mxGeometry._width = '90';
           obj.mxCell.mxGeometry._height = '70';
+
+          let catchObj: any = {
+            mxCell: {
+              _parent: '1',
+              _vertex: '1',
+              _style: 'rectangle',
+              mxGeometry: {
+                _as: 'geometry',
+                _width: '90',
+                _height: '40'
+              }
+            },
+            _label: 'Catch'
+          };
+          let _id = 0;
+          if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
+            catchObj._id = json.instructions[x].catch.id;
+            catchObj._targetId = json.instructions[x].id;
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              self.jsonParser(json.instructions[x].catch, mxJson, 'endCatch');
+              self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch');
+            }
+            _id = self.endCatch(json.instructions[x].catch, mxJson, json.instructions, x, json.instructions[x].catch.id);
+            mxJson.Catch.push(catchObj);
+          }
 
           if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
             self.jsonParser(json.instructions[x], mxJson, '');
             self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'try');
+            let _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
+            if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'try') {
+              self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try');
+            } else {
+              if (_lastNode && (_lastNode.TYPE === 'If')) {
+                if (mxJson.EndIf && mxJson.EndIf.length) {
+                  for (let j = 0; j < mxJson.EndIf.length; j++) {
+                    if (_lastNode.id === mxJson.EndIf[j]._targetId) {
+                      this.connectInstruction({id: mxJson.EndIf[j]._id}, json.instructions[x].catch, mxJson, 'try');
+                      break;
+                    }
+                  }
+                }
+              } else if (_lastNode && (_lastNode.TYPE === 'Retry')) {
+                if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
+                  for (let j = 0; j < mxJson.RetryEnd.length; j++) {
+                    if (_lastNode.id === mxJson.RetryEnd[j]._targetId) {
+                      this.connectInstruction({id: mxJson.RetryEnd[j]._id}, json.instructions[x].catch, mxJson, 'try');
+                      break;
+                    }
+                  }
+                }
+              } else if (_lastNode && (_lastNode.TYPE === 'Try')) {
+                if (mxJson.EndTry && mxJson.EndTry.length) {
+                  for (let j = 0; j < mxJson.EndTry.length; j++) {
+                    if (_lastNode.id === mxJson.EndTry[j]._targetId) {
+                      this.connectInstruction({id: mxJson.EndTry[j]._id}, json.instructions[x].catch, mxJson, 'try');
+                      break;
+                    }
+                  }
+                }
+              } else if (_lastNode && (_lastNode.TYPE === 'ForkJoin')) {
+                if (mxJson.Join && mxJson.Join.length) {
+                  for (let j = 0; j < mxJson.Join.length; j++) {
+                    if (_lastNode.id === mxJson.Join[j]._targetId) {
+                      this.connectInstruction({id: mxJson.Join[j]._id}, json.instructions[x].catch, mxJson, 'try');
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            self.connectInstruction(json.instructions[x], json.instructions[x].catch, mxJson, 'try');
           }
-          self.endTry(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id);
+          self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id);
           mxJson.Try.push(obj);
         } else if (json.instructions[x].TYPE === 'Exit') {
           if (mxJson.Exit) {
             if (!_.isArray(mxJson.Exit)) {
-              let _tempExit = _.clone(mxJson.Exit);
+              const _tempExit = _.clone(mxJson.Exit);
               mxJson.Exit = [];
               mxJson.Exit.push(_tempExit);
             }
@@ -322,7 +399,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
             if (!_.isArray(mxJson.Await)) {
-              let _tempAwait = _.clone(mxJson.Await);
+              const _tempAwait = _.clone(mxJson.Await);
               mxJson.Await = [];
               mxJson.Await.push(_tempAwait);
             }
@@ -337,9 +414,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
           if (json.instructions[x].events && json.instructions[x].events.length > 0) {
             for (let i = 0; i < json.instructions[x].events.length; i++) {
-              //TODO
               self.jsonParseForAwait(json.instructions[x].events[i], mxJson);
-              self.connectInstruction(json.instructions[x], json.instructions[x].events[i], mxJson, '');
+              self.connectInstruction(json.instructions[x], json.instructions[x].events[i], mxJson, 'await');
             }
           }
 
@@ -347,8 +423,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         } else {
           console.log('Workflow yet to parse : ' + json.instructions[x].TYPE);
         }
-        if (json.instructions[x].TYPE !== 'ForkJoin' && json.instructions[x].TYPE !== 'If')
+        if (json.instructions[x].TYPE !== 'ForkJoin' && json.instructions[x].TYPE !== 'If' && json.instructions[x].TYPE !== 'Try' && json.instructions[x].TYPE !== 'Retry') {
           self.connectEdges(json.instructions, x, mxJson, type);
+        }
       }
     } else {
       console.log('No instruction..');
@@ -358,7 +435,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   private connectEdges(list, index, mxJson, type) {
     if (mxJson.Connection) {
       if (!_.isArray(mxJson.Connection)) {
-        let _tempJob = _.clone(mxJson.Connection);
+        const _tempJob = _.clone(mxJson.Connection);
         mxJson.Connection = [];
         mxJson.Connection.push(_tempJob);
       }
@@ -368,7 +445,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (list.length > (index + 1)) {
       let obj: any = {
         _label: type,
-         _type: type,
+        _type: type,
         mxCell: {
           _parent: '1',
           _source: list[index].id,
@@ -387,7 +464,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   private connectInstruction(source, target, mxJson, label) {
     if (mxJson.Connection) {
       if (!_.isArray(mxJson.Connection)) {
-        let _tempJob = _.clone(mxJson.Connection);
+        const _tempJob = _.clone(mxJson.Connection);
         mxJson.Connection = [];
         mxJson.Connection.push(_tempJob);
       }
@@ -415,7 +492,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   private endRetry(branchs, mxJson, list, index, targetId) {
     if (mxJson.RetryEnd) {
       if (!_.isArray(mxJson.RetryEnd)) {
-        let _tempRetryEnd = _.clone(mxJson.RetryEnd);
+        const _tempRetryEnd = _.clone(mxJson.RetryEnd);
         mxJson.RetryEnd = [];
         mxJson.RetryEnd.push(_tempRetryEnd);
       }
@@ -423,13 +500,14 @@ export class EditorComponent implements OnInit, OnDestroy {
     } else {
       mxJson.RetryEnd = [];
     }
-    let id = parseInt(list[list.length - 1].id) + 3000;
+    let id: number;
+    id = parseInt(list[list.length - 1].id) + 3000;
 
     this.nodeMap.set(targetId.toString(), id.toString());
 
     let joinObj: any = {
       _id: id,
-      _label: 'RetryEnd',
+      _label: 'Retry-End',
       _targetId: targetId,
       mxCell: {
         _parent: '1',
@@ -444,7 +522,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
     mxJson.RetryEnd.push(joinObj);
 
-    let x = branchs.instructions[branchs.instructions.length - 1];
+    const x = branchs.instructions[branchs.instructions.length - 1];
     if (x && (x.TYPE === 'If')) {
       if (mxJson.EndIf && mxJson.EndIf.length) {
         for (let j = 0; j < mxJson.EndIf.length; j++) {
@@ -467,7 +545,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (mxJson.EndTry && mxJson.EndTry.length) {
         for (let j = 0; j < mxJson.EndTry.length; j++) {
           if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endTry');
+            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'retryEnd');
             break;
           }
         }
@@ -476,24 +554,24 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join');
+            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'retryEnd');
             break;
           }
         }
       }
     } else {
-      this.connectInstruction(x, {id: id}, mxJson, 'retryEnd')
+      this.connectInstruction(x, {id: id}, mxJson, 'retryEnd');
     }
 
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '')
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '');
     }
   }
 
   private joinFork(branchs, mxJson, list, index, targetId) {
     if (mxJson.Join) {
       if (!_.isArray(mxJson.Join)) {
-        let _tempJoin = _.clone(mxJson.Join);
+        const _tempJoin = _.clone(mxJson.Join);
         mxJson.Join = [];
         mxJson.Join.push(_tempJoin);
       }
@@ -502,7 +580,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       mxJson.Join = [];
     }
 
-    let id = parseInt(list[list.length - 1].id) + 1000;
+    let id: number;
+    id = parseInt(list[list.length - 1].id) + 1000;
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
@@ -521,7 +600,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
     mxJson.Join.push(joinObj);
     for (let i = 0; i < branchs.length; i++) {
-      let x = branchs[i].instructions[branchs[i].instructions.length - 1];
+      const x = branchs[i].instructions[branchs[i].instructions.length - 1];
       if (x && (x.TYPE === 'If')) {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
@@ -540,38 +619,38 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
           }
         }
-      }else if (x && (x.TYPE === 'Retry')) {
+      } else if (x && (x.TYPE === 'Retry')) {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'join');
               break;
             }
           }
         }
-      }else if (x && (x.TYPE === 'Try')) {
+      } else if (x && (x.TYPE === 'Try')) {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endTry');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join');
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'join')
+        this.connectInstruction(x, {id: id}, mxJson, 'join');
       }
     }
 
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '')
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '');
     }
   }
 
   private endIf(branchs, mxJson, list, index, targetId) {
     if (mxJson.EndIf) {
       if (!_.isArray(mxJson.EndIf)) {
-        let _tempJoin = _.clone(mxJson.EndIf);
+        const _tempJoin = _.clone(mxJson.EndIf);
         mxJson.EndIf = [];
         mxJson.EndIf.push(_tempJoin);
       }
@@ -579,7 +658,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     } else {
       mxJson.EndIf = [];
     }
-    let id = parseInt(list[list.length - 1].id) + 2000;
+    let id: number;
+    id = parseInt(list[list.length - 1].id) + 2000;
     this.nodeMap.set(targetId.toString(), id.toString());
     let endIfObj: any = {
       _id: id,
@@ -598,7 +678,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
     mxJson.EndIf.push(endIfObj);
     if (branchs.then && branchs.then.instructions) {
-      let x = branchs.then.instructions[branchs.then.instructions.length - 1];
+      const x = branchs.then.instructions[branchs.then.instructions.length - 1];
       if (x && (x.TYPE === 'If')) {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
@@ -621,26 +701,26 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf');
               break;
             }
           }
         }
-      }else if (x && (x.TYPE === 'Try')) {
+      } else if (x && (x.TYPE === 'Try')) {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endTry');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf');
               break;
             }
           }
         }
-      }else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf')
+      } else {
+        this.connectInstruction(x, {id: id}, mxJson, 'endIf');
       }
     }
     if (branchs.else && branchs.else.instructions) {
-      let x = branchs.else.instructions[branchs.else.instructions.length - 1];
+      const x = branchs.else.instructions[branchs.else.instructions.length - 1];
       if (x && (x.TYPE === 'If')) {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
@@ -659,69 +739,108 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
           }
         }
-      }else if (x && (x.TYPE === 'Retry')) {
+      } else if (x && (x.TYPE === 'Retry')) {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf');
               break;
             }
           }
         }
-      }else if (x && (x.TYPE === 'Try')) {
+      } else if (x && (x.TYPE === 'Try')) {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endTry');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf');
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf')
+        this.connectInstruction(x, {id: id}, mxJson, 'endIf');
       }
     }
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '')
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '');
     }
   }
 
-  private endTry(branchs, mxJson, list, index, targetId) {
-    if (mxJson.RetryEnd) {
-      if (!_.isArray(mxJson.RetryEnd)) {
-        let _tempRetryEnd = _.clone(mxJson.RetryEnd);
-        mxJson.RetryEnd = [];
-        mxJson.RetryEnd.push(_tempRetryEnd);
+  private endTry(x, mxJson, list, index, targetId) {
+    if (mxJson.EndTry) {
+      if (!_.isArray(mxJson.EndTry)) {
+        const _tempEndTry = _.clone(mxJson.EndTry);
+        mxJson.EndTry = [];
+        mxJson.EndTry.push(_tempEndTry);
       }
-
     } else {
-      mxJson.RetryEnd = [];
+      mxJson.EndTry = [];
     }
-    let id = parseInt(list[list.length - 1].id) + 4000;
+    let id: number;
+    id = parseInt(list[list.length - 1].id) + 5000;
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
-      _label: 'EndTry',
+      _label: 'Try-End',
       _targetId: targetId,
       mxCell: {
         _parent: '1',
         _vertex: '1',
-        _style: 'triangle',
+        _style: 'rhombus',
         mxGeometry: {
           _as: 'geometry',
-          _width: '70',
+          _width: '90',
           _height: '70'
         }
       }
     };
-    mxJson.RetryEnd.push(joinObj);
 
-    let x = branchs.instructions[branchs.instructions.length - 1];
+    mxJson.EndTry.push(joinObj);
+    this.connectInstruction({id: x}, {id: id}, mxJson, 'endTry');
+    if (list.length > (index + 1)) {
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '');
+    }
+  }
+
+  private endCatch(branchs, mxJson, list, index, targetId): number {
+    if (mxJson.EndCatch) {
+      if (!_.isArray(mxJson.EndCatch)) {
+        const _tempEndCatch = _.clone(mxJson.EndCatch);
+        mxJson.EndCatch = [];
+        mxJson.EndCatch.push(_tempEndCatch);
+      }
+
+    } else {
+      mxJson.EndCatch = [];
+    }
+    let id: number;
+    id = parseInt(list[list.length - 1].id) + 4000;
+    this.nodeMap.set(targetId.toString(), id.toString());
+    let joinObj: any = {
+      _id: id,
+      _label: 'Catch-End',
+      _targetId: targetId,
+      mxCell: {
+        _parent: '1',
+        _vertex: '1',
+        _style: 'rectangle',
+        mxGeometry: {
+          _as: 'geometry',
+          _width: '90',
+          _height: '40'
+        }
+      }
+    };
+
+    mxJson.EndCatch.push(joinObj);
+
+    const x = branchs.instructions[branchs.instructions.length - 1];
+
     if (x && (x.TYPE === 'If')) {
       if (mxJson.EndIf && mxJson.EndIf.length) {
         for (let j = 0; j < mxJson.EndIf.length; j++) {
           if (x.id === mxJson.EndIf[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'retryEnd');
+            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endCatch');
             break;
           }
         }
@@ -730,7 +849,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
         for (let j = 0; j < mxJson.RetryEnd.length; j++) {
           if (x.id === mxJson.RetryEnd[j]._targetId) {
-            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd');
+            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endCatch');
             break;
           }
         }
@@ -739,7 +858,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (mxJson.EndTry && mxJson.EndTry.length) {
         for (let j = 0; j < mxJson.EndTry.length; j++) {
           if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endTry');
+            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endCatch');
             break;
           }
         }
@@ -748,18 +867,16 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join');
+            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endCatch');
             break;
           }
         }
       }
-    } else {
-      this.connectInstruction(x, {id: id}, mxJson, 'endTry')
+    } else if (x) {
+      this.connectInstruction(x, {id: id}, mxJson, 'endCatch');
     }
 
-    if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '')
-    }
+    return id;
   }
 
   private createObject(type, node): any {
@@ -767,7 +884,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       id: node._id,
       TYPE: type,
     };
-    if (type == 'Job') {
+    if (type === 'Job') {
       obj.jobPath = node._path;
       obj.title = node._title;
       obj.agentPath = node._agent;
@@ -779,12 +896,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         failureArr = node._failure.split(',');
       }
       obj.returnCodeMeaning = {failure: failureArr, success: successArr};
-    } else if (type == 'If') {
+    } else if (type === 'If') {
       obj.predicate = node._predicate;
-    } else if (type == 'Retry') {
+    } else if (type === 'Retry') {
       obj.repeat = node._repeat;
       obj.delay = node._delay;
-    }else if (type == 'Exit'){
+    } else if (type === 'Exit') {
       obj.message = node._message;
     }
     return obj;
@@ -792,11 +909,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   private xmlToJsonParser() {
     if (this.editor) {
-      let _graph = _.clone(this.editor.graph);
-      let enc = new mxCodec();
-      let node = enc.encode(_graph.getModel());
-      let xml = mxUtils.getXml(node);
-      let x2js = new X2JS();
+      const _graph = _.clone(this.editor.graph);
+      const enc = new mxCodec();
+      const node = enc.encode(_graph.getModel());
+      const xml = mxUtils.getXml(node);
+      const x2js = new X2JS();
       let _json: any;
       try {
         _json = x2js.xml_str2json(xml);
@@ -833,13 +950,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_jobs) {
             if (_.isArray(_jobs)) {
               for (let j = 0; j < _jobs.length; j++) {
-                if (connection[i].mxCell._target == _jobs[j]._id) {
+                if (connection[i].mxCell._target === _jobs[j]._id) {
                   _jobs.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _jobs._id) {
+              if (connection[i].mxCell._target === _jobs._id) {
                 _jobs = [];
               }
             }
@@ -847,13 +964,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_forkInstructions) {
             if (_.isArray(_forkInstructions)) {
               for (let j = 0; j < _forkInstructions.length; j++) {
-                if (connection[i].mxCell._target == _forkInstructions[j]._id) {
+                if (connection[i].mxCell._target === _forkInstructions[j]._id) {
                   _forkInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _forkInstructions._id) {
+              if (connection[i].mxCell._target === _forkInstructions._id) {
                 _forkInstructions = [];
               }
             }
@@ -861,13 +978,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_retryInstructions) {
             if (_.isArray(_retryInstructions)) {
               for (let j = 0; j < _retryInstructions.length; j++) {
-                if (connection[i].mxCell._target == _retryInstructions[j]._id) {
+                if (connection[i].mxCell._target === _retryInstructions[j]._id) {
                   _retryInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _retryInstructions._id) {
+              if (connection[i].mxCell._target === _retryInstructions._id) {
                 _retryInstructions = [];
               }
             }
@@ -875,13 +992,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_tryInstructions) {
             if (_.isArray(_tryInstructions)) {
               for (let j = 0; j < _tryInstructions.length; j++) {
-                if (connection[i].mxCell._target == _tryInstructions[j]._id) {
+                if (connection[i].mxCell._target === _tryInstructions[j]._id) {
                   _tryInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _tryInstructions._id) {
+              if (connection[i].mxCell._target === _tryInstructions._id) {
                 _tryInstructions = [];
               }
             }
@@ -889,13 +1006,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_awaitInstructions) {
             if (_.isArray(_awaitInstructions)) {
               for (let j = 0; j < _awaitInstructions.length; j++) {
-                if (connection[i].mxCell._target == _awaitInstructions[j]._id) {
+                if (connection[i].mxCell._target === _awaitInstructions[j]._id) {
                   _awaitInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _awaitInstructions._id) {
+              if (connection[i].mxCell._target === _awaitInstructions._id) {
                 _awaitInstructions = [];
               }
             }
@@ -903,13 +1020,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_ifInstructions) {
             if (_.isArray(_ifInstructions)) {
               for (let j = 0; j < _ifInstructions.length; j++) {
-                if (connection[i].mxCell._target == _ifInstructions[j]._id) {
+                if (connection[i].mxCell._target === _ifInstructions[j]._id) {
                   _ifInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _ifInstructions._id) {
+              if (connection[i].mxCell._target === _ifInstructions._id) {
                 _ifInstructions = [];
               }
             }
@@ -917,13 +1034,13 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (_exitInstructions) {
             if (_.isArray(_exitInstructions)) {
               for (let j = 0; j < _exitInstructions.length; j++) {
-                if (connection[i].mxCell._target == _exitInstructions[j]._id) {
+                if (connection[i].mxCell._target === _exitInstructions[j]._id) {
                   _exitInstructions.splice(j, 1);
                   break;
                 }
               }
             } else {
-              if (connection[i].mxCell._target == _exitInstructions._id) {
+              if (connection[i].mxCell._target === _exitInstructions._id) {
                 _exitInstructions = [];
               }
             }
@@ -942,8 +1059,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('Job', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_forkInstructions) {
             if (_.isArray(_forkInstructions) && _forkInstructions.length > 0) {
               startNode = _forkInstructions[0];
@@ -957,8 +1073,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('ForkJoin', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_retryInstructions) {
             if (_.isArray(_retryInstructions) && _retryInstructions.length > 0) {
               startNode = _retryInstructions[0];
@@ -972,8 +1087,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('Retry', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_tryInstructions) {
             if (_.isArray(_tryInstructions) && _tryInstructions.length > 0) {
               startNode = _tryInstructions[0];
@@ -987,8 +1101,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('Try', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_awaitInstructions) {
             if (_.isArray(_awaitInstructions) && _awaitInstructions.length > 0) {
               startNode = _awaitInstructions[0];
@@ -1002,8 +1115,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('Await', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_ifInstructions) {
             if (_.isArray(_ifInstructions) && _ifInstructions.length > 0) {
               startNode = _ifInstructions[0];
@@ -1017,8 +1129,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('If', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
-        }
-        else {
+        } else {
           if (_exitInstructions) {
             if (_.isArray(_exitInstructions) && _exitInstructions.length > 0) {
               startNode = _exitInstructions[0];
@@ -1033,14 +1144,15 @@ export class EditorComponent implements OnInit, OnDestroy {
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
+
       } else {
-        let job = objects.Job;
-        let ifIns = objects.If;
-        let fork = objects.Fork;
-        let retry = objects.Retry;
-        let tryIns = objects.Try;
-        let awaitIns = objects.Await;
-        let exit = objects.Exit;
+        const job = objects.Job;
+        const ifIns = objects.If;
+        const fork = objects.Fork;
+        const retry = objects.Retry;
+        const tryIns = objects.Try;
+        const awaitIns = objects.Await;
+        const exit = objects.Exit;
         if (job) {
           if (_.isArray(job)) {
             for (let i = 0; i < job.length; i++) {
@@ -1110,16 +1222,16 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   private findNextNode(connection, node, objects, instructions: Array<any>, jsonObj) {
-    let id = node._id || node;
+    const id = node._id || node;
     if (_.isArray(connection)) {
       for (let i = 0; i < connection.length; i++) {
         if (!connection[i].skip && connection[i].mxCell._source && connection[i].mxCell._source === id) {
-          let _id = _.clone(connection[i].mxCell._target);
+          const _id = _.clone(connection[i].mxCell._target);
           let instructionArr = instructions;
-          if (connection[i]._type == 'then' || connection[i]._type == 'else') {
+          if (connection[i]._type === 'then' || connection[i]._type === 'else') {
             for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE == 'If' && instructions[j].id === id) {
-                if (connection[i]._type == 'then') {
+              if (instructions[j].TYPE === 'If' && instructions[j].id === id) {
+                if (connection[i]._type === 'then') {
                   instructions[j].then = {
                     instructions: []
                   };
@@ -1133,10 +1245,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                 break;
               }
             }
-          }
-          else if (connection[i]._type == 'branch') {
+          } else if (connection[i]._type === 'branch') {
             for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE == 'ForkJoin' && instructions[j].id === id) {
+              if (instructions[j].TYPE === 'ForkJoin' && instructions[j].id === id) {
                 if (!instructions[j].branches) {
                   instructions[j].branches = [];
                 }
@@ -1151,10 +1262,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                 break;
               }
             }
-          }
-          else if (connection[i]._type == 'retry') {
+          } else if (connection[i]._type === 'retry') {
             for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE == 'Retry' && instructions[j].id === id) {
+              if (instructions[j].TYPE === 'Retry' && instructions[j].id === id) {
                 if (!instructions[j].instructions) {
                   instructions[j].instructions = [];
                   instructionArr = instructions[j].instructions;
@@ -1162,10 +1272,9 @@ export class EditorComponent implements OnInit, OnDestroy {
                 break;
               }
             }
-          }
-          else if (connection[i]._type == 'try') {
+          } else if (connection[i]._type === 'try') {
             for (let j = 0; j < instructions.length; j++) {
-              if (instructions[j].TYPE == 'Try' && instructions[j].id === id) {
+              if (instructions[j].TYPE === 'Try' && instructions[j].id === id) {
                 if (!instructions[j].instructions) {
                   instructions[j].instructions = [];
                   instructionArr = instructions[j].instructions;
@@ -1175,15 +1284,14 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
           }
           connection[i].skip = true;
-          this.nextNode = [];
-          if (connection[i]._type == 'join') {
-            let joinInstructions = objects.Join;
+          if (connection[i]._type === 'join') {
+            const joinInstructions = objects.Join;
             let _node: any = {};
             if (joinInstructions) {
               if (_.isArray(joinInstructions)) {
-                for (let i = 0; i < joinInstructions.length; i++) {
-                  if (joinInstructions[i]._id === _id) {
-                    _node = joinInstructions[i];
+                for (let x = 0; x < joinInstructions.length; x++) {
+                  if (joinInstructions[x]._id === _id) {
+                    _node = joinInstructions[x];
                     break;
                   }
                 }
@@ -1193,20 +1301,18 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-
-          
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-            if(this.nextNode && this.nextNode.length > 0) {
-              instructionArr = this.nextNode
+            let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if (arr && arr.length > -1) {
+              instructionArr = arr;
             }
-          } else if (connection[i]._type == 'endIf') {
-            let endIfInstructions = objects.EndIf;
+          } else if (connection[i]._type === 'endIf') {
+            const endIfInstructions = objects.EndIf;
             let _node: any = {};
             if (endIfInstructions) {
               if (_.isArray(endIfInstructions)) {
-                for (let i = 0; i < endIfInstructions.length; i++) {
-                  if (endIfInstructions[i]._id === _id) {
-                    _node = endIfInstructions[i];
+                for (let x = 0; x < endIfInstructions.length; x++) {
+                  if (endIfInstructions[x]._id === _id) {
+                    _node = endIfInstructions[x];
                     break;
                   }
                 }
@@ -1216,19 +1322,18 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-        
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-            if(this.nextNode && this.nextNode.length > 0) {
-              instructionArr = this.nextNode;
+            let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if (arr && arr.length > -1) {
+              instructionArr = arr;
             }
-          }else if (connection[i]._type == 'retryEnd') {
-            let retryEndInstructions = objects.RetryEnd;
+          } else if (connection[i]._type === 'retryEnd') {
+            const retryEndInstructions = objects.RetryEnd;
             let _node: any = {};
             if (retryEndInstructions) {
               if (_.isArray(retryEndInstructions)) {
-                for (let i = 0; i < retryEndInstructions.length; i++) {
-                  if (retryEndInstructions[i]._id === _id) {
-                    _node = retryEndInstructions[i];
+                for (let x = 0; x < retryEndInstructions.length; x++) {
+                  if (retryEndInstructions[x]._id === _id) {
+                    _node = retryEndInstructions[x];
                     break;
                   }
                 }
@@ -1238,43 +1343,18 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-            if(this.nextNode && this.nextNode.length > 0) {
-              instructionArr = this.nextNode;
+            let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if (arr && arr.length > -1) {
+              instructionArr = arr;
             }
-          }else if (connection[i]._type == 'catch') {
-            let catchInstructions = objects.Catch;
-            let _node: any = {};
-            if (catchInstructions) {
-              console.log(catchInstructions, _id);
-              if (_.isArray(catchInstructions)) {
-                for (let i = 0; i < catchInstructions.length; i++) {
-                  if (catchInstructions[i]._id === _id) {
-                    _node = catchInstructions[i];
-                    break;
-                  }
-                }
-              } else {
-                if (catchInstructions._id === _id) {
-                  _node = catchInstructions;
-                }
-              }
-            }
-           
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-            console.log(this.nextNode)
-            if(this.nextNode && this.nextNode.length > 0) {
-              instructionArr = this.nextNode;
-            }
-          }else if (connection[i]._type == 'endTry') {
-            let endTryInstructions = objects.EndTry;
+          } else if (connection[i]._type === 'endTry') {
+            const endTryInstructions = objects.EndTry;
             let _node: any = {};
             if (endTryInstructions) {
               if (_.isArray(endTryInstructions)) {
-                for (let i = 0; i < endTryInstructions.length; i++) {
-                  if (endTryInstructions[i]._id === _id) {
-                    _node = endTryInstructions[i];
+                for (let x = 0; x < endTryInstructions.length; x++) {
+                  if (endTryInstructions[x]._id === _id) {
+                    _node = endTryInstructions[x];
                     break;
                   }
                 }
@@ -1284,19 +1364,19 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-            if(this.nextNode && this.nextNode.length > 0) {
-              instructionArr = this.nextNode;
+
+            let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if (arr && arr.length > -1) {
+              instructionArr = arr;
             }
-          }else if (connection[i]._type == 'endCatch') {
-            let endCatchInstructions = objects.EndCatch;
+          } else if (connection[i]._type === 'endCatch') {
+            const endCatchInstructions = objects.EndCatch;
             let _node: any = {};
             if (endCatchInstructions) {
               if (_.isArray(endCatchInstructions)) {
-                for (let i = 0; i < endCatchInstructions.length; i++) {
-                  if (endCatchInstructions[i]._id === _id) {
-                    _node = endCatchInstructions[i];
+                for (let x = 0; x < endCatchInstructions.length; x++) {
+                  if (endCatchInstructions[x]._id === _id) {
+                    _node = endCatchInstructions[x];
                     break;
                   }
                 }
@@ -1306,119 +1386,122 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            
-            this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
-           
-            if(this.nextNode && this.nextNode.length > 0) {
-              
-              instructionArr = this.nextNode;
+
+            let arr = this.recursiveFindParentCell(_node._targetId, jsonObj.instructions);
+            if (arr && arr.length > -1) {
+              instructionArr = arr;
             }
           }
-         
-          if(instructionArr)
           this.getNextNode(_id, objects, instructionArr, jsonObj);
         }
       }
     } else {
       if (connection.mxCell._source && connection.mxCell._source === id) {
-        let _id = _.clone(connection.mxCell._target);
+        const _id = _.clone(connection.mxCell._target);
         connection = null;
         this.getNextNode(_id, objects, instructions, jsonObj);
       }
     }
   }
 
-  private recursiveFindParentCell(id, instructionsArr: Array<any>) {
-    for (let i = 0; i < instructionsArr.length; i++) {
-      if (instructionsArr[i].id === id) {
-        this.nextNode = instructionsArr;
+  private recursiveFindParentCell(id, instructionsArr: Array<any>): Array<any> {
+    let arr = [];
 
-        break;
-      } else {
-        if (instructionsArr[i].TYPE === 'ForkJoin') {
-          if(instructionsArr[i].branches) {
-            for (let j = 0; j < instructionsArr[i].branches.length; j++) {
-              this.recursiveFindParentCell(id, instructionsArr[i].branches[j].instructions);
+    function recursive(_id, _instructionsArr: Array<any>) {
+      for (let i = 0; i < _instructionsArr.length; i++) {
+        if (_instructionsArr[i].id === _id) {
+          arr = _instructionsArr;
+          break;
+        } else {
+          if (_instructionsArr[i].TYPE === 'ForkJoin') {
+            if (_instructionsArr[i].branches) {
+              for (let j = 0; j < _instructionsArr[i].branches.length; j++) {
+                recursive(_id, _instructionsArr[i].branches[j].instructions);
+              }
             }
-          }
-        } else if (instructionsArr[i].TYPE === 'If') {
-          if (instructionsArr[i].then) {
-            this.recursiveFindParentCell(id, instructionsArr[i].then.instructions);
-          }
-          if (instructionsArr[i].else) {
-            this.recursiveFindParentCell(id, instructionsArr[i].else.instructions);
-          }
-        }else if (instructionsArr[i].TYPE === 'Try') {
-         
-          if (instructionsArr[i].catch) {
-            if (instructionsArr[i].catch.id === id) {
-              this.nextNode = instructionsArr[i].catch.instructions;
-             
-              break;
-            }else{
-              this.recursiveFindParentCell(id, instructionsArr[i].catch.instructions);
+          } else if (_instructionsArr[i].TYPE === 'If') {
+            if (_instructionsArr[i].then) {
+              recursive(_id, _instructionsArr[i].then.instructions);
+            }
+            if (_instructionsArr[i].else) {
+              recursive(_id, _instructionsArr[i].else.instructions);
+            }
+          } else if (_instructionsArr[i].TYPE === 'Try') {
+            if (_instructionsArr[i].catch) {
+              if (_instructionsArr[i].catch.id === _id) {
+                arr = _instructionsArr[i].catch.instructions;
+                break;
+              } else {
+                recursive(_id, _instructionsArr[i].catch.instructions);
+              }
+            }
+            if (_instructionsArr[i].instructions && _instructionsArr[i].instructions.length > 0) {
+              recursive(_id, _instructionsArr[i].instructions);
             }
           }
         }
       }
     }
+
+    recursive(id, instructionsArr);
+    return arr;
   }
 
-
   private recursiveFindCatchCell(node, instructionsArr: Array<any>): Array<any> {
-    let arr =[];
-    function recursive(node, instructionsArr: Array<any>){
-      for (let i = 0; i < instructionsArr.length; i++) {
-        if (instructionsArr[i].id === node._targetId) {
-          if(instructionsArr[i].TYPE === 'Try'){
-            if(!instructionsArr[i].catch){
-              
-              instructionsArr[i].catch = {instructions :[], id: node._id};
-              arr = instructionsArr[i].catch.instructions;
+    let arr = [];
+
+    function recursive(_node, _instructionsArr: Array<any>) {
+      for (let i = 0; i < _instructionsArr.length; i++) {
+        if (_instructionsArr[i].id === _node._targetId) {
+          if (_instructionsArr[i].TYPE === 'Try') {
+            if (!_instructionsArr[i].catch) {
+              _instructionsArr[i].catch = {instructions: [], id: _node._id};
+              arr = _instructionsArr[i].catch.instructions;
             }
           }
           break;
         } else {
-          if (instructionsArr[i].TYPE === 'ForkJoin') {
-            if(instructionsArr[i].branches) {
-              for (let j = 0; j < instructionsArr[i].branches.length; j++) {
-                recursive(node, instructionsArr[i].branches[j].instructions);
+          if (_instructionsArr[i].TYPE === 'ForkJoin') {
+            if (_instructionsArr[i].branches) {
+              for (let j = 0; j < _instructionsArr[i].branches.length; j++) {
+                recursive(_node, _instructionsArr[i].branches[j].instructions);
               }
             }
-          } else if (instructionsArr[i].TYPE === 'If') {
-            if (instructionsArr[i].then) {
-              recursive(node, instructionsArr[i].then.instructions);
+          } else if (_instructionsArr[i].TYPE === 'If') {
+            if (_instructionsArr[i].then) {
+              recursive(_node, _instructionsArr[i].then.instructions);
             }
-            if (instructionsArr[i].else) {
-              recursive(node, instructionsArr[i].else.instructions);
+            if (_instructionsArr[i].else) {
+              recursive(_node, _instructionsArr[i].else.instructions);
             }
-          }else if (instructionsArr[i].TYPE === 'Try') {
-            if (instructionsArr[i].catch) {
-              recursive(node, instructionsArr[i].catch.instructions);
+          } else if (_instructionsArr[i].TYPE === 'Try') {
+            if (_instructionsArr[i].catch) {
+              recursive(_node, _instructionsArr[i].catch.instructions);
             }
           }
         }
       }
     }
+
     recursive(node, instructionsArr);
     return arr;
   }
 
   private getNextNode(id, objects, instructionsArr: Array<any>, jsonObj) {
-    let jobs = objects.Job;
-    let ifInstructions = objects.If;
-    let endIfInstructions = objects.EndIf;
-    let forkInstructions = objects.Fork;
-    let joinInstructions = objects.Join;
-    let retryInstructions = objects.Retry;
-    let retryEndInstructions = objects.RetryEnd;
-    let tryInstructions = objects.Try;
-    let catchInstructions = objects.Catch;
-    let catchEndInstructions = objects.EndCatch;
-    let tryEndInstructions = objects.EndTry;
-    let awaitInstructions = objects.Await;
-    let connection = objects.Connection;
-    let exitInstructions = objects.Exit;
+    const jobs = objects.Job;
+    const ifInstructions = objects.If;
+    const endIfInstructions = objects.EndIf;
+    const forkInstructions = objects.Fork;
+    const joinInstructions = objects.Join;
+    const retryInstructions = objects.Retry;
+    const retryEndInstructions = objects.RetryEnd;
+    const tryInstructions = objects.Try;
+    const catchInstructions = objects.Catch;
+    const catchEndInstructions = objects.EndCatch;
+    const tryEndInstructions = objects.EndTry;
+    const awaitInstructions = objects.Await;
+    const connection = objects.Connection;
+    const exitInstructions = objects.Exit;
     let nextNode: any = {};
 
     if (jobs) {
@@ -1440,8 +1523,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       instructionsArr.push(this.createObject('Job', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (forkInstructions) {
         if (_.isArray(forkInstructions)) {
           for (let i = 0; i < forkInstructions.length; i++) {
@@ -1462,8 +1544,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       instructionsArr.push(this.createObject('ForkJoin', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (joinInstructions) {
         if (_.isArray(joinInstructions)) {
           for (let i = 0; i < joinInstructions.length; i++) {
@@ -1483,8 +1564,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (nextNode && !_.isEmpty(nextNode)) {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (retryInstructions) {
         if (_.isArray(retryInstructions)) {
           for (let i = 0; i < retryInstructions.length; i++) {
@@ -1505,8 +1585,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       instructionsArr.push(this.createObject('Retry', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (retryEndInstructions) {
         if (_.isArray(retryEndInstructions)) {
           for (let i = 0; i < retryEndInstructions.length; i++) {
@@ -1526,8 +1605,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (nextNode && !_.isEmpty(nextNode)) {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (awaitInstructions) {
         if (_.isArray(awaitInstructions)) {
           for (let i = 0; i < awaitInstructions.length; i++) {
@@ -1548,8 +1626,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       instructionsArr.push(this.createObject('Await', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (tryInstructions) {
         if (_.isArray(tryInstructions)) {
           for (let i = 0; i < tryInstructions.length; i++) {
@@ -1652,8 +1729,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       instructionsArr.push(this.createObject('If', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (endIfInstructions) {
         if (_.isArray(endIfInstructions)) {
           for (let i = 0; i < endIfInstructions.length; i++) {
@@ -1673,8 +1749,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (nextNode && !_.isEmpty(nextNode)) {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
-    }
-    else {
+    } else {
       if (exitInstructions) {
         if (_.isArray(exitInstructions)) {
           for (let i = 0; i < exitInstructions.length; i++) {
@@ -1702,7 +1777,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   private initEditorConf(editor) {
     const self = this;
-    let graph = editor.graph;
+    const graph = editor.graph;
     // Alt disables guides
     mxGraphHandler.prototype.guidesEnabled = true;
     /**
@@ -1754,17 +1829,17 @@ export class EditorComponent implements OnInit, OnDestroy {
     let node = document.getElementById('mainActions');
     let buttons = ['undo', 'redo', 'delete'];
 
-    //editor.urlImage = 'http://localhost:4200/export';
+    // editor.urlImage = 'http://localhost:4200/export';
     // Only adds image and SVG export if backend is available
     // NOTE: The old image export in mxEditor is not used, the urlImage is used for the new export.
     if (editor.urlImage != null) {
       // Client-side code for image export
-      let exportImage = function (editor) {
+      const exportImage = function (_editor) {
         const scale = graph.view.scale;
         let bounds = graph.getGraphBounds();
 
         // New image export
-        let xmlDoc = mxUtils.createXmlDocument();
+        const xmlDoc = mxUtils.createXmlDocument();
         let root = xmlDoc.createElement('output');
         xmlDoc.appendChild(root);
 
@@ -1788,7 +1863,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           const bg = '&bg=#FFFFFF';
           const blob = new Blob([xml], {type: 'text/xml'});
           saveAs(blob, name);
-          /* new mxXmlRequest(editor.urlImage, 'filename=' + name + '&format=' + format +
+          /* new mxXmlRequest(_editor.urlImage, 'filename=' + name + '&format=' + format +
              bg + '&w=' + w + '&h=' + h + '&xml=' + encodeURIComponent(xml)).simulate(document, '_blank');*/
         }
       };
@@ -1801,15 +1876,15 @@ export class EditorComponent implements OnInit, OnDestroy {
       let button = document.createElement('button');
       let dom = document.createElement('img');
       let icon: any;
-      if (buttons[i] == 'undo') {
+      if (buttons[i] === 'undo') {
         icon = './assets/mxgraph/images/undo.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Undo');
-      } else if (buttons[i] == 'redo') {
+      } else if (buttons[i] === 'redo') {
         icon = './assets/mxgraph/images/redo.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Redo');
-      } else if (buttons[i] == 'delete') {
+      } else if (buttons[i] === 'delete') {
         icon = './assets/mxgraph/images/delete.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Delete');
@@ -1818,7 +1893,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       dom.setAttribute('src', icon);
       button.appendChild(dom);
       mxUtils.write(button, '');
-      let factory = function (name) {
+      const factory = function (name) {
         return function () {
           editor.execute(name);
         };
@@ -1836,20 +1911,20 @@ export class EditorComponent implements OnInit, OnDestroy {
       let button = document.createElement('button');
       let dom = document.createElement('img');
       let icon: any;
-      if (zoomButtons[i] == 'zoomIn') {
+      if (zoomButtons[i] === 'zoomIn') {
         icon = './assets/mxgraph/images/zoomin.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Zoom In');
-      } else if (zoomButtons[i] == 'zoomOut') {
+      } else if (zoomButtons[i] === 'zoomOut') {
         icon = './assets/mxgraph/images/zoomout.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Zoom Out');
-      } else if (zoomButtons[i] == 'actualSize') {
+      } else if (zoomButtons[i] === 'actualSize') {
         icon = './assets/mxgraph/images/zoomactual.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('id', 'actual');
         button.setAttribute('title', 'Actual');
-      } else if (zoomButtons[i] == 'fit') {
+      } else if (zoomButtons[i] === 'fit') {
         icon = './assets/mxgraph/images/zoom.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Fit');
@@ -1857,7 +1932,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       dom.setAttribute('src', icon);
       button.appendChild(dom);
       mxUtils.write(button, '');
-      let factory = function (name) {
+      const factory = function (name) {
         return function () {
           editor.execute(name);
         };
@@ -1899,8 +1974,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Create new node object
       let node = doc.createElement(name);
       node.setAttribute('label', label);
-      if (id)
+      if (id) {
         node.setAttribute('targetId', id);
+      }
       return node;
     }
 
@@ -1908,7 +1984,7 @@ export class EditorComponent implements OnInit, OnDestroy {
      * Reformat the layout
      */
     function executeLayout() {
-      let layout = new mxHierarchicalLayout(graph);
+      const layout = new mxHierarchicalLayout(graph);
       layout.execute(graph.getDefaultParent());
       isUndoable = true;
     }
@@ -1919,8 +1995,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     function makeCenter() {
       setTimeout(() => {
         graph.zoomActual();
-        let gh = $('#graph');
-        let bounds = graph.getGraphBounds();
+        const gh = $('#graph');
+        const bounds = graph.getGraphBounds();
         graph.view.setTranslate(-bounds.x - (bounds.width - gh.width()) / 2,
           -bounds.y - (bounds.height - (gh.height() / 1.5)) / 2);
       }, 5);
@@ -1932,27 +2008,26 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     graph.convertValueToString = function (cell) {
       if (mxUtils.isNode(cell.value)) {
-        if (cell.value.nodeName.toLowerCase() == 'process') {
+        if (cell.value.nodeName.toLowerCase() === 'process') {
           let title = cell.getAttribute('title', '');
           if (title != null && title.length > 0) {
             return title;
           }
           return '';
-        } else if (cell.value.nodeName.toLowerCase() == 'job') {
+        } else if (cell.value.nodeName.toLowerCase() === 'job') {
           let path = cell.getAttribute('path', '');
           let title = cell.getAttribute('title', '');
           if (title != null && title.length > 0) {
             return path + ' - ' + title;
           }
           return path;
-        }
-        else if (cell.value.nodeName.toLowerCase() == 'retry') {
+        } else if (cell.value.nodeName.toLowerCase() === 'retry') {
           let str = 'Repeat ' + cell.getAttribute('repeat', '') + ' times';
-          if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') != 0) {
+          if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
             str = str + '\nwith delay ' + cell.getAttribute('delay', '');
           }
           return str;
-        } else if (cell.value.nodeName.toLowerCase() == 'if') {
+        } else if (cell.value.nodeName.toLowerCase() === 'if') {
           return cell.getAttribute('predicate', '');
         } else {
           return cell.getAttribute('label', '');
@@ -1965,23 +2040,23 @@ export class EditorComponent implements OnInit, OnDestroy {
      * To check drop target is valid or not on hover
      *
      */
-    mxDragSource.prototype.dragOver = function (graph, evt) {
-      let offset = mxUtils.getOffset(graph.container);
-      let origin = mxUtils.getScrollOrigin(graph.container);
-      let x = mxEvent.getClientX(evt) - offset.x + origin.x - graph.panDx;
-      let y = mxEvent.getClientY(evt) - offset.y + origin.y - graph.panDy;
+    mxDragSource.prototype.dragOver = function (_graph, evt) {
+      let offset = mxUtils.getOffset(_graph.container);
+      let origin = mxUtils.getScrollOrigin(_graph.container);
+      let x = mxEvent.getClientX(evt) - offset.x + origin.x - _graph.panDx;
+      let y = mxEvent.getClientY(evt) - offset.y + origin.y - _graph.panDy;
 
-      if (graph.autoScroll && (this.autoscroll == null || this.autoscroll)) {
-        graph.scrollPointToVisible(x, y, graph.autoExtend);
+      if (_graph.autoScroll && (this.autoscroll == null || this.autoscroll)) {
+        _graph.scrollPointToVisible(x, y, _graph.autoExtend);
       }
 
       // Highlights the drop target under the mouse
-      if (this.currentHighlight != null && graph.isDropEnabled()) {
-        this.currentDropTarget = this.getDropTarget(graph, x, y, evt);
-        let state = graph.getView().getState(this.currentDropTarget);
+      if (this.currentHighlight != null && _graph.isDropEnabled()) {
+        this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
+        let state = _graph.getView().getState(this.currentDropTarget);
         this.currentHighlight.highlightColor = 'green';
         if (state && state.cell) {
-          if (state.cell.value.tagName == 'Connector') {
+          if (state.cell.value.tagName === 'Connector') {
             return;
           } else if (state.cell.value.tagName === 'Job') {
             if (state.cell.edges) {
@@ -1991,12 +2066,12 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          } else if (state.cell.value.tagName == 'If') {
+          } else if (state.cell.value.tagName === 'If') {
             if (state.cell.edges && state.cell.edges.length > 2) {
               this.currentHighlight.highlightColor = '#ff0000';
             }
-          } else if (state.cell.value.tagName == 'Join' || state.cell.value.tagName == 'EndIf' || state.cell.value.tagName == 'RetryEnd'
-            || state.cell.value.tagName == 'EndTry' || state.cell.value.tagName == 'EndCatch') {
+          } else if (state.cell.value.tagName === 'Join' || state.cell.value.tagName === 'EndIf' || state.cell.value.tagName === 'RetryEnd'
+            || state.cell.value.tagName === 'EndTry' || state.cell.value.tagName === 'EndCatch') {
             if (state.cell.edges && state.cell.edges.length > 1) {
               for (let i = 0; i < state.cell.edges.length; i++) {
                 if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2004,7 +2079,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          } else if (state.cell.value.tagName == 'Connection') {
+          } else if (state.cell.value.tagName === 'Connection') {
             if ((state.cell.source.value.tagName === 'Fork' && state.cell.target.value.tagName === 'Join') ||
               (state.cell.source.value.tagName === 'If' && state.cell.target.value.tagName === 'EndIf') ||
               (state.cell.source.value.tagName === 'Retry' && state.cell.target.value.tagName === 'RetryEnd') ||
@@ -2013,7 +2088,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               (state.cell.source.value.tagName === 'EndCatch' && state.cell.target.value.tagName === 'EndTry')) {
               return;
             }
-          } else if (state.cell.value.tagName == 'Retry') {
+          } else if (state.cell.value.tagName === 'Retry') {
             if (state.cell.edges && state.cell.edges.length > 1) {
               for (let i = 0; i < state.cell.edges.length; i++) {
                 if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2023,7 +2098,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          } else if (state.cell.value.tagName == 'Try') {
+          } else if (state.cell.value.tagName === 'Try') {
             if (state.cell.edges && state.cell.edges.length > 1) {
               for (let i = 0; i < state.cell.edges.length; i++) {
                 if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2033,7 +2108,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          } else if (state.cell.value.tagName == 'Process') {
+          } else if (state.cell.value.tagName === 'Process') {
             if (state.cell.edges && state.cell.edges.length > 1) {
               let flag = false;
               for (let i = 0; i < state.cell.edges.length; i++) {
@@ -2045,8 +2120,8 @@ export class EditorComponent implements OnInit, OnDestroy {
               if (!flag) {
                 return;
               }
-            }else if (state.cell.edges && state.cell.edges.length === 1){
-              if(state.cell.edges[0].value.tagName === 'Connector' && state.cell.value.attributes[0].value === 'End' ){
+            } else if (state.cell.edges && state.cell.edges.length === 1) {
+              if (state.cell.edges[0].value.tagName === 'Connector' && state.cell.value.attributes[0].value === 'End') {
                 return;
               }
             }
@@ -2058,13 +2133,12 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Updates the location of the preview
       if (this.previewElement != null) {
         if (this.previewElement.parentNode == null) {
-          graph.container.appendChild(this.previewElement);
-
+          _graph.container.appendChild(this.previewElement);
           this.previewElement.style.zIndex = '3';
           this.previewElement.style.position = 'absolute';
         }
 
-        let gridEnabled = this.isGridEnabled() && graph.isGridEnabledEvent(evt);
+        let gridEnabled = this.isGridEnabled() && _graph.isGridEnabledEvent(evt);
         let hideGuide = true;
 
         // Grid and guides
@@ -2078,13 +2152,12 @@ export class EditorComponent implements OnInit, OnDestroy {
           hideGuide = false;
           x = delta.x;
           y = delta.y;
-        }
-        else if (gridEnabled) {
-          let scale = graph.view.scale;
-          let tr = graph.view.translate;
-          let off = graph.gridSize / 2;
-          x = (graph.snap(x / scale - tr.x - off) + tr.x) * scale;
-          y = (graph.snap(y / scale - tr.y - off) + tr.y) * scale;
+        } else if (gridEnabled) {
+          let scale = _graph.view.scale;
+          let tr = _graph.view.translate;
+          let off = _graph.gridSize / 2;
+          x = (_graph.snap(x / scale - tr.x - off) + tr.x) * scale;
+          y = (_graph.snap(y / scale - tr.y - off) + tr.y) * scale;
         }
 
         if (this.currentGuide != null && hideGuide) {
@@ -2100,19 +2173,18 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.previewElement.style.top = Math.round(y) + 'px';
         this.previewElement.style.visibility = 'visible';
       }
-
       this.currentPoint = new mxPoint(x, y);
     };
 
     /**
      * Check the drop target on drop event
-     * @param graph
+     * @param _graph
      * @param evt
      * @param drpTargt
      * @param x
      * @param y
      */
-    mxDragSource.prototype.drop = function (graph, evt, drpTargt, x, y) {
+    mxDragSource.prototype.drop = function (_graph, evt, drpTargt, x, y) {
       dropTarget = null;
       let flag = false;
       if (drpTargt) {
@@ -2129,7 +2201,8 @@ export class EditorComponent implements OnInit, OnDestroy {
               self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one condition');
               return;
             }
-          } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf' || drpTargt.value.tagName === 'RetryEnd' || drpTargt.value.tagName === 'EndCatch' || drpTargt.value.tagName === 'EndTry') {
+          } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf' || drpTargt.value.tagName === 'RetryEnd' ||
+            drpTargt.value.tagName === 'EndCatch' || drpTargt.value.tagName === 'EndTry') {
             if (drpTargt.edges.length > 1) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
@@ -2138,72 +2211,72 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             }
-          }else if(drpTargt.value.tagName === 'Retry') {
-            let flag =false;
-            if(drpTargt.edges && drpTargt.edges.length) {
+          } else if (drpTargt.value.tagName === 'Retry') {
+            let flag1 = false;
+            if (drpTargt.edges && drpTargt.edges.length) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].source.value.tagName === 'Retry' && drpTargt.edges[i].target.value.tagName === 'RetryEnd') {
-                  flag = true;
+                  flag1 = true;
                 }
               }
             }
-            if (!flag) {
+            if (!flag1) {
               self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
               return;
             }
-          }else if(drpTargt.value.tagName === 'Try') {
-            let flag = false;
+          } else if (drpTargt.value.tagName === 'Try') {
+            let flag1 = false;
             if (drpTargt.edges && drpTargt.edges.length) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].source.value.tagName === 'Try' && drpTargt.edges[i].target.value.tagName === 'Catch') {
-                  flag = true;
+                  flag1 = true;
                 }
               }
             }
-            if (!flag) {
+            if (!flag1) {
               self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
               return;
             }
-          }else if(drpTargt.value.tagName === 'Catch') {
-            let flag = false;
+          } else if (drpTargt.value.tagName === 'Catch') {
+            let flag1 = false;
             if (drpTargt.edges && drpTargt.edges.length) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].source.value.tagName === 'Catch' && drpTargt.edges[i].target.value.tagName === 'EndCatch') {
-                  flag = true;
+                  flag1 = true;
                 }
               }
             }
-            if (!flag) {
+            if (!flag1) {
               self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
               return;
             }
-          } else if (drpTargt.value.tagName == 'Process') {
+          } else if (drpTargt.value.tagName === 'Process') {
             if (drpTargt.edges && drpTargt.edges.length > 1) {
-              let flag = false;
+              let flag1 = false;
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].value.tagName !== 'Connector') {
-                  flag = true;
+                  flag1 = true;
                   break;
                 }
               }
-              if (!flag) {
+              if (!flag1) {
                 return;
               }
-            }else if (drpTargt.edges && drpTargt.edges.length === 1){
-              if(drpTargt.edges[0].value.tagName === 'Connector' && drpTargt.value.attributes[0].value === 'End' ){
+            } else if (drpTargt.edges && drpTargt.edges.length === 1) {
+              if (drpTargt.edges[0].value.tagName === 'Connector' && drpTargt.value.attributes[0].value === 'End') {
                 return;
               }
             }
           }
           dropTarget = drpTargt;
         } else {
-          if(drpTargt.value.tagName === 'Connection') {
-            if((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
+          if (drpTargt.value.tagName === 'Connection') {
+            if ((drpTargt.source.value.tagName === 'Fork' && drpTargt.target.value.tagName === 'Join') ||
               (drpTargt.source.value.tagName === 'If' && drpTargt.target.value.tagName === 'EndIf') ||
               (drpTargt.source.value.tagName === 'Retry' && drpTargt.target.value.tagName === 'RetryEnd') ||
               (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
               (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndCatch') ||
-              (drpTargt.source.value.tagName === 'EndCatch' && drpTargt.target.value.tagName === 'EndTry')){
+              (drpTargt.source.value.tagName === 'EndCatch' && drpTargt.target.value.tagName === 'EndTry')) {
               return;
             }
           }
@@ -2212,9 +2285,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       } else {
         return;
       }
-      this.dropHandler(graph, evt, drpTargt, x, y);
-      if (graph.container.style.visibility != 'hidden') {
-        graph.container.focus();
+      this.dropHandler(_graph, evt, drpTargt, x, y);
+      if (_graph.container.style.visibility !== 'hidden') {
+        _graph.container.focus();
       }
       if (flag) {
         executeLayout();
@@ -2269,15 +2342,15 @@ export class EditorComponent implements OnInit, OnDestroy {
      *
      * Method to be called to add new undoable edits to the <history>.
      */
-
     mxUndoManager.prototype.undoableEditHappened = function (undoableEdit) {
       this.trim();
       if (this.size > 0 &&
         this.size == this.history.length) {
         this.history.shift();
       }
-      if (isUndoable)
+      if (isUndoable) {
         this.history.push(undoableEdit);
+      }
       isUndoable = false;
       this.indexOfNextAdd = this.history.length;
       this.fireEvent(new mxEventObject(mxEvent.ADD, 'edit', undoableEdit));
@@ -2290,33 +2363,40 @@ export class EditorComponent implements OnInit, OnDestroy {
      * @param evt
      */
     graph.isValidDropTarget = function (cell, cells, evt) {
-
       isVertexDrop = true;
       if (cell) {
         if (cell.value && cell.value.tagName === 'Connection') {
           graph.clearSelection();
           if (cells && cells.length > 0) {
             if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
-              let parent = graph.getDefaultParent();
+              const parent = graph.getDefaultParent();
               let v1, label = '', type = '', v2, v3;
+              const attr = cell.value.attributes;
+              if (attr) {
+                for (let i = 0; i < attr.length; i++) {
+                  if (attr[i].value && attr[i].name) {
+                    label = attr[i].value;
+                    type = attr[i].value === 'true' ? 'then' : attr[i].value === 'false' ? 'else' : attr[i].value;
+                    break;
+                  }
+                }
+              }
               if (cells[0].value.tagName === 'Fork') {
-                label = 'branch';
-                type = 'branch';
-                v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/merge.png");
+                v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, 'symbol;image=./assets/mxgraph/images/symbols/merge.png');
               } else if (cells[0].value.tagName === 'If') {
-                v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'EndIf', null), 0, 0, 150, 70, "rhombus");
-              }else if (cells[0].value.tagName === 'Retry'){
-                v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'RetryEnd', null), 0, 0, 150, 70, "rhombus");
-              }else {
-                v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'EndTry', null), 0, 0, 70, 70, "triangle");
-                v2 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', null), 0, 0, 70, 70, "dashtriangle");
-                v3 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'EndCatch', null), 0, 0, 70, 70, "dashtriangle");
+                v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 70, 'rhombus');
+              } else if (cells[0].value.tagName === 'Retry') {
+                v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', null), 0, 0, 150, 70, 'rhombus');
+              } else {
+                v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 90, 70, 'rhombus');
+                v2 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', null), 0, 0, 90, 40, 'dashRectangle');
+                v3 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 90, 40, 'dashRectangle');
                 graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cells[0], v2);
-                graph.insertEdge(parent, null, getConnectionNode('', ''), v2, v3, "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;");
+                graph.insertEdge(parent, null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
                 graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
               }
               graph.insertEdge(parent, null, getConnectionNode(label, type), cell.source, cells[0]);
-              if(cells[0].value.tagName !== 'Try') {
+              if (cells[0].value.tagName !== 'Try') {
                 graph.insertEdge(parent, null, getConnectionNode('', ''), cells[0], v1);
               }
               graph.insertEdge(parent, null, getConnectionNode('', ''), v1, cell.target);
@@ -2326,16 +2406,16 @@ export class EditorComponent implements OnInit, OnDestroy {
               setTimeout(() => {
                 graph.getModel().beginUpdate();
                 try {
-                  let targetId = new mxCellAttributeChange(
+                  const targetId = new mxCellAttributeChange(
                     v1, 'targetId',
                     cells[0].id);
                   graph.getModel().execute(targetId);
-                  if(v2 && v3) {
-                    let targetId2 = new mxCellAttributeChange(
+                  if (v2 && v3) {
+                    const targetId2 = new mxCellAttributeChange(
                       v2, 'targetId',
                       cells[0].id);
                     graph.getModel().execute(targetId2);
-                    let targetId3 = new mxCellAttributeChange(
+                    const targetId3 = new mxCellAttributeChange(
                       v3, 'targetId',
                       v2.id);
                     graph.getModel().execute(targetId3);
@@ -2376,21 +2456,21 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (this.isCellCollapsed(cell)) {
         return true;
       }
-
       return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
     };
 
-     /**
+    /**
      * Implements a properties panel that uses
      * mxCellAttributeChange to change properties
      */
     graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
       let cell = graph.getSelectionCell();
       if (cell && (cell.value.tagName === 'EndIf' || cell.value.tagName === 'Join' || cell.value.tagName === 'RetryEnd'
-      || cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndCatch' || cell.value.tagName === 'Connection' || cell.value.tagName === 'Process')) {
+        || cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndCatch' || cell.value.tagName === 'Connection' || cell.value.tagName === 'Process')) {
         graph.clearSelection();
         return;
       }
+
       let label = '', type = '';
       if (cell && dropTarget) {
         if (dropTarget.value.tagName === 'If') {
@@ -2405,7 +2485,8 @@ export class EditorComponent implements OnInit, OnDestroy {
               if (dropTarget.edges[i].target && dropTarget.edges[i].target.edges) {
                 for (let j = 0; j < dropTarget.edges[i].target.edges.length; j++) {
                   if (dropTarget.edges[i].target.edges[j].edge && dropTarget.edges[i].target.edges[j].value.attributes
-                    && dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (dropTarget.edges[i].target.edges[j].value.attributes[0] && dropTarget.edges[i].target.edges[j].value.attributes[0].value == 'false')) {
+                    && dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (dropTarget.edges[i].target.edges[j].value.attributes[0]
+                      && dropTarget.edges[i].target.edges[j].value.attributes[0].value == 'false')) {
                     flag = true;
                   }
                 }
@@ -2427,34 +2508,34 @@ export class EditorComponent implements OnInit, OnDestroy {
           type = 'catch';
         }
 
-        let parent = dropTarget.parent || graph.getDefaultParent();
+        const parent = dropTarget.parent || graph.getDefaultParent();
         if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
           let v1, v2, v3, _label;
           if (cell.value.tagName === 'Fork') {
-            v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, "symbol;image=./assets/mxgraph/images/symbols/merge.png");
+            v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, 'symbol;image=./assets/mxgraph/images/symbols/merge.png');
             graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
             if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch') {
               _label = dropTarget.value.tagName === 'Retry' ? 'retryEnd' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : 'try';
             }
           } else if (cell.value.tagName === 'If') {
-            v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'EndIf', cell.id), 0, 0, 150, 70, "rhombus");
+            v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', cell.id), 0, 0, 150, 70, 'rhombus');
             graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
             if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch') {
               _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'Retry' ? 'retryEnd' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : 'try';
             }
           } else if (cell.value.tagName === 'Retry') {
-            v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'RetryEnd', cell.id), 0, 0, 150, 70, "rhombus");
+            v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', cell.id), 0, 0, 150, 70, 'rhombus');
             graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
             if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch') {
               _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : 'try';
             }
           } else if (cell.value.tagName === 'Try') {
-            v2 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 70, 70, "dashtriangle");
-            v3 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'EndCatch', null), 0, 0, 70, 70, "dashtriangle");
-            v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'EndTry', cell.id), 0, 0, 70, 70, "triangle");
+            v2 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 90, 40, 'dashRectangle');
+            v3 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 90, 40, 'dashRectangle');
+            v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', cell.id), 0, 0, 90, 70, 'rhombus');
 
             graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cell, v2);
-            graph.insertEdge(parent, null, getConnectionNode('', ''), v2, v3, "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;");
+            graph.insertEdge(parent, null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
             graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
             graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
             if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Catch') {
@@ -2464,10 +2545,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
           if (v1) {
             setTimeout(() => {
-              if(v2 && v3) {
+              if (v2 && v3) {
                 graph.getModel().beginUpdate();
                 try {
-                  let targetId = new mxCellAttributeChange(
+                  const targetId = new mxCellAttributeChange(
                     v3, 'targetId',
                     v2.id);
                   graph.getModel().execute(targetId);
@@ -2491,7 +2572,6 @@ export class EditorComponent implements OnInit, OnDestroy {
           for (let i = 0; i < dropTarget.edges.length; i++) {
             if (dropTarget.edges[i].source.id !== dropTarget.id) {
               if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-
                 for (let j = 0; j < cell.edges.length; j++) {
                   if (cell.edges[j].target.id !== cell.id) {
                     if (cell.edges[j].target.value.tagName === 'Join' || cell.edges[j].target.value.tagName === 'EndIf'
@@ -2506,12 +2586,10 @@ export class EditorComponent implements OnInit, OnDestroy {
                     }
                   }
                 }
-
               } else {
                 graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget.edges[i].source, cell);
               }
             } else {
-
               if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
                 for (let j = 0; j < cell.edges.length; j++) {
                   if (cell.edges[j].target.id !== cell.id) {
@@ -2532,7 +2610,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         } else {
           let checkLabel = '';
           if (dropTarget.value.tagName === 'Fork') {
-            label = '';
+            label = 'branch';
             type = 'branch';
             checkLabel = 'Join';
           } else if (dropTarget.value.tagName === 'If') {
@@ -2540,16 +2618,14 @@ export class EditorComponent implements OnInit, OnDestroy {
           } else if (dropTarget.value.tagName === 'Retry') {
             checkLabel = 'RetryEnd';
           } else if (dropTarget.value.tagName === 'Try') {
-            label = '';
+            label = 'try';
             type = 'try';
             checkLabel = 'EndTry';
-          }else if (dropTarget.value.tagName === 'Catch') {
+          } else if (dropTarget.value.tagName === 'Catch') {
             checkLabel = 'EndCatch';
-            graph.getModel().setStyle(dropTarget,'triangle');
+            graph.getModel().setStyle(dropTarget, 'rectangle');
           }
-
           if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-          
             let target1, target2;
             if (!self.nodeMap.has(dropTarget.id)) {
               for (let i = 0; i < dropTarget.edges.length; i++) {
@@ -2570,17 +2646,18 @@ export class EditorComponent implements OnInit, OnDestroy {
                     || cell.edges[i].target.value.tagName === 'RetryEnd' || cell.edges[i].target.value.tagName === 'EndTry') {
                     self.nodeMap.set(cell.id, cell.edges[i].target.id);
                     target2 = cell.edges[i].target;
+                    break;
                   }
-                  break;
                 }
               }
             }
+
             if (target1 && target2) {
               graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target1.target);
               isProgrammaticallyDelete = true;
               graph.getModel().remove(target1);
             } else if (self.nodeMap.has(dropTarget.id)) {
-              let target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
+              const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
               graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target);
             }
           } else {
@@ -2592,10 +2669,21 @@ export class EditorComponent implements OnInit, OnDestroy {
                   if (!self.nodeMap.has(dropTarget.id)) {
                     self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
                   }
-                  if(dropTarget.edges[i].target.value.tagName === 'EndCatch'){
-                    graph.getModel().setStyle(dropTarget.edges[i].target,'triangle');
+                  if (dropTarget.edges[i].target.value.tagName === 'EndCatch') {
+                    graph.getModel().setStyle(dropTarget.edges[i].target, 'rectangle');
                   }
-                  graph.insertEdge(parent, null, getConnectionNode('', ''), cell, dropTarget.edges[i].target);
+
+                  const attr = dropTarget.edges[i].value.attributes;
+                  if (attr) {
+                    for (let x = 0; x < attr.length; x++) {
+                      if (attr[x].value && attr[x].name) {
+                        label = attr[x].value;
+                        type = attr[i].value === 'true' ? 'then' : attr[i].value === 'false' ? 'else' : attr[i].value;
+                        break;
+                      }
+                    }
+                  }
+                  graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
                   isProgrammaticallyDelete = true;
                   graph.getModel().remove(dropTarget.edges[i]);
                   isProgrammaticallyDelete = false;
@@ -2605,22 +2693,20 @@ export class EditorComponent implements OnInit, OnDestroy {
             }
 
             if (!flag && self.nodeMap.has(dropTarget.id)) {
-              let target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
+              const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
               graph.insertEdge(parent, null, getConnectionNode(label, type), cell, target);
             }
           }
 
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
-              
               if (cell.edges[i].target.value.tagName === checkLabel) {
-                let _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'RetryEnd' ? 'retryEnd' : 'endTry';
-                cell.edges[i].value.attributes[0].nodeValue = '';
+                const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'RetryEnd' ? 'retryEnd' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
+                cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
               }
             }
           }
-
           graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget, cell);
         }
         if (cell.value.tagName === 'Try') {
@@ -2636,10 +2722,8 @@ export class EditorComponent implements OnInit, OnDestroy {
         dropTarget = null;
         executeLayout();
       }
-
       selectionChanged(graph);
     });
-
 
     /**
      * change label of EndIf and Join
@@ -2647,10 +2731,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     function changeLabelOfConnection(cell, data) {
       graph.getModel().beginUpdate();
       try {
-        let label = new mxCellAttributeChange(
+        const label = new mxCellAttributeChange(
           cell, 'label',
           '');
-        let type = new mxCellAttributeChange(
+        const type = new mxCellAttributeChange(
           cell, 'type',
           data);
         graph.getModel().execute(label);
@@ -2661,37 +2745,37 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     }
 
-    function checkConnectionLabel(cell, dropTarget, isChange) {
+    function checkConnectionLabel(cell, _dropTarget, isChange) {
       if (!isChange) {
-        if(dropTarget.value.attributes[0].nodeValue === 'join' || dropTarget.value.attributes[0].nodeValue === 'branch' || dropTarget.value.attributes[0].nodeValue === 'endIf'
-         || dropTarget.value.attributes[0].nodeValue === 'retryEnd' || dropTarget.value.attributes[0].nodeValue === 'endTry' || dropTarget.value.attributes[0].nodeValue === 'endCatch') {
+        if (_dropTarget.value.attributes[0].nodeValue === 'join' || _dropTarget.value.attributes[0].nodeValue === 'branch' || _dropTarget.value.attributes[0].nodeValue === 'endIf'
+          || _dropTarget.value.attributes[0].nodeValue === 'retryEnd' || _dropTarget.value.attributes[0].nodeValue === 'endTry' || _dropTarget.value.attributes[0].nodeValue === 'endCatch') {
           let _label1, _label2;
-          if (dropTarget.value.attributes[0].nodeValue === 'join') {
+          if (_dropTarget.value.attributes[0].nodeValue === 'join') {
             _label1 = 'join';
             _label2 = 'branch';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'branch') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'branch') {
             _label1 = 'branch';
             _label2 = 'branch';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'endIf') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'endIf') {
             _label1 = 'endIf';
             _label2 = 'endIf';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'retryEnd') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'retryEnd') {
             _label1 = 'retryEnd';
             _label2 = 'retryEnd';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'try') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'try') {
             _label1 = 'try';
             _label2 = 'try';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'endTry') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'endTry') {
             _label1 = 'endTry';
             _label2 = 'endTry';
-          } else if (dropTarget.value.attributes[0].nodeValue === 'endCatch') {
+          } else if (_dropTarget.value.attributes[0].nodeValue === 'endCatch') {
             _label1 = 'endCatch';
             _label2 = 'endCatch';
           }
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
               if ((cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf' || cell.edges[i].target.value.tagName === 'RetryEnd'
-               || cell.edges[i].target.value.tagName === 'EndTry' || cell.edges[i].target.value.tagName === 'EndCatch')) {
+                || cell.edges[i].target.value.tagName === 'EndTry' || cell.edges[i].target.value.tagName === 'EndCatch')) {
                 if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
                     if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id) {
@@ -2701,12 +2785,11 @@ export class EditorComponent implements OnInit, OnDestroy {
                   }
                 }
               }
-              if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry' 
-               || cell.edges[i].target.value.tagName === 'Try' || cell.edges[i].target.value.tagName === 'Catch') {
+              if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry'
+                || cell.edges[i].target.value.tagName === 'Try' || cell.edges[i].target.value.tagName === 'Catch') {
                 changeLabelOfConnection(cell.edges[i], _label2);
               }
             }
-
           }
         }
       } else {
@@ -2720,11 +2803,12 @@ export class EditorComponent implements OnInit, OnDestroy {
                   changeLabelOfConnection(cell.edges[i], 'join');
                 } else if (cell.edges[i].target.value.tagName === 'EndIf') {
                   changeLabelOfConnection(cell.edges[i], 'endIf');
-                }else if (cell.edges[i].target.value.tagName === 'RetryEnd') {
+                } else if (cell.edges[i].target.value.tagName === 'RetryEnd') {
                   changeLabelOfConnection(cell.edges[i], 'retryEnd');
-                }else if (cell.edges[i].target.value.tagName === 'EndTry') {
+                } else if (cell.edges[i].target.value.tagName === 'EndTry') {
+
                   changeLabelOfConnection(cell.edges[i], 'endTry');
-                }else if (cell.edges[i].target.value.tagName === 'EndCatch') {
+                } else if (cell.edges[i].target.value.tagName === 'EndCatch') {
                   changeLabelOfConnection(cell.edges[i], 'endCatch');
                 }
               }
@@ -2735,28 +2819,27 @@ export class EditorComponent implements OnInit, OnDestroy {
                 _tempCell = cell.edges[i];
               }
             }
-
-            if (((dropTarget.value.attributes[0].nodeValue === 'join' || dropTarget.value.attributes[1].nodeValue === 'join') && cell.edges[i].id !== dropTarget.id)) {
+            if (((_dropTarget.value.attributes[0].nodeValue === 'join' || _dropTarget.value.attributes[1].nodeValue === 'join') && cell.edges[i].id !== _dropTarget.id)) {
               changeLabelOfConnection(cell.edges[i], 'branch');
-            } else if (((dropTarget.value.attributes[0].nodeValue === 'endIf' || dropTarget.value.attributes[1].nodeValue === 'endIf') && cell.edges[i].id !== dropTarget.id)) {
+            } else if (((_dropTarget.value.attributes[0].nodeValue === 'endIf' || _dropTarget.value.attributes[1].nodeValue === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
               changeLabelOfConnection(cell.edges[i], '');
-            }else if (((dropTarget.value.attributes[0].nodeValue === 'retryEnd' || dropTarget.value.attributes[1].nodeValue === 'retryEnd') && cell.edges[i].id !== dropTarget.id)) {
+            } else if (((_dropTarget.value.attributes[0].nodeValue === 'retryEnd' || _dropTarget.value.attributes[1].nodeValue === 'retryEnd') && cell.edges[i].id !== _dropTarget.id)) {
               changeLabelOfConnection(cell.edges[i], '');
-            }else if (((dropTarget.value.attributes[0].nodeValue === 'endTry' || dropTarget.value.attributes[1].nodeValue === 'endTry') && cell.edges[i].id !== dropTarget.id)) {
+            } else if (((_dropTarget.value.attributes[0].nodeValue === 'endTry' || _dropTarget.value.attributes[1].nodeValue === 'endTry') && cell.edges[i].id !== _dropTarget.id)) {
               changeLabelOfConnection(cell.edges[i], '');
-            }else if (((dropTarget.value.attributes[0].nodeValue === 'endCatch' || dropTarget.value.attributes[1].nodeValue === 'endCatch') && cell.edges[i].id !== dropTarget.id)) {
+            } else if (((_dropTarget.value.attributes[0].nodeValue === 'endCatch' || _dropTarget.value.attributes[1].nodeValue === 'endCatch') && cell.edges[i].id !== _dropTarget.id)) {
               changeLabelOfConnection(cell.edges[i], '');
             }
             if (cell.id !== cell.edges[i].target.id) {
-              let attrs = cell.edges[i].value.attributes;
+              const attrs = cell.edges[i].value.attributes;
               if (attrs) {
                 if (attrs[0].value && (attrs[0].value === 'true' || attrs[0].value === 'false')) {
                   graph.getModel().beginUpdate();
                   try {
-                    let label = new mxCellAttributeChange(
+                    const label = new mxCellAttributeChange(
                       cell.edges[i], 'label',
                       '');
-                    let type = new mxCellAttributeChange(
+                    const type = new mxCellAttributeChange(
                       cell.edges[i], 'type',
                       '');
                     graph.getModel().execute(label);
@@ -2769,16 +2852,16 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               }
             } else if (cell.id !== cell.edges[i].source.id) {
-              let attrs = cell.edges[i].value.attributes;
+              const attrs = cell.edges[i].value.attributes;
               if (attrs) {
                 if (attrs[0].value === 'If') {
                   if (cell.edges[i].target.value.tagName !== 'If' && cell.edges[i].source.value.tagName !== 'If' && cell.value.tagName !== 'If') {
                     graph.getModel().beginUpdate();
                     try {
-                      let label = new mxCellAttributeChange(
+                      const label = new mxCellAttributeChange(
                         cell.edges[i], 'label',
                         '');
-                      let type = new mxCellAttributeChange(
+                      const type = new mxCellAttributeChange(
                         cell.edges[i], 'type',
                         '');
                       graph.getModel().execute(label);
@@ -2800,40 +2883,41 @@ export class EditorComponent implements OnInit, OnDestroy {
     /**
      * Updates the properties panel
      */
-    function selectionChanged(graph) {
+    function selectionChanged(_graph) {
       let div = document.getElementById('properties');
       // Forces focusout in IE
-      graph.container.focus();
+      _graph.container.focus();
 
       // Clears the DIV the non-DOM way
       div.innerHTML = '';
 
       // Gets the selection cell
-      let cell = graph.getSelectionCell();
+      let cell = _graph.getSelectionCell();
 
       if (cell == null) {
         mxUtils.writeln(div, 'Nothing selected.');
-      }
-      else {
-        let form = new mxForm('property-table');
+      } else {
+        const form = new mxForm('property-table');
         let attrs = cell.value.attributes;
         let flg1 = false, flg2 = false;
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
-            createTextField(graph, form, cell, attrs[i]);
-            if (attrs[i].nodeName == 'success') {
+            createTextField(_graph, form, cell, attrs[i]);
+            if (attrs[i].nodeName === 'success') {
               flg1 = true;
             }
-            if (attrs[i].nodeName == 'failure') {
+            if (attrs[i].nodeName === 'failure') {
               flg2 = true;
             }
           }
-          if (cell.value.nodeName == 'Job') {
-            if (!flg1)
-              createTextField(graph, form, cell, {nodeName: 'success', nodeValue: ''});
-            if (!flg2)
-              createTextField(graph, form, cell, {nodeName: 'failure', nodeValue: ''});
-            createTextAreaField(graph, form, cell, 'Script', '');
+          if (cell.value.nodeName === 'Job') {
+            if (!flg1) {
+              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
+            }
+            if (!flg2) {
+              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
+            }
+            createTextAreaField(_graph, form, cell, 'Script', '');
           }
         }
         div.appendChild(form.getTable());
@@ -2844,23 +2928,22 @@ export class EditorComponent implements OnInit, OnDestroy {
     /**
      * Creates the textfield for the given property.
      */
-    function createTextField(graph, form, cell, attribute) {
+    function createTextField(_graph, form, cell, attribute) {
       let input = form.addText(attribute.nodeName + ':', attribute.nodeValue);
-
-      let applyHandler = function () {
+      const applyHandler = function () {
         let newValue = input.value || '';
         let oldValue = cell.getAttribute(attribute.nodeName, '');
-        if (newValue != oldValue) {
-          graph.getModel().beginUpdate();
+        if (newValue !== oldValue) {
+          _graph.getModel().beginUpdate();
           try {
-            let edit = new mxCellAttributeChange(
+            const edit = new mxCellAttributeChange(
               cell, attribute.nodeName,
               newValue);
-            graph.getModel().execute(edit);
+            _graph.getModel().execute(edit);
             isUndoable = true;
           }
           finally {
-            graph.getModel().endUpdate();
+            _graph.getModel().endUpdate();
           }
         }
       };
@@ -2883,23 +2966,23 @@ export class EditorComponent implements OnInit, OnDestroy {
     /**
      * Creates the textAreafield for the given property.
      */
-    function createTextAreaField(graph, form, cell, name, value) {
+    function createTextAreaField(_graph, form, cell, name, value) {
       let input = form.addTextarea(name + ':', value, 10);
-      let applyHandler = function () {
+      const applyHandler = function () {
         let newValue = input.value || '';
 
         let oldValue = cell.getAttribute(name, '');
-        if (newValue != oldValue) {
-          graph.getModel().beginUpdate();
+        if (newValue !== oldValue) {
+          _graph.getModel().beginUpdate();
           try {
-            let edit = new mxCellAttributeChange(
+            const edit = new mxCellAttributeChange(
               cell, name,
               newValue);
-            graph.getModel().execute(edit);
+            _graph.getModel().execute(edit);
             isUndoable = true;
           }
           finally {
-            graph.getModel().endUpdate();
+            _graph.getModel().endUpdate();
           }
         }
       };
@@ -2914,14 +2997,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       if (mxClient.IS_IE) {
         mxEvent.addListener(input, 'focusout', applyHandler);
-      }
-      else {
+      } else {
         mxEvent.addListener(input, 'blur', applyHandler);
       }
     }
 
-    let doc = mxUtils.parseXml(this.xmlTest);
-    let codec = new mxCodec(doc);
+    const doc = mxUtils.parseXml(this.xmlTest);
+    const codec = new mxCodec(doc);
     codec.decode(doc.documentElement, graph.getModel());
 
     selectionChanged(graph);
@@ -2932,21 +3014,19 @@ export class EditorComponent implements OnInit, OnDestroy {
      * Reload dummy xml
      */
     function reloadDummyXml(dummyXml) {
-      let enc = new mxCodec();
-      let node = enc.encode(graph.getModel());
-      let xml = mxUtils.getXml(node);
-
-      let x2js = new X2JS();
+      const enc = new mxCodec();
+      const nodeModel = enc.encode(graph.getModel());
+      const xml = mxUtils.getXml(nodeModel);
+      const x2js = new X2JS();
       let json = x2js.xml_str2json(xml);
       if (!json.mxGraphModel.root.Connector) {
         self.nodeMap.clear();
         mxUndoManager.prototype.clear();
         graph.getModel().beginUpdate();
         try {
-          let doc = mxUtils.parseXml(dummyXml);
-          let codec = new mxCodec(doc);
-          let model = codec.decode(doc.documentElement);
-          let parent = graph.getDefaultParent();
+          const doc = mxUtils.parseXml(dummyXml);
+          const model = enc.decode(doc.documentElement);
+          const parent = graph.getDefaultParent();
           // Merges the old model with the dummy model
           graph.getModel().mergeChildren(model.getRoot().getChildAt(0), parent);
         } finally {
@@ -2957,7 +3037,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       makeCenter();
     }
 
-    let mgr = new mxAutoSaveManager(graph);
+    const mgr = new mxAutoSaveManager(graph);
     mgr.save = function () {
       setTimeout(() => {
         self.xmlToJsonParser();
@@ -2967,10 +3047,9 @@ export class EditorComponent implements OnInit, OnDestroy {
           graph.setEnabled(false);
           reloadDummyXml(self.xmlTest);
         }
-      }, 0)
+      }, 0);
     };
   }
-
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -2980,8 +3059,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     try {
       if (!mxClient.isBrowserSupported()) {
         mxUtils.error('Browser is not supported!', 200, false);
-      }
-      else {
+      } else {
         mxObjectCodec.allowEval = true;
         let node = mxUtils.load(config).getDocumentElement();
         editor = new mxEditor(node);
@@ -2990,14 +3068,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.initEditorConf(editor);
         mxObjectCodec.allowEval = false;
 
-        let outln = document.getElementById('outlineContainer');
-        outln.style["border"] = "1px solid lightgray";
-        outln.style["background"] = "#FFFFFF";
+        const outln = document.getElementById('outlineContainer');
+        outln.style['border'] = '1px solid lightgray';
+        outln.style['background'] = '#FFFFFF';
         new mxOutline(this.editor.graph, outln);
-
         editor.graph.allowAutoPanning = true;
         editor.graph.timerAutoScroll = true;
-
         editor.addListener(mxEvent.OPEN);
         // Prints the current root in the window title if the
         // current root of the graph changes (drilling).
@@ -3011,7 +3087,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   toggleView() {
-    this.view = this.view != 'list' ? 'list' : 'grid';
+    this.view = this.view !== 'list' ? 'list' : 'grid';
   }
 
   toggleRightSideBar() {
@@ -3020,11 +3096,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 
   checkAll() {
-    console.log('Check all...')
+    console.log('Check all...');
   }
 
   checkMainCheckbox() {
-    console.log('Check all...')
+    console.log('Check all...');
   }
 
   onNodeSelected(e): void {
@@ -3040,8 +3116,9 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   static setGraphHt() {
-    let ht = window.innerHeight - 168;
-    if (ht > 400)
+    const ht = window.innerHeight - 168;
+    if (ht > 400) {
       $('#graph').height(ht + 'px');
+    }
   }
 }

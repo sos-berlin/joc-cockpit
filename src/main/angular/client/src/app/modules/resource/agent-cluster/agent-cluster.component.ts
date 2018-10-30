@@ -146,10 +146,11 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   private checkExpand() {
     const self = this;
     setTimeout(function () {
-      const node = self.child.getNodeById(1);
-      node.expand();
-      node.setActiveAndVisible(true);
-
+      if(self.child && self.child.getNodeById(1)) {
+        const node = self.child.getNodeById(1);
+        node.expand();
+        node.setActiveAndVisible(true);
+      }
       console.log(self.tree)
     }, 10)
   }

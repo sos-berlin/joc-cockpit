@@ -232,6 +232,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
   isRuntimeEdit: boolean;
   countryField: boolean;
   isCalendarDisplay: boolean = false;
+  showMonthRange: boolean = false;
 
   excludedDates: any = [];
   includedDates: any = [];
@@ -903,6 +904,7 @@ export class FrequencyModal implements OnInit, OnDestroy {
       if (data && data.type == 'EXCLUDE') {
         color = '#eb8814';
       }
+      this.planItems=[];
       for (let m = 0; m < result.dates.length; m++) {
         let x = result.dates[m];
         self.planItems.push({
@@ -934,8 +936,12 @@ export class FrequencyModal implements OnInit, OnDestroy {
           }
         });
       }
+      this.tempList = [];
       this.tempList = _.clone(this.planItems);
-      $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      let a = Object.assign(this.tempList);
+      $('#full-calendar').data('calendar').setDataSource(a);
+     
+      
 
       this.isCalendarLoading = false;
       setTimeout(() => {
@@ -1453,12 +1459,12 @@ export class FrequencyModal implements OnInit, OnDestroy {
     this.frequencyList1 = [];
     if (this.calendar.includesFrequency.length > 0) {
       for (let i = 0; i < this.calendar.includesFrequency.length; i++) {
-        self.frequencyList1.push(this.calendar.includesFrequency[i])
+        self.frequencyList1.push(this.calendar.includesFrequency[i]);
       }
     }
     if (this.calendar.excludesFrequency.length > 0) {
       for (let i = 0; i < this.calendar.excludesFrequency.length; i++) {
-        self.frequencyList1.push(this.calendar.excludesFrequency[i])
+        self.frequencyList1.push(this.calendar.excludesFrequency[i]);
       }
     }
     this.changeFrequencyObj(data);
@@ -2318,9 +2324,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private checkExpand() {
     const self = this;
     setTimeout(function () {
-      const node = self.child.getNodeById(1);
-      node.expand();
-      node.setActiveAndVisible(true);
+      if(self.child && self.child.getNodeById(1)) {
+        const node = self.child.getNodeById(1);
+        node.expand();
+        node.setActiveAndVisible(true);
+      }
     }, 10)
   }
 

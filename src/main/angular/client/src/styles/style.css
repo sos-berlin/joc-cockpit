@@ -668,6 +668,10 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
   vertical-align: middle
 }
 
+.valign {
+  top: 2px !important;
+}
+
 .v-c {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1937,7 +1941,9 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
 .w {
   width: 145px
 }
-
+.w-115 {
+  width: 115px
+}
 .w-160 {
   width: 160px
 }
@@ -2940,7 +2946,8 @@ pre.cdata {
 
 .status-list {
   list-style: none;
-  margin-top: 57px
+  margin-top: 57px;
+  margin-left: 15px;
 }
 
 .m-top-122 {
@@ -4822,6 +4829,7 @@ body > .ui-select-bootstrap.open {
   border-radius: 0 !important;
   border: 1px solid rgba(120, 130, 140, .13) !important;
   background-color: transparent !important;
+  padding-left:0px !important;
 }
 
 .pagination a:hover, .pagination button:hover {
@@ -5027,12 +5035,16 @@ div.bar-chart div canvas {
   font-size: 14px;
   padding: 1px 2px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .node-wrapper {
   display: flex;
   align-items: flex-start;
-  width: max-content;
+}
+
+.scroll {
+  overflow: scroll !important;
 }
 
 .node-content-wrapper:after {
@@ -5067,7 +5079,6 @@ tree-viewport {
 }
 
 .angular-tree-component {
-  width: 100%;
   position: relative;
   display: inline-block;
   -webkit-touch-callout: none; /* iOS Safari */
@@ -5278,4 +5289,9 @@ tree-node-checkbox {
 .property-table tr td input:focus {
   border-color: #007da6;
   outline: 0
+}
+
+.chart-margin
+{
+  margin-top: -12px !important;
 }

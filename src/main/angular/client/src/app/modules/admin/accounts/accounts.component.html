@@ -19,7 +19,7 @@
             </th>
           </tr>
           </thead>
-           <tbody *ngFor="let user of users | filter: searchKey | orderBy: order:reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: usr.currentPage }">
+           <tbody *ngFor="let user of users | filter: searchKey | orderBy: order:reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: usr.currentPage }; let i = index">
               <tr>
                   <td>
                       <div class="btn-group dropdown pull-left m-r-sm">
@@ -27,7 +27,7 @@
                         <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                             <a class="dropdown-item" (click)="editUser(user)" translate>button.edit</a>
                             <a class="dropdown-item" (click)="copyUser(user)" translate>button.copy</a>
-                            <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user)" translate="">button.delete</a>
+                            <a class="dropdown-item" [ngClass]="{'disable-link' :username==user.user}" (click)="deleteUser(user.user,i)" translate="">button.delete</a>
                         </div>
                     </div>
                   </td>

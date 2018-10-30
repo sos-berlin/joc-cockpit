@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span *ngIf="!calendar">
       <span class="text-capitalize" translate>label.delete</span> :
-      {{entry}} {{user}} {{role}} {{master}} {{folder}} {{permission}}
+      {{entry}} {{user}} {{role}} {{master}} {{folder}} {{permission}} {{profiles}}
       ?
     </span>
     <span *ngIf="calendar">
@@ -33,6 +33,14 @@
       <span translate class="text" *ngIf="master">message.deleteMaster</span>
       <span translate class="text" *ngIf="folder">message.deleteFolder</span>
       <span translate class="text" *ngIf="permission">message.deletePermission</span>
+      <span class="text" *ngIf="object && object.profiles">
+        <div translate class="text"></div>
+        <p><strong translate="">message.deleteProfiles1 <span class="text-danger" *ngFor="let profile of object.profiles; let i = index">{{profile.account}}<span *ngIf="i!=object.profiles.length-1">,&nbsp;</span></span> message.deleteProfiles2</strong></p>
+        <p>All information associated to this user profile will be permanently deleted.
+        <span class="text-danger">This operation can not be undone.</span>
+        </p>
+      </span>
+
       <div *ngIf="calendar">
         <div *ngIf="calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
           <div class="row text-center">

@@ -4,14 +4,11 @@ import {CoreService} from '../../services/core.service';
 import {
     CompactType,
     DisplayGrid,
-    GridsterComponentInterface,
     GridsterConfig,
-    GridsterItem,
-    GridsterItemComponentInterface,
     GridType
 } from 'angular-gridster2';
-import { DataService } from "../../services/data.service";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DataService } from '../../services/data.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 declare const $;
 
@@ -38,24 +35,20 @@ export class AddWidgetModal {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  options: GridsterConfig ={};
-  dashboard: Array<any> =[];
+  options: GridsterConfig = {};
+  dashboard: Array<any> = [];
   editLayoutObj = false;
-  schedulerIds: any ={};
-  preferences: any ={};
-  permission: any ={};
-  _tempDashboard: Array<any> =[];
-  dashboardLayout: Array<any> =[];
-  widgets: Array<any> =[];
+  schedulerIds: any = {};
+  preferences: any = {};
+  permission: any = {};
+  _tempDashboard: Array<any> = [];
+  dashboardLayout: Array<any> = [];
+  widgets: Array<any> = [];
   subscription: any;
 
   eventStop = () => {
 
-  };
-
-  itemResize = (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => {
-
-  };
+  }
 
   constructor(private authService: AuthService, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
@@ -65,12 +58,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.init();
-    $('.gridster').height(window.innerHeight - 140 +'px')
+    $('.gridster').height(window.innerHeight - 160 + 'px');
   }
 
   private init() {
-    if(sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
 
@@ -87,84 +81,84 @@ export class DashboardComponent implements OnInit, OnDestroy {
     } else {
       this.dashboardLayout = [{
         cols: 4, rows: 2, y: 0, x: 0,
-        name: "agentClusterStatus",
+        name: 'agentClusterStatus',
         visible: true,
-        message: "message.agentClusterStatus"
+        message: 'message.agentClusterStatus'
       }, {
         cols: 4, rows: 2, y: 1, x: 0,
-        name: "agentClusterRunningTasks",
+        name: 'agentClusterRunningTasks',
         visible: true,
-        message: "message.agentClusterRunningTasks"
+        message: 'message.agentClusterRunningTasks'
       }, {
         cols: 8, rows: 4, y: 0, x: 4,
-        name: "masterClusterStatus",
+        name: 'masterClusterStatus',
         visible: true,
-        message: "message.masterClusterStatus"
+        message: 'message.masterClusterStatus'
       }, {
-        cols: 12, rows: 2, y: 4, x: 0,
-        name: "jobSchedulerStatus",
+        cols: 12, rows: 1, y: 4, x: 0,
+        name: 'jobSchedulerStatus',
         visible: true,
-        message: "message.jobSchedulerStatus"
+        message: 'message.jobSchedulerStatus'
       }, {
         cols: 8, rows: 1, y: 5, x: 0,
-        name: "ordersOverview",
+        name: 'ordersOverview',
         visible: true,
-        message: "message.ordersOverview"
+        message: 'message.ordersOverview'
       }, {
         cols: 4, rows: 1, y: 5, x: 8,
-        name: "ordersSummary",
+        name: 'ordersSummary',
         visible: true,
-        message: "message.ordersSummary"
+        message: 'message.ordersSummary'
       }, {
         cols: 8, rows: 1, y: 6, x: 0,
-        name: "tasksOverview",
+        name: 'tasksOverview',
         visible: true,
-        message: "message.tasksOverview"
+        message: 'message.tasksOverview'
       }, {
         cols: 4, rows: 1, y: 6, x: 8,
-        name: "tasksSummary",
+        name: 'tasksSummary',
         visible: true,
-        message: "message.tasksSummary"
+        message: 'message.tasksSummary'
       }, {
         cols: 8, rows: 1, y: 7, x: 0,
-        name: "fileTransferOverview",
+        name: 'fileTransferOverview',
         visible: true,
-        message: "message.fileTransferOverview"
+        message: 'message.fileTransferOverview'
       }, {
         cols: 4, rows: 1, y: 7, x: 8,
-        name: "fileTransferSummary",
+        name: 'fileTransferSummary',
         visible: true,
-        message: "message.fileTransferSummary"
+        message: 'message.fileTransferSummary'
       }, {
         cols: 12, rows: 1, y: 8, x: 0,
-        name: "dailyPlanOverview",
+        name: 'dailyPlanOverview',
         visible: true,
-        message: "message.dailyPlanOverview"
+        message: 'message.dailyPlanOverview'
       }];
     }
 
     for (let i = 0; i < this.dashboardLayout.length; i++) {
-      if (this.dashboardLayout[i].name == 'agentClusterStatus' && this.permission.JobschedulerUniversalAgent.view.status) {
+      if (this.dashboardLayout[i].name === 'agentClusterStatus' && this.permission.JobschedulerUniversalAgent.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
+      } else if (this.dashboardLayout[i].name === 'agentClusterRunningTasks' && this.permission.ProcessClass.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'jobSchedulerStatus') {
+      } else if (this.dashboardLayout[i].name === 'jobSchedulerStatus') {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'masterClusterStatus') {
+      } else if (this.dashboardLayout[i].name === 'masterClusterStatus') {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
+      } else if (this.dashboardLayout[i].name === 'dailyPlanOverview' && this.permission.DailyPlan.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'ordersOverview' && this.permission.Order.view.status) {
+      } else if (this.dashboardLayout[i].name === 'ordersOverview' && this.permission.Order.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'ordersSummary' && this.permission.Order.view.status) {
+      } else if (this.dashboardLayout[i].name === 'ordersSummary' && this.permission.Order.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'tasksOverview' && this.permission.Job.view.status) {
+      } else if (this.dashboardLayout[i].name === 'tasksOverview' && this.permission.Job.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'tasksSummary' && this.permission.Job.view.status) {
+      } else if (this.dashboardLayout[i].name === 'tasksSummary' && this.permission.Job.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'fileTransferOverview' && this.permission.YADE.view.status) {
+      } else if (this.dashboardLayout[i].name === 'fileTransferOverview' && this.permission.YADE.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
-      } else if (this.dashboardLayout[i].name == 'fileTransferSummary' && this.permission.YADE.view.status) {
+      } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.YADE.view.status) {
         this.widgets.push(this.dashboardLayout[i]);
       }
     }
@@ -185,8 +179,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
-      itemResizeCallback: this.itemResize,
-
       margin: 22,
       outerMargin: true,
       outerMarginTop: null,
@@ -221,6 +213,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         dragHandleClass: 'drag-handler',
         stop: this.eventStop
       },
+      pushItems: true,
+      disablePushOnDrag: false,
+      disablePushOnResize: false,
+      pushDirections: {
+        north: true,
+        east: true,
+        south: true,
+        west: true
+      },
       resizable: {
         delayStart: 0,
         enabled: flag,
@@ -236,17 +237,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
           nw: true
         }
       },
-      swap: false,
-      pushItems: true,
-      disablePushOnDrag: false,
-      disablePushOnResize: false,
-      pushDirections: {north: true, east: true, south: true, west: true},
-      pushResizeItems: false,
+      swap: true,
       displayGrid: DisplayGrid.None,
       disableWindowResize: false,
       disableWarnings: true,
       scrollToNewItems: false
     };
+  }
+
+  downloadJocLog() {
+    $('#tmpFrame').attr('src', './api/log?accessToken=' + this.permission.accessToken);
   }
 
   editLayout() {
@@ -278,7 +278,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     $event.stopPropagation();
     widget.visible = false;
     for (let j = 0; j < this.dashboard.length; j++) {
-      if (this.dashboard[j].name == widget.name) {
+      if (this.dashboard[j].name === widget.name) {
         this.dashboard.splice(j, 1);
         break;
       }
@@ -287,14 +287,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   addWidgetDialog() {
-    const modalRef = this.modalService.open(AddWidgetModal, {backdrop: "static", size: "lg"});
+    const modalRef = this.modalService.open(AddWidgetModal, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.dashboard = this.dashboard;
     modalRef.componentInstance.widgets = this.widgets;
     modalRef.componentInstance.addWidget = this.addWidget;
     modalRef.result.then(() => {
 
     }, (reason) => {
-      console.log('close...', reason)
+
     });
   }
 
@@ -310,13 +310,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     let configObj: any = {};
     configObj.jobschedulerId = this.schedulerIds.selected;
     configObj.account = this.permission.user;
-    configObj.configurationType = "PROFILE";
+    configObj.configurationType = 'PROFILE';
     configObj.id = parseInt(sessionStorage.preferenceId);
     configObj.configurationItem = JSON.stringify(this.preferences);
-    if (configObj.id && configObj.id > 0)
+    if (configObj.id && configObj.id > 0) {
       this.coreService.post('configuration/save', configObj).subscribe(() => {
 
-      })
+      });
+    }
   }
 
 }

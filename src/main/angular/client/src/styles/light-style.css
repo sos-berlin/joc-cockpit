@@ -1,15 +1,97 @@
 .backup {
-  background: #2c3e50;
-  background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);
-  background: -o-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-  background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
-  background: linear-gradient(to right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1))
+	background: #2c3e50;
+	background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #2c3e50);
+	background: -o-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
+	background: -moz-linear-gradient(right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1));
+	background: linear-gradient(to right, rgba(255, 255, 255, .51), rgba(44, 62, 80, 1))
 }
 
 .backup-top-header {
-  background: #2c3e50
+	background: #2c3e50
 }
 
-.backup-top-header .backup-text, .backup-top-header .m-r-sm {
-  color: #fff
+.backup-top-header .backup-text,
+.backup-top-header .m-r-sm {
+	color: #fff
+}
+
+.header-prussian-blue {
+    background-color: #03254E !important;
+}
+
+.header-eggplant {
+    background-color: #45062E !important;
+}
+
+.header-blackcurrant {
+    background-color: #320E3B !important;
+}
+
+.header-Dodger-Blue {
+    background-color: #246EB9 !important;
+}
+
+.header-nordic {
+    background-color: #022C2F !important;
+}
+
+.header-light-sea-green {
+    background-color: #2EC4B6 !important;
+}
+
+.header-toledo {
+    background-color: #3A3335 !important;
+}
+
+.header-Pine-Green {
+    background-color: #0F7173 !important;
+}
+
+.header-radical-red {
+    background-color: #C20114 !important;
+}
+
+.avatarbg-prussian-blue {
+    background-color: #FFF !important;
+    color: #03254E !important;
+}
+
+.avatarbg-eggplant {
+    background-color: #FFF !important;
+    color: #45062E !important;
+}
+
+.avatarbg-blackcurrant {
+    background-color: #FFF !important;
+    color: #320E3B !important;
+}
+
+.avatarbg-Dodger-Blue {
+    background-color: #FFF !important;
+    color: #246EB9 !important;
+}
+
+.avatarbg-nordic {
+    background-color: #FFF !important;
+    color: #022C2F !important;
+}
+
+.avatarbg-light-sea-green {
+    background-color: #FFF !important;
+    color: #2EC4B6 !important;
+}
+
+.avatarbg-toledo {
+    background-color: #FFF !important;
+    color: #3A3335 !important;
+}
+
+.avatarbg-Pine-Green {
+    background-color: #FFF !important;
+    color: #0F7173 !important;
+}
+
+.avatarbg-radical-red {
+    background-color: #FFF !important;
+    color: #7B0D1E !important;
 }

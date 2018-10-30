@@ -38,11 +38,13 @@ export class CommentModal implements OnInit {
       timeSpent: result.timeSpent,
       ticketLink: result.ticketLink
     };
-    if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin') {
+    if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin' || this.action ==='reactivatePrimaryJobschedulerWithIn') {
       obj.timeout = result.timeout;
       let url = 'jobscheduler/terminate';
       if (this.action == 'terminateAndRestartWithTimeout') {
         url = 'jobscheduler/restart';
+      } if(this.action ==='reactivatePrimaryJobschedulerWithIn') {
+        url = 'jobscheduler/cluster/reactivate';
       }
       this.postCall(url, obj);
     } else {
@@ -172,6 +174,17 @@ export class ActionComponent implements OnInit {
       }, () => {
         console.log('err in download')
       });
+    } else if (action === 'downloadDebugLog') {
+      let result: any = {};
+      this.coreService.post('jobscheduler/debuglog/info',obj).subscribe(res => {
+      result = res;
+      if(result && result.log) {
+      this.coreService.get('./api/jobscheduler/debuglog?jobschedulerId=' + obj.jobschedulerId + '&filename=' + result.log.filename + '&accessToken=' + this.authService.accessTokenId).subscribe((res) => {
+        ActionComponent.saveToFileSystem(res, obj);
+      }, () => {
+        console.log('err in download')
+      });}
+    });
     }
   }
 
