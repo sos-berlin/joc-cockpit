@@ -6083,19 +6083,27 @@
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                     JobSchedulerService.continue(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'remove') {
-                    JobSchedulerService.cleanup(obj).then(function () {
-                        JobSchedulerService.getSchedulerIds().then(function (res) {
-                            if (res) {
-                                CoreService.setDefaultTab();
-                                SOSAuth.setIds(res);
-                                SOSAuth.save();
-                                if (res.selected != vm.schedulerIds.selected)
-                                    $state.reload(vm.currentState);
-                                $rootScope.$broadcast('reloadUser');
-
+                  JobSchedulerService.cleanup(obj).then(function () {
+                    JobSchedulerService.getSchedulerIds().then(function (res) {
+                      if (res) {
+                        CoreService.setDefaultTab();
+                        SOSAuth.setIds(res);
+                        SOSAuth.save();
+                        if (res.selected != vm.schedulerIds.selected) {
+                          $state.reload(vm.currentState);
+                        } else {
+                          for (let i = 0; i < vm.mastersList.length; i++) {
+                            if (vm.mastersList[i].jobschedulerId === obj.jobschedulerId && vm.mastersList[i].host === obj.host && vm.mastersList[i].port === obj.port) {
+                              vm.mastersList.splice(i, 1);
+                              break;
                             }
-                        });
-                    })
+                          }
+                        }
+                        $rootScope.$broadcast('reloadUser');
+
+                      }
+                    });
+                  })
                 } else if (objectType === 'cluster' && action === 'terminate') {
                     JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType === 'cluster' && action === 'terminateFailsafe') {
