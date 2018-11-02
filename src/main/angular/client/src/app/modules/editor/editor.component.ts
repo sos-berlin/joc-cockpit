@@ -1810,6 +1810,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     graph.setConnectable(false);
     graph.setEnabled(false);
+    graph.collapseToPreferredSize = false;
+    graph.constrainChildren = false;
+    graph.extendParentsOnAdd = false;
+    graph.extendParents = false;
 
     // Changes the zoom on mouseWheel events
     mxEvent.addMouseWheelListener(function (evt, up) {
@@ -2338,6 +2342,72 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     /**
+     * Function: foldCells to collapse/expand
+     *
+     *
+     * collapsed - Boolean indicating the collapsed state to be assigned.
+     * recurse - Optional boolean indicating if the collapsed state of all
+     * descendants should be set. Default is true.
+     * cells - Array of <mxCells> whose collapsed state should be set. If
+     * null is specified then the foldable selection cells are used.
+     * checkFoldable - Optional boolean indicating of isCellFoldable should be
+     * checked. Default is false.
+     * evt - Optional native event that triggered the invocation.
+     */
+    mxGraph.prototype.foldCells = function(collapse, recurse, cells, checkFoldable, evt) {
+      if (cells == null) {
+        cells = this.getFoldableCells(this.getSelectionCells(), collapse);
+      }
+
+      const _self = this;
+
+      function recursive(cell) {
+        for (let i = 0; i < cell.edges.length; i++) {
+          if (cell.edges[i].source.id === cell.id) {
+            const _target = cell.edges[i].target;
+            _self.model.setCollapsed(cell.edges[i], collapse);
+            _self.swapBounds(cell.edges[i], collapse);
+            if (_target.value.tagName === 'Join' || _target.value.tagName === 'EndIf' || _target.value.tagName === 'RetryEnd' || _target.value.tagName === 'EndTry') {
+              let flag = false;
+              for (let j = 0; j < _target.value.attributes.length; j++) {
+                const attr = _target.value.attributes[j];
+                if (attr.name === 'targetId' && attr.value === cells[0].id) {
+                  flag = true;
+                  break;
+                }
+              }
+              if (!flag) {
+                _self.model.setCollapsed(_target, collapse);
+                _self.model.setVisible(_target, !collapse);
+                _self.swapBounds(_target, collapse);
+                recursive(_target);
+              }
+            } else {
+              _self.model.setCollapsed(_target, collapse);
+              _self.model.setVisible(_target, !collapse);
+              _self.swapBounds(_target, collapse);
+              recursive(_target);
+            }
+          }
+        }
+      }
+
+      _self.stopEditing(false);
+      _self.model.beginUpdate();
+      try {
+        _self.model.setCollapsed(cells[0], collapse);
+        _self.swapBounds(cells[0], collapse);
+        recursive(cells[0]);
+      }
+      finally {
+        _self.model.endUpdate();
+      }
+
+      executeLayout();
+      return cells;
+    };
+
+    /**
      * Function: undoableEditHappened
      *
      * Method to be called to add new undoable edits to the <history>.
@@ -2365,6 +2435,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     graph.isValidDropTarget = function (cell, cells, evt) {
       isVertexDrop = true;
       if (cell) {
+        if (cells && cells.length > 0) {
+          if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' ||
+            cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
+            cells[0].collapsed = true;
+          }
+        }
         if (cell.value && cell.value.tagName === 'Connection') {
           graph.clearSelection();
           if (cells && cells.length > 0) {
@@ -2778,16 +2854,17 @@ export class EditorComponent implements OnInit, OnDestroy {
                 || cell.edges[i].target.value.tagName === 'EndTry' || cell.edges[i].target.value.tagName === 'EndCatch')) {
                 if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
-                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id != cell.edges[i].target.id) {
+                    if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id !== cell.edges[i].target.id) {
                       changeLabelOfConnection(cell.edges[i].target.edges[j], _label1);
                       break;
                     }
                   }
                 }
-              }
-              if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry'
-                || cell.edges[i].target.value.tagName === 'Try' || cell.edges[i].target.value.tagName === 'Catch') {
+              } else if (cell.edges[i].target.value.tagName === 'Fork' || cell.edges[i].target.value.tagName === 'If' || cell.edges[i].target.value.tagName === 'Retry'
+                || cell.edges[i].target.value.tagName === 'Try') {
                 changeLabelOfConnection(cell.edges[i], _label2);
+              } else if (cell.edges[i].target.value.tagName === 'Catch') {
+                changeLabelOfConnection(cell.edges[i], 'try');
               }
             }
           }

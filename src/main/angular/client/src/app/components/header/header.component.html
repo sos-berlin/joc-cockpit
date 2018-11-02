@@ -194,9 +194,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/workflow" [routerLinkActive]="['active']">
-                        <span class="nav-text " id="orders_id" >
-                            <i class="fa fa-sitemap text-white dashboard-icon"></i>
+                    <a class="nav-link" href="#/workflow" [routerLinkActive]="['active']">
+                        <span class="nav-text">
+                            <i class="fa fa-sitemap text-white"></i>
                             <span class="font11 text-white text-u-c _600" translate>label.workflows</span>
                         </span>
                     </a>
@@ -220,8 +220,8 @@
                 <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
                     permission.Lock.view.status  || permission.Calendar.view.status">
                     <a class="nav-link" href="#/resources" [routerLinkActive]="['active']">
-                        <span class="nav-text" id="resources_id">
-                            <img src="./assets/images/resources.png">
+                        <span class="nav-text">
+                            <img src="./assets/images/resources.png" height="16">
                             <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                         </span>
                     </a>
@@ -229,7 +229,7 @@
                 <li class="nav-item" *ngIf="permission.History.view.status || permission.YADE.view.status">
                     <a class="nav-link" href="#/history" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="fa fa-history text-white history-icon"></i>
+                            <i class="fa fa-history text-white"></i>
                             <span class="font11 text-white text-u-c _600" translate>label.history</span>
                         </span>
                     </a>
@@ -237,15 +237,15 @@
                 <li class="nav-item" *ngIf="permission.AuditLog.view.status">
                     <a class="nav-link" href="#/audit_log" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="fa fa-file-text-o text-white history-icon"></i>
+                            <i class="fa fa-file-text-o text-white"></i>
                             <span class="font11 text-white text-u-c _600" translate>label.auditLog</span>
                         </span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#/joe" [routerLinkActive]="['active']">
-                        <span class="nav-text " >
-                            <i class="fa fa-pencil-square-o text-white jobchain-icon"></i>
+                        <span class="nav-text" >
+                            <i class="fa fa-pencil-square-o text-white"></i>
                             <span class="font11 text-white text-u-c _600" translate>label.joe</span>
                         </span>
                     </a>

@@ -3599,15 +3599,6 @@ input[type=search], input[type=search]:focus {
   }
 }
 
-.dashboard-icon, .history-icon, .jobchain-icon {
-  font-size: 16px !important;
-  margin-bottom: 5px !important
-}
-
-.history-icon {
-  margin-bottom: 6px !important
-}
-
 .order-icon {
   margin-bottom: 2px !important
 }

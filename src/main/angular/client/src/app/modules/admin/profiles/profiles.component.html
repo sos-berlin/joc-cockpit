@@ -1,0 +1,80 @@
+
+<div class="box p-a" [ngClass] ="{'p-b-md': (profiles | filter: searchKey).length > 10 }">
+  <div class="">
+      <table class="table table-hover table-bordered ">
+        <thead>
+          <tr>
+            <th  width="55">
+              <label class="md-check lg-check">
+                  <input type="checkbox" [(ngModel)]="checkAll.checkbox" (click)="checkAllProfileFnc()"><i class="primary"></i>
+              </label>
+            </th>
+            <th width="60"><span translate>label.action</span></th>
+            <th><span translate>label.user</span></th>
+            <th><span translate>label.lastAccess</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let profile of profiles | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: prof.currentPage }; let i = index ">
+            <td>
+              <label class="md-check">
+                  <input type="checkbox" [(checklist)]="object.profiles" [checklistValue]="profile" (change)="checkProfileFnc(profile, i, $event)"><i class="primary"></i>
+              </label>
+            </td>
+            <td>
+              <div class="btn-group dropdown pull-left m-r-sm">
+                <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list " role="menu">
+                  <a class="dropdown-item" [ngClass]="{'disable-link' :username==profile.account}" (click)="deleteProfile(i)" translate="">button.delete</a>
+                </div>
+              </div>
+            </td>
+            <td>
+              <a (click)="showMaster(profile.account)" class="text-hover-primary" [innerHTML]="profile.account"></a>
+            </td>
+            <td>
+              <span [innerHTML]="profile.lastLogin | stringToDate"></span>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        <pagination-controls class="pagination" (pageChange)="prof.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
+        <div class="pull-left m-l-xs m-b" *ngIf="profiles.length > 10">
+          <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
+               [(ngModel)]="preferences.entryPerPage">
+              <label ngbButtonLabel class="btn btn-default white btn-sm"
+                     [ngClass]="{'primary': preferences.entryPerPage=='10'}">
+                  <input ngbButton type="radio" [value]="10"> 10
+              </label>
+              <label ngbButtonLabel class="btn btn-default white btn-sm"
+                     [ngClass]="{'primary': preferences.entryPerPage=='25'}">
+                  <input ngbButton type="radio" [value]="25"> 25
+              </label>
+              <label ngbButtonLabel class="btn btn-default white btn-sm"
+                     [ngClass]="{'primary': preferences.entryPerPage=='50'}">
+                  <input ngbButton type="radio" [value]="50"> 50
+              </label>
+              <label ngbButtonLabel class="btn btn-default white btn-sm"
+                     [ngClass]="{'primary': preferences.entryPerPage=='100'}">
+                  <input ngbButton type="radio" [value]="100"> 100
+              </label>
+              <label ngbButtonLabel class="btn btn-default white btn-sm"
+                     [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
+                  <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
+              </label>
+          </div>
+        </div>
+        <div class="inline text-sm m-t-xs m-l-sm" *ngIf="profiles.length >0">
+            <span translate>label.total</span><span> {{profiles.length}} </span>
+            <span translate *ngIf="profiles.length >1">label.mainEntriesFound</span>
+            <span translate *ngIf="profiles.length ==1">label.mainEntryFound</span>
+        </div>
+        <div class="box-body p-b-0 hide" [ngClass]="{show : profiles.length==0}">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <span translate>message.noConfigurationAvailable</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
