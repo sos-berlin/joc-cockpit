@@ -1,0 +1,27 @@
+{
+  "name": "tracekit",
+  "main": "./tracekit.js",
+  "version": "0.4.5",
+  "homepage": "https://github.com/csnover/TraceKit",
+  "description": "Cross browser stack traces",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "TraceKit",
+    "stack traces"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "repository": {
+    "url": "https://github.com/csnover/TraceKit.git",
+    "type": "git"
+  },
+  "author": "Blake Niemyjski <bniemyjski@gmail.com>"
+}

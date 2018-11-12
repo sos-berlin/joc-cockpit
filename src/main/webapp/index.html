@@ -34,18 +34,14 @@
 ********************************************************** end of preamble*/
 
 //-->
-<!--[if IE 8]>
-<html lang="en" class="ie8 no-js" data-ng-app="app"> <![endif]-->
-<!--[if !IE]><!-->
 <html lang="en" ng-app="app" ng-strict-di>
-<!--<![endif]-->
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
     <meta charset="utf-8"/>
-
-    <title>JobScheduler</title>
     <meta name="description" content="opensource, scheduler, sos-berlin, jobscheduler, Joc"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui"/>
+    <title>JobScheduler</title>
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- style -->
@@ -98,47 +94,47 @@
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js?v=1.12.7"></script>
 <!-- Angular -->
 <script type="text/javascript" src="bower_components/angular/angular.min.js?v=1.12.7"></script>
-<script src="bower_components/angular/angular-animate.min.js?v=1.12.7"></script>
-<script src="bower_components/angular/angular-sanitize.min.js?v=1.12.7"></script>
-<script src="bower_components/angular/angular-messages.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular/angular-animate.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular/angular-sanitize.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular/angular-messages.min.js?v=1.12.7"></script>
 <!-- router -->
-<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js?v=1.12.7"></script>
-<script src="bower_components/angular/angular-resource.min.js?v=1.12.7"></script>
-<script src="bower_components/angular-filter/dist/angular-filter.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular/angular-resource.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-filter/dist/angular-filter.min.js?v=1.12.7"></script>
 <!-- toasty -->
-<script src="bower_components/angular-toasty/dist/angular-toasty.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-toasty/dist/angular-toasty.min.js?v=1.12.7"></script>
 <!-- Calendar -->
-<script src="bower_components/moment/min/moment.min.js?v=1.12.7"></script>
-<script src="bower_components/moment-timezone/moment-timezone.min.js?v=1.12.7"></script>
-<script src="bower_components/jstz/jstz.js?v=1.12.7"></script>
-<script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/moment/min/moment.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/moment-timezone/moment-timezone.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/jstz/jstz.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js?v=1.12.7"></script>
 <!-- angular-bootstrap -->
-<script src="bower_components/angular-bootstrap/ui-bootstrap.js?v=1.12.7"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js?v=1.12.7"></script>
 <!-- Angular strap -->
-<script src="bower_components/angular-strap/dist/angular-strap.js?v=1.12.7"></script>
-<script src="bower_components/angular-strap/dist/angular-strap.tpl.js?v=1.12.7"></script>
-<script src="bower_components/angular-gettext/dist/angular-gettext.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-strap/dist/angular-strap.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-strap/dist/angular-strap.tpl.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-gettext/dist/angular-gettext.min.js?v=1.12.7"></script>
 <!-- Breadcrumb -->
-<script src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js?v=1.12.7"></script>
 <!-- table-->
-<script src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js?v=1.12.7"></script>
-<script src="bower_components/angular-resizable-master/angular-resizable.min.js?v=1.12.7"></script>
-<script src="bower_components/ocLazyLoad-master/dist/ocLazyLoad.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-resizable-master/angular-resizable.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/oclazyload/dist/ocLazyLoad.min.js?v=1.12.7"></script>
 <!-- AngularJS directive for D3 and NVD3 -->
-<script src="bower_components/d3/d3.min.js?v=1.12.7"></script>
-<script src="bower_components/nvd3/nv.d3.min.js?v=1.12.7"></script>
-<script src="bower_components/angularjs-nvd3-directives/dist/angular-nvd3-directive.min.js?v=1.12.7"></script>
-<script src="bower_components/angular-moment/angular-moment.min.js?v=1.12.7"></script>
-<script src="bower_components/angular-gantt/assets/angular-gantt.js?v=1.12.7"></script>
-<script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js?v=1.12.7"></script>
-<script src="bower_components/angular-file-saver/dist/angular-file-saver.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/d3/d3.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/nvd3/nv.d3.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angularjs-nvd3-directives/dist/angular-nvd3-directive.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-moment/angular-moment.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-gantt/assets/angular-gantt.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-gantt/assets/angular-gantt-plugins.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.min.js?v=1.12.7"></script>
 <script type="text/javascript" src="js/xlsx.core.min.js?v=1.12.7"></script>
-<script src="bower_components/FileSaver/FileSaver.min.js?v=1.12.7"></script>
-<script src="bower_components/crypto-js/crypto-js.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/FileSaver/FileSaver.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/crypto-js/crypto-js.js?v=1.12.7"></script>
 
-<script src="bower_components/angular-clipboard/angular-clipboard.js?v=1.12.7"></script>
-<script src="bower_components/angular-ui-select/dist/select.min.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-clipboard/angular-clipboard.js?v=1.12.7"></script>
+<script type="text/javascript" src="bower_components/angular-ui-select/dist/select.min.js?v=1.12.7"></script>
 
 <script type="text/javascript" src="bower_components/tracekit/tracekit.js?v=1.12.7"></script>
 <script type="text/javascript" src="js/stickySidebar.js?v=1.12.7"></script>
@@ -150,41 +146,41 @@
 <script type="text/javascript" src="js/xml2json.min.js?v=1.12.7"></script>
 <script type="text/javascript" src="js/vkbeautify.js?v=1.12.7"></script>
 <script type="text/javascript" src="js/bundle.js?v=1.12.7"></script>
-<script src="js/jquery-ui.js?v=1.12.7"></script>
+<script type="text/javascript" src="js/jquery-ui.js?v=1.12.7"></script>
 <script type="text/javascript" src="js/lodash.js?v=1.12.7"></script>
-<script src="js/gridstack.js?v=1.12.7"></script>
-<script src="js/gridstack.jQueryUI.js?v=1.12.7"></script>
+<script type="text/javascript" src="js/gridstack.js?v=1.12.7"></script>
+<script type="text/javascript" src="js/gridstack.jQueryUI.js?v=1.12.7"></script>
 <!-- app -->
-<script src="modules/app.js?v=1.12.7"></script>
-<script src="modules/router.js?v=1.12.7"></script>
-<script src="modules/i18n/translations.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/app.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/router.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/i18n/translations.js?v=1.12.7"></script>
 <!-- core module-->
-<script src="modules/core/controllers/core.ctrl.js?v=1.12.7"></script>
-<script src="modules/core/directives/core.directive.js?v=1.12.7"></script>
-<script src="modules/core/directives/tree.directive.js?v=1.12.7"></script>
-<script src="modules/core/services/core.service.js?v=1.12.7"></script>
-<script src="modules/core/filters/core.filter.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/core/controllers/core.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/core/directives/core.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/core/directives/tree.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/core/services/core.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/core/filters/core.filter.js?v=1.12.7"></script>
 <!-- user module-->
-<script src="modules/user/controllers/user.ctrl.js?v=1.12.7"></script>
-<script src="modules/user/services/user.service.js?v=1.12.7"></script>
-<script src="modules/user/services/user.auth.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/user/controllers/user.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/user/services/user.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/user/services/user.auth.js?v=1.12.7"></script>
 <!-- job and jobchain module-->
-<script src="modules/job/controllers/job.ctrl.js?v=1.12.7"></script>
-<script src="modules/job/services/job.service.js?v=1.12.7"></script>
-<script src="modules/job/directives/job.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/job/controllers/job.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/job/services/job.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/job/directives/job.directive.js?v=1.12.7"></script>
 <!-- jobscheduler module-->
-<script src="modules/jobscheduler/controllers/jobscheduler.ctrl.js?v=1.12.7"></script>
-<script src="modules/jobscheduler/services/jobscheduler.service.js?v=1.12.7"></script>
-<script src="modules/jobscheduler/directives/dashboard.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/jobscheduler/controllers/jobscheduler.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/jobscheduler/services/jobscheduler.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/jobscheduler/directives/dashboard.directive.js?v=1.12.7"></script>
 <!-- order module-->
-<script src="modules/order/controllers/order.ctrl.js?v=1.12.7"></script>
-<script src="modules/order/services/order.service.js?v=1.12.7"></script>
-<script src="modules/order/directives/order.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/order/controllers/order.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/order/services/order.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/order/directives/order.directive.js?v=1.12.7"></script>
 <!-- endbuild -->
 <!-- yade module-->
-<script src="modules/yade/controllers/yade.ctrl.js?v=1.12.7"></script>
-<script src="modules/yade/services/yade.service.js?v=1.12.7"></script>
-<script src="modules/yade/directive/yade.directive.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/yade/controllers/yade.ctrl.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/yade/services/yade.service.js?v=1.12.7"></script>
+<script type="text/javascript" src="modules/yade/directive/yade.directive.js?v=1.12.7"></script>
 <!-- endbuild -->
 
 <script>

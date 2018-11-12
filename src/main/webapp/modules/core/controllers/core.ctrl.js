@@ -21,9 +21,8 @@
         .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService','$interval'];
-
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService, $interval) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -950,7 +949,7 @@
 
             if (vm.resourceFilters.state === 'agent') {
                 if (vm.permission.JobschedulerUniversalAgent.view.status) {
-                    $state.go('app.resources.agentClusters');
+                    $state.go('app.resources.agentClusters',{type: null});
                     return;
                 } else {
                     vm.resourceFilters.state = 'agentJobExecutions';
@@ -1472,7 +1471,7 @@
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
                         } else {
-                            if ($state.current.name != 'app.dashboard')
+                            if ($state.current.name !== 'app.dashboard')
                                 getScheduleDetail();
                             $state.reload(vm.currentState);
                         }
