@@ -5961,7 +5961,7 @@
                         t2 = $timeout(function () {
                             $rootScope.$broadcast('clusterStatusDataChanged');
                             vm.isLoadedMasterCluster = true;
-                        }, 50);
+                        }, 100);
 
                     }, function () {
                         vm.clusterStatusData = [];
@@ -6592,8 +6592,7 @@
             } else if (id == 'agentClusterRunningTasks') {
                 vm.isRunningAgentVisible = flag;
                 vm.getAgentClusterRunningTask();
-            }
-            else if (id == 'jobSchedulerStatus') {
+            } else if (id == 'jobSchedulerStatus') {
                 vm.isJobscheduleStatusVisible = flag;
                 vm.loadScheduleStatus();
             } else if (id == 'masterClusterStatus') {

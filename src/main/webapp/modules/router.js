@@ -167,7 +167,7 @@
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
-                        files: ["js/html2canvas.js","js/pdfmake.min.js","js/vfs_fonts.js", "bower_components/es6-promise/dist/es6-promise.auto.js", "js/canvas-toBlob.js"],
+                        files: ["bower_components/es6-promise/dist/es6-promise.auto.js", "js/html2canvas.js","js/pdfmake.min.js","js/vfs_fonts.js", "js/canvas-toBlob.js"],
                         serie: true
                     },{
                         insertBefore: '#load_styles_before',

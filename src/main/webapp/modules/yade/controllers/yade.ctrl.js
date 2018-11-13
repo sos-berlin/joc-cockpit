@@ -196,60 +196,48 @@
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
 
-            if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
-            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
-                fromDate = '-'+seconds+'s'
-            } else if (/^\s*(Today)\s*$/i.test(regex)) {
-                fromDate = '0d';
-                toDate = '0d';
-            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
-                fromDate = '-1d';
-                toDate = '-1d';
-            } else if (/^\s*(now)\s*$/i.test(regex)) {
-                fromDate = moment.utc(new Date());
-                toDate = fromDate;
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-            } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-                fromDate = new Date();
-                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                    fromDate.setHours(parseInt(time[1]) - 12);
-                } else {
-                    fromDate.setHours(parseInt(time[1]));
-                }
-                fromDate.setMinutes(parseInt(time[2]));
-                fromDate = moment.utc(fromDate);
-
-                toDate = new Date();
-                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                    toDate.setHours(parseInt(time[4]) - 12);
-                } else {
-                    toDate.setHours(parseInt(time[4]));
-                }
-                toDate.setMinutes(parseInt(time[5]));
-                toDate = moment.utc(toDate);
-            }
+          if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
+          } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+            var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+            fromDate = '-' + seconds + 's'
+          } else if (/^\s*(Today)\s*$/i.test(regex)) {
+            fromDate = '0d';
+            toDate = '0d';
+          } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+            fromDate = '-1d';
+            toDate = '-1d';
+          } else if (/^\s*(now)\s*$/i.test(regex)) {
+            fromDate = moment.utc(new Date());
+            toDate = fromDate;
+          } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+            arr = date[0].split('to');
+            fromDate = arr[0].trim();
+            toDate = arr[1].trim();
+          } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+            arr = date[0].split('to');
+            fromDate = arr[0].trim();
+            toDate = arr[1].trim();
+          } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+            arr = date[0].split('to');
+            fromDate = arr[0].trim();
+            toDate = arr[1].trim();
+          } else if (/^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
+            date = /^\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*(-)(\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*$/.exec(regex);
+            arr = date[0].split('to');
+            fromDate = arr[0].trim();
+            toDate = arr[1].trim();
+          } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(regex)) {
+            let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
+            let arr = reg[0].split('to');
+            let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
+            let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
+            fromDate = moment.utc(fromTime);
+            toDate = moment.utc(toTime);
+          }
 
             if (fromDate) {
                 obj.dateFrom = fromDate;

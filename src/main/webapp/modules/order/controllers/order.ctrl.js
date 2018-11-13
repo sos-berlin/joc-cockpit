@@ -1390,6 +1390,9 @@
         }
 
         vm.exportDiagram = function (type) {
+	   if (vm.isIE()) {
+            return;
+          }
             vm.loading = true;
             var bound = getBoundingNodes();
             var oHeight = $('#exportId').height();
@@ -6938,25 +6941,14 @@
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-                fromDate = new Date();
-                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                    fromDate.setHours(parseInt(time[1]) - 12);
-                } else {
-                    fromDate.setHours(parseInt(time[1]));
-                }
-                fromDate.setMinutes(parseInt(time[2]));
-                fromDate = moment.utc(fromDate);
+            } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(regex)) {
+              let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
+              let arr = reg[0].split('to');
+              let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
+              let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
 
-                toDate = new Date();
-                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                    toDate.setHours(parseInt(time[4]) - 12);
-                } else {
-                    toDate.setHours(parseInt(time[4]));
-                }
-                toDate.setMinutes(parseInt(time[5]));
-                toDate = moment.utc(toDate);
+              fromDate = moment.utc(fromTime);
+              toDate = moment.utc(toTime);
             }
 
             if (fromDate) {

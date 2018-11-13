@@ -158,7 +158,7 @@
                                          on-refresh="getClusterMembers()"
                                          on-operation="clusterAction(item,action,host,port,id)"></cluster-status-view>
                 </div>
-                <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}"
+                <div class="text-center text-primary text" ng-if="!isLoadedMasterCluster"
                      style="padding: 140px 0 155px 0">
                     <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
                 </div>

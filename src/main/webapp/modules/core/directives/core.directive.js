@@ -486,7 +486,7 @@
                     || /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     ||/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     ||/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-]\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
-                    || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
+                    || /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)
                 })
@@ -508,7 +508,7 @@
                     || /^\s*[-](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     ||/^\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
                     ||/^\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+](\d+)(s|h|d|w|M|y)\s*to\s*[-](\d+)(s|h|d|w|M|y)\s*[-,+]\s*(\d+)(s|h|d|w|M|y)\s*$/.test(n.$modelValue)
-                    ||/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
+                    || /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.test(n.$modelValue)? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)
                 })

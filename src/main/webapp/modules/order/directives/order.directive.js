@@ -314,9 +314,6 @@
                             if (item2.errorNode == item.name) {
                                 scope.jobChainData.nodes[index].isErrorNode = true;
                             }
-                            if (item2.nextNode == item.name && item2.level <= item.level) {
-                                scope.jobChainData.nodes[index].previous = item.name;
-                            }
                         });
 
                     });
@@ -412,31 +409,47 @@
                                 }
                             })
                         } else if (index > 0) {
-                            if (item.secondParent) {
-                                var lastTop = scope.coords[index].top;
-                                angular.forEach(scope.coords, function (obj) {
-                                    if (scope.coords[index].left === obj.left && lastTop === obj.top) {
-                                        lastTop = obj.top + rectH + splitMargin;
-                                    }
-                                });
-                                scope.coords[index].top = lastTop;
-                            } else {
-                                var matched = false;
-                                angular.forEach(scope.coords, function (obj, i) {
-                                    if (obj.next === item.name && scope.coords[index].left <= obj.left) {
-                                        scope.coords[index].left = obj.left + margin + rectW;
-                                        scope.coords[index].parent = obj.actual;
-                                        if (!matched) {
-                                            scope.coords[index].top = obj.top;
-                                        }
-                                        matched = true;
-                                    }
+                          if (item.secondParent) {
+                            var lastTop = scope.coords[index].top;
+                            angular.forEach(scope.coords, function (obj) {
+                              if (scope.coords[index].left === obj.left && lastTop === obj.top) {
+                                lastTop = obj.top + rectH + splitMargin;
+                              }
+                            });
+                            scope.coords[index].top = lastTop;
+                          } else {
 
-                                    if (item.nextNode === obj.name && scope.coords[index].left <= obj.left) {
-                                        obj.left = scope.coords[index].left + margin + rectW;
-                                    }
-                                });
+                            var matched = false, count = 0;
 
+                            for (let m = 0; m < scope.coords.length; m++) {
+                              if (scope.coords[m].next === item.name && scope.coords[index].left <= scope.coords[m].left) {
+
+                                scope.coords[index].left = scope.coords[m].left + margin + rectW;
+                                scope.coords[index].parent = scope.coords[m].actual;
+                                if (!matched) {
+                                  if (scope.coords[m].name == scope.coords[index].parent) {
+                                    count = count + 1;
+                                  }
+                                  scope.coords[index].top = scope.coords[m].top;
+                                 
+                                }
+                                if (count > 0) {
+
+                                  if (scope.coords[m].name == scope.coords[index].parent) {
+                                    count = count + 1;
+                                  }
+                                  if (count === 2) {
+                                    scope.coords[index].top = scope.coords[m].top;
+                                   
+                                  }
+                                }
+                                matched = true;
+                              }
+
+                              if (item.nextNode === scope.coords[m].name && scope.coords[index].left <= scope.coords[m].left) {
+                                scope.coords[m].left = scope.coords[index].left + margin + rectW;
+                              }
+                            }
 
                                 if (!matched) {
                                     scope.coords[index].left = scope.coords[index - 1].left + margin + rectW;
