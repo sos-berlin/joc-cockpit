@@ -451,23 +451,19 @@
                               }
                             }
 
-                                if (!matched) {
-                                    scope.coords[index].left = scope.coords[index - 1].left + margin + rectW;
-                                }
-
-                                if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
-
-                                    angular.forEach(scope.coords, function (obj) {
-                                        if (scope.coords[index].name == obj.error) {
-                                            scope.coords[index].left = obj.left + rectW + margin;
-                                            scope.coords[index].top = obj.top + rectH + splitMargin;
-                                        }
-                                    })
-
-
-                                }
+                            if (!matched) {
+                              scope.coords[index].left = scope.coords[index - 1].left + margin + rectW;
                             }
 
+                            if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
+                              angular.forEach(scope.coords, function (obj) {
+                                if (scope.coords[index].name == obj.error) {
+                                  scope.coords[index].left = obj.left + rectW + margin;
+                                  scope.coords[index].top = obj.top + rectH + splitMargin;
+                                }
+                              })
+                            }
+                          }
                         }
 
                     });
@@ -956,13 +952,13 @@
                             }
 
                             if (item.onError == "setback") {
-                                var height = 25;
-                                var width = 40;
-                                var top = div1.offsetTop - height;
-                                var left = div1.offsetLeft + div1.clientWidth / 2 + width / 2;
+                                let height = 25;
+                                let width = 40;
+                                let top = div1.offsetTop - height;
+                                let left = div1.offsetLeft + div1.clientWidth / 2 + width / 2;
                                 createLine(top, left, 2, height, index, item);
                                 left = left - width;
-                                var node = document.createElement('div');
+                                let node = document.createElement('div');
                                 node.innerHTML = '<span class="text-sm" translate>label.setback</span>';
                                 node.style['position'] = 'absolute';
                                 node.style['top'] = top  + 'px';
@@ -987,9 +983,9 @@
 
                             if (div2) {
                                 if (pDiv && pDiv.offsetTop > div1.offsetTop) {
-                                    var top = pDiv.offsetTop + pDiv.clientHeight / 2;
-                                    var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
-                                    width = vm.margin / 2;
+                                    let top = pDiv.offsetTop + pDiv.clientHeight / 2;
+                                    let left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
+                                    let width = vm.margin / 2;
                                     createLine(top, left, width, 2, index, item);
                                     top = div1.offsetTop + div1.clientHeight / 2;
                                     left = left + width;
@@ -998,9 +994,9 @@
                                     width = left - pDiv.offsetLeft - pDiv.clientWidth;
                                     createLine(top, left, width, 2, index, item);
                                 } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
-                                    var top = pDiv.offsetTop + pDiv.clientHeight / 2;
-                                    var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
-                                    var width = vm.margin / 2;
+                                    let top = pDiv.offsetTop + pDiv.clientHeight / 2;
+                                    let left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
+                                    let width = vm.margin / 2;
                                     createLine(top, left, width, 2, index, item);
                                     left = left + vm.margin / 2;
                                     height = div1.offsetTop + div1.clientHeight / 2 - top;
@@ -1011,10 +1007,10 @@
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {
-                                    var top = div2.offsetTop + div2.clientHeight / 2;
-                                    var left = div2.offsetLeft - vm.margin / 2;
-                                    var width = vm.margin / 2;
-                                    var height = 2;
+                                    let top = div2.offsetTop + div2.clientHeight / 2;
+                                    let left = div2.offsetLeft - vm.margin / 2;
+                                    let width = vm.margin / 2;
+                                    let height = 2;
                                     createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top + vm.border;
                                     createLine(top, left, 2, height, index, item);
@@ -1023,10 +1019,10 @@
                                     left = div1.offsetLeft + div1.clientWidth + vm.border;
                                     createLine(top, left, width, 2, index, item);
                                 } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
-                                    var top = div1.offsetTop + div1.clientHeight / 2;
-                                    var left = div1.offsetLeft + div1.clientWidth;
-                                    var width = div2.offsetLeft - left - vm.margin / 2;
-                                    var height = 1;
+                                    let top = div1.offsetTop + div1.clientHeight / 2;
+                                    let left = div1.offsetLeft + div1.clientWidth;
+                                    let width = div2.offsetLeft - left - vm.margin / 2;
+                                    let height = 1;
                                     createLine(top, left, width, 2, index, item);
                                     left = left + width;
                                     height = div2.offsetTop + div2.clientHeight / 2 - top;
@@ -1034,8 +1030,6 @@
                                     top = top + height;
                                     width = div1.offsetLeft - left;
                                     createLine(top, left, width, 2, index, item);
-
-
                                 } else {
                                     var parallels = 0;
                                     angular.forEach(vm.coords, function (obj) {
@@ -1043,22 +1037,20 @@
                                             parallels = obj.parallels;
                                         }
                                     });
-                                    if (vm.jobChainData.nodes.length - 1 > index && parallels > 0) {
-
-                                    } else {
-                                        createLine(div2.offsetTop + div2.clientHeight / 2, div1.offsetLeft + div1.clientWidth + vm.border,
-                                            div2.offsetLeft - div1.offsetLeft - div1.clientWidth, 2, index, item);
-                                    }
+                                  if (!(vm.jobChainData.nodes.length - 1 > index && parallels > 0)) {
+                                    createLine(div2.offsetTop + div2.clientHeight / 2, div1.offsetLeft + div1.clientWidth + vm.border,
+                                      div2.offsetLeft - div1.offsetLeft - div1.clientWidth, 2, index, item);
+                                  }
                                 }
                             }
 
                             if (errNode) {
                                 if (div1.offsetTop + div1.clientHeight < errNode.offsetTop + errNode.clientHeight &&
                                     div1.offsetTop > errNode.offsetTop) {
-                                    var top = errNode.offsetTop + errNode.clientHeight / 2;
-                                    var left = errNode.offsetLeft - vm.margin / 2;
-                                    var width = vm.margin / 2;
-                                    var height = 2;
+                                    let top = errNode.offsetTop + errNode.clientHeight / 2;
+                                    let left = errNode.offsetLeft - vm.margin / 2;
+                                    let width = vm.margin / 2;
+                                    let height = 2;
                                     createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top;
                                     createLine(top, left, 2, height, index, item);
@@ -1068,11 +1060,10 @@
                                     createLine(top, left, width, 2, index, item);
 
                                 } else if (errNode.offsetTop + errNode.clientHeight > div1.offsetTop + div1.clientHeight) {
-
-                                    var top = div1.offsetTop + div1.clientHeight + vm.border;
-                                    var left = div1.offsetLeft + div1.clientWidth / 2;
-                                    var width = errNode.offsetLeft - left - vm.margin / 2;
-                                    var height = errNode.offsetTop + errNode.clientHeight / 2 > top + vm.vSpace ? vm.vSpace : errNode.clientHeight / 2 - 2;
+                                    let top = div1.offsetTop + div1.clientHeight + vm.border;
+                                    let left = div1.offsetLeft + div1.clientWidth / 2;
+                                    let width = errNode.offsetLeft - left - vm.margin / 2;
+                                    let height = errNode.offsetTop + errNode.clientHeight / 2 > top + vm.vSpace ? vm.vSpace : errNode.clientHeight / 2 - 2;
                                     createErrorLine(top, left, 2, height,index, item);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
@@ -1092,10 +1083,10 @@
                                         node1 = errNode;
                                         node2 = div1;
                                     }
-                                    var top = node1.offsetTop + node1.clientHeight + vm.border;
-                                    var left = node1.offsetLeft + node1.clientWidth / 2;
-                                    var width = node2.offsetLeft - left - vm.margin / 2;
-                                    var height = vm.vSpace + 10;
+                                    let top = node1.offsetTop + node1.clientHeight + vm.border;
+                                    let left = node1.offsetLeft + node1.clientWidth / 2;
+                                    let width = node2.offsetLeft - left - vm.margin / 2;
+                                    let height = vm.vSpace + 10;
                                     createErrorLine(top, left, 2, height,index,item);
                                     top = top + height;
                                     width = node2.offsetLeft + node2.clientWidth / 2 - left;
@@ -1133,9 +1124,9 @@
                                 vm.showOrderPanel = '';
                                 getInfo(0);
                                 updateJobChain();
-                                $timeout(function () {
+                                setTimeout(function () {
                                     vm.fitIntoScreen();
-                                }, 500)
+                                }, 50)
                             }
                         });
 
@@ -1242,49 +1233,72 @@
                         }
                     };
 
+                    function getJobInfo(jobPaths) {
+                      vm.getJobInfo({filter: {jobs: jobPaths}}).then(function (res) {
+                        if (res.jobs && res.jobs.length > 0) {
+                          for (let i = 0; i < vm.jobChainData.nodes.length; i++) {
+                            for (let j = 0; j < res.jobs.length; j++) {
+                              if (vm.jobChainData.nodes[i].job.path === res.jobs[j].path) {
+                                if (res.jobs[j].locks && res.jobs[j].locks.length > 0) {
+                                  vm.jobChainData.nodes[i].locks = res.jobs[j].locks;
+                                }
+                                if (res.jobs[j].processClass) {
+                                  vm.jobChainData.nodes[i].processClass = res.jobs[j].processClass;
+                                }
+                                break;
+                              }
+                            }
+                          }
+                        }
+                      });
+                    }
+
+                    let arr =[];
                     function getInfo(index) {
-                        var node = vm.jobChainData.nodes[index];
-                        var nIndex = index;
+                      var node = vm.jobChainData.nodes[index];
+                      var nIndex = index;
+                      if (node.job && node.job.path && (!node.job.configurationStatus || node.job.configurationStatus.severity != 2)) {
 
-                        if (node.job && node.job.path && (!node.job.configurationStatus || node.job.configurationStatus.severity != 2)) {
-                            vm.getJobInfo({filter: {compact: true, job: node.job.path}}).then(function (res) {
-                                if (res.job.locks && res.job.locks.length > 0) {
-                                    vm.jobChainData.nodes[nIndex].locks = res.job.locks;
-                                }
-                                if (res.job.processClass) {
-                                    vm.jobChainData.nodes[nIndex].processClass = res.job.processClass;
-                                }
-                            });
-                        } else if (node.jobChain && node.jobChain.path) {
-                            vm.getJobChainInfo({
-                                filter: {
-                                    compact: false,
-                                    jobChain: node.jobChain.path
-                                }
-                            }).then(function (res) {
-
-                                if (res.jobChain.processClass) {
-                                    vm.jobChainData.nodes[nIndex].processClass = res.jobChain.processClass;
-                                }
-
-                            }, function (err) {
-
-                            })
+                        if (arr.filter(function (e) {
+                          return e.job === node.job.path;
+                        }).length <= 0) {
+                          arr.push({job: node.job.path});
                         }
-                        index++;
-                        if (index < vm.jobChainData.nodes.length) {
-                            getInfo(index);
+
+                      } else if (node.jobChain && node.jobChain.path) {
+                        
+                        vm.getJobChainInfo({
+                          filter: {
+                            compact: false,
+                            jobChain: node.jobChain.path
+                          }
+                        }).then(function (res) {
+                          if (res.jobChain.processClass) {
+                            vm.jobChainData.nodes[nIndex].processClass = res.jobChain.processClass;
+                          }
+                        }, function (err) {
+
+                        })
+                      }
+                      index++;
+                      if (index < vm.jobChainData.nodes.length) {
+                        getInfo(index);
+                      } else {
+                        if (arr.length > 0) {
+                          getJobInfo(arr);
+                          arr = [];
                         }
+                      }
                     }
 
                     vm.formatLock = function formatLock(index) {
                         var node = vm.jobChainData.nodes[index];
                         if (node && node.locks && node.locks[0] && node.locks[0].path && node.locks[0].path.indexOf('/') != -1) {
-                            var extra = node.locks.length > 1 ? ' + ' + (node.locks.length - 1) + ' <a href="#!/resources/locks">more</a>' : '';
+                            let extra = node.locks.length > 1 ? ' + ' + (node.locks.length - 1) + ' <a href="#!/resources/locks">more</a>' : '';
                             return node.locks[0].path.substring(node.locks[0].path.lastIndexOf('/') + 1, node.locks[0].path.length)
                                 + extra;
                         } else if (node && node.locks && node.locks[0] && node.locks[0].path) {
-                            var extra = node.locks.length > 1 ? ' + ' + (node.locks.length - 1) + ' <a href="#!/resources/locks">more</a>' : '';
+                            let extra = node.locks.length > 1 ? ' + ' + (node.locks.length - 1) + ' <a href="#!/resources/locks">more</a>' : '';
                             return node.locks[0].path + extra;
                         }
                     };
@@ -1368,19 +1382,15 @@
                                 return 'crimson';
                             } else if (d == 3) {
                                 return 'dimgrey';
-                            }
-                            else if (d == 4) {
+                            } else if (d == 4) {
                                 return 'text-dark';
                             } else if (d == 5) {
                                 return 'dark-orange';
-                            }
-                            else if (d == 6) {
+                            } else if (d == 6) {
                                 return 'corn-flower-blue';
-                            }
-                            else if (d == 7) {
+                            } else if (d == 7) {
                                 return 'dark-magenta';
-                            }
-                            else if (d == 8) {
+                            } else if (d == 8) {
                                 return 'chocolate';
                             }
                         }
@@ -1413,17 +1423,18 @@
                                 blockEllipsisFlowOrder = 'block-ellipsis-flow-order1';
                             }
                             angular.forEach(orders, function (order, index) {
-                                var node = $('#'+name);
+                                var node = document.getElementById(name);
                                 if (node) {
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     if (container && container.childNodes.length > 0) {
                                         var label = document.createElement('div');
                                         label.setAttribute('class', 'order-cls');
+
                                         label.innerHTML = getOrderMenu(order, name);
                                         container.appendChild(label);
                                         if (index <= 4) {
                                             if(container.offsetTop == 0){
-                                                container.style['top'] = (parseInt(node.css('top').replace(/[^-\d\.]/g, '')) - (orders.length * 25))+ 'px';
+                                                container.style['top'] = (node.offsetTop - (orders.length * 25))+ 'px';
                                             }else {
                                                 container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                             }
@@ -1439,12 +1450,12 @@
 
                                         $compile(label)(vm);
                                     } else {
-                                        if(!node.css('width')){
+                                        if(!node.offsetWidth){
                                             return;
                                         }
-                                        let wt = parseInt(node.css('width').replace(/[^-\d\.]/g, ''));
-                                        let tp = parseInt(node.css('top').replace(/[^-\d\.]/g, ''));
-                                        let lt = parseInt(node.css('left').replace(/[^-\d\.]/g, ''));
+                                        let wt = node.offsetWidth;
+                                        let tp = node.offsetTop;
+                                        let lt = node.offsetLeft;
                                         let label = document.createElement('div');
                                         label.setAttribute('id', 'lbl-order-' + order.state);
                                         label.setAttribute('class', 'orders-block-cls');

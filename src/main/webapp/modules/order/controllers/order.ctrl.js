@@ -365,10 +365,10 @@
 
         vm.getJobInfo = getJobInfo;
 
-        function getJobInfo(jobInfo) {
-            jobInfo.jobschedulerId = vm.schedulerIds.selected;
-            jobInfo.compact = false;
-            return JobService.getJobP(jobInfo);
+        function getJobInfo(obj) {
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = false;
+            return JobService.getJobsP(obj);
         }
 
         vm.slider = {
@@ -2432,7 +2432,7 @@
         }
 
         $scope.$on('event-started', function () {
-            if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+            if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots && vm.showHistoryPanel) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     var path = vm.events[0].eventSnapshots[i].path.split(',')[0];
                     if (vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType === "ORDER") && (path === vm.showHistoryPanel.path) && vm.isAuditLog && vm.permission.AuditLog.view.status) {
