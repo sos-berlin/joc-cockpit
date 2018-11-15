@@ -1342,5 +1342,5 @@
   "message.noSchedulerInstalled": "No JobScheduler Master connected",
   "label.joc": "JOC",
   "label.downloadLog": "Download Log",
-  "label.failedIncomplete": "Failed / Incomplete"
+  "label.numberOfJobsExecuted": "Number of Jobs executed"
 }

@@ -14824,12 +14824,12 @@ module.exports={
 		"05-01": {
           "_name": "05-01"
         },
-		"08-18": {
+		"08-15": {
           "name": {
             "en": "Independence day"
           }
         },
-		"12-02": {
+		"10-02": {
           "name": {
             "en": "Mahatma Gandhi Birthday"
           }

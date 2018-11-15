@@ -1342,5 +1342,5 @@
   "message.noSchedulerInstalled": "JobSchedulerマスターはインストールされていません",
   "label.joc": "JOC",
   "label.downloadLog": "ダウンロード",
-  "label.failedIncomplete": "失敗 / 未完了"
+  "label.numberOfJobsExecuted": "Number of Jobs executed"
 }

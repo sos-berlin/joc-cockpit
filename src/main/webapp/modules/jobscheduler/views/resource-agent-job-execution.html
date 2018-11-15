@@ -127,6 +127,12 @@
                             <i ng-show="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentJobExecutionFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
+                        <th ng-click="sortByAT('numOfJobs')"><a><span translate>label.numberOfJobsExecuted</span>
+                            <i ng-show="agentJobExecutionFilters.filter.sortBy == 'numOfJobs' && !agentJobExecutionFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentJobExecutionFilters.filter.sortBy == 'numOfJobs' && agentJobExecutionFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
                     </tr>
                     </thead>
                     <tbody >
@@ -135,6 +141,7 @@
                         <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" ng-bind="agentTask.agent"></a></td>
                         <td><span ng-bind="agentTask.cause"></span></td>
                         <td><span ng-bind="agentTask.numOfSuccessfulTasks"></span></td>
+                        <td><span ng-bind="agentTask.numOfJobs"></span></td>
                     </tr>
                     </tbody>
                 </table>
