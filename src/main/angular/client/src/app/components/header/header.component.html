@@ -179,8 +179,8 @@
             <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
                 <li class="nav-item" [ngClass]="{'disable-link':!schedulerIds.selected}">
                     <a class="nav-link" href="#/dashboard" [routerLinkActive]="['active']">
-                        <span class="nav-text" id="dashboard_id">
-                             <i class="fa fa-dashboard text-white dashboard-icon" ></i>
+                        <span class="nav-text">
+                             <i class="fa fa-dashboard text-white" ></i>
                             <span  class="font11 text-white text-u-c _600" translate>label.dashboard</span>
                         </span>
                     </a>
@@ -211,9 +211,9 @@
                 </li>
                 <li class="nav-item" *ngIf="permission.YADE.view.status">
                     <a class="nav-link" href="#/file_transfer" [routerLinkActive]="['active']">
-                        <span class="nav-text ">
-                            <i class="fa fa-exchange text-white fa-lg"></i>
-                            <span  class="font11 text-white text-u-c _600" translate>label.fileTransfers</span>
+                        <span class="nav-text">
+                            <i class="fa fa-exchange text-white"></i>
+                            <span class="font11 text-white text-u-c _600" translate>label.fileTransfers</span>
                         </span>
                     </a>
                 </li>

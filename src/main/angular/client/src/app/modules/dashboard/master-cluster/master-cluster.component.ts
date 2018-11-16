@@ -4,8 +4,8 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {Subscription} from 'rxjs/Subscription';
 import {TranslateService} from '@ngx-translate/core';
-import {CommentModal} from "../action/action.component";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {CommentModal} from '../action/action.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { saveAs } from 'file-saver/FileSaver';
 
 import * as _ from 'underscore';
@@ -52,21 +52,22 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "SchedulerStateChanged") {
+            if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
               this.isLoaded = false;
               this.getClusterStatusData(true);
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }
 
   ngOnInit() {
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (sessionStorage.$SOS$JOBSCHEDULE && JSON.parse(sessionStorage.$SOS$JOBSCHEDULE)) {
       this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
@@ -106,19 +107,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getSupervisor(resP): any {
-    /*      let result: any;
-          resP.jobscheduler.state = result.jobscheduler.state;
-          resP.jobscheduler.startedAt = result.jobscheduler.startedAt;*/
-    return this.coreService.post('jobscheduler/supervisor', {jobschedulerId: this.schedulerIds.selected})
-  }
-
   private getSupervisorDetails(): any {
-    this.coreService.post('jobscheduler/supervisor/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(res => {
-      return this.getSupervisor(res);
-    }, (err) => {
-      return this.getSupervisor(null);
-    });
+    return this.coreService.post('jobscheduler/supervisor/p', {jobschedulerId: this.schedulerIds.selected});
   }
 
   private onRefresh(): any {
@@ -150,7 +140,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   }
 
   private refresh() {
-    $("#clusterStatusContainer").remove();
+    $('#clusterStatusContainer').remove();
     if (this.clusterStatusData) {
       this.init();
     } else {
@@ -158,7 +148,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       this.translate.get('message.noDataAvailable').subscribe(translatedValue => {
         msg = translatedValue;
       });
-      this.template = "<div id=\"clusterStatusContainer\"><div style='top: 44%;left: 40%;' class='h6 text-u-c pos-abt' >" + msg + "</div>";
+      this.template = '<div id="clusterStatusContainer"><div style="top: 44%;left: 40%;" class="h6 text-u-c pos-abt">' + msg + '</div>';
       this.template = this.template + '</div>';
       this.loadComponent();
     }
@@ -180,10 +170,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
   private setListeners() {
     const self = this;
     let offset: any;
-    $('[data-toggle="popover"]').popover({html: true, trigger: "hover"});
+    $('[data-toggle="popover"]').popover({html: true, trigger: 'hover'});
     $('.clusterDiagram').on('shown.bs.dropdown', function (e) {
-      $("[data-toggle='popover']").popover('hide');
-      let p = $(e.target).find(".more-option");
+      $('[data-toggle="popover"]').popover('hide');
+      let p = $(e.target).find('.more-option');
       offset = p.offset();
       if (offset) {
         $('.cluster-dropdown').css({
@@ -206,7 +196,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     let anchors: any = document.querySelectorAll("a[id^='__']");
-      for(let i=0; i<anchors.length;i++ ){
+    for (let i = 0; i < anchors.length; i++) {
       anchors[i].addEventListener('click', function () {
         let obj: any = {};
         if (/__(.+)-(.+)-(\d+)-(\d+)/.test(anchors[i].id)) {
@@ -228,7 +218,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           obj.jobschedulerId = self.clusterStatusData.supervisors[results[3]].jobschedulerId;
           self.clusterAction(results[2], obj);
         }
-      })
+      });
     }
   }
 
@@ -305,10 +295,13 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     });
 
     for (let i = 0; i < this.clusterStatusData.members.masters.length; i++) {
-      if (!this.clusterStatusData.members.masters[i].supervisor) {
+      if (!this.clusterStatusData.members.masters[i].supervisor && i == this.clusterStatusData.members.masters.length - 1) {
         removeSupervised();
         return;
       }
+       if (!this.clusterStatusData.members.masters[i].supervisor) {
+         return;
+       }
 
       self.supervisedMasters.push(i);
       let nMaster = {};
@@ -322,7 +315,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         self.clusterStatusData.supervisors.push(nSupervisor);
       }
 
-      if (1 == this.clusterStatusData.members.masters.length - 1) {
+      if (i == this.clusterStatusData.members.masters.length - 1) {
         removeSupervised();
       }
     }
@@ -345,14 +338,20 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       }
       for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
         self.getSupervisorDetails().subscribe(res => {
-          self.clusterStatusData.supervisors[i].data = res;
-          if (refresh) {
-            refreshSupervisorState(self.clusterStatusData.supervisors[i]);
-          }
-          if (i == self.clusterStatusData.supervisors.length - 1) {
-            getTemporaryData(refresh);
-          }
-        })
+          let result: any;
+          self.coreService.post('jobscheduler/supervisor', {jobschedulerId: self.schedulerIds.selected}).subscribe(resV => {
+            result = resV;
+            res.jobscheduler.state = result.jobscheduler.state;
+            res.jobscheduler.startedAt = result.jobscheduler.startedAt;
+            self.clusterStatusData.supervisors[i].data = res;
+            if (refresh) {
+              refreshSupervisorState(self.clusterStatusData.supervisors[i]);
+            }
+            if (i === self.clusterStatusData.supervisors.length - 1) {
+              getTemporaryData(refresh);
+            }
+          });
+        });
       }
     }
 
@@ -362,18 +361,18 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         if (self.clusterStatusData.supervisors.length <= 0) {
           getTemporaryData2(res, refresh);
         }
-
         for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
           for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
             for (let x = 0; x < res.masters.length; x++) {
-              if (res.masters[x].host == self.clusterStatusData.supervisors[i].masters[j].host && res.masters[x].port == self.clusterStatusData.supervisors[i].masters[j].port) {
+              if (res.masters[x].host === self.clusterStatusData.supervisors[i].masters[j].host && res.masters[x].port === self.clusterStatusData.supervisors[i].masters[j].port) {
                 self.clusterStatusData.supervisors[i].masters[j].state = res.masters[x].state;
+                self.clusterStatusData.supervisors[i].masters[j].url = res.masters[x].url;
                 self.clusterStatusData.supervisors[i].masters[j].startedAt = res.masters[x].startedAt;
                 if (self.clusterStatusData.supervisors[i].masters[j].state && refresh) {
                   refreshMasterState(self.clusterStatusData.supervisors[i].masters[j]);
                 }
               }
-              if (self.clusterStatusData.supervisors.length - 1 == i && self.clusterStatusData.supervisors[i].masters.length - 1 == j && res.masters.length - 1 == x) {
+              if (self.clusterStatusData.supervisors.length - 1 === i && self.clusterStatusData.supervisors[i].masters.length - 1 === j && res.masters.length - 1 == x) {
                 getTemporaryData2(res, refresh);
               }
             }
@@ -382,7 +381,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
       }, () => {
         getTemporaryData2(null, refresh);
-      })
+      });
     }
 
     function getTemporaryData2(res, refresh) {
@@ -393,14 +392,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (res) {
         for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
           for (let j = 0; j < res.masters.length; j++) {
-            if (res.masters[j].host == self.clusterStatusData.members.masters[i].host && res.masters[j].port == self.clusterStatusData.members.masters[i].port) {
+            if (res.masters[j].host === self.clusterStatusData.members.masters[i].host && res.masters[j].port === self.clusterStatusData.members.masters[i].port) {
               self.clusterStatusData.members.masters[i].state = res.masters[j].state;
+              self.clusterStatusData.members.masters[i].url = res.masters[j].url;
               self.clusterStatusData.members.masters[i].startedAt = res.masters[j].startedAt;
               if (self.clusterStatusData.members.masters[i].state && refresh) {
                 refreshMasterState(self.clusterStatusData.members.masters[i]);
               }
             }
-            if (self.clusterStatusData.members.masters.length - 1 == i && res.masters.length - 1 == j && !refresh) {
+            if (self.clusterStatusData.members.masters.length - 1 == i && res.masters.length - 1 === j && !refresh) {
               drawFlow();
             }
           }
@@ -447,9 +447,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           sLeft = sLeft + self.tWidth + self.margin;
         }
 
-        let c = "cluster-rect";
+        let c = 'cluster-rect';
         if (new Date().getTime() - new Date(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).getTime() < 2000) {
-          c = c + " yellow-border";
+          c = c + ' yellow-border';
         }
 
         let sClassRunning = 'text-success';
@@ -543,13 +543,13 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           self.template = self.template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + self.clusterStatusData.supervisors[i].jobschedulerId + '">' + self.clusterStatusData.supervisors[i].jobschedulerId +
             '</span></div>';
         }
-        self.template = self.template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + self.clusterStatusData.supervisors[i].host + ':' + self.clusterStatusData.supervisors[i].port +
+        self.template = self.template + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster"><span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
           '</span></div>';
         if (self.clusterStatusData.supervisors[i].data.jobscheduler.state && self.clusterStatusData.supervisors[i].data.jobscheduler.state._text) {
-          self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >+"labelState+"</span>: ' +
-            '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '">' + status + '</span></div>';
+          self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >' + labelState + '</span>: ' +
+            '<span class="text-sm ' + colorClass + '" id="' + 'state' + self.clusterStatusData.supervisors[i].host + ':' + self.clusterStatusData.supervisors[i].port + '">' + status + '</span></div>';
         } else {
-          self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >+"labelState+"</span>: ' +
+          self.template = self.template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" >'+labelState+'</span>: ' +
             '<span id="' + 'state' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '" class="' + sClassRunning + '"></span></div>';
         }
         self.template = self.template + '</div>';
@@ -562,10 +562,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           let name = 'JobScheduler ';
           self.top = self.rHeight + self.vMargin;
           if (self.clusterStatusData.supervisors[i].masters.length - 1 == j) {
-            c = "cluster-rect ";
+            c = 'cluster-rect ';
           }
           if (new Date().getTime() - new Date(self.clusterStatusData.supervisors[i].masters[j].surveyDate).getTime() < 2000) {
-            c = c + " yellow-border";
+            c = c + ' yellow-border';
           }
           if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type == 'PASSIVE') {
             if (self.clusterStatusData.supervisors[i].masters[j].clusterType.precedence == 0) {
@@ -577,7 +577,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           } else if (self.clusterStatusData.supervisors[i].masters[j].clusterType && self.clusterStatusData.supervisors[i].masters[j].clusterType._type == 'ACTIVE') {
             name = 'JobScheduler JS' + (j + 1);
           }
-          if (self.clusterStatusData.supervisors[i].masters[j].clusterType._type == "PASSIVE" && !self.clusterStatusData.supervisors[i].masters[j].state) {
+          if (self.clusterStatusData.supervisors[i].masters[j].clusterType._type == 'PASSIVE' && !self.clusterStatusData.supervisors[i].masters[j].state) {
             self.clusterStatusData.supervisors[i].masters[j].state = {};
             self.clusterStatusData.supervisors[i].masters[j].state._text = ' ';
           }
@@ -699,7 +699,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
         masterTemplate = masterTemplate + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
           '</span></div>';
       }
-      masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.host + ':' + master.port + '</div>' +
+      masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm block-ellipsis-cluster">' + master.url + '</div>' +
         '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm">' +
         '<span class="text-black-dk" >' + labelState + '</span>: ' +
         '<span class="text-sm ' + colorClass + '" id="' + 'state' + master.host + master.port + '">' + status + '</span></div>' +
@@ -711,7 +711,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     function drawFlowForRemainings(zeroSupervisor) {
       for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
         if (self.clusterStatusData.members.masters[i]) {
-          let c = "cluster-rect";
+          let c = 'cluster-rect';
           if (zeroSupervisor && i == 0) {
             self.mLeft = self.mLeft + self.margin;
           } else {
@@ -719,10 +719,10 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           }
 
           if (self.clusterStatusData.members.masters - 1 == i) {
-            c = "cluster-rect";
+            c = 'cluster-rect';
           }
           if (new Date().getTime() - new Date(self.clusterStatusData.members.masters[i].surveyDate).getTime() < 2000) {
-            c = c + " yellow-border";
+            c = c + ' yellow-border';
           }
           let name = '';
           if (self.clusterStatusData.members.masters[i].clusterType && self.clusterStatusData.members.masters[i].clusterType._type == 'PASSIVE') {
@@ -758,11 +758,11 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     }
 
     function drawFlowForDatabase() {
-      let c = "cluster-rect";
+      let c = 'cluster-rect';
       self.mLeft = self.mLeft + self.margin + self.rWidth;
       let dTop = self.top - self.rHeight / 2 - 10;
       if (new Date().getTime() - new Date(self.clusterStatusData.database.surveyDate).getTime() < 2000) {
-        c = c + " yellow-border";
+        c = c + ' yellow-border';
       }
       let popoverTemplate = '<span class="_600">' + labelSurveyDate + ' : </span>' + moment(self.clusterStatusData.database.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
       let masterTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
@@ -774,7 +774,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
       self.template = self.template + '<div>' + masterTemplate + '</div></div>';
       self.loadComponent();
-      alignToCenter()
+      alignToCenter();
     }
 
     function alignToCenter() {
@@ -782,6 +782,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (!dom) {
         return;
       }
+      $('#clusterStatusContainer').css('height', (dom.height() - 12) + 'px');
       let containerCt = dom.height() / 2;
       let containerHCt = dom.width() / 2;
       let diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px', '')) + $("#database").width() - self.margin) / 2;
@@ -805,7 +806,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             }
             if (diffH > 0) {
               document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left =
-                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left.replace('px', '')) + diff + 'px';
+                parseInt(document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port).style.left.replace('px', '')) + diffH/2 + 'px';
             }
           }
         }
@@ -816,7 +817,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           }
           if (diffH > 0) {
             document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left =
-              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left.replace('px', '')) + diff + 'px';
+              parseInt(document.getElementById(self.clusterStatusData.members.masters[j].host + self.clusterStatusData.members.masters[j].port).style.left.replace('px', '')) + diffH/2 + 'px';
           }
 
         }
@@ -825,7 +826,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
             parseInt(document.getElementById('database').style.top.replace('px', '')) + diff + 'px';
         }
         if (diffH > 0) {
-
           document.getElementById('database').style.left =
             parseInt(document.getElementById('database').style.left.replace('px', '')) + diffH + 'px';
         }
@@ -848,7 +848,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       drawForRemainings();
     }
 
-    for(let i=0; i<self.clusterStatusData.supervisors.length;i++ ){
+    for (let i = 0; i < self.clusterStatusData.supervisors.length; i++) {
 
       let clusterStatusContainer = document.getElementById('clusterStatusContainer');
       let supervisorRect = document.getElementById(self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port);
@@ -866,7 +866,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       let databaseRect = document.getElementById('database');
       dTop = databaseRect.offsetTop;
       dLeft = databaseRect.offsetLeft;
-      for(let j=0; j<self.clusterStatusData.supervisors[i].masters.length;j++ ){
+      for (let j = 0; j < self.clusterStatusData.supervisors[i].masters.length; j++) {
         let masterRect = document.getElementById(self.clusterStatusData.supervisors[i].masters[j].host + self.clusterStatusData.supervisors[i].masters[j].port);
 
         let mLeft = masterRect.offsetLeft;
@@ -965,7 +965,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (!self.clusterStatusData.members) {
         return;
       }
-  for(let i=0; i<self.clusterStatusData.members.masters.length;i++ ){
+      for (let i = 0; i < self.clusterStatusData.members.masters.length; i++) {
         let masterRect = document.getElementById(self.clusterStatusData.members.masters[i].host + self.clusterStatusData.members.masters[i].port);
         if (masterRect) {
           clearInterval(self.interval)
@@ -1025,21 +1025,21 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
 
   /*  ------------------ Actions -----------------------*/
   clusterAction(action, obj) {
-    if (action === 'terminateAndRestartWithin' || action === 'terminateWithin' || action ==='reactivatePrimaryJobschedulerWithIn') {
-      if(obj == null) {
+    if (action === 'terminateAndRestartWithin' || action === 'terminateWithin' || action === 'reactivatePrimaryJobschedulerWithIn') {
+      if (obj == null) {
         obj = {};
         obj.jobschedulerId = this.schedulerIds.selected;
         obj.auditLog = {};
-        }
+      }
       this.getTimeout(action, obj);
     } else if (this.preferences.auditLog && (action !== 'download')) {
       let comments = {
         radio: 'predefined',
         name: obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')',
-        operation: action === "terminateFailsafe" ? "Terminate and fail-over" : action === "terminateAndRestart" ? "Terminate and Restart" : action === "abortAndRestart" ? "Abort and Restart" : action === "terminate" ? "Terminate" : action === "pause" ? "Pause" : action === "abort" ? "Abort" : action === "remove" ? "Remove instance" : "Continue"
+        operation: action === 'terminateFailsafe' ? 'Terminate and fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'pause' ? 'Pause' : action === 'abort' ? 'Abort' : action === 'remove' ? 'Remove instance' : 'Continue'
       };
 
-      const modalRef = this.modalService.open(CommentModal, {backdrop: "static"});
+      const modalRef = this.modalService.open(CommentModal, {backdrop: 'static'});
       modalRef.componentInstance.comments = comments;
       modalRef.componentInstance.action = action;
       modalRef.componentInstance.show = true;
@@ -1047,9 +1047,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.performAction = this.performAction;
 
       modalRef.result.then((result) => {
-        console.log('Close...', result)
+        console.log('Close...', result);
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
 
     } else {
@@ -1067,7 +1067,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       radio: 'predefined'
     };
 
-    const modalRef = this.modalService.open(CommentModal, {backdrop: "static"});
+    const modalRef = this.modalService.open(CommentModal, {backdrop: 'static'});
     modalRef.componentInstance.comments = comments;
     modalRef.componentInstance.action = action;
     modalRef.componentInstance.show = this.preferences.auditLog;
@@ -1075,15 +1075,15 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.obj = obj;
 
     modalRef.result.then((result) => {
-      console.log('close...', result)
+      console.log('close...', result);
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
   performAction(action, obj): void {
     if (action === 'terminate') {
-      if(obj == null) {
+      if (obj == null) {
         obj = {};
         obj.jobschedulerId = this.schedulerIds.selected;
         obj.auditLog = {};
@@ -1116,7 +1116,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           obj.jobschedulerId = this.schedulerIds.selected;
           obj.auditLog = {};
         }
-        console.log(obj);
+        
         this.postCall('jobscheduler/cluster/terminate_failsafe', obj);
   } else if (action === 'restart') {
     if(obj == null) {
