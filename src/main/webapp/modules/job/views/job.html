@@ -326,13 +326,13 @@
                                         <span class="text-black _600"  ng-bind="job.maxTasks"></span>
                                          {{'label.runningTask' | translate}}
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs">
+                                    <div class="text-sm  text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
                                         <span>
                                             <span class="text-black _600" ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
                                             <span  ng-bind="'label.orders' | translate"></span>
                                         </span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs" >
+                                    <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!userPreferences.isCompact">
                                         <span class="text-black _600" ng-bind="job.ordersSummary.pending || 0"></span>
                                         <span ng-bind="'label.pending' | translate"></span>
                                         <span class="text-black _600 m-l" ng-bind="job.ordersSummary.running || 0"></span>
@@ -340,23 +340,23 @@
                                         <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs">
-                                        <span>
-                                            <span  ng-bind="'label.nextStart' | translate"></span>
-                                        </span>
+                                    <div class="text-sm text-left text-muted p-t-xs">
+                                        <span translate>label.status </span>:
+                                        <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)"
+                                              ng-bind="job.state._text | translate" ></span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs">
+                                    <div class="text-sm text-left text-muted p-t-xs block-ellipsis " style="width: 100%">
+                                        <span translate>label.processClass </span>:
+                                        <a class="text-hover-primary " ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
+                                    </div>
+
+                                    <div class="text-sm  text-left text-muted p-t-xs">
                                         <span ng-if="job.nextStartTime">
+                                             {{'label.nextStart' | translate}}:
                                              {{job.nextStartTime | stringToDate}}
                                             <span class="text-success" >(<span time="{{job.nextStartTime}}"></span>)</span>
                                         </span>
-                                        <span ng-if="!job.nextStartTime">{{'label.never' | translate}}</span>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-xs">
-                                        <span translate>label.status </span>:
-                                        <span uib-tooltip="{{job.stateText}}"
-                                              class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
-                                              job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}" ng-bind="job.state._text | translate" ></span>
+                                        <span ng-if="!job.nextStartTime">{{'label.nextStartNever' | translate}}</span>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
@@ -399,13 +399,13 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'state._text' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('stateText')" ><a><span translate>label.stateText</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('stateText')" ><a><span translate>label.stateText</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'usedInJobChains' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'usedInJobChains' && jobFilters.reverse"
@@ -417,7 +417,7 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'processClass' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'numOfRunningTasks' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'numOfRunningTasks' && jobFilters.reverse"
@@ -429,37 +429,36 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'nextStartTime' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width=100" ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
+                                <th ng-if="!userPreferences.isCompact" width=100" ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
+                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-
                             </tr>
                             </thead>
                             <tbody ng-repeat="job in filtered track by $index" class="{{(showTaskPanel == job) ? 'light-bg' : ''}}">
@@ -538,8 +537,8 @@
                                               job.state.severity==4 ? 'bg-transparent': job.state.severity==5 ? 'bg-dark-orange' : job.state.severity==6 ? 'bg-corn-flower-blue' :job.state.severity==7 ? 'bg-dark-magenta' : job.state.severity==8 ? 'bg-chocolate' : ''}}"
                                               ng-bind="job.state._text | translate"></span>
                                     </td>
-                                    <td><span ng-if="job.stateText" ng-bind-html="job.stateText | linky:'_blank'"></span></td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact"><span ng-if="job.stateText" ng-bind-html="job.stateText | linky:'_blank'"></span></td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <span ng-if="job.usedInJobChains" class="text-hover-primary"
                                               ng-click="showJobChains(job)" ng-bind="job.usedInJobChains"></span>
                                         <span ng-if="!job.usedInJobChains">0</span>
@@ -547,7 +546,7 @@
                                     <td>
                                         <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
                                             <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
                                             <i class="text-black " translate>label.of</i>
@@ -565,11 +564,11 @@
                                             <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                         </span>
                                     </td>
-                                    <td ng-bind="job.ordersSummary.pending"></td>
-                                    <td ng-bind="job.ordersSummary.running"></td>
-                                    <td ng-bind="job.ordersSummary.suspended"></td>
-                                    <td ng-bind="job.ordersSummary.waitingForResource"></td>
-                                    <td ng-bind="job.ordersSummary.setback"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.pending"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.running"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.suspended"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.waitingForResource"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.setback"></td>
                                 </tr>
                                 <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                                     <td></td>

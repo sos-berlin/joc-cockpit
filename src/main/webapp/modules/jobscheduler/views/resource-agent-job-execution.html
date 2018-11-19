@@ -149,7 +149,8 @@
                      ng-if="agentTasks.length >0"> {{agentTasks.length}}
                     <span translate ng-if="agentTasks.length >1">label.agentTasksFound</span>
                     <span translate ng-if="agentTasks.length ==1">label.agentTaskFound</span>.
-                    <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}
+                    <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
+                    <span ng-if="totalJobs" translate>label.totalNumberOfJobExecutions</span>: {{totalJobs}}
                 </div>
                 <ul ng-show="agentTasks.length > userPreferences.entryPerPage" uib-pagination
                     total-items="agentTasks.length" ng-model="adtLog.currentPage"

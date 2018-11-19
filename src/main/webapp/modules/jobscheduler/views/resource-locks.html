@@ -46,7 +46,7 @@
                                     <a ng-click="copyLinkToObject('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxTask' | translate}}</div>
+                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxNonExclusive' | translate}}</div>
                             <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.holders.tasks.length || '0'"></span> {{'label.runningTask' | translate}}</div>
                             <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.queue.length || '0'"></span> {{'label.waitingTask' | translate}}</div>
                         </div>
@@ -73,25 +73,19 @@
                                 <i ng-show="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByL('status')"><a><span translate>label.status</span>
-                                <i ng-show="locksFilters.filter.sortBy == 'status' && !locksFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="locksFilters.filter.sortBy == 'status' && locksFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
                             <th ng-click="sortByL('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
                                 <i ng-show="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByL('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
+                            <th ng-click="sortByL('holders.tasks.length')"><a><span translate>label.runningTasks</span>
                                 <i ng-show="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByL('queue.length')"><a><span translate>label.numberQueued</span>
+                            <th ng-click="sortByL('queue.length')"><a><span translate>label.waitingTask</span>
                                 <i ng-show="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"
@@ -115,7 +109,6 @@
                             </td>
                             <td ng-bind="lock.name || '-'"></td>
                             <td>{{lock.path}}</td>
-                            <td ng-bind="lock.status || '-'"></td>
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>

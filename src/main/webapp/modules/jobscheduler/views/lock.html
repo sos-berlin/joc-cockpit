@@ -22,10 +22,9 @@
                             <th ng-if="permission.Lock.view.configuration" width="45"><span translate>label.action</span></th>
                             <th><span translate>label.lockName</span></th>
                             <th><span translate>label.path</span></th>
-                            <th><span translate>label.status</span></th>
                             <th><span translate>label.maxNonExclusive</span></th>
-                            <th><span translate>label.numberLockHolder</span></th>
-                            <th><span translate>label.numberQueued</span></th>
+                            <th><span translate>label.runningTasks</span></th>
+                            <th><span translate>label.waitingTask</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -41,7 +40,6 @@
                             </td>
                             <td ng-bind="lock.name || '-'"></td>
                             <td>{{lock.path}}</td>
-                            <td ng-bind="lock.status || '-'"></td>
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>

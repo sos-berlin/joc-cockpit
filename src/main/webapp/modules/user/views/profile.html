@@ -364,6 +364,10 @@
                                <input type="radio" name="view" ng-model="upc.preferences.pageView" value="list" ng-change="upc.changeConfiguration();upc.changeView()">
                                <i class="primary"></i> <span translate>label.asList</span>
                            </label>
+                           <label class="md-check w">
+                               <input type="checkbox" name="compact" ng-model="upc.preferences.isCompact" value="compact" ng-change="upc.changeConfiguration();upc.changeView()">
+                               <i class="primary"></i> <span translate>label.compact</span>
+                           </label>
                        </div>
                    </div>
                     <div class="row m-t">

@@ -310,13 +310,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-sm">
+                                    <div class="text-sm  text-left text-muted p-t-sm" ng-if="!userPreferences.isCompact">
                                         <span class="text-black _600" ng-bind="jobChain.numOfNodes || 0"></span>
                                         <span ng-if="jobChain.numOfNodes>1" ng-bind="'label.jobs' | translate"></span>
                                         <span ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes"
                                               ng-bind="'label.job' | translate"></span>
                                     </div>
-                                    <div class="text-sm text-left text-muted p-t-xs">
+                                    <div class="text-sm text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
                                         <span>
                                             <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
                                             <span ng-if="jobChain.numOfOrders>1"
@@ -325,7 +325,7 @@
                                                   ng-bind="'label.order' | translate"></span>
                                         </span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs">
+                                    <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!userPreferences.isCompact">
                                         <a class="text-black _600 text-hover-primary"
                                            ng-click="viewOrders(jobChain,'PENDING')"
                                            ng-bind="jobChain.ordersSummary.pending || 0"></a>
@@ -339,7 +339,7 @@
                                            ng-bind="jobChain.ordersSummary.suspended || 0"></a>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs">
+                                    <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!userPreferences.isCompact">
                                         <a class="text-black _600 text-hover-primary"
                                            ng-click="viewOrders(jobChain,'SETBACK')"
                                            ng-bind="jobChain.ordersSummary.setback || 0"></a>
@@ -361,6 +361,7 @@
                                               ng-bind="jobChain.state._text | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
+                                        <span translate>label.agentCluster</span>:
                                         <a class="text-hover-primary" ui-sref="app.resources.agentClusters"
                                            ng-bind="jobChain.processClass"></a>
                                         <i ng-if="!jobChain.processClass">-</i>
@@ -379,8 +380,8 @@
                                            ng-if="permission.DailyPlan.view.status"
                                            ng-class="{'pull-right':permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="showCalendar(jobChain);">
-                                            <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt"
-                                                                                               translate>button.showDailyPlan</span>
+                                            <i class="fa fa-calendar text-black-lt"></i>
+                                            <span class="text-black-lt" translate>button.showDailyPlan</span>
                                         </a>
                                     </div>
                                 </div>
@@ -423,7 +424,7 @@
                                     <i ng-show="jobChainFilters.filter.sortBy == 'state._text' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th  width="53px" ng-click="sortBy('numOfNodes')"><a><span translate>label.noOfJobs</span>
+                                <th width="53px" ng-click="sortBy('numOfNodes')" ng-if="!userPreferences.isCompact"><a><span translate>label.noOfJobs</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'numOfNodes' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'numOfNodes' && jobChainFilters.reverse"
@@ -435,40 +436,40 @@
                                     <i ng-show="jobChainFilters.filter.sortBy == 'processClass' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.pending')"><a><span
+                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.pending')" ng-if="!userPreferences.isCompact"><a><span
                                         translate>label.orderPending</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.pending' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.pending' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.running')"><a><span
+                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.running')" ng-if="!userPreferences.isCompact"><a><span
                                         translate>label.orderRunning</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.running' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.running' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
+                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.suspended')" ng-if="!userPreferences.isCompact"><a><span translate>label.orderSuspended</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.suspended' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.suspended' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="100" ng-click="sortBy('jobChain.ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
+                                <th width="100" ng-click="sortBy('jobChain.ordersSummary.waitingForResource')" ng-if="!userPreferences.isCompact"><a><span translate>label.orderQueued</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.waitingForResource' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.waitingForResource' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.setback')"><a><span
+                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.setback')" ng-if="!userPreferences.isCompact"><a><span
                                         translate>label.orderSetbacks</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.setback' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.setback' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.blacklist')"><a><span
+                                <th width="10" ng-click="sortBy('jobChain.ordersSummary.blacklist')" ng-if="!userPreferences.isCompact"><a><span
                                         translate>label.orderBlacklist</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.blacklist' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -538,25 +539,25 @@
                                     <td ng-bind-html="jobChain.path | highlight:filterString"></td>
                                     <td><span class="label {{jobChain.state.severity==0 ? 'bg-green' : jobChain.state.severity==1 ? 'bg-gold' : jobChain.state.severity==2 ? 'bg-crimson': jobChain.state.severity==3 ?'bg-dimgrey':
                                               jobChain.state.severity==4 ? 'bg-transparent': jobChain.state.severity==5 ? 'bg-dark-orange' : jobChain.state.severity==6 ? 'bg-corn-flower-blue' :jobChain.state.severity==7 ? 'bg-dark-magenta' : jobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="jobChain.state._text  | translate"></span></td>
-                                    <td ng-bind="jobChain.numOfNodes || 0"></td>
+                                    <td ng-if="!userPreferences.isCompact" ng-bind="jobChain.numOfNodes || 0"></td>
                                     <td>
                                         <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass"></a></td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending"></a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running"></a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')" ng-bind="jobChain.ordersSummary.suspended"></a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')" ng-bind="jobChain.ordersSummary.waitingForResource"></a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')" ng-bind="jobChain.ordersSummary.setback"></a>
                                     </td>
-                                    <td>
+                                    <td ng-if="!userPreferences.isCompact">
                                         <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist"></a>
                                     </td>
                                 </tr>

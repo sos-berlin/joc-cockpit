@@ -21,20 +21,13 @@
                             <thead>
                             <tr>
                                 <th><span translate>label.agentCluster</span></th>
-                                <th><span translate>label.status</span>
-                                </th>
-                                <th><span translate>label.totalAgents</span>
-                                </th>
-                                <th><span translate>label.runningAgents</span>
-                                </th>
-                                <th><span translate>label.notReachable</span>
-                                </th>
-                                <th><span translate>label.schedulingType</span>
-                                </th>
-                                <th><span translate>label.lastUpdateTime</span>
-                                </th>
-                                <th><span translate>label.maxProcesses</span>
-                                </th>
+                                <th><span translate>label.path</span></th>
+                                <th><span translate>label.status</span></th>
+                                <th><span translate>label.totalAgents</span></th>
+                                <th><span translate>label.runningAgents</span></th>
+                                <th><span translate>label.notReachable</span></th>
+                                <th><span translate>label.schedulingType</span></th>
+                                <th><span translate>label.maxProcesses</span></th>
                                 <th><span translate>label.runningProcesses</span></th>
                             </tr>
                             </thead>
@@ -43,18 +36,18 @@
                                 <td>
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
-                                    {{cluster.path}}
+                                    {{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}
                                 </td>
+                                <td>{{cluster.path}}</td>
                                 <td><span class="label" ng-class="bgColorFunction(cluster.state.severity)">
                                 <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_RUNNING'">{{'healthy' | translate}}</span>
                                 <span ng-if="cluster.state._text =='ONLY_SOME_AGENTS_ARE_RUNNING'">{{'unhealthy' | translate}}</span>
                                 <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
-                            </span></td>
+                                </span></td>
                                 <td>{{cluster.numOfAgents.any}}</td>
                                 <td>{{cluster.numOfAgents.running}}</td>
                                 <td>{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
                                 <td>{{cluster._type | translate}}</td>
-                                <td>{{cluster.surveyDate | stringToDate}}</td>
                                 <td>{{cluster.maxProcesses}}</td>
                                 <td>
                                     <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
@@ -69,6 +62,7 @@
                                             <th translate>label.agent</th>
                                             <th translate>label.state</th>
                                             <th translate>label.url</th>
+                                            <th translate>label.lastUpdateTime</th>
                                             <th translate>label.startedAt</th>
                                             <th translate>label.runningTasks</th>
                                         </tr>
@@ -78,6 +72,7 @@
                                             <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
                                             <td><span class="label" ng-class="bgColorFunction(agent.state.severity)">{{agent.state._text | translate}}</span></td>
                                             <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
+                                            <td>{{cluster.surveyDate | stringToDate}}</td>
                                             <td>{{agent.startedAt | stringToDate}}</td>
                                             <td>{{agent.runningTasks || 0}}</td>
                                         </tr>

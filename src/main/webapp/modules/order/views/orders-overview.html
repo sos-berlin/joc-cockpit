@@ -253,9 +253,8 @@
                                             </div>
                                         </div>
                                         <div class="text-left text-muted p-t-sm">
-                                            <span translate>label.state </span>:
-                                            <span class="{{order.processingState.severity==0 ? 'green' : order.processingState.severity==1 ? 'gold' : order.processingState.severity==2 ? 'crimson': order.processingState.severity==3 ?'dimgrey':
-                                              order.processingState.severity==4 ? 'text-dark': order.processingState.severity==5 ? 'dark-orange' : order.processingState.severity==6 ? 'corn-flower-blue' :order.processingState.severity==7 ? 'dark-magenta' : order.processingState.severity==8 ? 'chocolate' : ''}}" ng-bind="order.processingState._text | translate"></span>
+                                            <span translate>label.status </span>:
+                                            <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                         </div>
                                         <div class="text-left text-muted text-sm p-t-sm">
                                         <span ng-if="order.nextStartTime">

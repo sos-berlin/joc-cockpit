@@ -51,8 +51,7 @@
                             <div class="text-sm  text-left text-muted p-t-xs" >
                                 <span ng-if="!processClass.numOfProcesses" class="text-black _600">0</span>
                                  <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
-                                {{'label.noOfProcesses' | translate}}
-
+                                {{'label.runningProcesses' | translate}}
                             </div>
                         </div>
                     </div>
@@ -65,7 +64,7 @@
                     <thead>
                     <tr>
                         <th class="noExl" width="45"><span translate>label.action</span></th>
-                        <th ng-click="sortByP('name')"><a><span translate>label.name</span>
+                        <th ng-click="sortByP('name')"><a><span translate>label.processClass</span>
                             <i ng-show="processFilters.filter.sortBy == 'name' && !processFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="processFilters.filter.sortBy == 'name' && processFilters.reverse"
@@ -83,7 +82,7 @@
                             <i ng-show="processFilters.filter.sortBy == 'maxProcesses' && processFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByP('numOfProcesses')"><a><span translate>label.noOfProcesses</span>
+                        <th ng-click="sortByP('numOfProcesses')"><a><span translate>label.runningProcesses</span>
                             <i ng-show="processFilters.filter.sortBy == 'numOfProcesses' && !processFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="processFilters.filter.sortBy == 'numOfProcesses' && processFilters.reverse"

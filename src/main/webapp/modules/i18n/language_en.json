@@ -559,7 +559,6 @@
   "label.masters": "JobScheduler Masters",
   "label.maxAvailablePlanedDate": "Max. Planned Date",
   "label.maxEntryPerPage": "Max. number of entries per page",
-  "label.maxNonExclusive": "Max. Non-Exclusive",
   "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries",
   "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
   "label.maxNumberOfHistoryEntries": "Max. number of History entries",
@@ -1342,5 +1341,9 @@
   "message.noSchedulerInstalled": "No JobScheduler Master connected",
   "label.joc": "JOC",
   "label.downloadLog": "Download Log",
-  "label.numberOfJobsExecuted": "Number of Jobs executed"
+  "label.numberOfJobsExecuted": "Number of Jobs executed",
+  "label.compact": "Compact",
+  "label.maxNonExclusive": "Max. Non-Exclusive Tasks",
+  "label.calendarName": "Calendar Name",
+  "label.totalNumberOfJobExecutions": "Total number of Job executions"
 }

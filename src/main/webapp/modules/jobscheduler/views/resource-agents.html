@@ -36,11 +36,10 @@
                             <div>
                                 <span class="text-left ">
                                     <span class="fa fa-stop pos-abt m-t-xs text-xs" ng-class="colorFunction(cluster.state.severity)"></span>
-                                    <i class="fa fa-server m-l m-r-xs"></i>
+                                    <i class="fa fa-server m-l m-r-xs m-t-xs"></i>
                                     <span uib-tooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
                                           ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
                                     <span class="text-sm _600 pull-right" uib-tooltip="{{cluster._type | translate}}" ng-bind-template="({{cluster._type | limitTo:1}})"></span>
-
                                 </span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown">
@@ -51,16 +50,22 @@
                                 </div>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm">
+                                <span class="text-black _600" ng-bind="cluster.numOfAgents.running"></span> of
                                 <span class="text-black _600" ng-bind="cluster.numOfAgents.any"></span>
-                                {{'label.totalAgents' | translate}}
+                                {{'label.runningAgents' | translate}}
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-xs p-l">
-                                <span class="text-black _600" ng-bind="cluster.numOfAgents.running"></span> {{'label.running' | translate}}
+                            <div class="text-sm  text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
+                                {{'label.schedulingType' | translate}}:
+                                 <span class="text-black _600" ng-bind="cluster._type | translate"></span>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-xs">
+                                {{'label.maxProcesses' | translate}}:
+                                <span class="text-black _600" ng-bind="cluster.maxProcesses"></span>
+                            </div>
+                            <div class="text-sm  text-left text-muted p-t-xs">
+                                {{'label.runningProcesses' | translate}}:
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
                                 <span class="text-black _600"  ng-if="cluster.numOfProcesses==0" >0</span>
-                                {{'label.runningProcesses' | translate}}
                             </div>
                         </div>
                     </div>
@@ -73,7 +78,13 @@
                         <thead>
                         <tr>
                             <th width="45"><span translate>label.action</span></th>
-                            <th ng-click="sortByA('path')"><a><span translate>label.agentCluster</span>
+                            <th ng-click="sortByA('agentCluster')"><a><span translate>label.agentCluster</span>
+                                <i ng-show="agentsFilters.filter.sortBy == 'agentCluster' && !agentsFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="agentsFilters.filter.sortBy == 'agentCluster' && agentsFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortByA('path')"><a><span translate>label.path</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
@@ -83,36 +94,30 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
-                                           class="fa fa-caret-down "></i></a>
+                                   class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByA('numOfAgents.any')"><a><span translate>label.totalAgents</span>
+                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.any')"><a><span translate>label.totalAgents</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByA('numOfAgents.running')"><a><span translate>label.runningAgents</span>
+                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.running')"><a><span translate>label.runningAgents</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByA('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
+                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByA('_type')"><a><span translate>label.schedulingType</span>
+                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('_type')"><a><span translate>label.schedulingType</span>
                                 <i ng-show="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortByA('surveyDate')"><a><span translate>label.lastUpdateTime</span>
-                                <i ng-show="agentsFilters.filter.sortBy == 'surveyDate' && !agentsFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="agentsFilters.filter.sortBy == 'surveyDate' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByA('maxProcesses')"><a><span translate>label.maxProcesses</span>
@@ -127,7 +132,6 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-
                         </tr>
                         </thead>
                         <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':cluster.show}">
@@ -146,8 +150,11 @@
                                 <span class="show-in-single-line">
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
-                                    <a class="text-hover-primary" ng-bind="cluster.path" ng-click="showProcessClass(cluster.path)"></a>
+                                    <a ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></a>
                                 </span>
+                            </td>
+                            <td>
+                                <a class="text-hover-primary" ng-bind="cluster.path" ng-click="showProcessClass(cluster.path)"></a>
                             </td>
                             <td>
                                 <span class="label" ng-class="bgColorFunction(cluster.state.severity)">
@@ -156,11 +163,10 @@
                                     <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
                                 </span>
                             </td>
-                            <td>{{cluster.numOfAgents.any}}</td>
-                            <td>{{cluster.numOfAgents.running}}</td>
-                            <td>{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
-                            <td>{{cluster._type | translate}}</td>
-                            <td>{{cluster.surveyDate | stringToDate}}</td>
+                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any}}</td>
+                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.running}}</td>
+                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
+                            <td ng-if="!userPreferences.isCompact">{{cluster._type | translate}}</td>
                             <td>{{cluster.maxProcesses}}</td>
                             <td>
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
@@ -176,6 +182,7 @@
                                         <th translate>label.agent</th>
                                         <th translate>label.state</th>
                                         <th translate>label.url</th>
+                                        <th translate>label.lastUpdateTime</th>
                                         <th translate>label.startedAt</th>
                                         <th translate>label.runningTasks</th>
                                     </tr>
@@ -185,6 +192,7 @@
                                         <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
                                         <td><span class="label" ng-class="bgColorFunction(agent.state.severity)">{{agent.state._text | translate}}</span></td>
                                         <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
+                                        <td>{{cluster.surveyDate | stringToDate}}</td>
                                         <td>{{agent.startedAt | stringToDate}}</td>
                                         <td>{{agent.runningTasks || 0}}</td>
                                     </tr>

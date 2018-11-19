@@ -557,7 +557,6 @@
   "label.masters": "マスター",
   "label.maxAvailablePlanedDate": "最大計画日数",
   "label.maxEntryPerPage": "最大リスト表示行数",
-  "label.maxNonExclusive": "最大共有ロック",
   "label.maxNumberOfAuditLogEntries": "最大操作ログ表示数",
   "label.maxNumberOfAuditLogPerObject": "対象あたり最大操作ログ行数",
   "label.maxNumberOfHistoryEntries": "最大履歴表示数",
@@ -1342,5 +1341,9 @@
   "message.noSchedulerInstalled": "JobSchedulerマスターはインストールされていません",
   "label.joc": "JOC",
   "label.downloadLog": "ダウンロード",
-  "label.numberOfJobsExecuted": "Number of Jobs executed"
+  "label.numberOfJobsExecuted": "Number of Jobs executed",
+  "label.compact": "Compact",
+  "label.maxNonExclusive": "Max. Non-Exclusive Tasks",
+  "label.calendarName": "Calendar Name",
+  "label.totalNumberOfJobExecutions": "Total number of Job executions"
 }
