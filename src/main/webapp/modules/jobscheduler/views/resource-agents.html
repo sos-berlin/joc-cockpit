@@ -49,23 +49,23 @@
                                     <a ng-click="copyLinkToObject('agentCluster',cluster.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-sm">
+                            <div class="text-sm text-left text-muted p-t-sm">
                                 <span class="text-black _600" ng-bind="cluster.numOfAgents.running"></span> of
                                 <span class="text-black _600" ng-bind="cluster.numOfAgents.any"></span>
                                 {{'label.runningAgents' | translate}}
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
+                            <div class="text-sm text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
                                 {{'label.schedulingType' | translate}}:
-                                 <span class="text-black _600" ng-bind="cluster._type | translate"></span>
+                                 <span class="text-black-dk" ng-bind="cluster._type | translate"></span>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-xs">
+                            <div class="text-sm text-left text-muted p-t-xs">
                                 {{'label.maxProcesses' | translate}}:
                                 <span class="text-black _600" ng-bind="cluster.maxProcesses"></span>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-xs">
+                            <div class="text-sm text-left text-muted p-t-xs">
                                 {{'label.runningProcesses' | translate}}:
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
-                                <span class="text-black _600"  ng-if="cluster.numOfProcesses==0" >0</span>
+                                <span class="text-black _600" ng-if="cluster.numOfProcesses==0" >0</span>
                             </div>
                         </div>
                     </div>

@@ -132,8 +132,7 @@
                                             <label class="md-check pos-abt"
                                                    ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                                 <input type="checkbox" data-checklist-model="object.orders"
-                                                       data-checklist-value="order"><i
-                                                    class="primary"></i>
+                                                       data-checklist-value="order"><i class="primary"></i>
                                             </label>
 
                                             <div class="text-left block-ellipsis"
@@ -210,26 +209,24 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="text-left text-muted p-t-sm">
+                                        <div class="text-sm text-left text-muted p-t-sm">
                                             <span translate>label.status </span>:
                                             <span ng-class="colorFunction(order.processingState.severity)"
                                                   ng-bind="order.processingState._text | translate"></span>
                                         </div>
-                                        <div class="text-left text-muted p-t-sm">
+                                        <div class="text-sm text-left text-muted p-t-xs">
                                             <span translate>label.state </span>:
-                                            <span ng-bind="order.state"></span>
+                                            <span class="text-black-dk" ng-bind="order.state"></span>
                                         </div>
-                                        <div class="text-left text-muted p-t-sm">
+                                        <div class="text-sm text-left text-muted p-t-xs">
                                             <span translate>label.jobChain </span>:
-                                            <span ng-bind="order.jobChain | translate"></span>
+                                            <span class="text-black-dk" ng-bind="order.jobChain | translate"></span>
                                         </div>
                                         <div class="text-left text-muted text-sm p-t-sm">
-                                        <span class="hide"
-                                              ng-class="{'show-inline':order.nextStartTime}">
+                                        <span class="hide" ng-class="{'show-inline':order.nextStartTime}">
                                             {{'label.nextStart' | translate}}:
-                                            {{order.nextStartTime | stringToDate}}
-                                           <span class="text-success">(<span
-                                                   time="{{order.nextStartTime}}"></span>)</span>
+                                           <span class="text-black-dk">{{order.nextStartTime | stringToDate}}</span>
+                                           <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
                                         </span>
                                             <span class="hide" ng-class="{'show-inline':order.nextStartNever}" translate>label.nextStartNever</span>
                                             <span class="hide" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}

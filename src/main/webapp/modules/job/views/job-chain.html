@@ -355,16 +355,13 @@
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
-                                        <span uib-tooltip="{{jobChain.stateText}}"
-                                              class="{{jobChain.state.severity==0 ? 'green' : jobChain.state.severity==1 ? 'gold' : jobChain.state.severity==2 ? 'crimson': jobChain.state.severity==3 ?'dimgrey':
-                                              jobChain.state.severity==4 ? 'text-dark': jobChain.state.severity==5 ? 'dark-orange' : jobChain.state.severity==6 ? 'corn-flower-blue' :jobChain.state.severity==7 ? 'dark-magenta' : jobChain.state.severity==8 ? 'chocolate' : ''}}"
+                                        <span uib-tooltip="{{jobChain.stateText}}" ng-class="colorFunction(jobChain.state.severity)"
                                               ng-bind="jobChain.state._text | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.agentCluster</span>:
-                                        <a class="text-hover-primary" ui-sref="app.resources.agentClusters"
-                                           ng-bind="jobChain.processClass"></a>
-                                        <i ng-if="!jobChain.processClass">-</i>
+                                        <a class="text-black-dk text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
+                                        <i class="text-black-dk" ng-if="!jobChain.processClass">-</i>
                                         <span class="m-l text-orange" ng-if="jobChain.distributed" translate>label.distributed</span>
                                     </div>
                                 </div>
@@ -537,8 +534,7 @@
                                         <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
                                     <td ng-bind-html="jobChain.path | highlight:filterString"></td>
-                                    <td><span class="label {{jobChain.state.severity==0 ? 'bg-green' : jobChain.state.severity==1 ? 'bg-gold' : jobChain.state.severity==2 ? 'bg-crimson': jobChain.state.severity==3 ?'bg-dimgrey':
-                                              jobChain.state.severity==4 ? 'bg-transparent': jobChain.state.severity==5 ? 'bg-dark-orange' : jobChain.state.severity==6 ? 'bg-corn-flower-blue' :jobChain.state.severity==7 ? 'bg-dark-magenta' : jobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="jobChain.state._text  | translate"></span></td>
+                                    <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text  | translate"></span></td>
                                     <td ng-if="!userPreferences.isCompact" ng-bind="jobChain.numOfNodes || 0"></td>
                                     <td>
                                         <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass"></a></td>

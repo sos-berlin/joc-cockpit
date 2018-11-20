@@ -23,10 +23,10 @@
                                 <th><span translate>label.agentCluster</span></th>
                                 <th><span translate>label.path</span></th>
                                 <th><span translate>label.status</span></th>
-                                <th><span translate>label.totalAgents</span></th>
-                                <th><span translate>label.runningAgents</span></th>
-                                <th><span translate>label.notReachable</span></th>
-                                <th><span translate>label.schedulingType</span></th>
+                                <th ng-if="!userPreferences.isCompact"><span translate>label.totalAgents</span></th>
+                                <th ng-if="!userPreferences.isCompact"><span translate>label.runningAgents</span></th>
+                                <th ng-if="!userPreferences.isCompact"><span translate>label.notReachable</span></th>
+                                <th ng-if="!userPreferences.isCompact"><span translate>label.schedulingType</span></th>
                                 <th><span translate>label.maxProcesses</span></th>
                                 <th><span translate>label.runningProcesses</span></th>
                             </tr>
@@ -44,10 +44,10 @@
                                 <span ng-if="cluster.state._text =='ONLY_SOME_AGENTS_ARE_RUNNING'">{{'unhealthy' | translate}}</span>
                                 <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
                                 </span></td>
-                                <td>{{cluster.numOfAgents.any}}</td>
-                                <td>{{cluster.numOfAgents.running}}</td>
-                                <td>{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
-                                <td>{{cluster._type | translate}}</td>
+                                <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any}}</td>
+                                <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.running}}</td>
+                                <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
+                                <td ng-if="!userPreferences.isCompact">{{cluster._type | translate}}</td>
                                 <td>{{cluster.maxProcesses}}</td>
                                 <td>
                                     <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>

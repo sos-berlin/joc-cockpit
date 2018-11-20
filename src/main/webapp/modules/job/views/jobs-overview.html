@@ -171,37 +171,31 @@
                                         </div>
                                         <div class="text-sm  text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
                                             <span>
-                                                <span class="text-black _600"
-                                                      ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
+                                                <span class="text-black _600" ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
                                                 <span ng-bind="'label.orders' | translate"></span>
                                             </span>
                                         </div>
                                         <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="!userPreferences.isCompact">
-                                            <span class="text-black _600"
-                                                  ng-bind="job.ordersSummary.pending || 0"></span>
+                                            <span class="text-black _600" ng-bind="job.ordersSummary.pending || 0"></span>
                                             <span ng-bind="'label.pending' | translate"></span>
-                                            <span class="text-black _600 m-l"
-                                                  ng-bind="job.ordersSummary.running || 0"></span>
+                                            <span class="text-black _600 m-l" ng-bind="job.ordersSummary.running || 0"></span>
                                             <span ng-bind="'label.running' | translate"></span>
-                                            <span class="text-black _600 m-l"
-                                                  ng-bind="job.ordersSummary.suspended || 0"></span>
+                                            <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
                                             <span ng-bind="'label.suspended' | translate"></span>
                                         </div>
                                         <div class="text-sm text-left text-muted p-t-xs">
                                             <span translate>label.status </span>:
-                                            <span uib-tooltip="{{job.stateText}}"
-                                                  class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
-                                              job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}"
+                                            <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)"
                                                   ng-bind="job.state._text | translate"></span>
                                         </div>
                                          <div class="text-sm text-left text-muted p-t-xs block-ellipsis " style="width: 100%">
                                             <span translate>label.processClass </span>:
-                                            <a class="text-hover-primary " ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
+                                            <a class="text-black-dk text-hover-primary " ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                                         </div>
                                         <div class="text-sm text-left text-muted p-t-xs">
                                             <span ng-if="job.nextStartTime">
                                                 {{'label.nextStart' | translate}}:
-                                                {{job.nextStartTime | stringToDate}}
+                                                <span class="text-black-dk"> {{job.nextStartTime | stringToDate}}</span>
                                                 <span class="text-success" >(<span time="{{job.nextStartTime}}"></span>)</span>
                                             </span>
                                             <span ng-if="!job.nextStartTime">{{'label.nextStartNever' | translate}}</span>
@@ -398,9 +392,8 @@
                                 </td>
                                 <td ng-bind="job.path"></td>
                                 <td>
-                                    <span class="label {{job.state.severity==0 ? 'bg-green' : job.state.severity==1 ? 'bg-gold' : job.state.severity==2 ? 'bg-crimson': job.state.severity==3 ?'bg-dimgrey':
-                                              job.state.severity==4 ? 'bg-transparent': job.state.severity==5 ? 'bg-dark-orange' : job.state.severity==6 ? 'bg-corn-flower-blue' :job.state.severity==7 ? 'bg-dark-magenta' : job.state.severity==8 ? 'bg-chocolate' : ''}}" ng-if="job.state"
-                                          ng-bind="job.state._text  | translate"></span>
+                                    <span class="label" ng-if="job.state._text"
+                                         ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                                 </td>
                                 <td ng-if="!userPreferences.isCompact"><span ng-bind-html="job.stateText | linky:'_blank'"></span></td>
                                 <td ng-if="!userPreferences.isCompact">
@@ -438,7 +431,7 @@
                             </tr>
                             <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                                 <td></td>
-                                <td colspan="14">
+                                <td colspan="{{!userPreferences.isCompact ? 14 : 6}}">
                                     {{job.configurationStatus._text | translate}} :<span
                                         class="{{job.configurationStatus.severity==0 ? 'green' : job.configurationStatus.severity==1 ? 'gold' : job.configurationStatus.severity==2 ? 'crimson': job.configurationStatus.severity==3 ?'dimgrey':
                                               job.configurationStatus.severity==4 ? 'text-dark': job.configurationStatus.severity==5 ? 'dark-orange' : job.configurationStatus.severity==6 ? 'corn-flower-blue' :job.configurationStatus.severity==7 ? 'dark-magenta' : job.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{job.configurationStatus.message}}</span>
@@ -446,7 +439,7 @@
                             </tr>
                             <tr ng-if="job.error" style="background: transparent !important;">
                                 <td></td>
-                                <td colspan="14">
+                                <td colspan="{{!userPreferences.isCompact ? 14 : 6}}">
                                     {{job.error.code}} :<span class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
                                               job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}">{{job.error.message}}</span>
                                 </td>
@@ -455,7 +448,7 @@
                                 style="background: transparent !important;">
                                 <td></td>
                                 <td></td>
-                                <td colspan="13">
+                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                     <span translate>message.noDataFound</span>
                                 </td>
                             </tr>
@@ -463,7 +456,7 @@
                                 style="background: transparent !important;">
                                 <td></td>
                                 <td></td>
-                                <td colspan="13">
+                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                     <table class="table table-hover table-bordered m-t-xs m-b-sm">
                                         <thead>
                                         <tr>
@@ -523,7 +516,7 @@
                                 style="background: transparent !important;">
                                 <td></td>
                                 <td></td>
-                                <td colspan="13">
+                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                     <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}"
                                          ng-repeat="jobChain in job.jobChains">
                                         <div ng-if="$index==0" class="text-muted p-b-xs"><span

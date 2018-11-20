@@ -27,16 +27,16 @@
                             <th><span translate>label.jobName</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.status</span></th>
-                            <th><span translate>label.stateText</span></th>
-                            <th><span translate>label.jobChainsAssociated</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.stateText</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.jobChainsAssociated</span></th>
                             <th><span translate>label.processClass</span></th>
-                            <th><span translate>label.taskRunning</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.taskRunning</span></th>
                             <th><span translate>label.nextStartTime</span></th>
-                            <th><span translate>label.orderPending</span></th>
-                            <th><span translate>label.orderRunning</span></th>
-                            <th><span translate>label.orderSuspended</span></th>
-                            <th><span translate>label.orderQueued</span></th>
-                            <th><span translate>label.orderSetbacks</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.orderPending</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.orderRunning</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.orderSuspended</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.orderQueued</span></th>
+                            <th ng-if="!userPreferences.isCompact"><span translate>label.orderSetbacks</span></th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="job in jobs" ng-class="{'light-bg':showTaskPanel == job}">
@@ -109,10 +109,10 @@
                             <td>
                                 <span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                             </td>
-                            <td>
+                            <td ng-if="!userPreferences.isCompact">
                                 <span ng-bind-html="job.stateText | linky:'_blank'"></span>
                             </td>
-                            <td>
+                            <td ng-if="!userPreferences.isCompact">
                                 <span ng-if="job.usedInJobChains" class="text-hover-primary"
                                       ng-click="showJobChains(job)" ng-bind="job.usedInJobChains"></span>
                                 <span ng-if="!job.usedInJobChains">0</span>
@@ -120,7 +120,7 @@
                             <td>
                                 <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                             </td>
-                            <td>
+                            <td ng-if="!userPreferences.isCompact">
                                 <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
                                     <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
                                     <i class="text-black " translate>label.of</i>
@@ -138,36 +138,36 @@
                                     <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                 </span>
                             </td>
-                            <td ng-bind="job.ordersSummary.pending"></td>
-                            <td ng-bind="job.ordersSummary.running"></td>
-                            <td ng-bind="job.ordersSummary.suspended"></td>
-                            <td ng-bind="job.ordersSummary.waitingForResource"></td>
-                            <td ng-bind="job.ordersSummary.setback"></td>
+                            <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.pending"></td>
+                            <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.running"></td>
+                            <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.suspended"></td>
+                            <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.waitingForResource"></td>
+                            <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.setback"></td>
                         </tr>
                         <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                             <td></td>
-                            <td colspan="13">
+                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                 {{job.configurationStatus._text | translate}} :<span
                                     ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                             </td>
                         </tr>
                         <tr ng-if="job.error" style="background: transparent !important;">
                             <td></td>
-                            <td colspan="13">
+                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                 {{job.error.code}} :<span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                             </td>
                         </tr>
                         <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="13">
+                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                 <span translate>message.noDataFound</span>
                             </td>
                         </tr>
                         <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="13">
+                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                 <table class="table table-hover table-bordered m-t-xs m-b-sm">
                                     <thead>
                                     <tr>
@@ -224,7 +224,7 @@
                         <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0"
                             style="background: transparent !important;">
                             <td></td>
-                            <td colspan="13">
+                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
                                 <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}"
                                      ng-repeat="jobChain in job.jobChains">
                                     <div ng-if="$index==0" class="text-muted p-b-xs"><span
@@ -282,12 +282,10 @@
                                         <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderQueue</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab"
-                                           data-target="#tab5" translate>label.runningTask</a>
+                                        <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
                                     </li>
                                     <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                        <a class="nav-link" ng-class="{active: isAuditLog}"
-                                           ng-click="loadAuditLogs(showTaskPanel)" href data-toggle="tab"
+                                        <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="loadAuditLogs(showTaskPanel)" href data-toggle="tab"
                                            data-target="#tab6" translate>label.auditLog</a>
                                     </li>
                                 </ul>

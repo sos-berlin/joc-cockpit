@@ -56,25 +56,25 @@
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.usedByOrders </span>:
-                                <span ng-bind="schedule.usedByOrders.length || 0"></span>
+                                <span class="text-black _600" ng-bind="schedule.usedByOrders.length || 0"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.usedByJobs </span>:
-                                <span ng-bind="schedule.usedByJobs.length || 0"></span>
+                                <span class="text-black _600" ng-bind="schedule.usedByJobs.length || 0"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.substituteBy </span>:
-                                <span ng-bind="schedule.substitutedBy.length || '-'"></span>
+                                <span class="text-black _600" ng-bind="schedule.substitutedBy.length || '-'"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.substitute </span>:
-                                <span ng-bind="schedule.substitute.path || '-'"></span>
+                                <span class="text-black-dk" ng-bind="schedule.substitute.path || '-'"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.validity </span>:
-                                <span ng-if="schedule.substitute.validFrom" ng-bind="schedule.substitute.validFrom | stringToDate"></span>
+                                <span ng-if="schedule.substitute.validFrom" class="text-black-dk" ng-bind="schedule.substitute.validFrom | stringToDate"></span>
                                 <span ng-if="schedule.substitute.validFrom && schedule.substitute.validTo" translate> label.to </span>
-                                <span ng-bind="schedule.substitute.validTo | stringToDate"></span>
+                                <span class="text-black-dk" ng-bind="schedule.substitute.validTo | stringToDate"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t" >
