@@ -6900,6 +6900,15 @@
             vm.savedYadeHistoryFilter.selected = undefined;
         }
 
+        function updateDimensions() {
+          $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
+            let w  = $(this).width() + 17;
+            let elem = '#jobChain td.dynamic-thead' + index;
+            if(w > 17)
+                $(elem).css('width', w + 'px');
+          });
+        }
+
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
 
@@ -7430,6 +7439,9 @@
                 vm.isLoading = true;
                  vm.isLoaded = false;
                 isLoaded = true;
+                setTimeout(function(){
+                    updateDimensions();
+                },0)
             }, function () {
                 vm.isLoading = true;
                  vm.isLoaded = false;

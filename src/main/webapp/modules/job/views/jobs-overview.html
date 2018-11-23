@@ -81,7 +81,7 @@
             <div class="hide-block sidebar-btn resize-cursor">
                 <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
             </div>
-            <aside id="leftPanel" class="hidden-sm-down" style="width: 100%">
+            <aside id="leftPanel" class="hidden-sm-down w-full">
                 <job-pie-chart-component status="status"></job-pie-chart-component>
             </aside>
             <div id="rightPanel">
@@ -101,7 +101,6 @@
                                             <input type="checkbox" data-checklist-model="object.jobs"
                                                    data-checklist-value="job"><i class="primary"></i>
                                         </label>
-
                                         <div class="text-left block-ellipsis"
                                              ng-class="{'m-l-md':permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate}">
                                             <span uib-tooltip="{{job.title}}"
@@ -203,33 +202,29 @@
                                     </div>
                                     <div class="box-footer b-t">
                                         <div>
-                                            <a href class="text-left text-hover-color"
-                                               ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
-                                               ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span
-                                                    class="text-black-lt" translate>button.stop</span></a>
-                                            <a href class="text-left primary-text-hover-color"
-                                               ng-if="job.state._text =='STOPPED'  && permission.Job.execute.unstop"
-                                               ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span
-                                                    class="text-black-lt" translate>button.unstop</span></a>
+                                            <a href class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
+                                               ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
+                                            <a href class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.execute.unstop"
+                                               ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="box p-a " ng-if="pageView=='list' && allJobs.length >0">
+                    <div class="box p-a" ng-if="pageView=='list' && allJobs.length >0">
                         <div class="table-responsive" id="jobDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
                             <tr>
-                                <th class="tableexport-ignore" width="30"
+                                <th class="tableexport-ignore chk"
                                     ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i
                                             class="primary"></i>
                                     </label>
                                 </th>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -242,7 +237,7 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'path' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                <th class="status" ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'state._text' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'state._text' && jobFilters.reverse"
@@ -278,31 +273,31 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'nextStartTime' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
+                                <th class="num-long-header" ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
+                                <th class="num-long-header" ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
+                                <th class="num-long-header" ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
+                                <th class="num-long-header" ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
+                                <th class="num-long-header" ng-if="!userPreferences.isCompact" ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && jobFilters.reverse"
@@ -395,7 +390,11 @@
                                     <span class="label" ng-if="job.state._text"
                                          ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                                 </td>
-                                <td ng-if="!userPreferences.isCompact"><span ng-bind-html="job.stateText | linky:'_blank'"></span></td>
+                                <td ng-if="!userPreferences.isCompact">
+                                    <div class="state-text">
+                                        <span ng-bind-html="job.stateText | linky:'_blank'"></span>
+                                    </div>
+                                </td>
                                 <td ng-if="!userPreferences.isCompact">
                                     <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
                                     <span ng-if="!job.usedInJobChains">0</span>
@@ -406,8 +405,7 @@
                                 </td>
                                 <td ng-if="!userPreferences.isCompact">
                                     <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
-                                        <span class="text-black _600"
-                                              ng-bind="job.numOfRunningTasks || 0"></span>
+                                        <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
                                         <i class="text-black " translate>label.of</i>
                                         <span class="text-black _600" ng-bind="job.maxTasks"></span>
                                     </span>
@@ -429,38 +427,35 @@
                                 <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.waitingForResource"></td>
                                 <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.setback"></td>
                             </tr>
-                            <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
+                            <tr ng-if="job.configurationStatus._text">
                                 <td></td>
-                                <td colspan="{{!userPreferences.isCompact ? 14 : 6}}">
-                                    {{job.configurationStatus._text | translate}} :<span
-                                        class="{{job.configurationStatus.severity==0 ? 'green' : job.configurationStatus.severity==1 ? 'gold' : job.configurationStatus.severity==2 ? 'crimson': job.configurationStatus.severity==3 ?'dimgrey':
-                                              job.configurationStatus.severity==4 ? 'text-dark': job.configurationStatus.severity==5 ? 'dark-orange' : job.configurationStatus.severity==6 ? 'corn-flower-blue' :job.configurationStatus.severity==7 ? 'dark-magenta' : job.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{job.configurationStatus.message}}</span>
+                                <td colspan="14" class="p-a-0">
+                                    {{job.configurationStatus._text | translate}} :
+                                    <span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                                 </td>
                             </tr>
                             <tr ng-if="job.error" style="background: transparent !important;">
                                 <td></td>
-                                <td colspan="{{!userPreferences.isCompact ? 14 : 6}}">
-                                    {{job.error.code}} :<span class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
-                                              job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}">{{job.error.message}}</span>
+                                <td colspan="14" class="p-a-0">
+                                    {{job.error.code}} :
+                                    <span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                                 </td>
                             </tr>
-                            <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)"
-                                style="background: transparent !important;">
+                            <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">
                                 <td></td>
                                 <td></td>
-                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                                <td colspan="13" class="p-a-0">
                                     <span translate>message.noDataFound</span>
                                 </td>
                             </tr>
-                            <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0"
-                                style="background: transparent !important;">
+                            <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0">
                                 <td></td>
                                 <td></td>
-                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                                <td colspan="13" class="p-a-0">
                                     <table class="table table-hover table-bordered m-t-xs m-b-sm">
                                         <thead>
                                         <tr>
-                                            <th width="45"><span translate>label.action</span></th>
+                                            <th class="menu" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate"><span translate>label.action</span></th>
                                             <th translate>label.pid</th>
                                             <th translate>label.taskId</th>
                                             <th translate>label.cause</th>
@@ -472,8 +467,7 @@
                                         </thead>
                                         <tbody>
                                         <tr ng-repeat="task in job.runningTasks" class="cursor">
-                                            <td width="40"
-                                                ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                            <td ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                 <div class="btn-group dropdown">
                                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                                         <i class="fa fa-ellipsis-h"></i></button>
@@ -503,7 +497,8 @@
                                             <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob==true">{{task.order.orderId}}</td>
                                             <td ng-click="showLogWindow(null,task,job.path)">{{task.steps}}</td>
                                             <td ng-click="showLogWindow(null,task,job.path)">{{task.startedAt | stringToDate}}
-                                                <span class="text-success" ng-if="task.startedAt">(<span time="{{task.startedAt}}"></span>)</span></td>
+                                                <span class="text-success" ng-if="task.startedAt">(<span time="{{task.startedAt}}"></span>)</span>
+                                            </td>
                                             <td ng-click="showLogWindow(null,task,job.path)" ng-if="job.isOrderJob!=true">{{task.enqueued | stringToDate}} <span
                                                     class="text-success" ng-if="task.enqueued">(<span time="{{task.enqueued}}"></span>)</span>
                                             </td>
@@ -512,11 +507,10 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0"
-                                style="background: transparent !important;">
+                            <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0">
                                 <td></td>
                                 <td></td>
-                                <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                                <td colspan="13" class="p-a-0">
                                     <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}"
                                          ng-repeat="jobChain in job.jobChains">
                                         <div ng-if="$index==0" class="text-muted p-b-xs"><span
@@ -540,38 +534,34 @@
                             <span translate ng-if="allJobs.length >1">label.jobsFound</span>
                             <span translate ng-if="allJobs.length ==1">label.jobFound</span>
                         </div>
-                        <ul ng-show="allJobs.length > userPreferences.entryPerPage" uib-pagination
-                            total-items="allJobs.length" ng-model="jobFilters.currentPage"
-                            items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
-                            class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true"
-                            rotate="false" previous-text="{{'button.prev' | translate}}"
-                            next-text="{{'button.next' | translate}}"></ul>
+                        <ul ng-show="allJobs.length > userPreferences.entryPerPage" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage"
+                            items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true"
+                            rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-left" ng-show="allJobs.length > 10">
                             <div class="btn-group  m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="'10'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="'25'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="'50'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="'100'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                         uib-btn-radio="{{maxEntryPerPage}}"
                                         ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
                                     {{maxEntryPerPage}}
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -635,7 +625,7 @@
                                                         <th translate>label.duration</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
-                                                        <th translate>label.errorText</th>
+                                                        <th class="error-text" translate>label.errorText</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -667,12 +657,12 @@
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
-                                                        <th width="30" ng-if="permission.Job.execute.kill">
+                                                        <th class="chk" ng-if="permission.Job.execute.kill">
                                                             <label class="md-check lg-check" ng-if="showTaskPanel.taskQueue.length>0">
                                                                 <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-change="checkAllTask()"><i class="primary"></i>
                                                             </label>
                                                         </th>
-                                                        <th ng-if="permission.Job.execute.kill" translate>label.action</th>
+                                                        <th class="menu" ng-if="permission.Job.execute.kill" translate>label.action</th>
                                                         <th translate>label.taskId</th>
                                                         <th translate>label.enqueued</th>
                                                         <th translate>label.plannedStart</th>
@@ -685,7 +675,7 @@
                                                                     <input type="checkbox" data-checklist-model="object.tasks" data-checklist-value="task"><i class="primary"></i>
                                                                 </label>
                                                             </td>
-                                                            <td width="40" ng-if="permission.Job.execute.kill">
+                                                            <td ng-if="permission.Job.execute.kill">
                                                                 <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
@@ -712,12 +702,12 @@
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
-                                                        <th width="30" ng-if="permission.Order.delete.permanent">
+                                                        <th class="chk" ng-if="permission.Order.delete.permanent">
                                                             <label class="md-check lg-check" ng-if="queueOrders.orderQueue.length>0">
                                                                 <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-change="checkAllOrder()"><i class="primary"></i>
                                                             </label>
                                                         </th>
-                                                        <th ng-if="permission.Order.delete.permanent" translate>label.action</th>
+                                                        <th class="menu" ng-if="permission.Order.delete.permanent" translate>label.action</th>
                                                         <th translate>label.orderId</th>
                                                         <th translate>label.jobChain</th>
                                                         <th translate>label.status</th>
@@ -732,7 +722,7 @@
                                                                     <input type="checkbox" ng-disabled="order._type =='PERMANENT'" data-checklist-model="object.orders" data-checklist-value="order"><i class="primary"></i>
                                                                 </label>
                                                             </td>
-                                                            <td width="40" ng-if="permission.Order.delete.permanent">
+                                                            <td ng-if="permission.Order.delete.permanent">
                                                                 <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" >
                                                                         <i class="fa fa-ellipsis-h"></i></button>
@@ -767,7 +757,7 @@
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
-                                                        <th width="45"><span translate>label.action</span></th>
+                                                        <th class="menu"><span translate>label.action</span></th>
                                                         <th translate>label.pid</th>
                                                         <th translate>label.taskId</th>
                                                         <th translate>label.cause</th>
@@ -779,7 +769,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showTaskPanel.runningTasks" class="cursor">
-                                                             <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                                             <td ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                                 <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
@@ -812,7 +802,7 @@
                                      <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}"  id="tab6">
                                         <div class="row">
                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
-                                                <table class="table table-hover table-bordered ">
+                                                <table class="table table-hover table-bordered audit-table">
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.created</th>
@@ -834,7 +824,6 @@
                                                         </td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
                                                             <span ng-if="auditLog.timeSpent">
@@ -845,14 +834,14 @@
                                                         <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
                                                     <tr class="tableexport-ignore" ng-show="auditLog.show">
-                                                        <td colspan="6">
+                                                        <td colspan="6" class="p-a-0">
                                                             <table class="table m-a-0">
-                                                            <thead>
+                                                                <thead>
                                                                  <tr>
                                                                      <th translate>label.parameters</th>
                                                                  </tr>
-                                                                 </thead>
-                                                                 <tbody>
+                                                                </thead>
+                                                                <tbody>
                                                                  <tr>
                                                                      <td><span ng-bind="auditLog.parameters"></span></td>
                                                                  </tr>

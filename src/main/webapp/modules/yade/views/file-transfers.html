@@ -367,12 +367,12 @@
                 <table class="table table-hover table-bordered " id="yade">
                     <thead>
                     <tr>
-                        <th width="30" ng-if="permission.YADE.execute.transferStart">
+                        <th class="chk" ng-if="permission.YADE.execute.transferStart">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-change="checkAllFileTransfersFnc()"><i class="primary"></i>
                             </label>
                         </th>
-                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                        <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                         <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                             <i ng-show="yadeFilters.filter.sortBy == 'state._text' && !yadeFilters.sortReverse"
                                class="fa fa-caret-up "></i>
@@ -421,7 +421,7 @@
                             <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>
+                        <th class="error-text" ng-click="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>
                             <i ng-show="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.sortReverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="yadeFilters.filter.sortBy == 'error.message' && yadeFilters.sortReverse"
@@ -538,13 +538,13 @@
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
-                                         <th width="30" ng-if="transfer.permission.execute.transferStart">#</th>
+                                         <th class="chk" ng-if="transfer.permission.execute.transferStart">#</th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
                                          <th translate>label.status</th>
-                                         <th translate>label.errorMessage</th>
+                                         <th class="error-text" translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>
                                      </tr>
@@ -581,19 +581,19 @@
                 <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                 <div class="pull-left" ng-show="filtered.length > 10">
                     <div class="btn-group m-r-xxs">
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                        <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                 ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                         </button>
                     </div>

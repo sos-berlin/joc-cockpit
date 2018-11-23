@@ -92,12 +92,12 @@
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
-                        <th width="30" ng-if="permission.Schedule.change.addSubstitute">
+                        <th class="chk" ng-if="permission.Schedule.change.addSubstitute">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"><i class="primary"></i>
                             </label>
                         </th>
-                        <th class="noExl" width="45"><span translate>label.action</span></th>
+                        <th class="menu"><span translate>label.action</span></th>
                         <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
                             <i ng-show="scheduleFilters.filter.sortBy == 'name' && !scheduleFilters.reverse"
                                class="fa fa-caret-up "></i>
@@ -247,19 +247,19 @@
                     previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                 <div class="pull-left" ng-show="allSchedules.length > 10">
                     <div class="btn-group m-r-xxs">
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                        <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                 ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                         </button>
                     </div>

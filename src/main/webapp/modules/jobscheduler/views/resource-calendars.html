@@ -173,19 +173,19 @@
                 <ul ng-show="allCalendars.length > userPreferences.entryPerPage" uib-pagination total-items="allCalendars.length" ng-model="calendarFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-left" ng-show="allCalendars.length > 10">
                     <div class="btn-group m-r-xxs">
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                         </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                        <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                 ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                         </button>
                     </div>

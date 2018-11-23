@@ -882,47 +882,47 @@
         <div class="hide"  ng-class="{'show': isLoading}">
             <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'jobChain'" >
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="jobChain" >
+                    <table class="table table-hover table-bordered audit-table" id="jobChain" >
                         <thead>
                             <tr>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                                 <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                     <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
+                                <th class="dynamic-thead" ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                     <i ng-show="order.filter.sortBy == 'orderId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'orderId' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                <th class="dynamic-thead" ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
                                     <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                <th class="status" ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="order.filter.sortBy == 'state._text' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'state._text' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
+                                <th class="dynamic-thead" ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
                                     <i ng-show="order.filter.sortBy == 'startTime' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'startTime' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
+                                <th class="dynamic-thead" ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
                                     <i ng-show="order.filter.sortBy == 'endTime' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'endTime' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('duration')">
+                                <th class="dynamic-thead" ng-click="sortBy('duration')">
                                     <a><span translate>label.duration</span>
                                     <i ng-show="order.filter.sortBy == 'duration' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -938,7 +938,7 @@
                             </tr>
                         </thead>
                         <tbody ng-repeat="history in filtered = (historys | filter: {path:filterString}) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':history.show}">
-                        <tr  class="cursor">
+                        <tr class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
@@ -949,48 +949,73 @@
                                     </div>
                                 </div>
                             </td>
-                             <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
+                             <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)" nowrap>
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
                              </td>
-                            <td class="nowrap" ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
+                            <td nowrap ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="history.show = false;$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind-html="history.orderId | highlight:filterString"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
                                 <span ng-click="showJobChain(history.jobChain, history.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == history.jobschedulerId) || !history.jobschedulerId)}" ng-bind-html="history.jobChain | highlight:filterString"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
-                                <span uib-tooltip="{{history.error.message}}" class="label {{history.state.severity==0 ? 'bg-green' : history.state.severity==1 ? 'bg-gold' : history.state.severity==2 ? 'bg-crimson': history.state.severity==3 ?'bg-dimgrey':
-                                              history.state.severity==4 ? 'bg-transparent': history.state.severity==5 ? 'bg-dark-orange' : history.state.severity==6 ? 'bg-corn-flower-blue' :history.state.severity==7 ? 'bg-dark-magenta' : history.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="history.state._text | translate"></span></td>
+                                <span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span>
+                            </td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)"><span  ng-bind="history.startTime | stringToDate"></span></td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)"><span ng-if="history.endTime" ng-bind="history.endTime | stringToDate"></span></td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)"><span ng-if="history.endTime" ng-bind="history.startTime | duration:history.endTime"></span></td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)" ng-bind="history.node || '-' "></td>
                         </tr>
+                        <tr class="tableexport-ignore" ng-if="history.show">
+                            <td></td>
+                             <td colspan="8" >
+                                 <table class="table m-a-0 inner-table">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th class="step" translate>label.step</th>
+                                         <th width="10%" translate>label.state</th>
+                                         <th width="20%" translate>label.job</th>
+                                         <th translate>label.startTime</th>
+                                         <th translate>label.endTime</th>
+                                         <th translate>label.duration</th>
+                                         <th translate>label.exitCode</th>
+                                         <th translate>label.errorCode</th>
+                                         <th class="error-text" translate>label.errorText</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr ng-repeat="step in history.steps track by $index" class="cursor">
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.step}}</td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.node}}</td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">
+                                             <a ng-click="showJob(step.job,history.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == history.jobschedulerId) || !history.jobschedulerId)}">{{step.job}}</a>
+                                         </td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.startTime | stringToDate}}</td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.exitCode}}</td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.error.code}}</td>
+                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)" class="text-danger">{{step.error.message}}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <div ng-if="history.steps.length==0" translate>message.noDataMatched</div>
+                                 <div ng-if="!history.steps" class="text-primary text-center" translate><i class="fa fa-spin fa-spinner"></i></div>
+                             </td>
+                        </tr>
                         <tr ng-if="history.children">
-                            <td colspan="{{!historyView.current ? 9: 8}}" >
+                            <td colspan="9" class="p-a-0">
                                 <table class="table m-a-0">
-                                <!--thead>
-                                    <tr>
-                                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                        <th ng-if="!historyView.current" translate>label.jobSchedulerId</th>
-                                        <th translate>label.orderId</th>
-                                        <th translate>label.jobChain</th>
-                                        <th translate>label.status</th>
-                                        <th translate>label.startTime</th>
-                                        <th translate>label.endTime</th>
-                                        <th translate>label.duration</th>
-                                        <th translate>label.node</th>
-                                    </tr>
-                                    </thead-->
                                     <tbody ng-repeat="child in history.children | orderBy: 'startTime':true" ng-class="{'light-bg':child.show}">
                                     <tr class="cursor">
-                                        <td width="45" class="tableexport-ignore">
+                                        <td width="45px" class="tableexport-ignore">
                                             <div class="btn-group dropdown"  >
                                                 <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -1000,44 +1025,48 @@
                                                 </div>
                                             </div>
                                         </td>
-                                         <td ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
-                                             <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
-                                             <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="child.show = false;$event.stopPropagation()"></i>
-                                             <span ng-bind="child.jobschedulerId"></span>
-                                             <span ng-if="!child.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
+                                         <td ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)" nowrap>
+                                             <div class="m-l-sm">
+                                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
+                                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
+                                                 <span ng-bind="child.jobschedulerId"></span>
+                                                 <span ng-if="!child.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
+                                             </div>
                                          </td>
-                                        <td class="nowrap" ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
-                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show && historyView.current" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
-                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show && historyView.current" ng-click="child.show = false;$event.stopPropagation()"></i>
-                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
-                                            <span ng-bind-html="child.orderId | highlight:filterString"></span>
+                                        <td class="dynamic-thead0" nowrap ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
+                                            <div ng-class="{'m-l-sm' : historyView.current }" >
+                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show && historyView.current" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
+                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show && historyView.current" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
+                                                <span ng-bind-html="child.orderId | highlight:filterString"></span>
+                                            </div>
                                         </td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
+                                        <td class="dynamic-thead1" ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
                                             <span ng-click="showJobChain(child.jobChain,child.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == child.jobschedulerId) || !child.jobschedulerId)}" ng-bind-html="child.jobChain | highlight:filterString"></span>
                                         </td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
-                                            <span uib-tooltip="{{child.error.message}}" class="label {{child.state.severity==0 ? 'bg-green' : child.state.severity==1 ? 'bg-gold' : child.state.severity==2 ? 'bg-crimson': child.state.severity==3 ?'bg-dimgrey':
-                                                          child.state.severity==4 ? 'bg-transparent': child.state.severity==5 ? 'bg-dark-orange' : child.state.severity==6 ? 'bg-corn-flower-blue' :child.state.severity==7 ? 'bg-dark-magenta' : child.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="child.state._text | translate"></span></td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span  ng-bind="child.startTime | stringToDate"></span></td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.endTime | stringToDate"></span></td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.startTime | duration:child.endTime"></span></td>
+                                        <td class="status" ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
+                                            <span uib-tooltip="{{child.error.message}}" class="label" ng-class="bgColorFunction(child.state.severity)" ng-bind="child.state._text | translate"></span></td>
+                                        <td class="dynamic-thead2" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span  ng-bind="child.startTime | stringToDate"></span></td>
+                                        <td class="dynamic-thead3" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.endTime | stringToDate"></span></td>
+                                        <td class="dynamic-thead4" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.startTime | duration:child.endTime"></span></td>
                                         <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)" ng-bind="child.node || '-' "></td>
                                     </tr>
                                     <tr class="tableexport-ignore" ng-if="child.show">
                                         <td></td>
                                          <td colspan="8" >
-                                             <table class="table m-a-0">
+                                             <table class="table m-a-0 inner-table">
                                                  <thead>
                                                  <tr class="tableexport-ignore">
-                                                     <th translate>label.step</th>
-                                                     <th translate>label.state</th>
-                                                     <th translate>label.job</th>
+                                                     <th class="step" translate>label.step</th>
+                                                     <th width="10%" translate>label.state</th>
+                                                     <th width="20%" translate>label.job</th>
                                                      <th translate>label.startTime</th>
                                                      <th translate>label.endTime</th>
                                                      <th translate>label.duration</th>
                                                      <th translate>label.exitCode</th>
                                                      <th translate>label.errorCode</th>
-                                                     <th translate>label.errorText</th>
+                                                     <th class="error-text" translate>label.errorText</th>
                                                  </tr>
                                                  </thead>
                                                  <tbody>
@@ -1062,41 +1091,6 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-if="history.show">
-                            <td></td>
-                             <td colspan="8" >
-                                 <table class="table m-a-0">
-                                     <thead>
-                                     <tr class="tableexport-ignore">
-                                         <th translate>label.step</th>
-                                         <th translate>label.state</th>
-                                         <th translate>label.job</th>
-                                         <th translate>label.startTime</th>
-                                         <th translate>label.endTime</th>
-                                         <th translate>label.duration</th>
-                                         <th translate>label.exitCode</th>
-                                         <th translate>label.errorCode</th>
-                                         <th translate>label.errorText</th>
-                                     </tr>
-                                     </thead>
-                                     <tbody>
-                                     <tr ng-repeat="step in history.steps track by $index" class="cursor">
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.step}}</td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.node}}</td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><a ng-click="showJob(step.job,history.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == history.jobschedulerId) || !history.jobschedulerId)}">{{step.job}}</a></td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.startTime | stringToDate}}</td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.endTime  | stringToDate"></span></td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)"><span ng-if="step.endTime" ng-bind="step.startTime | duration:step.endTime"></span></td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.exitCode}}</td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)">{{step.error.code}}</td>
-                                         <td ng-click="showLogWindow(null,step,null,history.jobschedulerId)" class="text-danger">{{step.error.message}}</td>
-                                     </tr>
-                                     </tbody>
-                                 </table>
-                                 <div ng-if="history.steps.length==0" translate>message.noDataMatched</div>
-                                 <div ng-if="!history.steps" class="text-primary text-center" translate><i class="fa fa-spin fa-spinner"></i></div>
-                             </td>
-                        </tr>
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
@@ -1106,19 +1100,19 @@
                     <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                         ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
@@ -1132,7 +1126,7 @@
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
                             <tr>
-                               <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                               <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                                 <th ng-if="!historyView.current" ng-click="sortBy1('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                     <i ng-show="task.filter.sortBy == 'jobschedulerId' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1196,11 +1190,12 @@
                                 </div>
                             </td>
                             <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" >
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind="jobHistory.jobschedulerId"></span>
                                 <span ng-if="!jobHistory.jobschedulerId" ng-bind="jobSearch.jobschedulerId"></span>
                             </td>
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)">
-                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(jobHistory,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind-html="jobHistory.taskId | highlight:filterString"></span>
                             </td>
                             <td ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)">
@@ -1224,19 +1219,19 @@
                      <ul ng-show="jobFiltered.length > userPreferences.entryPerPage" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="jobFiltered.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                         ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
@@ -1256,10 +1251,10 @@
                                     <i ng-show="yade.filter.sortBy == 'jobschedulerId' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy2('status')"><a><span translate>label.status</span>
-                                    <i ng-show="yade.filter.sortBy == 'status' && !yade.sortReverse"
+                                <th class="status" ng-click="sortBy2('state._text')"><a><span translate>label.status</span>
+                                    <i ng-show="yade.filter.sortBy == 'state._text' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yade.filter.sortBy == 'status' && yade.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'state._text' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy2('profile')"><a><span translate>label.profileName</span>
@@ -1274,10 +1269,10 @@
                                     <i ng-show="yade.filter.sortBy == 'mandator' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy2('operation')"><a><span translate>label.operation</span>
-                                    <i ng-show="yade.filter.sortBy == 'operation' && !yade.sortReverse"
+                                <th ng-click="sortBy2('_operation')"><a><span translate>label.operation</span>
+                                    <i ng-show="yade.filter.sortBy == '_operation' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yade.filter.sortBy == 'operation' && yade.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == '_operation' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy2('source.host')"><a><span translate>label.sourceHost</span>
@@ -1292,13 +1287,13 @@
                                     <i ng-show="yade.filter.sortBy == 'target.host' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                 <th ng-click="sortBy2('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
+                                 <th class="num" ng-click="sortBy2('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
                                     <i ng-show="yade.filter.sortBy == 'numOfFiles' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="yade.filter.sortBy == 'numOfFiles' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy2('error.message')"><a><span translate>label.lastErrorMessage</span>
+                                <th class="error-text" ng-click="sortBy2('error.message')"><a><span translate>label.lastErrorMessage</span>
                                     <i ng-show="yade.filter.sortBy == 'error.message' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="yade.filter.sortBy == 'error.message' && yade.sortReverse"
@@ -1326,7 +1321,7 @@
                             </tr>
                         </thead>
                         <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter:filterString) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
-                        <tr  class="cursor">
+                        <tr class="cursor">
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer,transfer.jobschedulerId);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
@@ -1336,9 +1331,7 @@
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer,transfer.jobschedulerId);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                <span class="label {{transfer.state.severity==0 ? 'bg-green' : transfer.state.severity==1 ? 'bg-gold' : transfer.state.severity==2 ? 'bg-crimson': transfer.state.severity==3 ?'bg-dimgrey':
-                                       transfer.state.severity==4 ? 'bg-transparent': transfer.state.severity==5 ? 'bg-dark-orange' : transfer.state.severity==6 ? 'bg-corn-flower-blue' :transfer.state.severity==7 ? 'bg-dark-magenta' : transfer.state.severity==8 ? 'bg-chocolate' : ''}}"
-                                      ng-bind="transfer.state._text | translate"></span>
+                                <span class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.profile | highlight:filterString"></td>
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind-html="transfer.mandator | highlight:filterString"></td>
@@ -1352,8 +1345,7 @@
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="transfer.show">
-                            <td></td>
-                            <td colspan="11" >
+                            <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1374,16 +1366,16 @@
                                      </thead>
                                      <tbody>
                                      <tr>
-                                        <td  ng-bind="transfer.source.account"></td>
-                                        <td  ng-bind="transfer.source.port"></td>
-                                        <td  ng-bind="transfer.source.protocol"></td>
-                                        <td  ng-bind="transfer.target.account"></td>
-                                        <td  ng-bind="transfer.target.port"></td>
-                                        <td  ng-bind="transfer.target.protocol"></td>
-                                        <td  ng-bind="transfer.jump.host"></td>
-                                        <td  ng-bind="transfer.jump.account"></td>
-                                        <td  ng-bind="transfer.jump.port"></td>
-                                        <td  ng-bind="transfer.jump.protocol"></td>
+                                        <td ng-bind="transfer.source.account"></td>
+                                        <td ng-bind="transfer.source.port"></td>
+                                        <td ng-bind="transfer.source.protocol"></td>
+                                        <td ng-bind="transfer.target.account"></td>
+                                        <td ng-bind="transfer.target.port"></td>
+                                        <td ng-bind="transfer.target.protocol"></td>
+                                        <td ng-bind="transfer.jump.host"></td>
+                                        <td ng-bind="transfer.jump.account"></td>
+                                        <td ng-bind="transfer.jump.port"></td>
+                                        <td ng-bind="transfer.jump.protocol"></td>
                                         <td><span ng-click="showJobChain(transfer.jobChain,transfer.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.jobChain"></span></td>
                                         <td><span ng-click="showJob(transfer.job,transfer.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.job"></span></td>
                                         <td><span ng-click="showOrderLink(transfer.jobChain, transfer.orderId,transfer.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == transfer.jobschedulerId) || !transfer.jobschedulerId)}" ng-bind="transfer.orderId"></span></td>
@@ -1393,17 +1385,16 @@
                              </td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
-                             <td></td>
-                             <td colspan="11" >
-                                 <table class="table m-a-0">
+                             <td colspan="12">
+                                 <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
-                                         <th translate>label.status</th>
-                                         <th translate>label.errorMessage</th>
+                                         <th class="status" translate>label.status</th>
+                                         <th class="error-text" translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>
                                      </tr>
@@ -1433,23 +1424,23 @@
                     </div>
                     <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yade.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered2.length > 10">
-                            <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
-                                </button>
-                            </div>
+                      <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
+                        </button>
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
+                        </button>
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
+                        </button>
+                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                        </button>
+                        <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                        </button>
+                      </div>
                     </div>
                     <div ng-if="isLoading && yadeHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noYadeHistoryFound</div>
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && yadeHistorys.length !==0)}" translate>message.noDataMatched</div>

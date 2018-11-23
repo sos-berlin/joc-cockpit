@@ -1,0 +1,126 @@
+/**
+General CSS
+ */
+.table {
+  border-collapse: collapse;
+}
+.table th.menu {
+  width: 45px;
+}
+.table th.chk {
+  width: 30px;
+}
+.table .state-text {
+  max-width: 150px;
+  word-wrap: break-word;
+}
+.table .error-text {
+  width: 25%;
+  word-wrap: break-word;
+}
+.inner-table .equal-6{
+  width: 16.6%;
+}
+.table .status {
+  width: 80px;
+}
+.audit-table .p-a-0 {
+  padding: 0 !important;
+}
+.status-table .status{
+  min-width: 80px;
+}
+.order-overview-widget-table .col{
+  width: 16.6%;
+}
+.job-snapshot-widget-table .col{
+  width: 19.9%;
+}
+.col-50{
+  width: 25%;
+}
+.col-25{
+  width: 25%;
+}
+#jobChainDivId th.num {
+  width: 55px;
+}
+
+#jobChainDivId th.status, #orderTableId th.status {
+  width: 80px;
+}
+
+#jobChainDivId th.cluster {
+  min-width: 80px;
+}
+
+#jobChainTableId th.num-long-header {
+  width: 100px;
+}
+
+#jobChainTableId .inner-table th.menu {
+  width: 50px;
+}
+
+#jobChainTableId .inner-table th.num {
+  width: 60px;
+}
+
+#jobChainTableId .inner-table th.state {
+  width: 100px;
+}
+
+#jobChainTableId .inner-table th.status {
+  width: 90px;
+}
+#orderTableId .inner-table{
+  table-layout: fixed;
+}
+#orderTableId .inner-table th.type {
+  width: 100px;
+}
+#orderTableId .inner-table th.num {
+  width: 80px;
+}
+.inner-table .step{
+  width: 65px;
+}
+
+#yade th.status, #yade th.num{
+  width: 100px;
+}
+@media screen and (min-width: 1600px) {
+  #jobChainTableId .inner-table th.num {
+    width: 100px;
+  }
+
+  #jobChainTableId .inner-table th.state {
+    width: 120px;
+  }
+
+  #jobChainTableId .inner-table th.status {
+    width: 100px;
+  }
+
+  #orderTableId .inner-table th.type {
+    width: 120px;
+  }
+
+  #orderTableId .inner-table th.num {
+    width: 100px;
+  }
+
+  .table .state-text {
+    max-width: 180px;
+    word-wrap: break-word;
+  }
+
+  .table .error-text {
+    width: 30%;
+    word-wrap: break-word;
+  }
+
+  .table .status {
+    width: 90px;
+  }
+}

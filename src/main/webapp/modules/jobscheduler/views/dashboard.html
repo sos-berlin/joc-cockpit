@@ -92,7 +92,7 @@
                         </li>
                     </ul>
                 </div>
-                <div style="overflow: auto;width: 100%;" ng-class="{'hide':agentStatusChart[0].values.length==0}">
+                <div class="w-full" style="overflow: auto;" ng-class="{'hide':agentStatusChart[0].values.length==0}">
                     <nvd3 options="barOptions"
                           data="agentStatusChart"
                           on-ready="barChartReadyCallback">
@@ -179,7 +179,7 @@
                     <div class="table-responsive status-table">
                         <table class="w-full">
                             <tr ng-repeat="master in mastersList">
-                                <td>
+                                <td class="menu">
                                     <div class="btn-group dropdown status-dropdown">
                                         <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
                                                 class="fa fa-ellipsis-h"></i></button>
@@ -246,8 +246,7 @@
                                        ng-click="changeScheduler(master.jobschedulerId);$event.stopPropagation()">{{master.jobschedulerId}}</a>
                                 </td>
                                 <td><span>{{master.url}}</span></td>
-                                <td><span ng-class="bgColorFunction(master.state.severity)" class="label">{{master.state._text | translate}}</span>
-                                </td>
+                                <td class="status"><span ng-class="bgColorFunction(master.state.severity)" class="label">{{master.state._text | translate}}</span></td>
                                 <td>
                                     <span class="label label-default">{{master.clusterType._type | translate}}</span>
                                     <i ng-if="master.clusterType.precedence>0" class="text-xs" translate>- BACKUP</i>
@@ -283,50 +282,50 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table style="width: 100%" ng-if="!notPermissionForSnapshot && snapshot">
+                        <table class="w-full order-overview-widget-table" ng-if="!notPermissionForSnapshot && snapshot">
                             <tr class="text-center">
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.pending</div>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.running</div>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.suspended</div>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.setback</div>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.waitingForResource</div>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <div translate>label.blacklist</div>
                                 </td>
                             </tr>
                             <tr class="text-center">
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/PENDING" class="text-lg _600 "
                                        ng-bind="snapshot.pending || 0"></a>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/RUNNING" class="text-lg _600 "
                                        ng-bind="snapshot.running || 0"></a>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 "
                                        ng-class="{'dark-orange':snapshot.suspended >0}"
                                        ng-bind="snapshot.suspended || 0"></a>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/SETBACK" class="text-lg _600 "
                                        ng-bind="snapshot.setback || 0"></a>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 "
                                        ng-bind="snapshot.waitingForResource || 0"></a>
                                 </td>
-                                <td width="16.6%">
+                                <td class="col">
                                     <a href="#!/orders_overview/BLACKLIST" class="text-lg _600 "
                                        ng-bind="snapshot.blacklist || 0"></a>
                                 </td>
@@ -397,22 +396,22 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <table style="width: 100%" ng-if="!notPermissionForSummary && orderSummary">
+                    <table class="w-full" ng-if="!notPermissionForSummary && orderSummary">
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.successful</div>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.failed</div>
                             </td>
                         </tr>
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 "
                                    ng-class="{'text-success':orderSummary.successful >0}"
                                    ng-bind="orderSummary.successful || 0"></a>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 "
                                    ng-class="{'crimson':orderSummary.failed  >0}"
                                    ng-bind="orderSummary.failed || 0"></a>
@@ -438,42 +437,42 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table style="width: 100%" ng-if="!notPermissionForTaskSnapshot && jobSnapshot">
+                        <table class="w-full job-snapshot-widget-table" ng-if="!notPermissionForTaskSnapshot && jobSnapshot">
                             <tr class="text-center">
-                                <td width="19.9%">
+                                <td class="col">
                                     <div translate>label.pending</div>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <div translate>label.running</div>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <div translate>label.stopped</div>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <div translate>label.waitingForResource</div>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <div translate>label.tasks</div>
                                 </td>
                             </tr>
                             <tr class="text-center">
-                                <td width="19.9%">
+                                <td class="col">
                                     <a href="#!/tasks_overview/PENDING" class="text-lg _600 "
                                        ng-bind="jobSnapshot.pending || 0"></a>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <a href="#!/tasks_overview/RUNNING" class="text-lg _600 "
                                        ng-bind="jobSnapshot.running || 0"></a>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <a href="#!/tasks_overview/STOPPED" class="text-lg _600 "
                                        ng-bind="jobSnapshot.stopped || 0"></a>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <a href="#!/tasks_overview/WAITINGFORRESOURCE" class="text-lg _600 "
                                        ng-bind="jobSnapshot.waitingForResource || 0"></a>
                                 </td>
-                                <td width="19.9%">
+                                <td class="col">
                                     <span class="text-lg _600 " ng-bind="jobSnapshot.tasks || 0"></span>
                                 </td>
                             </tr>
@@ -543,22 +542,22 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <table style="width: 100%" ng-if="!notPermissionForTaskSummary && taskSummary">
+                    <table class="w-full" ng-if="!notPermissionForTaskSummary && taskSummary">
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.successful</div>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.failed</div>
                             </td>
                         </tr>
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <a ng-click="showTaskSummary('SUCCESSFUL')" class="text-lg _600 "
                                    ng-class="{'text-success':taskSummary.successful >0}"
                                    ng-bind="taskSummary.successful || 0"></a>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <a ng-click="showTaskSummary('FAILED')" class="text-lg _600 "
                                    ng-class="{'crimson':taskSummary.failed  >0}" ng-bind="taskSummary.failed || 0"></a>
                             </td>
@@ -584,36 +583,36 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive" ng-if="!notPermissionForFileOverview && yadeOverview">
-                        <table style="width: 100%">
+                        <table class="w-full">
                             <tr class="text-center">
-                                <td width="25%">
+                                <td class="col-25">
                                     <div translate>label.running</div>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <div translate>label.suspended</div>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <div translate>label.setBack</div>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <div translate>label.waitingForResource</div>
                                 </td>
                             </tr>
                             <tr class="text-center">
-                                <td width="25%">
+                                <td class="col-25">
                                     <a href="#!/file_transfer_overview/RUNNING" class="text-lg _600 "
                                        ng-bind="yadeOverview.running || 0"></a>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <a href="#!/file_transfer_overview/SUSPENDED"
                                        ng-class="{'dark-orange':yadeOverview.suspended >0}" class="text-lg _600 "
                                        ng-bind="yadeOverview.suspended || 0"></a>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <a href="#!/file_transfer_overview/SETBACK" class="text-lg _600 "
                                        ng-bind="yadeOverview.setback || 0"></a>
                                 </td>
-                                <td width="25%">
+                                <td class="col-25">
                                     <a href="#!/file_transfer_overview/WAITINGFORRESOURCE" class="text-lg _600 "
                                        ng-bind="yadeOverview.waitingForResource || 0"></a>
                                 </td>
@@ -684,22 +683,22 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <table style="width: 100%" ng-if="!notPermissionForFileSummary && yadeSummary">
+                    <table class="w-full" ng-if="!notPermissionForFileSummary && yadeSummary">
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.successful</div>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <div translate>label.failed</div>
                             </td>
                         </tr>
                         <tr class="text-center">
-                            <td width="50%">
+                            <td class="col-50">
                                 <a class="text-lg _600 " ng-click="showYadeSummary('SUCCESSFUL')"
                                    ng-class="{'text-success':yadeSummary.successful >0}"
                                    ng-bind="yadeSummary.successful || 0"></a>
                             </td>
-                            <td width="50%">
+                            <td class="col-50">
                                 <a class="text-lg _600 " ng-click="showYadeSummary('FAILED')"
                                    ng-class="{'crimson':yadeSummary.failed  >0}" ng-bind="yadeSummary.failed || 0"></a>
                             </td>

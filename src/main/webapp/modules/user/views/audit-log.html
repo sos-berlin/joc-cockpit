@@ -226,7 +226,7 @@
         <div class="hide"  ng-class="{'show': isLoading}">
             <div class="m-t-sm box p-a">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="auditLogTableId" >
+                    <table class="table table-hover table-bordered audit-table" id="auditLogTableId" >
                         <thead>
                             <tr>
                                 <th ng-if="!adtLog.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
@@ -333,7 +333,7 @@
                             <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" ng-bind="auditLog.ticketLink"></a></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="auditLog.show">
-                            <td colspan="10">
+                            <td colspan="10" class="p-a-0">
                                 <table class="table m-a-0">
                                     <thead>
                                     <tr class="tableexport-ignore">
@@ -357,19 +357,19 @@
                     <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="adtLog.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                         ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                         ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>

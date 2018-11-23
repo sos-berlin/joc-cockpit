@@ -488,15 +488,15 @@
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
-                                        <th class="tableexport-ignore" width="30"
+                                        <th class="tableexport-ignore chk"
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox"
-                                                       ng-change="checkAll()"><i
-                                                    class="primary"></i>
+                                                       ng-change="checkAll()">
+                                                <i class="primary"></i>
                                             </label>
                                         </th>
-                                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                        <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                                         <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>
@@ -515,7 +515,7 @@
                                             <i ng-show="orderFilters.filter.sortBy == 'job' && orderFilters.reverse"
                                                class="fa fa-caret-down "></i></a>
                                         </th>
-                                        <th ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
+                                        <th class="status" ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>
                                             <i ng-show="orderFilters.filter.sortBy == 'processingState._text' && orderFilters.reverse"
@@ -637,8 +637,7 @@
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:filterString"></span></td>
                                         <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind-html="order.job  | highlight:filterString"></span></td>
                                         <td>
-                                            <a class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
-                                               order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}"
+                                            <a class="label" ng-class="bgColorFunction(order.processingState.severity)"
                                                ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text"
                                                ng-bind="order.processingState._text | translate"></a>
                                             <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
@@ -668,14 +667,14 @@
                                     </tr>
                                     <tr ng-show="order.show" class="tableexport-ignore">
                                         <td></td>
-                                        <td colspan="10" style="padding: 1px !important;">
-                                            <table class="table m-a-0">
+                                        <td colspan="10" style="padding: 0 !important;">
+                                            <table class="table m-a-0 inner-table">
                                                 <thead>
                                                 <tr class="tableexport-ignore">
-                                                    <th translate>label.type</th>
+                                                    <th class="type" translate>label.type</th>
                                                     <th translate>label.stateText</th>
                                                     <th translate>label.endState</th>
-                                                    <th translate>label.priority</th>
+                                                    <th class="num" translate>label.priority</th>
                                                     <th translate>label.params</th>
                                                     <th translate>label.taskId</th>
                                                 </tr>
@@ -710,26 +709,20 @@
                                     next-text="{{'button.next' | translate}}"></ul>
                                 <div class="pull-left" ng-show="filtered.length > 10">
                                     <div class="btn-group m-r-xxs">
-                                        <button class="btn btn-default white btn-sm"
-                                                ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                                         </button>
-                                        <button class="btn btn-default white btn-sm"
-                                                ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                                 ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                                         </button>
-                                        <button class="btn btn-default white btn-sm"
-                                                ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                                 ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                                         </button>
-                                        <button class="btn btn-default white btn-sm"
-                                                ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                        <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                                 ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                         </button>
-                                        <button class="btn btn-default white btn-sm"
-                                                ng-model="userPreferences.entryPerPage"
-                                                uib-btn-radio="{{maxEntryPerPage}}"
-                                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
+                                        <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
+                                                uib-btn-radio="{{maxEntryPerPage}}" ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
                                             {{maxEntryPerPage}}
                                         </button>
                                     </div>
@@ -806,7 +799,7 @@
                                                         </thead>
                                                         <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
                                                         <tr ng-click="showLogWindow(history,null)" class="cursor">
-                                                            <td>
+                                                            <td nowrap>
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                                                 <span ng-bind="history.orderId"></span>
                                                             </td>
@@ -818,36 +811,20 @@
                                                             <td ng-bind="history.startTime | duration:history.endTime"></td>
                                                             <td ng-bind="history.node"></td>
                                                         </tr>
-                                                        <tr ng-if="history.children">
-                                                            <td colspan="6" >
-                                                            <table class="table m-a-0">
-                                                            <!--thead>
-                                                                <tr>
-                                                                    <th translate>label.orderId</th>
-                                                                    <th translate>label.status</th>
-                                                                    <th translate>label.startTime</th>
-                                                                    <th translate>label.endTime</th>
-                                                                    <th translate>label.duration</th>
-                                                                    <th translate>label.node</th>
-                                                                </tr>
-                                                                </thead-->
-                                                                <tbody>
-                                                                <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
-                                                                <td>
+                                                        <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                            <td nowrap>
+                                                                <div class="m-l-sm">
                                                                     <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
                                                                     <span ng-bind="child.orderId"></span>
-                                                                </td>
-                                                                <td>
-                                                                    <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
-                                                                </td>
-                                                                <td ng-bind="child.startTime | stringToDate"></td>
-                                                                <td ng-bind="child.endTime | stringToDate"></td>
-                                                                <td ng-bind="child.startTime | duration:child.endTime"></td>
-                                                                <td ng-bind="child.node"></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                                </div>
                                                             </td>
+                                                            <td>
+                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                            </td>
+                                                            <td ng-bind="child.startTime | stringToDate"></td>
+                                                            <td ng-bind="child.endTime | stringToDate"></td>
+                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                            <td ng-bind="child.node"></td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -869,12 +846,12 @@
                                                         <th translate>label.duration</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
-                                                        <th translate>label.errorText</th>
+                                                        <th class="error-text" translate>label.errorText</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showLogPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
-                                                           <td>
+                                                           <td nowrap>
                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
@@ -889,7 +866,6 @@
                                                            <td>{{task.error.code}}</td>
                                                            <td class="text-danger">{{task.error.message}}</td>
                                                         </tr>
-
                                                     </tbody>
                                                 </table>
                                                  <div ng-if="showLogPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
@@ -902,7 +878,7 @@
                                             <div class="row">
                                                 <div class="table-responsive" resizable r-directions="['bottom']"
                                                      r-height="250">
-                                                    <table class="table table-hover table-bordered ">
+                                                    <table class="table table-hover table-bordered audit-table">
                                                         <thead>
                                                         <tr>
                                                             <th translate>label.created</th>
@@ -928,17 +904,17 @@
                                                             <td><span ng-bind="auditLog.request"></span></td>
                                                             <td><span ng-bind="auditLog.comment"></span></td>
                                                             <td>
-                                                            <span ng-if="auditLog.timeSpent">
-                                                                <span ng-bind="auditLog.timeSpent"></span>
-                                                                <span>m</span>
-                                                            </span>
+                                                                <span ng-if="auditLog.timeSpent">
+                                                                    <span ng-bind="auditLog.timeSpent"></span>
+                                                                    <span>m</span>
+                                                                </span>
                                                             </td>
                                                             <td>
                                                                 <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a>
                                                             </td>
                                                         </tr>
                                                         <tr class="tableexport-ignore" ng-show="auditLog.show">
-                                                            <td colspan="6">
+                                                            <td colspan="6" class="p-a-0">
                                                                 <table class="table m-a-0">
                                                                     <thead>
                                                                         <tr><th translate>label.parameters</th></tr>

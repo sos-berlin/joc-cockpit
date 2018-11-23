@@ -420,6 +420,17 @@
             recursive(data);
         }
 
+        function updateDimensions() {
+          let max = 0;
+          $('#jobChainTableId .inner-table').find('thead th.dynamic-thead').each(function () {
+            let val = $(this).width();
+            max = (val > max) ? val : max;
+          });
+          if (max > 0) {
+            $('#jobChainTableId .inner-table th.dynamic-thead').css('width', max + 'px');
+          }
+        }
+
         function mergePermanentRes(arr, obj, expandNode) {
             delete obj['folders'];
             delete obj['states'];
@@ -670,7 +681,17 @@
                     _updatePanelHeight();
                 }
             }
+
+            setTimeout(function(){
+                 $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
+                 updateDimensions();
+            });
         }
+
+        $(window).resize(function () {
+            $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
+           updateDimensions();
+        });
 
         function _updatePanelHeight(info) {
             setTimeout(function () {

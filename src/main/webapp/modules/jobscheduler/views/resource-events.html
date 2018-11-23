@@ -287,23 +287,23 @@
                 previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
             <div class="pull-left" ng-show="filtered.length > 10">
                 <div class="btn-group m-r-xxs">
-                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                    <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                             uib-btn-radio="'10'"
                             ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                     </button>
-                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                    <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                             uib-btn-radio="'25'"
                             ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                     </button>
-                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                    <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                             uib-btn-radio="'50'"
                             ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                     </button>
-                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                    <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                             uib-btn-radio="'100'"
                             ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                     </button>
-                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                    <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                             uib-btn-radio="{{maxEntryPerPage}}"
                             ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
                         {{maxEntryPerPage}}

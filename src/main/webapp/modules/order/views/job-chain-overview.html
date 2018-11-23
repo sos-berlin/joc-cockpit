@@ -189,13 +189,13 @@
                     <table class="table table-hover table-bordered" ng-if="!jobChain.nestedJobChains || jobChain.nestedJobChains.length==0">
                         <thead>
                         <tr>
-                            <th ng-if="permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
+                            <th class="chk" ng-if="permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check lg-check">
                                     <input type="checkbox" ng-model="allCheck1.checkbox" ng-change="checkAllJobChains()"><i class="primary"></i>
                                 </label>
                             </th>
-                            <th translate>label.action</th>
+                            <th class="menu" translate>label.action</th>
                             <th translate>label.state</th>
                             <th translate>label.job</th>
                             <th translate>label.noOfOrders</th>
@@ -207,14 +207,14 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="node in jobChain.nodes" class="{{jobChain.showHistory == node.name ? 'light-bg':''}}">
-                            <td width="40" ng-if="permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
+                            <td ng-if="permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check">
                                     <input type="checkbox" data-checklist-model="object1.nodes" data-checklist-value="node" data-checklist-comparator=".name">
                                     <i class="primary"></i>
                                 </label>
                             </td>
-                            <td width="40" ng-if="permission.Job.view.configuration || permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
+                            <td ng-if="permission.Job.view.configuration || permission.Job.execute.stop || permission.Job.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
@@ -412,7 +412,7 @@
                     <table class="table table-hover table-bordered" ng-if="jobChain.nestedJobChains && jobChain.nestedJobChains.length>0">
                         <thead>
                         <tr>
-                            <th ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop || permission.JobChain.execute.stopJobChainNode
+                            <th class="chk" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check lg-check">
                                     <input type="checkbox" ng-model="allCheck1.checkbox" ng-change="checkAllJobChains()"><i
@@ -425,7 +425,7 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="node in jobChain.nodes | orderBy:state" ng-if="node.jobChain">
-                            <td width="40" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop || permission.JobChain.execute.stopJobChainNode
+                            <td ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop || permission.JobChain.execute.stopJobChainNode
                                     || permission.JobChain.execute.processJobChainNode || permission.JobChain.execute.skipJobChainNode || permission.JobChain.execute.processJobChainNode">
                                 <label class="md-check">
                                     <input type="checkbox" data-checklist-model="object1.nodes" data-checklist-value="node" data-checklist-comparator=".name"><i
@@ -557,7 +557,7 @@
                                                 <tbody>
                                                 <tr ng-repeat="nestedNode in nestedJobChain.nodes | orderBy:state"
                                                     ng-if="nestedNode.job" class="{{jobChain.showHistory == nestedNode.name ? 'light-bg':''}}">
-                                                    <td width="45">
+                                                    <td class="menu">
                                                         <div class="btn-group dropdown">
                                                             <button type="button"
                                                                     class="btn-drop more-option-h"
@@ -881,7 +881,7 @@
                                                 </thead>
                                                 <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
                                                     <tr ng-click="showLogWindow(history,null)" class="cursor">
-                                                        <td>
+                                                        <td nowrap>
                                                             <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                                             <span ng-bind="history.orderId"></span>
                                                         </td>
@@ -893,36 +893,20 @@
                                                         <td ng-bind="history.startTime | duration:history.endTime"></td>
                                                         <td ng-bind="history.node"></td>
                                                     </tr>
-                                                    <tr ng-if="history.children">
-                                                        <td colspan="6" >
-                                                        <table class="table m-a-0">
-                                                            <!--thead>
-                                                            <tr>
-                                                                <th translate>label.orderId</th>
-                                                                <th translate>label.status</th>
-                                                                <th translate>label.startTime</th>
-                                                                <th translate>label.endTime</th>
-                                                                <th translate>label.duration</th>
-                                                                <th translate>label.node</th>
-                                                            </tr>
-                                                            </thead-->
-                                                            <tbody>
-                                                            <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
-                                                            <td>
+                                                    <tr ng-if="history.children"  ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                        <td nowrap>
+                                                            <div class="m-l-sm">
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
                                                                 <span ng-bind="child.orderId"></span>
-                                                            </td>
-                                                            <td>
-                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
-                                                            </td>
-                                                            <td ng-bind="child.startTime | stringToDate"></td>
-                                                            <td ng-bind="child.endTime | stringToDate"></td>
-                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
-                                                            <td ng-bind="child.node"></td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
+                                                            </div>
                                                         </td>
+                                                        <td>
+                                                            <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                        </td>
+                                                        <td ng-bind="child.startTime | stringToDate"></td>
+                                                        <td ng-bind="child.endTime | stringToDate"></td>
+                                                        <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                        <td ng-bind="child.node"></td>
                                                     </tr>
                                                     </tbody>
                                             </table>
@@ -946,12 +930,12 @@
                                                         <th translate>label.duration</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
-                                                        <th width="30" translate>label.errorText</th>
+                                                        <th class="error-text" translate>label.errorText</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showHistoryPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
-                                                           <td>
+                                                           <td nowrap>
                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
@@ -979,7 +963,7 @@
                                     <div class="row">
                                         <div class="table-responsive" resizable r-directions="['bottom']"
                                              r-height="250">
-                                            <table class="table table-hover table-bordered ">
+                                            <table class="table table-hover table-bordered audit-table">
                                                 <thead>
                                                 <tr>
                                                     <th translate>label.created</th>
@@ -1014,7 +998,7 @@
                                                            target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                 </tr>
                                                 <tr class="noExl" ng-show="auditLog.show">
-                                                    <td colspan="6">
+                                                    <td colspan="6" class="p-a-0">
                                                         <table class="table m-a-0">
                                                             <thead>
                                                             <tr>

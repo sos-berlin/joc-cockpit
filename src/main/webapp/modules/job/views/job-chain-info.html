@@ -23,7 +23,7 @@
                     <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                         <thead>
                         <tr>
-                            <th width="45"><span translate>label.action</span></th>
+                            <th class="menu"><span translate>label.action</span></th>
                             <th><span translate>label.jobChain</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.state</span></th>
@@ -144,7 +144,7 @@
                                                 {{node.name}} </span>
                                         </td>
                                         <td colspan="11">
-                                            <table class="table table-hover table-bordered m-b-0">
+                                            <table class="table table-hover table-bordered m-b-0 inner-table">
                                                 <tbody ng-repeat="nestedJobChain in jobChain.nestedJobChains track by $index"
                                                        ng-if="nestedJobChain.path == node.jobChain.path">
                                                 <tr title="{{nestedJobChain.configurationStatus._text | translate}}"
@@ -249,10 +249,10 @@
                                                 </tr>
                                                 <tr ng-if="!nestedJobChain.hide" class="light-bg tableexport-ignore">
                                                     <td colspan="12">
-                                                        <table class="table m-a-0">
+                                                        <table class="table m-a-0 inner-table">
                                                             <thead>
                                                             <tr>
-                                                                <th width="45"><span translate>label.action</span></th>
+                                                                <th class="menu"><span translate>label.action</span></th>
                                                                 <th translate>label.state</th>
                                                                 <th translate>label.job</th>
                                                                 <th translate>label.processClass</th>
@@ -264,7 +264,7 @@
                                                             <tbody>
                                                             <tr ng-repeat="nestedNode in nestedJobChain.nodes | orderBy:state track by $index"
                                                                 ng-if="nestedNode.job">
-                                                                <td width="30">
+                                                                <td>
                                                                     <div class="btn-group dropdown">
                                                                         <button type="button"
                                                                                 class="btn-drop more-option-h"
@@ -312,8 +312,8 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                            <span ng-class="{'p-l-sm' : nestedNode.level==1,'p-l' : nestedNode.level==2,'p-l-md' : nestedNode.level==3,'p-l-lg' : nestedNode.level==4}">
-                                                                               {{nestedNode.name}} </span>
+                                                                    <span ng-class="{'p-l-sm' : nestedNode.level==1,'p-l' : nestedNode.level==2,'p-l-md' : nestedNode.level==3,'p-l-lg' : nestedNode.level==4}">
+                                                                        {{nestedNode.name}} </span>
                                                                 </td>
                                                                 <td>
                                                                     <i class="cursor fa fa-history tableexport-ignore"
@@ -534,25 +534,24 @@
                                                                 </td>
                                                                 <td>{{nestedNode.numOfOrders || 0}}</td>
                                                                 <td>
-                                                                            <span class="label {{nestedNode.job.state.severity==0 ? 'bg-green' : nestedNode.job.state.severity==1 ? 'bg-gold' : nestedNode.job.state.severity==2 ? 'bg-crimson': nestedNode.job.state.severity==3 ?'bg-dimgrey':
+                                                                    <span class="label {{nestedNode.job.state.severity==0 ? 'bg-green' : nestedNode.job.state.severity==1 ? 'bg-gold' : nestedNode.job.state.severity==2 ? 'bg-crimson': nestedNode.job.state.severity==3 ?'bg-dimgrey':
                                                                                 nestedNode.job.state.severity==4 ? 'bg-transparent': nestedNode.job.state.severity==5 ? 'bg-dark-orange' : nestedNode.job.state.severity==6 ? 'bg-corn-flower-blue' :nestedNode.job.state.severity==7 ? 'bg-dark-magenta' : nestedNode.job.state.severity==8 ? 'bg-chocolate' : ''}}"
-                                                                                  ng-if="nestedNode.job.state"
-                                                                                  ng-bind="nestedNode.job.state._text | translate"></span>
+                                                                          ng-if="nestedNode.job.state"
+                                                                          ng-bind="nestedNode.job.state._text | translate"></span>
                                                                     <span class="{{nestedNode.job.configurationStatus.severity==0 ? 'green' : nestedNode.job.configurationStatus.severity==1 ? 'gold' : nestedNode.job.configurationStatus.severity==2 ? 'crimson': nestedNode.job.configurationStatus.severity==3 ?'dimgrey':
                                                                                 nestedNode.job.configurationStatus.severity==4 ? 'text-dark': nestedNode.job.configurationStatus.severity==5 ? 'dark-orange' : nestedNode.job.configurationStatus.severity==6 ? 'corn-flower-blue' :nestedNode.job.configurationStatus.severity==7 ? 'dark-magenta' : nestedNode.job.configurationStatus.severity==8 ? 'chocolate' : ''}}"
                                                                           ng-if="nestedNode.job.configurationStatus"
                                                                           ng-bind="nestedNode.job.configurationStatus.message | translate"></span>
                                                                 </td>
                                                                 <td>
-                                                                            <span class="label {{nestedNode.state.severity==0 ? 'bg-green' : nestedNode.state.severity==1 ? 'bg-gold' : nestedNode.state.severity==2 ? 'bg-crimson': nestedNode.state.severity==3 ?'bg-dimgrey':
+                                                                    <span class="label {{nestedNode.state.severity==0 ? 'bg-green' : nestedNode.state.severity==1 ? 'bg-gold' : nestedNode.state.severity==2 ? 'bg-crimson': nestedNode.state.severity==3 ?'bg-dimgrey':
                                                                                 nestedNode.state.severity==4 ? 'bg-transparent': nestedNode.state.severity==5 ? 'bg-dark-orange' : nestedNode.state.severity==6 ? 'bg-corn-flower-blue' :nestedNode.state.severity==7 ? 'bg-dark-magenta' : nestedNode.state.severity==8 ? 'bg-chocolate' : ''}}"
-                                                                                  ng-bind="nestedNode.state._text | translate"></span>
+                                                                          ng-bind="nestedNode.state._text | translate"></span>
                                                                 </td>
                                                             </tr>
                                                             <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
                                                                 <td colspan="7">
-                                                                    <div class="text-sm"
-                                                                         ng-repeat="order in jobChain.fileOrderSources track by $index">
+                                                                    <div class="text-sm" ng-repeat="order in jobChain.fileOrderSources track by $index">
                                                                         <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
                                                                         <span>{{'label.directory' | translate}}:</span>
                                                                         {{order.directory}}&nbsp;
@@ -578,7 +577,7 @@
                                 <table class="table m-a-0" ng-if="!jobChain.nestedJobChains">
                                     <thead>
                                     <tr class="tableexport-ignore">
-                                        <th width="45"><span translate>label.action</span></th>
+                                        <th class="menu"><span translate>label.action</span></th>
                                         <th translate>label.state</th>
                                         <th translate>label.job</th>
                                         <th translate>label.processClass</th>
@@ -815,28 +814,24 @@
                                         </td>
                                         <td>{{node.numOfOrders || 0}}</td>
                                         <td>
-                                                    <span class="label {{node.job.state.severity==0 ? 'bg-green' : node.job.state.severity==1 ? 'bg-gold' : node.job.state.severity==2 ? 'bg-crimson': node.job.state.severity==3 ?'bg-dimgrey':
+                                            <span class="label {{node.job.state.severity==0 ? 'bg-green' : node.job.state.severity==1 ? 'bg-gold' : node.job.state.severity==2 ? 'bg-crimson': node.job.state.severity==3 ?'bg-dimgrey':
                                                           node.job.state.severity==4 ? 'bg-transparent': node.job.state.severity==5 ? 'bg-dark-orange' : node.job.state.severity==6 ? 'bg-corn-flower-blue' :node.job.state.severity==7 ? 'bg-dark-magenta' : node.job.state.severity==8 ? 'bg-chocolate' : ''}}"
-                                                          ng-if="node.job.state"
-                                                          ng-bind="node.job.state._text | translate"></span>
+                                                  ng-if="node.job.state" ng-bind="node.job.state._text | translate"></span>
                                             <span class="{{node.job.configurationStatus.severity==0 ? 'green' : node.job.configurationStatus.severity==1 ? 'gold' : node.job.configurationStatus.severity==2 ? 'crimson': node.job.configurationStatus.severity==3 ?'dimgrey':
                                                           node.job.configurationStatus.severity==4 ? 'text-dark': node.job.configurationStatus.severity==5 ? 'dark-orange' : node.job.configurationStatus.severity==6 ? 'corn-flower-blue' :node.job.configurationStatus.severity==7 ? 'dark-magenta' : node.job.configurationStatus.severity==8 ? 'chocolate' : ''}}"
-                                                  ng-if="node.job.configurationStatus"
-                                                  ng-bind="node.job.configurationStatus.message | translate"></span>
+                                                  ng-if="node.job.configurationStatus" ng-bind="node.job.configurationStatus.message | translate"></span>
                                             <span class="{{node.job.state.severity==0 ? 'green' : node.job.state.severity==1 ? 'gold' : node.job.state.severity==2 ? 'crimson': node.job.state.severity==3 ?'dimgrey':
                                                           node.job.state.severity==4 ? 'text-dark': node.job.state.severity==5 ? 'dark-orange' : node.job.state.severity==6 ? 'corn-flower-blue' :node.job.state.severity==7 ? 'dark-magenta' : node.job.state.severity==8 ? 'chocolate' : ''}}"
-                                                  ng-if="node.job.error"
-                                                  ng-bind="node.job.error.message | translate"></span>
+                                                  ng-if="node.job.error" ng-bind="node.job.error.message | translate"></span>
                                         </td>
                                         <td>
-                                                    <span class="label {{node.state.severity==0 ? 'bg-green' : node.state.severity==1 ? 'bg-gold' : node.state.severity==2 ? 'bg-crimson': node.state.severity==3 ?'bg-dimgrey':
-                                                        node.state.severity==4 ? 'bg-transparent': node.state.severity==5 ? 'bg-dark-orange' : node.state.severity==6 ? 'bg-corn-flower-blue' :node.state.severity==7 ? 'bg-dark-magenta' : node.state.severity==8 ? 'bg-chocolate' : ''}}"
-                                                          ng-bind="node.state._text | translate"></span></td>
+                                            <span class="label {{node.state.severity==0 ? 'bg-green' : node.state.severity==1 ? 'bg-gold' : node.state.severity==2 ? 'bg-crimson': node.state.severity==3 ?'bg-dimgrey':
+                                                       node.state.severity==4 ? 'bg-transparent': node.state.severity==5 ? 'bg-dark-orange' : node.state.severity==6 ? 'bg-corn-flower-blue' :node.state.severity==7 ? 'bg-dark-magenta' : node.state.severity==8 ? 'bg-chocolate' : ''}}"
+                                                  ng-bind="node.state._text | translate"></span></td>
                                     </tr>
                                     <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
                                         <td colspan="7">
-                                            <div class="text-sm "
-                                                 ng-repeat="order in jobChain.fileOrderSources track by $index">
+                                            <div class="text-sm" ng-repeat="order in jobChain.fileOrderSources track by $index">
                                                 <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
                                                 <span>{{'label.directory' | translate}}:</span> {{order.directory}}&nbsp;
                                                 <span>{{'label.pattern' | translate}}:</span> {{order.regex}}&nbsp;
@@ -848,8 +843,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div ng-if="isLoading && jobChain.nodes.length==0"
-                                     class="text-center m-t m-b h6 text-uppercase" translate>
+                                <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                     message.noNodesFound
                                 </div>
                             </td>
@@ -919,41 +913,24 @@
                                                         <td ng-bind="history.startTime | duration:history.endTime"></td>
                                                         <td ng-bind="history.node"></td>
                                                     </tr>
-                                                    <tr ng-if="history.children">
-                                                        <td colspan="6" >
-                                                        <table class="table m-a-0">
-                                                           <!--thead>
-                                                            <tr>
-                                                                <th translate>label.orderId</th>
-                                                                <th translate>label.status</th>
-                                                                <th translate>label.startTime</th>
-                                                                <th translate>label.endTime</th>
-                                                                <th translate>label.duration</th>
-                                                                <th translate>label.node</th>
-                                                            </tr>
-                                                            </thead-->
-                                                            <tbody>
-                                                            <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
-                                                            <td>
+                                                    <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                        <td nowrap>
+                                                            <div class="m-l-sm">
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
                                                                 <span ng-bind="child.orderId"></span>
-                                                            </td>
-                                                            <td>
-                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
-                                                            </td>
-                                                            <td ng-bind="child.startTime | stringToDate"></td>
-                                                            <td ng-bind="child.endTime | stringToDate"></td>
-                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
-                                                            <td ng-bind="child.node"></td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
+                                                            </div>
                                                         </td>
+                                                        <td>
+                                                            <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                        </td>
+                                                        <td ng-bind="child.startTime | stringToDate"></td>
+                                                        <td ng-bind="child.endTime | stringToDate"></td>
+                                                        <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                        <td ng-bind="child.node"></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                                <div ng-if="historys.length==0"
-                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>
                                                     message.noOrderHistoryFound
                                                 </div>
                                             </div>
@@ -973,12 +950,12 @@
                                                         <th translate>label.duration</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
-                                                        <th width="30" translate>label.errorText</th>
+                                                        <th class="error-text" translate>label.errorText</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showHistoryPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
-                                                           <td>
+                                                           <td nowrap>
                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
@@ -993,7 +970,6 @@
                                                            <td>{{task.error.code}}</td>
                                                            <td class="text-danger">{{task.error.message}}</td>
                                                         </tr>
-
                                                     </tbody>
                                                 </table>
                                                  <div ng-if="showHistoryPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
@@ -1004,9 +980,8 @@
                                      </div>
                                     <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}"  id="tab2">
                                         <div class="row">
-                                            <div class="table-responsive" resizable r-directions="['bottom']"
-                                                 r-height="250">
-                                                <table class="table table-hover table-bordered ">
+                                            <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                                <table class="table table-hover table-bordered audit-table">
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.created</th>
@@ -1040,7 +1015,7 @@
                                                         <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
                                                     <tr class="noExl" ng-show="auditLog.show">
-                                                        <td colspan="6">
+                                                        <td colspan="6" class="p-a-0">
                                                             <table class="table m-a-0">
                                                             <thead>
                                                                  <tr>

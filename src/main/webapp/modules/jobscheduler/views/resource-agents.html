@@ -77,7 +77,7 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
-                            <th width="45"><span translate>label.action</span></th>
+                            <th class="menu"><span translate>label.action</span></th>
                             <th ng-click="sortByA('agentCluster')"><a><span translate>label.agentCluster</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'agentCluster' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
@@ -90,7 +90,7 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-click="sortByA('state._text')"><a><span translate>label.status</span>
+                            <th class="status" ng-click="sortByA('state._text')"><a><span translate>label.status</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
@@ -150,7 +150,7 @@
                                 <span class="show-in-single-line">
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
-                                    <a ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></a>
+                                    <span ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
                                 </span>
                             </td>
                             <td>
@@ -175,16 +175,16 @@
                         </tr>
                         <tr ng-if="cluster.show">
                             <td></td>
-                            <td colspan="9" style="padding: 1px !important;">
-                                <table class="table m-a-0">
+                            <td colspan="9" style="padding: 0 !important;">
+                                <table class="table m-a-0 inner-table">
                                     <thead>
                                     <tr>
-                                        <th translate>label.agent</th>
-                                        <th translate>label.state</th>
-                                        <th translate>label.url</th>
-                                        <th translate>label.lastUpdateTime</th>
-                                        <th translate>label.startedAt</th>
-                                        <th translate>label.runningTasks</th>
+                                        <th class="equal-6" translate>label.agent</th>
+                                        <th class="equal-6" translate>label.state</th>
+                                        <th class="equal-6" translate>label.url</th>
+                                        <th class="equal-6" translate>label.lastUpdateTime</th>
+                                        <th class="equal-6" translate>label.startedAt</th>
+                                        <th class="equal-6" translate>label.runningTasks</th>
                                     </tr>
                                     </thead>
                                     <tbody ng-repeat="agent in cluster.agents">
@@ -209,19 +209,19 @@
                     <ul ng-show="allAgentClusters.length > userPreferences.entryPerPage" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                     <div class="pull-left" ng-show="allAgentClusters.length > 10">
                         <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                            <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                     ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                             </button>
                         </div>

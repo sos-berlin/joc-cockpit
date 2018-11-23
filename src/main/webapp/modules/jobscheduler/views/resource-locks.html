@@ -39,18 +39,17 @@
                                 </span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown">
-                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                        class="text fa fa-ellipsis-h"></i></a>
+                                <a href class="more-option text-black-lt" data-toggle="dropdown">
+                                    <i class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-if="permission.Lock.view.configuration" ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
                                     <a ng-click="copyLinkToObject('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxNonExclusive' | translate}}</div>
-                            <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.holders.tasks.length || '0'"></span> {{'label.runningTask' | translate}}</div>
-                            <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.queue.length || '0'"></span> {{'label.waitingTask' | translate}}</div>
+                            <div class="text-sm text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxNonExclusive' | translate}}</div>
+                            <div class="text-sm text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.holders.tasks.length || '0'"></span> {{'label.runningTask' | translate}}</div>
+                            <div class="text-sm text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.queue.length || '0'"></span> {{'label.waitingTask' | translate}}</div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -122,19 +121,19 @@
                 <ul ng-show="allLocks.length > userPreferences.entryPerPage" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-left" ng-show="allLocks.length > 10">
                         <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                            <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                            <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
                                     ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                             </button>
                         </div>

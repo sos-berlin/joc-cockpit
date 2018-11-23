@@ -23,7 +23,7 @@
                     <table class="table table-hover table-bordered " id="orderTableId">
                         <thead>
                         <tr>
-                            <th width="45"><span translate>label.action</span></th>
+                            <th class="menu"><span translate>label.action</span></th>
                             <th><span translate>label.orderId</span></th>
                             <th><span translate>label.jobChain</span></th>
                             <th><span translate>label.job</span></th>
@@ -77,7 +77,6 @@
                                         <a href class="dropdown-item"
                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
-
                                         <div class="dropdown-divider"></div>
                                         <a href class="dropdown-item"
                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
@@ -85,21 +84,18 @@
                                         <a href class="dropdown-item"
                                            ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                            ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
-
                                         <a href class="dropdown-item"
                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
                                            ng-click="showAssignedCalendar(order)">
-                                            <span translate>button.showAssignedCalendar</span></a>
-
+                                            <span translate>button.showAssignedCalendar</span>
+                                        </a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                            ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
-
                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                            class="hide dropdown-item"
                                            ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
                                            translate>button.showConfiguration</a>
-
                                     </div>
                                 </div>
                             </td>
@@ -192,29 +188,29 @@
                             </ul>
                         </div>
                         <div class="box-body p-t b-t">
-                                    <div class="b-b">
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item">
-                                                <a class="nav-link" ng-class="{active: !isAuditLog && !isTaskHistory}"
-                                                   ng-click="showLogFuc(showLogPanel, 'skip')" href data-toggle="tab"
-                                                   data-target="#tab1" translate>label.orderHistory</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" ng-class="{active: !isAuditLog && isTaskHistory}"
-                                                   ng-click="showJobHistory(showLogPanel)" href data-toggle="tab"
-                                                   data-target="#tab3" translate>label.taskHistory</a>
-                                            </li>
-                                            <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                                <a class="nav-link" ng-class="{active: isAuditLog && !isTaskHistory}"
-                                                   ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab"
-                                                   data-target="#tab2" translate>label.auditLog</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="tab-content p-a">
-                                        <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog && !isTaskHistory}"
+                            <div class="b-b">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link" ng-class="{active: !isAuditLog && !isTaskHistory}"
+                                           ng-click="showLogFuc(showLogPanel, 'skip')" href data-toggle="tab"
+                                           data-target="#tab1" translate>label.orderHistory</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" ng-class="{active: !isAuditLog && isTaskHistory}"
+                                           ng-click="showJobHistory(showLogPanel)" href data-toggle="tab"
+                                           data-target="#tab3" translate>label.taskHistory</a>
+                                    </li>
+                                    <li class="nav-item" ng-if="permission.AuditLog.view.status">
+                                        <a class="nav-link" ng-class="{active: isAuditLog && !isTaskHistory}"
+                                           ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab"
+                                           data-target="#tab2" translate>label.auditLog</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content p-a">
+                                <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog && !isTaskHistory}"
                                              id="tab1">
-                                            <div class="row">
+                                    <div class="row">
                                                 <div class="table-responsive" resizable r-directions="['bottom']"
                                                      r-height="250">
                                                     <table class="table table-hover table-bordered ">
@@ -230,7 +226,7 @@
                                                         </thead>
                                                         <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
                                                         <tr ng-click="showLogWindow(history,null)" class="cursor">
-                                                            <td>
+                                                            <td nowrap>
                                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                                                 <span ng-bind="history.orderId"></span>
                                                             </td>
@@ -242,36 +238,20 @@
                                                             <td ng-bind="history.startTime | duration:history.endTime"></td>
                                                             <td ng-bind="history.node"></td>
                                                         </tr>
-                                                        <tr ng-if="history.children">
-                                                            <td colspan="6" >
-                                                            <table class="table m-a-0">
-                                                            <!--thead>
-                                                                <tr>
-                                                                    <th translate>label.orderId</th>
-                                                                    <th translate>label.status</th>
-                                                                    <th translate>label.startTime</th>
-                                                                    <th translate>label.endTime</th>
-                                                                    <th translate>label.duration</th>
-                                                                    <th translate>label.node</th>
-                                                                </tr>
-                                                                </thead-->
-                                                                <tbody>
-                                                                <tr ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
-                                                                <td>
+                                                        <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                            <td nowrap>
+                                                                <div class="m-l-sm">
                                                                     <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
                                                                     <span ng-bind="child.orderId"></span>
-                                                                </td>
-                                                                <td>
-                                                                    <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
-                                                                </td>
-                                                                <td ng-bind="child.startTime | stringToDate"></td>
-                                                                <td ng-bind="child.endTime | stringToDate"></td>
-                                                                <td ng-bind="child.startTime | duration:child.endTime"></td>
-                                                                <td ng-bind="child.node"></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
+                                                                </div>
                                                             </td>
+                                                            <td>
+                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                            </td>
+                                                            <td ng-bind="child.startTime | stringToDate"></td>
+                                                            <td ng-bind="child.endTime | stringToDate"></td>
+                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                            <td ng-bind="child.node"></td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -281,9 +261,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && isTaskHistory}" id="tab3" >
-                                         <div class="row">
+                                </div>
+                                <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && isTaskHistory}" id="tab3" >
+                                    <div class="row">
                                              <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
@@ -296,7 +276,7 @@
                                                         <th translate>label.duration</th>
                                                         <th translate>label.exitCode</th>
                                                         <th translate>label.errorCode</th>
-                                                        <th translate>label.errorText</th>
+                                                        <th class="error-text" translate>label.errorText</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -324,69 +304,69 @@
                                                 </div>
                                             </div>
                                          </div>
-                                     </div>
-                                        <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}" id="tab2">
-                                            <div class="row">
-                                                <div class="table-responsive" resizable r-directions="['bottom']"
+                                </div>
+                                <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}" id="tab2">
+                                    <div class="row">
+                                        <div class="table-responsive" resizable r-directions="['bottom']"
                                                      r-height="250">
-                                                    <table class="table table-hover table-bordered ">
-                                                        <thead>
-                                                        <tr>
-                                                            <th translate>label.created</th>
-                                                            <th translate>label.account</th>
-                                                            <th translate>label.request</th>
-                                                            <th translate>label.comment</th>
-                                                            <th translate>label.timeSpend</th>
-                                                            <th translate>label.ticketLink</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
-                                                        <tr>
-                                                            <td>
-                                                                <span class="show-in-single-line">
-                                                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
-                                                                    <span ng-bind="auditLog.created | stringToDate"></span>
-                                                                </span>
-                                                            </td>
-                                                            <td><span ng-bind="auditLog.account"></span></td>
-                                                            <td><span ng-bind="auditLog.request"></span></td>
-                                                            <td><span ng-bind="auditLog.comment"></span></td>
-                                                            <td>
-                                                                <span ng-if="auditLog.timeSpent">
-                                                                    <span ng-bind="auditLog.timeSpent"></span>
-                                                                    <span>m</span>
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a>
-                                                            </td>
-                                                        </tr>
-                                                        <tr class="tableexport-ignore" ng-show="auditLog.show">
-                                                            <td colspan="6">
-                                                                <table class="table m-a-0">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th translate>label.parameters</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td><span ng-bind="auditLog.parameters"></span></td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div ng-if="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>
+                                            <table class="table table-hover table-bordered audit-table">
+                                                <thead>
+                                                <tr>
+                                                    <th translate>label.created</th>
+                                                    <th translate>label.account</th>
+                                                    <th translate>label.request</th>
+                                                    <th translate>label.comment</th>
+                                                    <th translate>label.timeSpend</th>
+                                                    <th translate>label.ticketLink</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                <tr>
+                                                    <td>
+                                                        <span class="show-in-single-line">
+                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </span>
+                                                    </td>
+                                                    <td><span ng-bind="auditLog.account"></span></td>
+                                                    <td><span ng-bind="auditLog.request"></span></td>
+                                                    <td><span ng-bind="auditLog.comment"></span></td>
+                                                    <td>
+                                                        <span ng-if="auditLog.timeSpent">
+                                                            <span ng-bind="auditLog.timeSpent"></span>
+                                                            <span>m</span>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a>
+                                                    </td>
+                                                </tr>
+                                                <tr class="tableexport-ignore" ng-show="auditLog.show">
+                                                    <td colspan="6" class="p-a-0">
+                                                        <table class="table m-a-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th translate>label.parameters</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><span ng-bind="auditLog.parameters"></span></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-if="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>
                                                         message.noAuditLogFound
                                                     </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
