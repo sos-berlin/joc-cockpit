@@ -117,13 +117,11 @@
     <div class="padding p-b-0">
         <div class="row m-b m-t-xs">
             <div class="col-md-12">
-                <button class="btn btn-sm btn-grey"
-                        ng-click="expandDetails()">
+                <button class="btn btn-sm btn-grey" ng-click="expandDetails()">
                     <i class="fa fa fa-caret-down"></i>
                     <span translate>button.expandDetails</span>
                 </button>
-                <button class="btn btn-sm btn-grey m-l-sm"
-                        ng-click="collapseDetails()">
+                <button class="btn btn-sm btn-grey m-l-sm" ng-click="collapseDetails()">
                     <i class="fa fa fa-caret-up"></i>
                     <span translate>button.collapseDetails</span>
                 </button>
@@ -156,7 +154,6 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
                                        name="profileId" ng-model="yadeSearch.profileId">
@@ -458,23 +455,19 @@
                             </td>
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
-                                            class="fa fa-ellipsis-h"></i></button>
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a ng-if="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
-                                           ng-click="restartTransfer(transfer)"
-                                           translate>button.restart</a>
-                                         <a class="dropdown-item"
-                                               ng-click="showLogWindow(null, transfer)" translate>button.viewLog</a>
-                                         <a class="dropdown-item"
-                                               ng-click="copyLinkToObject('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
+                                           ng-click="restartTransfer(transfer)" translate>button.restart</a>
+                                         <a class="dropdown-item" ng-click="showLogWindow(null, transfer)" translate>button.viewLog</a>
+                                         <a class="dropdown-item" ng-click="copyLinkToObject('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
                             </td>
                             <td class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
-                                <span class="label cursor"  ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                                <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
                             <td ng-bind-html="transfer.profile | highlight:filterString"></td>
                             <td ng-bind-html="transfer.mandator | highlight:filterString"></td>
@@ -493,8 +486,8 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="transfer.show">
                             <td></td>
-                            <td colspan="13" >
-                                 <table class="table m-a-0">
+                            <td colspan="13" style="padding: 0 !important;">
+                                 <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">
                                          <th translate>label.sourceHostUser</th>
@@ -534,8 +527,8 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
                             <td></td>
-                            <td colspan="13" >
-                                 <table class="table m-a-0">
+                            <td colspan="13" style="padding: 0 !important;">
+                                 <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">
                                          <th class="chk" ng-if="transfer.permission.execute.transferStart">#</th>
@@ -543,7 +536,7 @@
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
-                                         <th translate>label.status</th>
+                                         <th class="status" translate>label.status</th>
                                          <th class="error-text" translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>

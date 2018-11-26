@@ -196,7 +196,7 @@
                             {{schedule.configurationStatus._text | translate}} :<span ng-class="colorFunction(schedule.configurationStatus.severity)">{{schedule.configurationStatus.message}}</span>
                         </td>
                     </tr>
-                    <tr ng-if="schedule.show" style="background: transparent !important;" >
+                    <tr ng-if="schedule.show">
                         <td></td>
                         <td colspan="9">
                             <span ng-if="schedule.usedByOrders">{{'label.usedByOrders' |translate}}: </span>
@@ -216,7 +216,7 @@
                     </tr>
                     <tr ng-if="schedule.show && schedule.substitutedBy">
                         <td></td>
-                        <td colspan="9" style="padding: 1px !important;">
+                        <td colspan="9" style="padding: 0 !important;">
                             <table class="table m-a-0">
                                 <thead>
                                 <tr>

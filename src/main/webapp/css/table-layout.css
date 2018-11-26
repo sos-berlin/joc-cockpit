@@ -73,7 +73,7 @@ General CSS
 #jobChainTableId .inner-table th.status {
   width: 90px;
 }
-#orderTableId .inner-table{
+#orderTableId .inner-table, #jobChain .inner-table, #yade .inner-table{
   table-layout: fixed;
 }
 #orderTableId .inner-table th.type {

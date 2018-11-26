@@ -144,30 +144,28 @@
                             <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.waitingForResource"></td>
                             <td ng-if="!userPreferences.isCompact" ng-bind="job.ordersSummary.setback"></td>
                         </tr>
-                        <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
+                        <tr ng-if="job.configurationStatus._text">
                             <td></td>
-                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                            <td colspan="13" class="p-a-0">
                                 {{job.configurationStatus._text | translate}} :<span
                                     ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                             </td>
                         </tr>
-                        <tr ng-if="job.error" style="background: transparent !important;">
+                        <tr ng-if="job.error">
                             <td></td>
-                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                            <td colspan="13" class="p-a-0">
                                 {{job.error.code}} :<span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                             </td>
                         </tr>
-                        <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)"
-                            style="background: transparent !important;">
+                        <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">
                             <td></td>
-                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                            <td colspan="13" class="p-a-0">
                                 <span translate>message.noDataFound</span>
                             </td>
                         </tr>
-                        <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0"
-                            style="background: transparent !important;">
+                        <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0">
                             <td></td>
-                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                            <td colspan="13" class="p-a-0">
                                 <table class="table table-hover table-bordered m-t-xs m-b-sm">
                                     <thead>
                                     <tr>
@@ -220,10 +218,9 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0"
-                            style="background: transparent !important;">
+                        <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0">
                             <td></td>
-                            <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                            <td colspan="13" class="p-a-0">
                                 <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}"
                                      ng-repeat="jobChain in job.jobChains">
                                     <div ng-if="$index==0" class="text-muted p-b-xs"><span

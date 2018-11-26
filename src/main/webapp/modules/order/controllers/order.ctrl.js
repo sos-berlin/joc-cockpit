@@ -6901,13 +6901,36 @@
         }
 
         function updateDimensions() {
-          $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
-            let w  = $(this).width() + 17;
-            let elem = '#jobChain td.dynamic-thead' + index;
-            if(w > 17)
-                $(elem).css('width', w + 'px');
-          });
+            let max = 0;
+            $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
+                let w = $(this).width() + 17;
+                let elem = '#jobChain td.dynamic-thead' + index;
+                if (w > 17) {
+                    $(elem).css('width', w + 'px');
+                }else{
+                    max = w;
+                }
+            });
+            if(max !== 0){
+                setTimeout(function(){
+                    updateDimensions();
+                },5);
+            }
         }
+
+        $(window).resize(function () {
+            $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
+                let elem = '#jobChain td.dynamic-thead' + index;
+                $(elem).css('width', 'auto');
+            });
+            updateDimensions();
+        });
+
+        vm.pageChanged = function(){
+            setTimeout(function () {
+                updateDimensions();
+            },0);
+        };
 
         function parseProcessExecuted(regex, obj) {
             var fromDate, toDate, date, arr;
@@ -7551,8 +7574,9 @@
         }
 
         vm.search = function (flag) {
-            if (!flag)
+            if (!flag) {
                 vm.loading = true;
+            }
             var filter = {
                 jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : '',
                 limit: parseInt(vm.userPreferences.maxRecords)
@@ -7777,13 +7801,15 @@
                     setDuration(vm.historys);
                     vm.loading = false;
                     isLoaded = true;
+                    setTimeout(function () {
+                        updateDimensions();
+                    }, 0);
                 }, function () {
                     vm.loading = false;
                     isLoaded = true;
                 });
                 jobChainSearch = true;
-            }
-            else {
+            } else {
                 vm.yade.filter.historyStates = '';
                 vm.yade.filter.date = '';
                 if (vm.yadeSearch.states && vm.yadeSearch.states.length > 0) {
@@ -8193,7 +8219,7 @@
         };
         vm.showTransferFuc = function (value) {
             vm.isLoaded = true;
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = value.jobschedulerId || vm.schedulerIds.selected;
             obj.transferIds = [];
             obj.transferIds.push(value.id);
@@ -8205,7 +8231,7 @@
             });
             value.show = true;
             if (vm.permission.YADE.view.files) {
-                var ids = [];
+                let ids = [];
                 ids.push(value.id);
                 YadeService.files({
                     transferIds: ids,
@@ -9471,6 +9497,9 @@
                         }
                         setDuration(vm.historys);
                         isLoaded = true;
+                        setTimeout(function () {
+                            updateDimensions();
+                        }, 0);
                     }, function () {
                         isLoaded = true;
                     });
@@ -9568,15 +9597,15 @@
                         if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
                             updateHistoryAfterEvent();
                             break;
-                        } else if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated' && vm.historyFilters.type == 'yade') {
-                            for (var x = 0; x < vm.yadeHistorys.length; x++) {
+                        } else if (vm.events[0].eventSnapshots[i].eventType === 'YADETransferUpdated' && vm.historyFilters.type === 'yade') {
+                            for (let x = 0; x < vm.yadeHistorys.length; x++) {
                                 if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path) {
                                     getTransfer(vm.yadeHistorys[x]);
                                     break;
                                 }
                             }
-                        } else if (vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged') {
-                            for (var x = 0; x < vm.yadeHistorys.length; x++) {
+                        } else if (vm.events[0].eventSnapshots[i].eventType === 'YADEFileStateChanged') {
+                            for (let x = 0; x < vm.yadeHistorys.length; x++) {
                                 if (vm.yadeHistorys[x].id == vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show) {
                                     getFiles(vm.yadeHistorys[x]);
                                     break;

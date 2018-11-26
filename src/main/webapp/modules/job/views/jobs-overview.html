@@ -74,7 +74,6 @@
         </div>
     </div>
 </div>
-
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="m-t-sm">
@@ -434,7 +433,7 @@
                                     <span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                                 </td>
                             </tr>
-                            <tr ng-if="job.error" style="background: transparent !important;">
+                            <tr ng-if="job.error">
                                 <td></td>
                                 <td colspan="14" class="p-a-0">
                                     {{job.error.code}} :

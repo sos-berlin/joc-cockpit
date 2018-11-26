@@ -528,7 +528,7 @@
                                 </tr>
                                 <tr ng-if="jobChain.show" class="light-bg tableexport-ignore">
                                     <td></td>
-                                    <td colspan="12" style="padding: 1px 2px 0 2px !important">
+                                    <td colspan="12" style="padding: 0 !important">
                                         <div ng-if="jobChain.configurationStatus">{{jobChain.configurationStatus._text | translate}}:
                                             <span class="{{jobChain.configurationStatus.severity==0 ? 'green' : jobChain.configurationStatus.severity==1 ? 'gold' : jobChain.configurationStatus.severity==2 ? 'crimson': jobChain.configurationStatus.severity==3 ?'dimgrey':
                                               jobChain.configurationStatus.severity==4 ? 'text-dark': jobChain.configurationStatus.severity==5 ? 'dark-orange' : jobChain.configurationStatus.severity==6 ? 'corn-flower-blue' :jobChain.configurationStatus.severity==7 ? 'dark-magenta' : jobChain.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{jobChain.configurationStatus.message}}</span>
@@ -718,7 +718,7 @@
                                                                             <a class="text-hover-primary" ng-click="showJob(nestedNode.job.path)">
                                                                                 <span ng-bind-html="nestedNode.job.path | highlight:filterString"></span>
                                                                             </a>
-                                                                            <div class="p-l-sm ">
+                                                                            <div class="p-l-sm p-t-xs">
                                                                                 <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'"
                                                                                      ng-if="order.path.split(',')[0]==nestedJobChain.path || order.path.split(',')[0]==jobChain.path ">
                                                                                     <span>
@@ -965,7 +965,7 @@
                                                     <i class="cursor fa fa-history tableexport-ignore " ng-click="showHistory(jobChain,node, null, null, 'noToggle')"></i>
                                                     <a class="text-hover-primary" ng-click="showJob(node.job.path)">
                                                         <span ng-bind-html="node.job.path | highlight:filterString"></span></a>
-                                                    <div class="p-l-sm ">
+                                                    <div class="p-l-sm p-t-xs">
                                                         <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                                             <div class="btn-group dropdown ">
                                                                 <button type="button" class="btn-drop more-option-h" dropdown

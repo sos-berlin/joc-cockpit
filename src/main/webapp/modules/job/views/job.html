@@ -585,7 +585,7 @@
                                               job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}">{{job.error.message}}</span>
                                     </td>
                                 </tr>
-                                <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)" style="background: transparent !important;">
+                                <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">
                                     <td></td>
                                     <td></td>
                                     <td colspan="13" class="p-a-0">
@@ -639,10 +639,10 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0" style="background: transparent !important;" >
+                                <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0">
                                     <td></td>
                                     <td></td>
-                                    <td colspan="{{!userPreferences.isCompact ? 13 : 5}}">
+                                    <td colspan="13" class="p-a-0">
                                         <div class="p-t-xs {{$index==job.jobChains.length-1 ? 'p-b-xs' : ''}}" ng-repeat="jobChain in job.jobChains">
                                         <div ng-if="$index==0" class="text-muted p-b-xs"><span translate>label.jobChain</span> : </div>
                                         <div class="btn-group dropdown m-l-md">

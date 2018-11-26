@@ -975,7 +975,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-if="history.show">
                             <td></td>
-                             <td colspan="8" >
+                             <td colspan="8" class="p-a-0">
                                  <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1054,7 +1054,7 @@
                                     </tr>
                                     <tr class="tableexport-ignore" ng-if="child.show">
                                         <td></td>
-                                         <td colspan="8" >
+                                         <td colspan="8" class="p-a-0">
                                              <table class="table m-a-0 inner-table">
                                                  <thead>
                                                  <tr class="tableexport-ignore">
@@ -1097,22 +1097,22 @@
                         <span translate ng-if="filtered.length >1">label.historiesFound</span>
                         <span translate ng-if="filtered.length ==1">label.historyFound</span>
                     </div>
-                    <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <ul ng-show="filtered.length > userPreferences.entryPerPage" ng-change="pageChanged()" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'" ng-click="pageChanged()"
                                         ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                 </button>
-                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'" ng-click="pageChanged()"
                                         ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                 </button>
-                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'" ng-click="pageChanged()"
                                         ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                 </button>
-                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'" ng-click="pageChanged()"
                                         ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}" ng-click="pageChanged()"
                                         ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
@@ -1345,8 +1345,8 @@
                             <td ng-click="showLogWindow(null, transfer,null,transfer.jobschedulerId,true)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="transfer.show">
-                            <td colspan="12" >
-                                 <table class="table m-a-0">
+                            <td colspan="12" style="padding: 0 !important;">
+                                 <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">
                                          <th translate>label.sourceHostUser</th>
@@ -1385,7 +1385,7 @@
                              </td>
                         </tr>
                         <tr class="tableexport-ignore" ng-if="permission.YADE.view.files && transfer.show">
-                             <td colspan="12">
+                             <td colspan="12" style="padding: 0 !important;">
                                  <table class="table m-a-0 inner-table">
                                      <thead>
                                      <tr class="tableexport-ignore">

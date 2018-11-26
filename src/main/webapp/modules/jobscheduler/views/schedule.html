@@ -61,13 +61,13 @@
                             <td ng-bind="schedule.substitute.validTo | stringToDate"></td>
                             <td ng-bind="schedule.substitute.path"></td>
                         </tr>
-                        <tr ng-if="schedule.configurationStatus._text" style="background: transparent !important;">
+                        <tr ng-if="schedule.configurationStatus._text">
                             <td></td>
                             <td colspan="8">
                                 {{schedule.configurationStatus._text | translate}} :<span ng-class="colorFunction(schedule.configurationStatus.severity)">{{schedule.configurationStatus.message}}</span>
                             </td>
                         </tr>
-                        <tr ng-if="schedule.show" style="background: transparent !important;" >
+                        <tr ng-if="schedule.show" >
                             <td></td>
                             <td colspan="8">
                                 <span ng-if="schedule.usedByOrders">{{'label.usedByOrders' |translate}}: </span>
