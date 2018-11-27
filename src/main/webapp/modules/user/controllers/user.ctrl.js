@@ -1443,7 +1443,6 @@
         vm.addRole = function () {
             vm.role = {};
             vm.role.permissions = [];
-            //vm.role.permissions.push({path: 'sos:products:joc_cockpit:jobscheduler_master:view:status', excluded:false});
             vm.role.folders = [];
             vm.newRole = true;
             vm.isUnique = true;

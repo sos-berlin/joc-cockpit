@@ -2037,8 +2037,15 @@
                     }
                     vm.mainText = vm.mainText + entry.entryName + ' = ';
                     if (entry.entryValue && entry.entryValue.length > 0) {
-                        angular.forEach(entry.entryValue, function (value) {
-                            vm.mainText = vm.mainText + value + '\n'
+                        angular.forEach(entry.entryValue, function (value,index) {
+                            vm.mainText = vm.mainText +  (entry.entryValue.length > 1 ? '\\ \n'+value : value );
+                            if(entry.entryValue.length-1 !== index){
+                                vm.mainText = vm.mainText + ',';
+                            }
+
+                            if (entry.entryValue.length ===  1) {
+                                vm.mainText = vm.mainText + '\n';
+                            }
                         });
                     }
                 });
@@ -2050,14 +2057,50 @@
             let obj = {entryName: '', entryValue: [], entryComment: []};
             let arr = vm.mainText.split('\n');
             for (let i = 0; i < arr.length; i++) {
-                if (arr[i].substring(0, 1) === '#') {
-                    obj.entryComment.push(arr[i].substring(1));
-                } else {
-                    let x = arr[i].split('=');
-                    obj.entryName = x[0];
-                    obj.entryValue.push(x[1]);
-                    main.push(obj);
-                    obj = {entryValue: [], entryComment: []};
+                if (arr[i]) {
+                    if (arr[i].substring(0, 1) === '#') {
+                        obj.entryComment.push(arr[i].substring(1));
+                    } else if (arr[i].lastIndexOf('\\') === arr[i].length - 1) {
+
+                        let index = arr[i].indexOf('=');
+                        if (index > 0) {
+                            obj.entryName = arr[i].substring(0, index);
+                            let x = arr[i].substring(index + 1).trim();
+                            let val = x.replace('\\', '');
+                            if(val && val != '') {
+                                obj.entryValue.push(val);
+                            }
+                        } else {
+                            let val = arr[i].substring(0, arr[i].lastIndexOf(','));
+                            obj.entryValue.push(val);
+                        }
+
+                        if (arr[i + 1] && arr[i+1].lastIndexOf('\\') !== arr[i+1].length - 1 ) {
+                            obj.entryValue.push(arr[i+1]);
+                            main.push(obj);
+                            obj = {entryValue: [], entryComment: []};
+                        }
+
+                    } else {
+                        let index = arr[i].indexOf('=');
+                        if (index > 0) {
+                            obj.entryName = arr[i].substring(0, index);
+                            let x = arr[i].substring(index + 1).trim();
+                            let split = [];
+                            if (x.substring(0, 1) === '\\') {
+                                split = x.split(',');
+                            }
+                            if (split.length > 0) {
+                                for (let j = 0; j < split.length; j++) {
+                                    obj.entryValue.push(split[j].replace('\\', ''));
+                                }
+                            } else {
+                                obj.entryValue.push(x.replace('\\', ''));
+                            }
+                            main.push(obj);
+                            obj = {entryValue: [], entryComment: []};
+                        }
+                    }
                 }
             }
 
