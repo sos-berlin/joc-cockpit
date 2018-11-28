@@ -886,7 +886,7 @@
                         <thead>
                             <tr>
                                 <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-                                <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                <th class="dynamic-thead-o" ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                     <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
@@ -1025,8 +1025,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                         <td ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)" nowrap>
-                                             <div class="m-l-sm">
+                                         <td class="dynamic-thead-o" ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)" nowrap>
+                                             <div class="m-l-sm" >
                                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
                                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="child.show = false;$event.stopPropagation()"></i>
                                                  <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>

@@ -6902,6 +6902,14 @@
 
         function updateDimensions() {
             let max = 0;
+            if(!vm.historyView.current) {
+                $('#jobChain').find('thead th.dynamic-thead-o').each(function () {
+                    let w = $(this).width() + 17;
+                    if (w > 17) {
+                        $('#jobChain td.dynamic-thead-o').css('width', w + 'px');
+                    }
+                });
+            }
             $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
                 let w = $(this).width() + 17;
                 let elem = '#jobChain td.dynamic-thead' + index;
@@ -8215,6 +8223,7 @@
             },function(){
                 value.steps = [];
             });
+            vm.pageChanged();
 
         };
         vm.showTransferFuc = function (value) {
