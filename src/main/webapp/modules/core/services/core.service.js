@@ -186,6 +186,12 @@
         tabs._resource.events.reverse = false;
         tabs._resource.events.currentPage = '1';
         tabs._resource.events.selectedView = true;
+        tabs._resource.documents = {};
+        tabs._resource.documents.filter = {};
+        tabs._resource.documents.filter.sortBy = 'expires';
+        tabs._resource.documents.reverse = false;
+        tabs._resource.documents.currentPage = '1';
+        tabs._resource.documents.selectedView = true;
         tabs._resource.state = 'agent';
 
         tempTabs._jobChain = {};
@@ -359,6 +365,12 @@
         tempTabs._resource.events.reverse = false;
         tempTabs._resource.events.currentPage = '1';
         tempTabs._resource.events.selectedView = true;
+        tempTabs._resource.documents = {};
+        tempTabs._resource.documents.filter = {};
+        tempTabs._resource.documents.filter.sortBy = 'expires';
+        tempTabs._resource.documents.reverse = false;
+        tempTabs._resource.documents.currentPage = '1';
+        tempTabs._resource.documents.selectedView = true;
         tempTabs._resource.state = 'agent';
 
         dashboard._dashboard = {};

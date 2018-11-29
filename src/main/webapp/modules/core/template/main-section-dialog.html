@@ -24,18 +24,18 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row" ng-class="{'m-b-sm': entry.entryName.indexOf('groupRolesMapping') > -1}">
+            <div class="form-group row" ng-class="{'m-b-sm': entry.entryName.indexOf('groupRolesMap') > -1}">
                 <div ng-repeat="value in entryValue track by $index">
                    <label class="col-sm-4 form-control-label" ng-if="$index ==0" translate>label.entryValue</label>
                    <div class="col-sm-6" ng-class="{'col-md-offset-4 m-t-sm': $index >0}">
                        <input type="text" class="form-control" placeholder="{{'placeholder.value' | translate}} {{$index+1}}" ng-model="value.value" >
                    </div>
-                   <div class="col-sm-1 p-l-0" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
+                   <div class="col-sm-1 p-l-0" ng-if="entry.entryName.indexOf('groupRolesMap') > -1">
                        <a><i ng-click="removeValueField($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                    </div>
                 </div>
             </div>
-            <div class="form-group row" ng-if="entry.entryName.indexOf('groupRolesMapping') > -1">
+            <div class="form-group row" ng-if="entry.entryName.indexOf('groupRolesMap') > -1">
                 <div class="col-sm-12">
                     <a href class="text-u-l" ng-if="entryValue.length>0" ng-click="addValueField()" translate>button.addAnotherValue</a>
                     <a href class="text-u-l" ng-if="entryValue.length==0" ng-click="addValueField()" translate>button.addValue</a>

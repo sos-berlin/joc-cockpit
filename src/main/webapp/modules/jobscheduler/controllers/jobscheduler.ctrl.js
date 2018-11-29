@@ -25,6 +25,7 @@
         vm.scheduleFilters = vm.resourceFilters.schedules;
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
+        vm.documentFilters = vm.resourceFilters.documents;
 
         vm.selectedFiltered = '';
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
@@ -85,7 +86,7 @@
         }
 
         function recursiveTreeUpdate(scrTree, destTree, type) {
-            if (scrTree && destTree)
+            if (scrTree && destTree) {
                 for (let i = 0; i < scrTree.length; i++) {
                     for (let j = 0; j < destTree.length; j++) {
                         if (scrTree[i].path === destTree[j].path) {
@@ -97,8 +98,10 @@
                                 scrTree[i].agentClusters = destTree[j].agentClusters;
                             } else if (type === 'schedule') {
                                 scrTree[i].schedules = destTree[j].schedules;
-                            } else {
+                            } else if (type === 'calendar') {
                                 scrTree[i].calendars = destTree[j].calendars;
+                            } else if (type === 'document') {
+                                scrTree[i].documents = destTree[j].documents;
                             }
                             scrTree[i].expanded = destTree[j].expanded;
                             scrTree[i].selected = destTree[j].selected;
@@ -109,11 +112,12 @@
                         }
                     }
                 }
+            }
         }
 
         vm.recursiveTreeUpdate = function (scrTree, destTree, type) {
             if (scrTree && destTree) {
-              recursiveTreeUpdate(scrTree, destTree, type);
+                recursiveTreeUpdate(scrTree, destTree, type);
             }
             return scrTree;
         };
@@ -326,7 +330,7 @@
             vm.pollAgents();
         };
 
-        function pollCheckExpandTreeForUpdates(data) {
+        function pollCheckExpandTreeForUpdates(data, obj1) {
             if (data.selected1) {
                 obj1.folders.push({folder: data.path, recursive: false});
                 vm.folderPathA = data.name || '/';
@@ -334,13 +338,13 @@
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
-                    pollCheckExpandTreeForUpdates(value);
+                    pollCheckExpandTreeForUpdates(value, obj1);
             });
         }
 
-        var obj1 = {};
+
         vm.pollAgents = function () {
-            obj1 = {folders: []};
+            let obj1 = {folders: []};
 
             obj1.jobschedulerId = vm.schedulerIds.selected;
             if (vm.agentsFilters.filter.state != 'all') {
@@ -349,7 +353,7 @@
 
             angular.forEach(vm.treeAgent, function (value) {
                 if (value.expanded || value.selected1)
-                    pollCheckExpandTreeForUpdates(value);
+                    pollCheckExpandTreeForUpdates(value, obj1);
             });
 
             JobSchedulerService.getAgentCluster(obj1).then(function (result) {
@@ -1355,7 +1359,7 @@
                     }
                     var data = [];
 
-                    for (var i = 0; i < vm.eventFilterList.length; i++) {
+                    for (let i = 0; i < vm.eventFilterList.length; i++) {
                         var flag = true;
                         for (let j = 0; j < data.length; j++) {
                             if (data[j].account == vm.eventFilterList[i].account && data[j].name == vm.eventFilterList[i].name) {
@@ -3829,14 +3833,14 @@
             });
         }
 
-        function getExpandTreeForUpdates1(data) {
+        function getExpandTreeForUpdates1(data, obj1) {
             if (data.selected1) {
                 obj1.folders.push({folder: data.path, recursive: false});
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
-                    getExpandTreeForUpdates1(value);
+                    getExpandTreeForUpdates1(value, obj1);
             });
         }
 
@@ -3845,7 +3849,7 @@
             if (flag == 'remove') {
                 vm.calendarFilters.filter.category = undefined;
             }
-            obj1 = {folders: []};
+            let obj1 = {folders: []};
             if (vm.calendarFilters.filter.type != 'ALL') {
                 obj1.type = vm.calendarFilters.filter.type;
             }
@@ -3857,7 +3861,7 @@
             vm.loading = true;
             angular.forEach(vm.treeCalendar, function (value) {
                 if (value.expanded || value.selected1)
-                    getExpandTreeForUpdates1(value);
+                    getExpandTreeForUpdates1(value, obj1);
             });
             obj1.compact = true;
             obj1.jobschedulerId = vm.schedulerIds.selected;
@@ -3868,8 +3872,8 @@
                 });
                 vm.loading = false;
                 setTimeout(function () {
-                   updatePanelHeight();
-                },0);
+                    updatePanelHeight();
+                }, 0);
 
             }, function () {
                 vm.loading = false;
@@ -4013,24 +4017,28 @@
             });
         };
         var uploader = $scope.uploader = new FileUploader({
-            url: './calendars/import'
+            url: ''
         });
 
         vm.fileLoading = false;
         // CALLBACKS
         uploader.onAfterAddingFile = function (item) {
-            var fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
-            if (fileExt != 'JSON') {
-                toasty.error({
-                    title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
-                    timeout: 10000
-                });
-                item.remove();
-            } else {
+            if(vm.resourceFilters.state === 'calendars') {
+                let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
+                if (fileExt != 'JSON') {
+                    toasty.error({
+                        title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
+                        timeout: 10000
+                    });
+                    item.remove();
+                } else {
+                    vm.fileLoading = true;
+                    var reader = new FileReader();
+                    reader.readAsText(item._file, "UTF-8");
+                    reader.onload = onLoadFile;
+                }
+            }else{
                 vm.fileLoading = true;
-                var reader = new FileReader();
-                reader.readAsText(item._file, "UTF-8");
-                reader.onload = onLoadFile;
             }
         };
         vm.basedOnCalendars = [];
@@ -4270,7 +4278,7 @@
         }
 
         vm.deleteCalendar = function (calendar) {
-            var obj = {};
+            let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendarIds = [];
             if (calendar) {
@@ -4413,6 +4421,415 @@
 
         /** <<<<<<<<<<<<< End Calendars >>>>>>>>>>>>>>> */
 
+
+        /** ---------------------- Begin Documentations ------------------------ */
+
+        vm.treeDocument = [];
+        vm.my_tree_document = {};
+        vm.expanding_propertyD = {
+            field: "name"
+        };
+        vm.sortByD = function (propertyName) {
+            vm.documentFilters.reverse = !vm.documentFilters.reverse;
+            vm.documentFilters.filter.sortBy = propertyName;
+        };
+        vm.allCheckDocument = {
+            checkbox: false
+        };
+        vm.checkAllDocument = function () {
+            if (vm.allCheckDocument.checkbox && vm.allDocumentations.length > 0) {
+                var _document = $filter('orderBy')(vm.allDocumentations, vm.documentFilters.filter.sortBy, vm.documentFilters.reverse);
+                vm.object.documents = _document.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage));
+            } else {
+                vm.object.documents = [];
+            }
+        };
+
+        var watcher10 = $scope.$watchCollection('object.documents', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.allCheckDocument.checkbox = newNames.length == vm.allDocumentations.slice((vm.userPreferences.entryPerPage * (vm.documentFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.documentFilters.currentPage)).length;
+            } else {
+                vm.allCheckDocument.checkbox = false;
+            }
+        });
+
+        /**
+         * Function to initialized Document tree
+         */
+        function initDocumentTree() {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ["Documentation"]
+            }).then(function (res) {
+                if ($rootScope.document_expand_to) {
+                    vm.treeDocument = res.folders;
+                    filteredTreeDataD();
+                } else {
+                    if (vm.isEmpty(vm.documentFilters.expand_to)) {
+                        vm.treeDocument = res.folders;
+                        filteredTreeDataD();
+                    } else {
+                        vm.documentFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.documentFilters.expand_to, 'document');
+                        vm.treeDocument = vm.documentFilters.expand_to;
+                        console.log('>>>>>>>>>')
+                        vm.loadDocument();
+                    }
+                }
+                vm.documentFilters.expand_to = vm.treeDocument;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+
+
+        function filteredTreeDataD() {
+            angular.forEach(vm.treeDocument, function (value) {
+                value.expanded = true;
+                if ($rootScope.document_expand_to) {
+                    if ((value.path == $rootScope.document_expand_to.path))
+                        value.selected1 = true;
+                } else {
+                    value.selected1 = true;
+                }
+                vm.allDocumentations = [];
+                checkExpandD(value);
+            });
+        }
+
+        function checkExpandD(data) {
+            if (data.selected1) {
+                data.documents = [];
+                expandFolderDataD(data);
+
+                vm.folderPathD = data.name || '/';
+                vm.folderFullPathD = data.path || '/';
+                angular.forEach(data.documents, function (value) {
+                    value.path1 = data.path;
+                    vm.allDocumentations.push(value);
+                });
+
+            }
+            data.folders = orderBy(data.folders, 'name');
+            angular.forEach(data.folders, function (value) {
+                if ($rootScope.document_expand_to && $rootScope.document_expand_to.path.indexOf(value.path) != -1) {
+                    value.expanded = true;
+                }
+                if ($rootScope.document_expand_to && $rootScope.document_expand_to.path == value.path) {
+                    value.selected1 = true;
+                    $rootScope.document_expand_to = undefined;
+                }
+                checkExpandD(value);
+            });
+
+        }
+
+        function expandFolderDataD(data) {
+            vm.object.documents = [];
+            vm.loading = true;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [{folder: data.path, recursive: false}];
+
+            obj.compact = true;
+            vm.folderPathD = data.name || '/';
+            ResourceService.getDocumentations(obj).then(function (result) {
+                data.documents = result.documentations;
+
+                vm.folderFullPathD = data.path || '/';
+                vm.loading = false;
+                var flag = false;
+                if (data.documents.length > 0) {
+                    angular.forEach(data.documents, function (value) {
+                        value.path1 = data.path;
+                        if (vm.showPanel && vm.showPanel.path == data.path) {
+                            flag = true;
+                        }
+                    });
+                }
+                vm.allDocumentations = data.documents;
+            }, function () {
+
+                vm.loading = false;
+            });
+        }
+
+        vm.treeHandler1D = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
+        vm.treeHandlerD = function (data) {
+            if (vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
+            navFullTreeD();
+            data.selected1 = true;
+            data.documents = [];
+            vm.allDocumentations = [];
+            vm.loading = true;
+            expandFolderDataD(data);
+        };
+
+        function navFullTreeD() {
+            angular.forEach(vm.treeDocument, function (value) {
+                value.selected1 = false;
+                if (value.expanded) {
+                    traverseTree(value);
+                }
+            });
+        }
+
+        vm.expandNodeD = function (data) {
+            navFullTreeD();
+            vm.allDocumentations = [];
+            vm.loading = true;
+            vm.folderPathD = data.name || '/';
+            vm.folderFullPathD = data.path || '/';
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [];
+            obj.folders.push({folder: data.path, recursive: true});
+            if (vm.documentFilters.filter.type != 'ALL') {
+                obj.type = vm.documentFilters.filter.type;
+            }
+
+            obj.compact = true;
+            ResourceService.getDocumentations(obj).then(function (result) {
+                vm.allDocumentations = result.documentations;
+                startTraverseNode1(data);
+                vm.loading = false;
+            }, function () {
+                vm.loading = false;
+            });
+        };
+
+        vm.loadDocument = function () {
+            vm.object.documents = [];
+            let objDoc = {folders: []};
+            vm.allDocumentations = [];
+            vm.loading = true;
+            angular.forEach(vm.treeDocument, function (value) {
+                if (value.expanded || value.selected1)
+                    getExpandTreeForUpdates1(value, objDoc);
+            });
+            objDoc.compact = true;
+            objDoc.jobschedulerId = vm.schedulerIds.selected;
+            ResourceService.getDocumentations(objDoc).then(function (res) {
+                var data = res.documentations;
+                angular.forEach(vm.treeDocument, function (value) {
+                    insertDocument(value, data);
+                });
+                vm.loading = false;
+            }, function () {
+                vm.loading = false;
+            });
+        };
+
+        function insertDocument(node, x) {
+            node.calendars = [];
+            for (var i = 0; i < x.length; i++) {
+                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
+                    x[i].path1 = node.path;
+                    node.documents.push(x[i]);
+                    vm.allDocumentations.push(x[i]);
+                }
+            }
+
+            vm.folderPathD = node.name || '/';
+            vm.folderFullPathD = node.path || '/';
+            angular.forEach(node.folders, function (value) {
+                if (value.expanded || value.selected1)
+                    insertDocument(value, x);
+            });
+        }
+
+        vm.exportDocumentations = function () {
+            ResourceService.exportDocumentations({
+                jobschedulerId: vm.schedulerIds.selected,
+                documentations: [],
+                folders: []
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        };
+
+        vm.importDocument = function () {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/import-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
+
+            }, function () {
+
+            });
+
+        };
+
+        function uploadDocument() {
+            ResourceService.importDocumentations({
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        }
+
+        vm.deleteDocumentations = function (document) {
+            let obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.documentIds = [];
+            if (document) {
+                obj.documentIds.push(document.id)
+            } else {
+                angular.forEach(vm.object.documents, function (value) {
+                    obj.documentIds.push(value.id)
+                });
+            }
+            vm.document = angular.copy(document);
+            if (document) {
+                vm.documentArr = undefined;
+                vm.document.delete = true;
+                ResourceService.documentationsUsed({
+                    id: vm.document.id,
+                    jobschedulerId: vm.schedulerIds.selected
+                }).then(function (res) {
+                    vm.document.usedIn = res;
+
+                });
+            } else {
+                vm.documentArr = angular.copy(vm.object.documents);
+                angular.forEach(vm.documentArr, function (value) {
+                    ResourceService.documentationsUsed({
+                        id: value.id,
+                        jobschedulerId: vm.schedulerIds.selected
+                    }).then(function (res) {
+                        value.usedIn = res;
+                    });
+                });
+
+            }
+            deleteDocumentFn();
+        };
+
+
+        function deleteDocument(obj) {
+            ResourceService.deleteDocumentations(obj).then(function () {
+                vm.object.documents = [];
+                vm.getCategories();
+            });
+        }
+
+        function deleteDocumentFn(obj, document) {
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.type = 'Calendar';
+                vm.comments.operation = 'Delete';
+                if (document) {
+                    vm.comments.name = document.path;
+                } else {
+                    vm.comments.name = '';
+                    angular.forEach(vm.object.documents, function (value, index) {
+                        if (index == vm.object.documents.length - 1) {
+                            vm.comments.name = vm.comments.name + ' ' + value.path;
+                        } else {
+                            vm.comments.name = value.path + ', ' + vm.comments.name;
+                        }
+                    });
+                }
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    deleteDocument(obj);
+                }, function () {
+
+                });
+
+            } else {
+                var modalInstance1 = $uibModal.open({
+                    templateUrl: 'modules/core/template/confirm-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance1.result.then(function () {
+                    deleteDocument(obj);
+                }, function () {
+
+                });
+            }
+        }
+
+        vm.documentationsUsed = function (document) {
+            ResourceService.documentationsUsed({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: document.path,
+                id: document.id
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        };
+
+        vm.previewDocumentations = function (path) {
+            ResourceService.previewDocumentation({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: path
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        };
+        vm.showDocumentations = function (document) {
+            ResourceService.showDocumentation({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: document.path,
+                type: document.type
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        };
+        vm.urlDocumentations = function (document) {
+            ResourceService.documentationUrl({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: document.path,
+                type: document.type
+            }).then(function (res) {
+
+            }, function () {
+
+            });
+        };
+
+        /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
+
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
 
@@ -4453,6 +4870,11 @@
             } else if (toState.name == 'app.resources.events') {
                 vm.resourceFilters.state = 'events';
                 checkSharedFilters();
+            } else if (toState.name == 'app.resources.documentations') {
+                vm.pageView = views.document || vm.userPreferences.pageView;
+                vm.resourceFilters.state = 'documentations';
+                vm.treeDocument = [];
+                initDocumentTree();
             }
             startPolling();
         });
@@ -4689,6 +5111,7 @@
             watcher7();
             watcher8();
             watcher9();
+            watcher10();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             $timeout.cancel(t1);

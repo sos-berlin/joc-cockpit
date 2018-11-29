@@ -1,0 +1,62 @@
+<div nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel();uploader.queue[0].remove();" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title" translate>label.importDocument</h4>
+    </div>
+    <div class="modal-body p-a" style="min-height: 240px">
+        <form name="form1" ng-submit="ok()" novalidate >
+            <div ng-if="uploader.queue.length === 0">
+                <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
+                    <div><img src="images/upload.png"></div>
+                    <div translate>label.dragAndDropFileToUpload</div>
+                </div>
+                <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
+                    <button type="button" class="btn bg-blue btn-sm"
+                            onclick="openFileOption()">
+                        <span translate>button.chooseFileToUpload</span>
+                    </button>
+                </div>
+                <input type="file" id="file1" nv-file-select="" uploader="uploader" style="display: none;">
+            </div>
+            <div ng-if="uploader.queue.length>0">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th translate>label.name</th>
+                        <th ng-show="uploader.isHTML5" translate>label.size</th>
+                        <th ng-show="uploader.isHTML5" translate>label.progress</th>
+                        <th translate>label.status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in uploader.queue">
+                        <td><strong>{{ item.file.name }}</strong></td>
+                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                        <td ng-show="uploader.isHTML5">
+                            <div class="progress" style="margin-bottom: 0;">
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
+                            <span ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
+                            <span ng-show="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
+        <button type="submit" class="btn btn-primary btn-sm" ng-click="uploadDocument()" translate> button.import </button>
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
+    </div>
+</div>
+<script>
+    function openFileOption() {
+        document.getElementById("file1").click();
+    }
+</script>

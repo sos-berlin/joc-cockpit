@@ -997,8 +997,16 @@
                 }
 
             }
-            if (vm.resourceFilters.state === 'events' && vm.permission.Event.view.status) {
-                $state.go('app.resources.events');
+            if (vm.resourceFilters.state === 'events') {
+                if (vm.permission.Event.view.status) {
+                    $state.go('app.resources.events');
+                    return;
+                } else {
+                    vm.resourceFilters.state = 'documentations';
+                }
+            }
+            if (vm.resourceFilters.state === 'documentations') {
+                $state.go('app.resources.documentations');
             }
         };
 

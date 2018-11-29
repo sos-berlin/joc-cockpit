@@ -45,6 +45,26 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="btn-group dropdown">
+                                <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                    <span class="text-primary">
+                                        <span ng-show="agentsFilters.filter.sortBy =='path'">
+                                            {{'label.path' | translate}}
+                                            <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                            <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                        </span>
+                                        <span ng-show="agentsFilters.filter.sortBy =='state._text'">
+                                             {{'label.status' | translate}}
+                                            <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
+                                            <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                                        </span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" href ng-click="sortByA('path')" translate>label.path</a>
+                                    <a class="dropdown-item" href ng-click="sortByA('state._text')" translate>label.status</a>
+                                </div>
+                            </div>
                         </div>
                         <div class="hide" ng-class="{'show-block':resourceFilters.state=='schedules'}">
                             <div class="inline" ng-class="{'hide':object.schedules.length>0}">
@@ -74,25 +94,25 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="btn-group dropdown" ng-if="resourceFilters.state=='agent'">
-                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
-                                <span class="text-primary">
-                                    <span ng-show="agentsFilters.filter.sortBy =='path'">
-                                        {{'label.path' | translate}}
-                                        <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
+                            <div class="btn-group dropdown">
+                                <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                    <span class="text-primary">
+                                        <span ng-show="scheduleFilters.filter.sortBy =='name'">
+                                            {{'label.name' | translate}}
+                                            <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
+                                            <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
+                                        </span>
+                                        <span ng-show="scheduleFilters.filter.sortBy =='path'">
+                                            {{'label.path' | translate}}
+                                            <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
+                                            <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
+                                        </span>
                                     </span>
-                                    <span ng-show="agentsFilters.filter.sortBy =='state._text'">
-                                         {{'label.status' | translate}}
-                                        <i ng-show="!agentsFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="agentsFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="sortByA('path')" translate>label.path</a>
-                                <a class="dropdown-item" href ng-click="sortByA('state._text')" translate>label.status</a>
+                                </a>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" href ng-click="sortByS('name')" translate>label.name</a>
+                                    <a class="dropdown-item" href ng-click="sortByS('path')" translate>label.path</a>
+                                </div>
                             </div>
                         </div>
                         <div class="btn-group dropdown" ng-if="resourceFilters.state=='lock'">
@@ -113,26 +133,6 @@
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="sortByL('name')" translate>label.name</a>
                                 <a class="dropdown-item" href ng-click="sortByL('path')" translate>label.path</a>
-                            </div>
-                        </div>
-                        <div class="btn-group dropdown" ng-if="resourceFilters.state=='schedules'">
-                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
-                                <span class="text-primary">
-                                    <span ng-show="scheduleFilters.filter.sortBy =='name'">
-                                        {{'label.name' | translate}}
-                                        <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
-                                    <span ng-show="scheduleFilters.filter.sortBy =='path'">
-                                        {{'label.path' | translate}}
-                                        <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="sortByS('name')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="sortByS('path')" translate>label.path</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown" ng-if="resourceFilters.state=='processClass'">
@@ -310,6 +310,37 @@
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-click="deleteEvent()"><i class="fa fa-trash"></i> {{'button.deleteEvent' | translate}}</button>
                             </div>
                         </div>
+                        <div class="hide" ng-class="{'show-block': resourceFilters.state=='documentations'}">
+                            <button ng-if="object.documents.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="exportDocument()"><i class="fa fa-download"></i> {{'button.exportDocument' | translate}}</button>
+                            <button ng-if="object.documents.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteDocumentations()"><i class="fa fa-trash"></i> {{'button.deleteDocument' | translate}}</button>
+                            <div class="inline" ng-class="{'hide':object.documents.length>0}">
+                                <div class="btn-group dropdown">
+                                    <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                        <span class="text-primary">
+                                            <span ng-show="documentFilters.filter.sortBy =='path'">
+                                                {{'label.path' | translate}}
+                                                <i ng-show="!documentFilters.reverse" class="fa fa-caret-up"></i>
+                                                <i ng-show="documentFilters.reverse" class="fa fa-caret-down"></i>
+                                            </span>
+                                            <span ng-show="documentFilters.filter.sortBy =='type'">
+                                                 {{'label.type' | translate}}
+                                                <i ng-show="!documentFilters.reverse" class="fa fa-caret-up"></i>
+                                                <i ng-show="documentFilters.reverse" class="fa fa-caret-down"></i>
+                                            </span>
+                                        </span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" href ng-click="sortByD('path')" translate>label.path</a>
+                                        <a class="dropdown-item" href ng-click="sortByD('type')" translate>label.type</a>
+                                    </div>
+                                </div>
+                                <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allDocuments.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                                    <i class="fa fa fa-refresh"></i>
+                                    <span translate>button.resetPanel</span>
+                                </button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="importDocument()"><i class="fa fa-upload"></i> {{'button.importDocument' | translate}}</button>
+                            </div>
+                        </div>
                         <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions' || resourceFilters.state=='events'}"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.schedules.length>0}">
@@ -375,6 +406,14 @@
                 <li class="nav-item" ng-if="permission.Calendar.view.status">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.calendars">
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status">
+                    <span class="separator"></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.documentations">
+                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
                     </a>
                 </li>
             </ul>

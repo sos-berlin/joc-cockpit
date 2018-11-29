@@ -95,6 +95,79 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            getDocumentations: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentations');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, exportDocumentations: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentations/export');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, importDocumentations: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentations/import');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, deleteDocumentations: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentations/delete');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, documentationsUsed: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentation/used');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, previewDocumentation: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentation/preview');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, showDocumentation: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentation/show');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, documentationUrl: function (filter) {
+                var deferred = $q.defer();
+                var Documentations = $resource('documentation/url');
+                Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }
@@ -267,8 +340,6 @@
                 });
                 return deferred.promise;
             },
-
-
             getClusterMembersP: function (jobschedulerId) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/cluster/members/p');
