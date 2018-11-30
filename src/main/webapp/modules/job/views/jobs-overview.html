@@ -95,68 +95,59 @@
                                 <div class="box card {{job.state.severity==0 ? 'green-box' : job.state.severity==1 ? 'gold-box' : job.state.severity==2 ? 'crimson-box': job.state.severity==3 ?'dimgrey-box':
                                               job.state.severity==4 ? 'text-dark-box': job.state.severity==5 ? 'dark-orange-box' : job.state.severity==6 ? 'corn-flower-blue-box' :job.state.severity==7 ? 'dark-magenta-box' : job.state.severity==8 ? 'chocolate-box' : ''}}">
                                     <div class="box-body" title="{{job.configurationStatus._text | translate}}">
-                                        <label class="md-check pos-abt"
-                                               ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                        <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                             <input type="checkbox" data-checklist-model="object.jobs"
                                                    data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                         <div class="text-left block-ellipsis"
                                              ng-class="{'m-l-md':permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate}">
-                                            <span uib-tooltip="{{job.title}}"
-                                                  ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
+                                            <span uib-tooltip="{{job.title}}" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                                   ng-bind="job.name"></span>
                                         </div>
                                         <div class="btn-group dropdown pull-right abt-dropdown ">
                                             <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                                 <i class="text fa fa-ellipsis-h"></i></a>
-
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a class="dropdown-item"
-                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
-                                               ng-click="start(job)"
-                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
-                                               translate>button.startTask</a>
-                                            <a class="dropdown-item"
-                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
-                                               ng-click="startAt(job)"
-                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
-                                               translate>button.startTaskat</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
-                                               ng-click="stop(job)" translate>button.stop</a>
-                                            <a class="dropdown-item"
-                                               ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop"
-                                               ng-click="unstop(job)" translate>button.unstop</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)"
-                                               translate>button.killAllTasksImmediately</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
-                                               ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
-                                               ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
-                                               ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
-                                               ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" ng-click="setRunTime(job)"
-                                               ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.change.runTime"><span
-                                                    translate>button.setRunTime</span></a>
-                                            <a class="dropdown-item"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
-                                               ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
-                                            <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
-                                                    ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                               ng-if="permission.Calendar.view.status">
-                                                <span translate>button.showAssignedCalendar</span>
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a ng-click="showConfiguration('job',job.path,job.name)"
-                                               class="hide dropdown-item"
-                                               ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
-                                               translate>button.showConfiguration</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
+                                                   ng-click="start(job)" ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
+                                                   translate>button.startTask</a>
+                                                <a class="dropdown-item" ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
+                                                   ng-click="startAt(job)" ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
+                                                   translate>button.startTaskat</a>
+                                                <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
+                                                   ng-click="stop(job)" translate>button.stop</a>
+                                                <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop"
+                                                   ng-click="unstop(job)" translate>button.unstop</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                                   ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)"
+                                                   translate>button.killAllTasksImmediately</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                                   ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
+                                                   ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                                   ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
+                                                   ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                                   ng-if="permission.Job.change.runTime"><span translate>button.setRunTime</span></a>
+                                                <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
+                                                   ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
+                                                <a href class="dropdown-item" ng-click="showAssignedCalendar(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                                   ng-if="permission.Calendar.view.status"><span translate>button.showAssignedCalendar</span>
+                                                </a>
+                                                <a ng-click="showConfiguration('job',job.path,job.name)" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
+                                                   translate>button.showConfiguration</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href class="dropdown-item" ng-click="assignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation"><span translate>button.assignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item" ng-click="unassignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation"><span translate>button.unassignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                                    <span translate>button.showDocumentation</span>
+                                                </a>
+                                                <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                translate>button.copyLinkToObject</a>
                                             </div>
@@ -316,57 +307,50 @@
                                 </td>
                                 <td class="tableexport-ignore">
                                     <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
-                                                class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
-                                             role="menu">
-                                              <a class="dropdown-item"
-                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
-                                               ng-click="start(job)"
-                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
+                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a class="dropdown-item" ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
+                                               ng-click="start(job)" ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTask</a>
-                                            <a class="dropdown-item"
-                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
-                                               ng-click="startAt(job)"
-                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
+                                            <a class="dropdown-item" ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
+                                               ng-click="startAt(job)" ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTaskat</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
+                                            <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
                                                ng-click="stop(job)" translate>button.stop</a>
-                                            <a class="dropdown-item"
-                                               ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop"
+                                            <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop"
                                                ng-click="unstop(job)" translate>button.unstop</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)"
-                                               translate>button.killAllTasksImmediately</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                               ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
                                                ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
                                                ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                            <a class="dropdown-item bg-hover-color"
-                                               ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}"
                                                ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
                                                ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" ng-click="setRunTime(job)"
-                                               ng-class="{'disable-link':job.configurationStatus.severity==2}"
-                                               ng-if="permission.Job.change.runTime"><span
-                                                    translate>button.setRunTime</span></a>
-                                            <a class="dropdown-item"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
+                                            <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                               ng-if="permission.Job.change.runTime"><span translate>button.setRunTime</span></a>
+                                            <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
                                                ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
-                                            <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
-                                                    ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                            <a href class="dropdown-item" ng-click="showAssignedCalendar(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}"
                                                ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
-                                            <div class="dropdown-divider"></div><a class="dropdown-item" ng-if="permission.AuditLog.view.status"
-                                               ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
-                                            <a ng-click="showConfiguration('job',job.path,job.name)"
-                                               class="hide dropdown-item"
-                                               ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
+                                            <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
+                                            <a ng-click="showConfiguration('job',job.path,job.name)" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
                                                translate>button.showConfiguration</a>
+                                            <div class="dropdown-divider"></div>
+                                                <a href class="dropdown-item" ng-click="assignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation"><span translate>button.assignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item" ng-click="unassignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation"><span translate>button.unassignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                                    <span translate>button.showDocumentation</span>
+                                                </a>
+                                                <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                translate>button.copyLinkToObject</a>
                                         </div>
@@ -386,8 +370,7 @@
                                 </td>
                                 <td ng-bind="job.path"></td>
                                 <td>
-                                    <span class="label" ng-if="job.state._text"
-                                         ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
+                                    <span class="label" ng-if="job.state._text" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                                 </td>
                                 <td ng-if="!userPreferences.isCompact">
                                     <div class="state-text">
@@ -399,8 +382,7 @@
                                     <span ng-if="!job.usedInJobChains">0</span>
                                 </td>
                                 <td>
-                                    <a class="text-hover-primary"
-                                       ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
+                                    <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                                 </td>
                                 <td ng-if="!userPreferences.isCompact">
                                     <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
@@ -539,24 +521,19 @@
                         <div class="pull-left" ng-show="allJobs.length > 10">
                             <div class="btn-group  m-r-xxs">
                                 <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
-                                        uib-btn-radio="'10'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
+                                        uib-btn-radio="'10'" ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                                 </button>
                                 <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
-                                        uib-btn-radio="'25'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
+                                        uib-btn-radio="'25'" ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                                 </button>
                                 <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
-                                        uib-btn-radio="'50'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
+                                        uib-btn-radio="'50'" ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                                 </button>
                                 <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
-                                        uib-btn-radio="'100'"
-                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                                        uib-btn-radio="'100'" ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
                                 <button ng-if="maxEntryPerPage" class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
-                                        uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
+                                        uib-btn-radio="{{maxEntryPerPage}}" ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
                                     {{maxEntryPerPage}}
                                 </button>
                             </div>

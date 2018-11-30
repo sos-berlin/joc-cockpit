@@ -2426,7 +2426,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }
@@ -2704,7 +2704,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }
@@ -6744,7 +6744,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }
@@ -9780,6 +9780,9 @@
                         if (!vm.object.checkBoxs.scheduler) {
                             div.className += " hide-block";
                         }
+                    }
+                    if(level.startsWith("debug") && !$scope.object.checkBoxs.debug){
+                        div.className += " hide-block";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
                     if (!vm.isDeBugLevel) {

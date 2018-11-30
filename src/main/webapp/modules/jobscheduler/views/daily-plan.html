@@ -138,7 +138,10 @@
                 <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
-                <input type="search" class="pull-right hide" ng-class="{'show-block': pageView=='list'}"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="width: 180px">
+                <div class="pull-right hide" ng-class="{'show-block': pageView=='list'}" style="width: 180px">
+                    <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="dailyPlanFilters.searchText" >
+                    <i ng-if="dailyPlanFilters.searchText" class="fa fa-times search-close" ng-click="dailyPlanFilters.searchText = ''"></i>
+                </div>
             </div>
         </div>
         <div class="row" ng-if="showSearchPanel">
@@ -432,12 +435,12 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict)  | startFrom:(dailyPlanFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: dailyPlanFilters.searchText:strict)  | startFrom:(dailyPlanFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
                                 <td>
-                                    <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind-html="plan.jobChain | highlight:q"></span>
-                                    <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind-html="plan.job | highlight:q"></span>
+                                    <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind-html="plan.jobChain | highlight:dailyPlanFilters.searchText"></span>
+                                    <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind-html="plan.job | highlight:dailyPlanFilters.searchText"></span>
                                 </td>
-                                <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain);$event.stopPropagation()" ng-bind-html="plan.orderId | highlight:q"></span></td>
+                                <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain);$event.stopPropagation()" ng-bind-html="plan.orderId | highlight:dailyPlanFilters.searchText"></span></td>
                                 <td>
                                     <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>

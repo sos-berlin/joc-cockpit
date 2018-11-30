@@ -7,7 +7,7 @@
 (function () {
     'use strict';
     angular.module('myapp', []).controller('LogCtrl', ['$location', '$scope', '$http', '$sce','$q','$interval', function ($location, $scope, $http, $sce, $q, $interval) {
-
+        $scope.loading = true;
         $scope.object = {
             debug: 'Debug'
         };
@@ -155,6 +155,9 @@
                         if (!$scope.object.checkBoxs.scheduler) {
                             div.className += " hide-block";
                         }
+                    }
+                    if(level.startsWith("debug") && !$scope.object.checkBoxs.debug){
+                        div.className += " hide-block";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
                     if (!$scope.isDeBugLevel) {

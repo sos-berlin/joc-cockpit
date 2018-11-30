@@ -35,6 +35,16 @@
                                         <i class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                            <span translate>button.assignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                            <span translate>button.unassignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item {{permission.Lock.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('lock', lock.path)">
+                                            <span translate>button.showDocumentation</span>
+                                        </a>
                                     </div>
                                 </div>
                             </td>

@@ -7459,7 +7459,7 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 } else {
                     vm.maxPlannedTime = undefined;
                 }
@@ -7922,7 +7922,7 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 } else {
                     vm.maxPlannedTime = undefined;
                 }
@@ -8533,7 +8533,7 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 } else {
                     vm.maxPlannedTime = undefined;
                 }

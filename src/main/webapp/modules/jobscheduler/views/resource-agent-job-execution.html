@@ -3,10 +3,8 @@
         <div class="col-md-12">
             <div class="box p-a m-b-xs m-t-xs">
                 <form name="form" ng-submit="saveAsFilter(from)" novalidate>
-                    <div class="form-group row"
-                         ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                         <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-
                         <div class=" col-sm-6">
                             <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control"
                                    placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"
@@ -61,8 +59,7 @@
                             <input class="form-control input-date"
                                    style="width: 225px;background-position: 200px"
                                    ng-model="agentJobSearch.to" data-date-format="{{dataFormat}}"
-                                   data-autoclose="1"
-                                   placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                                   data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
                                    data-min-date="{{agentJobSearch.from}}" data-max-date="{{currentTime}}"
                                    bs-datepicker type="text">
                             <input valid-time maxlength="8" ng-disabled="!agentJobSearch.to"

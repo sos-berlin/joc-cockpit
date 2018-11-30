@@ -28,8 +28,8 @@
     </style>
 </head>
 <body ng-controller="LogCtrl">
-    <div class="p-t-sm" ng-if="!error">
-        <div class="p-l-sm">
+    <div style="display: none" class="p-t-sm "  ng-class="{show : !loading && !error}">
+        <div class="p-l-sm ">
             <label class="text- _600">Modify Log Viewing Criteria</label>
             <a href ng-if="!isCancel && !finished" ng-click="cancel()" class="m-l m-r pull-right"><i class="fa fa-times"></i> <span> Cancel</span></a>
             <a href ng-class="{'show-block': isCancel || finished}"  class="hide m-l m-r pull-right" ng-click="reload()"><i class="fa fa-refresh"></i> <span> Reload</span></a>
@@ -67,7 +67,7 @@
     </div>
     <div class="text-center hide" ng-class="{'show' : error && !loading}">
         <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px" ><span ng-bind="errStatus"></span></div>
-        <div class="text-lg text-muted hide" ng-class="{'show' : errStatus}">Error!</div>
+        <div style="display: none" class="text-lg text-muted" ng-class="{'show' : errStatus}">Error!</div>
         <div class="text m-t" ng-bind="error"></div>
     </div>
     <div ng-if="loading" class="loading-img"></div>

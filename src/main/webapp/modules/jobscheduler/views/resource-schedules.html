@@ -32,7 +32,6 @@
                      ng-repeat="schedule in value | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse">
                     <div class="box card" ng-class="colorBorderFunction(schedule.state.severity)">
                         <div class="box-body">
-
                             <div>
                                 <label class="md-check pos-abt" ng-if="permission.Schedule.change.addSubstitute">
                                     <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
@@ -50,6 +49,16 @@
                                         <div class="dropdown-divider"></div>
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
                                            ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assign.documentation">
+                                            <span translate>button.assignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assign.documentation">
+                                            <span translate>button.unassignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item {{permission.Schedule.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('schedule', schedule.path)">
+                                            <span translate>button.showDocumentation</span>
+                                        </a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -146,7 +155,6 @@
                             <i ng-show="scheduleFilters.filter.sortBy == 'substitute' && scheduleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-
                     </tr>
                     </thead>
                     <tbody  ng-repeat="schedule in allSchedules | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse | startFrom:(scheduleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
@@ -168,6 +176,16 @@
                                     <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
                                        class="hide dropdown-item"
                                        ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assign.documentation">
+                                        <span translate>button.assignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assign.documentation">
+                                        <span translate>button.unassignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item {{permission.Schedule.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('schedule', schedule.path)">
+                                        <span translate>button.showDocumentation</span>
+                                    </a>
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>

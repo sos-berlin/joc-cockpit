@@ -413,6 +413,29 @@
             });
         };
 
+        vm.showDocumentations = function (objType, objPath) {
+            let link = '';
+
+            if (objType === 'jobChain' && objPath) {
+                link = host + 'job_chain/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'job' && objPath) {
+                link = host + 'job/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'order' && objPath) {
+                link = host + 'order/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'lock' && objPath) {
+                link = host + 'lock/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'processClass' && objPath) {
+                link = host + 'process_class/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'schedule' && objPath) {
+                link = host + 'schedule/documentation?path=' + encodeURIComponent(objPath);
+            } else if (objType === 'calendar' && objPath) {
+                link = host + 'calendar/documentation?path=' + encodeURIComponent(objPath);
+            }
+            if (link != '') {
+                link = link + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            }
+        };
+
         if (!$window.localStorage.log_window_wt) {
             $window.localStorage.log_window_wt = 1000;
         }
@@ -442,8 +465,8 @@
                         $window.localStorage.log_window_y = newWindow.screenY;
                     }
                     if(newWindow.sessionStorage.changedPreferences) {
-                        $window.sessionStorage.preferences = newWindow.sessionStorage.changedPreferences;
-                        $rootScope.$broadcast('reloadPreferences');
+                        vm.userPreferences.logFilter = JSON.parse(newWindow.sessionStorage.changedPreferences).logFilter;
+                        $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
                     }
                     newWindow.close();
                 }
@@ -736,8 +759,8 @@
                             $window.localStorage.log_window_y = newWindow.screenY;
                         }
                         if (newWindow.sessionStorage.changedPreferences) {
-                            $window.sessionStorage.preferences = newWindow.sessionStorage.changedPreferences;
-                            $rootScope.$broadcast('reloadPreferences');
+                            vm.userPreferences.logFilter = JSON.parse(newWindow.sessionStorage.changedPreferences).logFilter;
+                            $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
                         }
                         return null;
                     });
@@ -776,8 +799,8 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-            var path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
-            var name = '';
+            let path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
+            let name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.expand_to = {
@@ -791,8 +814,8 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-            var path = job.substring(0, job.lastIndexOf('/')) || '/';
-            var name = '';
+            let path = job.substring(0, job.lastIndexOf('/')) || '/';
+            let name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.job_expand_to = {
@@ -811,7 +834,7 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-            var path = jobChain;
+            let path = jobChain;
             if(orderId){
                 path = jobChain+','+orderId;
             }
@@ -827,8 +850,8 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
-            var name = '';
+            let path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
+            let name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.agent_cluster_expand_to = {
@@ -847,10 +870,11 @@
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-           var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
+           let path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
+            let name = '';
+            if (path != '/') {
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            }
             $rootScope.process_class_expand_to = {
                 name: name,
                 path: path

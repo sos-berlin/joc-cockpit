@@ -142,7 +142,10 @@
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                     </button>
-                    <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" ng-model-options="{ debounce: 100 }" ng-change="searchInResult()" style="width: 180px">
+                    <div class="pull-right" style="width: 180px">
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="jobFilters.searchText" ng-change="searchInResult()">
+                        <i ng-if="jobFilters.searchText" class="fa fa-times search-close" ng-click="jobFilters.searchText = ''"></i>
+                    </div>
                 </div>
             </div>
             <div class="row" ng-if="showSearchPanel">
@@ -262,8 +265,7 @@
                         <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
                             <div class="box card {{job.state.severity==0 ? 'green-box' : job.state.severity==1 ? 'gold-box' : job.state.severity==2 ? 'crimson-box': job.state.severity==3 ?'dimgrey-box':
-                                              job.state.severity==4 ? 'text-dark-box': job.state.severity==5 ? 'dark-orange-box' : job.state.severity==6 ? 'corn-flower-blue-box' :job.state.severity==7 ? 'dark-magenta-box' : job.state.severity==8 ? 'chocolate-box' : ''}}"
-                            >
+                                              job.state.severity==4 ? 'text-dark-box': job.state.severity==5 ? 'dark-orange-box' : job.state.severity==6 ? 'corn-flower-blue-box' :job.state.severity==7 ? 'dark-magenta-box' : job.state.severity==8 ? 'chocolate-box' : ''}}">
                                 <div class="box-body" title="{{job.configurationStatus._text | translate}}">
                                     <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
@@ -310,11 +312,22 @@
                                                ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
-                                            <div class="dropdown-divider"></div>
                                             <a ng-click="showConfiguration('job',job.path,job.name)"
                                                class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}"
                                                ng-if="permission.Job.view.configuration"
                                                translate>button.showConfiguration</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a href class="dropdown-item" ng-click="assignedDocument(job)"
+                                               ng-if="permission.Job.assign.documentation">
+                                                <span translate>button.assignedDocumentation</span>
+                                            </a>
+                                            <a href class="dropdown-item" ng-click="unassignedDocument(job)"
+                                               ng-if="permission.Job.assign.documentation">
+                                                <span translate>button.unassignedDocumentation</span>
+                                            </a>
+                                            <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                                <span translate>button.showDocumentation</span>
+                                            </a>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                translate>button.copyLinkToObject</a>
                                         </div>
@@ -513,6 +526,18 @@
                                                 <a ng-click="showConfiguration('job',job.path,job.name)"
                                                    class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' : ''}} {{permission.Job.view.configuration ? '' : 'hide'}}"
                                                    translate>button.showConfiguration</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href class="dropdown-item" ng-click="assignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation">
+                                                    <span translate>button.assignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item" ng-click="unassignedDocument(job)"
+                                                   ng-if="permission.Job.assign.documentation">
+                                                    <span translate>button.unassignedDocumentation</span>
+                                                </a>
+                                                <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                                    <span translate>button.showDocumentation</span>
+                                                </a>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                    translate>button.copyLinkToObject</a>
                                             </div>
@@ -523,13 +548,13 @@
                                             <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                             <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="job.showJobChains" ng-click="hideJobChains(job)"></i>
                                             <span ng-click="showTaskFuc(job)" class="text-dark text-hover-primary {{(job.isOrderJob != undefined && job.isOrderJob!=true) ? 'text-u-l' :''}} {{job.configurationStatus.severity==2 ? 'crimson': ''}}"
-                                                  ng-bind-html="job.name | highlight:filterString">
+                                                  ng-bind-html="job.name | highlight:jobFilters.searchText">
                                             </span>
                                         </span>
                                         <span ng-if="job.title">-</span>
                                         <i ng-if="job.title" class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                                     </td>
-                                    <td ng-bind-html="job.path | highlight:filterString"></td>
+                                    <td ng-bind-html="job.path | highlight:jobFilters.searchText"></td>
                                     <td>
                                         <span ng-if="job.state._text" class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text | translate"></span>
                                     </td>

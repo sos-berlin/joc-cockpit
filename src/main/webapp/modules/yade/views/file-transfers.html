@@ -133,8 +133,10 @@
                         ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-                       ng-model="filterString" style="width: 180px">
+                <div class="pull-right" style="width: 180px">
+                    <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="yadeFilters.searchText">
+                    <i ng-if="yadeFilters.searchText" class="fa fa-times search-close" ng-click="yadeFilters.searchText = ''"></i>
+                </div>
             </div>
         </div>
         <div class="m-b-sm" ng-if="showSearchPanel">
@@ -445,7 +447,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody ng-repeat="transfer in filtered = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                    <tbody ng-repeat="transfer in filtered = (fileTransfers | filter: yadeFilters.searchText:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr>
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
@@ -469,15 +471,15 @@
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
                                 <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-bind-html="transfer.profile | highlight:filterString"></td>
-                            <td ng-bind-html="transfer.mandator | highlight:filterString"></td>
+                            <td ng-bind-html="transfer.profile | highlight:yadeFilters.searchText"></td>
+                            <td ng-bind-html="transfer.mandator | highlight:yadeFilters.searchText"></td>
                             <td ng-if="!yadeView.current" >
                                  <span ng-bind="yade.jobschedulerId"></span>
                                  <span ng-if="!yade.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:filterString"></span></td>
-                            <td><span ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:filterString"></span></td>
-                            <td><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:filterString"></span></td>
+                            <td><span ng-if="transfer._operation" ng-bind-html="transfer._operation | highlight:yadeFilters.searchText"></span></td>
+                            <td><span ng-if="transfer.source.host" ng-bind-html="transfer.source.host | highlight:yadeFilters.searchText"></span></td>
+                            <td><span ng-if="transfer.target.host" ng-bind-html="transfer.target.host | highlight:yadeFilters.searchText"></span></td>
                             <td ng-bind="transfer.numOfFiles"></td>
                             <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>

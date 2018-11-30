@@ -231,9 +231,9 @@
         function getFilteredData() {
             let tempArr = [];
             vm.reset();
-            if (vm.filterString) {
-                tempArr = $filter('filter')(vm.allJobChains, {path: vm.filterString}, false);
-                let tempArr1 = $filter('filter')(vm.allJobChains, {nodes: {$: vm.filterString}}, false);
+            if (vm.jobChainFilters.searchText && vm.jobChainFilters.searchText != '') {
+                tempArr = $filter('filter')(vm.allJobChains, {path: vm.jobChainFilters.searchText}, false);
+                let tempArr1 = $filter('filter')(vm.allJobChains, {nodes: {$: vm.jobChainFilters.searchText}}, false);
                 if (tempArr1.length > 0) {
                     angular.forEach(tempArr1, function (val, index) {
                         let flag = true;
@@ -259,6 +259,7 @@
                 vm.filtered = tempArr;
             }
             tempArr = [];
+
         }
 
         vm.reload = function () {
@@ -998,7 +999,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }
@@ -3154,8 +3155,8 @@
         function getFilteredData() {
             let tempArr = [];
             vm.reset();
-            if (vm.filterString) {
-                tempArr = $filter('filter')(vm.allJobs, {path: vm.filterString}, false);
+            if (vm.jobFilters.searchText) {
+                tempArr = $filter('filter')(vm.allJobs, {path: vm.jobFilters.searchText}, false);
             } else {
                 tempArr = vm.allJobs;
             }
@@ -5519,7 +5520,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }
@@ -7169,7 +7170,7 @@
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
-                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                    vm.maxPlannedTime = new Date(res.created.until);
                 }
             });
         }

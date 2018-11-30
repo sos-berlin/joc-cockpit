@@ -43,6 +43,16 @@
                                     <i class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-if="permission.Lock.view.configuration" ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                        <span translate>button.assignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                        <span translate>button.unassignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item {{permission.Lock.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('lock', lock.path)">
+                                        <span translate>button.showDocumentation</span>
+                                    </a>
                                     <a ng-click="copyLinkToObject('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
@@ -57,7 +67,7 @@
         <div class=" box p-a" ng-show="pageView=='list' && allLocks.length>0">
             <div class="table-responsive" >
                 <table class="table table-hover table-bordered  ">
-                        <thead>
+                    <thead>
                         <tr>
                             <th class="noExl" width="45"><span translate>label.action</span></th>
                             <th ng-click="sortByL('name')"><a><span translate>label.lockName</span>
@@ -91,16 +101,27 @@
                                    class="fa fa-caret-down "></i></a>
                             </th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                             <td>
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
-                                        <i class="fa fa-ellipsis-h"></i></button>
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a ng-click="showConfiguration('lock',lock.path,lock.name)" ng-if="permission.Lock.view.configuration"
                                            class="dropdown-item" translate>button.showConfiguration</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                            <span translate>button.assignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                            <span translate>button.unassignedDocumentation</span>
+                                        </a>
+                                        <a href class="dropdown-item {{permission.Lock.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('lock', lock.path)">
+                                            <span translate>button.showDocumentation</span>
+                                        </a>
                                         <a ng-click="copyLinkToObject('lock',lock.path)"
                                            class="dropdown-item" translate>button.copyLinkToObject</a>
                                     </div>
@@ -112,7 +133,7 @@
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>
                         </tr>
-                        </tbody>
+                    </tbody>
                 </table>
                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allLocks.length > 10}" ng-if="allLocks.length >0"><span translate>label.total</span> {{allLocks.length}}
                     <span translate ng-if="allLocks.length >1">label.locksFound</span>
@@ -140,14 +161,12 @@
                     </div>
             </div>
         </div>
-
         <div ng-if="isLoading && !loading && folderPathL && allLocks.length==0 && treeLock.length>0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathL}}"</span>
             <span translate>message.emptyFolder</span>
         </div>
     </div>
     <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-        <div class="backdrop" ></div>
         <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>

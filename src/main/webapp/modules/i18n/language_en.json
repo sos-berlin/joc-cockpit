@@ -1355,6 +1355,8 @@
   "button.exportDocument": "Export Document",
   "button.deleteDocument": "Delete Document",
   "button.showDocumentation": "Show Documentation",
+  "button.assignedDocumentation": "Assign Documentation",
+  "button.unassignedDocumentation": "Unassign Documentation",
   "breadcrumb.documentations": "Documentations",
   "message.noDocumentationFound": "no Documentation found",
   "message.deleteDocument": "Deleting a document will permanently remove it from the documentations list."

@@ -22,7 +22,6 @@
     </div>
 </div>
 <div id="rightPanel1">
-
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
             <div ng-repeat="(key, value) in allProcessClasses  | groupBy: 'path1'">
@@ -40,15 +39,25 @@
                                 </span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown">
-                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                        class="text fa fa-ellipsis-h"></i></a>
+                                <a href class=" more-option text-black-lt" data-toggle="dropdown">
+                                    <i class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-if="permission.ProcessClass.view.configuration" ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href class="dropdown-item" ng-click="assignedDocument(processClass)" ng-if="permission.ProcessClass.assign.documentation">
+                                        <span translate>button.assignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item" ng-click="unassignedDocument(processClass)" ng-if="permission.ProcessClass.assign.documentation">
+                                        <span translate>button.unassignedDocumentation</span>
+                                    </a>
+                                    <a href class="dropdown-item {{permission.ProcessClass.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('processClass', processClass.path)">
+                                        <span translate>button.showDocumentation</span>
+                                    </a>
                                      <a ng-click="copyLinkToObject('processClass',processClass.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
-                            <div class="text-sm  text-left text-muted p-t-xs" >
+                            <div class="text-sm text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
+                            <div class="text-sm text-left text-muted p-t-xs" >
                                 <span ng-if="!processClass.numOfProcesses" class="text-black _600">0</span>
                                  <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
                                 {{'label.runningProcesses' | translate}}
@@ -99,6 +108,16 @@
                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                      <a ng-if="permission.ProcessClass.view.configuration" ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
                                         class="dropdown-item" translate>button.showConfiguration</a>
+                                     <div class="dropdown-divider"></div>
+                                     <a href class="dropdown-item" ng-click="assignedDocument(processClass)" ng-if="permission.ProcessClass.assign.documentation">
+                                         <span translate>button.assignedDocumentation</span>
+                                     </a>
+                                     <a href class="dropdown-item" ng-click="unassignedDocument(processClass)" ng-if="permission.ProcessClass.assign.documentation">
+                                         <span translate>button.unassignedDocumentation</span>
+                                     </a>
+                                     <a href class="dropdown-item {{permission.ProcessClass.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('processClass', processClass.path)">
+                                         <span translate>button.showDocumentation</span>
+                                     </a>
                                      <a ng-click="copyLinkToObject('processClass',processClass.path)"
                                         class="dropdown-item" translate>button.copyLinkToObject</a>
                                  </div>

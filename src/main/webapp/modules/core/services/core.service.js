@@ -20,9 +20,9 @@
         tabs._jobChain.reverse = false;
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = [];
+        tabs._jobChain.searchText = '';
         tabs._jobChain.selectedView = true;
         tabs._jobChain.showHistoryPanel = undefined;
-
 
         tabs._job = {};
         tabs._job.filter = {};
@@ -30,6 +30,7 @@
         tabs._job.filter.type = 'ALL';
         tabs._job.filter.sortBy = 'name';
         tabs._job.reverse = false;
+        tabs._job.searchText = '';
         tabs._job.currentPage = '1';
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
@@ -53,6 +54,7 @@
         tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tabs._daliyPlan.filter.range = "today";
         tabs._daliyPlan.reverse = false;
+        tabs._daliyPlan.searchText = '';
         tabs._daliyPlan.currentPage = '1';
         tabs._daliyPlan.selectedView = true;
 
@@ -61,6 +63,7 @@
         tabs._order.filter.state = 'ALL';
         tabs._order.filter.sortBy = 'orderId';
         tabs._order.reverse = false;
+        tabs._order.searchText = '';
         tabs._order.currentPage = '1';
         tabs._order.expand_to = [];
         tabs._order.selectedView = true;
@@ -90,6 +93,7 @@
         tabs._history.order.filter.date = 'today';
         tabs._history.order.filter.sortBy = 'startTime';
         tabs._history.order.sortReverse = true;
+        tabs._history.order.searchText = '';
         tabs._history.order.currentPage = '1';
         tabs._history.order.selectedView = true;
         tabs._history.task = {};
@@ -98,6 +102,7 @@
         tabs._history.task.filter.date = 'today';
         tabs._history.task.filter.sortBy = 'startTime';
         tabs._history.task.sortReverse = true;
+        tabs._history.task.searchText = '';
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
         tabs._history.yade = {};
@@ -106,6 +111,7 @@
         tabs._history.yade.filter.date = 'today';
         tabs._history.yade.filter.sortBy = 'start';
         tabs._history.yade.sortReverse = true;
+        tabs._history.yade.searchText = '';
         tabs._history.yade.currentPage = '1';
         tabs._history.yade.selectedView = true;
 
@@ -115,6 +121,7 @@
         tabs._yade.filter.date = 'today';
         tabs._yade.filter.sortBy = 'start';
         tabs._yade.sortReverse = true;
+        tabs._yade.searchText = '';
         tabs._yade.currentPage = '1';
         tabs._yade.selectedView = true;
 
@@ -134,6 +141,7 @@
         tabs._auditLog.filter.date = 'today';
         tabs._auditLog.filter.sortBy = "created";
         tabs._auditLog.sortReverse = true;
+        tabs._auditLog.searchText = '';
         tabs._auditLog.currentPage = '1';
         tabs._auditLog.selectedView = true;
 
@@ -184,6 +192,7 @@
         tabs._resource.events.filter = {};
         tabs._resource.events.filter.sortBy = 'expires';
         tabs._resource.events.reverse = false;
+        tabs._resource.events.searchText = '';
         tabs._resource.events.currentPage = '1';
         tabs._resource.events.selectedView = true;
         tabs._resource.documents = {};
@@ -201,6 +210,7 @@
         tempTabs._jobChain.reverse = false;
         tempTabs._jobChain.currentPage = '1';
         tempTabs._jobChain.expand_to = [];
+        tempTabs._jobChain.searchText = '';
         tempTabs._jobChain.selectedView = true;
         tempTabs._jobChain.showHistoryPanel = undefined;
 
@@ -210,6 +220,7 @@
         tempTabs._job.filter.type = 'ALL';
         tempTabs._job.filter.sortBy = 'name';
         tempTabs._job.reverse = false;
+        tempTabs._job.searchText = '';
         tempTabs._job.currentPage = '1';
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
@@ -233,6 +244,7 @@
         tempTabs._daliyPlan.filter.sortBy = 'plannedStartTime';
         tempTabs._daliyPlan.filter.range = "today";
         tempTabs._daliyPlan.reverse = false;
+        tempTabs._daliyPlan.searchText = '';
         tempTabs._daliyPlan.currentPage = '1';
         tempTabs._daliyPlan.selectedView = true;
 
@@ -241,6 +253,7 @@
         tempTabs._order.filter.state = 'ALL';
         tempTabs._order.filter.sortBy = 'orderId';
         tempTabs._order.reverse = false;
+        tempTabs._order.searchText = '';
         tempTabs._order.currentPage = '1';
         tempTabs._order.expand_to = [];
         tempTabs._order.selectedView = true;
@@ -269,6 +282,7 @@
         tempTabs._history.order.filter.date = 'today';
         tempTabs._history.order.filter.sortBy = 'startTime';
         tempTabs._history.order.sortReverse = true;
+        tempTabs._history.order.searchText = '';
         tempTabs._history.order.currentPage = '1';
         tempTabs._history.order.selectedView = true;
         tempTabs._history.task = {};
@@ -277,6 +291,7 @@
         tempTabs._history.task.filter.date = 'today';
         tempTabs._history.task.filter.sortBy = 'startTime';
         tempTabs._history.task.sortReverse = true;
+        tempTabs._history.task.searchText = '';
         tempTabs._history.task.currentPage = '1';
         tempTabs._history.task.selectedView = true;
         tempTabs._history.yade = {};
@@ -285,6 +300,7 @@
         tempTabs._history.yade.filter.date = 'today';
         tempTabs._history.yade.filter.sortBy = 'start';
         tempTabs._history.yade.sortReverse = true;
+        tempTabs._history.yade.searchText = '';
         tempTabs._history.yade.currentPage = '1';
         tempTabs._history.yade.selectedView = true;
 
@@ -294,6 +310,7 @@
         tempTabs._yade.filter.date = 'today';
         tempTabs._yade.filter.sortBy = 'start';
         tempTabs._yade.sortReverse = true;
+        tempTabs._yade.searchText = '';
         tempTabs._yade.currentPage = '1';
         tempTabs._yade.selectedView = true;
 
@@ -313,6 +330,7 @@
         tempTabs._auditLog.filter.date = 'today';
         tempTabs._auditLog.filter.sortBy = "created";
         tempTabs._auditLog.sortReverse = true;
+        tempTabs._auditLog.searchText = '';
         tempTabs._auditLog.currentPage = '1';
         tempTabs._auditLog.selectedView = true;
 
@@ -363,6 +381,7 @@
         tempTabs._resource.events.filter = {};
         tempTabs._resource.events.filter.sortBy = 'expires';
         tempTabs._resource.events.reverse = false;
+        tempTabs._resource.events.searchText = '';
         tempTabs._resource.events.currentPage = '1';
         tempTabs._resource.events.selectedView = true;
         tempTabs._resource.documents = {};
