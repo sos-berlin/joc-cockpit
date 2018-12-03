@@ -27,8 +27,8 @@
                             <th><span translate>label.waitingTask</span></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr ng-repeat="lock in locks">
+                        <tbody ng-repeat="lock in locks">
+                        <tr title="{{lock.configurationStatus._text | translate}}">
                             <td ng-if="permission.Lock.view.configuration">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
@@ -36,13 +36,13 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                        <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assignDocumentation">
                                             <span translate>button.assignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assign.documentation">
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assignDocumentation && lock.hasDocumentation">
                                             <span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{permission.Lock.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('lock', lock.path)">
+                                        <a href class="dropdown-item {{lock.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Lock.view.documentation" ng-click="showDocument('lock', lock.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                     </div>
@@ -53,6 +53,13 @@
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>
+                        </tr>
+                        <tr ng-if="job.configurationStatus._text">
+                            <td></td>
+                            <td colspan="4" class="p-a-0">
+                                {{job.configurationStatus._text | translate}} :
+                                <span ng-if="job.configurationStatus.message" ng-class="colorFunction(lock.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

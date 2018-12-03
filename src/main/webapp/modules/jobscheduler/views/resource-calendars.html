@@ -51,13 +51,13 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                        <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation">
                                             <span translate>button.assignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation && calendar.hasDocumentation">
                                             <span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{permission.Calendar.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('calendar', calendar.path)">
+                                        <a href class="dropdown-item {{calendar.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocument('calendar', calendar.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                         <div class="dropdown-divider"></div>
@@ -157,13 +157,13 @@
                                     <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
                                     <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                     <div class="dropdown-divider"></div>
-                                    <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                    <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation">
                                         <span translate>button.assignedDocumentation</span>
                                     </a>
-                                    <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                    <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation && calendar.hasDocumentation">
                                         <span translate>button.unassignedDocumentation</span>
                                     </a>
-                                    <a href class="dropdown-item {{permission.Calendar.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('calendar', calendar.path)">
+                                    <a href class="dropdown-item {{calendar.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocument('calendar', calendar.path)">
                                         <span translate>button.showDocumentation</span>
                                     </a>
                                     <div class="dropdown-divider"></div>

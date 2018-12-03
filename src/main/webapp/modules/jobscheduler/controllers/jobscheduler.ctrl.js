@@ -26,6 +26,7 @@
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
         vm.documentFilters = vm.resourceFilters.documents;
+        vm.documentTypes =['ALL','HTML','XML','XSL','XSD','JAVASCRIPT','JSON','CSS','MARKDOWN','GIF','JPEG','PNG'];
 
         vm.selectedFiltered = '';
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
@@ -49,7 +50,6 @@
         }
 
         vm.object = {};
-
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
@@ -123,7 +123,7 @@
         };
 
         vm.expandDetails = function () {
-           vm.collapseDetails(true);
+            vm.collapseDetails(true);
         };
 
         vm.collapseDetails = function (isExpand) {
@@ -250,7 +250,7 @@
         };
 
         vm.treeHandlerA = function (data) {
-            if(vm.userPreferences.expandOption === 'both')
+            if (vm.userPreferences.expandOption === 'both')
                 data.expanded = true;
             navFullTreeA();
             data.selected1 = true;
@@ -634,7 +634,6 @@
         }
 
         function setDateRange(filter) {
-
             if (vm.agentJobExecutionFilters.filter.date == 'today') {
                 let from = new Date();
                 let to = new Date();
@@ -671,6 +670,7 @@
         vm.changeJobScheduler = function () {
             getAgentTasks();
         };
+
         vm.agentJobSearch = {};
         vm.advancedSearch = function () {
             vm.agentJobSearch = {};
@@ -688,7 +688,7 @@
             }
             vm.showSearchPanel = false;
             vm.agentJobSearch = {};
-            if(hitSearch) {
+            if (hitSearch) {
                 hitSearch = false;
                 getAgentTasks();
             }
@@ -4460,7 +4460,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ["Documentation"]
+                types: ["DOCUMENTATION"]
             }).then(function (res) {
                 if ($rootScope.document_expand_to) {
                     vm.treeDocument = res.folders;
@@ -4472,7 +4472,6 @@
                     } else {
                         vm.documentFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.documentFilters.expand_to, 'document');
                         vm.treeDocument = vm.documentFilters.expand_to;
-                        console.log('>>>>>>>>>')
                         vm.loadDocument();
                     }
                 }
@@ -4726,7 +4725,6 @@
         function deleteDocument(obj) {
             ResourceService.deleteDocumentations(obj).then(function () {
                 vm.object.documents = [];
-                vm.getCategories();
             });
         }
 
@@ -4786,8 +4784,7 @@
         vm.documentationsUsed = function (document) {
             ResourceService.documentationsUsed({
                 jobschedulerId: vm.schedulerIds.selected,
-                path: document.path,
-                id: document.id
+                documentation: document.path
             }).then(function (res) {
 
             }, function () {
@@ -4796,31 +4793,16 @@
         };
 
         vm.previewDocumentations = function (path) {
-            ResourceService.previewDocumentation({
-                jobschedulerId: vm.schedulerIds.selected,
-                path: path
-            }).then(function (res) {
-
-            }, function () {
-
-            });
+           //TODO: GET call
         };
         vm.showDocumentations = function (document) {
-            ResourceService.showDocumentation({
-                jobschedulerId: vm.schedulerIds.selected,
-                path: document.path,
-                type: document.type
-            }).then(function (res) {
-
-            }, function () {
-
-            });
+            //TODO: GET call
         };
         vm.urlDocumentations = function (document) {
             ResourceService.documentationUrl({
                 jobschedulerId: vm.schedulerIds.selected,
                 path: document.path,
-                type: document.type
+                type: document.type // Type of a JobScheduler object such as JOB, JOBCHAIN, ORDER, etc.
             }).then(function (res) {
 
             }, function () {
@@ -4829,6 +4811,77 @@
         };
 
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
+
+        vm.assignedDocument = function(data) {
+
+            vm.assignObj = {
+                type: vm.resourceFilters.state === 'schedules' ? 'Schedule' : vm.resourceFilters.state === 'calendars' ? 'Calendar' : vm.resourceFilters.state === 'processClass' ? 'Process Class' : 'Lock',
+                path: data.path,
+            };
+            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'process_class' : 'lock';
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj[type] = data.path;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+                console.log(obj);
+                ResourceService.assign(type, obj).then(function(res){
+                    console.log(res);
+                });
+            }, function () {
+
+            });
+        };
+
+        vm.unassignedDocument = function(data) {
+            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'process_class' : 'lock';
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj[type] = data.path;
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = jobChain.path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = vm.resourceFilters.state === 'schedules' ? 'Schedule' : vm.resourceFilters.state === 'calendars' ? 'Calendar' : vm.resourceFilters.state === 'processClass' ? 'Process Class' : 'Lock';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    ResourceService.unassign(type,obj);
+                }, function () {
+
+                });
+            } else {
+                ResourceService.unassign(type,obj);
+            }
+        };
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
@@ -4878,7 +4931,6 @@
             }
             startPolling();
         });
-
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)

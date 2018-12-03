@@ -43,59 +43,49 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu"
                                          id="menu{{$index}}">
-                                        <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
+                                        <a ng-click="showLogWindow(order)" class="dropdown-item hide" ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                            translate>button.viewLog</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
                                            ng-click="start(order)" translate>button.startOrderNow</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
                                            ng-click="startOrder(order)" translate>button.startOrderat</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
                                            ng-click="setOrderState(order)" translate>button.setOrderState</a>
-                                        <a href class="dropdown-item bg-hover-color"
-                                           ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
+                                        <a href class="dropdown-item bg-hover-color" ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                            ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                            ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                            ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
                                            ng-click="resumeOrderNextstate(order)"
                                            translate>button.resumeOrderFromState</a>
-                                        <a href class="dropdown-item bg-hover-color"
-                                           ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
+                                        <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                        <a href class="dropdown-item bg-hover-color"
-                                           ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
+                                        <a href class="dropdown-item bg-hover-color" ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
                                         <div class="dropdown-divider"></div>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                            ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
-                                        <a href class="dropdown-item"
-                                           ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                        <a href class="dropdown-item" ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                            ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
-                                        <a href class="dropdown-item"
-                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
-                                           ng-click="showAssignedCalendar(order)">
-                                            <span translate>button.showAssignedCalendar</span>
-                                        </a>
+                                        <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
+                                           ng-click="showAssignedCalendar(order)" translate>button.showAssignedCalendar</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                            ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
-                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
-                                           class="hide dropdown-item"
+                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item"
                                            ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
                                            translate>button.showConfiguration</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href class="dropdown-item" ng-click="assignedDocument(order)" ng-if="permission.Order.assignDocumentation"
+                                           translate>button.assignedDocumentation</a>
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.hasDocumentation"
+                                           translate>button.unassignedDocumentation</a>
+                                        <a href class="dropdown-item {{order.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                           translate>button.showDocumentation</a>
                                     </div>
                                 </div>
                             </td>
@@ -176,9 +166,9 @@
                 <div class="col-md-12">
                     <div class="box white">
                         <div class="box-header">
-                            <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i
-                                    ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted"
-                                                                        ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
+                            <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}}
+                                <i ng-if="showLogPanel.title">-</i>
+                                <i class="text-sm text-muted" ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
                         </div>
                         <div class="box-tool">
                             <ul class="nav text-muted text-md">
@@ -208,107 +198,103 @@
                                 </ul>
                             </div>
                             <div class="tab-content p-a">
-                                <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog && !isTaskHistory}"
-                                             id="tab1">
+                                <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog && !isTaskHistory}" id="tab1">
                                     <div class="row">
-                                                <div class="table-responsive" resizable r-directions="['bottom']"
-                                                     r-height="250">
-                                                    <table class="table table-hover table-bordered ">
-                                                        <thead>
-                                                        <tr>
-                                                            <th translate>label.orderId</th>
-                                                            <th translate>label.status</th>
-                                                            <th translate>label.startTime</th>
-                                                            <th translate>label.endTime</th>
-                                                            <th translate>label.duration</th>
-                                                            <th translate>label.node</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
-                                                        <tr ng-click="showLogWindow(history,null)" class="cursor">
-                                                            <td nowrap>
-                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
-                                                                <span ng-bind="history.orderId"></span>
-                                                            </td>
-                                                            <td>
-                                                                <span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span>
-                                                            </td>
-                                                            <td ng-bind="history.startTime | stringToDate"></td>
-                                                            <td ng-bind="history.endTime | stringToDate"></td>
-                                                            <td ng-bind="history.startTime | duration:history.endTime"></td>
-                                                            <td ng-bind="history.node"></td>
-                                                        </tr>
-                                                        <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
-                                                            <td nowrap>
-                                                                <div class="m-l-sm">
-                                                                    <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
-                                                                    <span ng-bind="child.orderId"></span>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
-                                                            </td>
-                                                            <td ng-bind="child.startTime | stringToDate"></td>
-                                                            <td ng-bind="child.endTime | stringToDate"></td>
-                                                            <td ng-bind="child.startTime | duration:child.endTime"></td>
-                                                            <td ng-bind="child.node"></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div ng-if="historys.length==0"
-                                                         class="text-center m-t-md h6 text-uppercase" translate>
-                                                        message.noOrderHistoryFound
-                                                    </div>
-                                                </div>
+                                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                            <table class="table table-hover table-bordered ">
+                                                <thead>
+                                                <tr>
+                                                    <th translate>label.orderId</th>
+                                                    <th translate>label.status</th>
+                                                    <th translate>label.startTime</th>
+                                                    <th translate>label.endTime</th>
+                                                    <th translate>label.duration</th>
+                                                    <th translate>label.node</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
+                                                <tr ng-click="showLogWindow(history,null)" class="cursor">
+                                                    <td nowrap>
+                                                        <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
+                                                        <span ng-bind="history.orderId"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span>
+                                                    </td>
+                                                    <td ng-bind="history.startTime | stringToDate"></td>
+                                                    <td ng-bind="history.endTime | stringToDate"></td>
+                                                    <td ng-bind="history.startTime | duration:history.endTime"></td>
+                                                    <td ng-bind="history.node"></td>
+                                                </tr>
+                                                <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
+                                                    <td nowrap>
+                                                        <div class="m-l-sm">
+                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
+                                                            <span ng-bind="child.orderId"></span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span ng-if="child.state._text" class="label" ng-bind="child.state._text | translate" ng-class="bgColorFunction(child.state.severity)"></span>
+                                                    </td>
+                                                    <td ng-bind="child.startTime | stringToDate"></td>
+                                                    <td ng-bind="child.endTime | stringToDate"></td>
+                                                    <td ng-bind="child.startTime | duration:child.endTime"></td>
+                                                    <td ng-bind="child.node"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-if="historys.length==0"
+                                                 class="text-center m-t-md h6 text-uppercase" translate>
+                                                message.noOrderHistoryFound
                                             </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog && isTaskHistory}" id="tab3" >
                                     <div class="row">
-                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
-                                                <table class="table table-hover table-bordered ">
-                                                    <thead>
-                                                    <tr>
-                                                        <th translate>label.taskId</th>
-                                                        <th translate>label.job</th>
-                                                        <th translate>label.status</th>
-                                                        <th translate>label.started</th>
-                                                        <th translate>label.ended</th>
-                                                        <th translate>label.duration</th>
-                                                        <th translate>label.exitCode</th>
-                                                        <th translate>label.errorCode</th>
-                                                        <th class="error-text" translate>label.errorText</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr ng-repeat="task in showLogPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
-                                                           <td>
-                                                               <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
-                                                                <span ng-bind="task.taskId"></span>
-                                                           </td>
-                                                            <td>{{task.job}}</td>
-                                                           <td>
-                                                               <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
-                                                           </td>
-                                                           <td>{{task.startTime | stringToDate}}</td>
-                                                           <td>{{task.endTime | stringToDate}}</td>
-                                                           <td>{{task.startTime | duration:task.endTime}}</td>
-                                                           <td>{{task.exitCode}}</td>
-                                                           <td>{{task.error.code}}</td>
-                                                           <td class="text-danger">{{task.error.message}}</td>
-                                                        </tr>
-
-                                                    </tbody>
-                                                </table>
-                                                 <div ng-if="showLogPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
-                                                    message.noTaskHistoryFound
-                                                </div>
+                                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                            <table class="table table-hover table-bordered ">
+                                                <thead>
+                                                <tr>
+                                                    <th translate>label.taskId</th>
+                                                    <th translate>label.job</th>
+                                                    <th translate>label.status</th>
+                                                    <th translate>label.started</th>
+                                                    <th translate>label.ended</th>
+                                                    <th translate>label.duration</th>
+                                                    <th translate>label.exitCode</th>
+                                                    <th translate>label.errorCode</th>
+                                                    <th class="error-text" translate>label.errorText</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="task in showLogPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
+                                                    <td>
+                                                        <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                        <span ng-bind="task.taskId"></span>
+                                                    </td>
+                                                    <td>{{task.job}}</td>
+                                                    <td>
+                                                        <span class="label" ng-if="task.state._text" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
+                                                    </td>
+                                                    <td>{{task.startTime | stringToDate}}</td>
+                                                    <td>{{task.endTime | stringToDate}}</td>
+                                                    <td>{{task.startTime | duration:task.endTime}}</td>
+                                                    <td>{{task.exitCode}}</td>
+                                                    <td>{{task.error.code}}</td>
+                                                    <td class="text-danger">{{task.error.message}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-if="showLogPanel.taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                message.noTaskHistoryFound
                                             </div>
-                                         </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog && !isTaskHistory}" id="tab2">
                                     <div class="row">
-                                        <div class="table-responsive" resizable r-directions="['bottom']"
-                                                     r-height="250">
+                                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                             <table class="table table-hover table-bordered audit-table">
                                                 <thead>
                                                 <tr>
@@ -361,8 +347,8 @@
                                                 </tbody>
                                             </table>
                                             <div ng-if="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>
-                                                        message.noAuditLogFound
-                                                    </div>
+                                                message.noAuditLogFound
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

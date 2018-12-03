@@ -343,6 +343,22 @@
                 }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.calendar' | translate}}", parent: "app.resources.calendars"}
+        }).state("app.documentation", {
+            url: "/documentation?path&scheduler_id",
+            templateUrl: "modules/jobscheduler/views/documentation.html",
+            controller: "ResourceInfoCtrl",
+            resolve: {
+                permission: function (authorizationService) {
+                    return authorizationService.permissionCheck('Resource');
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                   return $ocLazyLoad.load([{
+                        name:'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
+            },
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.documentation' | translate}}", parent: "app.resources.documentations"}
         }).state("app.history", {
             url: "/history",
             templateUrl: "modules/order/views/history.html",

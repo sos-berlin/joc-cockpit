@@ -264,8 +264,7 @@
                         </div>
                         <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
-                            <div class="box card {{job.state.severity==0 ? 'green-box' : job.state.severity==1 ? 'gold-box' : job.state.severity==2 ? 'crimson-box': job.state.severity==3 ?'dimgrey-box':
-                                              job.state.severity==4 ? 'text-dark-box': job.state.severity==5 ? 'dark-orange-box' : job.state.severity==6 ? 'corn-flower-blue-box' :job.state.severity==7 ? 'dark-magenta-box' : job.state.severity==8 ? 'chocolate-box' : ''}}">
+                            <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
                                 <div class="box-body" title="{{job.configurationStatus._text | translate}}">
                                     <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
@@ -318,14 +317,14 @@
                                                translate>button.showConfiguration</a>
                                             <div class="dropdown-divider"></div>
                                             <a href class="dropdown-item" ng-click="assignedDocument(job)"
-                                               ng-if="permission.Job.assign.documentation">
+                                               ng-if="permission.Job.assignDocumentation">
                                                 <span translate>button.assignedDocumentation</span>
                                             </a>
                                             <a href class="dropdown-item" ng-click="unassignedDocument(job)"
-                                               ng-if="permission.Job.assign.documentation">
+                                               ng-if="permission.Job.assignDocumentation && job.hasDocumentation">
                                                 <span translate>button.unassignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                            <a href class="dropdown-item {{job.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
                                                 <span translate>button.showDocumentation</span>
                                             </a>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
@@ -528,14 +527,14 @@
                                                    translate>button.showConfiguration</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a href class="dropdown-item" ng-click="assignedDocument(job)"
-                                                   ng-if="permission.Job.assign.documentation">
+                                                   ng-if="permission.Job.assignDocumentation">
                                                     <span translate>button.assignedDocumentation</span>
                                                 </a>
                                                 <a href class="dropdown-item" ng-click="unassignedDocument(job)"
-                                                   ng-if="permission.Job.assign.documentation">
+                                                   ng-if="permission.Job.assignDocumentation && job.hasDocumentation">
                                                     <span translate>button.unassignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item {{permission.Job.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('job', job.path)">
+                                                <a href class="dropdown-item {{job.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
@@ -599,15 +598,13 @@
                                     <td></td>
                                     <td colspan="14" class="p-a-0">
                                      {{job.configurationStatus._text | translate}} :
-                                        <span ng-if="job.configurationStatus.message" class="{{job.configurationStatus.severity==0 ? 'green' : job.configurationStatus.severity==1 ? 'gold' : job.configurationStatus.severity==2 ? 'crimson': job.configurationStatus.severity==3 ?'dimgrey':
-                                              job.configurationStatus.severity==4 ? 'text-dark': job.configurationStatus.severity==5 ? 'dark-orange' : job.configurationStatus.severity==6 ? 'corn-flower-blue' :job.configurationStatus.severity==7 ? 'dark-magenta' : job.configurationStatus.severity==8 ? 'chocolate' : ''}}">{{job.configurationStatus.message}}</span>
+                                        <span ng-if="job.configurationStatus.message" ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                                     </td>
                                 </tr>
                                 <tr ng-if="job.error">
                                     <td></td>
                                     <td colspan="14" class="p-a-0">
-                                     {{job.error.code}} :<span ng-if="job.error.message" class="{{job.state.severity==0 ? 'green' : job.state.severity==1 ? 'gold' : job.state.severity==2 ? 'crimson': job.state.severity==3 ?'dimgrey':
-                                              job.state.severity==4 ? 'text-dark': job.state.severity==5 ? 'dark-orange' : job.state.severity==6 ? 'corn-flower-blue' :job.state.severity==7 ? 'dark-magenta' : job.state.severity==8 ? 'chocolate' : ''}}">{{job.error.message}}</span>
+                                     {{job.error.code}} :<span ng-if="job.error.message" ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                                     </td>
                                 </tr>
                                 <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">

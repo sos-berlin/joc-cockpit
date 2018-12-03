@@ -381,19 +381,14 @@
                             </div>
                         </div>
                         <div class="form-group row"  ng-if="jobChainSearch.date == 'process'">
-                                <label class="col-md-2 col-sm-4 form-control-label"
-                                       translate>label.processExecuted</label>
-
-                                <div class=" col-sm-6"
-                                     ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                                           placeholder="{{'placeholder.processExecuted' | translate}}"
-                                           ng-model="jobChainSearch.planned">
-
-                                    <div class="help-block text-danger" ng-messages="form.planned.$error">
-                                        <div ng-message="invalid" translate>message.invalid</div>
-                                    </div>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
+                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                                <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                       placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="jobChainSearch.planned">
+                                <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
+                            </div>
                         </div>
                         <div class="form-group row"  ng-if="jobChainSearch.date == 'date'">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
@@ -407,24 +402,19 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="jobChainSearch.date == 'date'">
-                                <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-
-                                <div class="col-sm-6">
-                                    <input class="form-control input-date"
-                                           style="width: 225px;background-position: 200px"
-                                           ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}"
-                                           data-autoclose="1"
-                                           placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-max-date="{{currentTime}}"
-                                           bs-datepicker type="text">
-                                    <input valid-time maxlength="8" ng-disabled="!jobChainSearch.to"
-                                           class="form-control input-time m-l" ng-model="jobChainSearch.toTime"
-                                           placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
-                                           style="width: 175px;background-position: 150px">
-                                    <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime"
-                                       ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; "
-                                       translate>button.clear</a>
-                                </div>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                                       ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}"
+                                       data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                                       data-max-date="{{currentTime}}" bs-datepicker type="text">
+                                <input valid-time maxlength="8" ng-disabled="!jobChainSearch.to"
+                                       class="form-control input-time m-l" ng-model="jobChainSearch.toTime"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                                       style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime"
+                                   ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; " translate>button.clear</a>
+                            </div>
                         </div>
                         <div class="form-group row" >
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
@@ -441,7 +431,7 @@
                                <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobChainSearch.regex">
                                <div class="help-block text-danger" ng-messages="form.regex.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>
-                                </div>
+                               </div>
                            </div>
                            <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
@@ -449,7 +439,7 @@
                              <label class="col-md-2 col-sm-4" translate>label.folders</label>
                             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                                 <div ng-repeat="path in jobChainSearch.paths track by $index">
-                                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
+                                    <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
                                 </div>
                             </div>
                         </div>
@@ -462,7 +452,7 @@
                             <div class="col-sm-6" ng-if="jobChainSearch.jobChains.length>0 || jobChainSearch.orders.length>0">
                                 <div style="max-height: 140px; overflow: auto" ng-if="jobChainSearch.jobChains.length>0">
                                     <div ng-repeat="jobChain in jobChainSearch.jobChains track by $index">
-                                          <span class="text-muted" translate>label.jobChain</span>:  <span class="">{{jobChain}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(jobChain,'jobChain')"></i>
+                                        <span class="text-muted" translate>label.jobChain</span>:  <span class="">{{jobChain}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(jobChain,'jobChain')"></i>
                                     </div>
                                 </div>
                                 <div style="max-height: 140px; overflow: auto" ng-if="jobChainSearch.orders.length>0">
@@ -494,8 +484,8 @@
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search
                             </button>
-                            <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !jobChainSearch.name" translate>button.saveAsFilter
+                            <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !jobChainSearch.name" translate>
+                                button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
                                 button.cancel
@@ -534,19 +524,14 @@
                             </div>
                         </div>
                         <div class="form-group row"  ng-if="jobSearch.date == 'process'">
-                                <label class="col-md-2 col-sm-4 form-control-label"
-                                       translate>label.processExecuted</label>
-
-                                <div class=" col-sm-6"
-                                     ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                                           placeholder="{{'placeholder.processExecuted' | translate}}"
-                                           ng-model="jobSearch.planned">
-
-                                    <div class="help-block text-danger" ng-messages="form.planned.$error">
-                                        <div ng-message="invalid" translate>message.invalid</div>
-                                    </div>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
+                            <div class=" col-sm-6" ng-class="{ 'has-error' : form1.planned.$invalid && form1.planned.$dirty }">
+                                <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                       placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="jobSearch.planned">
+                                <div class="help-block text-danger" ng-messages="form1.planned.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
+                            </div>
                         </div>
                         <div class="form-group row"  ng-if="jobSearch.date == 'date'">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
@@ -560,24 +545,19 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="jobSearch.date == 'date'">
-                                <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-
-                                <div class="col-sm-6">
-                                    <input class="form-control input-date"
-                                           style="width: 225px;background-position: 200px"
-                                           ng-model="jobSearch.to" data-date-format="{{dataFormat}}"
-                                           data-autoclose="1"
-                                           placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
-                                           data-max-date="{{currentTime}}"
-                                           bs-datepicker type="text">
-                                    <input valid-time maxlength="8" ng-disabled="!jobSearch.to"
-                                           class="form-control input-time m-l" ng-model="jobSearch.toTime"
-                                           placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
-                                           style="width: 175px;background-position: 150px">
-                                    <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime"
-                                       ng-click="jobSearch.to='';jobSearch.toTime=''; "
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                                       ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1"
+                                       placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                                       data-max-date="{{currentTime}}" bs-datepicker type="text">
+                                <input valid-time maxlength="8" ng-disabled="!jobSearch.to"
+                                       class="form-control input-time m-l" ng-model="jobSearch.toTime"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                                       style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; "
                                        translate>button.clear</a>
-                                </div>
+                            </div>
                         </div>
                         <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
@@ -669,7 +649,6 @@
                         <div class="form-group row"
                              ng-class="{ 'has-error' : form1.profileId.$invalid && form1.profileId.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
                                        name="profileId"
@@ -679,16 +658,13 @@
                         <div class="form-group row"
                              ng-class="{ 'has-error' : form1.mandator.$invalid && form1.mandator.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.mandator</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}"
-                                       name="mandator"
-                                       ng-model="yadeSearch.mandator">
+                                       name="mandator" ng-model="yadeSearch.mandator">
                             </div>
                         </div>
                         <div class="m-b-sm row ">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
-
                             <div class="col-md-6">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="yadeSearch.date" value="date">
@@ -703,14 +679,13 @@
                         <div class="form-group row" ng-if="yadeSearch.date == 'process'">
                             <label class="col-md-2 col-sm-4 form-control-label"
                                    translate>label.processExecuted</label>
-
                             <div class=" col-sm-6"
-                                 ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                                 ng-class="{ 'has-error' : form1.planned.$invalid && form1.planned.$dirty }">
                                 <input valid-history-filter-regex type="text" name="planned" class="form-control"
                                        placeholder="{{'placeholder.processExecuted' | translate}}"
                                        ng-model="yadeSearch.planned">
 
-                                <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                <div class="help-block text-danger" ng-messages="form1.planned.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
                             </div>
@@ -796,31 +771,25 @@
                             </div>
                         </div>
 
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.sourceFileName.$invalid && form1.sourceFileName.$dirty }">
+                        <div class="form-group row" ng-class="{ 'has-error' : form1.sourceFileName.$invalid && form1.sourceFileName.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
-
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}"
-                                       name="sourceFileName"
-                                       ng-model="yadeSearch.sourceFileName">
+                                       name="sourceFileName" ng-model="yadeSearch.sourceFileName">
                             </div>
                         </div>
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.sourceFilesRegex.$invalid && form1.sourceFilesRegex.$dirty }">
+                        <div class="form-group row" ng-class="{ 'has-error' : form1.sourceFilesRegex.$invalid && form1.sourceFilesRegex.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileRegex</label>
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceFilesRegex' | translate}}"
-                                       name="sourceFilesRegex"
-                                       ng-model="yadeSearch.sourceFileRegex">
+                                       name="sourceFilesRegex" ng-model="yadeSearch.sourceFileRegex">
                             </div>
                         </div>
                         <div class="form-group row" ng-class="{ 'has-error' : form1.targetFileName.$invalid && form1.targetFileName.$dirty }">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
-                                       name="targetFileName"
-                                       ng-model="yadeSearch.targetFileName">
+                                       name="targetFileName" ng-model="yadeSearch.targetFileName">
                             </div>
                         </div>
                         <div class="form-group row"
@@ -828,16 +797,14 @@
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileRegex</label>
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.targetFilesRegex' | translate}}"
-                                       name="targetFilesRegex"
-                                       ng-model="yadeSearch.targetFileRegex">
+                                       name="targetFilesRegex" ng-model="yadeSearch.targetFileRegex">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}"
-                                       name="sourceHost"
-                                       ng-model="yadeSearch.sourceHost">
+                                       name="sourceHost" ng-model="yadeSearch.sourceHost">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -855,8 +822,7 @@
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetHost</label>
                             <div class=" col-sm-6">
                                 <input class="form-control" placeholder="{{'placeholder.targetHost' | translate}}"
-                                       name="targetHost"
-                                       ng-model="yadeSearch.targetHost">
+                                       name="targetHost" ng-model="yadeSearch.targetHost">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -870,7 +836,6 @@
                                </ui-select>
                            </div>
                         </div>
-
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search
@@ -956,16 +921,16 @@
                                     </div>
                                 </div>
                             </td>
-                             <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)" nowrap>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)" nowrap>
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
                              </td>
                             <td nowrap ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="history.show = false;$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
                                 <span ng-bind-html="history.orderId | highlight:order.searchText"></span>
                             </td>
@@ -1019,10 +984,10 @@
                         </tr>
                         <tr ng-if="history.children">
                             <td colspan="9" class="p-a-0">
-                                <table class="table m-a-0">
+                                <table class="table m-a-0 inner-history-table">
                                     <tbody ng-repeat="child in history.children | orderBy: 'startTime':true" ng-class="{'light-bg':child.show}">
                                     <tr class="cursor">
-                                        <td style="width: 45px" class="tableexport-ignore">
+                                        <td class="tableexport-ignore menu">
                                             <div class="btn-group dropdown"  >
                                                 <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -1035,7 +1000,7 @@
                                          <td class="dynamic-thead-o" ng-if="!historyView.current" ng-click="showLogWindow(child,null,null,child.jobschedulerId)" nowrap>
                                              <div class="m-l-sm" >
                                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
-                                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show" ng-click="hidePanelFuc(child);$event.stopPropagation()"></i>
                                                  <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                                  <span ng-bind="child.jobschedulerId"></span>
                                                  <span ng-if="!child.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
@@ -1044,7 +1009,7 @@
                                         <td class="dynamic-thead0" nowrap ng-click="showLogWindow(child,null,null,child.jobschedulerId)">
                                             <div ng-class="{'m-l-sm' : historyView.current }" >
                                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!child.show && historyView.current" ng-click="showPanelFuc(child);$event.stopPropagation()"></i>
-                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show && historyView.current" ng-click="child.show = false;$event.stopPropagation()"></i>
+                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="child.show && historyView.current" ng-click="hidePanelFuc(child);$event.stopPropagation()"></i>
                                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(child,jobHistory.jobschedulerId);$event.stopPropagation()"></i>
                                                 <span ng-bind-html="child.orderId | highlight:order.searchText"></span>
                                             </div>

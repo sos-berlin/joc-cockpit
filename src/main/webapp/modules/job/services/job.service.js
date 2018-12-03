@@ -105,6 +105,26 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            assign: function (filter) {
+                var deferred = $q.defer();
+                var JobChain = $resource('job_chain/documentation/assign');
+                JobChain.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            unassign: function (filter) {
+                var deferred = $q.defer();
+                var JobChain = $resource('job_chain/documentation/unassign');
+                JobChain.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }
@@ -342,7 +362,26 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-
+            },
+            assign: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('job/documentation/assign');
+                Job.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            unassign: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('job/documentation/unassign');
+                Job.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

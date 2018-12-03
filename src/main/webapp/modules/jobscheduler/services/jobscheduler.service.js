@@ -141,28 +141,28 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }, previewDocumentation: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentation/preview');
-                Documentations.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            }, showDocumentation: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentation/show');
-                Documentations.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
             }, documentationUrl: function (filter) {
                 var deferred = $q.defer();
                 var Documentations = $resource('documentation/url');
                 Documentations.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, assign: function (objType, filter) {
+                var deferred = $q.defer();
+                var Job = $resource(objType+'/documentation/assign');
+                Job.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, unassign: function (objType, filter) {
+                var deferred = $q.defer();
+                var Job = $resource(objType+'/documentation/unassign');
+                Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

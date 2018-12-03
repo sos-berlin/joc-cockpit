@@ -311,9 +311,22 @@
                             </div>
                         </div>
                         <div class="hide" ng-class="{'show-block': resourceFilters.state=='documentations'}">
-                            <button ng-if="object.documents.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="exportDocument()"><i class="fa fa-download"></i> {{'button.exportDocument' | translate}}</button>
-                            <button ng-if="object.documents.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteDocumentations()"><i class="fa fa-trash"></i> {{'button.deleteDocument' | translate}}</button>
+                            <button ng-if="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-sm" ng-click="exportDocument()"><i class="fa fa-download"></i> {{'button.exportDocument' | translate}}</button>
+                            <button ng-if="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteDocumentations()"><i class="fa fa-trash"></i> {{'button.deleteDocument' | translate}}</button>
                             <div class="inline" ng-class="{'hide':object.documents.length>0}">
+                                <div class="btn-group dropdown m-l-sm">
+                                    <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        <span translate> label.type</span>
+                                        <span class="text-primary" ng-bind="documentFilters.filter.type"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" ng-model="documentFilters.filter.type" ng-click="loadDocument()"
+                                           ng-repeat="type in documentTypes" uib-btn-radio="type"
+                                           ng-class="{'btn-primary': documentFilters.filter.type==type}" >
+                                            <span>{{type}}</span>
+                                        </a>
+                                    </div>
+                                </div>
                                 <div class="btn-group dropdown">
                                     <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                         <span class="text-primary">
@@ -334,11 +347,7 @@
                                         <a class="dropdown-item" href ng-click="sortByD('type')" translate>label.type</a>
                                     </div>
                                 </div>
-                                <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allDocuments.length>0 && pageView!='grid'}" ng-click="resetPanel()">
-                                    <i class="fa fa fa-refresh"></i>
-                                    <span translate>button.resetPanel</span>
-                                </button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="importDocument()"><i class="fa fa-upload"></i> {{'button.importDocument' | translate}}</button>
+                                <button ng-if="permission.Documentation.import" class="btn btn-grey btn-sm m-l-sm" ng-click="importDocument()"><i class="fa fa-upload"></i> {{'button.importDocument' | translate}}</button>
                             </div>
                         </div>
                         <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions' || resourceFilters.state=='events'}"></toggle-view>
@@ -408,10 +417,10 @@
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
                     </a>
                 </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status">
+                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Documentation.view">
                     <span class="separator"></span>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" ng-if="permission.Documentation.view">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.documentations">
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
                     </a>

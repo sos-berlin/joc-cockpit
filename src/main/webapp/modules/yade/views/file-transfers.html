@@ -183,16 +183,13 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="yadeSearch.date == 'process'">
-                            <label class="col-md-2 col-sm-4 form-control-label"
-                                   translate>label.processExecuted</label>
-
-                            <div class=" col-sm-6"
-                                 ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                <input valid-yade-filter-regex type="text" name="planned" class="form-control"
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
+                            <div class=" col-sm-6" ng-class="{'has-error' : form1.planned.$invalid && form1.planned.$dirty}">
+                                <input valid-history-filter-regex type="text" name="planned" class="form-control"
                                        placeholder="{{'placeholder.processExecuted' | translate}}"
                                        ng-model="yadeSearch.planned">
 
-                                <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                <div class="help-block text-danger" ng-messages="form1.planned.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
                             </div>

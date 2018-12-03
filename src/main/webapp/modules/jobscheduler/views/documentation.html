@@ -1,0 +1,85 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="hide m-t-xs" ng-class="{'show': isLoading}" >
+            <div class="box p-a">
+                <div class="table-responsive" id="documentDivId">
+                    <table class="table table-hover table-bordered" id="documentTableId">
+                        <thead>
+                        <tr>
+                            <th class="menu"><span translate>label.action</span></th>
+                            <th ng-click="sortByC('name')"><a><span translate>label.documentName</span>
+                                <i ng-show="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortByC('path')"><a><span translate>label.path</span>
+                                <i ng-show="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortByC('type')"><a><span translate>label.type</span>
+                                <i ng-show="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th ng-click="sortByC('modified')"><a><span translate>label.modified</span>
+                                <i ng-show="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="document in allDocumentations | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                        <tr>
+                            <td>
+                                <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a class="dropdown-item" ng-if="permission.Documentation.export"
+                                           ng-click="exportDocument(document)" translate>button.exportDocument</a>
+                                        <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete"
+                                           ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                                        <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                         <span>
+                             <span class="text-dark">{{document.name}}</span>
+                             <span ng-if="document.title">-</span>
+                             <i class="text-muted" ng-bind-html="document.title | linky:'_blank'"></i>
+                         </span>
+                            </td>
+                            <td ng-bind="document.path"></td>
+                            <td><span ng-bind="document.type | translate"></span></td>
+                            <td ng-bind="document.usedBy"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
+    </div>
+</div>

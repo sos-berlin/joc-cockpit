@@ -1980,12 +1980,18 @@
                 }
                 vm.mainText = vm.mainText + entry.entryName + ' = ';
                 if (entry.entryValue && entry.entryValue.length > 0) {
-                    angular.forEach(entry.entryValue, function (value) {
+                    angular.forEach(entry.entryValue, function (value, index) {
                         values.push({value: value});
-                        vm.mainText = vm.mainText + value + '\n'
+                        vm.mainText = vm.mainText + (entry.entryValue.length > 1 ? '\\ \n' + value : value);
+                        if (entry.entryValue.length - 1 !== index) {
+                            vm.mainText = vm.mainText + ',';
+                        }
+
+                        if (entry.entryValue.length === 1) {
+                            vm.mainText = vm.mainText + '\n';
+                        }
                     });
-                }
-                else {
+                } else {
                     values.push({value: ''});
                 }
 
@@ -2020,10 +2026,8 @@
                             if (val1.value && val1.value != '')
                                 obj.entryComment.push(val1.value);
                         });
-
                         main.push(obj);
                     }
-
                 });
 
                 vm.main = main;
@@ -2058,6 +2062,7 @@
                 templateUrl: 'modules/core/template/main-section-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -2227,7 +2232,6 @@
             vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
             vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
             for (let i = 0; i < vm.permissionArr.length; i++) {
-
                 var nodes = vm.permissionArr[i].split(':');
 
                 var arr = [];

@@ -6275,6 +6275,69 @@
             loadRuntime(order);
         };
 
+        vm.assignedDocument = function(order) {
+            vm.assignObj = {
+                type: 'Order',
+                path: order.path
+            };
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+
+                obj.documentation = vm.assignObj.documentation;
+                console.log(obj);
+                OrderService.assign(obj).then(function (res) {
+                    console.log(res);
+                });
+            }, function () {
+
+            });
+        };
+
+        vm.unassignedDocument = function(order) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = order.orderId;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = 'Order';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.unassign(obj);
+                }, function () {
+
+                });
+            } else {
+                OrderService.unassign(obj);
+            }
+        };
 
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
 
@@ -6901,25 +6964,30 @@
         }
 
         function updateDimensions() {
-            let max = 0;
+            let max = -1;
             if(!vm.historyView.current) {
                 $('#jobChain').find('thead th.dynamic-thead-o').each(function () {
-                    let w = $(this).width() + 17;
-                    if (w > 17) {
+                    let w = $(this).outerWidth();
+                    if (w > 50) {
                         $('#jobChain td.dynamic-thead-o').css('width', w + 'px');
                     }
                 });
             }
+            $('#jobChain').find('thead th.menu').each(function () {
+                console.log($(this).outerWidth() + ' >> '+$(this).width())
+                 $('#jobChain td.menu').css('width', $(this).outerWidth() + 'px');
+            });
             $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
-                let w = $(this).width() + 17;
+                let w = $(this).outerWidth();
                 let elem = '#jobChain td.dynamic-thead' + index;
-                if (w > 17) {
+                
+                if (w > 20) {
                     $(elem).css('width', w + 'px');
                 }else{
                     max = w;
                 }
             });
-            if(max !== 0){
+            if(max > -1){
                 setTimeout(function(){
                     updateDimensions();
                 },5);
@@ -6937,7 +7005,7 @@
         vm.pageChanged = function(){
             setTimeout(function () {
                 updateDimensions();
-            },0);
+            },10);
         };
 
         function parseProcessExecuted(regex, obj) {
@@ -8223,9 +8291,18 @@
             },function(){
                 value.steps = [];
             });
-            vm.pageChanged();
+             setTimeout(function () {
+                updateDimensions();
+            },0);
 
         };
+        vm.hidePanelFuc = function(history) {
+            history.show = false;
+            setTimeout(function () {
+                updateDimensions();
+            }, 100);
+        };
+
         vm.showTransferFuc = function (value) {
             vm.isLoaded = true;
             let obj = {};

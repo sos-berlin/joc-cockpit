@@ -1029,7 +1029,7 @@
                     vm.resourceFilters.state = 'documentations';
                 }
             }
-            if (vm.resourceFilters.state === 'documentations') {
+            if (vm.resourceFilters.state === 'documentations' && vm.permission.Documentation.view) {
                 $state.go('app.resources.documentations');
             }
         };

@@ -34,38 +34,32 @@
                     <div class="box card">
                         <div class="box-body">
                             <div>
-                                <label class="md-check pos-abt" ng-if="permission.Document.edit.delete">
+                                <label class="md-check pos-abt" ng-if="permission.Documentation.delete">
                                     <input type="checkbox" data-checklist-model="object.documents" data-checklist-value="document"><i class="primary"></i>
                                 </label>
 
-                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Document.edit.delete}">
-                                    <span ng-bind="document.name"></span>
+                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Documentation.delete}">
+                                    <span uib-tooltip="{{document.title}}" ng-bind="document.name"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
-
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Document.edit.delete}" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Document.edit.delete}" ng-click="exportDocument(document)" translate>button.exportDocument</a>
-                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" ng-if="permission.Documentation.export" ng-click="exportDocument(document)" translate>button.exportDocument</a>
+                                        <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
                                         <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('document',document.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.type </span>:
-                                <span ng-class="{'text-success': document.type=='WORKING_DAYS','text-gold':document.type=='NON_WORKING_DAYS'}" ng-bind="document.type | translate"></span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-xs">
-                                <span translate>label.modified </span>:
-                               <span ng-bind="document.category || '-'"></span>
+                                <span ng-bind="document.type | translate"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t" >
-                            <div>
-                                <a href class="pull-right text-hover-color " ng-if="permission.Document.edit.delete" ng-click="deleteDocumentations(document)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteDocument</span></a>
-                            </div>
+                            <a href class="text-left primary-text-hover-color " ng-if="permission.Documentation.export" ng-click="exportDocument(document)"><i class="fa fa-download text-black-lt"></i> <span class="text-black-lt" translate>button.exportDocument</span></a>
+                            <a href class="pull-right text-hover-color " ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteDocument</span></a>
                         </div>
                     </div>
                 </div>
@@ -76,7 +70,7 @@
                 <table class="table table-hover table-bordered" id="documentTableId">
                     <thead>
                     <tr>
-                        <th class="chk">
+                        <th class="chk" ng-if="permission.Documentation.delete">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument()"><i class="primary"></i>
                             </label>
@@ -110,10 +104,9 @@
                     </thead>
                     <tbody ng-repeat="document in allDocumentations | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
-                        <td>
-                            <label class="md-check">
-                                <input type="checkbox" data-checklist-model="object.documents"
-                                       data-checklist-value="document"><i class="primary"></i>
+                        <td ng-if="permission.Documentation.delete">
+                            <label class="md-check" >
+                                <input type="checkbox" data-checklist-model="object.documents" data-checklist-value="document"><i class="primary"></i>
                             </label>
                         </td>
                         <td>
@@ -122,19 +115,24 @@
                                      <i class="fa fa-ellipsis-h"></i>
                                  </button>
                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                     <a class="dropdown-item" ng-if="permission.Documentation.export" ng-click="exportDocument(document)" translate>button.exportDocument</a>
+                                     <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
                                      <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                     <div class="dropdown-divider"></div>
                                      <a class="dropdown-item" ng-click="copyLinkToObject('document',document.path)" translate>button.copyLinkToObject</a>
                                  </div>
                              </div>
                          </td>
                         <td>
                          <span>
-                             <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(document)">{{document.name}}</a>
+                             <span class="text-dark">{{document.name}}</span>
+                             <span ng-if="document.title">-</span>
+                             <i class="text-muted" ng-bind-html="document.title | linky:'_blank'"></i>
                          </span>
                         </td>
                         <td ng-bind="document.path"></td>
-                        <td><span class="label" ng-bind="document.type | translate"></span></td>
-                        <td ng-bind="document.modified"></td>
+                        <td><span ng-bind="document.type | translate"></span></td>
+                        <td ng-bind="document.usedBy"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -184,6 +182,5 @@
             sidebarTopMargin: 190
         });
     });
-
 </script>
 

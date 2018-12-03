@@ -40,13 +40,13 @@
                                          <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
                                          <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
                                          <div class="dropdown-divider"></div>
-                                         <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                         <a href class="dropdown-item" ng-click="assignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation">
                                                <span translate>button.assignedDocumentation</span>
                                          </a>
-                                         <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assign.documentation">
+                                         <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation && calendar.hasDocumentation">
                                              <span translate>button.unassignedDocumentation</span>
                                          </a>
-                                         <a href class="dropdown-item {{permission.Calendar.view.documentation ? '': 'disable-link'}}" ng-click="showDocument('calendar', calendar.path)">
+                                         <a href class="dropdown-item {{calendar.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocument('calendar', calendar.path)">
                                              <span translate>button.showDocumentation</span>
                                          </a>
                                      </div>
@@ -73,7 +73,7 @@
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
-        <div class="row" ng-show="showPanel">
+        <div class="row" ng-if="showPanel">
              <div class="col-md-12" ng-hide="loading">
                  <div class="box white">
                      <div class="box-header">
@@ -165,7 +165,6 @@
          </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
