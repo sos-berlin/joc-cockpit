@@ -301,10 +301,10 @@
                                                     <span translate>button.assignedDocumentation</span>
                                                 </a>
                                                 <a href class="dropdown-item" ng-click="unassignedDocumentJobChain(jobChain)"
-                                                   ng-if="permission.JobChain.assignDocumentation && jobChain.hasDocumentation">
+                                                   ng-if="permission.JobChain.assignDocumentation && jobChain.documentation">
                                                     <span translate>button.unassignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item {{jobChain.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', jobChain.path)">
+                                                <a href class="dropdown-item {{jobChain.documentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', jobChain.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain.path)" translate>button.copyLinkToObject</a>
@@ -502,10 +502,10 @@
                                                     <span translate>button.assignedDocumentation</span>
                                                 </a>
                                                 <a href class="dropdown-item" ng-click="unassignedDocumentJobChain(jobChain)"
-                                                   ng-if="permission.JobChain.assignDocumentation && jobChain.hasDocumentation">
+                                                   ng-if="permission.JobChain.assignDocumentation && jobChain.documentation">
                                                     <span translate>button.unassignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item {{jobChain.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', jobChain.path)">
+                                                <a href class="dropdown-item {{jobChain.documentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', jobChain.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
                                                 <a class="dropdown-item"
@@ -609,8 +609,8 @@
                                                                         <a href class="dropdown-item" ng-click="assignedDocumentJobChain(nestedJobChain)" ng-if="permission.JobChain.assignDocumentation"
                                                                            translate>button.assignedDocumentation</a>
                                                                         <a href class="dropdown-item" ng-click="unassignedDocumentJobChain(nestedJobChain)"
-                                                                           ng-if="permission.JobChain.assignDocumentation && nestedJobChain.hasDocumentation" translate>button.unassignedDocumentation</a>
-                                                                        <a href class="dropdown-item {{nestedJobChain.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', nestedJobChain.path)"
+                                                                           ng-if="permission.JobChain.assignDocumentation && nestedJobChain.documentation" translate>button.unassignedDocumentation</a>
+                                                                        <a href class="dropdown-item {{nestedJobChain.documentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocument('jobChain', nestedJobChain.path)"
                                                                            translate>button.showDocumentation</a>
                                                                         <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',nestedJobChain.path)"
                                                                            translate>button.copyLinkToObject</a>
@@ -758,8 +758,8 @@
                                                                                                   <a href class="dropdown-item" ng-click="assignedDocument(order)"
                                                                                                      ng-if="permission.Order.assignDocumentation" translate>button.assignedDocumentation</a>
                                                                                                   <a href class="dropdown-item" ng-click="unassignedDocument(order)"
-                                                                                                     ng-if="permission.Order.assignDocumentation && order.hasDocumentation" translate>button.unassignedDocumentation</a>
-                                                                                                  <a href class="dropdown-item {{order.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                                                                                     ng-if="permission.Order.assignDocumentation && order.documentation" translate>button.unassignedDocumentation</a>
+                                                                                                  <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
                                                                                                       translate>button.showDocumentation</a>
                                                                                                   <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)"
                                                                                                      translate>button.copyLinkToObject</a>
@@ -971,9 +971,9 @@
                                                                        ng-if="permission.Order.assignDocumentation"><span translate>button.assignedDocumentation</span>
                                                                     </a>
                                                                     <a href class="dropdown-item" ng-click="unassignedDocument(order)"
-                                                                       ng-if="permission.Order.assignDocumentation && order.hasDocumentation"><span translate>button.unassignedDocumentation</span>
+                                                                       ng-if="permission.Order.assignDocumentation && order.documentation"><span translate>button.unassignedDocumentation</span>
                                                                     </a>
-                                                                    <a href class="dropdown-item {{order.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)">
+                                                                    <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)">
                                                                         <span translate>button.showDocumentation</span>
                                                                     </a>
                                                                     <div class="dropdown-divider"></div>

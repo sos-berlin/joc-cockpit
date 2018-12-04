@@ -15,6 +15,7 @@
         .controller('LogCtrl', LogCtrl);
 
     JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService", "AuditLogService", "$location", "TaskService"];
+
     function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -239,8 +240,7 @@
                         TaskService.histories(obj).then(function (res) {
                             vm.showLogPanel.taskHistory = res.history;
                         })
-                    }
-                    else if (vm.showLogPanel && event.eventType === "AuditLogChanged" && (event.objectType === "ORDER") && event.path === vm.showLogPanel.path && vm.isAuditLog) {
+                    } else if (vm.showLogPanel && event.eventType === "AuditLogChanged" && (event.objectType === "ORDER") && event.path === vm.showLogPanel.path && vm.isAuditLog) {
                         let obj = {};
                         obj.jobschedulerId = vm.schedulerIds.selected;
                         obj.orders = [];
@@ -604,7 +604,6 @@
         }
 
         vm.stopNode = function (data, jobChain) {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -642,7 +641,6 @@
         };
 
         vm.unStopNode = function (data, jobChain) {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -720,7 +718,6 @@
         };
 
         vm.unskipNode = function (data, jobChain) {
-
             var nodes = {};
             nodes.nodes = [];
             nodes.jobschedulerId = vm.schedulerIds.selected;
@@ -798,7 +795,6 @@
         };
 
         vm.unstopJob = function (data) {
-
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
@@ -850,14 +846,12 @@
                 vm.isJobChain = false;
 
                 angular.forEach(vm.selectedNodes, function (value) {
-
                     if (value.job) {
                         vm.isJob = true;
                     }
                     if (value.jobChain) {
                         vm.isJobChain = true;
                     }
-
                     if (value.job && value.state && value.state._text == 'STOPPED') {
                         vm.isStoppedNode = true;
                     }
@@ -2369,6 +2363,70 @@
                         $scope.$emit('refreshList');
                     });
                 }
+            } else if (action == 'assign document') {
+                vm.assignObj = {
+                    type: 'Order',
+                    path: order.path,
+                };
+                let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/assign-document-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    obj.documentation = vm.assignObj.documentation;
+                    console.log(obj);
+                    OrderService.assign(obj).then(function (res) {
+                        console.log(res);
+                    });
+                }, function () {
+
+                });
+            } else if (action == 'unassign document') {
+                let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
+                if (vm.userPreferences.auditLog) {
+                    vm.comments = {};
+                    vm.comments.radio = 'predefined';
+                    vm.comments.name = order.orderId;
+                    vm.comments.operation = 'Unassign Documentation';
+                    vm.comments.type = 'Order';
+
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'modules/core/template/comment-dialog.html',
+                        controller: 'DialogCtrl',
+                        scope: vm,
+                        backdrop: 'static'
+                    });
+                    modalInstance.result.then(function () {
+                        obj.auditLog = {};
+                        if (vm.comments.comment)
+                            obj.auditLog.comment = vm.comments.comment;
+                        if (vm.comments.timeSpent)
+                            obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                        if (vm.comments.ticketLink)
+                            obj.auditLog.ticketLink = vm.comments.ticketLink;
+                        OrderService.unassign(obj);
+                    }, function () {
+
+                    });
+                } else {
+                    OrderService.unassign(obj);
+                }
+            } else if (action == 'documentation') {
+                vm.showDocumentations('order', order.path);
             }
         };
         vm.getPlan = function (calendarView, viewDate) {
@@ -6981,6 +7039,9 @@
                 let w = $(this).outerWidth();
                 let elem = '#jobChain td.dynamic-thead' + index;
                 
+                if(index < 2){
+                    w = w - 1;
+                }
                 if (w > 20) {
                     $(elem).css('width', w + 'px');
                 }else{
@@ -8293,7 +8354,7 @@
             });
              setTimeout(function () {
                 updateDimensions();
-            },0);
+            },10);
 
         };
         vm.hidePanelFuc = function(history) {

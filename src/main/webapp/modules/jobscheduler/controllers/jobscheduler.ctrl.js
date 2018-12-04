@@ -11,10 +11,10 @@
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
     ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService",
-        "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService", "$filter"];
+        "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService", "$filter", "SOSAuth"];
 
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService,
-                          CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter) {
+                          CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService, $filter, SOSAuth) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -728,9 +728,9 @@
                 vm.agentJobSearch.url = vm.agentJobSearch.url.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.agents = vm.agentJobSearch.url.split(',');
             }
-            if(vm.agentJobSearch.date == 'process'){
+            if (vm.agentJobSearch.date == 'process') {
                 obj.dateFrom = parseProcessExecuted(vm.selectedFiltered.planned);
-            }else {
+            } else {
                 if (vm.agentJobSearch.from) {
                     var fromDate = new Date(vm.agentJobSearch.from);
                     if (vm.agentJobSearch.fromTime) {
@@ -788,7 +788,6 @@
                 vm.agentTasks = res.agents;
                 vm.totalJobExecution = res.totalNumOfSuccessfulTasks;
             });
-
         };
 
         /** <<<<<<<<<<<<< End Agent Job Execution >>>>>>>>>>>>>>> */
@@ -841,7 +840,7 @@
                 if (vm.selectedFiltered.jobChains) {
                     obj.orders = [];
                     let jobChainsArr = angular.copy(vm.selectedFiltered.jobChains);
-                    if(vm.selectedFiltered.orders) {
+                    if (vm.selectedFiltered.orders) {
                         angular.forEach(vm.selectedFiltered.orders, function (order) {
                             let index = jobChainsArr.indexOf(order.jobChain);
                             if (index > -1) {
@@ -852,7 +851,7 @@
                     angular.forEach(jobChainsArr, function (jobChain) {
                         obj.orders.push({jobChain: jobChain});
                     });
-                    if(vm.selectedFiltered.orders) {
+                    if (vm.selectedFiltered.orders) {
                         obj.orders = obj.orders.concat(vm.selectedFiltered.orders);
                     }
                 } else if (vm.selectedFiltered.orders) {
@@ -887,8 +886,7 @@
             });
         }
 
-        vm.checkExpireValue = function(type) {
-          
+        vm.checkExpireValue = function (type) {
             if (type === 'expirationPeriod') {
                 vm.event.expirationCycle = '';
                 vm.event.expiresDate = '';
@@ -1012,13 +1010,13 @@
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     EventService.deleteEvent(obj).then(function (res) {
-                        if(event) {
+                        if (event) {
                             event.isDeleted = true;
-                        }else {
+                        } else {
                             angular.forEach(vm.object.events, function (value) {
                                 value.isDeleted = true;
                             });
-                             vm.object.events = [];
+                            vm.object.events = [];
                         }
                     });
 
@@ -1033,8 +1031,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                     EventService.deleteEvent(obj).then(function(res){
-                        if(event) {
+                    EventService.deleteEvent(obj).then(function (res) {
+                        if (event) {
                             event.isDeleted = true;
                         }else {
                             angular.forEach(vm.object.events, function (value) {
@@ -4017,8 +4015,17 @@
             });
         };
         var uploader = $scope.uploader = new FileUploader({
-            url: ''
+             url: 'joc/api/documentations/import?access_token=' + SOSAuth.accessTokenId,
+            alias: 'file'
         });
+
+
+    uploader.onBeforeUploadItem = function (item) {
+        item.formData = [{
+            folder: vm.folderFullPathD,
+            jobschedulerId : vm.schedulerIds.selected
+        }]
+    };
 
         vm.fileLoading = false;
         // CALLBACKS
@@ -4591,7 +4598,8 @@
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
             if (vm.documentFilters.filter.type != 'ALL') {
-                obj.type = vm.documentFilters.filter.type;
+                obj.types = [];
+                obj.types.push(vm.documentFilters.filter.type);
             }
 
             obj.compact = true;
@@ -4615,6 +4623,10 @@
             });
             objDoc.compact = true;
             objDoc.jobschedulerId = vm.schedulerIds.selected;
+            if (vm.documentFilters.filter.type != 'ALL') {
+                objDoc.types = [];
+                objDoc.types.push(vm.documentFilters.filter.type);
+            }
             ResourceService.getDocumentations(objDoc).then(function (res) {
                 var data = res.documentations;
                 angular.forEach(vm.treeDocument, function (value) {
@@ -4627,7 +4639,7 @@
         };
 
         function insertDocument(node, x) {
-            node.calendars = [];
+            node.documents = [];
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
                     x[i].path1 = node.path;
@@ -4644,13 +4656,24 @@
             });
         }
 
-        vm.exportDocumentations = function () {
-            ResourceService.exportDocumentations({
-                jobschedulerId: vm.schedulerIds.selected,
-                documentations: [],
-                folders: []
-            }).then(function (res) {
+        vm.showDocumentUsage = function(){
 
+        };
+
+        vm.exportDocument = function (document) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected,documentations: []};
+            if(document){
+                obj.documentations.push(document.path);
+            }else{
+                angular.forEach(vm.object.documents, function (value, index) {
+                    obj.documentations.push(value.path);
+                });
+            }
+            ResourceService.exportDocumentations(obj).then(function (res) {
+                let name = 'documentation_' + vm.schedulerIds.selected + '.zip';
+                let blob = new Blob([res], {type: "application/octet-stream"});
+                FileSaver.saveAs(blob, name);
+                vm.object.documents =[];
             }, function () {
 
             });
@@ -4674,14 +4697,26 @@
 
         };
 
-        function uploadDocument() {
-            ResourceService.importDocumentations({
-                jobschedulerId: vm.schedulerIds.selected
-            }).then(function (res) {
 
-            }, function () {
+    uploader.onErrorItem = function (fileItem, response, status, headers) {
+        console.log(status)
+    };
 
-            });
+    uploader.onCompleteItem = function (fileItem, response, status, headers) {
+
+       console.log('status '+status)
+
+    };
+        vm.uploadDocument= function() {
+            uploader.uploadAll();
+           /* let obj = {
+                file : uploader.queue[0].file,
+                folder: vm.folderFullPathD,
+                jobschedulerId : vm.schedulerIds.selected
+            };
+           ResourceService.importDocumentations(obj).then(function (obj) {
+
+            });*/
         }
 
         vm.deleteDocumentations = function (document) {
@@ -4689,18 +4724,18 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.documentIds = [];
             if (document) {
-                obj.documentIds.push(document.id)
+                obj.documentIds.push(document.path)
             } else {
                 angular.forEach(vm.object.documents, function (value) {
-                    obj.documentIds.push(value.id)
+                    obj.documentIds.push(value.path)
                 });
             }
             vm.document = angular.copy(document);
             if (document) {
                 vm.documentArr = undefined;
                 vm.document.delete = true;
-                ResourceService.documentationsUsed({
-                    id: vm.document.id,
+                ResourceService.documentationUsed({
+                    documentation: vm.document.path,
                     jobschedulerId: vm.schedulerIds.selected
                 }).then(function (res) {
                     vm.document.usedIn = res;
@@ -4709,8 +4744,8 @@
             } else {
                 vm.documentArr = angular.copy(vm.object.documents);
                 angular.forEach(vm.documentArr, function (value) {
-                    ResourceService.documentationsUsed({
-                        id: value.id,
+                    ResourceService.documentationUsed({
+                        documentation: value.path,
                         jobschedulerId: vm.schedulerIds.selected
                     }).then(function (res) {
                         value.usedIn = res;
@@ -4732,7 +4767,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.type = 'Calendar';
+                vm.comments.type = 'Documentation';
                 vm.comments.operation = 'Delete';
                 if (document) {
                     vm.comments.name = document.path;

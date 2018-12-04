@@ -1540,6 +1540,10 @@
                                         + '<a class="hide" id="showAssignedCalendar-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.runTime}">' + gettextCatalog.getString("button.showAssignedCalendar") + '</a>'
                                         + '<div class="dropdown-divider"></div>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order._type + '\'==\'PERMANENT\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
+                                        + '<a class="hide" id="assignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation && \'' + order._type + '\'==\'PERMANENT\'}">' + gettextCatalog.getString("button.assignedDocumentation") + '</a>'
+                                        + '<a class="hide" id="unassignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation && \'' + order._type + '\'==\'PERMANENT\' && order.documentation}">' + gettextCatalog.getString("button.unassignedDocumentation") + '</a>'
+                                        + '<a class="hide" id="documentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.documentation && \'' + order._type + '\'==\'PERMANENT\', \'disable-link\' : !order.documentation}">' + gettextCatalog.getString("button.showDocumentation") + '</a>'
+                                        + '<div class="dropdown-divider"></div>'
                                         + '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'order\',path:\'' + order.path + '\'})" id="copyLinkToObject-' + order.orderId + '" >' + gettextCatalog.getString("button.copyLinkToObject") + '</a>'
                                         + '</div></div>';
                                     return menu;
@@ -1663,9 +1667,31 @@
                                     })
                                 });
 
+                                var assignDocument = document.getElementById('assignDocumentation-' + order.orderId);
+                                assignDocument.addEventListener('click', function () {
+                                    vm.onOrderAction({
+                                        order: order,
+                                        action: 'assign document'
+                                    })
+                                });
+
+                                var unassignDocument = document.getElementById('unassignDocumentation-' + order.orderId);
+                                unassignDocument.addEventListener('click', function () {
+                                    vm.onOrderAction({
+                                        order: order,
+                                        action: 'unassign document'
+                                    })
+                                });
+
+                                var showDocument = document.getElementById('documentation-' + order.orderId);
+                                showDocument.addEventListener('click', function () {
+                                    vm.onOrderAction({
+                                        order: order,
+                                        action: 'documentation'
+                                    })
+                                });
+
                             });
-
-
                         }
                     }
 

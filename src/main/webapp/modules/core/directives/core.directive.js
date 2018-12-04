@@ -265,6 +265,7 @@
                     processClass: view,
                     schedule: view,
                     calendar: view,
+                    documentation: view,
                     jobChainOrder: view,
                     orderOverView: view,
                     jobOverView: view,
@@ -293,6 +294,8 @@
                     t.pageView = views.schedule;
                 } else if (l.path() == '/resources/calendars') {
                     t.pageView = views.calendar || view;
+                } else if (l.path() == '/resources/documentations') {
+                    t.pageView = views.documentation || view;
                 }else if (l.path().match('/job_chain_detail/')) {
                     t.pageView = views.jobChainOrder;
                 } else if (l.path().match('/orders_overview')) {
@@ -323,6 +326,8 @@
                         views.schedule = t.pageView;
                     }else if (l.path() == '/resources/calendars') {
                         views.calendar = t.pageView || view;
+                    }else if (l.path() == '/resources/documentations') {
+                        views.documentation = t.pageView || view;
                     } else if (l.path().match('/job_chain_detail/')) {
                         views.jobChainOrder = t.pageView;
                     } else if (l.path().match('/orders_overview')) {

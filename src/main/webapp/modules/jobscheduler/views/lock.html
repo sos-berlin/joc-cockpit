@@ -39,10 +39,10 @@
                                         <a href class="dropdown-item" ng-click="assignedDocument(lock)" ng-if="permission.Lock.assignDocumentation">
                                             <span translate>button.assignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assignDocumentation && lock.hasDocumentation">
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(lock)" ng-if="permission.Lock.assignDocumentation && lock.documentation">
                                             <span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{lock.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Lock.view.documentation" ng-click="showDocument('lock', lock.path)">
+                                        <a href class="dropdown-item {{lock.documentation ? '': 'disable-link'}}" ng-if="permission.Lock.view.documentation" ng-click="showDocument('lock', lock.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                     </div>

@@ -1987,7 +1987,7 @@
                             vm.mainText = vm.mainText + ',';
                         }
 
-                        if (entry.entryValue.length === 1) {
+                       if (entry.entryValue.length-1 === index) {
                             vm.mainText = vm.mainText + '\n';
                         }
                     });
@@ -2070,12 +2070,16 @@
                 vm.entry.entryComment = [];
                 if (vm.entryValue.length > 0) {
                     angular.forEach(vm.entryValue, function (val) {
-                        vm.entry.entryValue.push(val.value);
+                        if(val.value && val.value !='') {
+                            vm.entry.entryValue.push(val.value);
+                        }
                     });
                 }
                 if (vm.entryComment.length > 0) {
                     angular.forEach(vm.entryComment, function (val) {
-                        vm.entry.entryComment.push(val.value);
+                        if(val.value && val.value !='') {
+                            vm.entry.entryComment.push(val.value);
+                        }
                     });
                 }
 

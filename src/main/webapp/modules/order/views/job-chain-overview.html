@@ -234,9 +234,9 @@
                                 <div class="p-l-sm">
                                     <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                          <div class="btn-group dropdown ">
-                                            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                            <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown"><i
                                                     class="fa fa-ellipsis-h"></i></button>
-                                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list"
+                                            <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                                  role="menu">
                                                 <a ng-click="showLogWindow(order)" class="dropdown-item hide" ng-if="order.historyId"
                                                    ng-class="{'show':permission.Order.view.orderLog}"
@@ -246,8 +246,7 @@
                                                 <a href class="dropdown-item" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
                                                    ng-click="startOrder(order)" translate>button.startOrderat</a>
                                                 <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
-                                                   ng-click="setOrderState(order)"
-                                                   translate>button.setOrderState</a>
+                                                   ng-click="setOrderState(order)" translate>button.setOrderState</a>
                                                 <a href class="dropdown-item bg-hover-color" ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                    ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
                                                 <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
@@ -270,15 +269,14 @@
                                                 <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'" ng-click="showAssignedCalendar(order)"
                                                    translate>button.showAssignedCalendar</a>
                                                 <div class="dropdown-divider"></div>
-                                                <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
-                                                   class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
+                                                <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                    translate>button.showConfiguration</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a href class="dropdown-item" ng-click="assignedDocument(order)" ng-if="permission.Order.assignDocumentation"
                                                    translate>button.assignedDocumentation</a>
-                                                <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation"
+                                                <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.documentation"
                                                    translate>button.unassignedDocumentation</a>
-                                                <a href class="dropdown-item {{order.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                                <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
                                                    translate>button.showDocumentation</a>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)"
                                                    translate>button.copyLinkToObject</a>
@@ -593,9 +591,9 @@
                                                                         <div class="dropdown-divider"></div>
                                                                         <a href class="dropdown-item" ng-click="assignedDocument(order)" ng-if="permission.Order.assignDocumentation"
                                                                            translate>button.assignedDocumentation</a>
-                                                                        <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.hasDocumentation"
+                                                                        <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.documentation"
                                                                            translate>button.unassignedDocumentation</a>
-                                                                        <a href class="dropdown-item {{order.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                                                        <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
                                                                              translate>button.showDocumentation</a>
                                                                         <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)"
                                                                            translate>button.copyLinkToObject</a>

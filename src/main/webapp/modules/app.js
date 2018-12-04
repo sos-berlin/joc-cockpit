@@ -55,9 +55,7 @@
     .config(['$provide', function ($provide) {
       $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
         return function (exception, cause) {
-          if(exception && exception.message.trim() !== 'Invalid pointer') {
-            TraceKit.report(exception);
-          }
+          TraceKit.report(exception);
           $delegate(exception, cause);
         };
       }]);

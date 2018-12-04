@@ -39,10 +39,10 @@
                                             <a href class="dropdown-item" ng-click="assignedDocument(processClass)" ng-if="permission.ProcessClass.assignDocumentation">
                                                 <span translate>button.assignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item" ng-click="unassignedDocument(processClass)" ng-if="permission.ProcessClass.assignDocumentation && processClass.hasDocumentation">
+                                            <a href class="dropdown-item" ng-click="unassignedDocument(processClass)" ng-if="permission.ProcessClass.assignDocumentation && processClass.documentation">
                                                 <span translate>button.unassignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item {{processClass.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.ProcessClass.view.documentation" ng-click="showDocument('processClass', processClass.path)">
+                                            <a href class="dropdown-item {{processClass.documentation ? '': 'disable-link'}}" ng-if="permission.ProcessClass.view.documentation" ng-click="showDocument('processClass', processClass.path)">
                                                 <span translate>button.showDocumentation</span>
                                             </a>
                                         </div>

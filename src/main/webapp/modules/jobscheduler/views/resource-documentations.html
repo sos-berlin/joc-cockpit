@@ -44,9 +44,10 @@
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
+                                        <a class="dropdown-item" ng-click="previewDocument(document)" translate>button.previewDocument</a>
                                         <a class="dropdown-item" ng-if="permission.Documentation.export" ng-click="exportDocument(document)" translate>button.exportDocument</a>
-                                        <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                                        <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                        <a class="dropdown-item bg-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                                        <a class="dropdown-item" ng-click="showDocumentUsage(document)" translate>button.showUsage</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('document',document.path)" translate>button.copyLinkToObject</a>
                                     </div>
@@ -55,6 +56,10 @@
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.type </span>:
                                 <span ng-bind="document.type | translate"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.lastUpdateTime </span>:
+                                <span ng-bind="document.modified | stringToDate"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t" >
@@ -76,25 +81,25 @@
                             </label>
                         </th>
                         <th class="menu"><span translate>label.action</span></th>
-                        <th ng-click="sortByC('name')"><a><span translate>label.documentName</span>
+                        <th ng-click="sortByD('name')"><a><span translate>label.documentName</span>
                             <i ng-show="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByC('path')"><a><span translate>label.path</span>
+                        <th ng-click="sortByD('path')"><a><span translate>label.path</span>
                             <i ng-show="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByC('type')"><a><span translate>label.type</span>
+                        <th ng-click="sortByD('type')"><a><span translate>label.type</span>
                             <i ng-show="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByC('modified')"><a><span translate>label.modified</span>
+                        <th ng-click="sortByD('modified')"><a><span translate>label.lastUpdateTime</span>
                             <i ng-show="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
@@ -115,9 +120,10 @@
                                      <i class="fa fa-ellipsis-h"></i>
                                  </button>
                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                     <a class="dropdown-item" ng-click="previewDocument(document)" translate>button.previewDocument</a>
                                      <a class="dropdown-item" ng-if="permission.Documentation.export" ng-click="exportDocument(document)" translate>button.exportDocument</a>
-                                     <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                                     <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                                     <a class="dropdown-item" ng-click="showDocumentUsage(document)" translate>button.showUsage</a>
                                      <div class="dropdown-divider"></div>
                                      <a class="dropdown-item" ng-click="copyLinkToObject('document',document.path)" translate>button.copyLinkToObject</a>
                                  </div>
@@ -132,7 +138,7 @@
                         </td>
                         <td ng-bind="document.path"></td>
                         <td><span ng-bind="document.type | translate"></span></td>
-                        <td ng-bind="document.usedBy"></td>
+                        <td ng-bind="document.modified | stringToDate"></td>
                     </tr>
                     </tbody>
                 </table>

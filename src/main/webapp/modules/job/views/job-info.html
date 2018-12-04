@@ -85,9 +85,9 @@
                                            ng-if="permission.Job.assignDocumentation"><span translate>button.assignedDocumentation</span>
                                         </a>
                                         <a href class="dropdown-item" ng-click="unassignedDocument(job)"
-                                           ng-if="permission.Job.assignDocumentation && job.hasDocumentation"><span translate>button.unassignedDocumentation</span>
+                                           ng-if="permission.Job.assignDocumentation && job.documentation"><span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{job.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
+                                        <a href class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                     </div>

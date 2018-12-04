@@ -53,10 +53,10 @@
                                         <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation">
                                             <span translate>button.assignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation && schedule.hasDocumentation">
+                                        <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation && schedule.documentation">
                                             <span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{schedule.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Schedule.view.documentation" ng-click="showDocument('schedule', schedule.path)">
+                                        <a href class="dropdown-item {{schedule.documentation ? '': 'disable-link'}}" ng-if="permission.Schedule.view.documentation" ng-click="showDocument('schedule', schedule.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
@@ -180,10 +180,10 @@
                                     <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation">
                                         <span translate>button.assignedDocumentation</span>
                                     </a>
-                                    <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation && schedule.hasDocumentation">
+                                    <a href class="dropdown-item" ng-click="unassignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation && schedule.documentation">
                                         <span translate>button.unassignedDocumentation</span>
                                     </a>
-                                    <a href class="dropdown-item {{schedule.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Schedule.view.documentation" ng-click="showDocument('schedule', schedule.path)">
+                                    <a href class="dropdown-item {{schedule.documentation ? '': 'disable-link'}}" ng-if="permission.Schedule.view.documentation" ng-click="showDocument('schedule', schedule.path)">
                                         <span translate>button.showDocumentation</span>
                                     </a>
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>

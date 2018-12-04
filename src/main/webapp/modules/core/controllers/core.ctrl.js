@@ -962,6 +962,8 @@
                 link = host + 'file_transfer?id=' + encodeURIComponent(path);
             } else if (objType == 'calendar' && path) {
                 link = host + 'calendar?path=' + encodeURIComponent(path);
+            } else if (objType == 'document' && path) {
+                link = host + 'documentation?path=' + encodeURIComponent(path);
             }
             if (link !== '') {
                 clipboard.copyText(link + '&scheduler_id=' + vm.schedulerIds.selected);
@@ -2075,7 +2077,7 @@
                                 vm.mainText = vm.mainText + ',';
                             }
 
-                            if (entry.entryValue.length ===  1) {
+                            if (entry.entryValue.length-1 ===  index) {
                                 vm.mainText = vm.mainText + '\n';
                             }
                         });
@@ -2089,7 +2091,9 @@
             let obj = {entryName: '', entryValue: [], entryComment: []};
             let arr = vm.mainText.split('\n');
             for (let i = 0; i < arr.length; i++) {
+
                 if (arr[i]) {
+                    arr[i] = arr[i].trim();
                     if (arr[i].substring(0, 1) === '#') {
                         obj.entryComment.push(arr[i].substring(1));
                     } else if (arr[i].lastIndexOf('\\') === arr[i].length - 1) {

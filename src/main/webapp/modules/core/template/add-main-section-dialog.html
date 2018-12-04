@@ -35,7 +35,7 @@
                     <div class="col-sm-7 m-b-sm">
                         <div class="row" ng-repeat="value in entry.values track by $index">
                             <div class="col-sm-1" style="width: 30px" ng-if="entry.name.indexOf('groupRolesMap') > -1">
-                              <a ><i ng-click="addEntryValueField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
+                              <a ng-if="$index ==0"><i ng-click="addEntryValueField(PIndex)" class="fa fa-plus m-t-sm text-muted"></i></a>
                             </div>
                             <div class="col-sm-10" ng-class="{'m-t-sm' : $index>0, 'p-r-0': entry.name.indexOf('groupRolesMap') == -1,'p-r-26': entry.name.indexOf('groupRolesMap') > -1}">
                                 <input type="text" class="form-control" ng-model="value.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">

@@ -321,10 +321,10 @@
                                                 <span translate>button.assignedDocumentation</span>
                                             </a>
                                             <a href class="dropdown-item" ng-click="unassignedDocument(job)"
-                                               ng-if="permission.Job.assignDocumentation && job.hasDocumentation">
+                                               ng-if="permission.Job.assignDocumentation && job.documentation">
                                                 <span translate>button.unassignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item {{job.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
+                                            <a href class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
                                                 <span translate>button.showDocumentation</span>
                                             </a>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
@@ -531,10 +531,10 @@
                                                     <span translate>button.assignedDocumentation</span>
                                                 </a>
                                                 <a href class="dropdown-item" ng-click="unassignedDocument(job)"
-                                                   ng-if="permission.Job.assignDocumentation && job.hasDocumentation">
+                                                   ng-if="permission.Job.assignDocumentation && job.documentation">
                                                     <span translate>button.unassignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item {{job.hasDocumentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
+                                                <a href class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocument('job', job.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
@@ -568,7 +568,8 @@
                                         <span ng-if="!job.usedInJobChains">0</span>
                                     </td>
                                     <td>
-                                        <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
+                                        <a class="text-hover-primary" ng-click="showProcessClass(job.processClass)">{{job.processClass}}</a>
+                                        <span ng-if="!job.processClass">-</span>
                                     </td>
                                     <td ng-if="!userPreferences.isCompact">
                                         <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)">
