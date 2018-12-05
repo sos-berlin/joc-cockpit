@@ -250,7 +250,7 @@
                             }
                             break;
                         case 'Resource':
-                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status || permissionModel.permission.Calendar.view.status || permissionModel.permission.Event.view.status) {
+                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status || permissionModel.permission.Calendar.view.status || permissionModel.permission.Event.view.status || permissionModel.permission.Documentation.view) {
                                 ifPermissionPassed = true;
                             }
                             break;

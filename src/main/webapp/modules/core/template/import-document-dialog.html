@@ -5,58 +5,137 @@
         </button>
         <h4 class="modal-title" translate>label.importDocument</h4>
     </div>
-    <div class="modal-body p-a" style="min-height: 240px">
-        <form name="form1" ng-submit="ok()" novalidate >
-            <div ng-if="uploader.queue.length === 0">
-                <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
-                    <div><img src="images/upload.png"></div>
-                    <div translate>label.dragAndDropFileToUpload</div>
-                </div>
-                <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
-                    <button type="button" class="btn bg-blue btn-sm"
-                            onclick="openFileOption()">
-                        <span translate>button.chooseFileToUpload</span>
-                    </button>
-                </div>
-                <input type="file" id="file1" nv-file-select="" uploader="uploader" style="display: none;">
-            </div>
-            <div ng-if="uploader.queue.length>0">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th translate>label.name</th>
-                        <th ng-show="uploader.isHTML5" translate>label.size</th>
-                        <th ng-show="uploader.isHTML5" translate>label.progress</th>
-                        <th translate>label.status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="item in uploader.queue">
-                        <td><strong>{{ item.file.name }}</strong></td>
-                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                        <td ng-show="uploader.isHTML5">
-                            <div class="progress" style="margin-bottom: 0;">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+    <form name="form">
+        <div class="modal-body p-a" style="min-height: 240px;">
+            <div class="row">
+                <div class="col-md-12 hide" ng-class="{'show': display}">
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.selectComments</label>
+                        <div class=" col-sm-9">
+                            <div>
+                                <label class="md-check w w-md">
+                                    <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                                    <i class="primary"></i> <span translate>label.predefined</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                                    <i class="primary"></i> <span translate>label.individual</span>
+                                </label>
                             </div>
-                        </td>
-                        <td class="text-center">
-                            <span ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
-                            <span ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
-                            <span ng-show="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="comments.radio=='predefined'"
+                         ng-class="{'has-error' : logError}">
+                        <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" ng-model="comments.comment" ng-change="logError = false">
+                                <option value="" selected translate>label.selectPredefinedReason</option>
+                                <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                            </select>
+                            <div class="help-block text-danger" ng-if="logError">
+                                <div translate>message.requiredError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
+                        <label class="col-sm-3 " translate>label.comment</label>
+                        <div class=" col-sm-9">
+                                <textarea rows="3" class="form-control" maxlength="2000" name="comment"
+                                          ng-model="comments.comment"
+                                          ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                                          ng-focus="logError = false"></textarea>
+                            <div class="help-block text-danger" ng-if="logError">
+                                <div translate>message.requiredError</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
+                        <div class="col-sm-9">
+                            <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
+                                   placeholder="{{'placeholder.timeSpend' | translate}}" ng-model="comments.timeSpent">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
+                        <div class="col-sm-9">
+                            <input type="url" class="form-control"
+                                   placeholder="{{'placeholder.ticketLink' | translate}}"
+                                   ng-model="comments.ticketLink">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.path.$invalid && form.path.$dirty }">
+                        <label class="col-sm-3 form-control-label" translate>label.path</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" required name="path"
+                                   placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
+                                   ng-model="document.path">
+                            <div class="help-block text-danger" ng-if="form.path.$dirty" ng-messages="form.path.$error">
+                                <div ng-message="required" translate>message.requiredError</div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; right: 25px;margin-top:6px">
+                            <a href="" ng-click="getTreeStructure()">
+                                <i class="fa fa-folder-o fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div ng-if="uploader.queue.length === 0">
+                        <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
+                            <div><img src="images/upload.png"></div>
+                            <div translate>label.dragAndDropFileToUpload</div>
+                        </div>
+                        <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
+                            <button type="button" class="btn bg-blue btn-sm" onclick="openFileOption()">
+                                <span translate>button.chooseFileToUpload</span>
+                            </button>
+                        </div>
+                        <input type="file" id="file" nv-file-select="" uploader="uploader" style="display: none;">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div ng-if="uploader.queue.length>0">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th translate>label.name</th>
+                                <th ng-show="uploader.isHTML5" translate>label.size</th>
+                                <th ng-show="uploader.isHTML5" translate>label.progress</th>
+                                <th translate>label.status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="item in uploader.queue">
+                                <td><strong>{{ item.file.name }}</strong></td>
+                                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                <td ng-show="uploader.isHTML5">
+                                    <div class="progress" style="margin-bottom: 0;">
+                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-success" ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
+                                    <span class="text-warn" ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
+                                    <span class="text-danger" ng-show="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
-    <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
-        <button type="submit" class="btn btn-primary btn-sm" ng-click="uploadDocument()" translate> button.import </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
-    </div>
+        </div>
+        <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" ng-click="uploader.uploadAll();" translate> button.import </button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
+        </div>
+    </form>
 </div>
 <script>
     function openFileOption() {
-        document.getElementById("file1").click();
+        document.getElementById("file").click();
     }
 </script>

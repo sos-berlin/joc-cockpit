@@ -57,7 +57,7 @@
                                         <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation && calendar.documentation">
                                             <span translate>button.unassignedDocumentation</span>
                                         </a>
-                                        <a href class="dropdown-item {{calendar.documentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocument('calendar', calendar.path)">
+                                        <a href class="dropdown-item {{calendar.documentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)">
                                             <span translate>button.showDocumentation</span>
                                         </a>
                                         <div class="dropdown-divider"></div>
@@ -163,7 +163,7 @@
                                     <a href class="dropdown-item" ng-click="unassignedDocument(calendar)" ng-if="permission.Calendar.assignDocumentation && calendar.documentation">
                                         <span translate>button.unassignedDocumentation</span>
                                     </a>
-                                    <a href class="dropdown-item {{calendar.documentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocument('calendar', calendar.path)">
+                                    <a href class="dropdown-item {{calendar.documentation ? '': 'disable-link'}}" ng-if="permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)">
                                         <span translate>button.showDocumentation</span>
                                     </a>
                                     <div class="dropdown-divider"></div>

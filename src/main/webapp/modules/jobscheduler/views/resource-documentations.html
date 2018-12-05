@@ -137,7 +137,9 @@
                          </span>
                         </td>
                         <td ng-bind="document.path"></td>
-                        <td><span ng-bind="document.type | translate"></span></td>
+                        <td>
+                            <span ng-bind="document.type"></span>
+                        </td>
                         <td ng-bind="document.modified | stringToDate"></td>
                     </tr>
                     </tbody>
@@ -181,7 +183,41 @@
 </div>
 
 <div ng-if="isLoading && treeDocument.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noDocumentationFound</div>
-
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
+                <div ng-show="filterTree1 && filterTree1.length>0">
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            expand-on="expanding_property"
+                            on-click="treeExpandD(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+                <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
+                    <span translate>message.noCalendarFound</span>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModal()" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({

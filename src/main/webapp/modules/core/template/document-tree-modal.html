@@ -1,0 +1,39 @@
+<div class="modal fade" id="assignDocTreeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog box-shadow modal-lg" ng-controller="TreeDialogCtrl">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div ng-if="filterTree1 && filterTree1.length>0">
+                    <a class="text" ng-click="filter_tree_control.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree_control.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree_control"
+                            object="object"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            icon-collapse="fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeHandler(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/object-tree-filter-structure.html">
+                    </tree>
+                </div>
+                 <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
+                    <span translate>message.noDocumentationFound</span>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addObject()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

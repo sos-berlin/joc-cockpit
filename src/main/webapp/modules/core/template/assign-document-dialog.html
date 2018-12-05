@@ -13,9 +13,13 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.documentation</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control " placeholder="{{'placeholder.documentation' | translate}} " ng-model="assignObj.documentation">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.document.$invalid && form.document.$dirty }">
+                    <input type="text" class="form-control" name="document" required placeholder="{{'placeholder.enterOrSelectFromTree' | translate}} " ng-model="assignObj.documentation">
+                     <div class="help-block text-danger" ng-if="form.document.$dirty" ng-messages="form.document.$error">
+                         <div ng-message="required" translate>message.requiredError</div>
+                     </div>
                 </div>
+                <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getDocumentTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display}">
                 <label class="col-sm-4 " translate>label.selectComments</label>

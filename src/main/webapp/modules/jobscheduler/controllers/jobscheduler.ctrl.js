@@ -1034,7 +1034,7 @@
                     EventService.deleteEvent(obj).then(function (res) {
                         if (event) {
                             event.isDeleted = true;
-                        }else {
+                        } else {
                             angular.forEach(vm.object.events, function (value) {
                                 value.isDeleted = true;
                             });
@@ -1252,16 +1252,14 @@
                 if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.orders = vm.orders;
                     vm.eventSearch.jobChains = vm.jobChains;
-                }
-                else if (vm.eventFilter && !vm.showSearchEventPanel) {
+                } else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.orders = vm.orders;
                     vm.eventFilter.jobChains = vm.jobChains;
                 }
             } else {
                 if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.jobs = vm.jobs;
-                }
-                else if (vm.eventFilter && !vm.showSearchEventPanel) {
+                } else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.jobs = vm.jobs;
                 }
             }
@@ -4015,17 +4013,27 @@
             });
         };
         var uploader = $scope.uploader = new FileUploader({
-             url: 'joc/api/documentations/import?access_token=' + SOSAuth.accessTokenId,
+             url: 'joc/api/documentations/import',
             alias: 'file'
         });
 
-
-    uploader.onBeforeUploadItem = function (item) {
-        item.formData = [{
-            folder: vm.folderFullPathD,
-            jobschedulerId : vm.schedulerIds.selected
-        }]
-    };
+        uploader.onBeforeUploadItem = function (item) {
+            if(vm.resourceFilters.state !== 'calendars') {
+                let obj ={
+                    folder: vm.document.path === '/' ? '' : vm.document.path,
+                    jobschedulerId: vm.schedulerIds.selected,
+                    accessToken : SOSAuth.accessTokenId
+                };
+                if (vm.comments.comment) {
+                    obj.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent)
+                    obj.timeSpent = vm.comments.timeSpent;
+                if (vm.comments.ticketLink)
+                    obj.ticketLink = vm.comments.ticketLink;
+                item.formData = [obj];
+            }
+        };
 
         vm.fileLoading = false;
         // CALLBACKS
@@ -4044,10 +4052,30 @@
                     reader.readAsText(item._file, "UTF-8");
                     reader.onload = onLoadFile;
                 }
-            }else{
-                vm.fileLoading = true;
+            }else {
+                let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
+                if (vm.documentTypes.indexOf(fileExt) < 0) {
+                    toasty.error({
+                        title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
+                        timeout: 10000
+                    });
+                    item.remove();
+                }
             }
         };
+
+        uploader.onErrorItem = function (fileItem, response, status, headers) {
+           /* toasty.error({
+                title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
+                timeout: 10000
+            });*/
+           console.log(response);
+        };
+
+        uploader.onCompleteItem = function (fileItem, response, status, headers) {
+           $rootScope.$broadcast('closeModal');
+        };
+
         vm.basedOnCalendars = [];
         vm.fileContentCalendars = [];
 
@@ -4326,7 +4354,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ["WORKINGDAYSCALENDAR", "NONWORKINGDAYSCALENDAR"]
+                types: vm.resourceFilters.state === 'calendars' ? ["WORKINGDAYSCALENDAR", "NONWORKINGDAYSCALENDAR"] : ['DOCUMENTATION']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
                 angular.forEach(vm.filterTree1, function (value) {
@@ -4602,15 +4630,34 @@
                 obj.types.push(vm.documentFilters.filter.type);
             }
 
-            obj.compact = true;
             ResourceService.getDocumentations(obj).then(function (result) {
                 vm.allDocumentations = result.documentations;
-                startTraverseNode1(data);
+                startTraverseNodeD(data);
                 vm.loading = false;
             }, function () {
                 vm.loading = false;
             });
         };
+
+        function startTraverseNodeD(data) {
+            function recursive(data) {
+                data.expanded = true;
+                data.folders = orderBy(data.folders, 'name');
+                data.documents = [];
+                angular.forEach(vm.allDocumentations, function (value) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/') + 1)) {
+                        data.documents.push(value);
+                        value.path1 = data.path;
+                    }
+                });
+                data.selected1 = true;
+                angular.forEach(data.folders, function (a) {
+                    recursive(a);
+                });
+            }
+
+            recursive(data);
+        }
 
         vm.loadDocument = function () {
             vm.object.documents = [];
@@ -4621,7 +4668,6 @@
                 if (value.expanded || value.selected1)
                     getExpandTreeForUpdates1(value, objDoc);
             });
-            objDoc.compact = true;
             objDoc.jobschedulerId = vm.schedulerIds.selected;
             if (vm.documentFilters.filter.type != 'ALL') {
                 objDoc.types = [];
@@ -4647,7 +4693,6 @@
                     vm.allDocumentations.push(x[i]);
                 }
             }
-
             vm.folderPathD = node.name || '/';
             vm.folderFullPathD = node.path || '/';
             angular.forEach(node.folders, function (value) {
@@ -4656,8 +4701,26 @@
             });
         }
 
-        vm.showDocumentUsage = function(){
+        vm.showDocumentUsage = function(document) {
+            console.log(document);
+            vm.document = angular.copy(document);
+            ResourceService.documentationUsed({
+                documentation: vm.document.path,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+                vm.document.usedIn = res;
+            });
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/show-usage-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
 
+            }, function () {
+
+            });
         };
 
         vm.exportDocument = function (document) {
@@ -4680,6 +4743,7 @@
         };
 
         vm.importDocument = function () {
+            vm.document ={path : vm.folderFullPathD};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance1 = $uibModal.open({
@@ -4694,40 +4758,23 @@
             }, function () {
 
             });
-
         };
 
-
-    uploader.onErrorItem = function (fileItem, response, status, headers) {
-        console.log(status)
-    };
-
-    uploader.onCompleteItem = function (fileItem, response, status, headers) {
-
-       console.log('status '+status)
-
-    };
-        vm.uploadDocument= function() {
-            uploader.uploadAll();
-           /* let obj = {
-                file : uploader.queue[0].file,
-                folder: vm.folderFullPathD,
-                jobschedulerId : vm.schedulerIds.selected
-            };
-           ResourceService.importDocumentations(obj).then(function (obj) {
-
-            });*/
-        }
+        vm.treeExpandD = function (data) {
+            vm.document.path = data.path;
+            $('#treeModal').modal('hide');
+            $('.fade-modal').css('opacity', '1');
+        };
 
         vm.deleteDocumentations = function (document) {
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.documentIds = [];
+            obj.documentations = [];
             if (document) {
-                obj.documentIds.push(document.path)
+                obj.documentations.push(document.path)
             } else {
                 angular.forEach(vm.object.documents, function (value) {
-                    obj.documentIds.push(value.path)
+                    obj.documentations.push(value.path)
                 });
             }
             vm.document = angular.copy(document);
@@ -4738,7 +4785,7 @@
                     documentation: vm.document.path,
                     jobschedulerId: vm.schedulerIds.selected
                 }).then(function (res) {
-                    vm.document.usedIn = res;
+                    vm.document.usedIn = res.objects;
 
                 });
             } else {
@@ -4748,22 +4795,38 @@
                         documentation: value.path,
                         jobschedulerId: vm.schedulerIds.selected
                     }).then(function (res) {
-                        value.usedIn = res;
+                        value.usedIn = res.objects;
                     });
                 });
 
             }
-            deleteDocumentFn();
+            deleteDocumentFn(obj, document);
         };
 
-
-        function deleteDocument(obj) {
+        function deleteDocument(obj, document) {
             ResourceService.deleteDocumentations(obj).then(function () {
-                vm.object.documents = [];
+                if (document) {
+                    for (let i = 0; i < vm.allDocumentations.length; i++) {
+                        if (vm.allDocumentations[i].path === document.path) {
+                            vm.allDocumentations.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < vm.object.documents.length; i++) {
+                        for (let j = 0; j < vm.allDocumentations.length; j++) {
+                            if (vm.allDocumentations[j].path === vm.object.documents[i].path) {
+                                vm.allDocumentations.splice(j, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
             });
         }
 
         function deleteDocumentFn(obj, document) {
+
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
@@ -4796,7 +4859,7 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteDocument(obj);
+                    deleteDocument(obj, document);
                 }, function () {
 
                 });
@@ -4809,23 +4872,12 @@
                     backdrop: 'static'
                 });
                 modalInstance1.result.then(function () {
-                    deleteDocument(obj);
+                    deleteDocument(obj, document);
                 }, function () {
 
                 });
             }
         }
-
-        vm.documentationsUsed = function (document) {
-            ResourceService.documentationsUsed({
-                jobschedulerId: vm.schedulerIds.selected,
-                documentation: document.path
-            }).then(function (res) {
-
-            }, function () {
-
-            });
-        };
 
         vm.previewDocumentations = function (path) {
            //TODO: GET call
@@ -4848,7 +4900,6 @@
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
 
         vm.assignedDocument = function(data) {
-
             vm.assignObj = {
                 type: vm.resourceFilters.state === 'schedules' ? 'Schedule' : vm.resourceFilters.state === 'calendars' ? 'Calendar' : vm.resourceFilters.state === 'processClass' ? 'Process Class' : 'Lock',
                 path: data.path,
@@ -4862,6 +4913,7 @@
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -4882,6 +4934,14 @@
 
             });
         };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
 
         vm.unassignedDocument = function(data) {
             let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'process_class' : 'lock';
@@ -4996,8 +5056,7 @@
                                 vm.allLocks = [];
                                 navFullTreeForUpdateLock(path.substring(0, path.lastIndexOf('/')));
                             }
-                        }
-                        else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
+                        } else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
                             ResourceService.tree({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 compact: true,
@@ -5226,6 +5285,8 @@
                 getSchedule();
             } else if ($state.current.name == 'app.calendar') {
                 getCalendar();
+            } else if ($state.current.name == 'app.documentation') {
+                getDocument();
             }
         }
 
@@ -5820,6 +5881,127 @@
         vm.hideAuditPanel = function () {
             vm.showPanel = undefined;
         };
+
+        /** -----------------Begin Documentation------------------- */
+        function getDocument() {
+            vm.allDocumentations = [];
+            var obj = {};
+            obj.documentations = [$stateParams.path];
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            ResourceService.getDocumentations(obj).then(function (result) {
+                vm.allDocumentations = result.documentations;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+
+        vm.showDocumentUsage = function(document) {
+            vm.document = angular.copy(document);
+            ResourceService.documentationUsed({
+                documentation: vm.document.path,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+                vm.document.usedIn = res;
+            });
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/show-usage-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
+
+            }, function () {
+
+            });
+        };
+
+        vm.exportDocument = function (document) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected,documentations: []};
+            if(document){
+                obj.documentations.push(document.path);
+            }else{
+                angular.forEach(vm.object.documents, function (value, index) {
+                    obj.documentations.push(value.path);
+                });
+            }
+            ResourceService.exportDocumentations(obj).then(function (res) {
+                let name = 'documentation_' + vm.schedulerIds.selected + '.zip';
+                let blob = new Blob([res], {type: "application/octet-stream"});
+                FileSaver.saveAs(blob, name);
+                vm.object.documents =[];
+            }, function () {
+
+            });
+        };
+
+        vm.deleteDocumentations = function (document) {
+            let obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.documentations = [];
+            obj.documentations.push(document.path)
+            vm.document = angular.copy(document);
+            vm.documentArr = undefined;
+            vm.document.delete = true;
+            ResourceService.documentationUsed({
+                documentation: vm.document.path,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+                vm.document.usedIn = res.objects;
+            });
+
+            deleteDocumentFn(obj, document);
+        };
+
+        function deleteDocument(obj, document) {
+            ResourceService.deleteDocumentations(obj).then(function () {
+                vm.allDocumentations =[];
+            });
+        }
+
+        function deleteDocumentFn(obj, document) {
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.type = 'Documentation';
+                vm.comments.operation = 'Delete';
+                vm.comments.name = document.path;
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    deleteDocument(obj, document);
+                }, function () {
+
+                });
+
+            } else {
+                var modalInstance1 = $uibModal.open({
+                    templateUrl: 'modules/core/template/confirm-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance1.result.then(function () {
+                    deleteDocument(obj, document);
+                }, function () {
+
+                });
+            }
+        }
+
 
         $scope.$on('$destroy', function () {
             $timeout.cancel(t1);
@@ -6430,7 +6612,6 @@
                     clusterStatusData.database = res;
                     getClusterMembersP().then(function (res) {
                         clusterStatusData.members = res;
-
                         if (clusterStatusData.members.masters && clusterStatusData.members.masters.length > 1) {
                             clusterStatusData.members.masters.sort(function (a, b) {
                                 return a.clusterType.precedence - b.clusterType.precedence;
@@ -7397,7 +7578,6 @@
             setDateRange();
             vm.load();
         };
-
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);

@@ -1,0 +1,60 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span>
+                <span translate>label.showUsage</span> : {{document.path}}
+            </span>
+        </h4>
+    </div>
+    <div class="modal-body p-a">
+        <div class="row">
+            <div class=" col-sm-12">
+                <div class="p-l-sm">
+                    <div class="row form-group" ng-if="document.usedIn.orders || document.usedIn.jobs || document.usedIn.schedules">
+                        <div class="col-md-12">
+                            <span class="text _600" translate>label.usedIn</span> :
+                        </div>
+                    </div>
+                    <div class="row form-group" ng-if="document.usedIn.jobs">
+                        <label class="col-md-3" translate="">
+                            label.jobs
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="job in document.usedIn.jobs">
+                                {{$index+1}} - <span style="cursor: pointer" class="text-hover-primary" ng-click="showJob(job)">{{job}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group" ng-if="document.usedIn.orders">
+                        <label class="col-md-3" translate="">
+                            label.orders
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="order in document.usedIn.orders">
+                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showOrderLink1(order)">{{order}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group" ng-if="document.usedIn.schedules">
+                        <label class="col-md-3" translate="">
+                            label.schedules
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="schedule in document.usedIn.schedules">
+                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showScheduleLink(schedule)">{{schedule}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text" ng-if="!document.usedIn.orders && !document.usedIn.jobs && !document.usedIn.schedules" translate>message.documentNotUsed</div>
+            </div>
+        </div>
+        <div class="row m-t-md">
+            <div class="b-t"></div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.close</button>
+        </div>
+    </div>
+</div>

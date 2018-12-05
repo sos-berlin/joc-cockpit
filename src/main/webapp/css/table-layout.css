@@ -75,6 +75,7 @@ General CSS
 }
 #orderTableId .inner-table, #jobChain .inner-table, #yade .inner-table{
   table-layout: fixed;
+  word-wrap: break-word;
 }
 #orderTableId .inner-table th.type {
   width: 100px;

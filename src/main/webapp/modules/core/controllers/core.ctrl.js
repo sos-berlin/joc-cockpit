@@ -11,6 +11,7 @@
         .controller('ConfigurationCtrl', ConfigurationCtrl)
         .controller('DialogCtrl', DialogCtrl)
         .controller('DialogCtrl1', DialogCtrl1)
+        .controller('TreeDialogCtrl', TreeDialogCtrl)
         .controller('FrequencyCtrl', FrequencyCtrl)
         .controller('PeriodEditorCtrl', PeriodEditorCtrl)
         .controller('ScheduleEditorCtrl', ScheduleEditorCtrl)
@@ -413,27 +414,32 @@
             });
         };
 
-        vm.showDocumentations = function (objType, objPath) {
+/*        vm.showDocumentation = function (documentation) {
+            console.log(documentation)
+            let link = '/documentation/'+vm.schedulerIds.selected+ '/'+ SOSAuth.accessTokenId + '/' + encodeURIComponent(documentation);
+            $window.open(link, '_blank');
+        };*/
+        vm.showDocumentation = function (objType, objPath) {
             let link = '';
-
             if (objType === 'jobChain' && objPath) {
-                link = host + 'job_chain/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'job_chain/documentation?path=' + encodeURIComponent(objPath);
             } else if (objType === 'job' && objPath) {
-                link = host + 'job/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'job/documentation?job=' + encodeURIComponent(objPath);
             } else if (objType === 'order' && objPath) {
-                link = host + 'order/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'order/documentation?path=' + encodeURIComponent(objPath);
             } else if (objType === 'lock' && objPath) {
-                link = host + 'lock/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'lock/documentation?path=' + encodeURIComponent(objPath);
             } else if (objType === 'processClass' && objPath) {
-                link = host + 'process_class/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'process_class/documentation?path=' + encodeURIComponent(objPath);
             } else if (objType === 'schedule' && objPath) {
-                link = host + 'schedule/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'schedule/documentation?path=' + encodeURIComponent(objPath);
             } else if (objType === 'calendar' && objPath) {
-                link = host + 'calendar/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'calendar/documentation?path=' + encodeURIComponent(objPath);
             }
             if (link != '') {
                 link = link + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
             }
+             $window.open(link, '_blank');
         };
 
         if (!$window.localStorage.log_window_wt) {
@@ -2090,51 +2096,56 @@
             let main =[];
             let obj = {entryName: '', entryValue: [], entryComment: []};
             let arr = vm.mainText.split('\n');
+            let flag = false;
             for (let i = 0; i < arr.length; i++) {
 
                 if (arr[i]) {
                     arr[i] = arr[i].trim();
                     if (arr[i].substring(0, 1) === '#') {
+                        flag = false;
                         obj.entryComment.push(arr[i].substring(1));
                     } else if (arr[i].lastIndexOf('\\') === arr[i].length - 1) {
-
                         let index = arr[i].indexOf('=');
                         if (index > 0) {
+                            flag = true;
                             obj.entryName = arr[i].substring(0, index);
                             let x = arr[i].substring(index + 1).trim();
                             let val = x.replace('\\', '');
-                            if(val && val != '') {
+                            if (val && val != '') {
                                 obj.entryValue.push(val);
                             }
                         } else {
-                            let val = arr[i].substring(0, arr[i].lastIndexOf(','));
-                            obj.entryValue.push(val);
-                        }
-
-                        if (arr[i + 1] && arr[i+1].lastIndexOf('\\') !== arr[i+1].length - 1 ) {
-                            obj.entryValue.push(arr[i+1]);
-                            main.push(obj);
-                            obj = {entryValue: [], entryComment: []};
+                            if (flag) {
+                                let val = arr[i].substring(0, arr[i].lastIndexOf(','));
+                                obj.entryValue.push(val);
+                            }
                         }
 
                     } else {
-                        let index = arr[i].indexOf('=');
-                        if (index > 0) {
-                            obj.entryName = arr[i].substring(0, index);
-                            let x = arr[i].substring(index + 1).trim();
-                            let split = [];
-                            if (x.substring(0, 1) === '\\') {
-                                split = x.split(',');
-                            }
-                            if (split.length > 0) {
-                                for (let j = 0; j < split.length; j++) {
-                                    obj.entryValue.push(split[j].replace('\\', ''));
-                                }
-                            } else {
-                                obj.entryValue.push(x.replace('\\', ''));
-                            }
+                        if (flag) {
+                            obj.entryValue.push(arr[i]);
                             main.push(obj);
                             obj = {entryValue: [], entryComment: []};
+                            flag = false;
+                        } else {
+                            let index = arr[i].indexOf('=');
+                            if (index > 0) {
+                                obj.entryName = arr[i].substring(0, index);
+                                let x = arr[i].substring(index + 1).trim();
+                                let split = [];
+                                if (x.substring(0, 1) === '\\') {
+                                    split = x.split(',');
+                                }
+                                if (split.length > 0) {
+                                    for (let j = 0; j < split.length; j++) {
+                                        obj.entryValue.push(split[j].replace('\\', ''));
+                                    }
+                                } else {
+                                    obj.entryValue.push(x.replace('\\', ''));
+                                }
+                                main.push(obj);
+                                obj = {entryValue: [], entryComment: []};
+                            }
                         }
                     }
                 }
@@ -2254,6 +2265,10 @@
             $uibModalInstance.dismiss('cancel');
         };
 
+        vm.$on('closeModal', function () {
+            $uibModalInstance.dismiss('cancel');
+        });
+
         vm.addCriteria = function () {
             var param = {
                 name: '',
@@ -2280,6 +2295,71 @@
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+    }
+
+    TreeDialogCtrl.$inject = ['$scope','$rootScope','ResourceService','orderByFilter'];
+    function TreeDialogCtrl($scope, $rootScope, ResourceService, orderBy) {
+        var vm = $scope;
+        vm.filterTree1 =[];
+        vm.object ={};
+        vm.filter_tree_control ={};
+        vm.expanding_property = {
+            field: "name"
+        };
+
+        function init() {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ["DOCUMENTATION"]
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
+                });
+
+            }, function () {
+
+            });
+        }
+
+        vm.$on('initTree', function () {
+             vm.object.documents = [];
+              $('#assignDocTreeModal').modal('show');
+            init();
+        });
+
+        vm.treeExpand = function (data) {
+            if(data.document) {
+                $rootScope.$broadcast('closeDocumentTree', data.document);
+                $('#assignDocTreeModal').modal('hide');
+                return;
+            }
+            data.expanded = !data.expanded;
+            if (data.expanded) {
+                data.documents = [];
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.compact = true;
+                obj.types = ['html','xml','markdown'];
+                obj.folders = [{folder: data.path, recursive: false}];
+                ResourceService.getDocumentations(obj).then(function (res) {
+                    data.documents = res.documentations
+                });
+            } else {
+                data.calendars = [];
+            }
+        };
+
+        vm.treeHandler = function(data){
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
     }
 
     FrequencyCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', '$filter', 'CalendarService'];

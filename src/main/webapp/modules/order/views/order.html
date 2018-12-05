@@ -389,7 +389,7 @@
                                                            translate>button.assignedDocumentation</a>
                                                         <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.documentation"
                                                            translate>button.unassignedDocumentation</a>
-                                                        <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                                        <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)"
                                                              translate>button.showDocumentation</a>
                                                         <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                                     </div>
@@ -567,7 +567,7 @@
                                                        translate>button.assignedDocumentation</a>
                                                     <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.documentation"
                                                        translate>button.unassignedDocumentation</a>
-                                                    <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocument('order', order.path)"
+                                                    <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)"
                                                        translate>button.showDocumentation</a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>

@@ -24,7 +24,8 @@
                             </span>
                         </td>
                     </tr>
-                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)">
+                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) ||
+                    (row.branch.calendars && row.branch.calendars.length>0) || (row.branch.documents && row.branch.documents.length>0)">
 
                         <td></td>
                         <td>
@@ -63,6 +64,12 @@
                                     </label>
                                     <i class="fa fa-calendar text-sm" style="margin-top: -2px"></i>
                                     <span>{{calendar.name}}</span>  <span ng-if="calendar.title" class="text-sm text-muted">&nbsp;-&nbsp;{{calendar.title}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="document in row.branch.documents | orderBy: 'name'">
+                                <span class="cursor" ng-click="on_user_click({document:document.path})">
+                                    <i class="fa fa-file text-sm" style="margin-top: -2px"></i>
+                                    <span>{{document.name}}</span>  <span ng-if="document.title" class="text-sm text-muted">&nbsp;-&nbsp;{{document.title}}</span>
                                  </span>
                             </div>
                         </td>

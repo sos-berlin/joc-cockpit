@@ -1330,10 +1330,11 @@
         };
 
         vm.viewOrders = function (jobChain, state) {
-            if (state)
+            if (state) {
                 vm.orderFilters.filter.state = state;
-            else
+            }else {
                 vm.orderFilters.filter.state = 'ALL';
+            }
             $location.path('/job_chain_detail/orders').search(object);
         };
 
@@ -1343,8 +1344,7 @@
             $("#zoomCn").css("transform-origin", "0 0");
             if (vm.slider.value < 90) {
                 $('.rect').css('border-width', '2px');
-            }
-            else {
+            } else {
                 $('.rect').css('border-width', '1px');
             }
         });
@@ -1384,9 +1384,9 @@
         }
 
         vm.exportDiagram = function (type) {
-	   if (vm.isIE()) {
-            return;
-          }
+            if (vm.isIE()) {
+                return;
+            }
             vm.loading = true;
             var bound = getBoundingNodes();
             var oHeight = $('#exportId').height();
@@ -1414,68 +1414,69 @@
                 vm.fitToScreen = false;
                 setHeight();
             }
+            try {
+                html2canvas($('#exportId'), {
+                    useCORS: true,
+                    width: (bound.maxLeft + 100),
+                    height: (bound.maxTop + 600),
+                    background: getBackground(),
 
+                    onrendered: function (canvas) {
+                        var data = canvas.toDataURL('image/png');
 
-            html2canvas($('#exportId'), {
-                useCORS: true,
+                        if (type == 'pdf') {
+                            if (vm.jobChain.title) {
+                                var text = "Job Chain -" + vm.jobChain.path + " - " + vm.jobChain.title;
+                            } else {
+                                var text = "Job Chain -" + vm.jobChain.path;
+                            }
 
-                width: (bound.maxLeft + 100),
-                height: (bound.maxTop + 600),
-                background: getBackground(),
+                            var docDefinition = {
+                                content: [{
+                                    image: data,
+                                    fit: [bound.maxTop + 100, bound.maxTop + 100]
+                                }, {
+                                    text: text
+                                }],
+                                pageOrientation: 'landscape'
+                            };
+                            if ((bound.maxLeft + 100) > 750) {
+                                docDefinition.pageSize = {width: (bound.maxLeft + 120), height: 1200};
+                            }
+                            pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
 
-                onrendered: function (canvas) {
-                    var data = canvas.toDataURL('image/png');
-
-                    if (type == 'pdf') {
-                        if (vm.jobChain.title) {
-                            var text = "Job Chain -" + vm.jobChain.path + " - " + vm.jobChain.title;
                         } else {
-                            var text = "Job Chain -" + vm.jobChain.path;
+                            setCanvasBackground(canvas);
+                            canvas.toBlob(function (blob) {
+                                FileSaver.saveAs(blob, vm.jobChain.name + '.png');
+                            }, 'image/png', 1.0)
                         }
-
-                        var docDefinition = {
-                            content: [{
-                                image: data,
-                                fit: [bound.maxTop + 100, bound.maxTop + 100]
-                            }, {
-                                text: text
-                            }],
-                            pageOrientation: 'landscape'
-                        };
-                        if ((bound.maxLeft + 100) > 750) {
-                            docDefinition.pageSize = {width: (bound.maxLeft + 120), height: 1200};
+                        if (els && els.length > 0) {
+                            $.each(els, function (i, e) {
+                                $(this).show();
+                            })
                         }
-                        pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
-
-                    } else {
-                        setCanvasBackground(canvas);
-                        canvas.toBlob(function (blob) {
-                            FileSaver.saveAs(blob, vm.jobChain.name + '.png');
-                        }, 'image/png', 1.0)
+                        $('#exportId').height(oHeight);
+                        $('#exportId').width(oWidth);
+                        $(".block-ellipsis").css("overflow", "hidden");
+                        if (vm.slider && vm.slider.value != 100) {
+                            $("#zoomCn").css("zoom", vm.slider.value / 100);
+                            $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
+                            $("#zoomCn").css("transform-origin", "0 0");
+                        }
+                        if (type == 'png') {
+                            $('#exportId').css("padding-left", 0);
+                        }
+                        if (fitToScreen) {
+                            vm.fitToScreen = true;
+                            setHeight();
+                        }
+                        vm.loading = false;
                     }
-                    if (els && els.length > 0) {
-                        $.each(els, function (i, e) {
-                            $(this).show();
-                        })
-                    }
-                    $('#exportId').height(oHeight);
-                    $('#exportId').width(oWidth);
-                    $(".block-ellipsis").css("overflow", "hidden");
-                    if (vm.slider && vm.slider.value != 100) {
-                        $("#zoomCn").css("zoom", vm.slider.value / 100);
-                        $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
-                        $("#zoomCn").css("transform-origin", "0 0");
-                    }
-                    if (type == 'png') {
-                        $('#exportId').css("padding-left", 0);
-                    }
-                    if (fitToScreen) {
-                        vm.fitToScreen = true;
-                        setHeight();
-                    }
-                    vm.loading = false;
-                }
-            });
+                });
+            } catch (e) {
+                console.log(e);
+            }
         };
 
         vm.isLoading = true;
@@ -1529,12 +1530,10 @@
             } else {
                 vm.allCheck1.checkbox = false;
             }
-
             vm.selectedNodes = angular.copy(vm.object1.nodes);
         });
 
         vm.checkAllJobChains = function () {
-
             if (vm.allCheck1.checkbox && vm.jobChain) {
                 vm.object1.nodes = vm.jobChain.nodes;
             } else {
@@ -6345,6 +6344,7 @@
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -6365,6 +6365,14 @@
 
             });
         };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
 
         vm.unassignedDocument = function(order) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: order.jobChain, orderId: order.orderId};
@@ -6420,14 +6428,15 @@
                 });
                 modalInstance.result.then(function () {
                     orders.auditLog = {};
-                    if (vm.comments.comment)
+                    if (vm.comments.comment) {
                         orders.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
+                    }
+                    if (vm.comments.timeSpent) {
                         orders.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
+                    }
+                    if (vm.comments.ticketLink) {
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
-
+                    }
                     OrderService.suspendOrder(orders);
                     vm.reset();
                 }, function () {
@@ -6790,22 +6799,18 @@
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
                     return;
@@ -7032,7 +7037,7 @@
                 });
             }
             $('#jobChain').find('thead th.menu').each(function () {
-                console.log($(this).outerWidth() + ' >> '+$(this).width())
+               
                  $('#jobChain td.menu').css('width', $(this).outerWidth() + 'px');
             });
             $('#jobChain').find('thead th.dynamic-thead').each(function (index) {

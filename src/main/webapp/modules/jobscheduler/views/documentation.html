@@ -20,30 +20,10 @@
                         <thead>
                         <tr>
                             <th class="menu"><span translate>label.action</span></th>
-                            <th ng-click="sortByC('name')"><a><span translate>label.documentName</span>
-                                <i ng-show="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortByC('path')"><a><span translate>label.path</span>
-                                <i ng-show="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortByC('type')"><a><span translate>label.type</span>
-                                <i ng-show="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th ng-click="sortByC('modified')"><a><span translate>label.modified</span>
-                                <i ng-show="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i ng-show="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
+                            <th translate>label.documentName</th>
+                            <th translate>label.path</th>
+                            <th translate>label.type</th>
+                            <th translate>label.lastUpdateTime</th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="document in allDocumentations | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
@@ -54,11 +34,10 @@
                                         <i class="fa fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                        <a class="dropdown-item" ng-if="permission.Documentation.export"
-                                           ng-click="exportDocument(document)" translate>button.exportDocument</a>
-                                        <a class="dropdown-item text-hover-color" ng-if="permission.Documentation.delete"
-                                           ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
-                                        <a class="dropdown-item" ng-click="showUsage(document)" translate>button.showUsage</a>
+                                        <a class="dropdown-item" ng-click="previewDocument(document)" translate>button.previewDocument</a>
+                                         <a class="dropdown-item" ng-if="permission.Documentation.export" ng-click="exportDocument(document)" translate>button.exportDocument</a>
+                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Documentation.delete" ng-click="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                                         <a class="dropdown-item" ng-click="showDocumentUsage(document)" translate>button.showUsage</a>
                                     </div>
                                 </div>
                             </td>
@@ -70,8 +49,8 @@
                          </span>
                             </td>
                             <td ng-bind="document.path"></td>
-                            <td><span ng-bind="document.type | translate"></span></td>
-                            <td ng-bind="document.usedBy"></td>
+                            <td><span ng-bind="document.type"></span></td>
+                            <td ng-bind="document.modified | stringToDate"></td>
                         </tr>
                         </tbody>
                     </table>

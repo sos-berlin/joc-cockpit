@@ -1786,6 +1786,7 @@
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -1806,6 +1807,14 @@
 
             });
         };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
 
         vm.unassignedDocumentJobChain = function(jobChain) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
@@ -5525,6 +5534,7 @@
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -5545,6 +5555,14 @@
 
             });
         };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
 
         vm.unassignedDocument = function(job) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
@@ -7241,6 +7259,7 @@
                 templateUrl: 'modules/core/template/assign-document-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -7261,6 +7280,14 @@
 
             });
         };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
 
         vm.unassignedDocument = function(job) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
