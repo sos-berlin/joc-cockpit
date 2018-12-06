@@ -797,6 +797,7 @@
         vm.sortByE = function (propertyName) {
             vm.eventFilters.reverse = !vm.eventFilters.reverse;
             vm.eventFilters.filter.sortBy = propertyName;
+            vm.object = {};
         };
         vm.object.events = [];
         vm.checkAllEvent = {
@@ -804,7 +805,8 @@
         };
         vm.checkAllEventFnc = function () {
             if (vm.checkAllEvent.checkbox && vm.customEvents.length > 0) {
-                vm.object.events = vm.customEvents.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage));
+                var _events = $filter('orderBy')(vm.customEvents, vm.eventFilters.filter.sortBy, vm.eventFilters.reverse);
+                vm.object.events = _events.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage));
             } else {
                 vm.object.events = [];
             }
@@ -1163,8 +1165,6 @@
                 });
             }
         };
-        vm.searchObj = {};
-        vm.searchObj.filterString = '';
 
         vm.treeHandler = function (data) {
             if (!data.expanded && !data.level) {
@@ -1269,16 +1269,14 @@
                 if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.orders = vm.orders;
                     vm.eventSearch.jobChains = vm.jobChains;
-                }
-                else if (vm.eventFilter && !vm.showSearchEventPanel) {
+                } else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.orders = vm.orders;
                     vm.eventFilter.jobChains = vm.jobChains;
                 }
             } else {
                 if (vm.eventSearch && vm.showSearchEventPanel) {
                     vm.eventSearch.jobs = vm.jobs;
-                }
-                else if (vm.eventFilter && !vm.showSearchEventPanel) {
+                } else if (vm.eventFilter && !vm.showSearchEventPanel) {
                     vm.eventFilter.jobs = vm.jobs;
                 }
             }
@@ -1861,8 +1859,7 @@
                         vm.selectedFiltered.account = filter.account;
                         getEvents();
                     });
-                }
-                else {
+                } else {
                     vm.savedEventFilter.selected = filter;
                     vm.eventFilters.selectedView = false;
                     vm.selectedFiltered = filter;
@@ -1870,7 +1867,7 @@
                 }
 
                 SavedFilter.setEvent(vm.savedEventFilter);
-            }else{
+            } else {
                 vm.agentJobSearch = {};
                 vm.showSearchPanel = false;
 
@@ -1885,8 +1882,7 @@
                         vm.selectedFilteredAgent.account = filter.account;
                         getAgentTasks();
                     });
-                }
-                else {
+                } else {
                     isCustomizationSelected(false);
                     vm.savedAgentFilter.selected = filter;
                     vm.agentJobExecutionFilters.selectedView = false;
@@ -3378,7 +3374,7 @@
 
         var watcher3 = $scope.$watch('userPreferences.entryPerPage', function (newNames) {
             if (newNames)
-                vm.object.schedules = [];
+                vm.object = {};
         });
 
         vm.checkAll = function () {
@@ -3597,6 +3593,7 @@
         vm.sortByC = function (propertyName) {
             vm.calendarFilters.reverse = !vm.calendarFilters.reverse;
             vm.calendarFilters.filter.sortBy = propertyName;
+            vm.object = {};
         };
         vm.allCheckCalendar = {
             checkbox: false
@@ -4013,7 +4010,7 @@
             });
         };
         var uploader = $scope.uploader = new FileUploader({
-             url: 'joc/api/documentations/import',
+             url: './api/documentations/import',
             alias: 'file'
         });
 
@@ -4073,7 +4070,13 @@
         };
 
         uploader.onCompleteItem = function (fileItem, response, status, headers) {
-           $rootScope.$broadcast('closeModal');
+            if (status == '200') {
+                if(uploader.queue && uploader.queue.length>0) {
+                    uploader.queue[0].remove();
+                }
+                $rootScope.$broadcast('closeModal');
+                initDocumentTree();
+            }
         };
 
         vm.basedOnCalendars = [];
@@ -4467,6 +4470,7 @@
         vm.sortByD = function (propertyName) {
             vm.documentFilters.reverse = !vm.documentFilters.reverse;
             vm.documentFilters.filter.sortBy = propertyName;
+            vm.object = {};
         };
         vm.allCheckDocument = {
             checkbox: false
@@ -4728,7 +4732,7 @@
             if(document){
                 obj.documentations.push(document.path);
             }else{
-                angular.forEach(vm.object.documents, function (value, index) {
+                angular.forEach(vm.object.documents, function (value) {
                     obj.documentations.push(value.path);
                 });
             }
@@ -4926,9 +4930,9 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                console.log(obj);
-                ResourceService.assign(type, obj).then(function(res){
-                    console.log(res);
+
+                ResourceService.assign(type, obj).then(function (res) {
+                    data.documentation = vm.assignObj.documentation;
                 });
             }, function () {
 
@@ -4950,7 +4954,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = jobChain.path;
+                vm.comments.name = data.path;
                 vm.comments.operation = 'Unassign Documentation';
                 vm.comments.type = vm.resourceFilters.state === 'schedules' ? 'Schedule' : vm.resourceFilters.state === 'calendars' ? 'Calendar' : vm.resourceFilters.state === 'processClass' ? 'Process Class' : 'Lock';
 
@@ -4969,12 +4973,16 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    ResourceService.unassign(type,obj);
+                    ResourceService.unassign(type, obj).then(function () {
+                        data.documentation = undefined;
+                    });
                 }, function () {
 
                 });
             } else {
-                ResourceService.unassign(type,obj);
+                ResourceService.unassign(type, obj).then(function () {
+                    data.documentation = undefined;
+                });
             }
         };
 
@@ -5922,7 +5930,7 @@
             if(document){
                 obj.documentations.push(document.path);
             }else{
-                angular.forEach(vm.object.documents, function (value, index) {
+                angular.forEach(vm.object.documents, function (value) {
                     obj.documentations.push(value.path);
                 });
             }
@@ -5940,7 +5948,7 @@
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.documentations = [];
-            obj.documentations.push(document.path)
+            obj.documentations.push(document.path);
             vm.document = angular.copy(document);
             vm.documentArr = undefined;
             vm.document.delete = true;
@@ -8754,15 +8762,15 @@
                     obj.dateFrom = vm.dailyPlanFilters.filter.from;
                     obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                    if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                    if (vm.dailyPlanFilters.filter.status !== 'ALL') {
                         obj.states = [];
-                        if (vm.dailyPlanFilters.filter.status == 'WAITING') {
+                        if (vm.dailyPlanFilters.filter.status === 'WAITING') {
                             obj.states.push("PLANNED");
                         } else {
                             obj.states.push(vm.dailyPlanFilters.filter.status);
                         }
                     }
-                    if (vm.dailyPlanFilters.filter.state == 'LATE') {
+                    if (vm.dailyPlanFilters.filter.state === 'LATE') {
                         obj.late = true;
                     }
                 }

@@ -69,10 +69,10 @@
         </div>
         <div class="box p-a" ng-show="pageView=='list' && allProcessClasses.length>0">
             <div class="table-responsive" >
-                <table class="table table-hover table-bordered  ">
+                <table class="table table-hover table-bordered" id="processClassId">
                     <thead>
                     <tr>
-                        <th class="noExl" width="45"><span translate>label.action</span></th>
+                        <th class="menu"><span translate>label.action</span></th>
                         <th ng-click="sortByP('name')"><a><span translate>label.processClass</span>
                             <i ng-show="processFilters.filter.sortBy == 'name' && !processFilters.reverse"
                                class="fa fa-caret-up "></i>
@@ -140,10 +140,10 @@
                     <tr ng-if="processClass.show">
                         <td></td>
                             <td colspan="4" style="padding: 0 !important;">
-                                <table class="table m-a-0" ng-if="processClass.processes.length >0">
+                                <table class="table m-a-0 inner-table" ng-if="processClass.processes.length >0">
                                     <thead>
                                     <tr>
-                                        <th width="45" translate>label.action</th>
+                                        <th class="menu" translate>label.action</th>
                                         <th translate>label.agent</th>
                                         <th translate>label.job</th>
                                         <th translate>label.pid</th>

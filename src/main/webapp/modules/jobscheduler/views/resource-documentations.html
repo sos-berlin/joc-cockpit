@@ -24,7 +24,7 @@
 <div id="rightPanel1">
 
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
-        <div class="hide row" ng-class="{'show': pageView!='list'}">
+        <div class="row" ng-if="pageView!='list'">
             <div ng-repeat="(key, value) in allDocumentations  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </div>
-        <div class="box p-a" ng-show="pageView=='list' && allDocumentations.length>0">
+        <div class="box p-a" ng-if="pageView=='list' && allDocumentations.length>0">
             <div class="table-responsive" id="documentDivId">
                 <table class="table table-hover table-bordered" id="documentTableId">
                     <thead>
@@ -182,18 +182,16 @@
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
 
-<div ng-if="isLoading && treeDocument.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noDocumentationFound</div>
+<div class="text-center m-t h6 text-uppercase hide" ng-class="{'show' :isLoading && treeDocument.length==0 && !loading}" translate>message.noDocumentationFound</div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
                 <div ng-show="filterTree1 && filterTree1.length>0">
-                    <a class="text" ng-click="filter_tree.expand_all();"
-                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
                     </a>
-                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
-                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
                     <tree

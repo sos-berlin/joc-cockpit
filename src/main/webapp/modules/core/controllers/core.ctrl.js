@@ -420,26 +420,27 @@
             $window.open(link, '_blank');
         };*/
         vm.showDocumentation = function (objType, objPath) {
-            let link = '';
+            let link = './api/';
             if (objType === 'jobChain' && objPath) {
-                link = link + 'job_chain/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'job_chain/documentation?jobChain=' + encodeURIComponent(objPath);
             } else if (objType === 'job' && objPath) {
                 link = link + 'job/documentation?job=' + encodeURIComponent(objPath);
             } else if (objType === 'order' && objPath) {
-                link = link + 'order/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'order/documentation?order=' + encodeURIComponent(objPath);
             } else if (objType === 'lock' && objPath) {
-                link = link + 'lock/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'lock/documentation?lock=' + encodeURIComponent(objPath);
             } else if (objType === 'processClass' && objPath) {
-                link = link + 'process_class/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'process_class/documentation?processClass=' + encodeURIComponent(objPath);
             } else if (objType === 'schedule' && objPath) {
-                link = link + 'schedule/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'schedule/documentation?schedule=' + encodeURIComponent(objPath);
             } else if (objType === 'calendar' && objPath) {
-                link = link + 'calendar/documentation?path=' + encodeURIComponent(objPath);
+                link = link + 'calendar/documentation?calendar=' + encodeURIComponent(objPath);
             }
             if (link != '') {
                 link = link + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+                $window.open(link, '_blank');
             }
-             $window.open(link, '_blank');
+
         };
 
         if (!$window.localStorage.log_window_wt) {
@@ -2159,16 +2160,14 @@
                     angular.forEach(entry.entryComment, function (comment) {
                         comments.push({value: comment});
                     });
-                }
-                else {
+                } else {
                     comments.push({value: ''});
                 }
                 if (entry.entryValue && entry.entryValue.length > 0) {
                     angular.forEach(entry.entryValue, function (value) {
                         values.push({value: value});
                     });
-                }
-                else {
+                } else {
                     values.push({value: ''});
                 }
 
@@ -2180,6 +2179,7 @@
             });
             vm.mainSection = mainSection;
         };
+
         vm.addMainEntry = function () {
             var param = {
                 name:'',
@@ -2209,11 +2209,10 @@
         };
 
         vm.removeEntryCommentField = function (parentIindex, index) {
-
-            if(vm.mainSection[parentIindex].comments.length==1){
+            if (vm.mainSection[parentIindex].comments.length == 1) {
                 vm.mainSection[parentIindex].comments[0].value = '';
-            }else
-            vm.mainSection[parentIindex].comments.splice(index, 1);
+            } else
+                vm.mainSection[parentIindex].comments.splice(index, 1);
         };
         vm.ok = function (form) {
             if (vm.user) {
@@ -6757,17 +6756,17 @@
         },100);
 
         vm.addRestrictionInCalendar = function (data) {
-                $rootScope.$broadcast('restriction-frequency-editor', data);
-                $('#restriction-editor').modal('show');
-                $('.fade-modal').css('opacity', '0.85');
+            $rootScope.$broadcast('restriction-frequency-editor', data);
+            $('#restriction-editor').modal('show');
+            $('.fade-modal').css('opacity', '0.85');
         };
         vm.editRestrictionInCalendar = function (data, frequency) {
-                $rootScope.$broadcast('restriction-frequency-editor', {
-                    calendar: data.calendar,
-                    updateFrequency: frequency
-                });
-                $('#restriction-editor').modal('show');
-                $('.fade-modal').css('opacity', '0.85');
+            $rootScope.$broadcast('restriction-frequency-editor', {
+                calendar: data.calendar,
+                updateFrequency: frequency
+            });
+            $('#restriction-editor').modal('show');
+            $('.fade-modal').css('opacity', '0.85');
         };
         vm.deleteRestrictionInCalendar = function (data, frequency) {
             for (let i = 0; i < data.calendar.frequencyList.length; i++) {
@@ -13483,14 +13482,18 @@
                 compact: true,
                 types: vm.filter.type == 'WORKING_DAYS' ? ['WORKINGDAYSCALENDAR'] : ['NONWORKINGDAYSCALENDAR']
             }).then(function (res) {
-                vm.filterTree1 = angular.copy(res.folders);
+                vm.filterTree1 = res.folders;
+                angular.forEach(vm.filterTree1, function (value) {
+                    value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
+                });
             }, function () {
             });
         }
 
         $scope.$on('calendar-editor', function (event, calendar) {
-
-
             vm.filter = {};
             vm.object.calendars = [];
             vm.filter.type = 'WORKING_DAYS';

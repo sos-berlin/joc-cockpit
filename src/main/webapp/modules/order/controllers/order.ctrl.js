@@ -1929,7 +1929,7 @@
         }
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -1974,12 +1974,9 @@
                 } else {
                     OrderService.startOrder(orders);
                 }
-            }
-            else if (action == 'view log') {
+            } else if (action == 'view log') {
                 vm.showLogWindow(order);
-            }
-
-            else if (action == 'start order at') {
+            } else if (action == 'start order at') {
 
                 orders.orders = [];
 
@@ -2018,9 +2015,7 @@
                         vm._jobChain.nodes.push(value);
                     });
                 });
-            }
-
-            else if (action == 'set order state') {
+            } else if (action == 'set order state') {
                 vm.order = angular.copy(order);
 
                 JobChainService.getJobChainP({
@@ -2049,9 +2044,7 @@
                 }, function () {
 
                 });
-            }
-
-            else if (action == 'set run time') {
+            } else if (action == 'set run time') {
                 vm.order = order;
                 OrderService.getRunTime({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -2077,9 +2070,7 @@
 
                     });
                 });
-            }
-
-            else if (action == 'suspend order') {
+            } else if (action == 'suspend order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2111,9 +2102,7 @@
                 } else {
                     OrderService.suspendOrder(orders);
                 }
-            }
-
-            else if (action == 'resume order') {
+            } else if (action == 'resume order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2145,9 +2134,7 @@
                 } else {
                     OrderService.resumeOrder(orders);
                 }
-            }
-
-            else if (action == 'resume order with param') {
+            } else if (action == 'resume order with param') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2182,9 +2169,7 @@
                         vm._jobChain.nodes.push(value);
                     });
                 });
-            }
-
-            else if (action == 'resume order next state') {
+            } else if (action == 'resume order next state') {
                 vm.order = angular.copy(order);
 
                 JobChainService.getJobChainP({
@@ -2210,9 +2195,7 @@
                 }, function () {
 
                 });
-            }
-
-            else if (action == 'reset order') {
+            } else if (action == 'reset order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2244,9 +2227,7 @@
                 } else {
                     OrderService.resetOrder(orders);
                 }
-            }
-
-            else if (action == 'remove order') {
+            } else if (action == 'remove order') {
 
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
@@ -2278,9 +2259,7 @@
                 } else {
                     OrderService.removeOrder(orders);
                 }
-            }
-
-            else if (action == 'view calendar') {
+            } else if (action == 'view calendar') {
 
                 vm.maxPlannedTime = undefined;
                 vm.isCaledarLoading = true;
@@ -2301,8 +2280,7 @@
                     vm.isCaledarLoading = false;
                 });
                 openCalendar();
-            }
-            else if (action == 'show assigned calendar') {
+            } else if (action == 'show assigned calendar') {
 
                 orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.jobChain = order.jobChain;
@@ -2323,11 +2301,7 @@
                 }, function () {
 
                 });
-            }
-
-
-            else if (action == 'delete order') {
-
+            } else if (action == 'delete order') {
                 orders.orders = [];
                 orders.jobschedulerId = vm.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
@@ -2428,27 +2402,24 @@
                 vm.showDocumentations('order', order.path);
             }
         };
+
         vm.getPlan = function (calendarView, viewDate) {
             var date = '';
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
                     return;
@@ -2470,11 +2441,9 @@
             }, function (err) {
                 vm.isCaledarLoading = false;
             });
-
         };
 
         function populatePlanItems(res) {
-
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
@@ -2688,22 +2657,18 @@
             if (calendarView == 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView == 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else if (viewDate.getFullYear() >= new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
                     return;
@@ -3301,8 +3266,7 @@
 
         if (vm.orderFilters.selectedView) {
             vm.savedOrderFilter.selected = vm.savedOrderFilter.selected || vm.savedOrderFilter.favorite;
-        }
-        else {
+        } else {
             vm.savedOrderFilter.selected = undefined;
         }
 
@@ -5116,22 +5080,23 @@
                             obj.limit = vm.userPreferences.maxHistoryPerTask;
                             if (vm.showLogPanel.processingState._text === 'RUNNING' || vm.showLogPanel.processingState._text === 'SUSPENDED' || vm.showLogPanel.processingState._text === 'SETBACK') {
                                 obj.historyIds = [];
-                                obj.historyIds.push({historyId: vm.showLogPanel.historyId, state: vm.showLogPanel.state});
+                                obj.historyIds.push({
+                                    historyId: vm.showLogPanel.historyId,
+                                    state: vm.showLogPanel.state
+                                });
                             } else {
                                 obj.orders = [{jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId}];
                             }
                             TaskService.histories(obj).then(function (res) {
                                 vm.showLogPanel.taskHistory = res.history;
                             })
-                        }
-                        else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path && vm.isAuditLog) {
+                        } else if (vm.showLogPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "ORDER" && vm.events[0].eventSnapshots[m].path === vm.showLogPanel.path && vm.isAuditLog) {
                             let obj = {};
                             obj.jobschedulerId = vm.schedulerIds.selected;
                             obj.orders = [];
                             obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
                             loadAuditLogs(obj);
-                        }
-                        else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
+                        } else if ((vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "ORDER") {
                             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                                 var folders = [];
                                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -5971,8 +5936,7 @@
             if (newNames && newNames.length > 0) {
                 if (vm.filtered) {
                     vm.allCheck.checkbox = newNames.length === vm.filtered.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
-                }
-                else {
+                } else {
                     if (vm.allOrders && vm.allOrders.length > 0)
                         vm.allCheck.checkbox = newNames.length === vm.allOrders.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage)).length;
                     else if (vm.orders && vm.orders.length > 0)
@@ -6007,8 +5971,7 @@
                 if (vm.filtered) {
                     _order = $filter('orderBy')(vm.filtered, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
                     vm.object.orders = _order.slice((vm.userPreferences.entryPerPage * (vm.orderFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.orderFilters.currentPage));
-                }
-                else {
+                } else {
                     if (vm.allOrders && vm.allOrders.length > 0)
                         _order = $filter('orderBy')(vm.allOrders, vm.orderFilters.filter.sortBy, vm.orderFilters.reverse);
                     else if (vm.orders && vm.orders.length > 0)
@@ -6324,7 +6287,6 @@
                 }, function () {
 
                 });
-
             });
         }
 
@@ -6357,9 +6319,8 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
 
                 obj.documentation = vm.assignObj.documentation;
-                console.log(obj);
                 OrderService.assign(obj).then(function (res) {
-                    console.log(res);
+                    order.documentation = vm.assignObj.documentation;
                 });
             }, function () {
 
@@ -6396,17 +6357,20 @@
                         obj.auditLog.timeSpent = vm.comments.timeSpent;
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    OrderService.unassign(obj);
+                    OrderService.unassign(obj).then(function () {
+                        order.documentation = undefined;
+                    });
                 }, function () {
 
                 });
             } else {
-                OrderService.unassign(obj);
+                OrderService.unassign(obj).then(function () {
+                    order.documentation = undefined;
+                });
             }
         };
 
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
-
 
         vm.suspendOrder = function (order) {
             var orders = {};
@@ -6919,6 +6883,7 @@
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout",
         "JobService", "orderByFilter", "CoreService", "UserService", "YadeService"];
+
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout,
                          JobService, orderBy, CoreService, UserService, YadeService) {
         var vm = $scope;
@@ -6935,13 +6900,13 @@
         vm.reloadState = 'no';
 
         vm.reload = function () {
-            if (vm.reloadState == 'no') {
+            if (vm.reloadState === 'no') {
                 vm.historys = [];
                 vm.jobHistorys = [];
                 vm.yadeHistorys = [];
                 vm.folderPath = 'Process aborted';
                 vm.reloadState = 'yes';
-            } else if (vm.reloadState == 'yes') {
+            } else if (vm.reloadState === 'yes') {
                 vm.reloadState = 'no';
                 vm.isLoading = false;
                 vm.init();
@@ -9056,8 +9021,7 @@
                         }
                     });
                 }
-            }
-            else if (vm.historyFilters.type == 'yade') {
+            } else if (vm.historyFilters.type == 'yade') {
                 if (vm.yadeSearch && vm.yadeSearch.name) {
                     angular.forEach(vm.yadeHistoryFilterList, function (value) {
                         if (vm.yadeSearch.name == value.name && vm.permission.user == value.account) {
@@ -9088,8 +9052,7 @@
                         vm.selectedFiltered1.account = filter.account;
                         vm.init();
                     });
-                }
-                else {
+                } else {
                     isCustomizationSelected1(false);
                     vm.savedHistoryFilter.selected = filter;
                     vm.historyFilters.order.selectedView = false;
@@ -9111,8 +9074,7 @@
                         vm.selectedFiltered2.account = filter.account;
                         vm.init();
                     });
-                }
-                else {
+                } else {
                     isCustomizationSelected2(false);
                     vm.savedJobHistoryFilter.selected = filter;
                     vm.historyFilters.task.selectedView = false;
@@ -9121,8 +9083,7 @@
                 }
 
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-            }
-            else if (vm.historyFilters.type == 'yade') {
+            } else if (vm.historyFilters.type == 'yade') {
                 if (filter) {
                     vm.savedYadeHistoryFilter.selected = filter.id;
                     vm.historyFilters.yade.selectedView = true;
@@ -9134,8 +9095,7 @@
                         vm.selectedFiltered3.account = filter.account;
                         vm.init();
                     });
-                }
-                else {
+                } else {
                     isCustomizationSelected3(false);
                     vm.savedYadeHistoryFilter.selected = filter;
                     vm.historyFilters.yade.selectedView = false;
@@ -9149,7 +9109,6 @@
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
         };
-
 
         vm.expanding_property = {
             field: "name"
@@ -9275,16 +9234,18 @@
                 data.folders = orderBy(data.folders, 'name');
             }
         };
+
         vm.object.paths = [];
         vm.object.orders = [];
         vm.object.jobChains = [];
         vm.object.jobs = [];
-        var watcher6 = $scope.$watchCollection('object.paths', function (newNames) {
 
+        var watcher6 = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.paths = newNames;
             }
         });
+
         var watcher7 = $scope.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.orders = [];
@@ -9293,11 +9254,13 @@
                 });
             }
         });
+
         var watcher8 = $scope.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.jobChains = newNames;
             }
         });
+
         var watcher9 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.jobs = newNames;
@@ -9318,16 +9281,14 @@
                 if (vm.jobChainSearch && vm.showSearchPanel) {
                     vm.jobChainSearch.orders = vm.orders;
                     vm.jobChainSearch.jobChains = vm.jobChains;
-                }
-                else if (vm.historyFilter && !vm.showSearchPanel) {
+                } else if (vm.historyFilter && !vm.showSearchPanel) {
                     vm.historyFilter.orders = vm.orders;
                     vm.historyFilter.jobChains = vm.jobChains;
                 }
             } else if (vm.historyFilters.type == 'job') {
                 if (vm.jobSearch && vm.showSearchPanel) {
                     vm.jobSearch.jobs = vm.jobs;
-                }
-                else if (vm.historyFilter && !vm.showSearchPanel) {
+                } else if (vm.historyFilter && !vm.showSearchPanel) {
                     vm.historyFilter.jobs = vm.jobs;
                 }
             }
@@ -9605,7 +9566,7 @@
                 }).then(function (res) {
                     value.files = res.files;
                     vm.isLoaded = false;
-                },function () {
+                }, function () {
                     vm.isLoaded = false;
                 })
             }
@@ -9720,10 +9681,10 @@
                     vm.search(true);
                 } else {
                     YadeService.getTransfers(filter).then(function (res) {
-                        if( vm.yadeHistorys &&  vm.yadeHistorys.length>0 && res.transfers && res.transfers.length>0){
-                             vm.yadeHistorys = _.merge( vm.yadeHistorys,res.transfers);
-                        }else {
-                             vm.yadeHistorys = res.transfers;
+                        if (vm.yadeHistorys && vm.yadeHistorys.length > 0 && res.transfers && res.transfers.length > 0) {
+                            vm.yadeHistorys = _.merge(vm.yadeHistorys, res.transfers);
+                        } else {
+                            vm.yadeHistorys = res.transfers;
                         }
                         vm.isLoading = true;
                         isLoaded = true;
@@ -9791,13 +9752,14 @@
         });
     }
 
-    LogCtrl.$inject = ["$scope", "$rootScope", "OrderService", "TaskService", "$location", "$timeout","SOSAuth", "$q", "$interval", "$window", "UserService"];
+    LogCtrl.$inject = ["$scope", "$rootScope", "OrderService", "TaskService", "$location", "$timeout", "SOSAuth", "$q", "$interval", "$window", "UserService"];
+
     function LogCtrl($scope, $rootScope, OrderService, TaskService, $location, $timeout, SOSAuth, $q, $interval, $window, UserService) {
         var vm = $scope;
         vm.isLoading = false;
         vm.errStatus = '';
         vm.preferences = JSON.parse($window.sessionStorage.preferences);
-        if(!vm.preferences.logFilter) {
+        if (!vm.preferences.logFilter) {
             vm.preferences.logFilter = {
                 scheduler: true,
                 stdout: true,
@@ -9874,8 +9836,7 @@
             if (object && getParam("historyId")) {
                 vm.orderId = getParam("orderId");
                 vm.loadOrderLog();
-            }
-            else if (object && getParam("taskId")) {
+            } else if (object && getParam("taskId")) {
                 vm.taskId = getParam("taskId");
                 vm.loadJobLog();
             } else {
@@ -9910,7 +9871,7 @@
                         }
                     } else if (prefix.search(/\[stdout\]/i) > -1) {
                         div.className += " stdout stdout_" + level;
-                         if (!vm.object.checkBoxs.stdout) {
+                        if (!vm.object.checkBoxs.stdout) {
                             div.className += " hide-block";
                         }
                     } else if (prefix.search(/\[stderr\]/i) > -1) {
@@ -10148,7 +10109,7 @@
                     document.body.appendChild(sheet);
                 }
             }
-            
+
         };
 
         /**

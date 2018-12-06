@@ -69,7 +69,11 @@
             getProcessClassConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Configuration = $resource('process_class/configuration');
-                Configuration.save({processClass: path,jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
+                Configuration.save({
+                    processClass: path,
+                    jobschedulerId: jobschedulerId,
+                    mime: ['HTML']
+                }, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

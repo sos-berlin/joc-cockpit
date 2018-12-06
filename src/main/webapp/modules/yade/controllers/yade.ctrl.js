@@ -194,7 +194,7 @@
         }
 
         function parseProcessExecuted(regex, obj) {
-            var fromDate, toDate, date, arr;
+          var fromDate, toDate, date, arr;
 
           if (/^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.test(regex)) {
             fromDate = /^\s*(-)\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(regex)[0];
@@ -239,13 +239,13 @@
             toDate = moment.utc(toTime);
           }
 
-            if (fromDate) {
-                obj.dateFrom = fromDate;
-            }
-            if (toDate) {
-                obj.dateTo = toDate;
-            }
-            return obj;
+          if (fromDate) {
+            obj.dateFrom = fromDate;
+          }
+          if (toDate) {
+            obj.dateTo = toDate;
+          }
+          return obj;
         }
 
         vm.load = function () {

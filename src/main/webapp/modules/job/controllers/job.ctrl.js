@@ -38,6 +38,7 @@
             vm.isLoading = true;
             return;
         }
+
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;
             dest.numOfNodes = sour.numOfNodes;
@@ -1799,9 +1800,8 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                console.log(obj);
                 JobChainService.assign(obj).then(function(res){
-                    console.log(res);
+                    jobChain.documentation = vm.assignObj.documentation;
                 });
             }, function () {
 
@@ -1840,12 +1840,16 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobChainService.unassign(obj);
+                    JobChainService.unassign(obj).then(function () {
+                        jobChain.documentation = undefined;
+                    });
                 }, function () {
 
                 });
             } else {
-                JobChainService.unassign(obj);
+                JobChainService.unassign(obj).then(function () {
+                    jobChain.documentation = undefined;
+                });
             }
         };
 
@@ -2489,7 +2493,6 @@
             $('#rightPanel1').find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
-
         };
 
         function traverseToSelectedJobChain(data, jobChain) {
@@ -3049,20 +3052,15 @@
         });
     }
 
-    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService",
-        "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter"];
-
-    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService,
-                     $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter) {
+    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter"];
+    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
-
         vm.showTask = vm.userPreferences.showTasks;
         vm.isUnique = true;
 
         vm.object = {};
-
         vm.tree = [];
         vm.allJobs = [];
         vm.filtered = [];
@@ -4070,7 +4068,6 @@
             if (vm.jobFilter && vm.jobFilter.state) {
                 obj.states = vm.jobFilter.state;
             }
-
             JobService.get(obj).then(function (res) {
                 let data = [];
                 if (allJobs && allJobs.length > 0) {
@@ -4096,7 +4093,6 @@
                     vm.hideTaskPanel(0);
                 }
                 vm.isLoaded = false;
-
                 getFilteredData();
                 traverseTreeForSearchData();
             }, function () {
@@ -4611,9 +4607,7 @@
                         }
                     }
                 }
-
                 updatePanelHeight();
-
             }, function () {
                 vm.isLoaded = false;
             });
@@ -4631,7 +4625,6 @@
         /**--------------- Actions -----------------------------*/
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
-
             if (!vm.isIE()) {
                 $('#jobTableId').table2excel({
                     exclude: ".tableexport-ignore",
@@ -4690,7 +4683,6 @@
                 JobService.stop(jobs);
                 vm.reset();
             }
-
         };
         vm.unstop = function (job) {
             var jobs = {};
@@ -4729,7 +4721,6 @@
                 JobService.unstop(jobs);
                 vm.reset();
             }
-
         };
         vm.start = function (job) {
             var jobs = {};
@@ -4896,7 +4887,6 @@
                 JobService.stop(jobs);
                 vm.reset();
             }
-
         };
         vm.unStopAll = function () {
             var jobs = {};
@@ -4942,7 +4932,6 @@
                 JobService.unstop(jobs);
                 vm.reset();
             }
-
         };
         vm.startAll = function () {
             var jobs = {};
@@ -4988,7 +4977,6 @@
                 JobService.start(jobs);
                 vm.reset();
             }
-
         };
         vm.reset = function () {
             vm.allCheck.checkbox = false;
@@ -5028,9 +5016,7 @@
             }
             jobs.timeout = vm.timeObj.timeout;
             TaskService.terminateWith(jobs);
-
         }
-
         vm.terminateTaskWithTimeout = function (job, task, path) {
             if (job) {
                 vm.job = job;
@@ -5057,7 +5043,6 @@
             }, function () {
 
             });
-
         };
         vm.end = function (task, path) {
             var jobs = {};
@@ -5098,7 +5083,6 @@
                 TaskService.end(jobs);
                 vm.reset();
             }
-
         };
         vm.killTask = function (task, path) {
             var jobs = {};
@@ -5139,7 +5123,6 @@
                 TaskService.kill(jobs);
                 vm.reset();
             }
-
         };
         vm.terminateTask = function (task, path) {
             var jobs = {};
@@ -5180,7 +5163,6 @@
                 TaskService.terminate(jobs);
                 vm.reset();
             }
-
         };
         vm.killAllTask = function (job) {
             var jobs = {};
@@ -5339,7 +5321,6 @@
                 TaskService.terminateAll(jobs);
                 vm.reset();
             }
-
         };
 
         function setRunTime(job) {
@@ -5403,7 +5384,6 @@
             loadRuntime(job);
         };
         vm.deleteAllOrder = function () {
-
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
@@ -5547,9 +5527,8 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                console.log(obj);
                 JobService.assign(obj).then(function(res){
-                    console.log(res);
+                    job.documentation = vm.assignObj.documentation;
                 });
             }, function () {
 
@@ -5588,12 +5567,16 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.unassign(obj);
+                    JobService.unassign(obj).then(function () {
+                        job.documentation = undefined;
+                    });
                 }, function () {
 
                 });
             } else {
-                JobService.unassign(obj);
+                JobService.unassign(obj).then(function () {
+                    job.documentation = undefined;
+                });
             }
         };
 
@@ -7272,9 +7255,8 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                console.log(obj);
                 JobService.assign(obj).then(function(res){
-                    console.log(res);
+                    job.documentation = vm.assignObj.documentation;
                 });
             }, function () {
 
@@ -7313,12 +7295,16 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.unassign(obj);
+                    JobService.unassign(obj).then(function () {
+                        job.documentation = undefined;
+                    });
                 }, function () {
 
                 });
             } else {
-                JobService.unassign(obj);
+                JobService.unassign(obj).then(function () {
+                    job.documentation = undefined;
+                });
             }
         };
 
