@@ -4886,7 +4886,7 @@
 
         vm.previewDocument = function (document) {
            
-            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
             $window.open(link, '_blank');
         };
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
@@ -6025,7 +6025,7 @@
 
         vm.previewDocument = function (document) {
             console.log(document.path)
-            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
             $window.open(link, '_blank');
         };
 
