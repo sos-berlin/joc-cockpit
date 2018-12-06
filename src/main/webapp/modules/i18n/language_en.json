@@ -1367,5 +1367,6 @@
   "breadcrumb.documentations": "Documentations",
   "message.noDocumentationFound": "no Documentation found",
   "message.deleteDocument": "Deleting a document will permanently remove it from the list of documentations.",
-  "message.documentNotUsed": "This Documentation is not yet used"
+  "message.documentNotUsed": "This Documentation is not yet used",
+  "label.documentationUsedIn" : "This Documentation is used by"
 }

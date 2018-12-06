@@ -1367,5 +1367,6 @@
   "message.deleteDocument": "Die Dokumentation wird aus der Liste der Dokumentationen entfernt.",
   "button.previewDocument": "Preview Documentation",
   "breadcrumb.documentation": "Documentation",
-  "message.documentNotUsed": "This Documentation is not yet used"
+  "message.documentNotUsed": "This Documentation is not yet used",
+  "label.documentationUsedIn" : "This Documentation is used by"
 }

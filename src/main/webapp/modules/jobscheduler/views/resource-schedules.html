@@ -24,7 +24,7 @@
 <div id="rightPanel1">
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="(key, value) in allSchedules  | groupBy: 'path1'">
+            <div ng-repeat="(key, value) in filteredS = (allSchedules | filter: {path: scheduleFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -38,7 +38,7 @@
                                 </label>
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.change.addSubstitute}">
-                                    <span uib-tooltip="{{schedule.title}}" ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind="schedule.name"></span>
+                                    <span uib-tooltip="{{schedule.title}}" ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind-html="schedule.name | highlight:scheduleFilters.searchText"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -95,6 +95,7 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredS.length===0 && allSchedules.length !==0)}" translate>message.noDataMatched</div>
         </div>
         <div class="box p-a" ng-show="pageView=='list' && allSchedules.length>0">
             <div class="table-responsive">
@@ -157,7 +158,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody  ng-repeat="schedule in allSchedules | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse | startFrom:(scheduleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
+                    <tbody  ng-repeat="schedule in filteredS = (allSchedules | filter: {path: scheduleFilters.searchText}) | orderBy: scheduleFilters.filter.sortBy:scheduleFilters.reverse | startFrom:(scheduleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
                     <tr>
                         <td ng-if="permission.Schedule.change.addSubstitute" >
                             <label class="md-check">
@@ -194,12 +195,12 @@
                             <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!schedule.show" ng-click="schedule.show = true"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
-                                <span ng-class="{'crimson':schedule.configurationStatus.severity==2}">{{schedule.name}}</span>
+                                <span ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind-html="schedule.name | highlight:scheduleFilters.searchText"></span>
                             </span>
                             <span ng-if="schedule.title">-</span>
                             <i class="text-muted" ng-bind-html="schedule.title | linky:'_blank'" ></i>
                         </td>
-                        <td ng-bind="schedule.path"></td>
+                        <td ng-bind-html="schedule.path | highlight:scheduleFilters.searchText"></td>
                         <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
                                   ng-bind="schedule.state._text  | translate"></span></td>
                         <td><span ng-bind="schedule.usedByOrders.length || 0"></span></td>
@@ -255,15 +256,15 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allSchedules.length > 10}" ng-if="allSchedules.length >0"><span translate>label.total</span> {{allSchedules.length}}
-                    <span translate ng-if="allSchedules.length >1">label.schedulesFound</span>
-                    <span translate ng-if="allSchedules.length ==1">label.scheduleFound</span>
+                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredS.length > 10}" ng-if="filteredS.length >0"><span translate>label.total</span> {{filteredS.length}}
+                    <span translate ng-if="filteredS.length >1">label.schedulesFound</span>
+                    <span translate ng-if="filteredS.length ==1">label.scheduleFound</span>
                 </div>
-                <ul ng-show="allSchedules.length > userPreferences.entryPerPage" uib-pagination total-items="allSchedules.length"
+                <ul ng-show="filteredS.length > userPreferences.entryPerPage" uib-pagination total-items="filteredS.length"
                     ng-model="scheduleFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
                     ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
                     previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                <div class="pull-left" ng-show="allSchedules.length > 10">
+                <div class="pull-left" ng-show="filteredS.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
@@ -282,6 +283,7 @@
                         </button>
                     </div>
                 </div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredS.length===0 && allSchedules.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
         <div ng-if="isLoading && !loading && folderPathS && allSchedules.length==0 && treeSchedule.length>0" class="text-center m-t h6">

@@ -22,10 +22,9 @@
     </div>
 </div>
 <div id="rightPanel1">
-
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
-        <div class="hide row" ng-class="{'show': pageView!='list'}">
-            <div ng-repeat="(key, value) in allCalendars  | groupBy: 'path1'">
+        <div class="row" ng-if="pageView!='list'">
+            <div ng-repeat="(key, value) in filteredC = (allCalendars | filter: {path :calendarFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -40,7 +39,7 @@
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Calendar.edit.delete}">
                                     <span class="text-sm fa" ng-class="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
-                                    <span uib-tooltip="{{calendar.title}}" ng-bind="calendar.name"></span>
+                                    <span uib-tooltip="{{calendar.title}}" ng-bind-html="calendar.name | highlight:calendarFilters.searchText"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
@@ -90,8 +89,10 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange"
+                     ng-class="{'show': (filteredC.length===0 && allCalendars.length !==0)}" translate>message.noDataMatched</div>
         </div>
-        <div class="box p-a" ng-show="pageView=='list' && allCalendars.length>0">
+        <div class="box p-a" ng-if="pageView=='list' && allCalendars.length>0">
             <div class="table-responsive" id="calendarDivId" resizable r-directions="['bottom']" r-height="resizerHeight">
                 <table class="table table-hover table-bordered" id="calendarTableId">
                     <thead>
@@ -140,7 +141,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody ng-repeat="calendar in allCalendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tbody ng-repeat="calendar in filteredC = (allCalendars | filter: {path :calendarFilters.searchText}) | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
                         <td ng-if="permission.Calendar.edit.delete" >
                             <label class="md-check">
@@ -173,25 +174,25 @@
                          </td>
                         <td>
                          <span>
-                             <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)">{{calendar.name}}</a>
+                             <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)" ng-bind-html="calendar.name  | highlight:calendarFilters.searchText"></a>
                              <span ng-if="calendar.title">-</span>
                              <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
                          </span>
                         </td>
-                        <td ng-bind="calendar.path"></td>
-                        <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
+                        <td ng-bind-html="calendar.path | highlight:calendarFilters.searchText"></td>
+                        <td><span class="label" ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
                         <td ng-bind="calendar.category"></td>
                         <td ng-bind="calendar.from | stringToDate1"></td>
                         <td ng-bind="calendar.to | stringToDate1"></td>
                     </tr>
                     </tbody>
                 </table>
-                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allCalendars.length > 10}" ng-if="allCalendars.length >0"><span translate>label.total</span> {{allCalendars.length}}
-                     <span translate ng-if="allCalendars.length >1">label.calendarsFound</span>
-                     <span translate ng-if="allCalendars.length ==1">label.calendarFound</span>
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredC.length > 10}" ng-if="filteredC.length >0"><span translate>label.total</span> {{filteredC.length}}
+                     <span translate ng-if="filteredC.length >1">label.calendarsFound</span>
+                     <span translate ng-if="filteredC.length ==1">label.calendarFound</span>
                  </div>
-                <ul ng-show="allCalendars.length > userPreferences.entryPerPage" uib-pagination total-items="allCalendars.length" ng-model="calendarFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-left" ng-show="allCalendars.length > 10">
+                <ul ng-show="filteredC.length > userPreferences.entryPerPage" uib-pagination total-items="filteredC.length" ng-model="calendarFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="filteredC.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -210,6 +211,8 @@
                         </button>
                     </div>
                 </div>
+                 <div class="text-center m-t text-uppercase hide text-orange"
+                     ng-class="{'show': (filteredC.length===0 && allCalendars.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
         <div ng-if="isLoading && !loading && folderPathC && allCalendars.length==0 && treeCalendar.length>0" class="text-center m-t h6">
@@ -316,7 +319,7 @@
      </div>
 </div>
 
-<div ng-if="isLoading && treeCalendar.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noCalendarFound</div>
+<div class="text-center m-t h6 text-uppercase hide" ng-class="{'show' :isLoading && treeCalendar.length==0 && !loading}" translate>message.noCalendarFound</div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">

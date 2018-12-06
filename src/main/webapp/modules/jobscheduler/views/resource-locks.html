@@ -25,7 +25,7 @@
 <div id="rightPanel1">
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row " ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="(key, value) in allLocks  | groupBy: 'path1'">
+            <div ng-repeat="(key, value) in filteredL = (allLocks | filter: {path :locksFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -36,7 +36,7 @@
                             <div class="text-left block-ellipsis">
                                 <span class="text-left">
                                     <i class="fa fa-lock text-sm "></i>
-                                    <span ng-bind="lock.name"></span>
+                                    <span ng-bind-html="lock.name | highlight:locksFilters.searchText"></span>
                                 </span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown">
@@ -64,6 +64,7 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredL.length===0 && allLocks.length !==0)}" translate>message.noDataMatched</div>
         </div>
         <div class=" box p-a" ng-show="pageView=='list' && allLocks.length>0">
             <div class="table-responsive" >
@@ -103,7 +104,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tbody ng-repeat="lock in filteredL = (allLocks | filter: {path :locksFilters.searchText}) | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                         <tr title="{{lock.configurationStatus._text | translate}}">
                             <td>
                                 <div class="btn-group dropdown">
@@ -128,8 +129,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-bind="lock.name || '-'"></td>
-                            <td>{{lock.path}}</td>
+                            <td ng-bind-html="lock.name | highlight:locksFilters.searchText"></td>
+                            <td ng-bind-html="lock.path | highlight:locksFilters.searchText"></td>
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>
@@ -143,12 +144,12 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allLocks.length > 10}" ng-if="allLocks.length >0"><span translate>label.total</span> {{allLocks.length}}
-                    <span translate ng-if="allLocks.length >1">label.locksFound</span>
-                    <span translate ng-if="allLocks.length ==1">label.lockFound</span>
+                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredL.length > 10}" ng-if="filteredL.length >0"><span translate>label.total</span> {{filteredL.length}}
+                    <span translate ng-if="filteredL.length >1">label.locksFound</span>
+                    <span translate ng-if="filteredL.length ==1">label.lockFound</span>
                 </div>
-                <ul ng-show="allLocks.length > userPreferences.entryPerPage" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-left" ng-show="allLocks.length > 10">
+                <ul ng-show="filteredL.length > userPreferences.entryPerPage" uib-pagination total-items="filteredL.length" ng-model="locksFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="filteredL.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -168,6 +169,7 @@
                         </div>
                     </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredL.length===0 && allLocks.length !==0)}" translate>message.noDataMatched</div>
         </div>
         <div ng-if="isLoading && !loading && folderPathL && allLocks.length==0 && treeLock.length>0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathL}}"</span>

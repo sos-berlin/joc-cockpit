@@ -25,7 +25,7 @@
 
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="row" ng-if="pageView!='list'">
-            <div ng-repeat="(key, value) in allDocumentations  | groupBy: 'path1'">
+            <div ng-repeat="(key, value) in  filteredD = (allDocumentations | filter: {path :documentFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -39,7 +39,7 @@
                                 </label>
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Documentation.delete}">
-                                    <span uib-tooltip="{{document.title}}" ng-bind="document.name"></span>
+                                    <span uib-tooltip="{{document.title}}" ng-bind-html="document.name | highlight:documentFilters.searchText"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
@@ -69,6 +69,7 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredD.length===0 && allDocumentations.length !==0)}" translate>message.noDataMatched</div>
         </div>
         <div class="box p-a" ng-if="pageView=='list' && allDocumentations.length>0">
             <div class="table-responsive" id="documentDivId">
@@ -107,7 +108,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody ng-repeat="document in allDocumentations | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tbody ng-repeat="document in filteredD = (allDocumentations | filter: {path: documentFilters.searchText}) | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
                         <td ng-if="permission.Documentation.delete">
                             <label class="md-check" >
@@ -131,12 +132,12 @@
                          </td>
                         <td>
                          <span>
-                             <span class="text-dark">{{document.name}}</span>
+                             <span class="text-dark" ng-bind-html="document.name | highlight:documentFilters.searchText"></span>
                              <span ng-if="document.title">-</span>
-                             <i class="text-muted" ng-bind-html="document.title | linky:'_blank'"></i>
+                             <i class="text-muted" ng-bind-html="documentFilters.title | linky:'_blank'"></i>
                          </span>
                         </td>
-                        <td ng-bind="document.path"></td>
+                        <td ng-bind-html="document.path | highlight:documentFilters.searchText"></td>
                         <td>
                             <span ng-bind="document.type"></span>
                         </td>
@@ -144,12 +145,12 @@
                     </tr>
                     </tbody>
                 </table>
-                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allDocumentations.length > 10}" ng-if="allDocumentations.length >0"><span translate>label.total</span> {{allDocumentations.length}}
-                     <span translate ng-if="allDocumentations.length >1">label.documentationsFound</span>
-                     <span translate ng-if="allDocumentations.length ==1">label.documentationFound</span>
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredD.length > 10}" ng-if="filteredD.length >0"><span translate>label.total</span> {{filteredD.length}}
+                     <span translate ng-if="filteredD.length >1">label.documentationsFound</span>
+                     <span translate ng-if="filteredD.length ==1">label.documentationFound</span>
                  </div>
-                <ul ng-show="allDocumentations.length > userPreferences.entryPerPage" uib-pagination total-items="allDocumentations.length" ng-model="documentFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-left" ng-show="allDocumentations.length > 10">
+                <ul ng-show="filteredD.length > userPreferences.entryPerPage" uib-pagination total-items="filteredD.length" ng-model="documentFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="filteredD.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -168,6 +169,8 @@
                         </button>
                     </div>
                 </div>
+                <div class="text-center m-t text-uppercase hide text-orange"
+                     ng-class="{'show': (filteredD.length===0 && allDocumentations.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
         <div ng-if="isLoading && !loading && folderPathD && allDocumentations.length==0 && treeDocument.length>0" class="text-center m-t h6">

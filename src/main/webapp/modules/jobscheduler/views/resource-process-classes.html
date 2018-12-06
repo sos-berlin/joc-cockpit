@@ -24,7 +24,7 @@
 <div id="rightPanel1">
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="(key, value) in allProcessClasses  | groupBy: 'path1'">
+            <div ng-repeat="(key, value) in filteredP = (allProcessClasses | filter: {path :documentFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -99,7 +99,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tbody ng-repeat="processClass in filteredP = (allProcessClasses | filter: {path: processFilters.searchText}) | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
                         <td>
                              <div class="btn-group dropdown">
@@ -130,7 +130,7 @@
                                 <span ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name" ></span>
                             </span>
                         </td>
-                        <td ng-bind="processClass.path"></td>
+                        <td ng-bind-html="processClass.path | highlight:processFilters.searchText"></td>
                         <td ng-bind="processClass.maxProcesses"></td>
                         <td>
                             <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
@@ -179,12 +179,12 @@
                         </tr>
                     </tbody>
                 </table>
-                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allProcessClasses.length > 10}" ng-if="allProcessClasses.length >0"><span translate>label.total</span> {{allProcessClasses.length}}
-                     <span translate ng-if="allProcessClasses.length >1">label.processClassesFound</span>
-                     <span translate ng-if="allProcessClasses.length ==1">label.processClassFound</span>
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredP.length > 10}" ng-if="filteredP.length >0"><span translate>label.total</span> {{filteredP.length}}
+                     <span translate ng-if="filteredP.length >1">label.processClassesFound</span>
+                     <span translate ng-if="filteredP.length ==1">label.processClassFound</span>
                  </div>
-                <ul ng-show="allProcessClasses.length > userPreferences.entryPerPage" uib-pagination total-items="allProcessClasses.length" ng-model="processFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-left" ng-show="allProcessClasses.length > 10">
+                <ul ng-show="filteredP.length > userPreferences.entryPerPage" uib-pagination total-items="filteredP.length" ng-model="processFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="filteredP.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                 ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -203,6 +203,7 @@
                         </button>
                     </div>
                 </div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredP.length===0 && allProcessClasses.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
         <div ng-if="isLoading && !loading && folderPathP && allProcessClasses.length==0 && treeProcess.length>0" class="text-center m-t h6">

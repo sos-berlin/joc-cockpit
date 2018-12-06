@@ -4706,13 +4706,14 @@
         }
 
         vm.showDocumentUsage = function(document) {
-            console.log(document);
+  
             vm.document = angular.copy(document);
             ResourceService.documentationUsed({
                 documentation: vm.document.path,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                vm.document.usedIn = res;
+                vm.document.usedIn = res.objects;
+                
             });
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/show-usage-document-dialog.html',
@@ -4883,24 +4884,11 @@
             }
         }
 
-        vm.previewDocumentations = function (path) {
-           //TODO: GET call
+        vm.previewDocument = function (document) {
+           
+            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            $window.open(link, '_blank');
         };
-        vm.showDocumentations = function (document) {
-            //TODO: GET call
-        };
-        vm.urlDocumentations = function (document) {
-            ResourceService.documentationUrl({
-                jobschedulerId: vm.schedulerIds.selected,
-                path: document.path,
-                type: document.type // Type of a JobScheduler object such as JOB, JOBCHAIN, ORDER, etc.
-            }).then(function (res) {
-
-            }, function () {
-
-            });
-        };
-
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
 
         vm.assignedDocument = function(data) {
@@ -5256,6 +5244,28 @@
 
         };
 
+
+        var watcher11 = $scope.$watch('scheduleFilters.searchText', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
+        var watcher12 = $scope.$watch('calendarFilters.searchText', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
+        var watcher13 = $scope.$watch('documentFilters.searchText', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
+        var watcher14 = $scope.$watch('eventFilters.searchText', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
+
+        vm.pageChange = function () {
+            vm.object = {};
+        };
+
         $scope.$on('$destroy', function () {
             watcher1();
             watcher3();
@@ -5266,6 +5276,10 @@
             watcher8();
             watcher9();
             watcher10();
+            watcher11();
+            watcher12();
+            watcher13();
+            watcher14();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             $timeout.cancel(t1);
@@ -5273,9 +5287,8 @@
         });
     }
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver', 'AuditLogService'];
-
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver, AuditLogService) {
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver', 'AuditLogService', '$window','SOSAuth' ];
+    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver, AuditLogService, $window, SOSAuth) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -5910,7 +5923,7 @@
                 documentation: vm.document.path,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                vm.document.usedIn = res;
+                vm.document.usedIn = res.objects;
             });
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/show-usage-document-dialog.html',
@@ -6009,6 +6022,12 @@
                 });
             }
         }
+
+        vm.previewDocument = function (document) {
+            console.log(document.path)
+            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            $window.open(link, '_blank');
+        };
 
 
         $scope.$on('$destroy', function () {

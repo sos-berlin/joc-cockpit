@@ -12,15 +12,15 @@
                                 <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state" uib-btn-radio="'all'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster
                                 </button>
-                                <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state"
+                                <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentsFilters.filter.state"
                                         uib-btn-radio="'0'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='0'}" ng-click="loadAgents()" translate>button.healthyAgentCluster
                                 </button>
-                                <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state"
+                                <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentsFilters.filter.state"
                                         uib-btn-radio="'1'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='1'}" ng-click="loadAgents()" translate>button.unhealthyAgentCluster
                                 </button>
-                                <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state"
+                                <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="agentsFilters.filter.state"
                                         uib-btn-radio="'2'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='2'}" ng-click="loadAgents()" translate>button.unreachableAgentCluster
                                 </button>
@@ -163,11 +163,11 @@
                                     <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'ALL'"
                                             ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>label.all
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
                                             ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
                                             translate>button.workingDays
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis" ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
                                             ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
                                             translate>button.nonWorkingDays
                                     </button>
@@ -219,7 +219,7 @@
                                 <span class="upper-check">
                                     <label class="md-check m-r-sm">
                                         <input type="checkbox" ng-model="agentJobExecutionFilters.current" ng-change="changeJobScheduler()">
-                                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                                        <i class="primary"></i><span class="button-group-ellipsis" translate>label.currentJobscheduler</span>
                                     </label>
                                 </span>
                             </div>
@@ -362,101 +362,156 @@
 </div>
 <div class="padding" ng-if="schedulerIds.selected">
     <div class="row">
-        <div class="col-md-8">
-            <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                <li class="nav-item" ng-if="permission.JobschedulerUniversalAgent.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.JobschedulerUniversalAgent.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentJobExecutions">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Event.view.status || permission.Calendar.view.status)">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.Event.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.events">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.events</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Event.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.Lock.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.locks">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Lock.view.status && (permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.ProcessClass.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status && (permission.Schedule.view.status || permission.Calendar.view.status)">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.Schedule.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.schedules">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.schedules</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Schedule.view.status">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.Calendar.view.status">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.calendars">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Documentation.view">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item" ng-if="permission.Documentation.view">
-                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.documentations">
-                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-4 text-right" ng-if="pageView!='grid' && ((resourceFilters.state == 'agent' && allAgentClusters && allAgentClusters.length>0) || (resourceFilters.state == 'schedules' && allSchedules && allSchedules.length>0) ||
-            (resourceFilters.state == 'processClass' && allProcessClasses && allProcessClasses.length>0))">
-            <button class="btn btn-sm btn-grey" ng-click="expandDetails()" >
-                <i class="fa fa fa-caret-down"></i>
-                <span translate>button.expandDetails</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="collapseDetails()">
-                <i class="fa fa fa-caret-up"></i>
-                <span translate>button.collapseDetails</span>
-            </button>
-        </div>
-        <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'agentJobExecutions'">
-           <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
-               <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-           </button>
-            <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
-                <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-            </button>
-        </div>
-         <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'events'">
-             <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedEventSearch()" ng-show="!showSearchEventPanel">
-                <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-             </button>
-             <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancelEventSearch()" ng-if="showSearchEventPanel">
-                 <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-             </button>
-             <div class="pull-right" style="width: 180px">
-                 <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="eventFilters.searchText">
-                 <i ng-if="eventFilters.searchText" class="fa fa-times search-close" ng-click="eventFilters.searchText = ''"></i>
-             </div>
+        <div class="col-md-12">
+            <div class="custom-nav-bar">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item" ng-if="permission.JobschedulerUniversalAgent.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.JobschedulerUniversalAgent.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentJobExecutions">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Event.view.status || permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.Event.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.events">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.events</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.Event.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.Lock.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.locks">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.Lock.view.status && (permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.ProcessClass.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status && (permission.Schedule.view.status || permission.Calendar.view.status)">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.Schedule.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.schedules">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.schedules</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Schedule.view.status">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.Calendar.view.status">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.calendars">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Documentation.view">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item" ng-if="permission.Documentation.view">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.documentations">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown hide-nav-dropdown pull-left">
+                <a class="dropdown-toggle text-md m-t-xs text-primary" data-toggle="dropdown" ncy-breadcrumb-last></a>
+                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
+                    <a class="dropdown-item" ng-if="permission.JobschedulerUniversalAgent.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.agentClusters" translate>label.agentClusters</a>
+                    <a class="dropdown-item" ng-if="permission.JobschedulerUniversalAgent.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.agentJobExecutions" translate>label.agentJobExecution</a>
+                    <a class="dropdown-item" ng-if="permission.Event.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.events" translate>label.events</a>
+                    <a class="dropdown-item" ng-if="permission.Lock.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.locks" translate>label.locks</a>
+                    <a class="dropdown-item" ng-if="permission.ProcessClass.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.processClasses" translate>label.processClasses</a>
+                    <a class="dropdown-item" ng-if="permission.Schedule.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.schedules" translate>label.schedules</a>
+                    <a class="dropdown-item" ng-if="permission.Calendar.view.status" ui-sref-active="btn-primary" ui-sref="app.resources.calendars" translate>label.calendars</a>
+                    <a class="dropdown-item" ng-if="permission.Documentation.view" ui-sref-active="btn-primary" ui-sref="app.resources.documentations" translate>label.documentations</a>
+                </div>
+            </div>
+            <div class="text-right m-t-sm1" >
+                <div ng-if="(resourceFilters.state == 'agent' || resourceFilters.state == 'schedules' || resourceFilters.state == 'processClass')">
+                    <div class="inline pull-right m-l" ng-if="pageView!='grid' && ((allAgentClusters && allAgentClusters.length>0) || (allSchedules && allSchedules.length>0) ||
+                    (allProcessClasses && allProcessClasses.length>0))">
+                        <button class="btn btn-sm btn-grey button-group-ellipsis" ng-click="expandDetails()" >
+                            <i class="fa fa fa-caret-down"></i>
+                            <span translate>button.expandDetails</span>
+                        </button>
+                        <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="collapseDetails()">
+                            <i class="fa fa fa-caret-up"></i>
+                            <span translate>button.collapseDetails</span>
+                        </button>
+                    </div>
+                    <div class="inline pull-right search-filed-w">
+                        <div  ng-if="resourceFilters.state == 'agent'">
+                            <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="agentsFilters.searchText">
+                            <i ng-if="agentsFilters.searchText" class="fa fa-times search-close" ng-click="agentsFilters.searchText = ''"></i>
+                        </div>
+                        <div ng-if="resourceFilters.state == 'processClass'">
+                            <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="processFilters.searchText">
+                            <i ng-if="processFilters.searchText" class="fa fa-times search-close" ng-click="processFilters.searchText = ''"></i>
+                        </div>
+                        <div ng-if="resourceFilters.state == 'schedules'">
+                            <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="scheduleFilters.searchText">
+                            <i ng-if="scheduleFilters.searchText" class="fa fa-times search-close" ng-click="scheduleFilters.searchText = ''"></i>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="resourceFilters.state == 'agentJobExecutions'">
+                    <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+                    </button>
+                    <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+                    </button>
+                    <div class="pull-right" style="width: 180px">
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="agentJobExecutionFilters.searchText">
+                        <i ng-if="agentJobExecutionFilters.searchText" class="fa fa-times search-close" ng-click="agentJobExecutionFilters.searchText = ''"></i>
+                    </div>
+                </div>
+                <div ng-if="resourceFilters.state == 'events'">
+                     <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedEventSearch()" ng-show="!showSearchEventPanel">
+                        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+                     </button>
+                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancelEventSearch()" ng-if="showSearchEventPanel">
+                         <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+                     </button>
+                     <div class="pull-right" style="width: 180px">
+                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="eventFilters.searchText">
+                         <i ng-if="eventFilters.searchText" class="fa fa-times search-close" ng-click="eventFilters.searchText = ''"></i>
+                     </div>
+                </div>
+                <div ng-if="resourceFilters.state == 'documentations'">
+                     <div class="pull-right" style="width: 180px">
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="documentFilters.searchText">
+                        <i ng-if="documentFilters.searchText" class="fa fa-times search-close" ng-click="documentFilters.searchText = ''"></i>
+                    </div>
+                </div>
+                <div ng-if="resourceFilters.state == 'locks'">
+                    <div class="pull-right" style="width: 180px">
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="locksFilters.searchText">
+                        <i ng-if="locksFilters.searchText" class="fa fa-times search-close" ng-click="locksFilters.searchText = ''"></i>
+                    </div>
+                </div>
+                <div ng-if="resourceFilters.state == 'calendars'">
+                    <div class="pull-right" style="width: 180px" >
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="calendarFilters.searchText">
+                        <i ng-if="calendarFilters.searchText" class="fa fa-times search-close" ng-click="calendarFilters.searchText = ''"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

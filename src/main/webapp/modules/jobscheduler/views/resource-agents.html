@@ -3,7 +3,6 @@
 </div>
  <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeAgent.length>0">
      <div>
-
          <a class="text" ng-click="my_tree_agent.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
              <i class="fa fa-angle-double-down fa-lg"></i>
          </a>
@@ -25,7 +24,7 @@
 <div id="rightPanel1">
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row " ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="(key, value) in allAgentClusters | groupBy: 'path1'">
+            <div ng-repeat="(key, value) in filteredA = (allAgentClusters | filter: {path :agentsFilters.searchText}) | orderBy:'path1' | groupBy: 'path1' track by $index">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
@@ -38,7 +37,7 @@
                                     <span class="fa fa-stop pos-abt m-t-xs text-xs" ng-class="colorFunction(cluster.state.severity)"></span>
                                     <i class="fa fa-server m-l m-r-xs m-t-xs"></i>
                                     <span uib-tooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
-                                          ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
+                                          ng-bind-html="cluster.path.substring(cluster.path.lastIndexOf('/')+1) | highlight:agentsFilters.searchText"></span>
                                     <span class="text-sm _600 pull-right" uib-tooltip="{{cluster._type | translate}}" ng-bind-template="({{cluster._type | limitTo:1}})"></span>
                                 </span>
                             </div>
@@ -71,6 +70,7 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredA.length===0 && allAgentClusters.length !==0)}" translate>message.noDataMatched</div>
         </div>
         <div class="box p-a" ng-show="pageView=='list' && allAgentClusters.length >0">
              <div class="table-responsive" >
@@ -134,7 +134,7 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':cluster.show}">
+                        <tbody ng-repeat="cluster in filteredA = (allAgentClusters | filter: {path :agentsFilters.searchText}) | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':cluster.show}">
                         <tr>
                             <td>
                                 <div class="btn-group dropdown">
@@ -150,11 +150,11 @@
                                 <span class="show-in-single-line">
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
-                                    <span ng-bind="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
+                                    <span ng-bind-html="cluster.path.substring(cluster.path.lastIndexOf('/')+1) | highlight:agentsFilters.searchText"></span>
                                 </span>
                             </td>
                             <td>
-                                <a class="text-hover-primary" ng-bind="cluster.path" ng-click="showProcessClass(cluster.path)"></a>
+                                <a class="text-hover-primary" ng-bind-html="cluster.path | highlight:agentsFilters.searchText" ng-click="showProcessClass(cluster.path)"></a>
                             </td>
                             <td>
                                 <span class="label" ng-class="bgColorFunction(cluster.state.severity)">
@@ -202,12 +202,12 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allAgentClusters.length > 10}" ng-if="allAgentClusters.length >0"><span translate>label.total</span> {{allAgentClusters.length}}
-                        <span translate ng-if="allAgentClusters.length >1">label.agentClustersFound</span>
-                        <span translate ng-if="allAgentClusters.length ==1">label.agentClusterFound</span>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filteredA.length > 10}" ng-if="filteredA.length >0"><span translate>label.total</span> {{filteredA.length}}
+                        <span translate ng-if="filteredA.length >1">label.agentClustersFound</span>
+                        <span translate ng-if="filteredA.length ==1">label.agentClusterFound</span>
                     </div>
-                    <ul ng-show="allAgentClusters.length > userPreferences.entryPerPage" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                    <div class="pull-left" ng-show="allAgentClusters.length > 10">
+                    <ul ng-show="filteredA.length > userPreferences.entryPerPage" uib-pagination total-items="filteredA.length" ng-model="agentsFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                    <div class="pull-left" ng-show="filteredA.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
                                     ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
@@ -226,6 +226,7 @@
                             </button>
                         </div>
                     </div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredA.length===0 && allAgentClusters.length !==0)}" translate>message.noDataMatched</div>
                 </div>
         </div>
         <div ng-if="isLoading && !loading && folderPathA && allAgentClusters.length==0 && treeAgent.length>0" class="text-center m-t h6">

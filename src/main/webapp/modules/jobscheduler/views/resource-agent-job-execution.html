@@ -133,28 +133,28 @@
                     </tr>
                     </thead>
                     <tbody >
-                    <tr ng-repeat="agentTask in agentTasks | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.sortReverse | startFrom:(agentJobExecutionFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tr ng-repeat="agentTask in filteredAJ = (agentTasks | filter: agentJobExecutionFilters.searchText) | orderBy:agentJobExecutionFilters.filter.sortBy:agentJobExecutionFilters.sortReverse | startFrom:(agentJobExecutionFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                         <td ng-if="!agentJobExecutionFilters.current"><span ng-bind="agentTask.jobschedulerId"></span></td>
-                        <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" ng-bind="agentTask.agent"></a></td>
-                        <td><span ng-bind="agentTask.cause"></span></td>
+                        <td><a target="_blank" href="{{agentTask.agent}}" class="text-hover-primary" ng-bind-html="agentTask.agent | highlight:agentJobExecutionFilters.searchText"></a></td>
+                        <td><span ng-bind-html="agentTask.cause | highlight:agentJobExecutionFilters.searchText"></span></td>
                         <td><span ng-bind="agentTask.numOfSuccessfulTasks"></span></td>
                         <td><span ng-bind="agentTask.numOfJobs"></span></td>
                     </tr>
                     </tbody>
                 </table>
-                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': agentTasks.length > 10}"
-                     ng-if="agentTasks.length >0"> {{agentTasks.length}}
-                    <span translate ng-if="agentTasks.length >1">label.agentTasksFound</span>
-                    <span translate ng-if="agentTasks.length ==1">label.agentTaskFound</span>.
+                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filteredAJ.length > 10}"
+                     ng-if="filteredAJ.length >0"> {{filteredAJ.length}}
+                    <span translate ng-if="filteredAJ.length >1">label.filteredAJFound</span>
+                    <span translate ng-if="filteredAJ.length ==1">label.agentTaskFound</span>.
                     <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
                     <span ng-if="totalJobs" translate>label.totalNumberOfJobExecutions</span>: {{totalJobs}}
                 </div>
-                <ul ng-show="agentTasks.length > userPreferences.entryPerPage" uib-pagination
-                    total-items="agentTasks.length" ng-model="adtLog.currentPage"
+                <ul ng-show="filteredAJ.length > userPreferences.entryPerPage" uib-pagination
+                    total-items="filteredAJ.length" ng-model="adtLog.currentPage"
                     items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right"
                     max-size="5" boundary-link-numbers="true" rotate="false"
                     previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                <div class="pull-left" ng-show="agentTasks.length > 10">
+                <div class="pull-left" ng-show="filteredAJ.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default btn-sm" ng-model="userPreferences.entryPerPage"
                                 uib-btn-radio="'10'"
@@ -179,6 +179,7 @@
                         </button>
                     </div>
                 </div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filteredAJ.length===0 && agentTasks.length !==0)}" translate>message.noDataMatched</div>
                 <div ng-if="isLoading && agentTasks.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAgentTaskFound</div>
             </div>
         </div>

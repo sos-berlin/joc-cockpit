@@ -10,8 +10,7 @@
 
     CoreService.$inject = ['$window', '$resource', '$q'];
     function CoreService($window, $resource, $q) {
-
-        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {}, dashboard = {};
+        let _view = 'grid', _sideView = false, tabs = {}, tempTabs = {}, dashboard = {};
 
         tabs._jobChain = {};
         tabs._jobChain.filter = {};
@@ -151,6 +150,7 @@
         tabs._resource.agents.filter.state = 'all';
         tabs._resource.agents.filter.sortBy = 'path';
         tabs._resource.agents.reverse = false;
+        tabs._resource.agents.searchText = '';
         tabs._resource.agents.currentPage = '1';
         tabs._resource.agents.expand_to = [];
         tabs._resource.agentJobExecution = {};
@@ -158,6 +158,7 @@
         tabs._resource.agentJobExecution.filter.date = 'today';
         tabs._resource.agentJobExecution.filter.sortBy = 'agent';
         tabs._resource.agentJobExecution.reverse = false;
+        tabs._resource.agentJobExecution.searchText = '';
         tabs._resource.agentJobExecution.currentPage = '1';
         tabs._resource.agentJobExecution.selectedView = true;
         tabs._resource.locks = {};
@@ -165,6 +166,7 @@
         tabs._resource.locks.filter.state = 'all';
         tabs._resource.locks.filter.sortBy = 'name';
         tabs._resource.locks.reverse = false;
+        tabs._resource.locks.searchText = '';
         tabs._resource.locks.currentPage = '1';
         tabs._resource.locks.expand_to = [];
         tabs._resource.processClasses = {};
@@ -172,6 +174,7 @@
         tabs._resource.processClasses.filter.state = 'all';
         tabs._resource.processClasses.filter.sortBy = 'name';
         tabs._resource.processClasses.reverse = false;
+        tabs._resource.processClasses.searchText = '';
         tabs._resource.processClasses.currentPage = '1';
         tabs._resource.processClasses.expand_to = [];
         tabs._resource.schedules = {};
@@ -179,6 +182,7 @@
         tabs._resource.schedules.filter.state = 'all';
         tabs._resource.schedules.filter.sortBy = 'name';
         tabs._resource.schedules.reverse = false;
+        tabs._resource.schedules.searchText = '';
         tabs._resource.schedules.currentPage = '1';
         tabs._resource.schedules.expand_to = [];
         tabs._resource.calendars = {};
@@ -186,6 +190,7 @@
         tabs._resource.calendars.filter.type = 'ALL';
         tabs._resource.calendars.filter.sortBy = 'name';
         tabs._resource.calendars.reverse = false;
+        tabs._resource.calendars.searchText = '';
         tabs._resource.calendars.currentPage = '1';
         tabs._resource.calendars.expand_to = [];
         tabs._resource.events = {};
@@ -200,6 +205,7 @@
         tabs._resource.documents.filter.type = 'ALL';
         tabs._resource.documents.filter.sortBy = 'path';
         tabs._resource.documents.reverse = false;
+        tabs._resource.documents.searchText = '';
         tabs._resource.documents.currentPage = '1';
         tabs._resource.documents.selectedView = true;
         tabs._resource.state = 'agent';
@@ -341,6 +347,7 @@
         tempTabs._resource.agents.filter.state = 'all';
         tempTabs._resource.agents.filter.sortBy = 'path';
         tempTabs._resource.agents.reverse = false;
+        tempTabs._resource.agents.searchText = '';
         tempTabs._resource.agents.currentPage = '1';
         tempTabs._resource.agents.expand_to = [];
         tempTabs._resource.agentJobExecution = {};
@@ -348,6 +355,7 @@
         tempTabs._resource.agentJobExecution.filter.date = 'today';
         tempTabs._resource.agentJobExecution.filter.sortBy = 'agent';
         tempTabs._resource.agentJobExecution.reverse = false;
+        tempTabs._resource.agentJobExecution.searchText = '';
         tempTabs._resource.agentJobExecution.currentPage = '1';
         tempTabs._resource.agentJobExecution.selectedView = true;
         tempTabs._resource.locks = {};
@@ -355,6 +363,7 @@
         tempTabs._resource.locks.filter.state = 'all';
         tempTabs._resource.locks.filter.sortBy = 'name';
         tempTabs._resource.locks.reverse = false;
+        tempTabs._resource.locks.searchText = '';
         tempTabs._resource.locks.currentPage = '1';
         tempTabs._resource.locks.expand_to = [];
         tempTabs._resource.processClasses = {};
@@ -362,6 +371,7 @@
         tempTabs._resource.processClasses.filter.state = 'all';
         tempTabs._resource.processClasses.filter.sortBy = 'name';
         tempTabs._resource.processClasses.reverse = false;
+        tempTabs._resource.processClasses.searchText = '';
         tempTabs._resource.processClasses.currentPage = '1';
         tempTabs._resource.processClasses.expand_to = [];
         tempTabs._resource.schedules = {};
@@ -369,6 +379,7 @@
         tempTabs._resource.schedules.filter.state = 'all';
         tempTabs._resource.schedules.filter.sortBy = 'name';
         tempTabs._resource.schedules.reverse = false;
+        tempTabs._resource.schedules.searchText = '';
         tempTabs._resource.schedules.currentPage = '1';
         tempTabs._resource.schedules.expand_to = [];
         tempTabs._resource.calendars = {};
@@ -376,6 +387,7 @@
         tempTabs._resource.calendars.filter.type = 'ALL';
         tempTabs._resource.calendars.filter.sortBy = 'name';
         tempTabs._resource.calendars.reverse = false;
+        tempTabs._resource.calendars.searchText = '';
         tempTabs._resource.calendars.currentPage = '1';
         tempTabs._resource.calendars.expand_to = [];
         tempTabs._resource.events = {};
@@ -390,6 +402,7 @@
         tempTabs._resource.documents.filter.type = 'ALL';
         tempTabs._resource.documents.filter.sortBy = 'path';
         tempTabs._resource.documents.reverse = false;
+        tempTabs._resource.documents.searchText = '';
         tempTabs._resource.documents.currentPage = '1';
         tempTabs._resource.documents.selectedView = true;
         tempTabs._resource.state = 'agent';
@@ -406,11 +419,9 @@
 
         if ($window.localStorage.$SOS$DASHBOARDTABS) {
             try {
-                var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
-
+                let obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
                 if (obj) {
                     if (obj._dashboard.filter.orderRange != 'today') {
-
                         dashboard = obj;
                     }
                 }
@@ -494,10 +505,10 @@
             getResourceTab: function () {
                 return tabs._resource;
             },
-            getAuditLogTab: function(){
+            getAuditLogTab: function () {
                 return tabs._auditLog;
             },
-            getYadeTab: function(){
+            getYadeTab: function () {
                 return tabs._yade;
             },
             getYadeDetailTab: function () {
@@ -537,7 +548,6 @@
                 save(storage, name, self[name]);
             });
         };
-
         SavedFilter.prototype.setJobChain = function (jobchain) {
             this.jobChainFilters = JSON.stringify(jobchain);
         };
@@ -575,7 +585,6 @@
                 save(storage, name, null);
             });
         };
-
         return new SavedFilter();
 
         // Note: LocalStorage converts the value to string
@@ -592,5 +601,4 @@
             return storage[key] || null;
         }
     }
-
 })();

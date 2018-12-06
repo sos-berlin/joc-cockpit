@@ -414,11 +414,26 @@
             });
         };
 
-/*        vm.showDocumentation = function (documentation) {
-            console.log(documentation)
-            let link = '/documentation/'+vm.schedulerIds.selected+ '/'+ SOSAuth.accessTokenId + '/' + encodeURIComponent(documentation);
-            $window.open(link, '_blank');
-        };*/
+        vm.showDocument = function (document) {
+            let link = '';
+            if (document.type === 'JOBCHAIN') {
+                link = 'job_chain';
+            } else if (document.type === 'JOB') {
+                link = 'job';
+            } else if (document.type === 'ORDER') {
+                link = 'order';
+            } else if (document.type === 'LOCK') {
+                link = 'lock';
+            } else if (document.type === 'PROCESSCLASS') {
+                link = 'process_class';
+            } else if (document.type === 'SCHEDULE') {
+                link = 'schedule';
+            } else if (document.type === 'WORKINGDAYSCALENDAR' || document.type === 'NONWORKINGDAYSCALENDAR') {
+                link = 'calendar';
+            }
+            $location.path(link).search({path: document.path, scheduler_id: vm.schedulerIds.selected});
+        };
+
         vm.showDocumentation = function (objType, objPath) {
             let link = './api/';
             if (objType === 'jobChain' && objPath) {
