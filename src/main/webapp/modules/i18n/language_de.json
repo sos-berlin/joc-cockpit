@@ -1365,8 +1365,10 @@
   "breadcrumb.documentations": "Dokumentationen",
   "message.noDocumentationFound": "keine Dokumentation gefunden",
   "message.deleteDocument": "Die Dokumentation wird aus der Liste der Dokumentationen entfernt.",
-  "button.previewDocument": "Preview Documentation",
-  "breadcrumb.documentation": "Documentation",
-  "message.documentNotUsed": "This Documentation is not yet used",
-  "label.documentationUsedIn" : "This Documentation is used by"
+  "button.previewDocument": "Vorschau der Documentation",
+  "breadcrumb.documentation": "Dokumentation",
+  "message.documentNotUsed": "Diese Dokumentation wird noch nicht verwendet",
+  "label.documentationUsedIn" : "Diese Dokumentation wird verwendet von"
+  "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
+  "label.deleteAllDocument": "Delete all Documentations"
 }
