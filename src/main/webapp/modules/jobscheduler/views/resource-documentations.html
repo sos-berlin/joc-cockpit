@@ -34,11 +34,11 @@
                     <div class="box card">
                         <div class="box-body">
                             <div>
-                                <label class="md-check pos-abt" ng-if="permission.Documentation.delete">
+                                <label class="md-check pos-abt" ng-if="permission.Documentation.delete || permission.Documentation.export">
                                     <input type="checkbox" data-checklist-model="object.documents" data-checklist-value="document"><i class="primary"></i>
                                 </label>
 
-                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Documentation.delete}">
+                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Documentation.delete || permission.Documentation.export}">
                                     <span uib-tooltip="{{document.title}}" ng-bind-html="document.name | highlight:documentFilters.searchText"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -55,7 +55,7 @@
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.type </span>:
-                                <span ng-bind="document.type | translate"></span>
+                                <span ng-bind="document.type"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.lastUpdateTime </span>:
@@ -76,7 +76,7 @@
                 <table class="table table-hover table-bordered" id="documentTableId">
                     <thead>
                     <tr>
-                        <th class="chk" ng-if="permission.Documentation.delete">
+                        <th class="chk" ng-if="permission.Documentation.delete || permission.Documentation.export">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheckDocument.checkbox" ng-change="checkAllDocument()"><i class="primary"></i>
                             </label>
@@ -110,7 +110,7 @@
                     </thead>
                     <tbody ng-repeat="document in filteredD = (allDocumentations | filter: {path: documentFilters.searchText}) | orderBy: documentFilters.filter.sortBy:documentFilters.reverse | startFrom:(documentFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
-                        <td ng-if="permission.Documentation.delete">
+                        <td ng-if="permission.Documentation.delete || permission.Documentation.export">
                             <label class="md-check" >
                                 <input type="checkbox" data-checklist-model="object.documents" data-checklist-value="document"><i class="primary"></i>
                             </label>

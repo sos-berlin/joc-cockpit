@@ -17,9 +17,6 @@
             get: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chains');
-                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
-                    filter.compactView  = true;
-                }
                 JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -50,9 +47,6 @@
             getJobChain: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain');
-                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
-                    filter.compactView  = true;
-                }
                 JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -141,9 +135,6 @@
             get: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('jobs');
-                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
-                    filter.compactView  = true;
-                }
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

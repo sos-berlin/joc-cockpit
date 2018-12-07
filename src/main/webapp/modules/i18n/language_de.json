@@ -1368,7 +1368,8 @@
   "button.previewDocument": "Vorschau der Documentation",
   "breadcrumb.documentation": "Dokumentation",
   "message.documentNotUsed": "Diese Dokumentation wird noch nicht verwendet",
-  "label.documentationUsedIn" : "Diese Dokumentation wird verwendet von"
+  "label.documentationUsedIn": "Diese Dokumentation wird verwendet von"
   "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
-  "label.deleteAllDocument": "Delete all Documentations"
+  "label.deleteAllDocument": "Delete all Documentations",
+  "tooltip.removeFile": "Remove file"
 }

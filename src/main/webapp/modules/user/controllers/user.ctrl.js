@@ -1974,8 +1974,7 @@
                         comments.push({value: comment});
                         vm.mainText = vm.mainText + '#' + comment + '\n';
                     });
-                }
-                else {
+                } else {
                     comments.push({value: ''});
                 }
                 vm.mainText = vm.mainText + entry.entryName + ' = ';
@@ -1989,7 +1988,7 @@
 
                        if (entry.entryValue.length-1 === index) {
                             vm.mainText = vm.mainText + '\n';
-                        }
+                       }
                     });
                 } else {
                     values.push({value: ''});
@@ -2113,7 +2112,7 @@
         };
 
         vm.addValueField = function () {
-            var param = {
+            let param = {
                 value: ''
             };
             if (vm.entryValue)
@@ -2125,7 +2124,7 @@
         };
 
         vm.addCommentField = function () {
-            var param = {
+            let param = {
                 value: ''
             };
             if (vm.entryComment)

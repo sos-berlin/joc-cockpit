@@ -268,7 +268,6 @@
                                                    ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                 <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'" ng-click="showAssignedCalendar(order)"
                                                    translate>button.showAssignedCalendar</a>
-                                                <div class="dropdown-divider"></div>
                                                 <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                    translate>button.showConfiguration</a>
                                                 <div class="dropdown-divider"></div>
@@ -278,6 +277,7 @@
                                                    translate>button.unassignedDocumentation</a>
                                                 <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)"
                                                    translate>button.showDocumentation</a>
+                                                <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)"
                                                    translate>button.copyLinkToObject</a>
                                             </div>
@@ -447,8 +447,8 @@
                                                     <a ng-click="showConfiguration('jobChain',nestedJobChain.path,nestedJobChain.name)"
                                                        class="hide dropdown-item" ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                        translate>button.showConfiguration</a>
-                                                    <a class="dropdown-item"
-                                                       ng-click="copyLinkToObject('jobChain',nestedJobChain.path)"
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',nestedJobChain.path)"
                                                        translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
@@ -534,6 +534,7 @@
                                                                 <a class="dropdown-item" ng-class="{'disable-link':nestedNode.job.configurationStatus.severity ==2}"
                                                                    ng-if="permission.Job.view.configuration"
                                                                    ng-click="showConfiguration('job',nestedNode.job.path,nestedNode.job.name)" translate>button.showConfiguration</a>
+                                                                <div class="dropdown-divider"></div>
                                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',nestedNode.job.path)"
                                                                    translate>button.copyLinkToObject</a>
                                                             </div>
@@ -585,7 +586,6 @@
                                                                            ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                                         <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
                                                                            ng-click="showAssignedCalendar(order)" translate>button.showAssignedCalendar</a>
-                                                                        <div class="dropdown-divider"></div>
                                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                                            translate>button.showConfiguration</a>
                                                                         <div class="dropdown-divider"></div>
@@ -595,6 +595,7 @@
                                                                            translate>button.unassignedDocumentation</a>
                                                                         <a href class="dropdown-item {{order.documentation ? '': 'disable-link'}}" ng-if="permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)"
                                                                              translate>button.showDocumentation</a>
+                                                                        <div class="dropdown-divider"></div>
                                                                         <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)"
                                                                            translate>button.copyLinkToObject</a>
                                                                     </div>

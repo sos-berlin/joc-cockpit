@@ -8,6 +8,14 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.schedules.length>0}">
                         <div class="hide" ng-class="{'show-block':resourceFilters.state=='agent'}">
+                            <div class="show-inline">
+                                <span class="upper-check m-r-sm">
+                                    <label class="md-check">
+                                        <input type="checkbox" ng-model="agentsFilters.isCompact" ng-change="toggleCompactView()">
+                                        <i class="primary"></i><span translate>label.compact</span>
+                                    </label>
+                                </span>
+                            </div>
                             <div class="btn-group hidden-btn-group">
                                 <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state" uib-btn-radio="'all'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster

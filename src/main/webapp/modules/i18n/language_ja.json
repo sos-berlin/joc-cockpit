@@ -1366,7 +1366,10 @@
   "breadcrumb.documentation": "Documentation",
   "breadcrumb.documentations": "Documentations",
   "message.noDocumentationFound": "no Documentation found",
-  "message.deleteDocument": "Deleting a document will permanently remove it from the list of documentations.",
+  "message.deleteDocument": "Are you sure you want to delete this Document?",
   "message.documentNotUsed": "This Documentation is not yet used",
-  "label.documentationUsedIn" : "This Documentation is used by"
+  "label.documentationUsedIn": "This Documentation is used by",
+  "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
+  "label.deleteAllDocument": "Delete all Documentations",
+  "tooltip.removeFile": "Remove file"
 }

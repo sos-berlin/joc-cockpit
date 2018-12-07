@@ -1370,5 +1370,6 @@
   "message.documentNotUsed": "This Documentation is not yet used",
   "label.documentationUsedIn": "This Documentation is used by",
   "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
-  "label.deleteAllDocument": "Delete all Documentations"
+  "label.deleteAllDocument": "Delete all Documentations",
+  "tooltip.removeFile": "Remove file"
 }

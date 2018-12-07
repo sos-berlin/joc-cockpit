@@ -103,8 +103,9 @@
                             <tr>
                                 <th translate>label.name</th>
                                 <th ng-show="uploader.isHTML5" translate>label.size</th>
-                                <th ng-show="uploader.isHTML5" translate>label.progress</th>
+                                <th ng-show="uploader.isHTML5" class="text-capitalize" translate>label.progress</th>
                                 <th translate>label.status</th>
+                                <th ng-if="uploader.queue[0].isError" translate>label.action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -120,6 +121,9 @@
                                     <span class="text-success" ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
                                     <span class="text-warn" ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
                                     <span class="text-danger" ng-show="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+                                </td>
+                                <td ng-if="item.isError">
+                                    <a href="" class="text-hover-color" ng-click="item.remove();" uib-tooltip="{{'tooltip.removeFile' | translate}}" ><i class="fa fa-remove"></i></a>
                                 </td>
                             </tr>
                             </tbody>

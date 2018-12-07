@@ -267,7 +267,19 @@
             }
         }
 
-        function getUserProfileConfiguration(id, user) {
+
+        vm.saveProfileSettings = function(preferences) {
+            let configObj = {};
+            configObj.jobschedulerId = $scope.schedulerIds.selected;
+            configObj.account = $scope.permission.user;
+            configObj.configurationType = "PROFILE";
+            configObj.id = parseInt($window.sessionStorage.preferenceId);
+            configObj.configurationItem = JSON.stringify(preferences);
+            $window.sessionStorage.preferences = JSON.stringify(preferences);
+            UserService.saveConfiguration(configObj);
+        };
+
+        function getUserProfileConfiguration(id, user,arg) {
             let configObj = {};
             configObj.jobschedulerId = id;
             configObj.account = user;
@@ -343,9 +355,15 @@
                     setUserPrefrences(preferences, configObj);
                     $rootScope.$broadcast('reloadPreferences');
                 }
+                if (arg) {
+                    $state.reload(vm.currentState);
+                }
             }, function () {
                 setUserPrefrences(preferences, configObj);
                 $rootScope.$broadcast('reloadPreferences');
+                if (arg) {
+                    $state.reload(vm.currentState);
+                }
             });
         }
 
@@ -361,17 +379,16 @@
             setPreferences();
         });
 
-        $scope.$on('reloadUser', function () {
+        $scope.$on('reloadUser', function (evt, arg) {
             vm.username = SOSAuth.currentUserData;
             setPermission();
             setIds();
             if (vm.schedulerIds.selected) {
                 loadSettingConfiguration();
                 if (vm.username) {
-                    getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
+                    getUserProfileConfiguration(vm.schedulerIds.selected, vm.username, arg);
                 }
             }
-
         });
 
         function setPermission() {
@@ -1523,13 +1540,12 @@
 
                         SOSAuth.setIds(res);
                         PermissionService.savePermission(jobScheduler);
-                        $rootScope.$broadcast('reloadUser');
+                        $rootScope.$broadcast('reloadUser' ,'reloadState');
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
                         } else {
                             if ($state.current.name !== 'app.dashboard')
                                 getScheduleDetail();
-                            $state.reload(vm.currentState);
                         }
                     } else {
                         toasty.error({

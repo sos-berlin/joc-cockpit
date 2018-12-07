@@ -19,6 +19,7 @@
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
         vm.agentsFilters = vm.resourceFilters.agents;
+        vm.agentsFilters.isCompact = vm.userPreferences.isAgentCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isAgentCompact;
         vm.agentJobExecutionFilters = vm.resourceFilters.agentJobExecution;
         vm.locksFilters = vm.resourceFilters.locks;
         vm.processFilters = vm.resourceFilters.processClasses;
@@ -59,6 +60,11 @@
             vm.isLoading = true;
             return;
         }
+
+        vm.toggleCompactView = function(){
+            vm.userPreferences.isAgentCompact = vm.jobChainFilters.isCompact;
+            vm.saveProfileSettings(vm.userPreferences);
+        };
 
         vm.collapseNode = function (data) {
             function recursive(data) {
@@ -4032,6 +4038,15 @@
             }
         };
 
+        uploader.onErrorItem = function (fileItem, response, status, headers) {
+            toasty.error({
+                 title: response.error.code,
+                 msg: response.error.message,
+                 timeout: 10000
+             });
+        };
+
+
         vm.fileLoading = false;
         // CALLBACKS
         uploader.onAfterAddingFile = function (item) {
@@ -4048,15 +4063,6 @@
                     var reader = new FileReader();
                     reader.readAsText(item._file, "UTF-8");
                     reader.onload = onLoadFile;
-                }
-            }else {
-                let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
-                if (vm.documentTypes.indexOf(fileExt) < 0) {
-                    toasty.error({
-                        title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
-                        timeout: 10000
-                    });
-                    item.remove();
                 }
             }
         };

@@ -53,7 +53,7 @@
                                 <span class="text-black _600" ng-bind="cluster.numOfAgents.any"></span>
                                 {{'label.runningAgents' | translate}}
                             </div>
-                            <div class="text-sm text-left text-muted p-t-xs" ng-if="!userPreferences.isCompact">
+                            <div class="text-sm text-left text-muted p-t-xs" ng-if="!agentsFilters.isCompact">
                                 {{'label.schedulingType' | translate}}:
                                  <span class="text-black-dk" ng-bind="cluster._type | translate"></span>
                             </div>
@@ -96,25 +96,25 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.any')"><a><span translate>label.totalAgents</span>
+                            <th ng-if="!agentsFilters.isCompact" ng-click="sortByA('numOfAgents.any')"><a><span translate>label.totalAgents</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.running')"><a><span translate>label.runningAgents</span>
+                            <th ng-if="!agentsFilters.isCompact" ng-click="sortByA('numOfAgents.running')"><a><span translate>label.runningAgents</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
+                            <th ng-if="!agentsFilters.isCompact" ng-click="sortByA('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th ng-if="!userPreferences.isCompact" ng-click="sortByA('_type')"><a><span translate>label.schedulingType</span>
+                            <th ng-if="!agentsFilters.isCompact" ng-click="sortByA('_type')"><a><span translate>label.schedulingType</span>
                                 <i ng-show="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i ng-show="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
@@ -163,10 +163,10 @@
                                     <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
                                 </span>
                             </td>
-                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any}}</td>
-                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.running}}</td>
-                            <td ng-if="!userPreferences.isCompact">{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
-                            <td ng-if="!userPreferences.isCompact">{{cluster._type | translate}}</td>
+                            <td ng-if="!agentsFilters.isCompact">{{cluster.numOfAgents.any}}</td>
+                            <td ng-if="!agentsFilters.isCompact">{{cluster.numOfAgents.running}}</td>
+                            <td ng-if="!agentsFilters.isCompact">{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
+                            <td ng-if="!agentsFilters.isCompact">{{cluster._type | translate}}</td>
                             <td>{{cluster.maxProcesses}}</td>
                             <td>
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>

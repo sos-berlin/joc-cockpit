@@ -16,6 +16,7 @@
         const vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
+        vm.jobChainFilters.isCompact = vm.userPreferences.isJobChainCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobChainCompact;
 
         vm.object = {};
         vm.object1 = {};
@@ -116,6 +117,7 @@
 
         function getJobChainByPathV(obj) {
             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
+            obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 if (vm.jobChains) {
                     vm.jobChains[0] = mergePermanentAndVolatile(res.jobChains[0], vm.jobChains[0], res.nestedJobChains);
@@ -130,7 +132,8 @@
                         if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
-                                jobs: [{job: val.job.path}]
+                                jobs: [{job: val.job.path}],
+                                compactView : vm.jobChainFilters.isCompact
                             }).then(function (res1) {
                                 vm.jobChains[0].nodes[index].job = _.merge(vm.jobChains[0].nodes[index].job, res1.jobs[0]);
                             });
@@ -448,7 +451,8 @@
                                     if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                         JobService.get({
                                             jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}]
+                                            jobs: [{job: val.job.path}],
+                                            compactView : vm.jobChainFilters.isCompact
                                         }).then(function (res1) {
                                             vm.allJobChains[m].nodes[index].job = _.merge(vm.allJobChains[m].nodes[index].job, res1.jobs[0]);
                                         });
@@ -476,6 +480,7 @@
                 obj.states = [];
                 obj.states.push(vm.jobChainFilters.filter.state);
             }
+            obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 vm.allJobChains = res.jobChains;
                 let jobChainPath = [];
@@ -744,7 +749,7 @@
                 vm.isLoaded = false;
                 return;
             }
-
+            obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 for (let x = 0; x < vm.allJobChains.length; x++) {
                     if (vm.userPreferences.showOrders)
@@ -757,7 +762,8 @@
                                     if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                         JobService.get({
                                             jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}]
+                                            jobs: [{job: val.job.path}],
+                                            compactView : vm.jobChainFilters.isCompact
                                         }).then(function (res1) {
                                             vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
                                             updatePanelHeight();
@@ -779,7 +785,8 @@
                                 if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                     JobService.get({
                                         jobschedulerId: vm.schedulerIds.selected,
-                                        jobs: [{job: val.job.path}]
+                                        jobs: [{job: val.job.path}],
+                                        compactView : vm.jobChainFilters.isCompact
                                     }).then(function (res1) {
                                         vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
                                         updatePanelHeight();
@@ -794,6 +801,14 @@
                 updateTreeData(expandNode, treeUpdate);
             });
         }
+
+        vm.toggleCompactView = function(){
+            if(!vm.jobChainFilters.isCompact){
+                vm.changeStatus();
+            }
+            vm.userPreferences.isJobChainCompact = vm.jobChainFilters.isCompact;
+            vm.saveProfileSettings(vm.userPreferences);
+        };
 
         vm.changeStatus = function () {
             vm.reloadState = 'no';
@@ -1933,6 +1948,7 @@
             }
             if (obj.jobChains.length > 0) {
                 vm.isLoaded = true;
+                obj.compactView = vm.jobChainFilters.isCompact;
                 JobChainService.get(obj).then(function (res) {
                     for (let x = 0; x < vm.allJobChains.length; x++) {
                         for (let i = 0; i < res.jobChains.length; i++) {
@@ -1943,7 +1959,8 @@
                                         if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                             JobService.get({
                                                 jobschedulerId: vm.schedulerIds.selected,
-                                                jobs: [{job: val.job.path}]
+                                                jobs: [{job: val.job.path}],
+                                                compactView : vm.jobChainFilters.isCompact
                                             }).then(function (res1) {
                                                 vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
                                                 updatePanelHeight();
@@ -2013,6 +2030,7 @@
                 obj.compact = false;
             }
             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
+            obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
                 let data = [];
                 if (allJobChains && allJobChains.length > 0) {
@@ -2035,7 +2053,8 @@
                                     if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                         JobService.get({
                                             jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}]
+                                            jobs: [{job: val.job.path}],
+                                            compactView : vm.jobChainFilters.isCompact
                                         }).then(function (res1) {
                                             allJobChains[x].nodes[index].job = _.merge(allJobChains[x].nodes[index].job, res1.jobs[0]);
                                         });
@@ -2536,7 +2555,8 @@
                             if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                 JobService.get({
                                     jobschedulerId: vm.schedulerIds.selected,
-                                    jobs: [{job: val.job.path}]
+                                    jobs: [{job: val.job.path}],
+                                    compactView : vm.jobChainFilters.isCompact
                                 }).then(function (res1) {
                                     jobChain.nodes[index].job = _.merge(jobChain.nodes[index].job, res1.jobs[0]);
                                     updatePanelHeight();
@@ -2593,6 +2613,7 @@
                         obj.jobChains.push({jobChain: vm.filtered[i].path});
                     }
                 }
+                obj.compactView = vm.jobChainFilters.isCompact;
                 JobChainService.get(obj).then(function (res) {
                     for (let i = 0; i < vm.allJobChains.length; i++) {
                         for (let j = 0; j < res.jobChains.length; j++) {
@@ -2604,7 +2625,8 @@
                                         if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                             JobService.get({
                                                 jobschedulerId: vm.schedulerIds.selected,
-                                                jobs: [{job: val.job.path}]
+                                                jobs: [{job: val.job.path}],
+                                                compactView : vm.jobChainFilters.isCompact
                                             }).then(function (res1) {
                                                 vm.allJobChains[i].nodes[index].job = _.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
                                                 updatePanelHeight();
@@ -2828,7 +2850,7 @@
                         let obj = {};
                         obj.jobschedulerId = $scope.schedulerIds.selected;
                         obj.jobChains = arr1;
-
+                        obj.compactView = vm.jobChainFilters.isCompact;
                         JobChainService.get(obj).then(function (res) {
                             if (res.jobChains) {
                                 for (let index = 0; index < vm.allJobChains.length; index++) {
@@ -2840,7 +2862,8 @@
                                                     if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                                         JobService.get({
                                                             jobschedulerId: vm.schedulerIds.selected,
-                                                            jobs: [{job: val.job.path}]
+                                                            jobs: [{job: val.job.path}],
+                                                            compactView : vm.jobChainFilters.isCompact
                                                         }).then(function (res1) {
                                                             vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                             updatePanelHeight();
@@ -2930,6 +2953,7 @@
                 let obj = {};
                 obj.jobschedulerId = $scope.schedulerIds.selected;
                 obj.jobChains = arr;
+                obj.compactView = vm.jobChainFilters.isCompact;
                 JobChainService.get(obj).then(function (res) {
                     isFuncCalled = false;
                     if (res.jobChains) {
@@ -2942,7 +2966,8 @@
                                             if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                                 JobService.get({
                                                     jobschedulerId: vm.schedulerIds.selected,
-                                                    jobs: [{job: val.job.path}]
+                                                    jobs: [{job: val.job.path}],
+                                                    compactView : vm.jobChainFilters.isCompact
                                                 }).then(function (res1) {
                                                     vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                 });
@@ -3057,6 +3082,7 @@
     function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
+        vm.jobFilters.isCompact = vm.userPreferences.isJobCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobCompact;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.showTask = vm.userPreferences.showTasks;
         vm.isUnique = true;
@@ -3138,6 +3164,7 @@
         }
 
         function getJobByPathV(obj) {
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 if (vm.jobs && angular.isArray(vm.jobs)) {
                     vm.jobs[0] = mergePermanentAndVolatile(res.jobs[0], vm.jobs[0]);
@@ -3404,7 +3431,8 @@
                         if (vm.allJobs[i].state && vm.allJobs[i].state._text === 'RUNNING' && vm.userPreferences.showTasks) {
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
-                                jobs: [{job: vm.allJobs[i].path}]
+                                jobs: [{job: vm.allJobs[i].path}],
+                                compactView : vm.jobFilters.isCompact
                             }).then(function (res1) {
                                 vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
                             });
@@ -3716,6 +3744,7 @@
                 vm.isLoaded = false;
                 return;
             }
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 if (res.jobs.length > 0) {
                     for (let x = 0; x < vm.allJobs.length; x++) {
@@ -3770,6 +3799,7 @@
                 obj.states = [];
                 obj.states.push(vm.jobFilters.filter.state);
             }
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 vm.allJobs = res.jobs;
                 let jobsPath = [];
@@ -3785,6 +3815,14 @@
                 vm.loading = false;
             });
         }
+
+        vm.toggleCompactView = function(){
+            if(!vm.jobFilters.isCompact){
+                vm.changeStatus();
+            }
+            vm.userPreferences.isJobCompact = vm.jobFilters.isCompact;
+            vm.saveProfileSettings(vm.userPreferences);
+        };
 
         vm.changeStatus = function () {
             vm.hideTaskPanel();
@@ -3989,6 +4027,7 @@
             }
             if (obj.jobs.length > 0) {
                 vm.isLoaded = true;
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (res) {
                     for (let x = 0; x < vm.allJobs.length; x++) {
                         for (let i = 0; i < res.jobs.length; i++) {
@@ -4069,6 +4108,7 @@
             if (vm.jobFilter && vm.jobFilter.state) {
                 obj.states = vm.jobFilter.state;
             }
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 let data = [];
                 if (allJobs && allJobs.length > 0) {
@@ -4506,10 +4546,12 @@
             obj.jobs.push({job: value.path});
             JobService.getJobsP(obj).then(function (res) {
                 value = _.merge(value, res.job);
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
                     value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
             }, function () {
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (result) {
                     value = mergePermanentAndVolatile(result.jobs[0], value);
                 });
@@ -4544,6 +4586,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.job = value.path;
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.getQueueOrders(obj).then(function (res) {
                 vm.queueOrders = res.job;
             });
@@ -4557,6 +4600,7 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(jobs).then(function (result) {
                     job = mergePermanentAndVolatile(result.jobs[0], job);
                     updatePanelHeight();
@@ -4591,11 +4635,11 @@
                         if (res.jobs[i].path === vm.allJobs[m].path && res.jobs[i].name === vm.allJobs[m].name) {
                             vm.allJobs[m].jobChains = res.jobs[i].jobChains;
                             vm.allJobs[m].showJobChains = true;
-
                             if (vm.allJobs[m].state && vm.allJobs[m].state._text === 'RUNNING') {
                                 JobService.get({
                                     jobschedulerId: vm.schedulerIds.selected,
-                                    jobs: [{job: vm.allJobs[m].path}]
+                                    jobs: [{job: vm.allJobs[m].path}],
+                                    compactView : vm.jobFilters.isCompact
                                 }).then(function (result) {
                                     if (vm.allJobs[m].path === result.jobs[0].path) {
                                         vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
@@ -5769,6 +5813,7 @@
                                     obj.jobschedulerId = $scope.schedulerIds.selected;
                                     obj.jobs = [];
                                     obj.jobs.push({job: path[0]});
+                                    obj.compactView = vm.jobFilters.isCompact;
                                     JobService.get(obj).then(function (res) {
                                         if (res.jobs && res.jobs.length > 0) {
                                             var flag = false;
@@ -5889,6 +5934,7 @@
                 let obj = {};
                 obj.jobschedulerId = $scope.schedulerIds.selected;
                 obj.jobs = arr;
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (res) {
                     if (res.jobs && res.jobs.length > 0) {
                         var flag = false;
@@ -6017,6 +6063,7 @@
     function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
+        vm.jobFilters.isCompact = vm.userPreferences.isJobOverviewCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobOverviewCompact;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
         vm.showTask = vm.userPreferences.showTasks;
@@ -6068,7 +6115,7 @@
             vm.status = vm.jobFilters.filter.state;
             if (vm.jobFilters.filter.state !== 'ALL') {
                 obj.states.push(vm.jobFilters.filter.state);
-
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(obj).then(function (res) {
                     obj.jobs = [];
                     angular.forEach(res.jobs, function (value) {
@@ -6106,6 +6153,7 @@
                     }
                     vm.allJobs = res.jobs;
                     vm.isLoading = true;
+                    obj.compactView = vm.jobFilters.isCompact;
                     JobService.get(obj).then(function (result) {
                         for (let i = 0; i < vm.allJobs.length; i++) {
                             for (let j = 0; j < result.jobs.length; j++) {
@@ -6127,6 +6175,14 @@
             }
         };
         vm.init();
+
+        vm.toggleCompactView = function(){
+            if(!vm.jobFilters.isCompact){
+                vm.init();
+            }
+            vm.userPreferences.isJobOverviewCompact = vm.jobFilters.isCompact;
+            vm.saveProfileSettings(vm.userPreferences);
+        };
 
         vm.changeStatus = function () {
             vm.isLoading = false;
@@ -6291,6 +6347,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 value = mergePermanentAndVolatile(res.jobs[0], value);
             });
@@ -6325,6 +6382,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.job = value.path;
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.getQueueOrders(obj).then(function (res) {
                 vm.queueOrders = res.job;
             });
@@ -6338,6 +6396,7 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
+                obj.compactView = vm.jobFilters.isCompact;
                 JobService.get(jobs).then(function (res) {
                     job = mergePermanentAndVolatile(res.jobs[0], job);
                     updatePanelHeight();
@@ -7448,6 +7507,7 @@
                             obj.jobschedulerId = $scope.schedulerIds.selected;
                             obj.jobs = [];
                             obj.jobs.push({job: path[0]});
+                            obj.compactView = vm.jobFilters.isCompact;
                             JobService.get(obj).then(function (res) {
                                 if (res.jobs && res.jobs.length > 0) {
                                     var flag = false;
@@ -7544,7 +7604,7 @@
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
             obj.jobs = arr;
-
+            obj.compactView = vm.jobFilters.isCompact;
             JobService.get(obj).then(function (res) {
                 isFuncCalled = false;
                 if (res.jobs && res.jobs.length > 0) {
