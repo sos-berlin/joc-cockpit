@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!entry && !calendar && !calendarArr && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
+            <span ng-if="!entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
@@ -13,6 +13,12 @@
             </span>
             <span ng-if="calendarArr">
                 <span class="text-capitalize" translate>label.deleteAllCalendar</span>?
+            </span>
+            <span ng-if="document && document.delete">
+                <span class="text-capitalize" translate>label.delete</span> {{document.name}} ?
+            </span>
+            <span ng-if="documentArr">
+                <span class="text-capitalize" translate>label.deleteAllDocument</span>?
             </span>
             <span ng-if="_profiles">
                 <span class="text-capitalize" translate>label.deleteAllProfiles</span>?
@@ -36,7 +42,6 @@
                 <span ng-if="master.master" translate class="text">message.deleteMaster</span>
                 <span ng-if="folder.folder" translate class="text">message.deleteFolder</span>
                 <span ng-if="permission.path" translate class="text">message.deletePermission</span>
-                <span ng-if="document" translate class="text">message.deleteDocument</span>
                 <div ng-if="calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
                     <div class="row form-group">
                         <span ng-if="!calendar.delete" translate class="text">message.updateCalendar</span>
@@ -119,6 +124,44 @@
                                             {{$index+1}} - {{schedule}}
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="document && !documentArr">
+                    <div class="row form-group">
+                        <span ng-if="document.delete" translate class="text">message.deleteDocument</span>
+                    </div>
+                    <div class="text-left row">
+                        <div class="col-sm-12">
+                            <div class="row" ng-repeat="doc in document.usedIn">
+                                 <label class="col-md-2 _600">
+                                    {{doc.type}} :
+                                </label>
+                                <div class="col-md-10">
+                                    <a class="text-hover-primary" ng-click="showDocument(doc)">{{doc.path}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="documentArr && !document">
+                    <div class="row form-group">
+                        <span  translate class="text">message.deleteAllDocument</span>
+                    </div>
+                    <div class="text-left row" ng-repeat="document in documentArr" ng-class="{'b-t p-t': $index !=0}">
+                        <div class="row col-sm-12">
+                            <span class="col-md-3" translate="">label.document</span>
+                            <label class="col-md-9">{{document.path}}</label>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="row" ng-repeat="doc in document.usedIn">
+                                 <label class="col-md-2 _600">
+                                    {{doc.type}} :
+                                </label>
+                                <div class="col-md-10">
+                                    <a class="text-hover-primary" ng-click="showDocument(doc)">{{doc.path}}</a>
                                 </div>
                             </div>
                         </div>

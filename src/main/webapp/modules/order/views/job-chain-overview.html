@@ -12,14 +12,14 @@
                     <tr>
                         <th><span translate>label.jobChain</span></th>
                         <th><span translate>label.state</span></th>
-                        <th><span translate>label.noOfJobs</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.noOfJobs</span></th>
                         <th><span translate>label.agentCluster</span></th>
-                        <th><span translate>label.orderPending</span></th>
-                        <th><span translate>label.orderRunning</span></th>
-                        <th><span translate>label.orderSuspended</span></th>
-                        <th><span translate>label.orderQueued</span></th>
-                        <th><span translate>label.orderSetbacks</span></th>
-                        <th><span translate>label.orderBlacklist</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderPending</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderRunning</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderSuspended</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderQueued</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderSetbacks</span></th>
+                        <th ng-if="!userPreferences.isCompact"><span translate>label.orderBlacklist</span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -32,30 +32,30 @@
                         </td>
                         <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)"
                                   ng-bind="jobChain.state._text  | translate"></span></td>
-                        <td ng-bind="jobChain.numOfNodes || 0"></td>
+                        <td ng-if="!userPreferences.isCompact" ng-bind="jobChain.numOfNodes || 0"></td>
                         <td><a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)"
                                ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')"
                                ng-bind="jobChain.ordersSummary.pending"></a>
                         </td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')"
                                ng-bind="jobChain.ordersSummary.running"></a>
                         </td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')"
                                ng-bind="jobChain.ordersSummary.suspended"></a>
                         </td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')"
                                ng-bind="jobChain.ordersSummary.waitingForResource"></a>
                         </td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')"
                                ng-bind="jobChain.ordersSummary.setback"></a>
                         </td>
-                        <td>
+                        <td ng-if="!userPreferences.isCompact">
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')"
                                ng-bind="jobChain.ordersSummary.blacklist"></a>
                         </td>

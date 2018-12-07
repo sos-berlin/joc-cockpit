@@ -1540,9 +1540,9 @@
                                         + '<a class="hide" id="showAssignedCalendar-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.runTime}">' + gettextCatalog.getString("button.showAssignedCalendar") + '</a>'
                                         + '<div class="dropdown-divider"></div>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order._type + '\'==\'PERMANENT\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
-                                        + '<a class="hide" id="assignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation && \'' + order._type + '\'==\'PERMANENT\'}">' + gettextCatalog.getString("button.assignedDocumentation") + '</a>'
-                                        + '<a class="hide" id="unassignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation && \'' + order._type + '\'==\'PERMANENT\' && order.documentation}">' + gettextCatalog.getString("button.unassignedDocumentation") + '</a>'
-                                        + '<a class="hide" id="documentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.documentation && \'' + order._type + '\'==\'PERMANENT\', \'disable-link\' : !order.documentation}">' + gettextCatalog.getString("button.showDocumentation") + '</a>'
+                                        + '<a class="hide" id="assignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation}">' + gettextCatalog.getString("button.assignedDocumentation") + '</a>'
+                                        + '<a class="hide" id="unassignDocumentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.assignDocumentation && \'' + order.documentation + '\' != \'undefined\'}">' + gettextCatalog.getString("button.unassignedDocumentation") + '</a>'
+                                        + '<a class="hide" id="documentation-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.documentation && \'' + order._type + '\'==\'PERMANENT\', \'disable-link\' : ' + !order.documentation + '}">' + gettextCatalog.getString("button.showDocumentation") + '</a>'
                                         + '<div class="dropdown-divider"></div>'
                                         + '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'order\',path:\'' + order.path + '\'})" id="copyLinkToObject-' + order.orderId + '" >' + gettextCatalog.getString("button.copyLinkToObject") + '</a>'
                                         + '</div></div>';
@@ -1696,6 +1696,7 @@
                     }
 
                     vm.showOrderPanelFun = showOrderPanelFun;
+
                     function showOrderPanelFun(path) {
                         $location.path('/job_chain_detail/orders').search({path: path});
                     }
@@ -1706,7 +1707,26 @@
                             $(chkId).attr("checked", false);
                         });
                         vm.selectedNodes = [];
-                    })
+                    });
+
+                    vm.$on('updateOrder', function (event, args) {
+                        for (let x = 0; x < vm.jobChainData.nodes.length; x++) {
+                            let flag = false;
+                            if (vm.jobChainData.nodes[x].orders) {
+                                for (let i = 0; i < vm.jobChainData.nodes[x].orders.length; i++) {
+                                    if (vm.jobChainData.nodes[x].orders[i].path === args.path) {
+                                        vm.jobChainData.nodes[x].orders[i].documentation = args.documentation;
+                                        updateJobChain();
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (flag) {
+                                break;
+                            }
+                        }
+                    });
                 }]
         }
     }

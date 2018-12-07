@@ -72,7 +72,7 @@
                                             <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
                                             <td><span class="label" ng-class="bgColorFunction(agent.state.severity)">{{agent.state._text | translate}}</span></td>
                                             <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
-                                            <td>{{cluster.surveyDate | stringToDate}}</td>
+                                            <td>{{agent.surveyDate | stringToDate}}</td>
                                             <td>{{agent.startedAt | stringToDate}}</td>
                                             <td>{{agent.runningTasks || 0}}</td>
                                         </tr>

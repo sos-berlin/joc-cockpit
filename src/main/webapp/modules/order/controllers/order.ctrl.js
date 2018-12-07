@@ -1384,9 +1384,6 @@
         }
 
         vm.exportDiagram = function (type) {
-            if (vm.isIE()) {
-                return;
-            }
             vm.loading = true;
             var bound = getBoundingNodes();
             var oHeight = $('#exportId').height();
@@ -2061,7 +2058,8 @@
                         controller: 'RuntimeEditorDialogCtrl',
                         scope: vm,
                         size: 'lg',
-                        backdrop: 'static'
+                        backdrop: 'static',
+                        windowClass: 'fade-modal'
                     });
 
                     modalInstance.result.then(function () {
@@ -2348,6 +2346,7 @@
                     templateUrl: 'modules/core/template/assign-document-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
+                    size: 'lg',
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
@@ -2360,9 +2359,9 @@
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     obj.documentation = vm.assignObj.documentation;
-                    console.log(obj);
                     OrderService.assign(obj).then(function (res) {
-                        console.log(res);
+                        order.documentation = vm.assignObj.documentation;
+                        $rootScope.$broadcast('updateOrder', order);
                     });
                 }, function () {
 
@@ -2391,16 +2390,26 @@
 
                         if (vm.comments.ticketLink)
                             obj.auditLog.ticketLink = vm.comments.ticketLink;
-                        OrderService.unassign(obj);
+                        OrderService.unassign(obj).then(function (res) {
+                            order.documentation = undefined;
+                            $rootScope.$broadcast('updateOrder', order);
+                        });
                     }, function () {
 
                     });
                 } else {
-                    OrderService.unassign(obj);
+                    OrderService.unassign(obj).then(function (res) {
+                        order.documentation = undefined;
+                        $rootScope.$broadcast('updateOrder', order);
+                    });
                 }
             } else if (action == 'documentation') {
-                vm.showDocumentations('order', order.path);
+                vm.showDocumentation('order', order.path);
             }
+        };
+
+         vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
         };
 
         vm.getPlan = function (calendarView, viewDate) {

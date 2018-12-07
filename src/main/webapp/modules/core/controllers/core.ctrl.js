@@ -441,7 +441,7 @@
             } else if (objType === 'job' && objPath) {
                 link = link + 'job/documentation?job=' + encodeURIComponent(objPath);
             } else if (objType === 'order' && objPath) {
-                link = link + 'order/documentation?order=' + encodeURIComponent(objPath);
+                link = link + 'order/documentation?orderId=' + encodeURIComponent(objPath.substring(objPath.lastIndexOf(',')+1)) + '&jobChain='+encodeURIComponent(objPath.substring(0,objPath.lastIndexOf(',')));
             } else if (objType === 'lock' && objPath) {
                 link = link + 'lock/documentation?lock=' + encodeURIComponent(objPath);
             } else if (objType === 'processClass' && objPath) {

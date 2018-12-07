@@ -11,12 +11,12 @@
         <div class="row">
             <div class=" col-sm-12">
                 <div class="p-l-sm" ng-if="document.usedIn.length>0">
-                    <div class="row form-group" >
+                    <div class="row m-b" >
                         <div class="col-md-12">
                             <span class="text _600" translate>label.documentationUsedIn</span> : -
                         </div>
                     </div>
-                    <div class="row form-group" ng-repeat="doc in document.usedIn">
+                    <div class="row" ng-repeat="doc in document.usedIn">
                         <label class="col-md-2 _600">
                             {{doc.type}} :
                         </label>

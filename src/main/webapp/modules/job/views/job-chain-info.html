@@ -189,8 +189,7 @@
                                                                ng-click="nestedJobChain.hide =true"></i>
                                                             <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="nestedJobChain.hide"
                                                                ng-click="nestedJobChain.hide = false"></i>
-                                                            <span class="text-hover-primary"
-                                                                  ng-click="showHistory(nestedJobChain)"
+                                                            <span class="text-hover-primary" ng-click="showHistory(nestedJobChain)"
                                                                   ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
                                                                   ng-bind="nestedJobChain.name"></span>
                                                         </span>
@@ -202,27 +201,26 @@
                                                         <span class="label {{nestedJobChain.state.severity==0 ? 'bg-green' : nestedJobChain.state.severity==1 ? 'bg-gold' : nestedJobChain.state.severity==2 ? 'bg-crimson': nestedJobChain.state.severity==3 ?'bg-dimgrey': nestedJobChain.state.severity==4 ? 'bg-transparent' :
                                                                nestedJobChain.state.severity==5 ? 'bg-dark-orange' : nestedJobChain.state.severity==6 ? 'bg-corn-flower-blue' :nestedJobChain.state.severity==7 ? 'bg-dark-magenta' : nestedJobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="nestedJobChain.state._text  | translate"></span>
                                                     </td>
-                                                    <td ng-bind="nestedJobChain.numOfNodes || 0"></td>
+                                                    <td ng-if="!userPreferences.isCompact" ng-bind="nestedJobChain.numOfNodes || 0"></td>
                                                     <td>
                                                         <a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="nestedJobChain.processClass"></a>
                                                         <i ng-if="!nestedJobChain.processClass">-</i>
                                                     </td>
-                                                    <td><a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'PENDING')"
-                                                           ng-bind="nestedJobChain.ordersSummary.pending"></a>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'PENDING')" ng-bind="nestedJobChain.ordersSummary.pending"></a>
                                                     </td>
-                                                    <td><a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'RUNNING')"
-                                                           ng-bind="nestedJobChain.ordersSummary.running"></a></td>
-                                                    <td><a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'SUSPENDED')"
-                                                           ng-bind="nestedJobChain.ordersSummary.suspended"></a>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'RUNNING')" ng-bind="nestedJobChain.ordersSummary.running"></a></td>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'SUSPENDED')" ng-bind="nestedJobChain.ordersSummary.suspended"></a>
                                                     </td>
-                                                    <td><a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'WAITINGFORRESOURCE')"
-                                                           ng-bind="nestedJobChain.ordersSummary.waitingForResource"></a>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'WAITINGFORRESOURCE')" ng-bind="nestedJobChain.ordersSummary.waitingForResource"></a>
                                                     </td>
-                                                    <td><a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'SETBACK')"
-                                                           ng-bind="nestedJobChain.ordersSummary.setback"></a></td>
-                                                    <td>
-                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'BLACKLIST')"
-                                                           ng-bind="nestedJobChain.ordersSummary.blacklist"></a>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'SETBACK')" ng-bind="nestedJobChain.ordersSummary.setback"></a></td>
+                                                    <td ng-if="!userPreferences.isCompact">
+                                                        <a class="text-hover-primary" ng-click="viewOrders(nestedJobChain,'BLACKLIST')" ng-bind="nestedJobChain.ordersSummary.blacklist"></a>
                                                     </td>
                                                 </tr>
                                                 <tr ng-if="!nestedJobChain.hide" class="light-bg tableexport-ignore">

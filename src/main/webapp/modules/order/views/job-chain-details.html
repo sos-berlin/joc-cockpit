@@ -13,7 +13,7 @@
                         <button class="hide btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)" ng-class="{'show-block':permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"><i class="fa fa-cog"></i>
                             <span class="hidden-sm-down" translate>button.showConfiguration</span>
                         </button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="showDocumentation('jobChain',jobChain.path)" ng-class="{'show-block':permission.JobChain.view.documentation , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"><i class="fa fa-file"></i>
+                        <button class="hide btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="showDocumentation('jobChain',jobChain.path)" ng-class="{'show-block':permission.JobChain.view.documentation , 'disable-link': !jobChain.documentation}"><i class="fa fa-file"></i>
                             <span class="hidden-sm-down" translate>button.showDocumentation</span>
                         </button>
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color button-group-ellipsis" ng-if="jobChain.state._text != 'STOPPED'" ng-class="{'show-block':permission.JobChain.execute.stop}" ng-disabled="jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="stopJob()"><i class="fa fa-stop"></i>

@@ -4061,14 +4061,6 @@
             }
         };
 
-        uploader.onErrorItem = function (fileItem, response, status, headers) {
-           /* toasty.error({
-                title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
-                timeout: 10000
-            });*/
-           console.log(response);
-        };
-
         uploader.onCompleteItem = function (fileItem, response, status, headers) {
             if (status == '200') {
                 if(uploader.queue && uploader.queue.length>0) {
@@ -4155,14 +4147,14 @@
             }
 
             if (newNames) {
-              angular.forEach(vm.calendrs, function (value) {
-                for (var i = 0; i < newNames.length; i++) {
-                  if (value.usedBy && newNames[i].path == value.path) {
-                    vm.importCalendars.push(value);
-                    break;
-                  }
-                }
-              });
+                angular.forEach(vm.calendrs, function (value) {
+                    for (var i = 0; i < newNames.length; i++) {
+                        if (value.usedBy && newNames[i].path == value.path) {
+                            vm.importCalendars.push(value);
+                            break;
+                        }
+                    }
+                });
             }
         });
 
@@ -4732,18 +4724,13 @@
             let obj = {jobschedulerId: vm.schedulerIds.selected,documentations: []};
             if(document){
                 obj.documentations.push(document.path);
-            }else{
+            } else {
                 angular.forEach(vm.object.documents, function (value) {
                     obj.documentations.push(value.path);
                 });
             }
             ResourceService.exportDocumentations(obj).then(function (res) {
-                let name = 'documentation_' + vm.schedulerIds.selected + '.zip';
-                let blob = new Blob([res], {type: "application/octet-stream"});
-                FileSaver.saveAs(blob, name);
-                vm.object.documents =[];
-            }, function () {
-
+               $("#tmpFrame").attr('src', './api/documentations/export?jobschedulerId='+vm.schedulerIds.selected+'&filename='+res.filename+'&accessToken='+ SOSAuth.accessTokenId);
             });
         };
 
@@ -4885,8 +4872,7 @@
         }
 
         vm.previewDocument = function (document) {
-           
-            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
             $window.open(link, '_blank');
         };
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
@@ -4976,7 +4962,10 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
-
+            vm.document = undefined;
+            vm.documentArr = undefined;
+            vm.calendar = undefined;
+            vm.calendarArr = undefined;
             if ($window.localStorage.views)
                 views = JSON.parse($window.localStorage.views);
             if (toState.name == 'app.resources.agentClusters') {
@@ -5940,20 +5929,9 @@
 
         vm.exportDocument = function (document) {
             let obj = {jobschedulerId: vm.schedulerIds.selected,documentations: []};
-            if(document){
-                obj.documentations.push(document.path);
-            }else{
-                angular.forEach(vm.object.documents, function (value) {
-                    obj.documentations.push(value.path);
-                });
-            }
+            obj.documentations.push(document.path);
             ResourceService.exportDocumentations(obj).then(function (res) {
-                let name = 'documentation_' + vm.schedulerIds.selected + '.zip';
-                let blob = new Blob([res], {type: "application/octet-stream"});
-                FileSaver.saveAs(blob, name);
-                vm.object.documents =[];
-            }, function () {
-
+               $("#tmpFrame").attr('src', './api/documentations/export?jobschedulerId='+vm.schedulerIds.selected+'&filename='+res.filename+'&accessToken='+ SOSAuth.accessTokenId);
             });
         };
 
@@ -6024,8 +6002,7 @@
         }
 
         vm.previewDocument = function (document) {
-            console.log(document.path)
-            let link = 'http://localhost:4446/joc/api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
             $window.open(link, '_blank');
         };
 

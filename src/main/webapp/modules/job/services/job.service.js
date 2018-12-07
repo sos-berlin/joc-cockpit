@@ -17,7 +17,10 @@
             get: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chains');
-                JobChain.save(filter,function (res) {
+                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
+                    filter.compactView  = true;
+                }
+                JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -27,7 +30,7 @@
             getJobChainsP: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chains/p');
-                JobChain.save(filter,function (res) {
+                JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -37,7 +40,7 @@
             getJobChainP: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/p');
-                JobChain.save(filter,function (res) {
+                JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -47,7 +50,10 @@
             getJobChain: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain');
-                JobChain.save(filter,function (res) {
+                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
+                    filter.compactView  = true;
+                }
+                JobChain.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -135,6 +141,9 @@
             get: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('jobs');
+                if(JSON.parse($window.sessionStorage.preferences).isCompact) {
+                    filter.compactView  = true;
+                }
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

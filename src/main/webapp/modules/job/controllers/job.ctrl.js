@@ -1813,7 +1813,8 @@
         };
 
         vm.$on('closeDocumentTree', function (evn, path) {
-            vm.assignObj.documentation = path;
+            if(vm.assignObj)
+                vm.assignObj.documentation = path;
         });
 
         vm.unassignedDocumentJobChain = function(jobChain) {
