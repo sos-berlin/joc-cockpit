@@ -803,6 +803,7 @@
         }
 
         vm.toggleCompactView = function(){
+            vm.jobChainFilters.isCompact = !vm.jobChainFilters.isCompact;
             if(!vm.jobChainFilters.isCompact){
                 vm.changeStatus();
             }
@@ -3013,14 +3014,18 @@
         $scope.$on('refreshList', function (event, jobChain) {
             showNodePanelFuc(jobChain);
         });
-        const watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
             if (newNames)
                 vm.object = {};
         });
 
-        const watcher6 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
+        var watcher6 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
             if (newValue && oldValue) {
-                getFilteredData();
+                if(newValue === 'grid' && oldValue==='list' ){
+                    vm.changeStatus();
+                }else {
+                    getFilteredData();
+                }
             }
         });
 
@@ -3459,7 +3464,6 @@
             } else {
                 if (vm.jobFilters.filter.type !== 'ALL') {
                     obj.isOrderJob = vm.jobFilters.filter.type === 'order';
-                    obj.isOrderJob = vm.jobFilters.filter.type === 'order';
                 }
                 if (vm.jobFilters.filter.state !== 'ALL') {
                     if (vm.scheduleState === 'UNREACHABLE') {
@@ -3817,6 +3821,7 @@
         }
 
         vm.toggleCompactView = function(){
+            vm.jobFilters.isCompact = !vm.jobFilters.isCompact;
             if(!vm.jobFilters.isCompact){
                 vm.changeStatus();
             }
@@ -5992,14 +5997,18 @@
             }
         }
 
-        const watcher6 = $scope.$watchCollection('filtered', function (newNames) {
+        var watcher6 = $scope.$watchCollection('filtered', function (newNames) {
             if (newNames)
                 vm.object.jobs = [];
         });
 
-        const watcher7 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
+        var watcher7 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
             if (newValue && oldValue) {
-                getFilteredData();
+                if(newValue === 'grid' && oldValue==='list' ){
+                    vm.changeStatus();
+                }else {
+                    getFilteredData();
+                }
             }
         });
 
@@ -6177,6 +6186,7 @@
         vm.init();
 
         vm.toggleCompactView = function(){
+            vm.jobFilters.isCompact = !vm.jobFilters.isCompact;
             if(!vm.jobFilters.isCompact){
                 vm.init();
             }

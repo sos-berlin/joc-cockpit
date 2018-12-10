@@ -7,14 +7,6 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline  {{object.jobs.length>0 || !schedulerIds.selected ? 'hide' : ''}}">
-                        <div class="show-inline">
-                            <span class="upper-check m-r-sm">
-                                <label class="md-check">
-                                    <input type="checkbox" ng-model="jobFilters.isCompact" ng-change="toggleCompactView()">
-                                    <i class="primary"></i><span translate>label.compact</span>
-                                </label>
-                            </span>
-                        </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
                                      ng-click="changeStatus()" translate>button.allJobTypes
@@ -140,9 +132,12 @@
                         <i class="fa fa fa-caret-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
                         <i class="fa fa fa-refresh"></i>
                         <span translate>button.resetPanel</span>
+                    </button>
+                    <button class="hide btn btn-grey btn-sm button-group-ellipsis" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
+                            ng-click="toggleCompactView()" translate>button.compactView
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>

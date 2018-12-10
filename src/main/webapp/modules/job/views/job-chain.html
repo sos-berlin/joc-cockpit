@@ -7,14 +7,6 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobChains.length>0 || !schedulerIds.selected}">
-                        <div class="show-inline">
-                            <span class="upper-check m-r-sm">
-                                <label class="md-check">
-                                    <input type="checkbox" ng-model="jobChainFilters.isCompact" ng-change="toggleCompactView()">
-                                    <i class="primary"></i><span translate>label.compact</span>
-                                </label>
-                            </span>
-                        </div>
                         <div class="btn-group hidden-btn-group">
                             <button ng-disabled="savedJobChainFilter.selected" class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>
@@ -142,9 +134,12 @@
                         <i class="fa fa fa-caret-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
                         <i class="fa fa fa-refresh"></i>
                         <span translate>button.resetPanel</span>
+                    </button>
+                    <button class="hide btn btn-grey btn-sm button-group-ellipsis" ng-class="{'btn-primary': jobChainFilters.isCompact == true, 'show-block':allJobChains.length>0}"
+                            ng-click="toggleCompactView()" translate>button.compactView
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
@@ -302,37 +297,37 @@
                                         </div>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm" ng-if="!jobChainFilters.isCompact">
-                                        <span class="text-black _600" ng-bind="jobChain.numOfNodes || 0"></span>
+                                        <span class="text-black _600" ng-bind="jobChain.numOfNodes"></span>
                                         <span ng-if="jobChain.numOfNodes>1" ng-bind="'label.jobs' | translate"></span>
                                         <span ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes" ng-bind="'label.job' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs" ng-if="!jobChainFilters.isCompact">
                                         <span>
-                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
+                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders"></span>
                                             <span ng-if="jobChain.numOfOrders>1" ng-bind="'label.orders' | translate"></span>
                                             <span ng-if="jobChain.numOfOrders<2" ng-bind="'label.order' | translate"></span>
                                         </span>
                                     </div>
                                     <div class="text-sm text-left text-muted m-l p-t-xs" ng-if="!jobChainFilters.isCompact">
                                         <a class="text-black _600 text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')"
-                                           ng-bind="jobChain.ordersSummary.pending || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.pending"></a>
                                         <span ng-bind="'label.pending' | translate"></span>
                                         <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')"
-                                           ng-bind="jobChain.ordersSummary.running || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.running"></a>
                                         <span ng-bind="'label.running' | translate"></span>
                                         <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')"
-                                           ng-bind="jobChain.ordersSummary.suspended || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.suspended"></a>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted m-l p-t-xs" ng-if="!jobChainFilters.isCompact">
                                         <a class="text-black _600 text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')"
-                                           ng-bind="jobChain.ordersSummary.setback || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.setback"></a>
                                         <span ng-bind="'label.setback' | translate"></span>
                                         <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')"
-                                           ng-bind="jobChain.ordersSummary.blacklist || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.blacklist"></a>
                                         <span ng-bind="'label.blacklist' | translate"></span>
                                         <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')"
-                                           ng-bind="jobChain.ordersSummary.waitingForResource || 0"></a>
+                                           ng-bind="jobChain.ordersSummary.waitingForResource"></a>
                                         <span ng-bind="'label.waitingForResource' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
@@ -340,7 +335,7 @@
                                         <span uib-tooltip="{{jobChain.stateText}}" ng-class="colorFunction(jobChain.state.severity)"
                                               ng-bind="jobChain.state._text | translate"></span>
                                     </div>
-                                    <div class="text-sm text-left text-muted p-t-xs">
+                                    <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                                         <span translate>label.agentCluster</span>:
                                         <a class="text-black-dk text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
                                         <i class="text-black-dk" ng-if="!jobChain.processClass">-</i>
@@ -519,7 +514,7 @@
                                     </td>
                                     <td ng-bind-html="jobChain.path | highlight:jobChainFilters.searchText"></td>
                                     <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text  | translate"></span></td>
-                                    <td ng-if="!jobChainFilters.isCompact" ng-bind="jobChain.numOfNodes || 0"></td>
+                                    <td ng-if="!jobChainFilters.isCompact" ng-bind="jobChain.numOfNodes"></td>
                                     <td>
                                         <a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)" ng-bind="jobChain.processClass || '-' "></a></td>
                                     <td ng-if="!jobChainFilters.isCompact">
@@ -627,7 +622,7 @@
                                                                 <span class="label {{nestedJobChain.state.severity==0 ? 'bg-green' : nestedJobChain.state.severity==1 ? 'bg-gold' : nestedJobChain.state.severity==2 ? 'bg-crimson': nestedJobChain.state.severity==3 ?'bg-dimgrey': nestedJobChain.state.severity==4 ? 'bg-transparent' :
                                                                 nestedJobChain.state.severity==5 ? 'bg-dark-orange' : nestedJobChain.state.severity==6 ? 'bg-corn-flower-blue' :nestedJobChain.state.severity==7 ? 'bg-dark-magenta' : nestedJobChain.state.severity==8 ? 'bg-chocolate' : ''}}" ng-bind="nestedJobChain.state._text  | translate"></span>
                                                             </td>
-                                                            <td ng-if="!jobChainFilters.isCompact" ng-bind="nestedJobChain.numOfNodes || 0"></td>
+                                                            <td ng-if="!jobChainFilters.isCompact" ng-bind="nestedJobChain.numOfNodes"></td>
                                                             <td>
                                                                 <a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="nestedJobChain.processClass"></a>
                                                                 <i ng-if="!nestedJobChain.processClass">-</i>
@@ -835,7 +830,7 @@
                                                                             <a class="text-hover-primary" ng-click="showProcessClass(nestedNode.job.processClass)">{{nestedNode.job.processClass}}</a>
                                                                             <span ng-if="!nestedNode.job.processClass">-</span>
                                                                         </td>
-                                                                        <td>{{nestedNode.numOfOrders || 0}}</td>
+                                                                        <td>{{nestedNode.numOfOrders}}</td>
                                                                         <td>
                                                                             <span class="label {{nestedNode.job.state.severity==0 ? 'bg-green' : nestedNode.job.state.severity==1 ? 'bg-gold' : nestedNode.job.state.severity==2 ? 'bg-crimson': nestedNode.job.state.severity==3 ?'bg-dimgrey':
                                                                                 nestedNode.job.state.severity==4 ? 'bg-transparent': nestedNode.job.state.severity==5 ? 'bg-dark-orange' : nestedNode.job.state.severity==6 ? 'bg-corn-flower-blue' :nestedNode.job.state.severity==7 ? 'bg-dark-magenta' : nestedNode.job.state.severity==8 ? 'bg-chocolate' : ''}}" ng-if="nestedNode.job.state" ng-bind="nestedNode.job.state._text | translate"></span>
@@ -1055,7 +1050,7 @@
                                                         {{node.job.processClass}}</a>
                                                     <span ng-if="!node.job.processClass">-</span>
                                                 </td>
-                                                <td>{{node.numOfOrders || 0}}</td>
+                                                <td>{{node.numOfOrders}}</td>
                                                 <td>
                                                     <span class="label {{node.job.state.severity==0 ? 'bg-green' : node.job.state.severity==1 ? 'bg-gold' : node.job.state.severity==2 ? 'bg-crimson': node.job.state.severity==3 ?'bg-dimgrey':
                                                           node.job.state.severity==4 ? 'bg-transparent': node.job.state.severity==5 ? 'bg-dark-orange' : node.job.state.severity==6 ? 'bg-corn-flower-blue' :node.job.state.severity==7 ? 'bg-dark-magenta' : node.job.state.severity==8 ? 'bg-chocolate' : ''}}" ng-if="node.job.state"

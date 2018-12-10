@@ -8,14 +8,6 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.schedules.length>0}">
                         <div class="hide" ng-class="{'show-block':resourceFilters.state=='agent'}">
-                            <div class="show-inline">
-                                <span class="upper-check m-r-sm">
-                                    <label class="md-check">
-                                        <input type="checkbox" ng-model="agentsFilters.isCompact" ng-change="toggleCompactView()">
-                                        <i class="primary"></i><span translate>label.compact</span>
-                                    </label>
-                                </span>
-                            </div>
                             <div class="btn-group hidden-btn-group">
                                 <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state" uib-btn-radio="'all'"
                                         ng-class="{'btn-primary': agentsFilters.filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster
@@ -451,6 +443,11 @@
             </div>
             <div class="text-right m-t-sm1" >
                 <div ng-if="(resourceFilters.state == 'agent' || resourceFilters.state == 'schedules' || resourceFilters.state == 'processClass')">
+                    <div class="show-inline pull-right" ng-if="resourceFilters.state == 'agent'">
+                        <button class="hide btn btn-grey btn-sm button-group-ellipsis m-l-sm" ng-class="{'btn-primary': agentsFilters.isCompact == true, 'show-block':allAgentClusters.length>0}"
+                            ng-click="toggleCompactView()" translate>button.compactView
+                        </button>
+                    </div>
                     <div class="inline pull-right m-l" ng-if="pageView!='grid' && ((allAgentClusters && allAgentClusters.length>0) || (allSchedules && allSchedules.length>0) ||
                     (allProcessClasses && allProcessClasses.length>0))">
                         <button class="btn btn-sm btn-grey button-group-ellipsis" ng-click="expandDetails()" >

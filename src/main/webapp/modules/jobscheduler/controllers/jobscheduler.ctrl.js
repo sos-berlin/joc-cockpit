@@ -62,7 +62,8 @@
         }
 
         vm.toggleCompactView = function(){
-            vm.userPreferences.isAgentCompact = vm.jobChainFilters.isCompact;
+            vm.agentsFilters.isCompact = !vm.agentsFilters.isCompact;
+            vm.userPreferences.isAgentCompact = vm.agentsFilters.isCompact;
             vm.saveProfileSettings(vm.userPreferences);
         };
 
