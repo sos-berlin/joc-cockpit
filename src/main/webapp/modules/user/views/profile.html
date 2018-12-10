@@ -292,6 +292,19 @@
                        </div>
                    </div>
                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showDocumentations</div>
+                       <div class="col-sm-6">
+                           <label class="md-check w">
+                               <input type="radio" name="doc" ng-model="upc.preferences.isDocNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.newWindow</span>
+                           </label>
+                           <label class="md-check w">
+                               <input type="radio" name="doc" ng-model="upc.preferences.isDocNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i> <span translate>label.newTab</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.defaultHistoryTab</div>
                        <div class="col-sm-6">
                            <label class="md-check w">

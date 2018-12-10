@@ -36,6 +36,8 @@
                             <div class="text-left block-ellipsis">
                                 <span class="text-left">
                                     <i class="fa fa-lock text-sm "></i>
+                                    <i ng-if="lock.documentation && !permission.Lock.view.documentation" class="fa fa-book"></i>
+                                    <i ng-if="lock.documentation && permission.Lock.view.documentation" ng-click="showDocumentation('lock', lock.path)" class="cursor fa fa-book"></i>
                                     <span ng-bind-html="lock.name | highlight:locksFilters.searchText"></span>
                                 </span>
                             </div>
@@ -131,8 +133,14 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-bind-html="lock.name | highlight:locksFilters.searchText"></td>
-                            <td ng-bind-html="lock.path | highlight:locksFilters.searchText"></td>
+                            <td>
+                                <i ng-if="lock.documentation && !permission.Lock.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="lock.documentation && permission.Lock.view.documentation" ng-click="showDocumentation('lock', lock.path)" class="cursor fa fa-book"></i>
+                                <span ng-bind-html="lock.name | highlight:locksFilters.searchText"></span>
+                            </td>
+                            <td>
+                                <span ng-bind-html="lock.path | highlight:locksFilters.searchText"></span>
+                            </td>
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>

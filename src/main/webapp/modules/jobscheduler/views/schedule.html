@@ -34,15 +34,13 @@
                         <tr >
                             <td>
                                 <div class="btn-group dropdown">
-                                    <a class="more-option-h" href dropdown data-toggle="dropdown"><i
-                                            class="fa fa-ellipsis-h"></i></a>
+                                    <a class="more-option-h" href dropdown data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)"
                                            translate>button.addSubstitute</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
-                                           class="hide dropdown-item"
-                                           ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                           class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         <div class="dropdown-divider"></div>
                                         <a href class="dropdown-item" ng-click="assignedDocument(schedule)" ng-if="permission.Schedule.assignDocumentation">
                                             <span translate>button.assignedDocumentation</span>
@@ -59,6 +57,8 @@
                             <td>
                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!schedule.show" ng-click="schedule.show = true"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
+                                <i ng-if="schedule.documentation && !permission.Schedule.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="schedule.documentation && permission.Schedule.view.documentation" ng-click="showDocumentation('schedule', schedule.path)" class="cursor fa fa-book"></i>
                                 <span ng-class="{'crimson':schedule.configurationStatus.severity==2}">{{schedule.name}}</span>
                                 <span ng-if="schedule.title">-</span>
                                 <i class="text-muted" ng-bind-html="schedule.title | linky:'_blank'" ></i>

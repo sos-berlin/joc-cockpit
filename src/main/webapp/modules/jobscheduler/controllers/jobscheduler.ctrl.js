@@ -2487,8 +2487,7 @@
         };
 
         function filteredTreeDataP() {
-
-            for (var i = 0; i < vm.treeProcess.length; i++) {
+            for (let i = 0; i < vm.treeProcess.length; i++) {
                 if ($rootScope.process_class_expand_to) {
                     vm.expand_to = angular.copy($rootScope.process_class_expand_to);
                     splitPath = vm.expand_to.path.split('/');
@@ -2521,7 +2520,7 @@
         function insertDataP(node, x) {
             var _temp = angular.copy(node.processClasses);
             node.processClasses = [];
-            for (var i = 0; i < x.length; i++) {
+            for (let i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1) == node.path)) {
                     x[i].path1 = node.path;
                     if (_temp && _temp.length > 0) {
@@ -2616,6 +2615,7 @@
                         angular.forEach(res.processClasses, function (processClassData) {
                             if (processClass.path == processClassData.path) {
                                 processClassData.maxProcesses = processClass.maxProcesses;
+                                processClassData.documentation = processClass.documentation;
                                 processClass = processClassData;
                             }
                         });
@@ -2668,12 +2668,12 @@
 
         function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
-
                 if (data.processClasses.length > 0) {
                     angular.forEach(data.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
                             if (processClass.path == processClassData.path) {
                                 processClassData.maxProcesses = processClass.maxProcesses;
+                                processClassData.documentation = processClass.documentation;
                                 processClass = processClassData;
                             }
                         });
@@ -2729,6 +2729,7 @@
                         angular.forEach(res.processClasses, function (processClassData) {
                             if (processClass.path == processClassData.path) {
                                 processClassData.maxProcesses = processClass.maxProcesses;
+                                processClassData.documentation = processClass.documentation;
                                 processClass = processClassData;
                             }
                         });
@@ -4912,7 +4913,7 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
 
-                ResourceService.assign(type, obj).then(function (res) {
+                ResourceService.assign(type === 'processClass' ? 'process_class' : type, obj).then(function (res) {
                     data.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -4928,8 +4929,8 @@
             vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocument = function(data) {
-            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'process_class' : 'lock';
+        vm.unassignedDocument = function (data) {
+            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'processClass' : 'lock';
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj[type] = data.path;
             if (vm.userPreferences.auditLog) {
@@ -4954,14 +4955,14 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    ResourceService.unassign(type, obj).then(function () {
+                    ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
                         data.documentation = undefined;
                     });
                 }, function () {
 
                 });
             } else {
-                ResourceService.unassign(type, obj).then(function () {
+                ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
                     data.documentation = undefined;
                 });
             }
@@ -5283,8 +5284,8 @@
         });
     }
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver', 'AuditLogService', '$window','SOSAuth' ];
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver, AuditLogService, $window, SOSAuth) {
+    ResourceInfoCtrl.$inject = ['$scope', '$rootScope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver', 'AuditLogService', '$window','SOSAuth' ];
+    function ResourceInfoCtrl($scope, $rootScope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver, AuditLogService, $window, SOSAuth) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -5960,7 +5961,7 @@
             deleteDocumentFn(obj, document);
         };
 
-        function deleteDocument(obj, document) {
+        function deleteDocument(obj) {
             ResourceService.deleteDocumentations(obj).then(function () {
                 vm.allDocumentations =[];
             });
@@ -5988,7 +5989,7 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteDocument(obj, document);
+                    deleteDocument(obj);
                 }, function () {
 
                 });
@@ -6001,12 +6002,95 @@
                     backdrop: 'static'
                 });
                 modalInstance1.result.then(function () {
-                    deleteDocument(obj, document);
+                    deleteDocument(obj);
                 }, function () {
 
                 });
             }
         }
+
+        vm.assignedDocument = function (data) {
+            vm.assignObj = {
+                type: $state.current.name === 'app.schedule' ? 'Schedule' : $state.current.name === 'app.calendar' ? 'Calendar' : $state.current.name === 'app.processClass' ? 'Process Class' : 'Lock',
+                path: data.path,
+            };
+            let type = $state.current.name === 'app.schedule' ? 'schedule' : $state.current.name === 'app.calendar' ? 'calendar' : $state.current.name === 'app.processClass' ? 'processClass' : 'lock';
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj[type] = data.path;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+
+                ResourceService.assign(type === 'processClass' ? 'process_class' : type, obj).then(function (res) {
+                    data.documentation = vm.assignObj.documentation;
+                });
+            }, function () {
+
+            });
+        };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            vm.assignObj.documentation = path;
+        });
+
+        vm.unassignedDocument = function (data) {
+            let type = $state.current.name === 'app.schedule' ? 'schedule' : $state.current.name === 'app.calendar' ? 'calendar' : $state.current.name === 'app.processClass' ? 'processClass' : 'lock';
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            obj[type] = data.path;
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = data.path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = $state.current.name === 'app.schedule' ? 'Schedule' : $state.current.name === 'app.calendar' ? 'Calendar' : $state.current.name === 'app.processClass' ? 'Process Class' : 'Lock';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                        data.documentation = undefined;
+                    });
+                }, function () {
+
+                });
+            } else {
+                ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                    data.documentation = undefined;
+                });
+            }
+        };
 
         vm.previewDocument = function (document) {
             let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;

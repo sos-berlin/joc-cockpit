@@ -1824,6 +1824,39 @@
             });
         };
 
+        vm.assignedDocumentJob = function(job) {
+            vm.assignObj = {
+                type: 'Job',
+                path: job.path,
+            };
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+                JobService.assign(obj).then(function(res){
+                    job.documentation = vm.assignObj.documentation;
+                });
+            }, function () {
+
+            });
+        };
+
         vm.getDocumentTreeStructure = function () {
             $rootScope.$broadcast('initTree');
         };
@@ -1866,6 +1899,42 @@
             } else {
                 JobChainService.unassign(obj).then(function () {
                     jobChain.documentation = undefined;
+                });
+            }
+        };
+
+        vm.unassignedDocumentJob = function(job) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = job.path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    JobService.unassign(obj).then(function () {
+                        job.documentation = undefined;
+                    });
+                }, function () {
+
+                });
+            } else {
+                JobService.unassign(obj).then(function () {
+                    job.documentation = undefined;
                 });
             }
         };

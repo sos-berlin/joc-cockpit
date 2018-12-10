@@ -19,7 +19,7 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
-                            <th ng-if="permission.Lock.view.configuration" class="menu"><span translate>label.action</span></th>
+                            <th class="menu"><span translate>label.action</span></th>
                             <th><span translate>label.lockName</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.maxNonExclusive</span></th>
@@ -29,7 +29,7 @@
                         </thead>
                         <tbody ng-repeat="lock in locks">
                         <tr title="{{lock.configurationStatus._text | translate}}">
-                            <td ng-if="permission.Lock.view.configuration">
+                            <td>
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                         <i class="fa fa-ellipsis-h"></i></button>
@@ -48,7 +48,11 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-bind="lock.name || '-'"></td>
+                            <td>
+                                <i ng-if="lock.documentation && !permission.Lock.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="lock.documentation && permission.Lock.view.documentation" ng-click="showDocumentation('lock', lock.path)" class="cursor fa fa-book"></i>
+                                <span ng-bind="lock.name"></span>
+                            </td>
                             <td>{{lock.path}}</td>
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>

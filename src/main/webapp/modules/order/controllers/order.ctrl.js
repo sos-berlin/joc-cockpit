@@ -32,6 +32,7 @@
                         for (let i = 0; i < res.orders.length; i++) {
                             if (order.path === res.orders[i].path) {
                                 res.orders[i].title = angular.copy(order.title);
+                                res.orders[i].documentation = angular.copy(order.documentation);
                                 res.orders[i].params = angular.copy(order.params);
                                 res.orders[i].show = angular.copy(order.show);
                                 order = res.orders[i];
@@ -320,7 +321,8 @@
                     if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
-                            jobs: [{job: val.job.path}]
+                            jobs: [{job: val.job.path}],
+                            compactView : vm.userPreferences.isCompact
                         }).then(function (res1) {
                             vm.jobChain.nodes[index].job = _.merge(vm.jobChain.nodes[index].job, res1.jobs[0]);
                         });
@@ -3629,6 +3631,7 @@
                                 res.orders[i].title = angular.copy(data1.orders[x].title);
                                 res.orders[i].path1 = angular.copy(data1.orders[x].path1);
                                 res.orders[i].show = angular.copy(data1.orders[x].show);
+                                res.orders[i].documentation = angular.copy(data1.orders[x].documentation);
                                 data1.orders[x] = res.orders[i];
                                 data.push(data1.orders[x]);
                                 res.orders.splice(i, 1);
@@ -3844,6 +3847,7 @@
                                 res.orders[i].title = vm.allOrders[x].title;
                                 res.orders[i].path1 = vm.allOrders[x].path1;
                                 res.orders[i].show = vm.allOrders[x].show;
+                                res.orders[i].documentation = vm.allOrders[x].documentation;
                                 vm.allOrders[x] = res.orders[i];
                                 res.orders.splice(i, 1);
                                 break;
@@ -3937,6 +3941,7 @@
                                 if (vm.allOrders[m].path === res.orders[i].path) {
                                     res.orders[i].title = angular.copy(vm.allOrders[m].title);
                                     res.orders[i].show = angular.copy(vm.allOrders[m].show);
+                                    res.orders[i].documentation = angular.copy(vm.allOrders[m].documentation);
                                     vm.allOrders[m] = res.orders[i];
                                     res.orders.splice(i, 1);
                                     break;
@@ -4130,6 +4135,7 @@
                             for (let i = 0; i < result.orders.length; i++) {
                                 if (vm.allOrders[x].path === result.orders[i].path) {
                                     vm.allOrders[x].title = result.orders[i].title;
+                                    vm.allOrders[x].documentation = result.orders[i].documentation;
                                     result.orders.splice(i, 1);
                                     break;
                                 }
@@ -4972,6 +4978,7 @@
                                             delete mapObj[vm.events[0].eventSnapshots[m].path];
                                             if (res.order && res.order.path === vm.allOrders[i].path) {
                                                 res.order.title = angular.copy(vm.allOrders[i].title);
+                                                res.order.documentation = angular.copy(vm.allOrders[i].documentation);
                                                 res.order.path1 = angular.copy(vm.allOrders[i].path1);
                                                 res.order.params = angular.copy(vm.allOrders[i].params);
                                                 res.order.show = angular.copy(vm.allOrders[i].show);
@@ -4997,6 +5004,7 @@
                                                 flag = true;
                                                 if (res.order.processingState._text === vm.orderFilters.filter.state) {
                                                     res.order.title = angular.copy(vm.allOrders[i].title);
+                                                    res.order.documentation = angular.copy(vm.allOrders[i].documentation);
                                                     res.order.path1 = angular.copy(vm.allOrders[i].path1);
                                                     res.order.params = angular.copy(vm.allOrders[i].params);
                                                     res.order.show = angular.copy(vm.allOrders[i].show);
@@ -5039,6 +5047,7 @@
                                             for (let i = 0; i < res.orders.length; i++) {
                                                 if (vm.allOrders[m].path === res.orders[i].path) {
                                                     res.orders[i].title = angular.copy(vm.allOrders[m].title);
+                                                    res.orders[i].documentation = angular.copy(vm.allOrders[m].documentation);
                                                     res.orders[i].show = angular.copy(vm.allOrders[m].show);
                                                     res.orders[i].path1 = angular.copy(vm.allOrders[m].path1);
                                                     vm.allOrders[m] = res.orders[i];
@@ -5202,6 +5211,7 @@
                             for (let i = 0; i < res.orders.length; i++) {
                                 if (vm.allOrders[m].path === res.orders[i].path) {
                                     res.orders[i].title = angular.copy(vm.allOrders[m].title);
+                                    res.orders[i].documentation = angular.copy(vm.allOrders[m].documentation);
                                     res.orders[i].show = angular.copy(vm.allOrders[m].show);
                                     res.orders[i].path1 = angular.copy(vm.allOrders[m].path1);
                                     vm.allOrders[m] = res.orders[i];

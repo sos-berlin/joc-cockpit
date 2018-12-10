@@ -95,15 +95,15 @@
                             </div>
                             <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                                  ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
-                                <div class="box card {{job.state.severity==0 ? 'green-box' : job.state.severity==1 ? 'gold-box' : job.state.severity==2 ? 'crimson-box': job.state.severity==3 ?'dimgrey-box':
-                                              job.state.severity==4 ? 'text-dark-box': job.state.severity==5 ? 'dark-orange-box' : job.state.severity==6 ? 'corn-flower-blue-box' :job.state.severity==7 ? 'dark-magenta-box' : job.state.severity==8 ? 'chocolate-box' : ''}}">
+                                <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
                                     <div class="box-body" title="{{job.configurationStatus._text | translate}}">
                                         <label class="md-check pos-abt" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                             <input type="checkbox" data-checklist-model="object.jobs"
                                                    data-checklist-value="job"><i class="primary"></i>
                                         </label>
-                                        <div class="text-left block-ellipsis"
-                                             ng-class="{'m-l-md':permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate}">
+                                        <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate}">
+                                            <i ng-if="job.documentation && !permission.Job.view.documentation" class="fa fa-book"></i>
+                                            <i ng-if="job.documentation && permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)" class="cursor fa fa-book"></i>
                                             <span uib-tooltip="{{job.title}}" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                                   ng-bind="job.name"></span>
                                         </div>
@@ -363,6 +363,8 @@
                                     <span class="show-in-single-line">
                                         <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                         <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="job.showJobChains" ng-click="hideJobChains(job)"></i>
+                                        <i ng-if="job.documentation && !permission.Job.view.documentation" class="fa fa-book"></i>
+                                        <i ng-if="job.documentation && permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)" class="cursor fa fa-book"></i>
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                               ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}"
                                               ng-bind="job.name">

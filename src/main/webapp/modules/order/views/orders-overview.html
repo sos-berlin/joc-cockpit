@@ -164,6 +164,8 @@
                                             </label>
                                             <div class="text-left block-ellipsis"
                                                  ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
+                                                <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
+                                                <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
                                                 <span uib-tooltip="{{order.title}}" ng-bind="order.orderId"></span>
                                             </div>
                                             <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -410,6 +412,8 @@
                                         <span class="show-in-single-line">
                                             <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
                                             <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
+                                            <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
+                                            <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
                                             <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)">{{order.orderId}}</span>
                                         </span>
                                         <span ng-if="order.title">-</span>

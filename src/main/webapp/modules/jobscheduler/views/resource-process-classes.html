@@ -35,7 +35,9 @@
                             <div class="text-left block-ellipsis">
                                 <span>
                                     <i class="fa fa-stop text-sm text-orange" ng-class="{'text-success': processClass.numOfProcesses>0 }"></i>
-                                    <span class="text" ng-bind="processClass.name"></span>
+                                    <i ng-if="processClass.documentation && !permission.ProcessClass.view.documentation" class="fa fa-book"></i>
+                                    <i ng-if="processClass.documentation && permission.ProcessClass.view.documentation" ng-click="showDocumentation('processClass', processClass.path)" class="cursor fa fa-book"></i>
+                                    <span class="text" ng-bind-html="processClass.name | highlight:processFilters.searchText"></span>
                                 </span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown">
@@ -101,7 +103,7 @@
                     </tr>
                     </thead>
                     <tbody ng-repeat="processClass in filteredP = (allProcessClasses | filter: {path: processFilters.searchText}) | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
-                    <tr >
+                    <tr>
                         <td>
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
@@ -129,7 +131,9 @@
                             <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
-                                <span ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name" ></span>
+                                <i ng-if="processClass.documentation && !permission.ProcessClass.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="processClass.documentation && permission.ProcessClass.view.documentation" ng-click="showDocumentation('processClass', processClass.path)" class="cursor fa fa-book"></i>
+                                <span ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind-html="processClass.name | highlight:processFilters.searchText" ></span>
                             </span>
                         </td>
                         <td ng-bind-html="processClass.path | highlight:processFilters.searchText"></td>
@@ -176,7 +180,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div ng-if="!processClass.processes || processClass.processes.length === 0" translate>message.noDataFound</div>
+                                <div class="m-l-sm" ng-if="!processClass.processes || processClass.processes.length === 0" translate>message.noDataFound</div>
                             </td>
                         </tr>
                     </tbody>

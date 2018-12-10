@@ -1372,5 +1372,6 @@
   "message.deleteAllDocument": "Are you sure you want to delete all Documentations?",
   "label.deleteAllDocument": "Delete all Documentations",
   "tooltip.removeFile": "Remove file",
-  "button.compactView": "Compact View"
+  "button.compactView": "Compact View",
+  "label.showDocumentations": "Show Documentations"
 }

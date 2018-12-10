@@ -36,9 +36,10 @@
                                 <label class="md-check pos-abt" ng-if="permission.Calendar.edit.delete">
                                     <input type="checkbox" data-checklist-model="object.calendars" data-checklist-value="calendar"><i class="primary"></i>
                                 </label>
-
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Calendar.edit.delete}">
                                     <span class="text-sm fa" ng-class="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
+                                    <i ng-if="calendar.documentation && !permission.Calendar.view.documentation" class="fa fa-book"></i>
+                                    <i ng-if="calendar.documentation && permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)" class="cursor fa fa-book"></i>
                                     <span uib-tooltip="{{calendar.title}}" ng-bind-html="calendar.name | highlight:calendarFilters.searchText"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -173,6 +174,8 @@
                          </td>
                         <td>
                          <span>
+                             <i ng-if="calendar.documentation && !permission.Calendar.view.documentation" class="fa fa-book"></i>
+                             <i ng-if="calendar.documentation && permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)" class="cursor fa fa-book"></i>
                              <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)" ng-bind-html="calendar.name  | highlight:calendarFilters.searchText"></a>
                              <span ng-if="calendar.title">-</span>
                              <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>

@@ -90,6 +90,8 @@
                             </td>
                             <td>
                                 <span class="show-in-single-line">
+                                    <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
+                                    <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
                                     <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)">{{order.orderId}}</span>

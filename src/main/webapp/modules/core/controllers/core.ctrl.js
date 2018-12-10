@@ -238,6 +238,7 @@
                 preferences.maxEntryPerPage = '1000';
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
+                preferences.isDocNewWindow = 'newTab';
                 preferences.historyTab = 'order';
                 preferences.expandOption = 'single';
                 preferences.pageView = 'list';
@@ -316,6 +317,9 @@
                         }
                         if (preferences && !preferences.expandOption) {
                             preferences.expandOption = 'single';
+                        }
+                        if (preferences && !preferences.isDocNewWindow) {
+                            preferences.isDocNewWindow = 'newTab';
                         }
                         if (preferences && !preferences.maxNumInOrderOverviewPerObject) {
                             preferences.maxNumInOrderOverviewPerObject = 10;
@@ -470,9 +474,13 @@
             }
             if (link != '') {
                 link = link + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
-                $window.open(link, '_blank');
+                if(vm.userPreferences.isDocNewWindow === 'newWindow'){
+        
+                    $window.open(link, "Documenation, top=0,left=0" + windowProperties, true);
+                }else{
+                    $window.open(link, '_blank');
+                }
             }
-
         };
 
         if (!$window.localStorage.log_window_wt) {
@@ -2374,7 +2382,7 @@
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.compact = true;
-                obj.types = ['html','xml','markdown'];
+                obj.types = ['assignTypes'];
                 obj.folders = [{folder: data.path, recursive: false}];
                 ResourceService.getDocumentations(obj).then(function (res) {
                     data.documents = res.documentations

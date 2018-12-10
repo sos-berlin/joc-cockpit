@@ -338,8 +338,7 @@
                                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                                 </div>
                                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12" ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse track by $index">
-                                    <div class="box card {{order.processingState.severity==0 ? 'green-box' : order.processingState.severity==1 ? 'gold-box' : order.processingState.severity==2 ? 'crimson-box': order.processingState.severity==3 ?'dimgrey-box':
-                                              order.processingState.severity==4 ? 'text-dark-box': order.processingState.severity==5 ? 'dark-orange-box' : order.processingState.severity==6 ? 'corn-flower-blue-box' :order.processingState.severity==7 ? 'dark-magenta-box' : order.processingState.severity==8 ? 'chocolate-box' : ''}}">
+                                    <div class="box card" ng-class="colorBorderFunction(order.processingState.severity)">
                                         <div class="box-body" title="{{order.configurationStatus._text | translate}}">
                                             <div>
                                                 <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
@@ -347,7 +346,9 @@
                                                     <i class="primary"></i>
                                                 </label>
                                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
-                                                    <span uib-tooltip="{{order.title}}"  ng-class="{'crimson':job.configurationStatus.severity==2}" >{{order.orderId}}</span></div>
+                                                    <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
+                                                    <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
+                                                    <span uib-tooltip="{{order.title}}"  ng-class="{'crimson':job.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:orderFilters.searchText"></span></div>
                                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                                     <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                                         <i class="text fa fa-ellipsis-h"></i></a>
@@ -381,9 +382,9 @@
                                                            ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                         <a href ng-if="(order.processingState._text != 'BLACKLIST') && permission.Calendar.view.status && order._type !='AD_HOC'"
                                                            class="dropdown-item" ng-click="showAssignedCalendar(order)"  translate>button.showAssignedCalendar</a>
-                                                        <div class="dropdown-divider"></div>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="dropdown-item"
                                                            ng-if="permission.Order.view.configuration && order._type =='PERMANENT'" translate>button.showConfiguration</a>
+                                                        <div class="dropdown-divider"></div>
                                                         <a href class="dropdown-item" ng-click="assignedDocument(order)" ng-if="permission.Order.assignDocumentation"
                                                            translate>button.assignedDocumentation</a>
                                                         <a href class="dropdown-item" ng-click="unassignedDocument(order)" ng-if="permission.Order.assignDocumentation && order.documentation"
@@ -577,6 +578,8 @@
                                             <span class="show-in-single-line">
                                                 <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
                                                 <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order);"></i>
+                                                <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
+                                                <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
                                                 <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)" ng-class="{'crimson':order.configurationStatus.severity==2}" ng-bind-html="order.orderId | highlight:orderFilters.searchText"></span>
                                             </span>
                                             <span ng-if="order.title">-</span>

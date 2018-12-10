@@ -38,6 +38,8 @@
                                 </label>
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.change.addSubstitute}">
+                                    <i ng-if="schedule.documentation && !permission.Schedule.view.documentation" class="fa fa-book"></i>
+                                    <i ng-if="schedule.documentation && permission.Schedule.view.documentation" ng-click="showDocumentation('schedule', schedule.path)" class="cursor fa fa-book"></i>
                                     <span uib-tooltip="{{schedule.title}}" ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind-html="schedule.name | highlight:scheduleFilters.searchText"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
@@ -197,6 +199,8 @@
                             <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!schedule.show" ng-click="schedule.show = true"></i>
                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
+                                <i ng-if="schedule.documentation && !permission.Schedule.view.documentation" class="fa fa-book"></i>
+                                <i ng-if="schedule.documentation && permission.Schedule.view.documentation" ng-click="showDocumentation('schedule', schedule.path)" class="cursor fa fa-book"></i>
                                 <span ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind-html="schedule.name | highlight:scheduleFilters.searchText"></span>
                             </span>
                             <span ng-if="schedule.title">-</span>
