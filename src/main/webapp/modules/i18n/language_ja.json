@@ -1347,6 +1347,7 @@
   "label.calendarName": "カレンダー名",
   "label.totalNumberOfJobExecutions": "合計ジョブ実行数",
   "label.documentation": "ドキュメント",
+  "label.displayDocumentation": "ドキュメント表示",
   "label.documentations": "ドキュメント",
   "label.documentName": "ドキュメント名",
   "label.assignDocumentation": "ドキュメントを割当",
