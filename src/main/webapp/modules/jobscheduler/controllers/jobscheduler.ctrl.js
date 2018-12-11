@@ -4890,7 +4890,7 @@
                 type: vm.resourceFilters.state === 'schedules' ? 'Schedule' : vm.resourceFilters.state === 'calendars' ? 'Calendar' : vm.resourceFilters.state === 'processClass' ? 'Process Class' : 'Lock',
                 path: data.path,
             };
-            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'process_class' : 'lock';
+            let type = vm.resourceFilters.state === 'schedules' ? 'schedule' : vm.resourceFilters.state === 'calendars' ? 'calendar' : vm.resourceFilters.state === 'processClass' ? 'processClass' : 'lock';
             let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj[type] = data.path;
             vm.comments = {};
@@ -4913,7 +4913,7 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
 
-                ResourceService.assign(type === 'processClass' ? 'process_class' : type, obj).then(function (res) {
+                ResourceService.assign(type, obj).then(function (res) {
                     data.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -4955,14 +4955,14 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                    ResourceService.unassign(type, obj).then(function () {
                         data.documentation = undefined;
                     });
                 }, function () {
 
                 });
             } else {
-                ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                ResourceService.unassign(type, obj).then(function () {
                     data.documentation = undefined;
                 });
             }
@@ -6037,7 +6037,7 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
 
-                ResourceService.assign(type === 'processClass' ? 'process_class' : type, obj).then(function (res) {
+                ResourceService.assign(type, obj).then(function (res) {
                     data.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -6079,14 +6079,14 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                    ResourceService.unassign(type, obj).then(function () {
                         data.documentation = undefined;
                     });
                 }, function () {
 
                 });
             } else {
-                ResourceService.unassign(type === 'processClass' ? 'process_class' : type, obj).then(function () {
+                ResourceService.unassign(type, obj).then(function () {
                     data.documentation = undefined;
                 });
             }

@@ -111,11 +111,28 @@
                 n = moment(n).tz(o.zone), r = moment(r).tz(o.zone);
                 var i = Math.abs(moment(r).diff(n));
                 if (i >= 1e3) {
-                    var a = parseInt(i / 1e3 % 60), s = parseInt(i / 6e4 % 60), f = parseInt(i / 36e5 % 24), u = parseInt(i / 864e5);
+                    var u = parseInt(i / 1e3 % 60), a = parseInt(i / 6e4 % 60), s = parseInt(i / 36e5 % 24), f = parseInt(i / 864e5);
                     a = a>9 ? a : '0'+a;
                     s = s>9 ? s : '0'+s;
                     f = f>9 ? f : '0'+f;
-                    return 0 == u && 0 != f ? f + ":" + s +":" + a + "h" : 0 == f && 0 != s ? s + ":" + a + "min" : 0 == u && 0 == f && 0 == s ? a + "sec" : u > 1 ? u + "days" : u + "day"
+                    if (f == 0 && s != 0) {
+                        return s + ':' + a + 'h';
+                    } else if (s == 0 && a != 0) {
+                        if(f == 1){
+                            return (f*24) + ':' + a + 'h';
+                        }if(f > 1){
+                            return f + 'days';
+                        }else {
+                            return a + ':' + u + 'min';
+                        }
+                    } else if (f == 0 && s == 0 && a == 0) {
+                        return u + 'sec';
+                    } else {
+                        if (f > 1)
+                            return f + 'days';
+                        else
+                            return f + 'day';
+                    }
                 }
                 return t.getString("never")
             }
@@ -133,13 +150,32 @@
             if (e.sessionStorage.preferences) {
                 var n = new Date, r = JSON.parse(e.sessionStorage.preferences);
                 t = moment(t).tz(r.zone), n = moment(n).tz(r.zone);
+
                 var o = Math.abs(moment(n).diff(t));
                 if (o >= 1e3) {
-                    var i = parseInt(o / 1e3 % 60), a = parseInt(o / 6e4 % 60), s = parseInt(o / 36e5 % 24), f = parseInt(o / 864e5);
-                    i = i>9 ? i : '0'+i;
-                    a = a>9 ? a : '0'+a;
-                    s = s>9 ? s : '0'+s;
-                    return 0 == f && 0 != s ? s + ":" + a +":" + i + "h" : 0 == s && 0 != a ? a + ":" + i + "min" : 0 == f && 0 == s && 0 == a ? i + "sec" : f > 1 ? f + "days" : f + "day"
+                    var i = parseInt((o / 1e3) % 60), a = parseInt((o / 6e4) % 60), s = parseInt((o / 36e5) % 24),
+                        f = parseInt(o / 864e5);
+                    i = i > 9 ? i : '0' + i;
+                    a = a > 9 ? a : '0' + a;
+                    s = s > 9 ? s : '0' + s;
+                    if (f == 0 && s != 0) {
+                        return s + ':' + a + 'h';
+                    } else if (s == 0 && a != 0) {
+                        if(f == 1){
+                            return (f*24) + ':' + a + 'h';
+                        }if(f > 1){
+                            return f + 'days';
+                        }else {
+                            return a + ':' + i + 'min';
+                        }
+                    } else if (f == 0 && s == 0 && a == 0) {
+                        return i + 'sec';
+                    } else {
+                        if (f > 1)
+                            return f + 'days';
+                        else
+                            return f + 'day';
+                    }
                 }
                 return "1sec"
             }

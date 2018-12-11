@@ -901,7 +901,7 @@
                                     <i ng-show="order.filter.sortBy == 'duration' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('node')"><a><span translate>label.node</span>
+                                <th class="dynamic-thead" ng-click="sortBy('node')"><a><span translate>label.node</span>
                                     <i ng-show="order.filter.sortBy == 'node' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="order.filter.sortBy == 'node' && order.sortReverse"
@@ -1022,7 +1022,7 @@
                                         <td class="dynamic-thead2" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span  ng-bind="child.startTime | stringToDate"></span></td>
                                         <td class="dynamic-thead3" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.endTime | stringToDate"></span></td>
                                         <td class="dynamic-thead4" ng-click="showLogWindow(child,null,null,child.jobschedulerId)"><span ng-if="child.endTime" ng-bind="child.startTime | duration:child.endTime"></span></td>
-                                        <td ng-click="showLogWindow(child,null,null,child.jobschedulerId)" ng-bind="child.node || '-' "></td>
+                                        <td class="dynamic-thead5" ng-click="showLogWindow(child,null,null,child.jobschedulerId)" ng-bind="child.node || '-' "></td>
                                     </tr>
                                     <tr class="tableexport-ignore" ng-if="child.show">
                                         <td></td>

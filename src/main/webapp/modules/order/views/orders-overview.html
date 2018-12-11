@@ -154,8 +154,7 @@
                             </div>
                             <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 "
                                  ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse">
-                                <div class="box card {{order.processingState.severity==0 ? 'green-box' : order.processingState.severity==1 ? 'gold-box' : order.processingState.severity==2 ? 'crimson-box': order.processingState.severity==3 ?'dimgrey-box':
-                                              order.processingState.severity==4 ? 'text-dark-box': order.processingState.severity==5 ? 'dark-orange-box' : order.processingState.severity==6 ? 'corn-flower-blue-box' :order.processingState.severity==7 ? 'dark-magenta-box' : order.processingState.severity==8 ? 'chocolate-box' : ''}}">
+                                <div class="box card" ng-class="colorBorderFunction(order.processingState.severity)">
                                     <div class="box-body">
                                         <div>
                                             <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">

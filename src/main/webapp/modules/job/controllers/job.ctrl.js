@@ -64,6 +64,9 @@
                             dest.nodes[i] = sour.nodes[j];
                             sour.nodes.splice(j, 1);
                             break;
+                        } else {
+                            if(dest.nodes[i].jobChain.path == sour.nodes[j].jobChain.path)
+                                dest.nodes[i].jobChain.documentation = sour.nodes[j].jobChain.documentation;
                         }
                     }
                     if (dest.nodes[i].jobChain && nestedJobChain)
@@ -2617,7 +2620,8 @@
                 JobChainService.getJobChain({
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: jobChain.path,
-                    maxOrders: vm.userPreferences.maxOrderPerJobchain
+                    maxOrders: vm.userPreferences.maxOrderPerJobchain,
+                    compactView : vm.jobChainFilters.isCompact
                 }).then(function (res) {
                     jobChain = mergePermanentAndVolatile(res.jobChain, jobChain, res.nestedJobChains);
                     if (vm.userPreferences.showTasks) {

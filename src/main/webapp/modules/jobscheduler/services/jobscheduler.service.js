@@ -121,16 +121,6 @@
                 });
                 return deferred.promise;
             },
-            importDocumentations: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentations/import');
-                Documentations.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             deleteDocumentations: function (filter) {
                 var deferred = $q.defer();
                 var Documentations = $resource('documentations/delete');
@@ -151,19 +141,10 @@
                 });
                 return deferred.promise;
             },
-            documentationUrl: function (filter) {
-                var deferred = $q.defer();
-                var Documentations = $resource('documentation/url');
-                Documentations.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             assign: function (objType, filter) {
                 var deferred = $q.defer();
-                var Job = $resource(objType + '/documentation/assign');
+                let resType = objType === 'processClass' ? 'process_class' : objType;
+                var Job = $resource(resType + '/documentation/assign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -173,7 +154,8 @@
             },
             unassign: function (objType, filter) {
                 var deferred = $q.defer();
-                var Job = $resource(objType + '/documentation/unassign');
+                let resType = objType === 'processClass' ? 'process_class' : objType;
+                var Job = $resource(resType + '/documentation/unassign');
                 Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

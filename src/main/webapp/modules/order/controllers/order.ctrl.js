@@ -321,8 +321,7 @@
                     if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
-                            jobs: [{job: val.job.path}],
-                            compactView : vm.userPreferences.isCompact
+                            jobs: [{job: val.job.path}]
                         }).then(function (res1) {
                             vm.jobChain.nodes[index].job = _.merge(vm.jobChain.nodes[index].job, res1.jobs[0]);
                         });
@@ -830,6 +829,252 @@
                 });
             } else {
                 JobService.unstop(jobs);
+            }
+        };
+
+     vm.assignedDocumentJobChain = function(jobChain) {
+            vm.assignObj = {
+                type: 'Job Chain',
+                path: jobChain.path,
+            };
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain : jobChain.path};
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+                JobChainService.assign(obj).then(function(res){
+                    jobChain.documentation = vm.assignObj.documentation;
+                });
+            }, function () {
+
+            });
+        };
+
+        vm.assignedDocumentJob = function(job) {
+            vm.assignObj = {
+                type: 'Job',
+                path: job.path,
+            };
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+                JobService.assign(obj).then(function(res){
+                    job.documentation = vm.assignObj.documentation;
+                });
+            }, function () {
+
+            });
+        };
+
+        vm.getDocumentTreeStructure = function () {
+            $rootScope.$broadcast('initTree');
+        };
+
+        vm.$on('closeDocumentTree', function (evn, path) {
+            if(vm.assignObj)
+                vm.assignObj.documentation = path;
+        });
+
+        vm.unassignedDocumentJobChain = function(jobChain) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = jobChain.path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = 'Job Chain';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    JobChainService.unassign(obj).then(function () {
+                        jobChain.documentation = undefined;
+                    });
+                }, function () {
+
+                });
+            } else {
+                JobChainService.unassign(obj).then(function () {
+                    jobChain.documentation = undefined;
+                });
+            }
+        };
+
+        vm.unassignedDocumentJob = function(job) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = job.path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    JobService.unassign(obj).then(function () {
+                        job.documentation = undefined;
+                    });
+                }, function () {
+
+                });
+            } else {
+                JobService.unassign(obj).then(function () {
+                    job.documentation = undefined;
+                });
+            }
+        };
+        vm.assignedDocumentation= function(type,path) {
+            vm.assignObj = {
+                type: type === 'job' ? 'Job' : 'Job Chain',
+                path: path,
+            };
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            if(type === 'job'){
+                obj.job =path;
+            }else{
+                obj.jobChain =path;
+            }
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-document-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                obj.auditLog = {};
+                if (vm.comments.comment)
+                    obj.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj.documentation = vm.assignObj.documentation;
+
+                if (type === 'job') {
+                    JobService.assign(obj).then(function (res) {
+                        $rootScope.$broadcast('reloadJobChain');
+                    });
+                } else {
+                    JobChainService.assign(obj).then(function (res) {
+                        $rootScope.$broadcast('reloadJobChain');
+                    });
+                }
+            }, function () {
+
+            });
+        };
+
+        vm.unassignedDocumentation= function(type,path) {
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            if(type === 'job'){
+                obj.job =path;
+            }else{
+                obj.jobChain =path;
+            }
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'Unassign Documentation';
+                vm.comments.type = type === 'job' ? 'Job' : 'Job Chain';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    if (type === 'job') {
+                        JobService.unassign(obj).then(function () {
+                            $rootScope.$broadcast('reloadJobChain');
+                        });
+                    } else {
+                        JobChainService.unassign(obj).then(function () {
+                            $rootScope.$broadcast('reloadJobChain');
+                        });
+                    }
+                }, function () {
+
+                });
+            } else {
+                if (type === 'job') {
+                    JobService.unassign(obj).then(function () {
+                        $rootScope.$broadcast('reloadJobChain');
+                    });
+                } else {
+                    JobChainService.unassign(obj).then(function () {
+                        $rootScope.$broadcast('reloadJobChain');
+                    });
+                }
             }
         };
 
@@ -2553,6 +2798,7 @@
                 angular.forEach(vm.jobChain.nodes, function (node1, index) {
                     angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
                         if (node1.jobChain.path == chain1.path) {
+                            chain1.documentation = vm.jobChain.nodes[index].jobChain.documentation;
                             vm.jobChain.nodes[index].jobChain = chain1;
                         }
                     });
@@ -5339,8 +5585,23 @@
             obj1.processingStates.push(vm.orderFilters.filter.state);
             vm.status = vm.orderFilters.filter.state;
             OrderService.get(obj1).then(function (res) {
+                let obj = { jobschedulerId : vm.schedulerIds.selected,compact : true,orders :[]};
                 angular.forEach(res.orders, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                    obj.orders.push({jobChain : value.jobChain, orderId : value.orderId});
+                });
+
+                OrderService.getOrdersP(obj).then(function (result) {
+                    for (let m = 0; m < res.orders.length; m++) {
+                        for (let i = 0; i < result.orders.length; i++) {
+                            if (res.orders[m].path === result.orders[i].path) {
+                                res.orders[i].documentation = result.orders[m].documentation;
+                                vm.allOrders[m] = res.orders[i];
+                                res.orders.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
                 });
                 vm.allOrders = res.orders;
                 vm.isLoading = true;
