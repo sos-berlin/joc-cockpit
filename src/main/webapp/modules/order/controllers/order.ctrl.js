@@ -2695,10 +2695,12 @@
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    return;
+                }else {
+                    if (viewDate.getFullYear() > new Date().getFullYear()) {
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
+                    } else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 
@@ -2945,10 +2947,12 @@
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else {
-                    return;
+                }  else {
+                   if (viewDate.getFullYear() > new Date().getFullYear()) {
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
+                    } else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 
@@ -3036,19 +3040,19 @@
             if (order.title)
                 obj.title = order.title;
 
-             if (order.fromDate && order.fromTime) {
-                 if (order.fromTime === '24:00' || order.fromTime === '24:00:00') {
-                     order.fromDate.setDate(order.fromDate.getDate() + 1);
-                     order.fromDate.setHours(0);
-                     order.fromDate.setMinutes(0);
-                     order.fromDate.setSeconds(0);
-                 } else {
-                     order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
-                     order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
-                     order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
-                 }
-                 order.fromDate.setMilliseconds(0);
-             }
+            if (order.fromDate && order.fromTime) {
+                if (order.fromTime === '24:00' || order.fromTime === '24:00:00') {
+                    order.fromDate.setDate(order.fromDate.getDate() + 1);
+                    order.fromDate.setHours(0);
+                    order.fromDate.setMinutes(0);
+                    order.fromDate.setSeconds(0);
+                } else {
+                    order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                    order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                    order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
+                }
+                order.fromDate.setMilliseconds(0);
+            }
             if (order.fromDate && order.at == 'later') {
                 obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
@@ -3512,6 +3516,7 @@
     }
 
     OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location", "TaskService"];
+
     function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location, TaskService) {
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderTab();
@@ -3550,7 +3555,7 @@
         vm.expanding_property = {
             field: "name"
         };
-       if (!vm.schedulerIds.selected) {
+        if (!vm.schedulerIds.selected) {
             vm.isLoading = true;
             return;
         }
@@ -3718,7 +3723,7 @@
                     } else {
                         vm.orderFilters.expand_to = vm.recursiveTreeUpdate(res.folders, vm.orderFilters.expand_to);
                         vm.tree = vm.orderFilters.expand_to;
-                        vm.orderFilters.expand_to= [];
+                        vm.orderFilters.expand_to = [];
                         vm.changeStatus();
                     }
                 }
@@ -7074,10 +7079,12 @@
                     return;
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                } else if (viewDate.getFullYear() >= new Date().getFullYear()) {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    return;
+                    if (viewDate.getFullYear() > new Date().getFullYear()) {
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
+                    } else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 
@@ -7302,13 +7309,11 @@
                 });
             }
             $('#jobChain').find('thead th.menu').each(function () {
-               
                  $('#jobChain td.menu').css('width', $(this).outerWidth() + 'px');
             });
             $('#jobChain').find('thead th.dynamic-thead').each(function (index) {
                 let w = $(this).outerWidth();
                 let elem = '#jobChain td.dynamic-thead' + index;
-                
                 if(index < 2){
                     w = w - 1;
                 }
@@ -7381,13 +7386,13 @@
                 toDate = arr[1].trim();
 
             } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(regex)) {
-              let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
-              let arr = reg[0].split('to');
-              let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
-              let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
+                let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
+                let arr = reg[0].split('to');
+                let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
+                let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
 
-              fromDate = moment.utc(fromTime);
-              toDate = moment.utc(toTime);
+                fromDate = moment.utc(fromTime);
+                toDate = moment.utc(toTime);
             }
 
             if (fromDate) {

@@ -139,6 +139,7 @@
                                 compactView : vm.jobChainFilters.isCompact
                             }).then(function (res1) {
                                 vm.jobChains[0].nodes[index].job = _.merge(vm.jobChains[0].nodes[index].job, res1.jobs[0]);
+                                updatePanelHeight();
                             });
                         }
                     });
@@ -695,7 +696,7 @@
             setTimeout(function(){
                  $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
                  updateDimensions();
-            });
+            },0);
         }
 
         $(window).resize(function () {
@@ -720,7 +721,7 @@
                     vm.resizerHeight = ht + 'px';
                     $('#jobChainDivId').css('height', vm.resizerHeight);
                 }
-            }, 5);
+            }, 10);
         }
 
         function volatileInformation(obj, expandNode, treeUpdate) {
@@ -967,7 +968,11 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    if(viewDate.getFullYear() > new Date().getFullYear()){
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
+                    }else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 
@@ -3866,7 +3871,7 @@
                     vm.resizerHeight = ht + 'px';
                     $('#jobDivId').css('height', vm.resizerHeight);
                 }
-            }, 5);
+            }, 10);
         }
 
         function volatileInformation(obj, expandNode, treeUpdate) {
@@ -5794,7 +5799,11 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    if(viewDate.getFullYear() > new Date().getFullYear()){
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
+                    }else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 
@@ -7542,7 +7551,11 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    if(viewDate.getFullYear() > new Date().getFullYear()){
+                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
+                    }else {
+                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
+                    }
                 }
             }
 

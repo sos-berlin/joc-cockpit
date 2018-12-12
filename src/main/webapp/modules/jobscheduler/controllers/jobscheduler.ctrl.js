@@ -4439,7 +4439,7 @@
                 }
                 vm.resizerHeight = ht + 'px';
                 $('#calendarDivId').css('height', vm.resizerHeight);
-            }, 5);
+            }, 10);
         }
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {

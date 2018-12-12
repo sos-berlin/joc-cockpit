@@ -496,9 +496,9 @@
                         if (item.job) {
                             scope.jobPaths.push(item.job.path);
                             jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
-                            jobName = '<span><i class="fa fa-book p-r-xs" ng-if="jobChainData.nodes[\'' + index + '\'].job.documentation"></i>' + jobName + '</span>';
+                            jobName = '<span><i class="fa fa-book p-r-xs" ng-click="showDocumentation({type:\'job\',path: \'' + item.job.path + '\'});$event.stopPropagation()" ng-if="jobChainData.nodes[\'' + index + '\'].job.documentation"></i>' + jobName + '</span>';
                         } else if (item.jobChain) {
-                            jobName = '<span><i class="fa fa-chain"></i><i class="fa fa-book p-l-sm" ng-if="jobChainData.nodes[\'' + index + '\'].jobChain.documentation"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
+                            jobName = '<span><i class="fa fa-chain"></i><i class="fa fa-book p-l-sm" ng-click="showDocumentation({type:\'jobChain\',path: \'' + item.jobChain.path + '\'});$event.stopPropagation()" ng-if="jobChainData.nodes[\'' + index + '\'].jobChain.documentation"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
                         }
 
                         var nodeName = item.name;

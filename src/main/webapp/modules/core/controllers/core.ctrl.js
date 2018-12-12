@@ -57,7 +57,8 @@
             $rootScope.clientLogFilter = {};
             $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
         }
-        function loadSettingConfiguration() {
+
+        function loadSettingConfiguration(arg) {
             var configObj = {};
             configObj.jobschedulerId = $scope.schedulerIds.selected;
             configObj.account = $scope.permission.user;
@@ -67,20 +68,28 @@
             UserService.configurations(configObj).then(function (res1) {
                 if (res1.configurations && res1.configurations.length > 0) {
                     $window.sessionStorage.settingId = res1.configurations[0].id;
-                    UserService.configuration({
-                        jobschedulerId: $scope.schedulerIds.selected,
-                        id: $window.sessionStorage.settingId
-                    }).then(function (res) {
-                        if (res.configuration && res.configuration.configurationItem) {
-                            $rootScope.clientLogFilter = JSON.parse(res.configuration.configurationItem);
-                        } else {
-                            $rootScope.clientLogFilter.isEnable = false;
-                        }
-                        $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-                    });
+                    if (res1.configurations[0].configurationItem) {
+                        $rootScope.clientLogFilter = JSON.parse(res1.configurations[0].configurationItem);
+                    } else {
+                        $rootScope.clientLogFilter.isEnable = false;
+                    }
+                    $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                } else {
+                    $rootScope.clientLogFilter = {};
+                    $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
+                    $rootScope.clientLogFilter.isEnable = false;
+                    vm.saveSettingConf(true);
                 }
+                if(arg) {
+                    $rootScope.clientLogs = [];
+                    $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+                }
+                setTimeout(function () {
+                    isLoaded = true;
+                },1);
             }, function () {
                 $rootScope.clientLogFilter.isEnable = false;
+                isLoaded = true;
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
             });
         }
@@ -388,7 +397,8 @@
             setPermission();
             setIds();
             if (vm.schedulerIds.selected) {
-                loadSettingConfiguration();
+                isLoaded = false;
+                loadSettingConfiguration(arg);
                 if (vm.username) {
                     getUserProfileConfiguration(vm.schedulerIds.selected, vm.username, arg);
                 }
@@ -523,7 +533,7 @@
             }
         }
 
-        var t1;
+        var t1, isLoaded = true;
         vm.showLogWindow = function (order, task, job, id, transfer) {
             if (!order && !task) {
                 return;
@@ -621,7 +631,6 @@
                         '&accessToken=' + SOSAuth.accessTokenId;
                 });
             }
-
         };
 
         vm.end = function (task, path) {
@@ -661,7 +670,6 @@
                 TaskService.end(jobs);
 
             }
-
         };
 
         vm.killTask = function (task, path) {
@@ -701,10 +709,9 @@
                 });
             } else {
                 TaskService.kill(jobs);
-
             }
-
         };
+
         vm.terminateTask = function (task, path) {
             var jobs = {};
             jobs.jobs = [];
@@ -742,7 +749,6 @@
                 });
             } else {
                 TaskService.terminate(jobs);
-
             }
         };
 
@@ -824,14 +830,13 @@
         }
 
         vm.$on('order-list', function (event, path) {
-
             vm.showOrderLink(path)
         });
+
         vm.showJobChain = function (jobChain,id) {
             if(id && id !== vm.schedulerIds.selected){
                 return;
             }
-
             vm.showHistoryImmeditaly = false;
             $location.path('/job_chain').search({path: jobChain,scheduler_id: (id || vm.schedulerIds.selected)});
         };
@@ -842,6 +847,7 @@
             }
              $location.path('/job').search({path: job,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showJobChain1 = function (jobChain,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -871,12 +877,14 @@
             };
             $location.path('/jobs').search({});
         };
+
         vm.showOrderLink = function (path,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
             $location.path('/job_chain').search({path: path,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showOrderLink1 = function (jobChain, orderId,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -887,12 +895,17 @@
             }
             $location.path('/order').search({path: path,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showAgentCluster = function (agentCluster,id) {
-             if(id && id !== vm.schedulerIds.selected){
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-             $location.path('/agent_cluster').search({path: agentCluster,scheduler_id:(id || vm.schedulerIds.selected)});
+            $location.path('/agent_cluster').search({
+                path: agentCluster,
+                scheduler_id: (id || vm.schedulerIds.selected)
+            });
         };
+
         vm.showAgentCluster1 = function (agentCluster,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -907,12 +920,14 @@
             };
             $location.path('/resources/agent_clusters/').search({});
         };
+
         vm.showProcessClass = function (processClass,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
              $location.path('/process_class').search({path: processClass,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showProcessClass1 = function (processClass,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -928,12 +943,14 @@
             };
             $location.path('/resources/process_classes').search({});
         };
+
         vm.showScheduleLink = function (schedule,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
             $location.path('/schedule').search({path: schedule,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showScheduleLink1 = function (schedule,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -948,12 +965,14 @@
             };
             $location.path('/resources/schedules').search({});
         };
+
         vm.showCalendarLink = function (calendar,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
             }
             $location.path('/calendar').search({path: calendar,scheduler_id:(id || vm.schedulerIds.selected)});
         };
+
         vm.showCalendarLink1 = function (calendar,id) {
              if(id && id !== vm.schedulerIds.selected){
                 return;
@@ -969,6 +988,7 @@
 
             $location.path('/resources/calendars').search({});
         };
+
         vm.about = function () {
             vm.versionData = $rootScope.versionData;
             var modalInstance = $uibModal.open({
@@ -1019,7 +1039,6 @@
 
         vm.navigateToResource = function () {
             vm.resourceFilters = CoreService.getResourceTab();
-
             if (vm.resourceFilters.state === 'agent') {
                 if (vm.permission.JobschedulerUniversalAgent.view.status) {
                     $state.go('app.resources.agentClusters',{type: null});
@@ -1084,12 +1103,13 @@
         };
 
         vm.isEmpty = function (obj) {
-            for (var key in obj) {
+            for (let key in obj) {
                 if (obj.hasOwnProperty(key))
                     return false;
             }
             return true;
         };
+
         vm.getWeekDays = function (day) {
             if (!day) {
                 return;
@@ -1121,13 +1141,11 @@
                     str = str + 'Sun';
                 }
             });
-
             if (str.length == 1) {
                 return '';
             } else {
                 if (str.substring(str.length - 1) == ',')
                     str = str.substring(0, str.length - 1);
-
             }
             return str;
         };
@@ -1136,7 +1154,6 @@
             var str = '';
             if (!month)
                 return;
-
             var months = month;
             if (!angular.isArray(month)) {
                 months = month.toString().split(' ');
@@ -1156,26 +1173,19 @@
                     str = str + 'Apr,';
                 } else if (value == 5) {
                     str = str + 'May,';
-                }
-                else if (value == 6) {
+                } else if (value == 6) {
                     str = str + 'Jun,';
-                }
-                else if (value == 7) {
+                } else if (value == 7) {
                     str = str + 'Jul,';
-                }
-                else if (value == 8) {
+                } else if (value == 8) {
                     str = str + 'Aug,';
-                }
-                else if (value == 9) {
+                } else if (value == 9) {
                     str = str + 'Sep,';
-                }
-                else if (value == 10) {
+                } else if (value == 10) {
                     str = str + 'Oct,';
-                }
-                else if (value == 11) {
+                } else if (value == 11) {
                     str = str + 'Nov,';
-                }
-                else if (value == 12) {
+                } else if (value == 12) {
                     str = str + 'Dec';
                 }
             });
@@ -1214,7 +1224,6 @@
         };
 
         vm.getMonthDays = function (month, isUltimos) {
-
             var str = '';
             if (!month) {
                 return month;
@@ -1223,7 +1232,7 @@
             if (!angular.isArray(month)) {
                 months = month.toString().split(' ').sort(compareNumbers);
             }
-            for (var i = 0; i < months.length; i++) {
+            for (let i = 0; i < months.length; i++) {
                 if (months[i] == 32 && isUltimos) {
                     continue;
                 }
@@ -1232,18 +1241,14 @@
                 }
                 if (months[i] == 1 || months[i] == 31) {
                     str = str + months[i] + 'st,';
-                }
-                else if (months[i] == 2) {
+                } else if (months[i] == 2) {
                     str = str + months[i] + 'nd,';
-                }
-                else if (months[i] == 3) {
+                } else if (months[i] == 3) {
                     str = str + months[i] + 'rd,';
                 } else {
                     str = str + months[i] + 'th,';
                 }
-
             }
-
             if (str.length == 1) {
                 return '';
             } else {
@@ -1251,9 +1256,9 @@
                     str = str.substring(0, str.length - 1);
                 }
             }
-
             return str;
         };
+
         vm.getTimeInString = function (time) {
             if (time.toString().substring(0, 2) == '00' && time.toString().substring(3, 5) == '00') {
                 return time.toString().substring(6, time.length) + ' seconds'
@@ -1265,6 +1270,7 @@
                 return time;
             }
         };
+
         function compareNumbers(a, b) {
             return a - b;
         }
@@ -1277,19 +1283,20 @@
             return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         };
 
+
         var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
-            if (newNames != oldValues && vm.schedulerIds.selected && vm.permission.user) {
+            if (newNames != oldValues && vm.schedulerIds.selected && vm.permission.user && isLoaded) {
                 vm.saveSettingConf();
             }
         });
 
-        vm.saveSettingConf = function () {
-            if ($window.sessionStorage.settingId) {
+        vm.saveSettingConf = function (flag) {
+            if ($window.sessionStorage.settingId || flag) {
                 var configObj = {};
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "SETTING";
-                configObj.id = $window.sessionStorage.settingId;
+                configObj.id = flag ? 0 : $window.sessionStorage.settingId;
                 configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
@@ -1571,7 +1578,6 @@
                 vm.changeScheduler($location.search().scheduler_id);
             }
         };
-
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParam, fromState) {
             vm.currentState = toState.name;

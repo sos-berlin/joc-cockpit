@@ -86,6 +86,9 @@ General CSS
 .inner-table .step{
   width: 65px;
 }
+.inner-history-table{
+  word-break: break-all;
+}
 .inner-history-table > tbody > tr{
   border: none !important;
 }

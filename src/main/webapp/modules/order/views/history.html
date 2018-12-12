@@ -913,26 +913,29 @@
                         <tr class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i
-                                            class="fa fa-ellipsis-h"></i></button>
+                                    <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" ng-click="addOrderToIgnoreList(history.orderId,history.jobChain)" translate>button.addOrderToIgnoreList</a>
                                         <a class="dropdown-item" ng-class="{'disable-link':(schedulerIds.selected != history.jobschedulerId && history.jobschedulerId)}" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)" nowrap>
-                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
-                                 <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
-                                 <span ng-bind="history.jobschedulerId"></span>
-                                 <span ng-if="!history.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
+                                 <span class="show-in-single-line">
+                                     <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                     <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
+                                     <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-l-xs p-r-xs" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
+                                     <span ng-bind="history.jobschedulerId"></span>
+                                     <span ng-if="!history.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
+                                 </span>
                              </td>
-                            <td nowrap ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-if="historyView.current" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
-                                <span ng-bind-html="history.orderId | highlight:order.searchText"></span>
+                            <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
+                                <span class="show-in-single-line">
+                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show && historyView.current" ng-click="hidePanelFuc(history);$event.stopPropagation()"></i>
+                                    <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-l-xs p-r-xs" ng-if="historyView.current" ng-click="downloadLog(history,history.jobschedulerId);$event.stopPropagation()"></i>
+                                    <span ng-bind-html="history.orderId | highlight:order.searchText"></span>
+                                </span>
                             </td>
                             <td ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
                                 <span ng-click="showJobChain(history.jobChain, history.jobschedulerId);$event.stopPropagation()" ng-class="{'text-hover-primary': ((schedulerIds.selected == history.jobschedulerId) || !history.jobschedulerId)}" ng-bind-html="history.jobChain | highlight:order.searchText"></span>
