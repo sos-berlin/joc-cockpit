@@ -979,6 +979,25 @@
                 });
             }
         };
+
+        function updateNodes(type,path, doc) {
+            for (let i = 0; i < vm.jobChain.nodes.length; i++) {
+                if (type === 'job') {
+                    if(vm.jobChain.nodes[i].job.path === path) {
+                        vm.jobChain.nodes[i].job.documentation = doc;
+                    }
+                }else{
+                     if(vm.jobChain.nodes[i].jobChain.path === path) {
+                         vm.jobChain.nodes[i].jobChain.documentation = doc;
+                     }
+                }
+            }
+
+            SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
+            SOSAuth.save();
+            $rootScope.$broadcast('reloadJobChain');
+        }
+
         vm.assignedDocumentation= function(type,path) {
             vm.assignObj = {
                 type: type === 'job' ? 'Job' : 'Job Chain',
@@ -1012,11 +1031,12 @@
 
                 if (type === 'job') {
                     JobService.assign(obj).then(function (res) {
-                        $rootScope.$broadcast('reloadJobChain');
+
+                        updateNodes(type,path,obj.documentation);
                     });
                 } else {
                     JobChainService.assign(obj).then(function (res) {
-                        $rootScope.$broadcast('reloadJobChain');
+                         updateNodes(type,path, obj.documentation);
                     });
                 }
             }, function () {
@@ -1055,11 +1075,11 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     if (type === 'job') {
                         JobService.unassign(obj).then(function () {
-                            $rootScope.$broadcast('reloadJobChain');
+                             updateNodes(type,path);
                         });
                     } else {
                         JobChainService.unassign(obj).then(function () {
-                            $rootScope.$broadcast('reloadJobChain');
+                             updateNodes(type,path);
                         });
                     }
                 }, function () {
@@ -1068,11 +1088,11 @@
             } else {
                 if (type === 'job') {
                     JobService.unassign(obj).then(function () {
-                        $rootScope.$broadcast('reloadJobChain');
+                        updateNodes(type,path);
                     });
                 } else {
                     JobChainService.unassign(obj).then(function () {
-                        $rootScope.$broadcast('reloadJobChain');
+                         updateNodes(type,path);
                     });
                 }
             }
@@ -9883,12 +9903,13 @@
                         filter.dateTo = moment(filter.dateTo).tz(vm.userPreferences.zone)._d;
                     }
                     OrderService.histories(filter).then(function (res) {
+                        let temp;
                         if (vm.historys && vm.historys.length > 0 && res.history && res.history.length > 0) {
-                            vm.historys = _.merge(vm.historys, res.history);
-                        } else {
-                            vm.historys = res.history;
+                            temp = angular.copy(vm.historys);
                         }
-                        setDuration(vm.historys);
+                        vm.historys = res.history;
+                        setDuration(vm.historys, temp);
+                        temp =[];
                         isLoaded = true;
                         setTimeout(function () {
                             updateDimensions();
@@ -10010,12 +10031,19 @@
             }
         });
 
-        function setDuration(histories) {
+        function setDuration(histories, temp) {
             angular.forEach(histories, function (history, index) {
+                if (temp) {
+                    for (let i = 0; i < temp.length; i++) {
+                        if((temp[i].historyId === history.historyId)){
+                            histories[index] = _.merge(temp[i], history)
+                        }
+                    }
+                }
                 if (history.startTime && history.endTime) {
                     histories[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
                 }
-            })
+            });
         }
 
         vm.$on('resetViewDate', function () {

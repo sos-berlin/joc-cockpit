@@ -168,9 +168,9 @@
                                                                    class="hide dropdown-item" ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                                    translate>button.showConfiguration</a>
                                                                 <div class="dropdown-divider"></div>
-                                                                <a href class="dropdown-item" ng-click="assignedDocumentJobChain(nestedJobChain)" ng-if="permission.JobChain.assignDocumentation"
+                                                                <a href class="dropdown-item" ng-click="assignedDocumentJobChain(node.jobChain, true)" ng-if="permission.JobChain.assignDocumentation"
                                                                    translate>button.assignedDocumentation</a>
-                                                                <a href class="dropdown-item" ng-click="unassignedDocumentJobChain(nestedJobChain)"
+                                                                <a href class="dropdown-item" ng-click="unassignedDocumentJobChain(node.jobChain, true)"
                                                                    ng-if="permission.JobChain.assignDocumentation && node.jobChain.documentation" translate>button.unassignedDocumentation</a>
                                                                 <a href class="dropdown-item {{node.jobChain.documentation ? '': 'disable-link'}}" ng-if="permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', nestedJobChain.path)"
                                                                    translate>button.showDocumentation</a>
@@ -259,9 +259,9 @@
                                                                                ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',nestedNode.job.path,nestedNode.job.name)"
                                                                                translate>button.showConfiguration</a>
                                                                             <div class="dropdown-divider"></div>
-                                                                            <a href class="dropdown-item" ng-click="assignedDocumentJob(nestedNode.job)"
+                                                                            <a href class="dropdown-item" ng-click="assignedDocumentJob(nestedNode.job, nestedJobChain, true)"
                                                                                ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
-                                                                            <a href class="dropdown-item" ng-click="unassignedDocumentJob(nestedNode.job)"
+                                                                            <a href class="dropdown-item" ng-click="unassignedDocumentJob(nestedNode.job, nestedJobChain, true)"
                                                                                ng-if="permission.Job.assignDocumentation && nestedNode.job.documentation" translate>button.unassignedDocumentation</a>
                                                                             <a href class="dropdown-item {{nestedNode.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', nestedNode.job.path)"
                                                                                translate>button.showDocumentation</a>
@@ -474,8 +474,8 @@
                                                        ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',node.job.path,node.job.name)"
                                                        translate>button.showConfiguration</a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a href class="dropdown-item" ng-click="assignedDocumentJob(node.job)" ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
-                                                    <a href class="dropdown-item" ng-click="unassignedDocumentJob(node.job)"
+                                                    <a href class="dropdown-item" ng-click="assignedDocumentJob(node.job, jobChain)" ng-if="permission.Job.assignDocumentation" translate>button.assignedDocumentation</a>
+                                                    <a href class="dropdown-item" ng-click="unassignedDocumentJob(node.job, jobChain)"
                                                        ng-if="permission.Job.assignDocumentation && node.job.documentation" translate>button.unassignedDocumentation</a>
                                                     <a href class="dropdown-item {{node.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', node.job.path)"
                                                        translate>button.showDocumentation</a>

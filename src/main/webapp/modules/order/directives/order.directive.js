@@ -171,7 +171,7 @@
             restrict: 'E',
             transclude: true,
 
-            link: function (scope, element, attributes, _, transclude) {
+            link: function (scope, element) {
                 var compiledHtml;
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
@@ -396,11 +396,9 @@
                                     scope.coords[index].left = obj.left + rectW + margin;
                                     if (obj.parallels == 1) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
-                                    }
-                                    else if (obj.parallels == 2) {
+                                    } else if (obj.parallels == 2) {
                                         scope.coords[index].top = obj.top + rectH / 2 + splitMargin / 2;
-                                    }
-                                    else if (obj.parallels % 2 == 0) {
+                                    } else if (obj.parallels % 2 == 0) {
                                         scope.coords[index].top = obj.top + rectH / 2 + splitMargin / 2 + (rectH + splitMargin) * (obj.parallels - 3);
 
                                     } else if (obj.parallels % 2 != 0) {
@@ -409,61 +407,58 @@
                                 }
                             })
                         } else if (index > 0) {
-                          if (item.secondParent) {
-                            var lastTop = scope.coords[index].top;
-                            angular.forEach(scope.coords, function (obj) {
-                              if (scope.coords[index].left === obj.left && lastTop === obj.top) {
-                                lastTop = obj.top + rectH + splitMargin;
-                              }
-                            });
-                            scope.coords[index].top = lastTop;
-                          } else {
+                            if (item.secondParent) {
+                                var lastTop = scope.coords[index].top;
+                                angular.forEach(scope.coords, function (obj) {
+                                    if (scope.coords[index].left === obj.left && lastTop === obj.top) {
+                                        lastTop = obj.top + rectH + splitMargin;
+                                    }
+                                });
+                                scope.coords[index].top = lastTop;
+                            } else {
 
-                            var matched = false, count = 0;
+                                var matched = false, count = 0;
 
-                            for (let m = 0; m < scope.coords.length; m++) {
-                              if (scope.coords[m].next === item.name && scope.coords[index].left <= scope.coords[m].left) {
+                                for (let m = 0; m < scope.coords.length; m++) {
+                                    if (scope.coords[m].next === item.name && scope.coords[index].left <= scope.coords[m].left) {
 
-                                scope.coords[index].left = scope.coords[m].left + margin + rectW;
-                                scope.coords[index].parent = scope.coords[m].actual;
+                                        scope.coords[index].left = scope.coords[m].left + margin + rectW;
+                                        scope.coords[index].parent = scope.coords[m].actual;
+                                        if (!matched) {
+                                            if (scope.coords[m].name == scope.coords[index].parent) {
+                                                count = count + 1;
+                                            }
+                                            scope.coords[index].top = scope.coords[m].top;
+                                        }
+                                        if (count > 0) {
+                                            if (scope.coords[m].name == scope.coords[index].parent) {
+                                                count = count + 1;
+                                            }
+                                            if (count === 2) {
+                                                scope.coords[index].top = scope.coords[m].top;
+                                            }
+                                        }
+                                        matched = true;
+                                    }
+
+                                    if (item.nextNode === scope.coords[m].name && scope.coords[index].left <= scope.coords[m].left) {
+                                        scope.coords[m].left = scope.coords[index].left + margin + rectW;
+                                    }
+                                }
+
                                 if (!matched) {
-                                  if (scope.coords[m].name == scope.coords[index].parent) {
-                                    count = count + 1;
-                                  }
-                                  scope.coords[index].top = scope.coords[m].top;
-                                 
+                                    scope.coords[index].left = scope.coords[index - 1].left + margin + rectW;
                                 }
-                                if (count > 0) {
 
-                                  if (scope.coords[m].name == scope.coords[index].parent) {
-                                    count = count + 1;
-                                  }
-                                  if (count === 2) {
-                                    scope.coords[index].top = scope.coords[m].top;
-                                   
-                                  }
+                                if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
+                                    angular.forEach(scope.coords, function (obj) {
+                                        if (scope.coords[index].name == obj.error) {
+                                            scope.coords[index].left = obj.left + rectW + margin;
+                                            scope.coords[index].top = obj.top + rectH + splitMargin;
+                                        }
+                                    })
                                 }
-                                matched = true;
-                              }
-
-                              if (item.nextNode === scope.coords[m].name && scope.coords[index].left <= scope.coords[m].left) {
-                                scope.coords[m].left = scope.coords[index].left + margin + rectW;
-                              }
                             }
-
-                            if (!matched) {
-                              scope.coords[index].left = scope.coords[index - 1].left + margin + rectW;
-                            }
-
-                            if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
-                              angular.forEach(scope.coords, function (obj) {
-                                if (scope.coords[index].name == obj.error) {
-                                  scope.coords[index].left = obj.left + rectW + margin;
-                                  scope.coords[index].top = obj.top + rectH + splitMargin;
-                                }
-                              })
-                            }
-                          }
                         }
 
                     });
@@ -492,30 +487,18 @@
                             left = margin + avatarW;
                         }
 
-                        var jobName,isDocument,isJob,isJobChain;
+                        var jobName;
                         var host = '<div class="text-left text-sm p-t-xs block-ellipsis-job">' +
                             '<span ng-if="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"><i class="fa fa-server "></i><span class="p-l-sm" ng-bind="jobChainData.nodes[\'' + index + '\'].processClass || jobChainData.nodes[\'' + index + '\'].jobChain.processClass"></span></span>' +
                             '<span class="hide m-l-sm" ng-class="{\'show-block\':jobChainData.nodes[\'' + index + '\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-sm" ng-bind-html="formatLock(\'' + index + '\')"></span></span>' +
                             '</div>';
 
                         if (item.job) {
-                            isJob = true;
                             scope.jobPaths.push(item.job.path);
                             jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
-                            if(item.job.documentation){
-                                jobName = '<span><i class="fa fa-book p-r-sm"></i>' + jobName + '</span>';
-                                isDocument =true;
-                            }else {
-                                jobName = '<span>' + jobName + '</span>';
-                            }
+                            jobName = '<span><i class="fa fa-book p-r-xs" ng-if="jobChainData.nodes[\'' + index + '\'].job.documentation"></i>' + jobName + '</span>';
                         } else if (item.jobChain) {
-                            isJobChain = true;
-                            if (item.jobChain.documentation) {
-                                isDocument =true;
-                                jobName = '<span><i class="fa fa-chain"></i><i class="fa fa-book p-l-sm"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
-                            } else {
-                                jobName = '<span><i class="fa fa-chain"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
-                            }
+                            jobName = '<span><i class="fa fa-chain"></i><i class="fa fa-book p-l-sm" ng-if="jobChainData.nodes[\'' + index + '\'].jobChain.documentation"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
                         }
 
                         var nodeName = item.name;
@@ -555,16 +538,16 @@
                             '<a class="hide dropdown-item bg-hover-color" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.execute.skipJobChainNode"  translate>button.skipNode</a>' +
                             '<a class="hide dropdown-item" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}" ng-if="permission.JobChain.execute.processJobChainNode"  translate>button.unskipNode</a>' +
                             '<a class="dropdown-item" ng-click="showConfiguration({type: \'' + itemType + '\', path: \'' + itemPath + '\', name: \'' + item.name + '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
-                            '<div class="dropdown-divider"></div>'+
-                            '<a class="hide dropdown-item" ng-if="permission.Job.assignDocumentation" ng-class="{\'show\': '+ isJob+'}" ng-click="assignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.assignedDocumentation</a>'+
-                            '<a class="hide dropdown-item" ng-if="permission.Job.assignDocumentation" ng-class="{\'show\': '+ isDocument+'\ && ' + isJob +'\}" ng-click="unassignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.unassignedDocumentation</a>'+
-                            '<a class="hide dropdown-item" ng-if="permission.Job.view.documentation" ng-click="showDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" ng-class="{\'show\' : ' + isJob +'\, \'disable-link\' : ' + (item.job && !item.job.documentation) + '}" translate>button.showDocumentation</a>'+
-                            '<a class="hide dropdown-item" ng-if="permission.JobChain.assignDocumentation" ng-class="{\'show\': '+ isJobChain+'}" ng-click="assignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.assignedDocumentation</a>'+
-                            '<a class="hide dropdown-item" ng-if="permission.JobChain.assignDocumentation" ng-class="{\'show\': '+ isDocument+'\ && ' + isJobChain +'\}" ng-click="unassignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.unassignedDocumentation</a>'+
-                            '<a class="hide dropdown-item" ng-if="permission.JobChain.view.documentation" ng-click="showDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" ng-class="{\'show\' : ' + isJobChain +'\, \'disable-link\' : ' + (item.jobChain && !item.jobChain.documentation) + '}" translate>button.showDocumentation</a>'+
-                            '<div class="dropdown-divider"></div>'+
+                            '<div class="dropdown-divider"></div>' +
+                            '<a class="hide dropdown-item" ng-if="permission.Job.assignDocumentation" ng-class="{\'show\': jobChainData.nodes[\''+index+'\'].job}" ng-click="assignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.assignedDocumentation</a>' +
+                            '<a class="hide dropdown-item" ng-click="unassignedDocumentation({type:\'' + itemType + '\',path: \''+itemPath+'\'})"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].job.documentation}" ng-if="permission.Job.assignDocumentation" translate>button.unassignedDocumentation</a>' +
+                            '<a class="hide dropdown-item" ng-if="permission.Job.view.documentation" ng-click="showDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" ng-class="{\'show\' : jobChainData.nodes[\''+index+'\'].job, \'disable-link\' : jobChainData.nodes[\'' + index + '\'].job && !jobChainData.nodes[\'' + index + '\'].job.documentation}" translate>button.showDocumentation</a>' +
+                            '<a class="hide dropdown-item" ng-if="permission.JobChain.assignDocumentation" ng-class="{\'show\': jobChainData.nodes[\''+index+'\'].jobChain}" ng-click="assignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.assignedDocumentation</a>' +
+                            '<a class="hide dropdown-item" ng-if="permission.JobChain.assignDocumentation" ng-class="{\'show\': jobChainData.nodes[\''+index+'\'].jobChain && jobChainData.nodes[\'' + index + '\'].jobChain.documentation}" ng-click="unassignedDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" translate>button.unassignedDocumentation</a>' +
+                            '<a class="hide dropdown-item" ng-if="permission.JobChain.view.documentation" ng-click="showDocumentation({type:\'' + itemType + '\',path: \'' + itemPath + '\'})" ng-class="{\'show\' : jobChainData.nodes[\''+index+'\'].jobChain, \'disable-link\' : ' + (item.jobChain && !item.jobChain.documentation) + '}" translate>button.showDocumentation</a>' +
+                            '<div class="dropdown-divider"></div>' +
                             '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'' + itemType + '\',path:\'' + itemPath + '\'})"  translate>button.copyLinkToObject</a>' +
-                            '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a ng-if="!jobChainData.nodes[\'' + index + '\'].move" class="text-hover-primary" title="' + itemPath + '" ng-click="navigateToItem(\'' + index + '\')">' +  jobName +
+                            '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a ng-if="!jobChainData.nodes[\'' + index + '\'].move" class="text-hover-primary" title="' + itemPath + '" ng-click="navigateToItem(\'' + index + '\')">' + jobName +
                             '</a>' +
                             '<div class="text-sm p-t-xs" ng-if="jobChainData.nodes[\'' + index + '\'].move"><span translate>label.move</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\'' + index + '\'].move"></span></div>' +
                             '<div class="text-sm p-t-xs" ng-if="jobChainData.nodes[\'' + index + '\'].move"><span translate>label.remove</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\'' + index + '\'].remove"></span></div>' +
@@ -1347,25 +1330,9 @@
 
                     vm.$on('reloadJobChain', function () {
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
-                        if (vm.jobChainData) {
-                            let temp = vm.jobChainData.nodes;
-                            vm.jobChainData = angular.copy(vm.jobChain);
-                            if (temp) {
-                                vm.jobChainData.nodes = temp;
-                            }
-                            angular.forEach(vm.jobChain.nodes, function (item, index1) {
-                                angular.forEach(vm.jobChainData.nodes, function (item2, index2) {
-                                    if (item2 && (item.name === item2.name)) {
-                                        vm.jobChainData.nodes[index2] = item;
-                                    }
-                                    if (index1 == vm.jobChain.nodes.length - 1 && vm.jobChainData.nodes.length - 1 == index2) {
-                                        getInfo(0);
-                                        updateJobChain();
-                                    }
-
-                                })
-                            })
-                        }
+                        vm.jobChainData = angular.copy(vm.jobChain);
+                        getInfo(0);
+                        updateJobChain();
                     });
 
                     function updateJobChain() {
@@ -1380,8 +1347,6 @@
                             if (label) {
                                 label.parentNode.removeChild(label);
                             }
-
-
                             if (node.orders && node.orders.length > 0) {
 
                                 addLabel(node.orders, node.name, node.numOfOrders);

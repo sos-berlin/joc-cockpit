@@ -1794,7 +1794,45 @@
             });
         };
 
-        vm.assignedDocumentJobChain = function(jobChain) {
+        function updateListForDocmentation(path, doc, isReversed) {
+            angular.forEach(vm.allJobChains, function (value, index) {
+                if (value.path === path && !isReversed) {
+                    vm.allJobChains[index].documentation = doc;
+                }else{
+                    if(value.show){
+                        angular.forEach(vm.allJobChains[index].nodes, function (val, i) {
+                            if(val.jobChain){
+                                if(val.jobChain.path === path)
+                                vm.allJobChains[index].nodes[i].jobChain.documentation =doc;
+                            }
+                        });
+                    }
+                }
+            })
+        }
+
+        function updateNodeListForDocmentation(job, path, doc, isReversed) {
+            angular.forEach(vm.allJobChains, function (value, index) {
+                if (value.show) {
+                    if (!isReversed && value.path === path) {
+                        angular.forEach(vm.allJobChains[index].nodes, function (val, i) {
+                            vm.allJobChains[index].nodes[i].job.documentation = doc;
+                        });
+                    } else if (value.path !== path && value.nestedJobChains) {
+                        angular.forEach(vm.allJobChains[index].nestedJobChains, function (val, i) {
+                            if (val.path === path) {
+                                angular.forEach(val.nodes, function (val1, j) {
+                                    vm.allJobChains[index].nestedJobChains[i].nodes[j].job.documentation = doc;
+                                });
+                            }
+                        });
+                    }
+                }
+
+            })
+        }
+
+        vm.assignedDocumentJobChain = function(jobChain, isNested) {
             vm.assignObj = {
                 type: 'Job Chain',
                 path: jobChain.path,
@@ -1821,13 +1859,18 @@
                 obj.documentation = vm.assignObj.documentation;
                 JobChainService.assign(obj).then(function(res){
                     jobChain.documentation = vm.assignObj.documentation;
+                    if(isNested){
+                        updateListForDocmentation(jobChain.path, vm.assignObj.documentation);
+                    }else{
+                        updateListForDocmentation(jobChain.path, vm.assignObj.documentation, 'reverse');
+                    }
                 });
             }, function () {
 
             });
         };
 
-        vm.assignedDocumentJob = function(job) {
+        vm.assignedDocumentJob = function(job, nestedJobChain, isNested) {
             vm.assignObj = {
                 type: 'Job',
                 path: job.path,
@@ -1854,6 +1897,11 @@
                 obj.documentation = vm.assignObj.documentation;
                 JobService.assign(obj).then(function(res){
                     job.documentation = vm.assignObj.documentation;
+                    if(isNested){
+                        updateNodeListForDocmentation(job, nestedJobChain.path, vm.assignObj.documentation);
+                    }else{
+                        updateNodeListForDocmentation(job, nestedJobChain.path, vm.assignObj.documentation, 'reverse');
+                    }
                 });
             }, function () {
 
@@ -1869,7 +1917,8 @@
                 vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocumentJobChain = function(jobChain) {
+        vm.unassignedDocumentJobChain = function(jobChain, isNested) {
+            vm.assignObj = {};
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -1895,6 +1944,11 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     JobChainService.unassign(obj).then(function () {
                         jobChain.documentation = undefined;
+                        if (isNested) {
+                            updateListForDocmentation(jobChain.path);
+                        } else {
+                            updateListForDocmentation(jobChain.path, null, 'reverse');
+                        }
                     });
                 }, function () {
 
@@ -1902,11 +1956,17 @@
             } else {
                 JobChainService.unassign(obj).then(function () {
                     jobChain.documentation = undefined;
+                    if (isNested) {
+                        updateListForDocmentation(jobChain.path);
+                    } else {
+                        updateListForDocmentation(jobChain.path, null, 'reverse');
+                    }
                 });
             }
         };
 
-        vm.unassignedDocumentJob = function(job) {
+        vm.unassignedDocumentJob = function(job, nestedJobChain, isNested) {
+            vm.assignObj = {};
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -1931,6 +1991,11 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.unassign(obj).then(function () {
                         job.documentation = undefined;
+                        if (isNested) {
+                            updateNodeListForDocmentation(job, nestedJobChain.path, null);
+                        } else {
+                            updateNodeListForDocmentation(job, nestedJobChain.path, null, 'reverse');
+                        }
                     });
                 }, function () {
 
@@ -1938,6 +2003,11 @@
             } else {
                 JobService.unassign(obj).then(function () {
                     job.documentation = undefined;
+                    if (isNested) {
+                        updateNodeListForDocmentation(job, nestedJobChain.path, null);
+                    } else {
+                        updateNodeListForDocmentation(job, nestedJobChain.path, null, 'reverse');
+                    }
                 });
             }
         };
