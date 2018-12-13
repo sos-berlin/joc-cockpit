@@ -480,10 +480,10 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="p-l-0">
                                         <span class="show-in-single-line">
-                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!jobChain.show" ng-click="showNodePanelFuc(jobChain)"></i>
-                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.show" ng-click="hideNodePanelFuc(jobChain)"></i>
+                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg p-l-xs p-r-xs" ng-if="!jobChain.show" ng-click="showNodePanelFuc(jobChain)"></i>
+                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg p-l-xs p-r-xs" ng-if="jobChain.show" ng-click="hideNodePanelFuc(jobChain)"></i>
                                             <i ng-if="jobChain.documentation && !permission.JobChain.view.documentation" class="fa fa-book m-t-xxs"></i>
                                             <i ng-if="jobChain.documentation && permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', jobChain.path)" class="cursor fa fa-book m-t-xxs"></i>
                                             <span class="text-hover-primary" ng-click="showHistory(jobChain)" ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
@@ -583,12 +583,12 @@
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td>
+                                                            <td class="p-l-0">
                                                                 <span class="show-in-single-line">
-                                                                    <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="!nestedJobChain.hide" ng-click="nestedJobChain.hide =true"></i>
-                                                                    <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="nestedJobChain.hide" ng-click="nestedJobChain.hide = false"></i>
-                                                                    <i ng-if="node.jobChain.documentation && !permission.JobChain.view.documentation" class="fa fa-book"></i>
-                                                                    <i ng-if="node.jobChain.documentation && permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', node.jobChain.path)" class="cursor fa fa-book"></i>
+                                                                    <i class="cursor fa fa-caret-up p-l-xs p-r-xs fa-lg" ng-if="!nestedJobChain.hide" ng-click="nestedJobChain.hide =true"></i>
+                                                                    <i class="cursor fa fa-caret-down p-l-xs p-r-xs fa-lg" ng-if="nestedJobChain.hide" ng-click="nestedJobChain.hide = false"></i>
+                                                                    <i ng-if="node.jobChain.documentation && !permission.JobChain.view.documentation" class="fa fa-book p-l-xs p-r-xs"></i>
+                                                                    <i ng-if="node.jobChain.documentation && permission.JobChain.view.documentation" ng-click="showDocumentation('jobChain', node.jobChain.path)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                                                                     <span class="text-hover-primary" ng-click="showHistory(nestedJobChain)" ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
                                                                           ng-bind="nestedJobChain.name"></span>
                                                                 </span>
@@ -1148,7 +1148,7 @@
                                                     <tbody ng-repeat="history in historys | orderBy: 'startTime':true">
                                                     <tr ng-click="showLogWindow(history,null)" class="cursor">
                                                         <td nowrap>
-                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(history);$event.stopPropagation()"></i>
+                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs" ng-click="downloadLog(history);$event.stopPropagation()"></i>
                                                             <span ng-bind="history.orderId"></span>
                                                         </td>
                                                         <td>
@@ -1162,7 +1162,7 @@
                                                     <tr ng-if="history.children" ng-repeat="child in history.children | orderBy: 'startTime':true" ng-click="showLogWindow(child,null)" class="cursor">
                                                         <td nowrap>
                                                             <div class="m-l-sm">
-                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(child);$event.stopPropagation()"></i>
+                                                                <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs" ng-click="downloadLog(child);$event.stopPropagation()"></i>
                                                                 <span ng-bind="child.orderId"></span>
                                                             </div>
                                                         </td>
@@ -1202,7 +1202,7 @@
                                                     <tbody>
                                                         <tr ng-repeat="task in showHistoryPanel.taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
                                                            <td nowrap>
-                                                               <i class="cursor fa fa-download tableexport-ignore text-hover-primary" ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                               <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs" ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                 <span ng-bind="task.taskId"></span>
                                                            </td>
                                                            <td>{{task.job}}</td>
@@ -1241,14 +1241,10 @@
                                                     </thead>
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
-                                                        <td>
+                                                        <td class="p-l-0">
                                                             <span class="show-in-single-line">
-                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                                   ng-if="!auditLog.show"
-                                                                   ng-click="auditLog.show =true"></i>
-                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                                   ng-if="auditLog.show"
-                                                                   ng-click="auditLog.show =false"></i>
+                                                                <i class="cursor fa fa-caret-down fa-lg  p-l-xs p-r-xs" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                                <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                                 <span ng-bind="auditLog.created | stringToDate"></span>
                                                             </span>
                                                         </td>

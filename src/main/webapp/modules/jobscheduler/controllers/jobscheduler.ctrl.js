@@ -4879,10 +4879,6 @@
             }
         }
 
-        vm.previewDocument = function (document) {
-            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
-            $window.open(link, '_blank');
-        };
         /** <<<<<<<<<<<<< End Documentations >>>>>>>>>>>>>>> */
 
         vm.assignedDocument = function(data) {
@@ -5021,7 +5017,7 @@
         });
 
         $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
                     if (event.eventType == "FileBasedActivated" || event.eventType == "FileBasedRemoved") {
                         var path = '';
@@ -6092,12 +6088,6 @@
             }
         };
 
-        vm.previewDocument = function (document) {
-            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
-            $window.open(link, '_blank');
-        };
-
-
         $scope.$on('$destroy', function () {
             $timeout.cancel(t1);
         });
@@ -6716,7 +6706,7 @@
                         t2 = $timeout(function () {
                             $rootScope.$broadcast('clusterStatusDataChanged');
                             vm.isLoadedMasterCluster = true;
-                        }, 100);
+                        }, 75);
 
                     }, function () {
                         vm.clusterStatusData = [];
@@ -7398,7 +7388,7 @@
 
         $scope.$on('event-started', function (event, args) {
             if (args.events && args.events[0] && args.events[0].eventSnapshots) {
-                for (var i = 0; i < args.events[0].eventSnapshots.length; i++) {
+                for (let i = 0; i < args.events[0].eventSnapshots.length; i++) {
                     if (args.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
                         isLoadedSnapshot = false;
                         isLoadedTaskSnapshot = false;

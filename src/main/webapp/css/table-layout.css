@@ -96,6 +96,9 @@ General CSS
 #yade th.status, #yade th.num{
   width: 100px;
 }
+.table tbody td.p-l-0{
+  padding-left: 4px !important;
+}
 @media screen and (min-width: 1600px) {
   #jobChainTableId .inner-table th.num {
     width: 100px;

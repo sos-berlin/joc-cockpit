@@ -3479,7 +3479,7 @@
         };
 
         $scope.$on('event-started', function () {
-            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0) {
                 for (let i = 0; i < vm.events[0].eventSnapshots.length; i++) {
                     if (vm.events[0].eventSnapshots[i].path === vm.jobChain.path && vm.events[0].eventSnapshots[i].eventType === "FileBasedRemoved") {
                         $location.path('/job_chains');

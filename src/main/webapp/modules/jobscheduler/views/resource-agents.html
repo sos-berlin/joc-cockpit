@@ -146,10 +146,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="p-l-0">
                                 <span class="show-in-single-line">
-                                    <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
-                                    <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
+                                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
                                     <span ng-bind-html="cluster.path.substring(cluster.path.lastIndexOf('/')+1) | highlight:agentsFilters.searchText"></span>
                                 </span>
                             </td>

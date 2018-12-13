@@ -127,12 +127,12 @@
                                  </div>
                              </div>
                          </td>
-                        <td>
+                        <td class="p-l-0">
                             <span class="show-in-single-line">
-                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
-                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
-                                <i ng-if="processClass.documentation && !permission.ProcessClass.view.documentation" class="fa fa-book"></i>
-                                <i ng-if="processClass.documentation && permission.ProcessClass.view.documentation" ng-click="showDocumentation('processClass', processClass.path)" class="cursor fa fa-book"></i>
+                                <i class="cursor fa fa-caret-down noExl fa-lg p-l-xs p-r-xs" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
+                                <i class="cursor fa fa-caret-up noExl fa-lg p-l-xs p-r-xs" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
+                                <i ng-if="processClass.documentation && !permission.ProcessClass.view.documentation" class="fa fa-book p-l-xs p-r-xs"></i>
+                                <i ng-if="processClass.documentation && permission.ProcessClass.view.documentation" ng-click="showDocumentation('processClass', processClass.path)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                                 <span ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind-html="processClass.name | highlight:processFilters.searchText" ></span>
                             </span>
                         </td>

@@ -493,6 +493,15 @@
             }
         };
 
+        vm.previewDocument = function (document) {
+            let link = './api/documentation/preview?documentation=' +encodeURIComponent(document.path) + '&accessToken=' + SOSAuth.accessTokenId + '&jobschedulerId=' + vm.schedulerIds.selected;
+            if(vm.userPreferences.isDocNewWindow === 'newWindow') {
+                $window.open(link, "Documenation, top=0,left=0" + windowProperties, true);
+            }else{
+                $window.open(link, '_blank');
+            }
+        };
+
         if (!$window.localStorage.log_window_wt) {
             $window.localStorage.log_window_wt = 1000;
         }

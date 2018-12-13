@@ -133,10 +133,12 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>
-                                <i ng-if="lock.documentation && !permission.Lock.view.documentation" class="fa fa-book"></i>
-                                <i ng-if="lock.documentation && permission.Lock.view.documentation" ng-click="showDocumentation('lock', lock.path)" class="cursor fa fa-book"></i>
-                                <span ng-bind-html="lock.name | highlight:locksFilters.searchText"></span>
+                            <td class="p-l-0">
+                                <span class="show-in-single-line">
+                                    <i ng-if="lock.documentation && !permission.Lock.view.documentation" class="fa fa-book p-l-xs p-r-xs"></i>
+                                    <i ng-if="lock.documentation && permission.Lock.view.documentation" ng-click="showDocumentation('lock', lock.path)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                                    <span ng-bind-html="lock.name | highlight:locksFilters.searchText"></span>
+                                </span>
                             </td>
                             <td>
                                 <span ng-bind-html="lock.path | highlight:locksFilters.searchText"></span>

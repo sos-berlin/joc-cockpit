@@ -182,13 +182,13 @@
             <table class="table table-hover table-bordered" id="agentJobExecution">
                 <thead>
                 <tr>
-                    <th width="30" ng-if="permission.Event.execute.delete">
+                    <th class="chk" ng-if="permission.Event.execute.delete">
                         <label class="md-check lg-check">
                             <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-change="checkAllEventFnc()"><i
                                 class="primary"></i>
                         </label>
                     </th>
-                    <th width="45"><span translate>label.action</span></th>
+                    <th class="menu"><span translate>label.action</span></th>
                     <th ng-click="sortByE('eventId')"><a><span translate>label.eventId</span>
                         <i ng-show="eventFilters.filter.sortBy == 'eventId' && !eventFilters.reverse"
                            class="fa fa-caret-up "></i>

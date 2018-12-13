@@ -173,13 +173,13 @@
                              </div>
                          </td>
                         <td>
-                         <span>
-                             <i ng-if="calendar.documentation && !permission.Calendar.view.documentation" class="fa fa-book"></i>
-                             <i ng-if="calendar.documentation && permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)" class="cursor fa fa-book"></i>
-                             <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)" ng-bind-html="calendar.name  | highlight:calendarFilters.searchText"></a>
+                            <span class="show-in-single-line">
+                                 <i ng-if="calendar.documentation && !permission.Calendar.view.documentation" class="fa fa-book p-l-xs p-r-xs"></i>
+                                 <i ng-if="calendar.documentation && permission.Calendar.view.documentation" ng-click="showDocumentation('calendar', calendar.path)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                                 <a class="text-dark text-hover-primary" ng-click="loadAuditLogs(calendar)" ng-bind-html="calendar.name  | highlight:calendarFilters.searchText"></a>
+                             </span>
                              <span ng-if="calendar.title">-</span>
                              <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
-                         </span>
                         </td>
                         <td ng-bind-html="calendar.path | highlight:calendarFilters.searchText"></td>
                         <td><span class="label" ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>

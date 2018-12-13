@@ -69,19 +69,6 @@
                             </a>
                         </div>
                     </div>
-<!--                    <div class="btn-group dropdown m-l-sm">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" ng-class="{'btn-primary': savedIgnoreList.isEnable}" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                            <a class="dropdown-item" ng-if="savedIgnoreList.auditLog.length > 0" href
-                               ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()"
-                               ng-if="!savedIgnoreList.isEnable" translate>button.enableIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()"
-                               ng-if="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="resetIgnoreList()"
-                               translate>button.resetIgnoreList</a>
-                        </div>
-                    </div>-->
                     <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()" tooltip-placement="left"><i>.</i></button>
                 </div>
             </div>
@@ -101,7 +88,10 @@
                 <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+                <div class="pull-right" style="width: 180px">
+                    <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="adtLog.searchText">
+                    <i ng-if="adtLog.searchText" class="fa fa-times search-close" ng-click="adtLog.searchText = ''"></i>
+                </div>
             </div>
         </div>
         <div class="row m-b" ng-if="showSearchPanel">
@@ -298,32 +288,30 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict)  | orderBy:adtLog.filter.sortBy:adtLog.sortReverse | startFrom:(adtLog.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                        <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: adtLog.searchText:strict)  | orderBy:adtLog.filter.sortBy:adtLog.sortReverse | startFrom:(adtLog.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                         <tr>
-                            <td ng-if="!adtLog.current">
+                            <td class="p-l-0" ng-if="!adtLog.current">
                                 <span class="show-in-single-line">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show"
-                                   ng-click="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show"
-                                   ng-click="auditLog.show = false"></i>
-                                <span ng-bind="auditLog.jobschedulerId"></span>
-                                <span ng-if="!auditLog.jobschedulerId" ng-bind="auditSearch.jobschedulerId"></span>
+                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="auditLog.show" ng-click="auditLog.show = false"></i>
+                                    <span ng-bind="auditLog.jobschedulerId"></span>
+                                    <span ng-if="!auditLog.jobschedulerId" ng-bind="auditSearch.jobschedulerId"></span>
                                 </span>
                             </td>
-                            <td nowrap>
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                   ng-if="!auditLog.show && adtLog.current" ng-click="auditLog.show =true"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                   ng-if="auditLog.show && adtLog.current" ng-click="auditLog.show = false"></i>
-                                <span ng-bind="auditLog.created | stringToDate"></span>
+                            <td class="p-l-0">
+                                <span class="show-in-single-line">
+                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="!auditLog.show && adtLog.current" ng-click="auditLog.show =true"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="auditLog.show && adtLog.current" ng-click="auditLog.show = false"></i>
+                                    <span ng-bind="auditLog.created | stringToDate"></span>
+                                </span>
                             </td>
-                            <td><span ng-bind-html="auditLog.account | highlight:filterString"></span></td>
-                            <td><span ng-bind-html="auditLog.request | highlight:filterString"></span></td>
-                            <td><span ng-click="showJobChain(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:filterString"></span></td>
-                            <td><span ng-click="showOrderLink(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:filterString"></span></td>
-                            <td><span ng-click="showJob(auditLog.job, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:filterString"></span></td>
-                            <td><span ng-click="showCalendarLink(auditLog.calendar, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:filterString"></span></td>
-                            <td><span ng-if="auditLog.comment" ng-bind-html="auditLog.comment | highlight:filterString"></span></td>
+                            <td><span ng-bind-html="auditLog.account | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-bind-html="auditLog.request | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-click="showJobChain(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.jobChain" ng-bind-html="auditLog.jobChain | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-click="showOrderLink(auditLog.jobChain, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.orderId" ng-bind-html="auditLog.orderId | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-click="showJob(auditLog.job, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.job" ng-bind-html="auditLog.job | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-click="showCalendarLink(auditLog.calendar, auditLog.jobschedulerId);" ng-class="{'text-hover-primary': ((schedulerIds.selected == auditLog.jobschedulerId) || !auditLog.jobschedulerId) }" ng-if="auditLog.calendar" ng-bind-html="auditLog.calendar | highlight:adtLog.searchText"></span></td>
+                            <td><span ng-if="auditLog.comment" ng-bind-html="auditLog.comment | highlight:adtLog.searchText"></span></td>
                             <td>
                                 <span ng-if="auditLog.timeSpent">
                                     <span ng-bind="auditLog.timeSpent"></span>

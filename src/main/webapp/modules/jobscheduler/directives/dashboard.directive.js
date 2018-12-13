@@ -718,8 +718,9 @@
 
                     angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
                         var clusterStatusContainer = document.getElementById('clusterStatusContainer');
-
-
+                        if(!clusterStatusContainer){
+                            return;
+                        }
                         var supervisorRect = document.getElementById(supervisor.host + supervisor.port);
                         if (!supervisorRect) {
                             return;
@@ -735,12 +736,16 @@
 
                         var masterCtMargin = $('#masterContainer').css("margin-top");
                         var databaseRect = document.getElementById('database');
-                        dTop = databaseRect.offsetTop;
-                        dLeft = databaseRect.offsetLeft;
+                        if(databaseRect) {
+                            dTop = databaseRect.offsetTop;
+                            dLeft = databaseRect.offsetLeft;
+                        }
 
                         angular.forEach(supervisor.masters, function (master, index) {
                             var masterRect = document.getElementById(master.host + master.port);
-
+                            if(!masterRect){
+                                return;
+                            }
                             var vMargin = vm.vMargin;
 
 

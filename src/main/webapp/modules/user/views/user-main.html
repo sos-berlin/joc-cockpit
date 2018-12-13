@@ -66,7 +66,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-b m-t-xs" ng-if="state == 'user' || state == 'role' || state == 'main' || state == 'profile'">
-            <div class="col-md-6 col-sm-4">
+            <div class="col-md-12">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.users.user">
@@ -98,9 +98,10 @@
                         </a>
                     </li>
                 </ul>
-            </div>
-            <div ng-if="state == 'user'" class="col-md-6 col-sm-8">
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString.q" style="width: 180px">
+                <div class="inline pull-right" style="width: 180px" ng-if="state == 'user'">
+                    <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="filterString.q">
+                    <i ng-if="filterString.q" class="fa fa-times search-close" ng-click="filterString.q = ''"></i>
+                </div>
             </div>
         </div>
         <div class="row m-t-sm">

@@ -407,12 +407,12 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="p-l-0">
                                         <span class="show-in-single-line">
-                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
-                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
-                                            <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book"></i>
-                                            <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book"></i>
+                                            <i class="cursor fa fa-caret-down p-l-xs p-r-xs fa-lg" ng-if="!order.show" ng-click="showPanelFuc1(order)"></i>
+                                            <i class="cursor fa fa-caret-up p-l-xs p-r-xs fa-lg" ng-if="order.show" ng-click="hidePanelFuc(order)"></i>
+                                            <i ng-if="order.documentation && !permission.Order.view.documentation" class="fa fa-book p-l-xs p-r-xs"></i>
+                                            <i ng-if="order.documentation && permission.Order.view.documentation" ng-click="showDocumentation('order', order.path)" class="cursor fa fa-book p-l-xs p-r-xs"></i>
                                             <span class="text-dark text-hover-primary" ng-click="showLogFuc(order)">{{order.orderId}}</span>
                                         </span>
                                         <span ng-if="order.title">-</span>
@@ -670,11 +670,11 @@
                                                         </thead>
                                                         <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                         <tr>
-                                                            <td>
+                                                            <td class="p-l-0">
                                                                 <span class="show-in-single-line">
-                                                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                                    <i class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"
                                                                        ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                                    <i class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"
                                                                        ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                                     <span ng-bind="auditLog.created | stringToDate"></span>
                                                                 </span>
