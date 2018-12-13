@@ -463,10 +463,12 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="nowrap" >
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
-                                <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                            <td class="p-l-0">
+                                <span class="show-in-single-line">
+                                    <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
+                                    <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
+                                    <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                                </span>
                             </td>
                             <td ng-bind-html="transfer.profile | highlight:yadeFilters.searchText"></td>
                             <td ng-bind-html="transfer.mandator | highlight:yadeFilters.searchText"></td>

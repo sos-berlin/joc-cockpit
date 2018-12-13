@@ -1,4 +1,4 @@
-<div nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+<div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel();uploader.queue[0].remove();" aria-label="Close">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -42,13 +42,10 @@
                     </div>
                     <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
                         <label class="col-sm-3 " translate>label.comment</label>
-
                         <div class=" col-sm-9">
-                                    <textarea rows="3" class="form-control" maxlength="2000" name="comment"
-                                              ng-model="comments.comment"
-                                              ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
-                                              ng-focus="logError = false"></textarea>
-
+                            <textarea rows="3" class="form-control" maxlength="2000" name="comment"
+                                      ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                                      ng-focus="logError = false"></textarea>
                             <div class="help-block text-danger" ng-if="logError">
                                 <div translate>message.requiredError</div>
                             </div>
@@ -56,10 +53,8 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
-
                         <div class="col-sm-9">
-                            <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
-                                   placeholder="{{'placeholder.timeSpend' | translate}}"
+                            <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"
                                    ng-model="comments.timeSpent">
                         </div>
                     </div>
@@ -67,8 +62,7 @@
                         <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
 
                         <div class="col-sm-9">
-                            <input type="url" class="form-control"
-                                   placeholder="{{'placeholder.ticketLink' | translate}}"
+                            <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"
                                    ng-model="comments.ticketLink">
                         </div>
                     </div>
@@ -77,7 +71,7 @@
             <div ng-hide="fileLoading">
                 <div class="table-responsive" ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">
                     <table class="table table-hover table-bordered  " >
-                            <thead>
+                        <thead>
                             <tr>
                                 <th width="30">
                                     <label class="md-check lg-check">
@@ -92,7 +86,7 @@
                                 <th><span translate>label.validityTo</span></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="calendar in fileContentCalendars">
+                        <tbody ng-repeat="calendar in fileContentCalendars">
                             <tr>
                                 <td >
                                     <label class="md-check">
@@ -115,14 +109,14 @@
                                 <td ng-bind="calendar.to | stringToDate1"></td>
                             </tr>
                             </tbody>
-                        </table>
+                    </table>
                 </div>
                 <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
                     <div><img src="images/upload.png"></div>
                     <div translate>button.dropFileToUpload</div>
                 </div>
                 <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
-                    <button type="button" class="btn bg-blue btn-sm"
+                    <button type="button" class="btn btn-grey btn-sm"
                             onclick="openFileOption()">
                         <span translate="">button.chooseFileToUpload</span>
                     </button>

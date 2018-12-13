@@ -30,6 +30,9 @@ General CSS
 .status-table .status{
   min-width: 80px;
 }
+.status-table .url{
+  min-width: 120px;
+}
 .order-overview-widget-table .col{
   width: 16.6%;
 }

@@ -658,6 +658,7 @@
            scope: {},
            link: function (scope, element) {
                element.bind("click", function (e) {
+                   $('[data-toggle="popover"]').popover('hide');
                    const top = e.clientY + 8;
                    const left = e.clientX - 20;
                    if (window.innerHeight > top + 240) {

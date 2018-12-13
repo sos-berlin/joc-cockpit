@@ -245,7 +245,7 @@
                                 <td><a class="text-hover-primary"
                                        ng-click="changeScheduler(master.jobschedulerId);$event.stopPropagation()">{{master.jobschedulerId}}</a>
                                 </td>
-                                <td><span>{{master.url}}</span></td>
+                                <td class="url"><span>{{master.url}}</span></td>
                                 <td class="status"><span ng-class="bgColorFunction(master.state.severity)" class="label">{{master.state._text | translate}}</span></td>
                                 <td>
                                     <span class="label label-default">{{master.clusterType._type | translate}}</span>

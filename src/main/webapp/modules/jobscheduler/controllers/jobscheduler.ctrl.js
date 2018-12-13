@@ -6692,7 +6692,7 @@
                 return;
             }
             clusterStatusData = {};
-            if (vm.schedulerIds.selected) {
+            if (vm.schedulerIds.selected && !vm.isLoadedMasterCluster) {
                 getDatabase().then(function (res) {
                     clusterStatusData.database = res;
                     getClusterMembersP().then(function (res) {
@@ -7342,6 +7342,7 @@
                 vm.loadScheduleStatus();
             } else if (id == 'masterClusterStatus') {
                 vm.isMasterClusterVisible = flag;
+                vm.isLoadedMasterCluster = false;
                 prepareClusterStatusData();
             } else if (id == 'ordersOverview') {
                 vm.isOrderOverviewVisible = flag;
@@ -7396,6 +7397,8 @@
                         vm.loadTaskSnapshot(true);
                         vm.getFileOverview(true);
                         vm.loadScheduleStatus();
+                        vm.isLoadedMasterCluster = false;
+                        prepareClusterStatusData();
                     }
                     if ((args.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;
@@ -7445,6 +7448,10 @@
                             for (var x = 0; x < args.otherEvents[j].eventSnapshots.length; x++) {
                                 if (args.otherEvents[j].eventSnapshots[x].eventType === "SchedulerStateChanged") {
                                     vm.loadScheduleStatus();
+                                   if(vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType && ( vm.selectedJobScheduler.clusterType !== 'STANDALONE')) {
+                                       vm.isLoadedMasterCluster = false;
+                                       prepareClusterStatusData();
+                                    }
                                     flag = true;
                                     break;
                                 }
