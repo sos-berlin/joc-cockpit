@@ -40,6 +40,19 @@
             return;
         }
 
+        function resizeSidePanel() {
+            setTimeout(function () {
+                let ht = ($('.app-header').height() || 61)
+                    + ($('.top-header-bar').height() || 16)
+                    + $('.sub-header').height() + 24;
+
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: ht
+                });
+            }, 0);
+        }
+        resizeSidePanel();
+
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
             dest.numOfOrders = sour.numOfOrders;
             dest.numOfNodes = sour.numOfNodes;
@@ -3257,6 +3270,18 @@
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || {};
         vm.jobFilterList = [];
 
+       function resizeSidePanel() {
+            setTimeout(function () {
+                let ht = ($('.app-header').height() || 61)
+                    + ($('.top-header-bar').height() || 16)
+                    + $('.sub-header').height() + 24;
+
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: ht
+                });
+            }, 0);
+        }
+        resizeSidePanel();
 
         if (vm.jobFilters.selectedView) {
             vm.savedJobFilter.selected = vm.savedJobFilter.selected || vm.savedJobFilter.favorite;

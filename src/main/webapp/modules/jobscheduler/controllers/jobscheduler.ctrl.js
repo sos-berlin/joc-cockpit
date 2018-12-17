@@ -38,6 +38,18 @@
         vm.eventFilterList = [];
         vm.agentFilterList = [];
 
+        function resizeSidePanel() {
+            setTimeout(function () {
+                let ht = ($('.app-header').height() || 61)
+                    + ($('.top-header-bar').height() || 16)
+                    + $('.sub-header').height() + $('.sub-header-2').height() + 32;
+
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: ht
+                });
+            }, 0);
+        }
+
         if (vm.eventFilters.selectedView) {
             vm.savedEventFilter.selected = vm.savedEventFilter.selected || vm.savedEventFilter.favorite;
         } else {
@@ -4036,16 +4048,19 @@
                     obj.timeSpent = vm.comments.timeSpent;
                 if (vm.comments.ticketLink)
                     obj.ticketLink = vm.comments.ticketLink;
+                item.file.name = encodeURIComponent(item.file.name);
                 item.formData = [obj];
             }
         };
 
         uploader.onErrorItem = function (fileItem, response, status, headers) {
-            toasty.error({
-                 title: response.error.code,
-                 msg: response.error.message,
-                 timeout: 10000
-             });
+            if (response.error) {
+                toasty.error({
+                    title: response.error.code,
+                    msg: response.error.message,
+                    timeout: 10000
+                });
+            }
         };
 
 
@@ -4572,6 +4587,10 @@
 
             obj.compact = true;
             vm.folderPathD = data.name || '/';
+            if (vm.documentFilters.filter.type != 'ALL') {
+                obj.types = [];
+                obj.types.push(vm.documentFilters.filter.type);
+            }
             ResourceService.getDocumentations(obj).then(function (result) {
                 data.documents = result.documentations;
 
@@ -4970,6 +4989,7 @@
             vm.documentArr = undefined;
             vm.calendar = undefined;
             vm.calendarArr = undefined;
+            resizeSidePanel();
             if ($window.localStorage.views)
                 views = JSON.parse($window.localStorage.views);
             if (toState.name == 'app.resources.agentClusters') {

@@ -194,10 +194,3 @@
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
 <div ng-class="{'show':isLoading && treeLock.length==0}" ng-hide="loading" class="hide text-center m-t h6 text-uppercase" translate>message.noLocksFound</div>
-<script>
-    $(document).ready(function () {
-        $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 190
-        });
-    });
-</script>

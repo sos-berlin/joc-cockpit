@@ -3544,6 +3544,19 @@
             vm.object.orders = [];
         };
 
+        function resizeSidePanel() {
+            setTimeout(function () {
+                let ht = ($('.app-header').height() || 61)
+                    + ($('.top-header-bar').height() || 16)
+                    + $('.sub-header').height() + 24;
+
+                $('#leftPanel').stickySidebar({
+                    sidebarTopMargin: ht
+                });
+            }, 0);
+        }
+        resizeSidePanel();
+
         vm.savedOrderFilter = JSON.parse(SavedFilter.orderFilters) || {};
         vm.orderFilterList = [];
 
