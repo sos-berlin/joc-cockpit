@@ -1814,6 +1814,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     mxGraph.prototype.foldingEnabled = true;
     mxHierarchicalLayout.prototype.intraCellSpacing = 30;
     mxHierarchicalLayout.prototype.interRankCellSpacing = 60;
+    mxHierarchicalLayout.prototype.fineTuning = true;
+    mxHierarchicalLayout.prototype.disableEdgeStyle = true;
     mxConstants.DROP_TARGET_COLOR = 'green';
 
     // Enables snapping waypoints to terminals
@@ -1821,6 +1823,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     graph.setConnectable(false);
     graph.setEnabled(false);
+    graph.setDisconnectOnMove(false);
     graph.collapseToPreferredSize = false;
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
@@ -2073,7 +2076,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (state && state.cell) {
           if (state.cell.value.tagName === 'Connector') {
             return;
-          } else if (state.cell.value.tagName === 'Job') {
+          } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Exit') {
             if (state.cell.edges) {
               for (let i = 0; i < state.cell.edges.length; i++) {
                 if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2204,10 +2207,10 @@ export class EditorComponent implements OnInit, OnDestroy {
       let flag = false;
       if (drpTargt) {
         if (drpTargt.value.tagName !== 'Connection') {
-          if (drpTargt.value.tagName === 'Job') {
+          if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Exit') {
             for (let i = 0; i < drpTargt.edges.length; i++) {
               if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                self.toasterService.pop('error', 'Invalid target!!', 'Job instruction can have only one out going and one incoming Edges');
+                self.toasterService.pop('error', 'Invalid target!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
                 return;
               }
             }
@@ -2309,35 +2312,158 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     };
 
-    /**
-     * Recursively remove all the target vertex if edges is removed
-     */
-    graph.addListener(mxEvent.REMOVE_CELLS, function (sender, evt) {
-      let cells = evt.getProperty('cells');
-      let cell = graph.getSelectionCell();
-      let id = 0;
-      if (cell) {
-        id = cell.id;
-        if (!isProgrammaticallyDelete) {
-          for (let i = 0; i < cells.length; i++) {
-            let cell = cells[i];
-            if (cell.edge && cell.source) {
-              if (cell.source.value.tagName === 'Fork' || cell.source.value.tagName === 'If' || cell.source.value.tagName === 'Retry' || cell.source.value.tagName === 'Try') {
-                if (cell.source.id != id && graph.getOutgoingEdges(cell.source).length < 1) {
-                  graph.removeCells([cell.source]);
+    let isFullyDelete = false;
+    let _targetNode : any;
+
+    function recursiveDeleteFn(selectedCell, target) {
+      let flag = false;
+      const edges = target.edges;
+      if ((selectedCell.value.tagName === 'Fork' && target.value.tagName === 'Join') ||
+        (selectedCell.value.tagName === 'If' && target.value.tagName === 'EndIf') ||
+        (selectedCell.value.tagName === 'Retry' && target.value.tagName === 'RetryEnd') ||
+        (selectedCell.value.tagName === 'Try' && target.value.tagName === 'EndTry')) {
+        const attrs = target.value.attributes;
+        if (attrs) {
+          for (let i = 0; i < attrs.length; i++) {
+            if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === selectedCell.id || attrs[i].nodeValue === target.id)) {
+              for (let x = 0; x < edges.length; x++) {
+                if (edges[x].target.id !== target.id) {
+                  _targetNode = edges[x].target;
                 }
               }
-              if (cell.target) {
-                if (cell.target.id != id && graph.getIncomingEdges(cell.target).length < 1) {
-                  graph.removeCells([cell.target]);
+              graph.removeCells([target]);
+              flag = true;
+              break;
+            }
+          }
+        }
+      }
+      if (edges && edges.length > 0) {
+        for (let j = 0; j < edges.length; j++) {
+          if (edges[j].target) {
+
+            if (edges[j].target.id !== target.id) {
+              if ((selectedCell.value.tagName === 'Fork' && edges[j].target.value.tagName === 'Join') ||
+                (selectedCell.value.tagName === 'If' && edges[j].target.value.tagName === 'EndIf') ||
+                (selectedCell.value.tagName === 'Retry' && edges[j].target.value.tagName === 'RetryEnd') ||
+                (selectedCell.value.tagName === 'Try' && edges[j].target.value.tagName === 'EndTry')) {
+                const attrs = edges[j].target.value.attributes;
+                if (attrs) {
+                  for (let i = 0; i < attrs.length; i++) {
+                    if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === selectedCell.id || attrs[i].nodeValue === target.id)) {
+                      const _edges = _.clone(edges[j].target.edges);
+                      for (let x = 0; x < _edges.length; x++) {
+                        if (_edges[x].target.id !== edges[j].target.id) {
+                          _targetNode = _edges[x].target;
+                        }
+                      }
+                      graph.removeCells([edges[j].target]);
+                      flag = true;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                if (edges[j].target) {
+                  recursiveDeleteFn(selectedCell, _.clone(edges[j].target));
+                  if (edges[j]) {
+                    graph.removeCells([edges[j].target]);
+                  }
                 }
               }
             }
           }
+        }
+        if (!flag) {
+          for (let i = 0; i < edges.length; i++) {
+            if (edges[i] && edges[i].target) {
+              recursiveDeleteFn(selectedCell, _.clone(edges[i].target));
+              if (edges[i]) {
+                graph.removeCells([edges[i].target]);
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
 
+    function recursiveEdgeDelete(cells) {
+      const selectedCell = graph.getSelectionCell();
+      let id = 0;
+      if (selectedCell) {
+        id = selectedCell.id;
+        if (!isProgrammaticallyDelete) {
+          let _sour, _tar, _label = '', _type = '';
+          for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            if (cell.edge && cell.source) {
+              if (cell.target.id === id) {
+                _sour = cell.source;
+              }
+              if (selectedCell.value.tagName === 'Fork' || selectedCell.value.tagName === 'If' ||
+                selectedCell.value.tagName === 'Retry' || selectedCell.value.tagName === 'Try') {
+                if (cell.target) {
+                  if (cell.target.id !== id) {
+                    recursiveDeleteFn(selectedCell, _.clone(cell.target));
+                    graph.removeCells([cell.target]);
+                  }
+                }
+              } else {
+                if (cell.source.id === id) {
+                  const attrs = cell.value.attributes;
+                  if (attrs) {
+                    for (let j = 0; j < attrs.length; j++) {
+                      if (attrs[j].nodeName === 'label') {
+                        _label = attrs[j].nodeValue;
+                      } else if (attrs[j].nodeName === 'type') {
+                        _type = attrs[j].nodeValue;
+                      }
+                    }
+                  }
+                  _tar = cell.target;
+                }
+              }
+            }
+          }
+          if (_sour && (_tar || _targetNode)) {
+            if (!_tar) {
+              _tar = _targetNode;
+            }
+            let flag = true;
+            if ((_sour.value.tagName === 'Fork' && _tar.value.tagName === 'Join') ||
+              (_sour.value.tagName === 'If' && _tar.value.tagName === 'EndIf') ||
+              (_sour.value.tagName === 'Retry' && _tar.value.tagName === 'RetryEnd') ||
+              (_sour.value.tagName === 'Try' && _tar.value.tagName === 'EndTry')) {
+              if (_sour.edges.length > 1) {
+                flag = false;
+              } else {
+                _label = '';
+                _type = '';
+              }
+            }
+            if (flag) {
+              graph.insertEdge(graph.getDefaultParent(), null, getConnectionNode(_label, _type), _sour, _tar);
+            }
+          }
         } else {
           isProgrammaticallyDelete = false;
         }
+      }
+      setTimeout(() => {
+        isFullyDelete = false;
+        executeLayout();
+      }, 0);
+    }
+
+    /**
+     * Recursively remove all the target vertex if edges is removed
+     */
+    graph.addListener(mxEvent.REMOVE_CELLS, function (sender, evt) {
+      const cells = evt.getProperty('cells');
+      if(!isFullyDelete) {
+        isFullyDelete = true;
+        recursiveEdgeDelete(cells);
       }
     });
 
@@ -2383,10 +2509,6 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.model.endUpdate();
       }
       executeLayout();
-      setTimeout(() => {
-        executeLayout();
-      }, 10);
-
       return cells;
     };
 
@@ -2418,6 +2540,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     graph.isValidDropTarget = function (cell, cells, evt) {
       isVertexDrop = true;
       if (cell) {
+       /* if (cells && cells.length > 0) {
+          if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' ||
+            cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
+            cells[0].collapsed = true;
+          }
+        }*/
         if (cell.value && cell.value.tagName === 'Connection') {
           graph.clearSelection();
           if (cells && cells.length > 0) {
@@ -2456,6 +2584,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               isUndoable = true;
               isProgrammaticallyDelete = true;
               graph.getModel().remove(cell);
+              isProgrammaticallyDelete = false;
               setTimeout(() => {
                 graph.getModel().beginUpdate();
                 try {
@@ -2509,12 +2638,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (this.isCellCollapsed(cell)) {
         return true;
       }
-      if (cells && cells.length > 0) {
-          if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' ||
-            cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
-            cells[0].collapsed = true;
-          }
-        }
       return mxGraph.prototype.isValidDropTarget.apply(this, arguments);
     };
 
@@ -2672,6 +2795,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           }
           isProgrammaticallyDelete = true;
           graph.removeCells([dropTarget]);
+          isProgrammaticallyDelete = false;
         } else {
           let checkLabel = '';
           if (dropTarget.value.tagName === 'Fork') {
@@ -2721,6 +2845,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target1.target);
               isProgrammaticallyDelete = true;
               graph.getModel().remove(target1);
+              isProgrammaticallyDelete = false;
             } else if (self.nodeMap.has(dropTarget.id)) {
               const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
               graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target);
@@ -3076,6 +3201,15 @@ export class EditorComponent implements OnInit, OnDestroy {
     const doc = mxUtils.parseXml(this.xmlTest);
     const codec = new mxCodec(doc);
     codec.decode(doc.documentElement, graph.getModel());
+    let vertices = graph.getChildVertices(graph.getDefaultParent());
+    for (let i = 0; i < vertices.length; i++) {
+      if (vertices[i].value.tagName === 'Fork' || vertices[i].value.tagName === 'If' || vertices[i].value.tagName === 'Try' || vertices[i].value.tagName === 'Retry') {
+        vertices[i].collapsed = true;
+      }
+    }
+    if (vertices.length > 3) {
+      graph.setEnabled(true);
+    }
 
     selectionChanged(graph);
     executeLayout();
