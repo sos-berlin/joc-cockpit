@@ -5638,8 +5638,7 @@
                         for (let i = 0; i < result.orders.length; i++) {
                             if (res.orders[m].path === result.orders[i].path) {
                                 res.orders[i].documentation = result.orders[m].documentation;
-                                vm.allOrders[m] = res.orders[i];
-                                res.orders.splice(i, 1);
+                                result.orders.splice(i, 1);
                                 break;
                             }
                         }
