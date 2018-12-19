@@ -226,25 +226,23 @@
                         if (!item) {
                             return;
                         }
-                        angular.forEach(jobChainData2.nodes, function (item2, index2) {
-                            if (item.nextNode == item2.name) {
+                        for (let i = 0; i < jobChainData2.nodes.length; i++) {
+                            if (item.nextNode === jobChainData2.nodes[i].name) {
                                 gotNext = true;
                                 var cursor = index;
                                 if (splitRegex.test(item.name)) {
-                                    if (!item.position || item.position == 0) {
+                                    if (!item.position || item.position === 0) {
                                         item.position = 1;
                                     }
                                     cursor = cursor + item.position;
                                 } else {
                                     cursor++;
                                 }
-                                scope.jobChainData.nodes.splice(cursor, 0, angular.copy(item2));
-                                jobChainData2.nodes.splice(index2, 1);
+                                scope.jobChainData.nodes.splice(cursor, 0, angular.copy(jobChainData2.nodes[i]));
+                                jobChainData2.nodes.splice(i, 1);
+                                break;
                             }
-
-                        });
-
-
+                        }
                         if (index + 1 < scope.jobChainData.nodes.length) {
                             index++;
                             getNext(index);
@@ -259,22 +257,20 @@
                             var gotSplitted = false;
                             var position = 0;
                             var removables = [];
-                            angular.forEach(jobChainData2.nodes, function (item2, index2) {
-                                if (splitRegex.test(item2.name) && item.name == splitRegex.exec(item2.name)[1]) {
+                            for(let i=0; i < jobChainData2.nodes.length;i++) {
+                                if (splitRegex.test(jobChainData2.nodes[i].name) && item.name == splitRegex.exec(jobChainData2.nodes[i].name)[1]) {
                                     gotSplitted = true;
                                     proceed = false;
                                     position++;
-                                    jobChainData2.nodes[index2].position = position;
-                                    scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(item2));
-                                    removables.push(index2);
+                                    jobChainData2.nodes[i].position = position;
+                                    scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(jobChainData2.nodes[i]));
+                                    removables.push(i);
+                                    break;
                                 }
-                            });
-
+                            }
                             angular.forEach(removables, function (rm, index3) {
                                 jobChainData2.nodes.splice(rm - index3, 1);
                             });
-
-
                             if (gotSplitted) {
                                 getNext(index + 1);
                             }
@@ -310,12 +306,16 @@
 
                 function findErrorNodes() {
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
-                        angular.forEach(scope.jobChainData.nodes, function (item2) {
-                            if (item2.errorNode == item.name) {
-                                scope.jobChainData.nodes[index].isErrorNode = true;
+                        for (let i = 0; i < scope.jobChainData.nodes.length; i++) {
+                            if(item.name == scope.jobChainData.nodes[i].nextNode){
+                                scope.jobChainData.nodes[index].isNormal = splitRegex.test(scope.jobChainData.nodes[i].nextNode);
                             }
-                        });
-
+                            if (scope.jobChainData.nodes[i].errorNode == item.name) {
+                                scope.jobChainData.nodes[index].isErrorNode = true;
+                                scope.jobChainData.nodes[index].isNormal = splitRegex.test(scope.jobChainData.nodes[i].errorNode);
+                                break;
+                            }
+                        }
                     });
                     draw();
                 }
@@ -383,8 +383,8 @@
                         if (scope.errorNodes.indexOf(item.name) >= 0 && scope.errorNodeIndex == -1) {
                             scope.errorNodeIndex = index;
                         }
-
-                        if (splitRegex.test(item.name)) {
+                        
+                        if (splitRegex.test(item.name) && !item.isNormal) {
                             isSplitted = true;
                             scope.coords[index].name = splitRegex.exec(item.name)[2];
                             scope.coords[index].isParallel = true;
