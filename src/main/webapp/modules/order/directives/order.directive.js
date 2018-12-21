@@ -265,7 +265,6 @@
                                     jobChainData2.nodes[i].position = position;
                                     scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(jobChainData2.nodes[i]));
                                     removables.push(i);
-                                    break;
                                 }
                             }
                             angular.forEach(removables, function (rm, index3) {
@@ -313,7 +312,6 @@
                             if (scope.jobChainData.nodes[i].errorNode == item.name) {
                                 scope.jobChainData.nodes[index].isErrorNode = true;
                                 scope.jobChainData.nodes[index].isNormal = splitRegex.test(scope.jobChainData.nodes[i].errorNode);
-                                break;
                             }
                         }
                     });

@@ -791,7 +791,8 @@
 
         vm.search = function () {
             var filter = {
-                jobschedulerId: vm.adtLog.current == true ? vm.schedulerIds.selected : ''
+                jobschedulerId: vm.adtLog.current == true ? vm.schedulerIds.selected : '',
+                limit: parseInt(vm.userPreferences.maxAuditLogRecords)
             };
 
             vm.adtLog.filter.date = '';
