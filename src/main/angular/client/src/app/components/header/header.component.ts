@@ -13,21 +13,21 @@ declare const $;
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-    preferences:any = {};
-    schedulerIds:any = {};
-    permission:any = {};
-    username:string = '';
-    timeout:any;
-    eventId:string;
-    eventLoading:boolean = false;
-    switchScheduler:boolean = false;
-    allEvents:any = [];
-    eventsRequest:any = [];
-    events:any = [];
-    allSessionEvent:any = {};
-    showGroupEvent:any = [];
-    isLogout:boolean = false;
-    showEvent:boolean = false;
+  preferences: any = {};
+  schedulerIds: any = {};
+  permission: any = {};
+  username = '';
+  timeout: any;
+  eventId: string;
+  eventLoading = false;
+  switchScheduler = false;
+  allEvents: any = [];
+  eventsRequest: any = [];
+  events: any = [];
+  allSessionEvent: any = {};
+  showGroupEvent: any = [];
+  isLogout = false;
+  showEvent = false;
 
     @Output() onLogout: EventEmitter<any> = new EventEmitter();
 
@@ -48,13 +48,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
     }
 
-    reloadSettings() {
-      if (this.authService.scheduleIds)
-        this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-      if (sessionStorage.preferences)
-        this.preferences = JSON.parse(sessionStorage.preferences);
-      this.permission = JSON.parse(this.authService.permission) || {};
+  reloadSettings() {
+    if (this.authService.scheduleIds) {
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     }
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.permission = JSON.parse(this.authService.permission) || {};
+  }
 
     ngOnDestroy() {
         clearTimeout(this.timeout);
@@ -113,26 +115,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         if (this.allSessionEvent.group) {
 
-            for (let i = 0; i <= this.allSessionEvent.group.length - 1; i++) {
-                if (this.allSessionEvent.group[i].objectType == eventByPath.objectType && this.allSessionEvent.group[i].path == eventByPath.path && this.allSessionEvent.group[i].jobschedulerId == eventByPath.jobschedulerId) {
-                    for (let m = 0; m <= eventByPath.events.length - 1; m++) {
-                        if (this.allSessionEvent.group[i].events.indexOf(eventByPath.events[m]) == -1) {
-                            this.allSessionEvent.group[i].eventId = eventByPath.eventId;
-                            this.allSessionEvent.group[i].readCount++;
-                            this.allSessionEvent.eventUnReadCount++;
-                            eventByPath.events[m].read = false;
-                            this.allSessionEvent.group[i].events.push(eventByPath.events[m]);
-                        }
-                    }
-                    flag = false;
-                }
+      for (let x = 0; x <= this.allSessionEvent.group.length - 1; x++) {
+        if (this.allSessionEvent.group[x].objectType == eventByPath.objectType && this.allSessionEvent.group[x].path == eventByPath.path && this.allSessionEvent.group[x].jobschedulerId == eventByPath.jobschedulerId) {
+          for (let m = 0; m <= eventByPath.events.length - 1; m++) {
+            if (this.allSessionEvent.group[x].events.indexOf(eventByPath.events[m]) == -1) {
+              this.allSessionEvent.group[x].eventId = eventByPath.eventId;
+              this.allSessionEvent.group[x].readCount++;
+              this.allSessionEvent.eventUnReadCount++;
+              eventByPath.events[m].read = false;
+              this.allSessionEvent.group[x].events.push(eventByPath.events[m]);
             }
+          }
+          flag = false;
         }
-        if (flag) {
-            eventByPath.readCount = 1;
-            this.allSessionEvent.eventUnReadCount++;
-            this.allSessionEvent.group.push(eventByPath);
-        }
+      }
+    }
+    if (flag) {
+      eventByPath.readCount = 1;
+      this.allSessionEvent.eventUnReadCount++;
+      this.allSessionEvent.group.push(eventByPath);
+    }
 
     }
 

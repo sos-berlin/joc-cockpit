@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AuthService {
 
-  props = ["accessTokenId", "currentUserData", "sessionTimeout", "permissions", "permission", "scheduleIds"];
-  propsPrefix: string = '$SOS$';
+  props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'permissions', 'permission', 'scheduleIds'];
+  propsPrefix = '$SOS$';
   rememberMe = false;
   scheduleIds;
   accessTokenId;

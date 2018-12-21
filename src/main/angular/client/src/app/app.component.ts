@@ -11,6 +11,17 @@ declare const $;
 })
 
 export class AppComponent {
+  static themeInit() {
+    if (localStorage.$SOS$THEME != null) {
+      $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
+      if (localStorage.$SOS$MENUTHEME != null) {
+        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
+        if (localStorage.$SOS$AVATARTHEME != null) {
+          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
+        }
+      }
+    }
+  }
 
   public config: ToasterConfig = new ToasterConfig({
     positionClass: 'toast-top-center',
@@ -38,15 +49,4 @@ export class AppComponent {
     this.translate.use(lang);
   }
 
-  static themeInit() {
-    if (localStorage.$SOS$THEME != null) {
-      $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
-      if (localStorage.$SOS$MENUTHEME != null) {
-        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
-        if (localStorage.$SOS$AVATARTHEME != null) {
-          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
-        }
-      }
-    }
-  }
 }

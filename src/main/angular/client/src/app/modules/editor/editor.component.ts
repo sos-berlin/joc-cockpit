@@ -1898,10 +1898,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         icon = './assets/mxgraph/images/undo.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Undo');
+        button.setAttribute('id', 'undoBtn');
       } else if (buttons[i] === 'redo') {
         icon = './assets/mxgraph/images/redo.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Redo');
+        button.setAttribute('id', 'redoBtn');
       } else if (buttons[i] === 'delete') {
         icon = './assets/mxgraph/images/delete.gif';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
@@ -1976,7 +1978,7 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     function getConnectionNode(label: string, type: string): Object {
       // Create new Connection object
-      let connNode = doc.createElement('Connection');
+      const connNode = doc.createElement('Connection');
       connNode.setAttribute('label', label);
       connNode.setAttribute('type', type);
       return connNode;
@@ -1990,18 +1992,19 @@ export class EditorComponent implements OnInit, OnDestroy {
      */
     function getCellNode(name: string, label: string, id: any): Object {
       // Create new node object
-      let node = doc.createElement(name);
-      node.setAttribute('label', label);
+      const _node = doc.createElement(name);
+      _node.setAttribute('label', label);
       if (id) {
-        node.setAttribute('targetId', id);
+        _node.setAttribute('targetId', id);
       }
-      return node;
+      return _node;
     }
 
     /**
      * Reformat the layout
      */
     function executeLayout() {
+      isUndoable = true;
       const layout = new mxHierarchicalLayout(graph);
       layout.execute(graph.getDefaultParent());
       isUndoable = true;
@@ -2313,7 +2316,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     let isFullyDelete = false;
-    let _targetNode : any;
+    let _targetNode: any;
+    let _iterateId = 0;
 
     function recursiveDeleteFn(selectedCell, target) {
       let flag = false;
@@ -2325,12 +2329,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         const attrs = target.value.attributes;
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === selectedCell.id || attrs[i].nodeValue === target.id)) {
+            if (attrs[i].nodeName === 'targetId' && attrs[i].nodeValue === selectedCell.id) {
               for (let x = 0; x < edges.length; x++) {
                 if (edges[x].target.id !== target.id) {
                   _targetNode = edges[x].target;
                 }
               }
+              self.nodeMap.delete(attrs[i].nodeValue);
               graph.removeCells([target]);
               flag = true;
               break;
@@ -2341,7 +2346,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (edges && edges.length > 0) {
         for (let j = 0; j < edges.length; j++) {
           if (edges[j].target) {
-
             if (edges[j].target.id !== target.id) {
               if ((selectedCell.value.tagName === 'Fork' && edges[j].target.value.tagName === 'Join') ||
                 (selectedCell.value.tagName === 'If' && edges[j].target.value.tagName === 'EndIf') ||
@@ -2351,12 +2355,14 @@ export class EditorComponent implements OnInit, OnDestroy {
                 if (attrs) {
                   for (let i = 0; i < attrs.length; i++) {
                     if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === selectedCell.id || attrs[i].nodeValue === target.id)) {
-                      const _edges = _.clone(edges[j].target.edges);
+                      const _edges = edges[j].target.edges;
                       for (let x = 0; x < _edges.length; x++) {
                         if (_edges[x].target.id !== edges[j].target.id) {
                           _targetNode = _edges[x].target;
                         }
                       }
+                     
+                      self.nodeMap.delete(attrs[i].nodeValue);
                       graph.removeCells([edges[j].target]);
                       flag = true;
                       break;
@@ -2365,7 +2371,10 @@ export class EditorComponent implements OnInit, OnDestroy {
                 }
               } else {
                 if (edges[j].target) {
-                  recursiveDeleteFn(selectedCell, _.clone(edges[j].target));
+                  if (_iterateId !== edges[j].target.id) {
+                    _iterateId = edges[j].target.id;
+                    recursiveDeleteFn(selectedCell, edges[j].target);
+                  }
                   if (edges[j]) {
                     graph.removeCells([edges[j].target]);
                   }
@@ -2377,7 +2386,10 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (!flag) {
           for (let i = 0; i < edges.length; i++) {
             if (edges[i] && edges[i].target) {
-              recursiveDeleteFn(selectedCell, _.clone(edges[i].target));
+              if (_iterateId !== edges[i].target.id) {
+                _iterateId = edges[i].target.id;
+                recursiveDeleteFn(selectedCell, (edges[i].target));
+              }
               if (edges[i]) {
                 graph.removeCells([edges[i].target]);
               }
@@ -2389,11 +2401,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     function recursiveEdgeDelete(cells) {
+      _targetNode = {};
+      _iterateId = 0;
       const selectedCell = graph.getSelectionCell();
       let id = 0;
       if (selectedCell) {
-        id = selectedCell.id;
         if (!isProgrammaticallyDelete) {
+          id = selectedCell.id;
           let _sour, _tar, _label = '', _type = '';
           for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
@@ -2405,7 +2419,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                 selectedCell.value.tagName === 'Retry' || selectedCell.value.tagName === 'Try') {
                 if (cell.target) {
                   if (cell.target.id !== id) {
-                    recursiveDeleteFn(selectedCell, _.clone(cell.target));
+                    recursiveDeleteFn(selectedCell, cell.target);
                     graph.removeCells([cell.target]);
                   }
                 }
@@ -2452,7 +2466,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
       setTimeout(() => {
         isFullyDelete = false;
-        executeLayout();
+        if (id > 0) {
+          executeLayout();
+        }
       }, 0);
     }
 
@@ -2518,17 +2534,84 @@ export class EditorComponent implements OnInit, OnDestroy {
      * Method to be called to add new undoable edits to the <history>.
      */
     mxUndoManager.prototype.undoableEditHappened = function (undoableEdit) {
-      this.trim();
-      if (this.size > 0 &&
-        this.size == this.history.length) {
-        this.history.shift();
-      }
       if (isUndoable) {
-        this.history.push(undoableEdit);
+        console.log(this.indexOfNextAdd + ' this.indexOfNextAdd');
+        if (this.history.length === 10) {
+          this.history.shift();
+        }
+        const enc = new mxCodec();
+        const nodeModel = enc.encode(graph.getModel());
+        const xml = mxUtils.getXml(nodeModel);
+        this.history.push(xml);
+        this.indexOfNextAdd = this.history.length;
+        isUndoable = false;
       }
-      isUndoable = false;
-      this.indexOfNextAdd = this.history.length;
-      this.fireEvent(new mxEventObject(mxEvent.ADD, 'edit', undoableEdit));
+    };
+
+    /**
+     * Function: undo
+     *
+     * Undoes the last change.
+     */
+    mxUndoManager.prototype.undo = function() {
+      if (this.indexOfNextAdd > 0) {
+        const xml = this.history[--this.indexOfNextAdd];
+        console.log(this.indexOfNextAdd + ' undo');
+        const parent = graph.getDefaultParent();
+        graph.getModel().beginUpdate();
+        try {
+          const _doc = mxUtils.parseXml(xml);
+          const dec = new mxCodec(_doc);
+          let model = dec.decode(_doc.documentElement);
+          // Removes all cells which are not in the response
+          for (let key in graph.getModel().cells) {
+            let tmp = graph.getModel().getCell(key);
+            if (graph.getModel().isVertex(tmp)) {
+              graph.removeCells([tmp]);
+            }
+          }
+          graph.getModel().mergeChildren(model.getRoot().getChildAt(0), parent);
+        } finally {
+          graph.getModel().endUpdate();
+        }
+      }else{
+       // document.getElementById('undoBtn').disabled = true;
+      //  document.getElementById('redoBtn').disabled = false;
+      }
+    };
+
+    /**
+     * Function: redo
+     *
+     * Redoes the last change.
+     */
+    mxUndoManager.prototype.redo = function() {
+      const n = this.history.length;
+      console.log(n)
+      if (this.indexOfNextAdd < n) {
+        const xml = this.history[this.indexOfNextAdd++];
+        console.log(this.indexOfNextAdd + ' Redo');
+        const parent = graph.getDefaultParent();
+        graph.getModel().beginUpdate();
+        try {
+          const _doc = mxUtils.parseXml(xml);
+          const dec = new mxCodec(_doc);
+          let model = dec.decode(_doc.documentElement);
+          // Removes all cells which are not in the response
+          for (let key in graph.getModel().cells) {
+            let tmp = graph.getModel().getCell(key);
+            if (graph.getModel().isVertex(tmp)) {
+              graph.removeCells([tmp]);
+            }
+          }
+          graph.getModel().mergeChildren(model.getRoot().getChildAt(0), parent);
+        } finally {
+          graph.getModel().endUpdate();
+        }
+      }else{
+        // document.getElementById('undoBtn').disabled = false;
+       // document.getElementById('redoBtn').disabled = true;
+      }
     };
 
     /**
@@ -2581,7 +2664,6 @@ export class EditorComponent implements OnInit, OnDestroy {
                 graph.insertEdge(parent, null, getConnectionNode('', ''), cells[0], v1);
               }
               graph.insertEdge(parent, null, getConnectionNode('', ''), v1, cell.target);
-              isUndoable = true;
               isProgrammaticallyDelete = true;
               graph.getModel().remove(cell);
               isProgrammaticallyDelete = false;
@@ -2594,16 +2676,13 @@ export class EditorComponent implements OnInit, OnDestroy {
                   graph.getModel().execute(targetId);
                   if (v2 && v3) {
                     const targetId2 = new mxCellAttributeChange(
-                      v2, 'targetId',
-                      cells[0].id);
+                      v2, 'targetId', cells[0].id);
                     graph.getModel().execute(targetId2);
                     const targetId3 = new mxCellAttributeChange(
-                      v3, 'targetId',
-                      v2.id);
+                      v3, 'targetId', v2.id);
                     graph.getModel().execute(targetId3);
                   }
-                }
-                finally {
+                } finally {
                   graph.getModel().endUpdate();
                 }
                 checkConnectionLabel(cells[0], cell, false);
@@ -2615,7 +2694,9 @@ export class EditorComponent implements OnInit, OnDestroy {
             (cell.source.value.tagName === 'If' && cell.target.value.tagName === 'EndIf') ||
             (cell.source.value.tagName === 'Retry' && cell.target.value.tagName === 'RetryEnd') ||
             (cell.source.value.tagName === 'Try' && cell.target.value.tagName === 'EndTry')) {
+            isProgrammaticallyDelete = true;
             graph.removeCells(cells);
+            isProgrammaticallyDelete = false;
             evt.preventDefault();
             evt.stopPropagation();
             return false;
@@ -2628,7 +2709,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         } else {
           if (cell.value && cell.value.tagName === 'Connector') {
+            isProgrammaticallyDelete = true;
             graph.removeCells(cells);
+            isProgrammaticallyDelete = false;
             evt.preventDefault();
             evt.stopPropagation();
             return false;
@@ -2735,15 +2818,13 @@ export class EditorComponent implements OnInit, OnDestroy {
                 graph.getModel().beginUpdate();
                 try {
                   const targetId = new mxCellAttributeChange(
-                    v3, 'targetId',
-                    v2.id);
+                    v3, 'targetId', v2.id);
                   graph.getModel().execute(targetId);
-                }
-                finally {
+                } finally {
                   graph.getModel().endUpdate();
                 }
               }
-              if(_label) {
+              if (_label) {
                 for (let i = 0; i < v1.edges.length; i++) {
                   if (v1.edges[i].target.id !== v1.id) {
                     changeLabelOfConnection(v1.edges[i], _label);
@@ -2793,6 +2874,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               }
             }
           }
+
           isProgrammaticallyDelete = true;
           graph.removeCells([dropTarget]);
           isProgrammaticallyDelete = false;
@@ -2892,7 +2974,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.value.tagName === checkLabel) {
                 const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'RetryEnd' ? 'retryEnd' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
-                if(cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry') {
+                if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry') {
                   cell.edges[i].value.attributes[0].nodeValue = _label;
                   cell.edges[i].value.attributes[1].nodeValue = _label;
                 }
@@ -2905,7 +2987,9 @@ export class EditorComponent implements OnInit, OnDestroy {
           for (let j = 0; j < cell.edges.length; j++) {
             if (cell.edges[j].target.id !== cell.id) {
               if (cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') {
+                isProgrammaticallyDelete = true;
                 graph.getModel().remove(cell.edges[j]);
+                isProgrammaticallyDelete = false;
                 break;
               }
             }
@@ -3040,16 +3124,14 @@ export class EditorComponent implements OnInit, OnDestroy {
                       '');
                     graph.getModel().execute(label);
                     graph.getModel().execute(type);
-                    isUndoable = true;
-                  }
-                  finally {
+                  } finally {
                     graph.getModel().endUpdate();
                   }
                 }
               }
             } else if (cell.id !== cell.edges[i].source.id) {
               const attrs = cell.edges[i].value.attributes;
-              if (attrs && attrs.length>0) {
+              if (attrs && attrs.length > 0) {
                 if (attrs[0].value === 'If') {
                   if (cell.edges[i].target.value.tagName !== 'If' && cell.edges[i].source.value.tagName !== 'If' && cell.value.tagName !== 'If') {
                     graph.getModel().beginUpdate();
@@ -3062,9 +3144,7 @@ export class EditorComponent implements OnInit, OnDestroy {
                         '');
                       graph.getModel().execute(label);
                       graph.getModel().execute(type);
-                      isUndoable = true;
-                    }
-                    finally {
+                    } finally {
                       graph.getModel().endUpdate();
                     }
                   }
@@ -3080,6 +3160,7 @@ export class EditorComponent implements OnInit, OnDestroy {
      * Updates the properties panel
      */
     function selectionChanged(_graph) {
+
       let div = document.getElementById('properties');
       // Forces focusout in IE
       _graph.container.focus();
@@ -3133,12 +3214,10 @@ export class EditorComponent implements OnInit, OnDestroy {
           _graph.getModel().beginUpdate();
           try {
             const edit = new mxCellAttributeChange(
-              cell, attribute.nodeName,
-              newValue);
+              cell, attribute.nodeName, newValue);
             _graph.getModel().execute(edit);
             isUndoable = true;
-          }
-          finally {
+          } finally {
             _graph.getModel().endUpdate();
           }
         }
@@ -3166,18 +3245,15 @@ export class EditorComponent implements OnInit, OnDestroy {
       let input = form.addTextarea(name + ':', value, 10);
       const applyHandler = function () {
         let newValue = input.value || '';
-
         let oldValue = cell.getAttribute(name, '');
         if (newValue !== oldValue) {
           _graph.getModel().beginUpdate();
           try {
             const edit = new mxCellAttributeChange(
-              cell, name,
-              newValue);
+              cell, name, newValue);
             _graph.getModel().execute(edit);
             isUndoable = true;
-          }
-          finally {
+          } finally {
             _graph.getModel().endUpdate();
           }
         }
@@ -3219,6 +3295,7 @@ export class EditorComponent implements OnInit, OnDestroy {
      * Reload dummy xml
      */
     function reloadDummyXml(dummyXml) {
+
       const enc = new mxCodec();
       const nodeModel = enc.encode(graph.getModel());
       const xml = mxUtils.getXml(nodeModel);

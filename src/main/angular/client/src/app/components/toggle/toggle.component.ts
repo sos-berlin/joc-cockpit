@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class ToggleComponent implements OnInit {
 
-    view:string = 'list';
+    view = 'list';
     pageView:string;
     views:any = {};
 
