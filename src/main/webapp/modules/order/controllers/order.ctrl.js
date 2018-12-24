@@ -160,7 +160,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -1922,7 +1922,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: nestedJobChain ? nestedJobChain.path : vm.jobChain.path});
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -2746,7 +2746,7 @@
                             obj.jobschedulerId = vm.schedulerIds.selected;
                             obj.orders = [];
                             obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+                            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
                             AuditLogService.getLogs(obj).then(function (result) {
                                 if (result && result.auditLog) {
                                     vm.auditLogs = result.auditLog;
@@ -4317,7 +4317,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -5712,7 +5712,7 @@
         };
 
         function loadAuditLogs(obj) {
-            obj.limit = vm.userPreferences.maxAuditLogPerObject;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
