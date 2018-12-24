@@ -63,8 +63,9 @@
             configObj.jobschedulerId = $scope.schedulerIds.selected;
             configObj.account = $scope.permission.user;
             configObj.configurationType = "SETTING";
-            if (!$window.sessionStorage.settingId)
+            if (!$window.sessionStorage.settingId) {
                 $window.sessionStorage.settingId = 0;
+            }
             UserService.configurations(configObj).then(function (res1) {
                 if (res1.configurations && res1.configurations.length > 0) {
                     $window.sessionStorage.settingId = res1.configurations[0].id;
@@ -86,7 +87,7 @@
                 }
                 setTimeout(function () {
                     isLoaded = true;
-                },1);
+                }, 0);
             }, function () {
                 $rootScope.clientLogFilter.isEnable = false;
                 isLoaded = true;
@@ -369,13 +370,13 @@
                     $rootScope.$broadcast('reloadPreferences');
                 }
                 if (arg) {
-                    $state.reload(vm.currentState);
+                    $state.reload(arg);
                 }
             }, function () {
                 setUserPrefrences(preferences, configObj);
                 $rootScope.$broadcast('reloadPreferences');
                 if (arg) {
-                    $state.reload(vm.currentState);
+                    $state.reload(arg);
                 }
             });
         }
@@ -1548,6 +1549,7 @@
 
         vm.changeScheduler = function (jobScheduler) {
             vm.switchScheduler = true;
+            vm.isSwitchLoaded = true;
             let key = angular.copy(vm.schedulerIds.selected);
             tabsMap.set(key , JSON.stringify(CoreService.getTabs()));
             vm.schedulerIds.selected = jobScheduler;
@@ -1564,11 +1566,11 @@
 
                         SOSAuth.setIds(res);
                         PermissionService.savePermission(jobScheduler);
-                        $rootScope.$broadcast('reloadUser' ,'reloadState');
+                        $rootScope.$broadcast('reloadUser' ,vm.currentState);
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
                         } else {
-                            if ($state.current.name !== 'app.dashboard')
+                            if ($state.current.name != 'app.dashboard')
                                 getScheduleDetail();
                         }
                     } else {
@@ -1578,7 +1580,12 @@
                             timeout: 10000
                         });
                     }
+                    vm.isSwitchLoaded = false;
+                }, function () {
+                    vm.isSwitchLoaded = false;
                 });
+            }, function () {
+                vm.isSwitchLoaded = false;
             })
         };
 

@@ -149,7 +149,7 @@
                     </button>
                     <div class="pull-right" style="width: 180px">
                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="jobChainFilters.searchText" ng-change="searchInResult()">
-                        <i ng-if="jobChainFilters.searchText" class="fa fa-times search-close" ng-click="jobChainFilters.searchText = ''"></i>
+                        <i ng-if="jobChainFilters.searchText" class="fa fa-times search-close" ng-click="jobChainFilters.searchText = '';searchInResult()"></i>
                     </div>
                 </div>
             </div>
