@@ -10214,14 +10214,15 @@
                             div.className += " hide-block";
                         }
                     }
-                    if(level.startsWith("debug") && !$scope.object.checkBoxs.debug){
+
+                    if(level.match("^debug") && !$scope.object.checkBoxs.debug){
                         div.className += " hide-block";
                     }
                     div.textContent = match.replace(/^\r?\n/, "");
                     if (!vm.isDeBugLevel) {
-                        vm.isDeBugLevel = level.startsWith('debug');
+                        vm.isDeBugLevel = !!level.match("^debug");
                     }
-                    if (vm.isDeBugLevel && level.startsWith('debug')) {
+                    if (vm.isDeBugLevel && level.match("^debug")) {
                         if (level === 'debug') {
                             vm.isDebugLevels[0] = true;
                         } else {
@@ -10237,7 +10238,7 @@
                         }
                     }
                     if (!vm.isStdErrLevel) {
-                        vm.isStdErrLevel = div.className.includes('stderr');
+                        vm.isStdErrLevel = div.className.indexOf('stderr') > -1;
                     }
 
                     let j = 0;
