@@ -349,6 +349,8 @@
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 !== data.path)) {
                 vm.showHistoryPanel = '';
+                vm.historyRequestObj = {};
+                vm.taskHistoryRequestObj = {};
             }
             data.selected1 = true;
             data.jobChains = [];
@@ -366,6 +368,8 @@
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 !== data.path)) {
                 vm.showHistoryPanel = '';
+                vm.historyRequestObj = {};
+                vm.taskHistoryRequestObj = {};
             }
             vm.allJobChains = [];
             vm.loading = true;
@@ -831,6 +835,8 @@
         vm.changeStatus = function () {
             vm.reloadState = 'no';
             vm.showHistoryPanel = '';
+            vm.historyRequestObj = {};
+            vm.taskHistoryRequestObj = {};
             vm.allJobChains = [];
             vm.loading = true;
             let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: false};
@@ -2973,6 +2979,8 @@
                         if (vm.showHistoryPanel && vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved" && vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN") {
                             if (vm.showHistoryPanel.path === vm.events[0].eventSnapshots[j].path) {
                                 vm.showHistoryPanel = '';
+                                vm.historyRequestObj = {};
+                                vm.taskHistoryRequestObj = {};
                             }
                         }
                     }
