@@ -1,26 +1,26 @@
 import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angular/core';
-import { CoreService } from '../../services/core.service';
-import { SaveService } from '../../services/save.service';
-import { AuthService } from '../../components/guard';
-import { DataService } from '../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {TreeModal} from "../../components/tree-modal/tree.component";
-import {EditFilterModal} from "../../components/filter-modal/filter.component";
+import {CoreService} from '../../services/core.service';
+import {SaveService} from '../../services/save.service';
+import {AuthService} from '../../components/guard';
+import {DataService} from '../../services/data.service';
+import {Subscription} from 'rxjs';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 
 import * as moment from 'moment';
 import * as _ from 'underscore';
+
 declare const $;
 
 @Component({
-  selector: 'ngbd-modal-content',
+  selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
 
-export class FilterModal implements OnInit {
+export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
-  preferences: any  = {};
-  permission: any  = {};
+  preferences: any = {};
+  permission: any = {};
 
   @Input() allFilter;
   @Input() new;
@@ -44,16 +44,16 @@ export class FilterModal implements OnInit {
         planned: 'today',
         shared: false
       };
-    }else{
+    } else {
       this.filter.radio = 'planned';
       this.name = _.clone(this.filter.name);
     }
   }
 
-  cancel(obj){
-    if(obj){
+  cancel(obj) {
+    if (obj) {
       this.activeModal.close(obj);
-    }else {
+    } else {
       this.activeModal.dismiss('');
     }
   }
@@ -80,10 +80,11 @@ export class SearchComponent implements OnInit {
   dateFormatM: any;
   config: any = {};
   existingName: any;
-  submitted: boolean = false;
-  isUnique: boolean = true;
+  submitted = false;
+  isUnique = true;
 
-  constructor(public coreService: CoreService) {}
+  constructor(public coreService: CoreService) {
+  }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -107,16 +108,16 @@ export class SearchComponent implements OnInit {
     let configObj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
-      configurationType: "CUSTOMIZATION",
-      objectType: "AUDITLOG",
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'AUDITLOG',
       name: result.name,
       shared: result.shared,
       id: 0,
       configurationItem: {}
     };
-    let fromDate:any;
-    let toDate:any;
-    let obj:any = {};
+    let fromDate: any;
+    let toDate: any;
+    let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.jobChain = result.jobChain;
@@ -126,14 +127,14 @@ export class SearchComponent implements OnInit {
     obj.name = result.name;
     if (result.radio != 'current') {
       if (result.from1) {
-       fromDate = this.coreService.parseProcessExecuted(result.from1);
+        fromDate = this.coreService.parseProcessExecuted(result.from1);
       }
       if (result.to1) {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate)
-    console.log(toDate)
+    console.log(fromDate);
+    console.log(toDate);
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -150,10 +151,10 @@ export class SearchComponent implements OnInit {
       data = res;
       configObj.id = data.id;
       this.allFilter.push(configObj);
-      if(this.isSearch){
+      if (this.isSearch) {
         this.filter.name = '';
-      }else{
-         this.onCancel.emit(configObj);
+      } else {
+        this.onCancel.emit(configObj);
       }
       this.submitted = false;
     }, err => {
@@ -162,8 +163,9 @@ export class SearchComponent implements OnInit {
   }
 
   search() {
-      this.onSearch.emit();
+    this.onSearch.emit();
   }
+
   cancel() {
     this.onCancel.emit();
   }
@@ -171,8 +173,7 @@ export class SearchComponent implements OnInit {
 
 @Component({
   selector: 'app-audit-log',
-  templateUrl: './audit-log.component.html',
-  styleUrls: ['./audit-log.component.css']
+  templateUrl: './audit-log.component.html'
 })
 export class AuditLogComponent implements OnInit, OnDestroy {
 
@@ -183,9 +184,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   auditLogs: any = [];
-  isLoaded: boolean = false;
-  loading: boolean = false;
-  showSearchPanel: boolean = false;
+  isLoaded = false;
+  loading = false;
+  showSearchPanel = false;
   searchFilter: any = {};
 
   searchKey: string;
@@ -206,16 +207,16 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].jobschedulerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "AuditLogChanged") {
+            if (args[i].eventSnapshots[j].eventType === 'AuditLogChanged') {
               this.load(null);
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }
@@ -225,10 +226,18 @@ export class AuditLogComponent implements OnInit, OnDestroy {
   }
 
   private init() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (this.authService.scheduleIds) {
+      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    }
+    if (this.authService.permission) {
+      this.permission = JSON.parse(this.authService.permission) || {};
+    }
+    if (this.preferences.dateFormat) {
+      this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    }
     this.adtLog = this.coreService.getAuditLogTab();
     this.load(null);
 
@@ -266,7 +275,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2],10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -357,9 +366,9 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   exportToExcel() {
     $('#auditLogTableId').table2excel({
-      exclude: ".tableexport-ignore",
-      filename: "jobscheduler-agent-job-excution",
-      fileext: ".xls",
+      exclude: '.tableexport-ignore',
+      filename: 'jobscheduler-agent-job-excution',
+      fileext: '.xls',
       exclude_img: false,
       exclude_links: false,
       exclude_inputs: false
@@ -422,7 +431,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filter.dateTo = toDate;
     }
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter['timeZone']
+      delete filter['timeZone'];
     }
     return filter;
   }
@@ -443,25 +452,25 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     this.adtLog.filter.date = '';
     if (this.searchFilter.jobChain) {
       if (this.searchFilter.orderIds) {
-        let s = this.searchFilter.orderIds.replace(/\s*(,|^|$)\s*/g, "$1");
+        let s = this.searchFilter.orderIds.replace(/\s*(,|^|$)\s*/g, '$1');
         let orderIds = s.split(',');
         let self = this;
         orderIds.forEach(function (value) {
-          filter.orders.push({jobChain: self.searchFilter.jobChain, orderId: value})
+          filter.orders.push({jobChain: self.searchFilter.jobChain, orderId: value});
         });
       } else {
-        filter.orders.push({jobChain: this.searchFilter.jobChain})
+        filter.orders.push({jobChain: this.searchFilter.jobChain});
       }
     }
     if (this.searchFilter.job) {
-      let s = this.searchFilter.job.replace(/\s*(,|^|$)\s*/g, "$1");
+      let s = this.searchFilter.job.replace(/\s*(,|^|$)\s*/g, '$1');
       let jobs = s.split(',');
       jobs.forEach(function (value) {
-        filter.jobs.push({job: value})
+        filter.jobs.push({job: value});
       });
     }
     if (this.searchFilter.calendars) {
-      let s = this.searchFilter.calendars.replace(/\s*(,|^|$)\s*/g, "$1");
+      let s = this.searchFilter.calendars.replace(/\s*(,|^|$)\s*/g, '$1');
       filter.calendars = s.split(',');
     }
     if (this.searchFilter.regex) {
@@ -487,7 +496,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   /* ---- Customization ------ */
   createCustomization() {
-    const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
+    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.permission = this.permission;
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.allFilter = this.filterList;
@@ -503,12 +512,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
         // this.saveService.save();
       }
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
   editFilters() {
-    const modalRef = this.modalService.open(EditFilterModal, {backdrop: "static"});
+    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.filterList = this.filterList;
     modalRef.componentInstance.favorite = this.savedFilter.favorite;
     modalRef.componentInstance.permission = this.permission;
@@ -518,12 +527,12 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
     modalRef.result.then((obj) => {
       if (obj.type === 'EDIT') {
-        this.editFilter(obj)
+        this.editFilter(obj);
       } else if (obj.type === 'COPY') {
-        this.copyFilter(obj)
+        this.copyFilter(obj);
       }
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
@@ -567,7 +576,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filterObj = JSON.parse(result.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
-      const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
@@ -576,7 +585,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
     });
   }
@@ -590,7 +599,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filterObj.shared = filter.shared;
       filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
 
-      const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
@@ -598,7 +607,7 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
     });
   }

@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {AuthService} from "../components/guard";
-import * as _ from 'underscore';
-import {AboutModal} from "../components/about-modal/about.component";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {AuthService} from '../components/guard';
+import {AboutModalComponent} from '../components/about-modal/about.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
-
+import * as _ from 'underscore';
 
 declare var $;
 
 @Injectable()
 export class CoreService {
 
-  _view: string = 'grid';
-  _sideView: boolean = false;
+  _view = 'grid';
+  _sideView = false;
   tabs: any = {};
   tempTabs: any = {};
   dashboard: any = {};
@@ -28,6 +27,7 @@ export class CoreService {
     this.tabs._job.filter.type = 'ALL';
     this.tabs._job.filter.sortBy = 'name';
     this.tabs._job.reverse = false;
+    this.tabs._job.searchText = '';
     this.tabs._job.currentPage = '1';
     this.tabs._job.expand_to = [];
     this.tabs._job.selectedView = true;
@@ -37,9 +37,9 @@ export class CoreService {
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.filter.status = 'ALL';
     this.tabs._daliyPlan.filter.state = '';
-    this.tabs._daliyPlan.filter.sortBy = 'processedPlanned';
-    this.tabs._daliyPlan.filter.range = "today";
-    this.tabs._daliyPlan.range = 'period';
+    this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
+    this.tabs._daliyPlan.filter.range = 'today';
+    this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
@@ -49,6 +49,7 @@ export class CoreService {
     this.tabs._order.filter.state = 'ALL';
     this.tabs._order.filter.sortBy = 'orderId';
     this.tabs._order.reverse = false;
+    this.tabs._order.searchText = '';
     this.tabs._order.currentPage = '1';
     this.tabs._order.expand_to = [];
     this.tabs._order.selectedView = true;
@@ -78,6 +79,7 @@ export class CoreService {
     this.tabs._history.order.filter.date = 'today';
     this.tabs._history.order.filter.sortBy = 'startTime';
     this.tabs._history.order.reverse = true;
+    this.tabs._history.order.searchText = '';
     this.tabs._history.order.currentPage = '1';
     this.tabs._history.order.selectedView = true;
     this.tabs._history.task = {};
@@ -86,6 +88,7 @@ export class CoreService {
     this.tabs._history.task.filter.date = 'today';
     this.tabs._history.task.filter.sortBy = 'startTime';
     this.tabs._history.task.reverse = true;
+    this.tabs._history.task.searchText = '';
     this.tabs._history.task.currentPage = '1';
     this.tabs._history.task.selectedView = true;
     this.tabs._history.yade = {};
@@ -94,6 +97,7 @@ export class CoreService {
     this.tabs._history.yade.filter.date = 'today';
     this.tabs._history.yade.filter.sortBy = 'start';
     this.tabs._history.yade.reverse = true;
+    this.tabs._history.yade.searchText = '';
     this.tabs._history.yade.currentPage = '1';
     this.tabs._history.yade.selectedView = true;
 
@@ -103,6 +107,7 @@ export class CoreService {
     this.tabs._yade.filter.date = 'today';
     this.tabs._yade.filter.sortBy = 'start';
     this.tabs._yade.reverse = true;
+    this.tabs._yade.searchText = '';
     this.tabs._yade.currentPage = '1';
     this.tabs._yade.selectedView = true;
 
@@ -116,18 +121,20 @@ export class CoreService {
 
     this.tabs._auditLog = {};
     this.tabs._auditLog.filter = {};
-    this.tabs._auditLog.filter.historyStates = 'all';
+    this.tabs._auditLog.filter.historyStates = 'ALL';
     this.tabs._auditLog.filter.date = 'today';
-    this.tabs._auditLog.filter.sortBy = "created";
+    this.tabs._auditLog.filter.sortBy = 'created';
     this.tabs._auditLog.reverse = true;
+    this.tabs._auditLog.searchText = '';
     this.tabs._auditLog.currentPage = '1';
 
     this.tabs._resource = {};
     this.tabs._resource.agents = {};
     this.tabs._resource.agents.filter = {};
-    this.tabs._resource.agents.filter.state = 'all';
+    this.tabs._resource.agents.filter.state = 'ALL';
     this.tabs._resource.agents.filter.sortBy = 'path';
     this.tabs._resource.agents.reverse = false;
+    this.tabs._resource.agents.searchText = '';
     this.tabs._resource.agents.currentPage = '1';
     this.tabs._resource.agents.expand_to = [];
     this.tabs._resource.agentJobExecution = {};
@@ -135,19 +142,22 @@ export class CoreService {
     this.tabs._resource.agentJobExecution.filter.date = 'today';
     this.tabs._resource.agentJobExecution.filter.sortBy = 'agent';
     this.tabs._resource.agentJobExecution.reverse = false;
+    this.tabs._resource.agentJobExecution.searchText = '';
     this.tabs._resource.agentJobExecution.currentPage = '1';
     this.tabs._resource.locks = {};
     this.tabs._resource.locks.filter = {};
-    this.tabs._resource.locks.filter.state = 'all';
+    this.tabs._resource.locks.filter.state = 'ALL';
     this.tabs._resource.locks.filter.sortBy = 'name';
     this.tabs._resource.locks.reverse = false;
+    this.tabs._resource.locks.searchText = '';
     this.tabs._resource.locks.currentPage = '1';
     this.tabs._resource.locks.expand_to = [];
     this.tabs._resource.processClasses = {};
     this.tabs._resource.processClasses.filter = {};
-    this.tabs._resource.processClasses.filter.state = 'all';
+    this.tabs._resource.processClasses.filter.state = 'ALL';
     this.tabs._resource.processClasses.filter.sortBy = 'name';
     this.tabs._resource.processClasses.reverse = false;
+    this.tabs._resource.processClasses.searchText = '';
     this.tabs._resource.processClasses.currentPage = '1';
     this.tabs._resource.processClasses.expand_to = [];
     this.tabs._resource.calendars = {};
@@ -155,9 +165,10 @@ export class CoreService {
     this.tabs._resource.calendars.filter.type = 'ALL';
     this.tabs._resource.calendars.filter.sortBy = 'name';
     this.tabs._resource.calendars.reverse = false;
+    this.tabs._resource.calendars.searchText = '';
     this.tabs._resource.calendars.currentPage = '1';
     this.tabs._resource.calendars.expand_to = [];
-
+    this.tabs._resource.state = 'agent';
 
     this.tempTabs._job = {};
     this.tempTabs._job.filter = {};
@@ -170,13 +181,12 @@ export class CoreService {
     this.tempTabs._job.selectedView = true;
     this.tempTabs._job.showTaskPanel = undefined;
 
-
     this.tempTabs._daliyPlan = {};
     this.tempTabs._daliyPlan.filter = {};
     this.tempTabs._daliyPlan.filter.status = 'ALL';
     this.tempTabs._daliyPlan.filter.state = '';
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
-    this.tempTabs._daliyPlan.filter.range = "today";
+    this.tempTabs._daliyPlan.filter.range = 'today';
     this.tempTabs._daliyPlan.range = 'period';
     this.tempTabs._daliyPlan.reverse = false;
     this.tempTabs._daliyPlan.currentPage = '1';
@@ -254,16 +264,16 @@ export class CoreService {
 
     this.tempTabs._auditLog = {};
     this.tempTabs._auditLog.filter = {};
-    this.tempTabs._auditLog.filter.historyStates = 'all';
+    this.tempTabs._auditLog.filter.historyStates = 'ALL';
     this.tempTabs._auditLog.filter.date = 'today';
-    this.tempTabs._auditLog.filter.sortBy = "created";
+    this.tempTabs._auditLog.filter.sortBy = 'created';
     this.tempTabs._auditLog.reverse = true;
     this.tempTabs._auditLog.currentPage = '1';
 
     this.tempTabs._resource = {};
     this.tempTabs._resource.agents = {};
     this.tempTabs._resource.agents.filter = {};
-    this.tempTabs._resource.agents.filter.state = 'all';
+    this.tempTabs._resource.agents.filter.state = 'ALL';
     this.tempTabs._resource.agents.filter.sortBy = 'path';
     this.tempTabs._resource.agents.reverse = false;
     this.tempTabs._resource.agents.currentPage = '1';
@@ -276,14 +286,14 @@ export class CoreService {
     this.tempTabs._resource.agentJobExecution.currentPage = '1';
     this.tempTabs._resource.locks = {};
     this.tempTabs._resource.locks.filter = {};
-    this.tempTabs._resource.locks.filter.state = 'all';
+    this.tempTabs._resource.locks.filter.state = 'ALL';
     this.tempTabs._resource.locks.filter.sortBy = 'name';
     this.tempTabs._resource.locks.reverse = false;
     this.tempTabs._resource.locks.currentPage = '1';
     this.tempTabs._resource.locks.expand_to = [];
     this.tempTabs._resource.processClasses = {};
     this.tempTabs._resource.processClasses.filter = {};
-    this.tempTabs._resource.processClasses.filter.state = 'all';
+    this.tempTabs._resource.processClasses.filter.state = 'ALL';
     this.tempTabs._resource.processClasses.filter.sortBy = 'name';
     this.tempTabs._resource.processClasses.reverse = false;
     this.tempTabs._resource.processClasses.currentPage = '1';
@@ -295,25 +305,25 @@ export class CoreService {
     this.tempTabs._resource.calendars.reverse = false;
     this.tempTabs._resource.calendars.currentPage = '1';
     this.tempTabs._resource.calendars.expand_to = [];
+    this.tempTabs._resource.state = 'agent';
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
     this.dashboard._dashboard.task = {};
     this.dashboard._dashboard.file = {};
 
-    this.dashboard._dashboard.dailyplan = "0d";
+    this.dashboard._dashboard.dailyplan = '0d';
 
-    this.dashboard._dashboard.order.date = "0d";
+    this.dashboard._dashboard.order.date = '0d';
     this.dashboard._dashboard.order.label = 'button.today';
 
-    this.dashboard._dashboard.task.date = "0d";
+    this.dashboard._dashboard.task.date = '0d';
     this.dashboard._dashboard.task.label = 'button.today';
 
-    this.dashboard._dashboard.file.date = "0d";
+    this.dashboard._dashboard.file.date = '0d';
     this.dashboard._dashboard.file.label = 'button.today';
 
     if (localStorage.$SOS$DASHBOARDTABS) {
-
       try {
         let obj = JSON.parse(localStorage.$SOS$DASHBOARDTABS);
         if (obj && obj.order) {
@@ -359,6 +369,10 @@ export class CoreService {
     this.tabs = this.tempTabs;
   }
 
+  setTabs(tempTabs) {
+    this.tabs = tempTabs;
+  }
+  
   getTabs() {
     return this.tabs;
   }
@@ -420,31 +434,31 @@ export class CoreService {
     return this.http.post(url, object);
   }
 
-  getColor(d, type): string {
-    if (d == 0) {
+  getColor(d: number, type: string): string {
+    if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
-    } else if (d == 1) {
+    } else if (d === 1) {
       return type === 'text' ? 'gold' : type === 'border' ? 'gold-box' : 'bg-gold';
-    } else if (d == 2) {
+    } else if (d === 2) {
       return type === 'text' ? 'crimson' : type === 'border' ? 'crimson-box' : 'bg-crimson';
-    } else if (d == 3) {
+    } else if (d === 3) {
       return type === 'text' ? 'dimgrey' : type === 'border' ? 'dimgrey-box' : 'bg-dimgrey';
-    } else if (d == 4) {
+    } else if (d === 4) {
       return type === 'text' ? 'text-dark' : type === 'border' ? 'text-dark-box' : 'bg-transparent';
-    } else if (d == 5) {
+    } else if (d === 5) {
       return type === 'text' ? 'dark-orange' : type === 'border' ? 'dark-orange-box' : 'bg-dark-orange';
-    } else if (d == 6) {
+    } else if (d === 6) {
       return type === 'text' ? 'corn-flower-blue' : type === 'border' ? 'corn-flower-blue-box' : 'bg-corn-flower-blue';
-    } else if (d == 7) {
+    } else if (d === 7) {
       return type === 'text' ? 'dark-magenta' : type === 'border' ? 'dark-magenta-box' : 'bg-dark-magenta';
-    } else if (d == 8) {
+    } else if (d === 8) {
       return type === 'text' ? 'chocolate' : type === 'border' ? 'chocolate-box' : 'bg-chocolate';
     }
   }
 
   getDateFormat(dateFormat): string {
-    if(!dateFormat) {
-      return "";
+    if (!dateFormat) {
+      return '';
     }
     dateFormat = dateFormat.replace('YY', 'yy');
     dateFormat = dateFormat.replace('YY', 'yy');
@@ -454,11 +468,10 @@ export class CoreService {
     return this.getDateFormatMom(dateFormat);
   }
 
-  getDateFormatMom(dateFormat): string {
+  getDateFormatMom(dateFormat: string): string {
     if (dateFormat.match('HH:mm')) {
       dateFormat = dateFormat.replace('HH:mm', '');
-    }
-    else if (dateFormat.match('hh:mm')) {
+    } else if (dateFormat.match('hh:mm')) {
       dateFormat = dateFormat.replace('hh:mm', '');
     }
 
@@ -475,11 +488,11 @@ export class CoreService {
     return dateFormat;
   }
 
-  getTimeFormat(timeFormat): string {
+  getTimeFormat(timeFormat: string): string {
     if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
       let result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
       if (result.match(/hh/g)) {
-        return result + " a";
+        return result + ' a';
       } else {
         return result;
       }
@@ -492,7 +505,6 @@ export class CoreService {
 
   hidePanel() {
     let dom = $('#rightPanel');
-
     dom.addClass('m-l-0 fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
     $('#leftPanel').hide();
@@ -523,28 +535,11 @@ export class CoreService {
     }
   }
 
-  private recursive(data, output) {
-
-    if (data.folders && data.folders.length > 0) {
-      data.folders = _.sortBy(data.folders, 'name');
-      for (let i = 0; i < data.folders.length; i++) {
-        output.push({
-          name: data.folders[i].name,
-          path: data.folders[i].path,
-          children: []
-        });
-        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children);
-        }
-      }
-    }
-  }
-
   recursiveTreeUpdate(scrTree, destTree): any {
-    if (scrTree && destTree)
+    if (scrTree && destTree) {
       for (let i = 0; i < scrTree.length; i++) {
         for (let j = 0; j < destTree.length; j++) {
-          if (scrTree[i].path == destTree[j].path) {
+          if (scrTree[i].path === destTree[j].path) {
             scrTree[i].isExpanded = destTree[j].isExpanded;
             scrTree[i].isSelected = destTree[j].isSelected;
             scrTree[i].data = destTree[j].data;
@@ -554,22 +549,8 @@ export class CoreService {
           }
         }
       }
+    }
     return scrTree;
-  }
-
-  private refreshParent() {
-    try {
-      if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
-        window.localStorage.log_window_wt = this.newWindow.innerWidth;
-        window.localStorage.log_window_ht = this.newWindow.innerHeight;
-        window.localStorage.log_window_x = this.newWindow.screenX;
-        window.localStorage.log_window_y = this.newWindow.screenY;
-        this.newWindow.close();
-      }
-    }
-    catch (x) {
-      console.log(x)
-    }
   }
 
   showLogWindow(order, task, job, id, transfer) {
@@ -598,13 +579,13 @@ export class CoreService {
           } else {
             return;
           }
-          document.cookie = "$SOS$scheduleId=" + (id || schedulerId) + ";path=/";
-          document.cookie = "$SOS$accessTokenId=" + this.authService.accessTokenId + ";path=/";
-          document.cookie = "$SOS$accountName=" + this.authService.currentUserData + ";path=/";
+          document.cookie = '$SOS$scheduleId=' + (id || schedulerId) + ';path=/';
+          document.cookie = '$SOS$accessTokenId=' + this.authService.accessTokenId + ';path=/';
+          document.cookie = '$SOS$accountName=' + this.authService.currentUserData + ';path=/';
           console.log(url);
-          
-          this.newWindow = window.open(url, "Log", 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
-          
+
+          this.newWindow = window.open(url, 'Log', 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
+
           const self = this;
           setTimeout(() => {
             self.calWindowSize();
@@ -615,7 +596,7 @@ export class CoreService {
       }
     } else {
       if (order && order.historyId && order.orderId) {
-        
+
         url = '/workflow/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || schedulerId);
       } else if (task && task.taskId) {
 
@@ -653,7 +634,7 @@ export class CoreService {
           window.localStorage.log_window_y = self.newWindow.screenY;
           return;
         };
-        this.newWindow.addEventListener("resize", function () {
+        this.newWindow.addEventListener('resize', function () {
           window.localStorage.log_window_wt = self.newWindow.innerWidth;
           window.localStorage.log_window_ht = self.newWindow.innerHeight;
           window.localStorage.log_window_x = self.newWindow.screenX;
@@ -670,7 +651,7 @@ export class CoreService {
     if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
       let fromDate = new Date();
       date = new Date();
-      let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+      let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2], 10);
       date.setSeconds(fromDate.getSeconds() - seconds);
     } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
       date = regex;
@@ -684,7 +665,7 @@ export class CoreService {
     return date;
   }
 
-   parseProcessExecutedRegex(regex, obj): any {
+  parseProcessExecutedRegex(regex, obj): any {
     let fromDate, toDate, date, arr;
 
     if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
@@ -693,7 +674,7 @@ export class CoreService {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -731,20 +712,20 @@ export class CoreService {
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
       let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-        fromDate.setHours(parseInt(time[1]) - 12);
+      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
+        fromDate.setHours(parseInt(time[1], 10) - 12);
       } else {
         fromDate.setHours(parseInt(time[1]));
       }
 
-      fromDate.setMinutes(parseInt(time[2]));
+      fromDate.setMinutes(parseInt(time[2], 10));
       toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-        toDate.setHours(parseInt(time[4]) - 12);
+      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
+        toDate.setHours(parseInt(time[4], 10) - 12);
       } else {
-        toDate.setHours(parseInt(time[4]));
+        toDate.setHours(parseInt(time[4], 10));
       }
-      toDate.setMinutes(parseInt(time[5]));
+      toDate.setMinutes(parseInt(time[5], 10));
     }
 
     if (fromDate) {
@@ -759,7 +740,7 @@ export class CoreService {
   mergeHostAndProtocol(hosts, protocols) {
     let arr = [];
     if (protocols.length < hosts.length) {
-      hosts.forEach(function (value, index) {
+      hosts.forEach((value, index) => {
         if (protocols.length > 0) {
           if (protocols.length < hosts.length) {
             if (protocols.length == 1) {
@@ -774,12 +755,12 @@ export class CoreService {
             }
           }
         } else {
-          arr.push({host: value})
+          arr.push({host: value});
         }
 
-      })
+      });
     } else if (protocols.length > hosts.length) {
-      protocols.forEach( function (value, index) {
+      protocols.forEach((value, index) => {
         if (hosts.length > 0) {
           if (hosts.length < protocols.length) {
             if (hosts.length == 1) {
@@ -795,12 +776,12 @@ export class CoreService {
 
           }
         } else {
-          arr.push({protocol: value})
+          arr.push({protocol: value});
         }
 
-      })
+      });
     } else {
-      hosts.forEach( function (value, index) {
+      hosts.forEach((value, index) => {
         for (let x = 0; x < protocols.length; x++) {
           arr.push({host: value, protocol: protocols[x]});
           protocols.splice(index, 1);
@@ -811,8 +792,7 @@ export class CoreService {
     return arr;
   }
 
-
-  checkCopyName(list:any, name:string):string {
+  checkCopyName(list: any, name: string): string {
     let _temp = '';
     if (/.+\((\d+)\)$/.test(name)) {
       _temp = name;
@@ -823,11 +803,12 @@ export class CoreService {
     function recursion() {
       for (let j = 0; j < list.length; j++) {
         if (list[j].name == _temp) {
-          _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1]) + 1) + ')');
+          _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1], 10) + 1) + ')');
           recursion();
         }
       }
     }
+
     recursion();
     return _temp;
   }
@@ -847,32 +828,63 @@ export class CoreService {
   showOrderLink(order) {
 
   }
-  showCalendarLink(calendar){
+
+  showCalendarLink(calendar) {
 
   }
 
   about() {
-    this.get("version.json").subscribe((data) => {
-      const modalRef = this.modalService.open(AboutModal, {
-        backdrop: "static"
+    this.get('version.json').subscribe((data) => {
+      const modalRef = this.modalService.open(AboutModalComponent, {
+        backdrop: 'static'
       });
       modalRef.componentInstance.versionData = data;
       modalRef.result.then(() => {
 
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
     });
   }
 
- //To convert date string into moment date format
-  toMomentDateFormat(date){
-    let formattedDate = moment(date, 'DD.MM.YYYY');
-    return formattedDate;
+  // To convert date string into moment date format
+  toMomentDateFormat(date) {
+    return moment(date, 'DD.MM.YYYY');
   }
 
   getProtocols() {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
+  }
+
+  private recursive(data, output) {
+
+    if (data.folders && data.folders.length > 0) {
+      data.folders = _.sortBy(data.folders, 'name');
+      for (let i = 0; i < data.folders.length; i++) {
+        output.push({
+          name: data.folders[i].name,
+          path: data.folders[i].path,
+          children: []
+        });
+        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
+          this.recursive(data.folders[i], output[i].children);
+        }
+      }
+    }
+  }
+
+  private refreshParent() {
+    try {
+      if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
+        window.localStorage.log_window_wt = this.newWindow.innerWidth;
+        window.localStorage.log_window_ht = this.newWindow.innerHeight;
+        window.localStorage.log_window_x = this.newWindow.screenX;
+        window.localStorage.log_window_y = this.newWindow.screenY;
+        this.newWindow.close();
+      }
+    } catch (x) {
+      console.log(x);
+    }
   }
 
 }

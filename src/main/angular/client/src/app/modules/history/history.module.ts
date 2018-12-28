@@ -1,21 +1,30 @@
 import {NgModule} from '@angular/core';
 import {
   HistoryComponent,
-  FilterModal,
+  FilterModalComponent,
   OrderSearchComponent,
   YadeSearchComponent,
   TaskSearchComponent
 } from './history.component';
+import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
-import {EditIgnoreListModal} from "../../components/ignore-list-modal/ignore-list.component";
+import {EditIgnoreListModal} from '../../components/ignore-list-modal/ignore-list.component';
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    HistoryRoutingModule
   ],
-  declarations: [HistoryComponent, FilterModal, EditIgnoreListModal, OrderSearchComponent, YadeSearchComponent, TaskSearchComponent],
+  declarations: [
+    HistoryComponent,
+    FilterModalComponent,
+    EditIgnoreListModal,
+    OrderSearchComponent,
+    YadeSearchComponent,
+    TaskSearchComponent
+  ],
   entryComponents: [
-    FilterModal,
+    FilterModalComponent,
     EditIgnoreListModal
   ]
 })

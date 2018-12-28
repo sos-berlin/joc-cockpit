@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { CoreService } from '../../../services/core.service';
-
+import {Injectable} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {CoreService} from '../../../services/core.service';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 
@@ -13,16 +12,12 @@ export class CalendarService {
   }
 
   getStringDay(day): string {
-    return day == 0 ? "sunday" : day == 1 ? "monday" : day == 2 ? "tuesday" : day == 3 ? "wednesday" : day == 4 ? "thursday" : day == 5 ? "friday" : "saturday";
+    return day == 0 ? 'sunday' : day == 1 ? 'monday' : day == 2 ? 'tuesday' : day == 3 ? 'wednesday' : day == 4 ? 'thursday' : day == 5 ? 'friday' : 'saturday';
   }
 
 
   getDay(day): number {
-    return day == "sunday" ? 0 : day == "monday" ? 1 : day == "tuesday" ? 2 : day == "wednesday" ? 3 : day == "thursday" ? 4 : day == "friday" ? 5 : 6;
-  }
-
-  private compareNumbers(a, b) {
-    return a - b;
+    return day == 'sunday' ? 0 : day == 'monday' ? 1 : day == 'tuesday' ? 2 : day == 'wednesday' ? 3 : day == 'thursday' ? 4 : day == 'friday' ? 5 : 6;
   }
 
   getMonths(month): string {
@@ -49,26 +44,19 @@ export class CalendarService {
         str = str + 'Apr,';
       } else if (value == 5) {
         str = str + 'May,';
-      }
-      else if (value == 6) {
+      } else if (value == 6) {
         str = str + 'Jun,';
-      }
-      else if (value == 7) {
+      } else if (value == 7) {
         str = str + 'Jul,';
-      }
-      else if (value == 8) {
+      } else if (value == 8) {
         str = str + 'Aug,';
-      }
-      else if (value == 9) {
+      } else if (value == 9) {
         str = str + 'Sep,';
-      }
-      else if (value == 10) {
+      } else if (value == 10) {
         str = str + 'Oct,';
-      }
-      else if (value == 11) {
+      } else if (value == 11) {
         str = str + 'Nov,';
-      }
-      else if (value == 12) {
+      } else if (value == 12) {
         str = str + 'Dec';
       }
     });
@@ -165,11 +153,9 @@ export class CalendarService {
       }
       if (months[i] == 1 || months[i] == 31) {
         str = str + months[i] + 'st,';
-      }
-      else if (months[i] == 2) {
+      } else if (months[i] == 2) {
         str = str + months[i] + 'nd,';
-      }
-      else if (months[i] == 3) {
+      } else if (months[i] == 3) {
         str = str + months[i] + 'rd,';
       } else {
         str = str + months[i] + 'th,';
@@ -206,8 +192,7 @@ export class CalendarService {
       } else {
         return self.getSpecificDay(data.which) + ' ' + data.specificWeekDay + ' of month';
       }
-    }
-    else if (data.tab == 'specificDays') {
+    } else if (data.tab == 'specificDays') {
       str = 'On ';
       if (data.dates) {
         data.dates.forEach(function (date, index) {
@@ -218,8 +203,7 @@ export class CalendarService {
         });
       }
       return str;
-    }
-    else if (data.tab == 'monthDays') {
+    } else if (data.tab == 'monthDays') {
       if (data.isUltimos != 'months') {
         if (str) {
           return '- ' + self.getMonthDays(data.selectedMonthsU, data.isUltimos) + ' of ' + str;
@@ -233,29 +217,25 @@ export class CalendarService {
           return self.getMonthDays(data.selectedMonths, null) + ' of month';
         }
       }
-    }
-    else if (data.tab == 'every') {
+    } else if (data.tab == 'every') {
       if (data.interval == 1) {
         str = data.interval + 'st ';
-      }
-      else if (data.interval == 2) {
+      } else if (data.interval == 2) {
         str = data.interval + 'nd ';
-      }
-      else if (data.interval == 3) {
+      } else if (data.interval == 3) {
         str = data.interval + 'rd ';
       } else {
         str = data.interval + 'th ';
       }
       let repetitions = data.dateEntity == 'DAILY' ? 'day' : data.dateEntity == 'WEEKLY' ? 'week' : data.dateEntity == 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
-        let formattedDate  = moment(data.startingWith, 'DD-MM-YYYY');
+        let formattedDate = moment(data.startingWith, 'DD-MM-YYYY');
         return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(formattedDate, dataFormat);
       } else {
         return 'Every ' + str + repetitions;
       }
 
-    }
-    else if (data.tab == 'nationalHoliday') {
+    } else if (data.tab == 'nationalHoliday') {
       if (data.nationalHoliday) {
         str = moment(data.nationalHoliday[0]).format('YYYY') + ' national holidays ';
 
@@ -274,26 +254,26 @@ export class CalendarService {
     let self = this;
     let arr = [];
     let from, to;
-    if (data.type == "INCLUDE") {
+    if (data.type == 'INCLUDE') {
       if (data.months && _.isArray(data.months) && data.months.length > 0) {
         if (!obj.includes.months)
           obj.includes.months = [];
 
         if (data.tab == 'weekDays') {
           if (data.startingWithW) {
-            from = moment(data.startingWithW).format('YYYY-MM-DD')
+            from = moment(data.startingWithW).format('YYYY-MM-DD');
           }
           if (data.endOnW) {
-            to = moment(data.endOnW).format('YYYY-MM-DD')
+            to = moment(data.endOnW).format('YYYY-MM-DD');
           }
           arr.push({days: data.days, from: from, to: to});
           obj.includes.months.push({months: data.months, weekdays: arr});
         } else if (data.tab == 'monthDays') {
           if (data.startingWithM) {
-            from = moment(data.startingWithM).format('YYYY-MM-DD')
+            from = moment(data.startingWithM).format('YYYY-MM-DD');
           }
           if (data.endOnM) {
-            to = moment(data.endOnM).format('YYYY-MM-DD')
+            to = moment(data.endOnM).format('YYYY-MM-DD');
           }
           if (data.isUltimos == 'months') {
             arr.push({days: data.selectedMonths, from: from, to: to});
@@ -304,10 +284,10 @@ export class CalendarService {
           }
         } else if (data.tab == 'specificWeekDays') {
           if (data.startingWithS) {
-            from = moment(data.startingWithS).format('YYYY-MM-DD')
+            from = moment(data.startingWithS).format('YYYY-MM-DD');
           }
           if (data.endOnS) {
-            to = moment(data.endOnS).format('YYYY-MM-DD')
+            to = moment(data.endOnS).format('YYYY-MM-DD');
           }
           arr.push({
             day: self.getDay(data.specificWeekDay),
@@ -327,10 +307,10 @@ export class CalendarService {
             obj.includes.weekdays = [];
 
           if (data.startingWithW) {
-            from = moment(data.startingWithW).format('YYYY-MM-DD')
+            from = moment(data.startingWithW).format('YYYY-MM-DD');
           }
           if (data.endOnW) {
-            to = moment(data.endOnW).format('YYYY-MM-DD')
+            to = moment(data.endOnW).format('YYYY-MM-DD');
           }
           obj.includes.weekdays.push({days: data.days, from: from, to: to});
         } else if (data.tab == 'monthDays') {
@@ -339,10 +319,10 @@ export class CalendarService {
               obj.includes.monthdays = [];
 
             if (data.startingWithM) {
-              from = moment(data.startingWithM).format('YYYY-MM-DD')
+              from = moment(data.startingWithM).format('YYYY-MM-DD');
             }
             if (data.endOnM) {
-              to = moment(data.endOnM).format('YYYY-MM-DD')
+              to = moment(data.endOnM).format('YYYY-MM-DD');
             }
             obj.includes.monthdays.push({days: data.selectedMonths, from: from, to: to});
           } else {
@@ -350,10 +330,10 @@ export class CalendarService {
               obj.includes.ultimos = [];
 
             if (data.startingWithM) {
-              from = moment(data.startingWithM).format('YYYY-MM-DD')
+              from = moment(data.startingWithM).format('YYYY-MM-DD');
             }
             if (data.endOnM) {
-              to = moment(data.endOnM).format('YYYY-MM-DD')
+              to = moment(data.endOnM).format('YYYY-MM-DD');
             }
             obj.includes.ultimos.push({days: data.selectedMonthsU, from: from, to: to});
           }
@@ -364,10 +344,10 @@ export class CalendarService {
           });
 
           if (data.startingWithS) {
-            from = moment(data.startingWithS).format('YYYY-MM-DD')
+            from = moment(data.startingWithS).format('YYYY-MM-DD');
           }
           if (data.endOnS) {
-            to = moment(data.endOnS).format('YYYY-MM-DD')
+            to = moment(data.endOnS).format('YYYY-MM-DD');
           }
           if (data.which > 0) {
             if (!obj.includes.monthdays)
@@ -382,7 +362,7 @@ export class CalendarService {
           if (!obj.includes.dates)
             obj.includes.dates = [];
           data.dates.forEach(function (value) {
-            obj.includes.dates.push(moment(value).format('YYYY-MM-DD'))
+            obj.includes.dates.push(moment(value).format('YYYY-MM-DD'));
           });
 
         } else if (data.tab == 'every') {
@@ -397,7 +377,7 @@ export class CalendarService {
           if (data.startingWith)
             obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
           if (data.endOn) {
-            obj1.to = moment(data.endOn).format('YYYY-MM-DD')
+            obj1.to = moment(data.endOn).format('YYYY-MM-DD');
           }
           obj.includes.repetitions.push(obj1);
 
@@ -406,10 +386,10 @@ export class CalendarService {
             obj.includes.holidays = [];
           let dates = [];
           data.nationalHoliday.forEach(function (value) {
-            dates.push(moment(value).format('YYYY-MM-DD'))
+            dates.push(moment(value).format('YYYY-MM-DD'));
           });
           if (obj.includes.holidays.length > 0) {
-            obj.includes.holidays[0].dates = obj.includes.holidays[0].dates.concat(dates)
+            obj.includes.holidays[0].dates = obj.includes.holidays[0].dates.concat(dates);
           } else {
             obj.includes.holidays.push({dates: dates});
           }
@@ -423,20 +403,20 @@ export class CalendarService {
         if (data.tab == 'weekDays') {
 
           if (data.startingWithW) {
-            from = moment(data.startingWithW).format('YYYY-MM-DD')
+            from = moment(data.startingWithW).format('YYYY-MM-DD');
           }
           if (data.endOnW) {
-            to = moment(data.endOnW).format('YYYY-MM-DD')
+            to = moment(data.endOnW).format('YYYY-MM-DD');
           }
 
           arr.push({days: data.days, from: from, to: to});
           obj.excludes.months.push({months: data.months, weekdays: arr});
         } else if (data.tab == 'monthDays') {
           if (data.startingWithM) {
-            from = moment(data.startingWithM).format('YYYY-MM-DD')
+            from = moment(data.startingWithM).format('YYYY-MM-DD');
           }
           if (data.endOnM) {
-            to = moment(data.endOnM).format('YYYY-MM-DD')
+            to = moment(data.endOnM).format('YYYY-MM-DD');
           }
 
           if (data.isUltimos == 'months') {
@@ -448,10 +428,10 @@ export class CalendarService {
           }
         } else if (data.tab == 'specificWeekDays') {
           if (data.startingWithS) {
-            from = moment(data.startingWithS).format('YYYY-MM-DD')
+            from = moment(data.startingWithS).format('YYYY-MM-DD');
           }
           if (data.endOnS) {
-            to = moment(data.endOnS).format('YYYY-MM-DD')
+            to = moment(data.endOnS).format('YYYY-MM-DD');
           }
           arr.push({
             day: self.getDay(data.specificWeekDay),
@@ -468,20 +448,20 @@ export class CalendarService {
       } else {
         if (data.tab == 'weekDays') {
           if (data.startingWithW) {
-            from = moment(data.startingWithW).format('YYYY-MM-DD')
+            from = moment(data.startingWithW).format('YYYY-MM-DD');
           }
           if (data.endOnW) {
-            to = moment(data.endOnW).format('YYYY-MM-DD')
+            to = moment(data.endOnW).format('YYYY-MM-DD');
           }
           if (!obj.excludes.weekdays)
             obj.excludes.weekdays = [];
           obj.excludes.weekdays.push({days: data.days, from: from, to: to});
         } else if (data.tab == 'monthDays') {
           if (data.startingWithM) {
-            from = moment(data.startingWithM).format('YYYY-MM-DD')
+            from = moment(data.startingWithM).format('YYYY-MM-DD');
           }
           if (data.endOnM) {
-            to = moment(data.endOnM).format('YYYY-MM-DD')
+            to = moment(data.endOnM).format('YYYY-MM-DD');
           }
           if (data.isUltimos == 'months') {
             if (!obj.excludes.monthdays)
@@ -494,10 +474,10 @@ export class CalendarService {
           }
         } else if (data.tab == 'specificWeekDays') {
           if (data.startingWithS) {
-            from = moment(data.startingWithS).format('YYYY-MM-DD')
+            from = moment(data.startingWithS).format('YYYY-MM-DD');
           }
           if (data.endOnS) {
-            to = moment(data.endOnS).format('YYYY-MM-DD')
+            to = moment(data.endOnS).format('YYYY-MM-DD');
           }
           arr.push({
             day: self.getDay(data.specificWeekDay),
@@ -516,7 +496,7 @@ export class CalendarService {
           if (!obj.excludes.dates)
             obj.excludes.dates = [];
           data.dates.forEach(function (value) {
-            obj.excludes.dates.push(moment(value).format('YYYY-MM-DD'))
+            obj.excludes.dates.push(moment(value).format('YYYY-MM-DD'));
           });
 
         } else if (data.tab == 'every') {
@@ -539,10 +519,10 @@ export class CalendarService {
             obj.excludes.holidays = [];
           let dates = [];
           data.nationalHoliday.forEach(function (value) {
-            dates.push(moment(value).format('YYYY-MM-DD'))
+            dates.push(moment(value).format('YYYY-MM-DD'));
           });
           if (obj.excludes.holidays.length > 0) {
-            obj.excludes.holidays[0].dates = obj.excludes.holidays[0].dates.concat(dates)
+            obj.excludes.holidays[0].dates = obj.excludes.holidays[0].dates.concat(dates);
           } else {
             obj.excludes.holidays.push({dates: dates});
           }
@@ -558,5 +538,9 @@ export class CalendarService {
       return moment(el.toString()).format('YYYY');
     });
     return _(datesObj).toArray();
+  }
+
+  private compareNumbers(a, b) {
+    return a - b;
   }
 }

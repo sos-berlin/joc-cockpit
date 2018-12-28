@@ -2,7 +2,7 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
-      <div class="col-sm-6" [ngClass]="{'col-md-8': isSearch}">
+      <div class="col-sm-6">
         <input ngbTooltip="Max: 25 characters" triggers="click:blur" required class="form-control"
                placeholder="{{'placeholder.name' | translate}}"
                name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
@@ -101,19 +101,19 @@
     <div class="form-group row">
       <label class="col-sm-4 " [ngClass]="{'col-md-2': isSearch}" translate>label.operations</label>
       <div class="col-sm-8">
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="COPY" name="copy">
           <i class="primary"></i><span translate>label.copy</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="MOVE" name="move">
           <i class="primary"></i><span translate>label.move</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="GETLIST" name="getlist">
           <i class="primary"></i><span translate>label.getList</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.operations" checklistValue="RENAME" name="rename">
           <i class="primary"></i><span translate>label.rename</span>
         </label>

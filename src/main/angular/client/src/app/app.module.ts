@@ -11,7 +11,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AboutModal} from './components/about-modal/about.component';
+import {AboutModalComponent} from './components/about-modal/about.component';
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
 
@@ -22,40 +22,41 @@ export function createTranslateLoader(http: HttpClient) {
 
 @Injectable()
 export class ErrorLogService {
-    logError(error: any) {
-        if (error instanceof HttpErrorResponse) {
-            console.error('There was an HTTP error.', error.message, 'Status code:', (<HttpErrorResponse>error).status);
-        } else if (error instanceof TypeError) {
-            console.error('There was a Type error.', error.message);
-        } else if (error instanceof Error) {
-            console.error('There was a general error.', error.message);
-        } else {
-            console.error('Nobody threw an error but something happened!', error);
-        }
+  logError(error: any) {
+    if (error instanceof HttpErrorResponse) {
+      console.error('There was an HTTP error.', error.message, 'Status code:', (<HttpErrorResponse>error).status);
+    } else if (error instanceof TypeError) {
+      console.error('There was a Type error.', error.message);
+    } else if (error instanceof Error) {
+      console.error('There was a general error.', error.message);
+    } else {
+      console.error('Nobody threw an error but something happened!', error);
     }
+  }
 }
 
 // global error handler that utilizes the above created service (ideally in its own file)
 @Injectable()
 export class GlobalErrorHandler extends ErrorHandler {
-    constructor(private errorLogService: ErrorLogService) {
-        super();
-    }
+  constructor(private errorLogService: ErrorLogService) {
+    super();
+  }
 
-    handleError(error) {
-        this.errorLogService.logError(error);
-    }
+  handleError(error) {
+    this.errorLogService.logError(error);
+  }
 }
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutModal
+    AboutModalComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     FormsModule,
+    NgbModule,
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -66,8 +67,7 @@ export class GlobalErrorHandler extends ErrorHandler {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    }),
-    NgbModule.forRoot()
+    })
   ],
   providers: [
     AuthGuard,
@@ -83,7 +83,7 @@ export class GlobalErrorHandler extends ErrorHandler {
       multi: true
     }],
   bootstrap: [AppComponent],
-  entryComponents: [AboutModal]
+  entryComponents: [AboutModalComponent]
 })
 export class AppModule {
 }

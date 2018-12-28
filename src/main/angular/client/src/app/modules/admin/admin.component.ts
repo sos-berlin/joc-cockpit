@@ -1,20 +1,20 @@
-import { Component, OnInit} from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
-import { DataService } from './data.service';
+import {Component, OnInit} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
+import {DataService} from './data.service';
 
 @Component({
-    selector: 'app-admin',
-    templateUrl: './admin.component.html'
+  selector: 'app-admin',
+  templateUrl: './admin.component.html'
 })
 export class AdminComponent implements OnInit {
 
   schedulerIds: any;
   permission: any;
-  showTabs: boolean = false;
-  isLdapRealmEnable: boolean = true;
-  isJOCClusterEnable: boolean = true;
+  showTabs = false;
+  isLdapRealmEnable = true;
+  isJOCClusterEnable = true;
   selectedUser: string;
   route: any;
   userObj: any;
@@ -32,7 +32,7 @@ export class AdminComponent implements OnInit {
     if (val.url) {
       this.route = val.url;
       this.showTabs = !!(this.route === '/users/account' || this.route.search('/users/master') > -1 || this.route === '/users/main_section' || this.route === '/users/profiles');
-      if(this.route.match('/users')) {
+      if (this.route.match('/users')) {
         this.dataService.announceData(this.userObj);
         this.activeRoute.queryParams
           .subscribe(params => {
@@ -44,9 +44,6 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.router.url === '/users' || this.router.url === '#/users') {
-      this.router.navigate(['/users/account']);
-    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.pageView = JSON.parse(localStorage.views).permission;
@@ -66,12 +63,12 @@ export class AdminComponent implements OnInit {
     if (this.userObj.main && this.userObj.main.length > 1) {
 
       for (let i = 0; i < this.userObj.main.length; i++) {
-        if ((this.userObj.main[i].entryName == 'sessionDAO' && this.userObj.main[i].entryValue == 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
-          (this.userObj.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue == '$sessionDAO')) {
+        if ((this.userObj.main[i].entryName === 'sessionDAO' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSDistributedSessionDAO') ||
+          (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
           this.isJOCClusterEnable = false;
         }
-        if ((this.userObj.main[i].entryName == 'ldapRealm' && this.userObj.main[i].entryValue == 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
-          (this.userObj.main[i].entryName == 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue == '$sessionDAO')) {
+        if ((this.userObj.main[i].entryName === 'ldapRealm' && this.userObj.main[i].entryValue === 'com.sos.auth.shiro.SOSLdapAuthorizingRealm') ||
+          (this.userObj.main[i].entryName === 'securityManager.sessionManager.sessionDAO' && this.userObj.main[i].entryValue === '$sessionDAO')) {
           this.isLdapRealmEnable = false;
         }
       }
@@ -129,11 +126,11 @@ export class AdminComponent implements OnInit {
   }
 
   deleteProfiles() {
-    this.dataService.announceFunction('DELETE_PROFILES')
+    this.dataService.announceFunction('DELETE_PROFILES');
   }
 
   receiveMessage($event) {
     this.pageView = $event;
-    this.dataService.announceFunction("CHANGE_VIEW");
+    this.dataService.announceFunction('CHANGE_VIEW');
   }
 }

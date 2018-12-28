@@ -1,28 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
-import { DataService } from '../../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html'
 })
-export class DailyPlanComponent implements OnInit ,OnDestroy {
-
+export class DailyPlanComponent implements OnInit, OnDestroy {
 
   schedulerIds: any = {};
   filters: any = {date: ''};
   preferences: any = {};
   arrayWidth: any = [];
-  isLoaded: boolean = false;
-  totalPlanData: number = 0;
-  waiting: number = 0;
-  late: number = 0;
-  lateSuccess: number = 0;
-  lateError: number = 0;
-  success: number = 0;
-  error: number = 0;
+  isLoaded = false;
+  totalPlanData = 0;
+  waiting = 0;
+  late = 0;
+  lateSuccess = 0;
+  lateError = 0;
+  success = 0;
+  error = 0;
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
@@ -36,13 +35,13 @@ export class DailyPlanComponent implements OnInit ,OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "DailyPlanChanged") {
+            if (args[i].eventSnapshots[j].eventType === 'DailyPlanChanged') {
               this.getPlans();
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }
@@ -182,6 +181,6 @@ export class DailyPlanComponent implements OnInit ,OnDestroy {
   }
 
   navigate(obj) {
-    console.log(obj)
+    console.log(obj);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class AuthService {
@@ -28,17 +28,17 @@ export class AuthService {
     }
   }
 
-  setUser (userData) {
+  setUser(userData) {
     this.accessTokenId = userData.accessToken;
     this.currentUserData = userData.user;
     this.sessionTimeout = userData.sessionTimeout;
   }
 
-  setPermissions (permissions) {
+  setPermissions(permissions) {
     this.permissions = JSON.stringify(permissions);
   }
 
-  setIds (scheduleIds) {
+  setIds(scheduleIds) {
     this.scheduleIds = JSON.stringify(scheduleIds);
   }
 
@@ -57,17 +57,6 @@ export class AuthService {
       this._save(sessionStorage, this.props[i], null);
       this._save(localStorage, this.props[i], null);
     }
-  }
-
-  private _save(storage, name, value) {
-    let key = this.propsPrefix + name;
-    if (value == null) value = '';
-    storage[key] = value;
-  }
-
-  private load(name) {
-    let key = this.propsPrefix + name;
-    return localStorage[key] || sessionStorage[key] || null;
   }
 
   getPermission(id) {
@@ -92,5 +81,16 @@ export class AuthService {
         }
       }
     }
+  }
+
+  private _save(storage, name, value) {
+    let key = this.propsPrefix + name;
+    if (value == null) value = '';
+    storage[key] = value;
+  }
+
+  private load(name) {
+    let key = this.propsPrefix + name;
+    return localStorage[key] || sessionStorage[key] || null;
   }
 }

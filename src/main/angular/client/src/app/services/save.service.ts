@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class SaveService {
 
   props = ['orderFilters', 'jobFilters', 'yadeFilters', 'historyFilters', 'ignoreList', 'dailyPlanFilters'];
-  propsPrefix: string = '$SOS$';
+  propsPrefix = '$SOS$';
   orderFilters;
   jobFilters;
   yadeFilters;

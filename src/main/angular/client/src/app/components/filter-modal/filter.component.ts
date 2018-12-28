@@ -1,15 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CoreService } from '../../services/core.service';
-import {AuthService} from "../guard/auth.service";
-import * as _ from "underscore";
-
+import {Component, Input} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 @Component({
-    selector: 'ngbd-modal-content',
-     templateUrl: './filter.component.html'
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './filter.component.html'
 })
-export class EditFilterModal {
+export class EditFilterModalComponent {
 
   @Input() permission: any;
   @Input() filterList: any;

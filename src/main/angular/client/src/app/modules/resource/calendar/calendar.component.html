@@ -68,17 +68,17 @@
                   <button class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
                     <span translate>label.sortBy</span>
                     <span class="text-primary">
-                                            <span *ngIf="calendarFilters.filter.sortBy ==='path'">
-                                            {{'label.path' | translate}}
-                                            <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                                            <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
-                                            </span>
-                                            <span *ngIf="calendarFilters.filter.sortBy ==='type'">
-                                                 {{'label.type' | translate}}
-                                                <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                                                <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
-                                            </span>
-                                        </span>
+                      <span *ngIf="calendarFilters.filter.sortBy ==='path'">
+                        {{'label.path' | translate}}
+                        <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
+                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
+                      </span>
+                      <span *ngIf="calendarFilters.filter.sortBy ==='type'">
+                        {{'label.type' | translate}}
+                        <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
+                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
+                      </span>
+                    </span>
                   </button>
                   <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                     <a class="dropdown-item" (click)="sortBy('path')"
@@ -151,7 +151,6 @@
     </div>
   </div>
 </div>
-
 <div class="padding p-b-0">
   <div class="row">
     <div class="col-sm-12">
@@ -179,7 +178,6 @@
                         <input type="checkbox" [(checklist)]="object.calendars" [checklistValue]="calendar"><i
                         class="primary"></i>
                       </label>
-
                       <div class="text-left block-ellipsis m-l-md">
                         <span class="text-sm fa"
                               [ngClass]="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
@@ -326,34 +324,33 @@
                 </tr>
                 </tbody>
               </table>
-              <pagination-controls class="pagination" (pageChange)="calendarFilters.currentPage = $event"
-                                   previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
-              <div class="pull-left m-l-xs m-b" *ngIf="calendars.length > 10">
+              <pagination-controls class="pagination" (pageChange)="calendarFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
+              <div class="pull-left m-b" *ngIf="calendars.length > 10">
                 <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
                      [(ngModel)]="preferences.entryPerPage">
-                  <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                  <label ngbButtonLabel class="btn btn-default btn-sm"
                          [ngClass]="{'primary': preferences.entryPerPage=='10'}">
                     <input ngbButton type="radio" [value]="10"> 10
                   </label>
-                  <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                  <label ngbButtonLabel class="btn btn-default btn-sm"
                          [ngClass]="{'primary': preferences.entryPerPage=='25'}">
                     <input ngbButton type="radio" [value]="25"> 25
                   </label>
-                  <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                  <label ngbButtonLabel class="btn btn-default btn-sm"
                          [ngClass]="{'primary': preferences.entryPerPage=='50'}">
                     <input ngbButton type="radio" [value]="50"> 50
                   </label>
-                  <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                  <label ngbButtonLabel class="btn btn-default btn-sm"
                          [ngClass]="{'primary': preferences.entryPerPage=='100'}">
                     <input ngbButton type="radio" [value]="100"> 100
                   </label>
-                  <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                  <label ngbButtonLabel class="btn btn-default btn-sm"
                          [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
                     <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
                   </label>
                 </div>
               </div>
-              <div class="inline text-sm m-l-xs" [ngClass]="{'m-t-xs m-l-sm': calendars.length > 10}"
+              <div class="inline text-sm m-l-xs p-t-xxs" [ngClass]="{'m-t-xs m-l-sm': calendars.length > 10}"
                    *ngIf="calendars.length >0"><span translate>label.total</span> {{calendars.length}}
                 <span translate *ngIf="calendars.length >1">label.calendarsFound</span>
                 <span translate *ngIf="calendars.length ==1">label.calendarFound</span>

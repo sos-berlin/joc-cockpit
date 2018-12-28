@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { WorkflowComponent } from './workflow.component';
-import {SharedModule} from "../shared/shared.module";
+import {SharedModule} from '../shared/shared.module';
+import {WorkflowRoutingModule} from './workflow-routing.module';
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    WorkflowRoutingModule
   ],
   declarations: [WorkflowComponent]
 })

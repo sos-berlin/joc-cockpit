@@ -123,7 +123,7 @@ td.gspanning {
 
 .gformlabel {
     position: relative;
-    top: 0px;
+    top: 0;
     cursor: pointer;
     border: #ffffff 1px solid;
     margin-left: 2px;
@@ -216,8 +216,8 @@ span.gfoldercollapse {
 .gmdtop {
     top: 2px;
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border-bottom: 5px solid black;
     border-left: 5px solid transparent;
     border-top: 5px solid transparent;
@@ -227,8 +227,8 @@ span.gfoldercollapse {
 .gmdbottom {
     top: 2px;
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border-top: 5px solid black;
     border-left: 5px solid transparent;
     border-bottom: 5px solid transparent;
@@ -258,8 +258,8 @@ span.gfoldercollapse {
 
 .ggroupblackendpointleft {
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     top: 2px;
     border-top: 4px solid black;
     border-left: 4px solid transparent;
@@ -270,8 +270,8 @@ span.gfoldercollapse {
 
 .ggroupblackendpointright {
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     top: 2px;
     border-top: 4px solid black;
     border-left: 4px solid transparent;
@@ -346,43 +346,43 @@ span.gfoldercollapse {
 /* note that "@media print" is not supported in IE6 or 7.  Fully patched IE8 should be OK */
 @media print {
     .ggroupblack {
-        height: 0px;
+        height: 0;
         border-top: 7px solid;
         border-color: #000000;
     }
 
     .gtaskblue {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(58, 132, 195);
     }
 
     .gtaskred {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(196, 58, 58);
     }
 
     .gtaskgreen {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(80, 193, 58);
     }
 
     .gtaskyellow {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(247, 228, 56);
     }
 
     .gtaskpurple {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(193, 58, 193);
     }
 
     .gtaskpink {
-        height: 0px;
+        height: 0;
         border-top: 13px solid;
         border-color: rgb(249, 177, 245);
     }
@@ -393,16 +393,16 @@ span.gfoldercollapse {
     .gtaskyellowcomplete,
     .gtaskpurplecomplete,
     .gtaskpinkcomplete {
-        height: 0px;
+        height: 0;
         filter: alpha(opacity=40);
         opacity: 0.4;
         margin-top: -9px;
         border-top: 5px solid;
-        border-color: #000000;
+        border-color: #000000 !important;
     }
 
     .ggroupblackcomplete {
-        height: 0px;
+        height: 0;
         filter: alpha(opacity=80);
         opacity: 0.8;
         margin-top: -5px;
@@ -414,12 +414,12 @@ span.gfoldercollapse {
 /*  END Task bar styles */
 .glinev {
     border-left: 1px solid;
-    width: 0px;
+    width: 0;
 }
 
 .glineh {
     border-top: 1px solid;
-    height: 0px;
+    height: 0;
 }
 
 .gDepFS,
@@ -432,8 +432,8 @@ span.gfoldercollapse {
 .gDepFSArw,
 .gDepSSArw {
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border-bottom: 4px solid transparent;
     border-left: 4px solid #ff0000;
     border-top: 4px solid transparent;
@@ -443,8 +443,8 @@ span.gfoldercollapse {
 .gDepFFArw,
 .gDepSFArw {
     overflow: hidden;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border-bottom: 4px solid transparent;
     border-left: 4px solid transparent;
     border-top: 4px solid transparent;
@@ -458,7 +458,7 @@ span.gfoldercollapse {
 div.gtaskbarcontainer {
     z-index: 1;
     position: absolute;
-    top: 0px
+    top: 0
 }
 
 .JSGanttToolTip {
@@ -471,14 +471,14 @@ div.gtaskbarcontainer {
 
     font-size: 10px;
     display: block;
-    background: #ffffff;
-    color: #656565
+    background: #ffffff !important;
+    color: #656565 !important;
 }
 
 .gTaskInfo {
     background: #dbecff;
     width: 400px;
-    border: #656565 1px solid;
+    border: #656565 1px solid !important;
     border-radius: 10px;
     padding: 4px 6px 4px 6px;
     float: left;
@@ -488,7 +488,7 @@ div.gtaskbarcontainer {
     display: block;
     font-size: 12px;
     font-weight: normal;
-    color: #404040;
+    color: #404040 !important;
     margin-left: 4px;
     margin-bottom: 1em;
 }
@@ -496,7 +496,7 @@ div.gtaskbarcontainer {
 .gTaskLabel {
     font-size: 11px;
     font-weight: normal;
-    color: #656565;
+    color: #656565 !important;
     margin-left: 4px;
 }
 
@@ -506,13 +506,13 @@ div.gtaskbarcontainer {
     padding-top: 1px;
     font-size: 10px;
     font-weight: normal;
-    color: #656565;
+    color: #656565 !important;
 }
 
 .gTaskNotes {
     font-size: 11px;
     font-weight: normal;
-    color: #323232;
+    color: #323232 !important;
     padding: 0 15px;
     display: block;
 }
@@ -538,10 +538,10 @@ div.gtaskbarcontainer {
 .glistgrid {
     width: 532px; /* LC width */
     float: left; /* LC width */
-    padding-right: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
     background-color: #ffffff;
     overflow: hidden;
 }
@@ -549,10 +549,10 @@ div.gtaskbarcontainer {
 .glistlbl {
     width: 532px; /* LC width */
     float: left; /* LC width */
-    padding-right: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
     background-color: #ffffff;
     overflow: hidden;
 }
@@ -568,26 +568,26 @@ div.gtaskbarcontainer {
 .rhscrpad {
     width: 150px;
     position: absolute;
-    top: 0px;
+    top: 0;
     height: 1px;
 }
 
 .gchartgrid {
-    padding-right: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
     background-color: #ffffff;
     position: relative;
     overflow: auto;
-    min-height: 0%;
+    min-height: 0;
 }
 
 .gchartlbl {
-    padding-right: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
     background-color: #ffffff;
     position: relative;
     overflow: hidden;
@@ -611,7 +611,7 @@ div.gchartgrid {
 /* ie6 fixed width */
 div.glistlbl,
 div.glistgrid {
-    *right: 0px; /* ie7 pulls the content too far left with the negative margin */
+    *right: 0; /* ie7 pulls the content too far left with the negative margin */
     _right: 532px; /* but ie6 fixed width needs this */
     _margin-left: -532px; /* ie6 fixed width */
     float: left;
@@ -679,7 +679,7 @@ td.gspanning div {
 /* Workaround for odd bug in old versions of Opera - no other browser needs this */
 .glinediv {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 }
 

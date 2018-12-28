@@ -46,7 +46,7 @@ pre {
 }
 
 #footer {
-	background: #eee url('../images/draw/drawfooter.jpg') no-repeat top; 
+	background: #eee url('../images/draw/drawfooter.jpg') no-repeat top;
 	border: none;
 	}
 
@@ -174,7 +174,7 @@ a:hover {
 /* Begin Structure */
 body {
 	margin: 0 0 20px 0;
-	padding: 0; 
+	padding: 0;
 	}
 
 #page {
@@ -187,8 +187,8 @@ body {
 
 #header {
 	background-color: #73a0c5;
-	margin: 0 0 0 1px; 
-	padding: 0; 
+	margin: 0 0 0 1px;
+	padding: 0;
 	height: 70px;
 	width: 758px;
 	}
@@ -345,7 +345,7 @@ html>body .entry ul {
 	list-style: none;
 	padding-left: 10px;
 	text-indent: -10px;
-	} 
+	}
 
 html>body .entry li {
 	margin: 7px 0 8px 10px;
@@ -409,7 +409,7 @@ ol li, #sidebar ul ol li {
 /* Begin Form Elements */
 #searchform {
 	margin: 10px auto;
-	padding: 5px 3px; 
+	padding: 5px 3px;
 	text-align: center;
 	}
 

@@ -113,19 +113,19 @@
     <div class="form-group row ">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.status</label>
       <div class="col-sm-8">
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="WAITING" name="waiting"/>
           <i class="primary"></i><span translate>label.waiting</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="LATE" name="late"/>
           <i class="primary"></i><span translate>label.late</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="SUCCESSFUL" name="success"/>
           <i class="primary"></i><span translate>label.successful</span>
         </label>
-        <label class="md-check w">
+        <label class="md-check w-115">
           <input type="checkbox" [(checklist)]="filter.state" checklistValue="FAILED" name="failed"/>
           <i class="primary"></i><span translate>label.failed</span>
         </label>

@@ -1,13 +1,11 @@
-import {Component, OnInit, Input, ViewChild, Output, EventEmitter} from '@angular/core';
-import { CoreService } from '../../services/core.service';
+import {Component, OnInit, Input, ViewChild, Output, EventEmitter, HostListener} from '@angular/core';
+import {CoreService} from '../../services/core.service';
 
 declare const $;
+
 @Component({
-    selector: 'app-tree-nagivation',
-    templateUrl: './tree.component.html',
-    host: {
-      '(window:resize)': 'onResize()'
-    }
+  selector: 'app-tree-nagivation',
+  templateUrl: './tree.component.html'
 })
 export class TreeComponent implements OnInit {
 
@@ -20,32 +18,28 @@ export class TreeComponent implements OnInit {
 
   }
 
+  static setGraphHt() {
+    let top = $('.scroll-y').position().top + 16;
+    top = top - $(window).scrollTop();
+    if (top < 1) {
+      top = 8;
+    }
+    $('.sticky').css('top', top);
+    const ht = window.innerHeight - top;
+    if (ht > 400) {
+      $('#tre').height(ht + 'px');
+    }
+  }
+
   ngOnInit() {
     this.onResize();
-    let self = this;
-    let interval = setInterval(function () {
-      if (self.treeCtrl && self.treeCtrl.treeModel) {
-        const node = self.treeCtrl.treeModel.getNodeById(1);
+    const interval = setInterval(() => {
+      if (this.treeCtrl && this.treeCtrl.treeModel) {
+        const node = this.treeCtrl.treeModel.getNodeById(1);
         node.expand();
         clearInterval(interval);
       }
-    }, 5)
-  }
-
-  private traverseTree(data) {
-    let self = this;
-    data.children.forEach(function (value) {
-      value.isSelected = false;
-      self.traverseTree(value);
-    });
-  }
-
-  private navFullTree() {
-    let self = this;
-    this.tree.forEach(function (value) {
-      value.isSelected = false;
-      self.traverseTree(value);
-    });
+    }, 5);
   }
 
   expandAll(): void {
@@ -61,7 +55,7 @@ export class TreeComponent implements OnInit {
     const someNode = this.treeCtrl.treeModel.getNodeById(node.data.id);
     someNode.expandAll();
     node.action = 'ALL';
-    this.messageEvent.emit(node)
+    this.messageEvent.emit(node);
   }
 
   collapseNode(node): void {
@@ -72,7 +66,7 @@ export class TreeComponent implements OnInit {
   onNodeSelected(e): void {
     this.navFullTree();
     e.node.action = 'NODE';
-    this.messageEvent.emit(e.node)
+    this.messageEvent.emit(e.node);
   }
 
   toggleExpanded(e): void {
@@ -83,15 +77,27 @@ export class TreeComponent implements OnInit {
     return this.treeCtrl.treeModel.getNodeById(id);
   }
 
+  @HostListener('window:resize', ['$event'])
   onResize() {
     TreeComponent.setGraphHt();
   }
 
-  static setGraphHt() {
-    let ht = window.innerHeight - $('.navbar').height() - $('.top-header-bar').height() - $('.sub-header').height() - $('.sub-link').height() - 60;
-    if (ht > 400)
-      $('#tre').height(ht+'px');      
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    TreeComponent.setGraphHt();
   }
 
+  private traverseTree(data) {
+    data.children.forEach((value) => {
+      value.isSelected = false;
+      this.traverseTree(value);
+    });
+  }
 
+  private navFullTree() {
+    this.tree.forEach((value) => {
+      value.isSelected = false;
+      this.traverseTree(value);
+    });
+  }
 }

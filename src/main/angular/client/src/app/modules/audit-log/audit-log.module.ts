@@ -1,16 +1,17 @@
-import { NgModule } from '@angular/core';
-import { AuditLogComponent, FilterModal, SearchComponent } from './audit-log.component';
-import { SharedModule } from '../shared/shared.module';
-
+import {NgModule} from '@angular/core';
+import {AuditLogComponent, FilterModalComponent, SearchComponent} from './audit-log.component';
+import {SharedModule} from '../shared/shared.module';
+import {AuditLogRoutingModule} from './audit-log-routing.module';
 
 @NgModule({
-    imports: [
-        SharedModule
-    ],
-    declarations: [AuditLogComponent, FilterModal, SearchComponent],
-    entryComponents: [
-        FilterModal
-    ]
+  imports: [
+    SharedModule,
+    AuditLogRoutingModule
+  ],
+  declarations: [AuditLogComponent, FilterModalComponent, SearchComponent],
+  entryComponents: [
+    FilterModalComponent
+  ]
 })
 export class AuditLogModule {
 }

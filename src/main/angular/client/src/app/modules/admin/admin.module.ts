@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
-
 import { SelectModule } from 'ng2-select';
 import { SharedModule } from '../shared/shared.module';
-import { AccountsComponent, AccountModal } from './accounts/accounts.component';
+import { AccountsComponent, AccountModalComponent } from './accounts/accounts.component';
 import { RolesComponent, RoleModal, MasterModal } from './roles/roles.component';
-import { MainSectionComponent, MainSectionModal, LdapSectionModal, EditMainSectionModal } from './main-section/main-section.component';
-import { PermissionsComponent, FolderModal,  PermissionModal} from './permissions/permissions.component';
+import { MainSectionComponent, MainSectionModalComponent, LdapSectionModalComponent, EditMainSectionModalComponent } from './main-section/main-section.component';
+import { PermissionsComponent, FolderModalComponent,  PermissionModalComponent} from './permissions/permissions.component';
 import { DataService } from './data.service';
 import { ProfilesComponent} from './profiles/profiles.component';
 
@@ -15,7 +14,7 @@ import { ProfilesComponent} from './profiles/profiles.component';
     imports: [
         AdminRoutingModule,
         SelectModule,
-        SharedModule
+        SharedModule,
     ],
     declarations: [
         AccountsComponent,
@@ -24,25 +23,25 @@ import { ProfilesComponent} from './profiles/profiles.component';
         MainSectionComponent,
         ProfilesComponent,
         PermissionsComponent,
-        FolderModal,
+        FolderModalComponent,
         RoleModal,
         MasterModal,
-        MainSectionModal,
-        LdapSectionModal,
-        EditMainSectionModal,
-        PermissionModal,
-        AccountModal
+        MainSectionModalComponent,
+        LdapSectionModalComponent,
+        EditMainSectionModalComponent,
+        PermissionModalComponent,
+        AccountModalComponent,
     ],
     entryComponents: [
-        MainSectionModal,
-        LdapSectionModal,
-        EditMainSectionModal,
-        FolderModal,
-        PermissionModal,
-        AccountModal,
+        MainSectionModalComponent,
+        LdapSectionModalComponent,
+        EditMainSectionModalComponent,
+        FolderModalComponent,
+        PermissionModalComponent,
+        AccountModalComponent,
         MasterModal,
-        RoleModal
-    ], providers:[
+        RoleModal,
+    ], providers: [
         DataService
     ]
 })

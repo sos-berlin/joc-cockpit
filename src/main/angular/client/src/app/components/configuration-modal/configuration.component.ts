@@ -1,5 +1,5 @@
-import { Component, OnInit,Input } from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {Component, Input} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-toggle',
@@ -30,16 +30,11 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
     </div>
   `
 })
-export class ConfigurationModal implements OnInit {
+export class ConfigurationModalComponent {
 
   @Input() type: string;
   @Input() configuration: any;
 
   constructor(public activeModal: NgbActiveModal) {
   }
-
-  ngOnInit() {
-
-  }
-
 }

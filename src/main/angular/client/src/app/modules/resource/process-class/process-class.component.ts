@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -18,7 +18,7 @@ import * as _ from 'underscore';
 })
 export class ProcessClassComponent implements OnInit, OnDestroy {
 
-  isLoading: boolean = false;
+  isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
   tree: any = [];
@@ -47,10 +47,10 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
+            if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
               this.initTree();
               break;
-            } else if (args[i].eventSnapshots[j].eventType === "JobStateChanged") {
+            } else if (args[i].eventSnapshots[j].eventType === 'JobStateChanged') {
               if (this.processClasses.length > 0) {
                 for (let x = 0; x < this.processClasses.length; x++) {
                   if (this.processClasses[x].path === args[i].eventSnapshots[j].path) {
@@ -60,14 +60,14 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
                     };
                     this.coreService.post('process_classes', obj).subscribe(res => {
                       //TODO merge
-                    })
+                    });
                   }
                 }
               }
             }
           }
         }
-        break
+        break;
       }
     }
   }
@@ -98,7 +98,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
-      types: ["PROCESSCLASS"]
+      types: ['PROCESSCLASS']
     }).subscribe(res => {
       this.filteredTreeData(this.coreService.prepareTree(res));
       this.isLoading = true;
@@ -136,7 +136,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private navigatePath(data) {
-     const self = this;
+    const self = this;
     if (this.process_class_expand_to && self.child) {
 
       let node = self.child.getNodeById(data.id);
@@ -150,7 +150,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
       if (data.children && data.children.length > 0)
         data.children.forEach(function (value) {
-          self.navigatePath(value)
+          self.navigatePath(value);
         });
     }
   }
@@ -182,7 +182,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       const node = self.child.getNodeById(1);
       node.expand();
       node.setActiveAndVisible(true);
-    }, 10)
+    }, 10);
   }
 
   private getExpandTreeForUpdates(data, obj) {
@@ -264,7 +264,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     if ($event.action === 'NODE')
       this.getProcessClass($event.data);
     else
-      this.expandNode($event)
+      this.expandNode($event);
 
   }
 

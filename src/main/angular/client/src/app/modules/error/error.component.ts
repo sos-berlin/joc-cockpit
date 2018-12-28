@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
-import {Router} from "@angular/router";
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-error',

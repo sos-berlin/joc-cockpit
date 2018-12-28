@@ -1,64 +1,66 @@
-import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import {Directive, HostListener, forwardRef, OnInit, OnDestroy, ElementRef} from '@angular/core';
 import {AbstractControl, NgModel, Validator, NG_VALIDATORS} from '@angular/forms';
+
 declare const $;
 
 @Directive({
   selector: '[timevalidator][ngModel]',
-  host: {
-    '(ngModelChange)': 'onInputChange($event)'
-  }
+  providers: [NgModel]
 })
 
-export class TimeValidator {
+export class TimeValidatorDirective implements OnInit {
 
   constructor(private model: NgModel) {
   }
 
-  onInputChange(event) {
-    if (event.length === 2 && /^([0-2][0-9])?$/i.test(event)) {
-      if (event >= 24) {
-        this.model.valueAccessor.writeValue('24:00:00');
-      } else {
-        this.model.valueAccessor.writeValue(event + ':');
+  ngOnInit() {
+    this.model.valueChanges.subscribe((event) => {
+      if (event) {
+        if (event.length === 2 && /^([0-2][0-9])?$/i.test(event)) {
+          if (event >= 24) {
+            this.model.valueAccessor.writeValue('24:00:00');
+          } else {
+            this.model.valueAccessor.writeValue(event + ':');
+          }
+        } else if (event.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(event)) {
+          this.model.valueAccessor.writeValue(event + ':');
+        } else {
+          if (event.length > 1 && event.length < 3 && !(/^([0-2][0-9])?$/i.test(event))) {
+            this.model.valueAccessor.writeValue('');
+          } else if (event.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(event))) {
+            this.model.valueAccessor.writeValue(event.substring(0, 3));
+          } else if (event.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(event))) {
+            this.model.valueAccessor.writeValue(event.substring(0, 6) + '00');
+          }
+        }
       }
-    } else if (event.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(event)) {
-      this.model.valueAccessor.writeValue(event + ':');
-    } else {
-      if (event.length > 1 && event.length < 3 && !(/^([0-2][0-9])?$/i.test(event))) {
-        this.model.valueAccessor.writeValue('');
-      } else if (event.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(event))) {
-        this.model.valueAccessor.writeValue(event.substring(0, 3));
-      } else if (event.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(event))) {
-        this.model.valueAccessor.writeValue(event.substring(0, 6) + '00');
-      }
-    }
+    });
   }
 
   @HostListener('focusout', ['$event.target'])
   onFocusout(target) {
     if (target.value) {
-      if (target.value.substring(0, 2) == 24) {
+      if (target.value.substring(0, 2) === 24) {
         this.model.valueAccessor.writeValue('24:00:00');
       } else {
-        if (target.value.length == 1) {
+        if (target.value.length === 1) {
           this.model.valueAccessor.writeValue('');
 
-        } else if (target.value.length == 3) {
+        } else if (target.value.length === 3) {
           this.model.valueAccessor.writeValue(target.value + '00');
 
-        } else if (target.value.length == 4) {
+        } else if (target.value.length === 4) {
           this.model.valueAccessor.writeValue(target.value + '0');
 
-        } else if (target.value.length == 6) {
+        } else if (target.value.length === 6) {
           this.model.valueAccessor.writeValue(target.value + '00');
 
-        } else if (target.value.length == 7) {
+        } else if (target.value.length === 7) {
           this.model.valueAccessor.writeValue(target.value + '0');
 
         }
       }
     }
-
   }
 }
 
@@ -93,7 +95,7 @@ export class RegexValidator implements Validator {
     }
     return {
       validateReqex: true
-    }
+    };
 
   }
 }
@@ -132,14 +134,14 @@ export class DailyPlanRegexValidator implements Validator {
 @Directive({
   selector: '[appDropdown]'
 })
-export class DropdownDirective implements  OnDestroy {
+export class DropdownDirective implements OnDestroy {
 
   constructor(private el: ElementRef) {
   }
 
   @HostListener('click', ['$event'])
   click(event) {
-    if ($(event.target).attr('class') != 'dropdown-backdrop') {
+    if ($(event.target).attr('class') !== 'dropdown-backdrop') {
       const top = event.clientY + 8;
       const left = event.clientX - 20;
       $('.list-dropdown').css({top: top + 'px', left: left + 'px'});
@@ -176,7 +178,7 @@ export class ResizableDirective implements OnInit {
     if (this.el.nativeElement.attributes.class.value.match('resource')) {
       dom = $('#leftPanel');
       if (dom && dom.offset() && dom.offset().top > 88)
-        dom.css('top', 192 - event.pageY + 'px')
+        dom.css('top', 192 - event.pageY + 'px');
     }
   }
 
@@ -191,7 +193,7 @@ export class ResizableDirective implements OnInit {
           maxWidth: 450,
           minWidth: 180,
           resize: function () {
-            $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px')
+            $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px');
           }
         });
       }

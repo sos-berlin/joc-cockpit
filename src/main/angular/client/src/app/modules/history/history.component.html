@@ -65,10 +65,10 @@
                                     [ngClass]="{'btn-primary': order.filter.date=='-12h'}" translate>button.last12
                             </button>
                             <button (disabled)="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
-                                    [ngClass]="{'btn-primary': order.filter.date=='-1d'}" translate>button.last24
+                                    [ngClass]="{'btn-primary': order.filter.date=='-24h'}" translate>button.last24
                             </button>
-                             <button (disabled)="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
-                                    [ngClass]="{'btn-primary': order.filter.date=='-1w'}" translate>button.lastWeak
+                             <button (disabled)="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-7d')"
+                                    [ngClass]="{'btn-primary': order.filter.date=='-7d'}" translate>button.lastWeak
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
@@ -86,11 +86,11 @@
                                 <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
                                         [ngClass]="{'btn-primary': order.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
-                                        [ngClass]="{'btn-primary': order.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-24h')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-24h', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
-                                        [ngClass]="{'btn-primary': order.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-7d')"
+                                        [ngClass]="{'btn-primary': order.filter.date=='-7d', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
@@ -152,11 +152,11 @@
                             <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-12h')"
                                     [ngClass]="{'btn-primary': task.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
-                                    [ngClass]="{'btn-primary': task.filter.date=='-1d'}" translate>button.last24
+                            <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-24h')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-24h'}" translate>button.last24
                             </button>
-                             <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
-                                    [ngClass]="{'btn-primary': task.filter.date=='-1w'}" translate>button.lastWeak
+                             <button (disabled)="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-7d')"
+                                    [ngClass]="{'btn-primary': task.filter.date=='-7d'}" translate>button.lastWeak
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
@@ -174,11 +174,11 @@
                                 <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
                                         [ngClass]="{'btn-primary': task.filter.date=='-12h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last12
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
-                                        [ngClass]="{'btn-primary': task.filter.date=='-1d', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last24
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-24h')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-24h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last24
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
-                                        [ngClass]="{'btn-primary': task.filter.date=='-1w', 'disable-link':savedJobHistoryFilter.selected}" translate>button.lastWeak
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-7d')"
+                                        [ngClass]="{'btn-primary': task.filter.date=='-7d', 'disable-link':savedJobHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
@@ -240,11 +240,11 @@
                             <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-12h')"
                                     [ngClass]="{'btn-primary': yade.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1d')"
-                                    [ngClass]="{'btn-primary': yade.filter.date=='-1d'}" translate>button.last24
+                            <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-24h')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-24h'}" translate>button.last24
                             </button>
-                             <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-1w')"
-                                    [ngClass]="{'btn-primary': yade.filter.date=='-1w'}" translate>button.lastWeak
+                             <button (disabled)="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" (click)="loadHistory('DATE','-7d')"
+                                    [ngClass]="{'btn-primary': yade.filter.date=='-7d'}" translate>button.lastWeak
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
@@ -262,11 +262,11 @@
                                 <a class="dropdown-item" (click)="loadHistory('DATE','-12h')"
                                         [ngClass]="{'btn-primary': yade.filter.date=='-12h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last12
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1d')"
-                                        [ngClass]="{'btn-primary': yade.filter.date=='-1d', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last24
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-24h')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-24h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last24
                                 </a>
-                                <a class="dropdown-item" (click)="loadHistory('DATE','-1w')"
-                                        [ngClass]="{'btn-primary': yade.filter.date=='-1w', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.lastWeak
+                                <a class="dropdown-item" (click)="loadHistory('DATE','-7d')"
+                                        [ngClass]="{'btn-primary': yade.filter.date=='-7d', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
@@ -365,7 +365,7 @@
           </div>
         </div>
         <div class="hide"  [ngClass]="{'show': isLoading}">
-            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'ORDER'}" >
+            <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'ORDER'" >
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
@@ -422,8 +422,8 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody *ngFor="let history of historys | filter: searchKey | orderBy: order.filter.sortBy:order.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: order.currentPage }" [ngClass]="{'light-bg':history.show}">
-                        <tr  class="cursor">
+                        <tbody *ngFor="let history of historys | filter: searchKey | orderBy: order.filter.sortBy:order.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: order.currentPage}" [ngClass]="{'light-bg':history.show}">
+                        <tr class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
@@ -434,16 +434,20 @@
                                     </div>
                                 </div>
                             </td>
-                             <td *ngIf="!historyView.current" (click)="coreService.showLogWindow(history,null,null,history.jobschedulerId)">
-                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>
+                             <td *ngIf="!historyView.current" >
+                                <span class="show-in-single-line w-full" (click)="coreService.showLogWindow(history,null,null,history.jobschedulerId)">
+                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="!history.show" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="history.show" (click)="history.show = false;$event.stopPropagation()"></i>
                                  <span [innerHtml]="history.jobschedulerId"></span>
                                  <span *ngIf="!history.jobschedulerId" [innerHtml]="jobChainSearch.jobschedulerId"></span>
+                               </span>
                              </td>
-                            <td class="nowrap" (click)="coreService.showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" *ngIf="!history.show && historyView.current" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" *ngIf="history.show && historyView.current" (click)="history.show = false;$event.stopPropagation()"></i>
+                            <td>
+                              <span class="show-in-single-line w-full" (click)="coreService.showLogWindow(history,null)">
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="!history.show && historyView.current" (click)="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs" *ngIf="history.show && historyView.current" (click)="history.show = false;$event.stopPropagation()"></i>
                                 <span [innerHtml]="history.orderId"></span>
+                              </span>
                             </td>
                             <td (click)="coreService.showLogWindow(history,null)">
                                 <span (click)="coreService.showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" [innerHtml]="history.jobChain"></span>
@@ -490,33 +494,33 @@
                         </tr>
                         </tbody>
                     </table>
-                    <pagination-controls class="pagination" (pageChange)="order.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
-                    <div class="pull-left m-l-xs m-b" *ngIf="(historys | filter: searchKey).length > 10">
+                    <pagination-controls class="pagination" (pageChange)="order.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-b" *ngIf="(historys | filter: searchKey).length > 10">
                         <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
                              [(ngModel)]="preferences.entryPerPage">
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='10'}">
                                 <input ngbButton type="radio" [value]="10"> 10
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='25'}">
                                 <input ngbButton type="radio" [value]="25"> 25
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='50'}">
                                 <input ngbButton type="radio" [value]="50"> 50
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='100'}">
                                 <input ngbButton type="radio" [value]="100"> 100
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
                                 <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
                             </label>
                         </div>
                     </div>
-                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(historys | filter: searchKey).length >0">
+                    <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (historys | filter: searchKey).length > 10}" *ngIf="(historys | filter: searchKey).length >0">
                         <span translate>label.total</span> {{(historys | filter: searchKey).length}}
                         <span *ngIf="(historys | filter: searchKey).length >1" translate>label.historiesFound</span>
                         <span *ngIf="(historys | filter: searchKey).length === 1" translate>label.historyFound</span>
@@ -525,7 +529,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((historys | filter: searchKey).length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'TASK'}">
+            <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'TASK'">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
@@ -608,36 +612,35 @@
                             <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.startTime | duration:jobHistory.endTime"></td>
                             <td (click)="coreService.showLogWindow(null,jobHistory)" [innerHtml]="jobHistory.exitCode"></td>
                         </tr>
-
                         </tbody>
                     </table>
-                    <pagination-controls class="pagination" (pageChange)="task.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
-                    <div class="pull-left m-l-xs m-b" *ngIf="(jobHistorys | filter: searchKey).length > 10">
+                    <pagination-controls class="pagination" (pageChange)="task.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-b" *ngIf="(jobHistorys | filter: searchKey).length > 10">
                         <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
                              [(ngModel)]="preferences.entryPerPage">
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='10'}">
                                 <input ngbButton type="radio" [value]="10"> 10
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='25'}">
                                 <input ngbButton type="radio" [value]="25"> 25
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='50'}">
                                 <input ngbButton type="radio" [value]="50"> 50
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='100'}">
                                 <input ngbButton type="radio" [value]="100"> 100
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
                                 <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
                             </label>
                         </div>
                     </div>
-                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(jobHistorys | filter: searchKey).length >0">
+                    <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (jobHistorys | filter: searchKey).length > 10}" *ngIf="(jobHistorys | filter: searchKey).length >0">
                         <span translate>label.total</span> {{(jobHistorys | filter: searchKey).length}}
                         <span *ngIf="(jobHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
                         <span *ngIf="(jobHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>
@@ -646,7 +649,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" [ngClass]="{'show': ((jobHistorys | filter: searchKey).length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a hide" [ngClass]="{'show':historyFilters.type == 'YADE'}" >
+            <div class="m-t-sm box p-a" *ngIf="historyFilters.type == 'YADE'" >
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="yade" >
                         <thead>
@@ -832,33 +835,33 @@
                         </tr>
                         </tbody>
                     </table>
-                    <pagination-controls class="pagination" (pageChange)="yade.currentPage = $event" previousLabel="Prev" nextLabel="Next" autoHide="true"></pagination-controls>
-                    <div class="pull-left m-l-xs m-b" *ngIf="(yadeHistorys | filter: searchKey).length > 10">
+                    <pagination-controls class="pagination" (pageChange)="yade.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
+                    <div class="pull-left m-b" *ngIf="(yadeHistorys | filter: searchKey).length > 10">
                         <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
                              [(ngModel)]="preferences.entryPerPage">
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='10'}">
                                 <input ngbButton type="radio" [value]="10"> 10
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                    [ngClass]="{'primary': preferences.entryPerPage=='25'}">
                                 <input ngbButton type="radio" [value]="25"> 25
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='50'}">
                                 <input ngbButton type="radio" [value]="50"> 50
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage=='100'}">
                                 <input ngbButton type="radio" [value]="100"> 100
                             </label>
-                            <label ngbButtonLabel class="btn btn-grey white btn-sm"
+                            <label ngbButtonLabel class="btn btn-default btn-sm"
                                      [ngClass]="{'primary': preferences.entryPerPage== preferences.maxEntryPerPage}">
                                 <input ngbButton type="radio" [value]="preferences.maxEntryPerPage"> {{preferences.maxEntryPerPage}}
                             </label>
                         </div>
                     </div>
-                    <div class="inline text-sm m-l-sm m-t-xs"  *ngIf="(yadeHistorys | filter: searchKey).length >0">
+                    <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (yadeHistorys | filter: searchKey).length > 10}"  *ngIf="(yadeHistorys | filter: searchKey).length >0">
                         <span translate>label.total</span> {{(yadeHistorys | filter: searchKey).length}}
                         <span *ngIf="(yadeHistorys | filter: searchKey).length >1" translate>label.historiesFound</span>
                         <span *ngIf="(yadeHistorys | filter: searchKey).length === 1" translate>label.historyFound</span>

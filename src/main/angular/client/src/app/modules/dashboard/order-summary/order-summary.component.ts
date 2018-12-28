@@ -1,13 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
+import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-order-summary',
-  templateUrl: './order-summary.component.html',
-  styleUrls: ['./order-summary.component.css']
+  templateUrl: './order-summary.component.html'
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 
@@ -15,8 +14,8 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   schedulerIds: any;
   preferences: any = {};
   filters: any = {};
-  isLoaded: boolean = false;
-  notAuthenticate: boolean = false;
+  isLoaded = false;
+  notAuthenticate = false;
   subscription: Subscription;
 
   constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService) {
@@ -30,13 +29,13 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "ReportingChangedOrder") {
+            if (args[i].eventSnapshots[j].eventType === 'ReportingChangedOrder') {
               this.getSummary();
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }

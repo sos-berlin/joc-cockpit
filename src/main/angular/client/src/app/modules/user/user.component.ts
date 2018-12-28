@@ -1,23 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { CoreService } from '../../services/core.service';
-import { AuthService } from '../../components/guard';
-import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CoreService} from '../../services/core.service';
+import {AuthService} from '../../components/guard';
+import {TranslateService} from '@ngx-translate/core';
+import {Router} from '@angular/router';
 import * as moment from 'moment-timezone';
 import * as jstz from 'jstz';
 
-declare var $:any;
+declare var $;
 
 @Component({
-    selector: 'app-user',
-    templateUrl: './user.component.html',
-    styleUrls: ['./user.component.css']
+  selector: 'app-user',
+  templateUrl: './user.component.html'
 })
 export class UserComponent implements OnInit {
   zones: any = {};
   preferences: any = {};
   userPreferences: any = {};
-  username: string = '';
+  username = '';
   permission: any = {};
   object: any = {};
   schedulerIds: any = {};
@@ -30,29 +29,29 @@ export class UserComponent implements OnInit {
   configObj: any = {};
   timeZone: any = {};
   locales: any = [];
-  forceLoging:boolean=false;
+  forceLoging = false;
   prevMenuTheme: string;
   prevMenuAvatorColor: string;
   jobs: any = [
-    {value: 'JobStopped', label: "label.jobStopped"},
-    {value: 'JobPending', label: "label.jobPending"}
+    {value: 'JobStopped', label: 'label.jobStopped'},
+    {value: 'JobPending', label: 'label.jobPending'}
   ];
   jobChains: any = [
-    {value: 'JobChainStopped', label: "label.jobChainStopped"},
-    {value: 'JobChainPending', label: "label.jobChainPending"},
-    {value: 'JobChainRunning', label: "label.jobChainUnstopped"}
+    {value: 'JobChainStopped', label: 'label.jobChainStopped'},
+    {value: 'JobChainPending', label: 'label.jobChainPending'},
+    {value: 'JobChainRunning', label: 'label.jobChainUnstopped'}
   ];
   positiveOrders: any = [
-    {value: 'OrderStarted', label: "label.orderStarted"},
-    {value: 'OrderStepStarted', label: "label.orderStepStarted"},
-    {value: 'OrderStepEnded', label: "label.orderStepEnded"},
-    {value: 'OrderNodeChanged', label: "label.orderNodeChanged"},
-    {value: 'OrderResumed', label: "label.orderResumed"},
-    {value: 'OrderFinished', label: "label.orderFinished"}
+    {value: 'OrderStarted', label: 'label.orderStarted'},
+    {value: 'OrderStepStarted', label: 'label.orderStepStarted'},
+    {value: 'OrderStepEnded', label: 'label.orderStepEnded'},
+    {value: 'OrderNodeChanged', label: 'label.orderNodeChanged'},
+    {value: 'OrderResumed', label: 'label.orderResumed'},
+    {value: 'OrderFinished', label: 'label.orderFinished'}
   ];
   negativeOrders: any = [
-    {value: 'OrderSetback', label: "label.orderSetback"},
-    {value: 'OrderSuspended', label: "label.orderSuspended"}
+    {value: 'OrderSetback', label: 'label.orderSetback'},
+    {value: 'OrderSuspended', label: 'label.orderSuspended'}
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private translate: TranslateService) {
@@ -65,11 +64,11 @@ export class UserComponent implements OnInit {
     this.coreService.post('configuration/save', this.configObj).subscribe(res => {
     }, (err) => {
       console.log(err);
-    })
+    });
   }
 
   setIds() {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
   }
 
   setPreferences() {
@@ -104,68 +103,69 @@ export class UserComponent implements OnInit {
     this.setPreferences();
     this.zones = moment.tz.names();
     let localTZ = jstz.determine();
-    if (localTZ)
+    if (localTZ) {
       this.timeZone = localTZ.name() || this.selectedJobScheduler.timeZone;
-    else {
+    } else {
       this.timeZone = this.selectedJobScheduler.timeZone;
     }
     this.configObj.jobschedulerId = this.schedulerIds.selected;
     this.configObj.account = this.permission.user;
-    this.configObj.configurationType = "PROFILE";
-    this.configObj.id = parseInt(sessionStorage.preferenceId);
+    this.configObj.configurationType = 'PROFILE';
+    this.configObj.id = parseInt(sessionStorage.preferenceId, 10);
     if (this.preferences.events && this.preferences.events.filter) {
       this.eventFilter = this.preferences.events.filter;
     } else {
-      if(this.preferences.events)
-      this.eventFilter = JSON.parse(this.preferences.events.filter);
+      if (this.preferences.events) {
+        this.eventFilter = JSON.parse(this.preferences.events.filter);
+      }
     }
 
-    let self = this;
-    if(this.eventFilter)
-    this.eventFilter.forEach(function (name) {
-      if(name) {
-        if (name.match('JobChain')) {
-          self.object.jobChains.push(name)
-        } else if (name.match('Job')) {
-          self.object.jobs.push(name)
-        } else if (name.match('OrderS')) {
-          self.object.negativeOrders.push(name)
-        } else {
-          self.object.positiveOrders.push(name)
+    if (this.eventFilter) {
+      this.eventFilter.forEach((name) => {
+        if (name) {
+          if (name.match('JobChain')) {
+            this.object.jobChains.push(name);
+          } else if (name.match('Job')) {
+            this.object.jobs.push(name);
+          } else if (name.match('OrderS')) {
+            this.object.negativeOrders.push(name);
+          } else {
+            this.object.positiveOrders.push(name);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   changeConfiguration(reload) {
-    if (isNaN(parseInt(this.preferences.maxRecords))) {
-      this.preferences.maxRecords = parseInt(Object.assign({}, this.userPreferences).maxRecords);
+    if (isNaN(parseInt(this.preferences.maxRecords, 10))) {
+      this.preferences.maxRecords = parseInt(Object.assign({}, this.userPreferences, 10).maxRecords, 10);
     }
-    if (isNaN(parseInt(this.preferences.maxAuditLogRecords))) {
-      this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.userPreferences).maxAuditLogRecords);
+    if (isNaN(parseInt(this.preferences.maxAuditLogRecords, 10))) {
+      this.preferences.maxAuditLogRecords = parseInt(Object.assign({}, this.userPreferences).maxAuditLogRecords, 10);
     }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerOrder))) {
-      this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerOrder);
+    if (isNaN(parseInt(this.preferences.maxHistoryPerOrder, 10))) {
+      this.preferences.maxHistoryPerOrder = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerOrder, 10);
     }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerTask))) {
-      this.preferences.maxHistoryPerTask = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerTask);
+    if (isNaN(parseInt(this.preferences.maxHistoryPerTask, 10))) {
+      this.preferences.maxHistoryPerTask = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerTask, 10);
     }
-    if (isNaN(parseInt(this.preferences.maxAuditLogPerObject))) {
-      this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.userPreferences).maxAuditLogPerObject);
+    if (isNaN(parseInt(this.preferences.maxAuditLogPerObject, 10))) {
+      this.preferences.maxAuditLogPerObject = parseInt(Object.assign({}, this.userPreferences).maxAuditLogPerObject, 10);
     }
 
-    if (isNaN(parseInt(this.preferences.maxOrderPerJobchain))) {
-      this.preferences.maxOrderPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxOrderPerJobchain);
+    if (isNaN(parseInt(this.preferences.maxOrderPerJobchain, 10))) {
+      this.preferences.maxOrderPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxOrderPerJobchain, 10);
     }
-    if (isNaN(parseInt(this.preferences.maxHistoryPerJobchain))) {
-      this.preferences.maxHistoryPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerJobchain);
+    if (isNaN(parseInt(this.preferences.maxHistoryPerJobchain, 10))) {
+      this.preferences.maxHistoryPerJobchain = parseInt(Object.assign({}, this.userPreferences).maxHistoryPerJobchain, 10);
     }
     if (this.preferences.entryPerPage > 100) {
       this.preferences.entryPerPage = this.preferences.maxEntryPerPage;
     }
     sessionStorage.preferences = JSON.stringify(this.preferences);
     // $rootScope.$broadcast('reloadPreferences');
-    if (reload){
+    if (reload) {
       // $rootScope.$broadcast('reloadDate');
     }
 
@@ -199,95 +199,86 @@ export class UserComponent implements OnInit {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage.$SOS$THEME = theme;
     if (theme == 'lighter') {
-      $('#orders_id img').attr("src", './assets/images/workflow.png');
-      $('#jobs_id img').attr("src", './assets/images/job.png');
-      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
-      $('#resources_id img').attr("src", './assets/images/resources1.png');
+      $('#orders_id img').attr('src', './assets/images/workflow.png');
+      $('#jobs_id img').attr('src', './assets/images/job.png');
+      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
+      $('#resources_id img').attr('src', './assets/images/resources1.png');
     } else {
-      $('#orders_id img').attr("src", './assets/images/order1.png');
-      $('#jobs_id img').attr("src", './assets/images/job1.png');
-      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
-      $('#resources_id img').attr("src", './assets/images/resources.png');
+      $('#orders_id img').attr('src', './assets/images/order1.png');
+      $('#jobs_id img').attr('src', './assets/images/job1.png');
+      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
+      $('#resources_id img').attr('src', './assets/images/resources.png');
     }
     this.savePreferences();
   }
 
   changeMenuTheme(theme) {
-    for(let i=0;i<$('#headerColor')[0].classList.length;i++) {
+    for (let i = 0; i < $('#headerColor')[0].classList.length; i++) {
       let temp = $('#headerColor')[0].classList[i].split('-');
-      if(temp[0]==='header') {
+      if (temp[0] === 'header') {
         this.prevMenuTheme = $('#headerColor')[0].classList[i];
         break;
       }
     }
     $('#headerColor').removeClass(this.prevMenuTheme);
     $('#headerColor').addClass(theme);
-    
-    for(let i=0;i<$('#avatarBg')[0].classList.length;i++) {
+
+    for (let i = 0; i < $('#avatarBg')[0].classList.length; i++) {
       let temp = $('#avatarBg')[0].classList[i].split('-');
-      if(temp[0]==='avatarbg') {
+      if (temp[0] === 'avatarbg') {
         this.prevMenuAvatorColor = $('#avatarBg')[0].classList[i];
         break;
       }
     }
     $('#avatarBg').removeClass(this.prevMenuAvatorColor);
-    if($('#headerColor').hasClass('header-prussian-blue'))
-    {
+    if ($('#headerColor').hasClass('header-prussian-blue')) {
       $('#avatarBg').addClass('avatarbg-prussian-blue');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-prussian-blue';
-      this.preferences.avatarColor = "avatarbg-prussian-blue";
-    } else if($('#headerColor').hasClass('header-eggplant'))
-    {
+      this.preferences.avatarColor = 'avatarbg-prussian-blue';
+    } else if ($('#headerColor').hasClass('header-eggplant')) {
       $('#avatarBg').addClass('avatarbg-eggplant');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-eggplant';
-      this.preferences.avatarColor = "avatarbg-eggplant";
-    } else if($('#headerColor').hasClass('header-blackcurrant'))
-    {
+      this.preferences.avatarColor = 'avatarbg-eggplant';
+    } else if ($('#headerColor').hasClass('header-blackcurrant')) {
       $('#avatarBg').addClass('avatarbg-blackcurrant');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-blackcurrant';
-      this.preferences.avatarColor = "avatarbg-blackcurrant";
-    } else if($('#headerColor').hasClass('header-Dodger-Blue'))
-    {
+      this.preferences.avatarColor = 'avatarbg-blackcurrant';
+    } else if ($('#headerColor').hasClass('header-Dodger-Blue')) {
       $('#avatarBg').addClass('avatarbg-Dodger-Blue');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-Dodger-Blue';
-      this.preferences.avatarColor = "avatarbg-Dodger-Blue";
-    } else if($('#headerColor').hasClass('header-nordic'))
-    {
+      this.preferences.avatarColor = 'avatarbg-Dodger-Blue';
+    } else if ($('#headerColor').hasClass('header-nordic')) {
       $('#avatarBg').addClass('avatarbg-nordic');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-nordic';
-      this.preferences.avatarColor = "avatarbg-nordic";
-    } else if($('#headerColor').hasClass('header-light-sea-green'))
-    {
+      this.preferences.avatarColor = 'avatarbg-nordic';
+    } else if ($('#headerColor').hasClass('header-light-sea-green')) {
       $('#avatarBg').addClass('avatarbg-light-sea-green');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-light-sea-green';
-      this.preferences.avatarColor = "avatarbg-light-sea-green";
-    } else if($('#headerColor').hasClass('header-toledo'))
-    {
+      this.preferences.avatarColor = 'avatarbg-light-sea-green';
+    } else if ($('#headerColor').hasClass('header-toledo')) {
       $('#avatarBg').addClass('avatarbg-toledo');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-toledo';
-      this.preferences.avatarColor = "avatarbg-toledo";
-    } else if($('#headerColor').hasClass('header-Pine-Green'))
-    {
+      this.preferences.avatarColor = 'avatarbg-toledo';
+    } else if ($('#headerColor').hasClass('header-Pine-Green')) {
       $('#avatarBg').addClass('avatarbg-Pine-Green');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-Pine-Green';
-      this.preferences.avatarColor = "avatarbg-Pine-Green";
-    } else if($('#headerColor').hasClass('header-radical-red'))
-    {
+      this.preferences.avatarColor = 'avatarbg-Pine-Green';
+    } else if ($('#headerColor').hasClass('header-radical-red')) {
       $('#avatarBg').addClass('avatarbg-radical-red');
       localStorage.$SOS$AVATARTHEME = 'avatarbg-radical-red';
-      this.preferences.avatarColor = "avatarbg-radical-red";
+      this.preferences.avatarColor = 'avatarbg-radical-red';
     }
     localStorage.$SOS$MENUTHEME = theme;
     if (theme == 'lighter') {
-      $('#orders_id img').attr("src", './assets/images/workflow.png');
-      $('#jobs_id img').attr("src", './assets/images/job.png');
-      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan1.png');
-      $('#resources_id img').attr("src", './assets/images/resources1.png');
+      $('#orders_id img').attr('src', './assets/images/workflow.png');
+      $('#jobs_id img').attr('src', './assets/images/job.png');
+      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
+      $('#resources_id img').attr('src', './assets/images/resources1.png');
     } else {
-      $('#orders_id img').attr("src", './assets/images/order1.png');
-      $('#jobs_id img').attr("src", './assets/images/job1.png');
-      $('#dailyPlan_id img').attr("src", './assets/images/daily_plan.png');
-      $('#resources_id img').attr("src", './assets/images/resources.png');
+      $('#orders_id img').attr('src', './assets/images/order1.png');
+      $('#jobs_id img').attr('src', './assets/images/job1.png');
+      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
+      $('#resources_id img').attr('src', './assets/images/resources.png');
     }
     this.savePreferences();
   }
@@ -295,10 +286,9 @@ export class UserComponent implements OnInit {
   selectAllJobFunction() {
     if (this.selectAllJobModel) {
       this.object.jobs = [];
-      let self = this;
-      this.jobs.forEach(function (job) {
-        self.object.jobs.push(job.value)
-      })
+      this.jobs.forEach((job) => {
+        this.object.jobs.push(job.value);
+      });
     } else {
       this.object.jobs = [];
     }
@@ -313,10 +303,9 @@ export class UserComponent implements OnInit {
   selectAllJobChainFunction() {
     if (this.selectAllJobChainModel) {
       this.object.jobChains = [];
-      let self = this;
-      this.jobChains.forEach(function (job) {
-        self.object.jobChains.push(job.value)
-      })
+      this.jobChains.forEach((job) => {
+        this.object.jobChains.push(job.value);
+      });
     } else {
       this.object.jobChains = [];
     }
@@ -331,10 +320,10 @@ export class UserComponent implements OnInit {
   selectAllPositiveOrderFunction() {
     if (this.selectAllPositiveOrderModel) {
       this.object.positiveOrders = [];
-      let self = this;
-      this.positiveOrders.forEach(function (job) {
-        self.object.positiveOrders.push(job.value)
-      })
+
+      this.positiveOrders.forEach((job) => {
+        this.object.positiveOrders.push(job.value);
+      });
     } else {
       this.object.positiveOrders = [];
     }
@@ -349,10 +338,9 @@ export class UserComponent implements OnInit {
   selectAllNegativeOrdersFunction() {
     if (this.selectAllNegativeOrderModel) {
       this.object.negativeOrders = [];
-      let self = this;
-      this.negativeOrders.forEach(function (job) {
-        self.object.negativeOrders.push(job.value)
-      })
+      this.negativeOrders.forEach((job) => {
+        this.object.negativeOrders.push(job.value);
+      });
     } else {
       this.object.negativeOrders = [];
     }
@@ -366,18 +354,17 @@ export class UserComponent implements OnInit {
 
   updateChecks() {
     this.eventFilter = [];
-    let self = this;
-    this.object.jobs.forEach(function (val) {
-      self.eventFilter.push(val.value)
+    this.object.jobs.forEach((val) => {
+      this.eventFilter.push(val.value);
     });
-    this.object.jobChains.forEach(function (val) {
-      self.eventFilter.push(val.value)
+    this.object.jobChains.forEach((val) => {
+      this.eventFilter.push(val.value);
     });
-    this.object.positiveOrders.forEach(function (val) {
-      self.eventFilter.push(val.value)
+    this.object.positiveOrders.forEach((val) => {
+      this.eventFilter.push(val.value);
     });
-    this.object.negativeOrders.forEach(function (val) {
-      self.eventFilter.push(val.value)
+    this.object.negativeOrders.forEach((val) => {
+      this.eventFilter.push(val.value);
     });
     this.preferences.events.filter = this.eventFilter;
     this.savePreferences();

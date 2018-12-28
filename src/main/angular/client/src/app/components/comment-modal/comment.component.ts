@@ -1,15 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import {CoreService} from "../../services/core.service";
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 @Component({
-    selector: 'ngbd-modal-content',
-    templateUrl: './comment.component.html'
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './comment.component.html'
 })
-export class CommentModal implements  OnInit {
-  submitted: boolean = false;
-  messageList: any =[];
-  required: boolean = false;
+export class CommentModalComponent implements OnInit {
+  submitted = false;
+  messageList: any = [];
+  required = false;
   @Input() comments: any;
   @Input() obj: any;
   @Input() url: any;
@@ -18,9 +18,10 @@ export class CommentModal implements  OnInit {
   }
 
   ngOnInit() {
-    this.comments.radio = "predefined";
-    if (sessionStorage.comments)
+    this.comments.radio = 'predefined';
+    if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
+    }
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
@@ -34,7 +35,7 @@ export class CommentModal implements  OnInit {
       ticketLink: this.comments.ticketLink
     };
 
-    this.postCall(this.obj)
+    this.postCall(this.obj);
   }
 
   postCall(obj) {

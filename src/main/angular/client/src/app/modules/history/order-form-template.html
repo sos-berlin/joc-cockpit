@@ -3,7 +3,7 @@
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
-        <input ngbTooltip="Max: 25 characters" triggers="click:blur" required class="form-control"
+        <input ngbTooltip="Max: 25 characters" triggers="click:blur" class="form-control"
                placeholder="{{'placeholder.name' | translate}}"
                name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">

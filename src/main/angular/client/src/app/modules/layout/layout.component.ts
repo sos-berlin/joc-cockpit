@@ -1,66 +1,73 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, HostListener, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from '../../services/data.service';
-import {Subscription} from 'rxjs/Subscription';
 import {AuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {Subscription} from 'rxjs';
 import * as jstz from 'jstz';
+
 declare const $;
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css'],
-  host: {
-    '(window:resize)': 'onResize()',
-    '(window:click)': 'onClick()'
-  }
 })
 export class LayoutComponent implements OnInit, OnDestroy {
 
-  preferences:any= {};
-  schedulerIds:any= {};
-  permission:any= {};
-  selectedScheduler:any= {};
-  selectedJobScheduler:any= {};
-  remainingSessionTime:any= {};
+  preferences: any = {};
+  schedulerIds: any = {};
+  permission: any = {};
+  selectedScheduler: any = {};
+  selectedJobScheduler: any = {};
+  remainingSessionTime: any = {};
   interval: any;
+  tabsMap = new Map();
   scheduleState: string;
   currentTime = new Date();
-  subscription1: Subscription;
-  subscription2: Subscription;
+  subscription1: any = Subscription;
+  subscription2: any = Subscription;
   isLogout = false;
   isTouch = false;
   count = 0;
 
   @ViewChild(HeaderComponent) child;
 
-  constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router, private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService) {
+  constructor(private coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
+              private dataService: DataService, public translate: TranslateService, private toasterService: ToasterService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
     this.subscription2 = dataService.switchSchedulerAnnounced$.subscribe(res => {
       this.changeScheduler(res);
     });
-    let evn: any;
-    router.events.subscribe(e => {
-      evn = e;
-      if (evn.url) {
+
+    router.events.subscribe((e: any) => {
+      if (e.url) {
         LayoutComponent.calculateHeight();
-        if (evn.url === '/resources') {
-          this.router.navigate(['/resources/agent_cluster']);
-        }
       }
     });
+  }
+
+  static calculateHeight() {
+    const headerHt = $('.fixed-top').height() || 70;
+    $('.app-body').css('margin-top', headerHt + 'px');
+  }
+
+  static checkNavHeader() {
+    const dom = $('#navbar1');
+    if (dom && dom.hasClass('in')) {
+      dom.removeClass('in');
+      $('a.navbar-item').addClass('collapsed');
+    }
   }
 
   refresh(args) {
     if (args && args.length) {
       for (let i = 0; i < args.length; i++) {
-        if (args[i].jobschedulerId == this.schedulerIds.selected) {
+        if (args[i].jobschedulerId === this.schedulerIds.selected) {
           if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
             for (let j = 0; j < args[i].eventSnapshots.length; j++) {
               if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
@@ -79,21 +86,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.router.url === '/') {
-      if (localStorage.$SOS$URL) {
-        this.router.navigate([localStorage.$SOS$URL]);
-      } else {
-        this.router.navigate(['/dashboard']);
-      }
-    }
-
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.permission = JSON.parse(this.authService.permission) || {};
     this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData);
-    this.count = parseInt(this.authService.sessionTimeout) / 1000;
+    this.count = parseInt(this.authService.sessionTimeout, 10) / 1000;
     this.loadScheduleDetail();
     this.calculateTime();
     LayoutComponent.calculateHeight();
@@ -105,28 +104,97 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
-  static calculateHeight() {
-    const headerHt = $('.fixed-top').height() || 70;
-    $('.app-body').css('margin-top', headerHt + 'px');
-  }
 
-  static checkNavHeader() {
-    const dom = $('#navbar1');
-    if (dom && dom.hasClass('in')) {
-      dom.removeClass('in');
-      $('a.navbar-item').addClass('collapsed');
-    }
-  }
-
+  @HostListener('window:resize', ['$event'])
   onResize() {
     LayoutComponent.calculateHeight();
     LayoutComponent.checkNavHeader();
   }
 
+  @HostListener('window:click', ['$event'])
   onClick() {
     if (!this.isLogout) {
       this.refreshSession();
     }
+  }
+
+  getScheduleDetail(refresh: boolean): void {
+    this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
+      this.getVolatileData(result, refresh);
+    }, () => {
+      this.getVolatileData(null, refresh);
+    });
+  }
+
+  loadScheduleDetail() {
+    if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE !== 'null') {
+      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
+      if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
+        this.scheduleState = this.selectedJobScheduler.state._text;
+      }
+      this.selectedScheduler.scheduler = this.selectedJobScheduler;
+      if (this.selectedScheduler && this.selectedScheduler.scheduler) {
+        document.title = this.selectedScheduler.scheduler.host + ':' +
+          this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+      }
+    } else if (this.schedulerIds && this.schedulerIds.selected) {
+      this.getScheduleDetail(false);
+    }
+  }
+
+  changeScheduler(jobScheduler) {
+    this.child.switchScheduler = true;
+    this.schedulerIds.selected = jobScheduler;
+    const key = this.schedulerIds.selected;
+    this.tabsMap.set(key, JSON.stringify(this.coreService.getTabs()));
+    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe(() => {
+
+      this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
+        if (res) {
+          let previousData = this.tabsMap.get(jobScheduler);
+          if (previousData) {
+            previousData = JSON.parse(previousData);
+            this.coreService.setTabs(previousData);
+          } else {
+            this.coreService.setDefaultTab();
+          }
+          this.authService.setIds(res);
+          this.authService.setPermissions(jobScheduler);
+          this.authService.save();
+          this.reloadUI();
+        } else {
+          let title = '', msg = '';
+          this.translate.get('message.oops').subscribe(translatedValue => {
+            title = translatedValue;
+          });
+          this.translate.get('message.errorInLoadingScheduleIds').subscribe(translatedValue => {
+            msg = translatedValue;
+          });
+          this.toasterService.pop('error', title, msg);
+        }
+      });
+    });
+  }
+
+  logout(timeout) {
+    this.isLogout = true;
+    this.child.isLogout = true;
+    this.coreService.post('security/logout', {}).subscribe(() => {
+      this.authService.clearUser();
+      this.authService.clearStorage();
+      if (timeout) {
+        localStorage.setItem('clientLogs', null);
+        sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+        sessionStorage.setItem('$SOS$ALLEVENT', null);
+        this.router.navigate(['/login']);
+      } else {
+        this.coreService.setDefaultTab();
+        localStorage.removeItem('$SOS$URL');
+        sessionStorage.clear();
+        this.router.navigate(['/login']);
+      }
+
+    });
   }
 
   private refreshSession() {
@@ -135,7 +203,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.coreService.post('touch', {}).subscribe(res => {
         this.isTouch = false;
         if (res) {
-          this.count = parseInt(this.authService.sessionTimeout) / 1000 - 1;
+          this.count = parseInt(this.authService.sessionTimeout, 10) / 1000 - 1;
         }
       }, () => {
         this.isTouch = false;
@@ -156,11 +224,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const x = m > 9 ? m : '0' + m;
       const y = s > 9 ? s : '0' + s;
 
-      if (d == 0 && h != 0) {
+      if (d === 0 && h !== 0) {
         this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
-      } else if (d == 0 && h == 0 && m != 0) {
+      } else if (d === 0 && h === 0 && m !== 0) {
         this.remainingSessionTime = x + 'm ' + y + 's';
-      } else if (d == 0 && h == 0 && m == 0) {
+      } else if (d === 0 && h === 0 && m === 0) {
         this.remainingSessionTime = s + 's';
       } else {
         this.remainingSessionTime = d + 'd ' + h + 'h';
@@ -177,7 +245,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private setUserPreferences(preferences, configObj) {
-    if (sessionStorage.preferenceId == 0) {
+    if (sessionStorage.preferenceId === 0) {
       const timezone = jstz.determine();
       if (timezone) {
         preferences.zone = timezone.name() || this.selectedJobScheduler.timeZone;
@@ -300,7 +368,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     this.selectedScheduler.scheduler = this.selectedJobScheduler;
     if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-      document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
+      document.title = this.selectedScheduler.scheduler.host + ':' +
+        this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
     }
     sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(this.selectedJobScheduler);
     if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
@@ -325,84 +394,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
-  getScheduleDetail(refresh: boolean): void {
-    this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
-      this.getVolatileData(result, refresh);
-    }, () => {
-      this.getVolatileData(null, refresh);
-    });
-  }
-
-  loadScheduleDetail() {
-    if (sessionStorage.$SOS$JOBSCHEDULE && sessionStorage.$SOS$JOBSCHEDULE != 'null') {
-      this.selectedJobScheduler = JSON.parse(sessionStorage.$SOS$JOBSCHEDULE);
-      if (this.selectedJobScheduler && this.selectedJobScheduler.state) {
-        this.scheduleState = this.selectedJobScheduler.state._text;
-      }
-      this.selectedScheduler.scheduler = this.selectedJobScheduler;
-      if (this.selectedScheduler && this.selectedScheduler.scheduler) {
-        document.title = this.selectedScheduler.scheduler.host + ':' + this.selectedScheduler.scheduler.port + '/' + this.selectedScheduler.scheduler.jobschedulerId;
-      }
-    } else if (this.schedulerIds && this.schedulerIds.selected) {
-      this.getScheduleDetail(false);
-    }
-  }
-
   private reloadUI() {
     this.getScheduleDetail(true);
     this.child.reloadSettings();
     this.preferences = JSON.parse(sessionStorage.preferences);
     this.permission = JSON.parse(this.authService.permission);
-  }
-
-  changeScheduler(jobScheduler) {
-    this.child.switchScheduler = true;
-    this.schedulerIds.selected = jobScheduler;
-    this.coreService.post('jobscheduler/switch', {jobschedulerId: this.schedulerIds.selected}).subscribe(() => {
-
-      this.coreService.post('jobscheduler/ids', {}).subscribe((res) => {
-        if (res) {
-          this.coreService.setDefaultTab();
-          this.authService.setIds(res);
-          this.authService.save();
-
-          if (this.router.url.match('job_chain_detail/')) {
-            this.router.navigate(['/dashboard'], {queryParams: {}});
-          } else {
-            this.reloadUI();
-          }
-        } else {
-          let title = '', msg = '';
-          this.translate.get('message.oops').subscribe(translatedValue => {
-            title = translatedValue;
-          });
-          this.translate.get('message.errorInLoadingScheduleIds').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.pop('error', title, msg);
-        }
-      });
-    });
-  }
-
-  logout(timeout) {
-    this.isLogout = true;
-    this.child.isLogout = true;
-    this.coreService.post('security/logout', {}).subscribe(() => {
-      this.authService.clearUser();
-      this.authService.clearStorage();
-      if (timeout) {
-        localStorage.setItem('clientLogs', null);
-        sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
-        sessionStorage.setItem('$SOS$ALLEVENT', null);
-        this.router.navigate(['/login']);
-      } else {
-        this.coreService.setDefaultTab();
-        localStorage.removeItem('$SOS$URL');
-        sessionStorage.clear();
-        this.router.navigate(['/login']);
-      }
-
-    });
   }
 }

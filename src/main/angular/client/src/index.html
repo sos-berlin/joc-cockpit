@@ -39,9 +39,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta charset="utf-8"/>
   <title>JobScheduler</title>
-  <base href="/"/>
+  <base href="/">
   <meta name="description" content="opensource, scheduler, sos-berlin, jobscheduler, Joc"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 <app-root>
@@ -59,21 +59,21 @@
       localStorage.setItem('getSessionStorage', Date.now());
     }
     window.addEventListener('storage', function (event) {
-      
+
       if (event.key === 'getSessionStorage') {
         // Some tab asked for the sessionStorage -> send it
         localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
         localStorage.removeItem('sessionStorage');
       } else if (event.key === 'sessionStorage' && !sessionStorage.length) {
-       if(event.newValue) {
-        	var data = JSON.parse(event.newValue);
-        	for (var key in data) {
-          		sessionStorage.setItem(key, data[key]);
-        	}
-	}
+        // sessionStorage is empty -> fill it
+        if (event.newValue) {
+          var data = JSON.parse(event.newValue);
+          for (let key in data) {
+            sessionStorage.setItem(key, data[key]);
+          }
+        }
       }
     });
-
   })();
 </script>
 </body>

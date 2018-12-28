@@ -103,7 +103,7 @@ TraceKit.wrap = function traceKitWrapper(func) {
  *
  * Tries to catch all unhandled exceptions and report them to the
  * subscribed handlers. Please note that TraceKit.report will rethrow the
- * exception. This is REQUIRED in order to get a useful stack trace in IE.
+ * exception. This is REQUIRED in workflow to get a useful stack trace in IE.
  * If the exception does not reach the top of the browser, you will only
  * get a stack trace from the point where TraceKit.report was called.
  *

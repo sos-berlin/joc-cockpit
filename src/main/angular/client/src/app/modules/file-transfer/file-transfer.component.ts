@@ -1,23 +1,23 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription} from "rxjs/Subscription";
-import {AuthService} from "../../components/guard";
-import {CoreService} from "../../services/core.service";
-import {DataService} from "../../services/data.service";
-import {SaveService} from "../../services/save.service";
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {EditFilterModal} from "../../components/filter-modal/filter.component";
+import {Subscription} from 'rxjs';
+import {AuthService} from '../../components/guard';
+import {CoreService} from '../../services/core.service';
+import {DataService} from '../../services/data.service';
+import {SaveService} from '../../services/save.service';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 
-import * as moment from "moment";
-import * as _ from "underscore";
+import * as moment from 'moment';
+import * as _ from 'underscore';
 
 declare const $;
 
 @Component({
-  selector: 'ngbd-modal-content',
+  selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
 
-export class FilterModal implements OnInit {
+export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -42,16 +42,16 @@ export class FilterModal implements OnInit {
         planned: 'today',
         shared: false
       };
-    }else{
+    } else {
       this.filter.radio = 'planned';
       this.name = _.clone(this.filter.name);
     }
   }
 
-  cancel(obj){
-    if(obj){
+  cancel(obj) {
+    if (obj) {
       this.activeModal.close(obj);
-    }else {
+    } else {
       this.activeModal.dismiss('');
     }
   }
@@ -78,13 +78,14 @@ export class SearchComponent implements OnInit {
   dateFormatM: any;
   config: any = {};
   existingName: any;
-  submitted: boolean = false;
-  isUnique: boolean = true;
+  submitted = false;
+  isUnique = true;
   allhosts: any;
-  sourceProtocol: any= [];
-  targetProtocol: any= [];
-  
-  constructor(public coreService: CoreService) {}
+  sourceProtocol: any = [];
+  targetProtocol: any = [];
+
+  constructor(public coreService: CoreService) {
+  }
 
   ngOnInit() {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -103,43 +104,46 @@ export class SearchComponent implements OnInit {
       }
     }
   }
-  
-  selectedTargetProtocol(value:any):void {
-    if(!this.filter.targetProtocol){
-      this.filter.targetProtocol =[]
+
+  selectedTargetProtocol(value: any): void {
+    if (!this.filter.targetProtocol) {
+      this.filter.targetProtocol = [];
     }
     this.filter.targetProtocol.push(value.text);
   }
-  removedTargetProtocol(value:any):void {
+
+  removedTargetProtocol(value: any): void {
     this.filter.targetProtocol.splice(this.filter.targetProtocol.indexOf(value.text), 1);
   }
-  selectedSourceProtocol(value:any):void {
-    if(!this.filter.targetProtocol){
-      this.filter.sourceProtocol =[]
+
+  selectedSourceProtocol(value: any): void {
+    if (!this.filter.targetProtocol) {
+      this.filter.sourceProtocol = [];
     }
     this.filter.sourceProtocol.push(value.text);
   }
-  removedSourceProtocol(value:any):void {
+
+  removedSourceProtocol(value: any): void {
     this.filter.sourceProtocol.splice(this.filter.sourceProtocol.indexOf(value.text), 1);
   }
-  
-  onSubmit(result): void {   
+
+  onSubmit(result): void {
     console.log(result);
-     
+
     this.submitted = true;
     let configObj = {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
-      configurationType: "CUSTOMIZATION",
-      objectType: "DAILYPLAN",
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'DAILYPLAN',
       name: result.name,
       shared: result.shared,
       id: 0,
       configurationItem: {}
     };
-    let fromDate:any;
-    let toDate:any;
-    let obj:any = {};
+    let fromDate: any;
+    let toDate: any;
+    let obj: any = {};
     obj.regex = result.regex;
     obj.paths = result.paths;
     obj.jobChain = result.jobChain;
@@ -149,7 +153,7 @@ export class SearchComponent implements OnInit {
     obj.name = result.name;
     if (result.radio != 'current') {
       if (result.from1) {
-       fromDate = this.coreService.parseProcessExecuted(result.from1);
+        fromDate = this.coreService.parseProcessExecuted(result.from1);
       }
       if (result.to1) {
         toDate = this.coreService.parseProcessExecuted(result.to1);
@@ -172,10 +176,10 @@ export class SearchComponent implements OnInit {
       data = res;
       configObj.id = data.id;
       this.allFilter.push(configObj);
-      if(this.isSearch){
+      if (this.isSearch) {
         this.filter.name = '';
-      }else{
-         this.onCancel.emit(configObj);
+      } else {
+        this.onCancel.emit(configObj);
       }
       this.submitted = false;
     }, () => {
@@ -184,8 +188,9 @@ export class SearchComponent implements OnInit {
   }
 
   search() {
-      this.onSearch.emit();
+    this.onSearch.emit();
   }
+
   cancel() {
     this.onCancel.emit();
   }
@@ -193,8 +198,7 @@ export class SearchComponent implements OnInit {
 
 @Component({
   selector: 'app-file-transfer',
-  templateUrl: './file-transfer.component.html',
-  styleUrls: ['./file-transfer.component.css']
+  templateUrl: './file-transfer.component.html'
 })
 export class FileTransferComponent implements OnInit, OnDestroy {
 
@@ -203,7 +207,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   permission: any = {};
   yadeFilters: any = {};
   yadeView: any = {current: false};
-  object: any = {files:[], fileTransfers: []};
+  object: any = {files: [], fileTransfers: []};
   searchFilter: any = {};
   savedFilter: any = {};
   selectedFiltered: any = {};
@@ -215,16 +219,16 @@ export class FileTransferComponent implements OnInit, OnDestroy {
   dateFormat: any;
   dateFormatM: any;
   config: any = {};
-  checkAllFileTransfers: any = { checkbox: false};
+  checkAllFileTransfers: any = {checkbox: false};
   temp_filter: any = {};
   searchKey: string;
 
-  showFiles:boolean= false;
-  isLoading:boolean= false;
-  isLoaded:boolean= false;
-  loading:boolean= false;
-  loadConfig:boolean= false;
-  showSearchPanel:boolean= false;
+  showFiles = false;
+  isLoading = false;
+  isLoaded = false;
+  loading = false;
+  loadConfig = false;
+  showSearchPanel = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -235,64 +239,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].objectType === "OTHER") {
-              if (args[i].eventSnapshots[j].eventType == 'YADETransferStarted') {
-                this.load();
-                break;
-              } else if (args[i].eventSnapshots[j].eventType == 'YADETransferUpdated') {
-                for (let x = 0; x < this.fileTransfers.length; x++) {
-                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path) {
-                    this.getTransfer(this.fileTransfers[x]);
-                    break;
-                  }
-                }
-              } else if (args[i].eventSnapshots[j].eventType == 'YADEFileStateChanged') {
-                for (let x = 0; x < this.fileTransfers.length; x++) {
-                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path && this.fileTransfers[x].show) {
-                    this.getFiles(this.fileTransfers[x]);
-                    break;
-                  }
-                }
-              }
-              break;
-            }
-          }
-        }
-        break
-      }
-    }
-  }
-
   ngOnInit() {
     this.init();
-  }
-
-  private init() {
-    this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.yadeFilters = this.coreService.getYadeTab();
-    this.yadeView.current = this.preferences.fileTransfer == 'current';
-    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM,
-      max: moment().format(this.dateFormatM)
-    };
-
-    if (this.yadeFilters.showFiles != undefined) {
-      this.showFiles = this.yadeFilters.showFiles;
-    } else {
-      this.showFiles = this.preferences.showFiles;
-    }
-
-    this.checkSharedFilters();
   }
 
   ngOnDestroy() {
@@ -305,23 +253,18 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.yadeFilters.filter.sortBy = propertyName;
   }
 
-  changeJobScheduler(){
+  changeJobScheduler() {
     this.load();
   }
 
   loadYadeFiles(type, value) {
     if (type === 'DATE') {
       this.yadeFilters.filter.date = value;
-      
-    }else if(type === 'STATE'){
+
+    } else if (type === 'STATE') {
       this.yadeFilters.filter.states = value;
     }
-     this.load();
-  }
-
-  private reset() {
-     this.object.files = [];
-            this.object.fileTransfers = [];
+    this.load();
   }
 
   load() {
@@ -336,17 +279,17 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       this.isCustomizationSelected(true);
     }
     let obj: any = {};
-    
+
     obj.jobschedulerId = this.yadeView.current == true ? this.schedulerIds.selected : '';
 
     if (this.selectedFiltered && !_.isEmpty(this.selectedFiltered)) {
-      
-      
+
+
       if (this.selectedFiltered.states && this.selectedFiltered.states.length > 0) {
         obj.states = this.selectedFiltered.states;
       }
       if (this.selectedFiltered.profileId) {
-        this.selectedFiltered.profileId = this.selectedFiltered.profileId.replace(/\s*(,|^|$)\s*/g, "$1");
+        this.selectedFiltered.profileId = this.selectedFiltered.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
         obj.profiles = this.selectedFiltered.profileId.split(',');
       }
 
@@ -358,22 +301,22 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         obj.operations = this.selectedFiltered.operations;
       }
       if (this.selectedFiltered.sourceFileName) {
-        this.selectedFiltered.sourceFileName = this.selectedFiltered.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+        this.selectedFiltered.sourceFileName = this.selectedFiltered.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
         obj.sourceFiles = this.selectedFiltered.sourceFileName.split(',');
       }
       if (this.selectedFiltered.targetFileName) {
-        this.selectedFiltered.targetFileName = this.selectedFiltered.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+        this.selectedFiltered.targetFileName = this.selectedFiltered.targetFileName.replace(/\s*(,|^|$)\s*/g, '$1');
         obj.targetFiles = this.selectedFiltered.targetFileName.split(',');
       }
       if (this.selectedFiltered.sourceHost || this.selectedFiltered.sourceProtocol) {
         let hosts = [];
         let protocols = [];
         if (this.selectedFiltered.sourceHost) {
-          this.selectedFiltered.sourceHost = this.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+          this.selectedFiltered.sourceHost = this.selectedFiltered.sourceHost.replace(/\s*(,|^|$)\s*/g, '$1');
           hosts = this.selectedFiltered.sourceHost.split(',');
         }
         if (this.selectedFiltered.sourceProtocol) {
-          this.selectedFiltered.sourceProtocol = this.selectedFiltered.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
+          this.selectedFiltered.sourceProtocol = this.selectedFiltered.sourceProtocol.replace(/\s*(,|^|$)\s*/g, '$1');
           protocols = this.selectedFiltered.sourceProtocol.split(',');
         }
         obj.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
@@ -383,11 +326,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         let hosts = [];
         let protocols = [];
         if (this.selectedFiltered.targetHost) {
-          this.selectedFiltered.targetHost = this.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+          this.selectedFiltered.targetHost = this.selectedFiltered.targetHost.replace(/\s*(,|^|$)\s*/g, '$1');
           hosts = this.selectedFiltered.targetHost.split(',');
         }
         if (this.selectedFiltered.targetProtocol) {
-          this.selectedFiltered.targetProtocol = this.selectedFiltered.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
+          this.selectedFiltered.targetProtocol = this.selectedFiltered.targetProtocol.replace(/\s*(,|^|$)\s*/g, '$1');
           protocols = this.selectedFiltered.targetProtocol.split(',');
         }
         obj.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
@@ -396,8 +339,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       if (this.selectedFiltered.planned) {
         obj = this.parseProcessExecuted(this.selectedFiltered.planned, obj);
       }
-    }
-    else {
+    } else {
       if (this.yadeFilters.filter.states && this.yadeFilters.filter.states != 'ALL') {
         obj.states = [];
         obj.states.push(this.yadeFilters.filter.states);
@@ -410,7 +352,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
-      delete obj["timeZone"];
+      delete obj['timeZone'];
     }
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function')) {
       obj.dateFrom = moment(obj.dateFrom).tz(this.preferences.zone);
@@ -420,9 +362,9 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
     obj.limit = parseInt(this.preferences.maxRecords);
 
-    let result:any;
-    this.coreService.post('yade/transfers',obj).subscribe((res)=> {
-      result =res;
+    let result: any;
+    this.coreService.post('yade/transfers', obj).subscribe((res) => {
+      result = res;
       this.fileTransfers = result.transfers;
 
       this.fileTransfers.forEach(function (transfer) {
@@ -435,17 +377,17 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       });
 
       this.isLoading = true;
-    },  ()=> this.isLoading = true);
+    }, () => this.isLoading = true);
   }
 
   getTransfer(transfer) {
     let obj = {
-    jobschedulerId : this.schedulerIds.selected,
-    transferIds : [transfer.id]
+      jobschedulerId: this.schedulerIds.selected,
+      transferIds: [transfer.id]
 
     };
-    let res:any;
-    this.coreService.post('yade/transfers',obj).subscribe((result)=> {
+    let res: any;
+    this.coreService.post('yade/transfers', obj).subscribe((result) => {
       res = result;
       if (res.transfers && res.transfers.length > 0) {
         transfer.states = res.transfers[0].states;
@@ -466,33 +408,32 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       jobschedulerId: this.schedulerIds.selected,
       transferIds: [transferId]
     };
-    let result:any;
-    this.coreService.post('yade/transfers',obj).subscribe((res)=> {
+    let result: any;
+    this.coreService.post('yade/transfers', obj).subscribe((res) => {
       result = res;
       this.fileTransfers = result.transfers;
       this.fileTransfers[0].permission = this.authService.getPermission(this.schedulerIds.selected).YADE;
       this.isLoading = true;
-    },  ()=> this.isLoading = true);
+    }, () => this.isLoading = true);
   }
 
   getFiles(value) {
     let ids = [value.id];
-    let result:any;
-    this.coreService.post('yade/files',{
+    let result: any;
+    this.coreService.post('yade/files', {
       transferIds: ids,
       jobschedulerId: value.jobschedulerId || this.schedulerIds.selected
-    }).subscribe((res)=> {
-       result = res;
+    }).subscribe((res) => {
+      result = res;
       value.files = result.files;
-    })
+    });
   }
-
 
   checkAllFileTransfersFnc() {
     const self = this;
     if (this.checkAllFileTransfers.checkbox && this.fileTransfers.length > 0) {
       this.object.fileTransfers = [];
-     // let data = $filter('orderBy')($scope.filtered, this.yadeFilters.filter.sortBy, this.yadeFilters.sortReverse);
+      // let data = $filter('orderBy')($scope.filtered, this.yadeFilters.filter.sortBy, this.yadeFilters.sortReverse);
       let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
       data.forEach(function (value) {
         if (value.state._text != 'SUCCESSFUL') {
@@ -522,7 +463,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   checkALLFilesFnc(transfer) {
     const self = this;
-    if ($("#" + transfer.id) && $("#" + transfer.id).prop('checked')) {
+    if ($('#' + transfer.id) && $('#' + transfer.id).prop('checked')) {
       if (transfer && transfer.files) {
         transfer.files.forEach(function (file) {
           let flag = false;
@@ -533,7 +474,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
             }
           }
           if (!flag) {
-            self.object.files.push(file)
+            self.object.files.push(file);
           }
         });
       }
@@ -550,18 +491,17 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     }
   }
 
-
   checkFile(newNames) {
     const self = this;
     if (newNames && newNames.length > 0) {
       let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
-      newNames.forEach( function (value) {
+      newNames.forEach(function (value) {
         for (let i = 0; i < data.length; i++) {
           if (data[i].id == value.transferId) {
             let flg = false;
             for (let x = 0; x < self.object.fileTransfers.length; x++) {
               if (self.object.fileTransfers[x].id == data[i].id) {
-                flg = true
+                flg = true;
               }
             }
             if (!flg)
@@ -575,12 +515,474 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       if (this.fileTransfers && this.fileTransfers.length > 0) {
         let data = this.fileTransfers.slice((this.preferences.entryPerPage * (this.yadeFilters.currentPage - 1)), (this.preferences.entryPerPage * this.yadeFilters.currentPage));
         data.forEach(function (transfer) {
-          if ($("#" + transfer.id)) {
-            $("#" + transfer.id).prop('checked', false);
+          if ($('#' + transfer.id)) {
+            $('#' + transfer.id).prop('checked', false);
           }
         });
       }
     }
+  }
+
+  showTransferFuc(value) {
+    let obj = {
+      jobschedulerId: value.jobschedulerId || this.schedulerIds.selected,
+      transferIds: [value.id]
+    };
+    let result: any;
+    this.coreService.post('yade/transfers', obj).subscribe((res) => {
+      result = res;
+      value = _.extend(value, result.transfers[0]);
+      this.isLoading = true;
+    }, () => this.isLoading = true);
+    value.show = true;
+    this.getFiles(value);
+  }
+
+  search() {
+    this.isLoaded = false;
+    let filter: any = {
+      jobschedulerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
+      limit: parseInt(this.preferences.maxRecords)
+    };
+
+    this.yadeFilters.filter.states = '';
+    this.yadeFilters.filter.date = '';
+
+    if (this.searchFilter.states && this.searchFilter.states.length > 0) {
+      filter.states = this.searchFilter.states;
+    }
+    if (this.searchFilter.operations && this.searchFilter.operations.length > 0) {
+      filter.operations = this.searchFilter.operations;
+    }
+    if (this.searchFilter.profileId) {
+      this.searchFilter.profileId = this.searchFilter.profileId.replace(/\s*(,|^|$)\s*/g, '$1');
+      filter.profiles = this.searchFilter.profileId.split(',');
+    }
+
+    if (this.searchFilter.mandator) {
+      filter.mandator = this.searchFilter.mandator;
+    }
+
+    if (this.searchFilter.sourceFileName) {
+      this.searchFilter.sourceFileName = this.searchFilter.sourceFileName.replace(/\s*(,|^|$)\s*/g, '$1');
+      filter.sourceFiles = this.searchFilter.sourceFileName.split(',');
+    }
+    if (this.searchFilter.targetFileName) {
+      this.searchFilter.targetFileName = this.searchFilter.targetFileName.replace(/\s*(,|^|$)\s*/g, '$1');
+      filter.targetFiles = this.searchFilter.targetFileName.split(',');
+    }
+    if (this.searchFilter.sourceHost || this.searchFilter.sourceProtocol) {
+      let hosts = [];
+      let protocols = [];
+      if (this.searchFilter.sourceHost) {
+        this.searchFilter.sourceHost = this.searchFilter.sourceHost.replace(/\s*(,|^|$)\s*/g, '$1');
+        hosts = this.searchFilter.sourceHost.split(',');
+      }
+      if (this.searchFilter.sourceProtocol) {
+
+        protocols = this.searchFilter.sourceProtocol;
+      }
+      filter.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
+
+    }
+    if (this.searchFilter.targetHost || this.searchFilter.targetProtocol) {
+
+      let hosts = [];
+      let protocols = [];
+      if (this.searchFilter.targetHost) {
+        this.searchFilter.targetHost = this.searchFilter.targetHost.replace(/\s*(,|^|$)\s*/g, '$1');
+        hosts = this.searchFilter.targetHost.split(',');
+      }
+      if (this.searchFilter.targetProtocol) {
+
+        protocols = this.searchFilter.targetProtocol;
+      }
+      filter.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
+    }
+    if (this.searchFilter.radio == 'planned') {
+      filter = this.parseProcessExecuted(this.searchFilter.planned, filter);
+    } else {
+      if (this.searchFilter.radio == 'current' && this.searchFilter.from) {
+        let fromDate = new Date(this.searchFilter.from);
+        if (this.searchFilter.fromTime) {
+          fromDate.setHours(moment(this.searchFilter.fromTime, 'HH:mm:ss').hours());
+          fromDate.setMinutes(moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes());
+          fromDate.setSeconds(moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds());
+        } else {
+          fromDate.setHours(0);
+          fromDate.setMinutes(0);
+          fromDate.setSeconds(0);
+        }
+        fromDate.setMilliseconds(0);
+        filter.dateFrom = fromDate;
+      }
+      if (this.searchFilter.radio == 'current' && this.searchFilter.to) {
+        let toDate = new Date(this.searchFilter.to);
+        if (this.searchFilter.toTime) {
+          toDate.setHours(moment(this.searchFilter.toTime, 'HH:mm:ss').hours());
+          toDate.setMinutes(moment(this.searchFilter.toTime, 'HH:mm:ss').minutes());
+          toDate.setSeconds(moment(this.searchFilter.toTime, 'HH:mm:ss').seconds());
+        } else {
+          toDate.setHours(0);
+          toDate.setMinutes(0);
+          toDate.setSeconds(0);
+        }
+        toDate.setMilliseconds(0);
+        filter.dateTo = toDate;
+      }
+    }
+
+    if (this.searchFilter.jobschedulerId) {
+      filter.jobschedulerId = this.searchFilter.jobschedulerId;
+    }
+
+    filter.timeZone = this.preferences.zone;
+    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+      delete filter['timeZone'];
+    }
+    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
+      filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
+    }
+    if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+      filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
+    }
+    let result: any;
+    this.coreService.post('yade/transfers', filter).subscribe((res) => {
+      result = res;
+      this.fileTransfers = result.transfers;
+      this.loading = false;
+      this.isLoaded = true;
+    }, () => {
+      this.loading = false;
+      this.isLoaded = true;
+    });
+
+  };
+
+  /* ------------- Advance search ------------------- */
+  advancedSearch() {
+    this.showSearchPanel = true;
+    this.searchFilter = {
+      radio: 'current',
+      planned: 'today',
+      from: moment().format(this.dateFormatM),
+      fromTime: '00:00',
+      to: moment().format(this.dateFormatM),
+      toTime: '24:00',
+      paths: [],
+      state: []
+    };
+  }
+
+  cancel() {
+    this.searchFilter = {};
+    this.showSearchPanel = false;
+    if (!this.yadeFilters.filter.states) {
+      this.yadeFilters.filter.states = 'ALL';
+    }
+    if (!this.yadeFilters.filter.date) {
+      this.yadeFilters.filter.date = 'today';
+    }
+
+    this.load();
+  };
+
+  checkSharedFilters() {
+    if (this.permission.JOCConfigurations.share.view) {
+      let obj = {
+        jobschedulerId: this.schedulerIds.selected,
+        configurationType: 'CUSTOMIZATION',
+        objectType: 'YADE',
+        shared: true
+      };
+      let result: any;
+      this.coreService.post('configurations', obj).subscribe((res) => {
+        result = res;
+        if (result.configurations && result.configurations.length > 0)
+          this.filterList = result.configurations;
+        this.getYadeCustomizations();
+      }, () => {
+        this.filterList = [];
+        this.getYadeCustomizations();
+      });
+    } else {
+      this.filterList = [];
+      this.getYadeCustomizations();
+    }
+  }
+
+  getYadeCustomizations() {
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'YADE'
+    };
+    let result: any;
+    this.coreService.post('configurations', obj).subscribe((res) => {
+      result = res;
+      if (this.filterList && this.filterList.length > 0) {
+        if (result.configurations && result.configurations.length > 0) {
+          this.filterList = this.filterList.concat(result.configurations);
+        }
+        let data = [];
+
+        for (let i = 0; i < this.filterList.length; i++) {
+          let flag = true;
+          for (let j = 0; j < data.length; j++) {
+            if (data[j].account == this.filterList[i].account && data[j].name == this.filterList[i].name) {
+              flag = false;
+            }
+          }
+          if (flag) {
+            data.push(this.filterList[i]);
+          }
+        }
+        this.filterList = data;
+      } else {
+        this.filterList = result.configurations;
+      }
+
+      if (this.savedFilter.selected) {
+        let flag = true;
+        const self = this;
+        this.filterList.forEach(function (value) {
+          if (value.id == self.savedFilter.selected) {
+            flag = false;
+            this.coreService.post('configuration', {
+              jobschedulerId: value.jobschedulerId,
+              id: value.id
+            }).subscribe((conf) => {
+              self.loadConfig = true;
+              self.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+              self.selectedFiltered.account = value.account;
+              self.load();
+            });
+          }
+        });
+        if (flag) {
+          this.savedFilter.selected = undefined;
+          this.loadConfig = true;
+          this.load();
+        }
+      } else {
+        this.loadConfig = true;
+        this.savedFilter.selected = undefined;
+        this.load();
+      }
+
+    }, (err) => {
+      this.loadConfig = true;
+      this.savedFilter.selected = undefined;
+      this.load();
+    });
+  }
+
+  saveAsFilter() {
+    let configObj = {
+      jobschedulerId: this.schedulerIds.selected,
+      account: this.permission.user,
+      configurationType: 'CUSTOMIZATION',
+      objectType: 'YADE',
+      id: 0,
+      name: this.searchFilter.name,
+      configurationItem: JSON.stringify(this.searchFilter)
+    };
+    let result: any;
+    this.coreService.post('configuration/save', configObj).subscribe((res) => {
+      result = res;
+      configObj.id = result.id;
+      this.searchFilter.name = '';
+      this.filterList.push(configObj);
+    });
+  }
+
+  expandDetails() {
+    this.showFiles = true;
+    this.yadeFilters.showFiles = true;
+    this.load();
+  }
+
+  collapseDetails() {
+    this.showFiles = false;
+    this.yadeFilters.showFiles = false;
+
+    this.fileTransfers.forEach(function (value) {
+      value.show = false;
+    });
+  }
+
+  /** ------------------Action------------------- */
+
+  restartAllTransfer() {
+
+  }
+
+  restartTransfer(data) {
+
+  }
+
+  /* ---- Customization ------ */
+  createCustomization() {
+    const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.allFilter = this.filterList;
+    modalRef.componentInstance.new = true;
+    modalRef.result.then((configObj) => {
+      if (this.filterList.length == 1) {
+        this.savedFilter.selected = configObj.id;
+        this.yadeFilters.selectedView = true;
+        this.selectedFiltered = configObj;
+        this.isCustomizationSelected(true);
+        this.load();
+        this.saveService.setYade(this.savedFilter);
+        this.saveService.save();
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  editFilters() {
+    const modalRef = this.modalService.open(EditFilterModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.filterList = this.filterList;
+    modalRef.componentInstance.favorite = this.savedFilter.favorite;
+    modalRef.componentInstance.permission = this.permission;
+    modalRef.componentInstance.username = this.permission.user;
+    modalRef.componentInstance.action = this.action;
+    modalRef.componentInstance.self = this;
+
+    modalRef.result.then((obj) => {
+      if (obj.type === 'EDIT') {
+        this.editFilter(obj);
+      } else if (obj.type === 'COPY') {
+        this.copyFilter(obj);
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  action(type, obj, self) {
+    if (type === 'DELETE') {
+      if (self.savedFilter.selected == obj.id) {
+        self.savedFilter.selected = undefined;
+        self.isCustomizationSelected(false);
+        self.yadeFilters.selectedView = false;
+        self.selectedFiltered = undefined;
+        self.setDateRange(null);
+        self.load();
+      } else {
+        if (self.filterList.length == 0) {
+          self.isCustomizationSelected(false);
+          self.savedFilter.selected = undefined;
+          self.yadeFilters.selectedView = false;
+          self.selectedFiltered = undefined;
+        }
+      }
+      self.saveService.setYade(self.savedFilter);
+      self.saveService.save();
+    } else if (type === 'MAKEFAV') {
+      self.savedFilter.favorite = obj.id;
+      self.yadeFilters.selectedView = true;
+      self.saveService.setYade(self.savedFilter);
+      self.saveService.save();
+      self.load();
+    } else if (type === 'REMOVEFAV') {
+      self.savedFilter.favorite = '';
+      self.saveService.setYade(self.savedFilter);
+      self.saveService.save();
+    }
+  }
+
+  changeFilter(filter) {
+    this.cancel();
+    if (filter) {
+      this.savedFilter.selected = filter.id;
+      this.yadeFilters.selectedView = true;
+      let result: any;
+      this.coreService.post('configuration',
+        {
+          jobschedulerId: filter.jobschedulerId,
+          id: filter.id
+        }).subscribe((conf) => {
+        result = conf;
+        this.selectedFiltered = JSON.parse(result.configuration.configurationItem);
+        this.selectedFiltered.account = filter.account;
+        this.load();
+      });
+    } else {
+      this.isCustomizationSelected(false);
+      this.savedFilter.selected = filter;
+      this.yadeFilters.selectedView = false;
+      this.selectedFiltered = filter;
+      this.load();
+    }
+
+    this.saveService.setYade(this.savedFilter);
+    this.saveService.save();
+  };
+
+  private refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if (args[i].eventSnapshots[j].objectType === 'OTHER') {
+              if (args[i].eventSnapshots[j].eventType == 'YADETransferStarted') {
+                this.load();
+                break;
+              } else if (args[i].eventSnapshots[j].eventType == 'YADETransferUpdated') {
+                for (let x = 0; x < this.fileTransfers.length; x++) {
+                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path) {
+                    this.getTransfer(this.fileTransfers[x]);
+                    break;
+                  }
+                }
+              } else if (args[i].eventSnapshots[j].eventType == 'YADEFileStateChanged') {
+                for (let x = 0; x < this.fileTransfers.length; x++) {
+                  if (this.fileTransfers[x].id == args[i].eventSnapshots[j].path && this.fileTransfers[x].show) {
+                    this.getFiles(this.fileTransfers[x]);
+                    break;
+                  }
+                }
+              }
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  private init() {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.yadeFilters = this.coreService.getYadeTab();
+    this.yadeView.current = this.preferences.fileTransfer == 'current';
+    this.savedFilter = JSON.parse(this.saveService.yadeFilters) || {};
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    this.config = {
+      format: this.dateFormatM,
+      max: moment().format(this.dateFormatM)
+    };
+
+    if (this.yadeFilters.showFiles != undefined) {
+      this.showFiles = this.yadeFilters.showFiles;
+    } else {
+      this.showFiles = this.preferences.showFiles;
+    }
+
+    this.checkSharedFilters();
+  }
+
+  private reset() {
+    this.object.files = [];
+    this.object.fileTransfers = [];
   }
 
   private setDateRange(filter) {
@@ -611,7 +1013,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       }
     }
   }
-
 
   private parseProcessExecuted(regex, obj) {
     let fromDate, toDate, date, arr;
@@ -685,380 +1086,6 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     return obj;
   }
 
-  showTransferFuc(value) {
-    let obj = {
-        jobschedulerId : value.jobschedulerId || this.schedulerIds.selected,
-        transferIds : [value.id]
-    };
-    let result:any;
-    this.coreService.post('yade/transfers',obj).subscribe((res)=> {
-      result = res;
-      value = _.extend(value, result.transfers[0]);
-      this.isLoading = true;
-    },  ()=> this.isLoading = true);
-    value.show = true;
-    this.getFiles(value);
-  }
-
-  search() {
-    this.isLoaded = false;
-    let filter: any = {
-      jobschedulerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords)
-    };
-
-    this.yadeFilters.filter.states = '';
-    this.yadeFilters.filter.date = '';
-
-    if (this.searchFilter.states && this.searchFilter.states.length > 0) {
-      filter.states = this.searchFilter.states;
-    }
-    if (this.searchFilter.operations && this.searchFilter.operations.length > 0) {
-      filter.operations = this.searchFilter.operations;
-    }
-    if (this.searchFilter.profileId) {
-      this.searchFilter.profileId = this.searchFilter.profileId.replace(/\s*(,|^|$)\s*/g, "$1");
-      filter.profiles = this.searchFilter.profileId.split(',');
-    }
-
-    if (this.searchFilter.mandator) {
-      filter.mandator = this.searchFilter.mandator;
-    }
-
-    if (this.searchFilter.sourceFileName) {
-      this.searchFilter.sourceFileName = this.searchFilter.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
-      filter.sourceFiles = this.searchFilter.sourceFileName.split(',');
-    }
-    if (this.searchFilter.targetFileName) {
-      this.searchFilter.targetFileName = this.searchFilter.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
-      filter.targetFiles = this.searchFilter.targetFileName.split(',');
-    }
-    if (this.searchFilter.sourceHost || this.searchFilter.sourceProtocol) {
-      let hosts = [];
-      let protocols = [];
-      if (this.searchFilter.sourceHost) {
-        this.searchFilter.sourceHost = this.searchFilter.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-        hosts = this.searchFilter.sourceHost.split(',');
-      }
-      if (this.searchFilter.sourceProtocol) {
-        
-        protocols = this.searchFilter.sourceProtocol;
-      }
-      filter.sources = this.coreService.mergeHostAndProtocol(hosts, protocols);
-
-    }
-    if (this.searchFilter.targetHost || this.searchFilter.targetProtocol) {
-  
-      let hosts = [];
-      let protocols = [];
-      if (this.searchFilter.targetHost) {
-        this.searchFilter.targetHost = this.searchFilter.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-        hosts = this.searchFilter.targetHost.split(',');
-      }
-      if (this.searchFilter.targetProtocol) {
-       
-        protocols = this.searchFilter.targetProtocol;
-      }
-      filter.targets = this.coreService.mergeHostAndProtocol(hosts, protocols);
-    }
-    if (this.searchFilter.radio == 'planned') {
-      filter = this.parseProcessExecuted(this.searchFilter.planned, filter);
-    } else {
-      if (this.searchFilter.radio == 'current' && this.searchFilter.from) {
-        let fromDate = new Date(this.searchFilter.from);
-        if (this.searchFilter.fromTime) {
-          fromDate.setHours(moment(this.searchFilter.fromTime, 'HH:mm:ss').hours());
-          fromDate.setMinutes(moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes());
-          fromDate.setSeconds(moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds());
-        } else {
-          fromDate.setHours(0);
-          fromDate.setMinutes(0);
-          fromDate.setSeconds(0);
-        }
-        fromDate.setMilliseconds(0);
-        filter.dateFrom = fromDate;
-      }
-      if (this.searchFilter.radio == 'current' && this.searchFilter.to) {
-        let toDate = new Date(this.searchFilter.to);
-        if (this.searchFilter.toTime) {
-          toDate.setHours(moment(this.searchFilter.toTime, 'HH:mm:ss').hours());
-          toDate.setMinutes(moment(this.searchFilter.toTime, 'HH:mm:ss').minutes());
-          toDate.setSeconds(moment(this.searchFilter.toTime, 'HH:mm:ss').seconds());
-        } else {
-          toDate.setHours(0);
-          toDate.setMinutes(0);
-          toDate.setSeconds(0);
-        }
-        toDate.setMilliseconds(0);
-        filter.dateTo = toDate;
-      }
-    }
-
-    if (this.searchFilter.jobschedulerId) {
-      filter.jobschedulerId = this.searchFilter.jobschedulerId;
-    }
-
-    filter.timeZone = this.preferences.zone;
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      delete filter["timeZone"];
-    }
-    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
-      filter.dateFrom = moment(filter.dateFrom).tz(this.preferences.zone);
-    }
-    if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-      filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
-    }
-let result:any;
-     this.coreService.post('yade/transfers',filter).subscribe((res)=> {
-       result = res;
-      this.fileTransfers = result.transfers;
-      this.loading = false;
-      this.isLoaded = true;
-    },  ()=> {
-      this.loading = false;
-      this.isLoaded = true;
-    });
-
-  };
-  /* ------------- Advance search ------------------- */
-  advancedSearch() {
-    this.showSearchPanel = true;
-    this.searchFilter = {
-      radio: 'current',
-      planned: 'today',
-      from: moment().format(this.dateFormatM),
-      fromTime: '00:00',
-      to: moment().format(this.dateFormatM),
-      toTime: '24:00',
-      paths: [],
-      state: []
-    };
-  }
-
-  cancel  () {
-    this.searchFilter = {};
-    this.showSearchPanel = false;
-    if (!this.yadeFilters.filter.states) {
-      this.yadeFilters.filter.states = 'ALL';
-    }
-    if (!this.yadeFilters.filter.date) {
-      this.yadeFilters.filter.date = 'today';
-    }
-
-    this.load();
-  };
-
-
-  checkSharedFilters() {
-    if (this.permission.JOCConfigurations.share.view) {
-      let obj = {
-      jobschedulerId : this.schedulerIds.selected,
-      configurationType : "CUSTOMIZATION",
-      objectType : "YADE",
-      shared : true
-      };
-      let result:any;
-      this.coreService.post('configurations',obj).subscribe( (res)=> {
-        result = res;
-        if (result.configurations && result.configurations.length > 0)
-          this.filterList = result.configurations;
-        this.getYadeCustomizations();
-      }, () =>{
-        this.filterList = [];
-        this.getYadeCustomizations();
-      });
-    } else {
-      this.filterList = [];
-      this.getYadeCustomizations();
-    }
-  }
-
-  getYadeCustomizations() {
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      account: this.permission.user,
-      configurationType: "CUSTOMIZATION",
-      objectType: "YADE"
-    };
-    let result:any;
-    this.coreService.post('configurations',obj).subscribe( (res)=> {
-       result = res;
-      if (this.filterList && this.filterList.length > 0) {
-        if (result.configurations && result.configurations.length > 0) {
-          this.filterList = this.filterList.concat(result.configurations);
-        }
-        let data = [];
-
-        for (let i = 0; i < this.filterList.length; i++) {
-          let flag = true;
-          for (let j = 0; j < data.length; j++) {
-            if (data[j].account == this.filterList[i].account && data[j].name == this.filterList[i].name) {
-              flag = false;
-            }
-          }
-          if (flag) {
-            data.push(this.filterList[i]);
-          }
-        }
-        this.filterList = data;
-      } else {
-        this.filterList = result.configurations;
-      }
-
-      if (this.savedFilter.selected) {
-        let flag = true;
-        const self = this;
-        this.filterList.forEach(function (value) {
-          if (value.id == self.savedFilter.selected) {
-            flag = false;
-            this.coreService.post('configuration',{
-              jobschedulerId: value.jobschedulerId,
-              id: value.id
-            }).subscribe( (conf)=> {
-              self.loadConfig = true;
-              self.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              self.selectedFiltered.account = value.account;
-              self.load();
-            });
-          }
-        });
-        if (flag) {
-          this.savedFilter.selected = undefined;
-          this.loadConfig = true;
-          this.load();
-        }
-      } else {
-        this.loadConfig = true;
-        this.savedFilter.selected = undefined;
-        this.load();
-      }
-
-    },  (err)=> {
-      this.loadConfig = true;
-      this.savedFilter.selected = undefined;
-      this.load();
-    });
-  }
-
-  saveAsFilter() {
-    let configObj = {
-      jobschedulerId: this.schedulerIds.selected,
-      account: this.permission.user,
-      configurationType: "CUSTOMIZATION",
-      objectType: "YADE",
-      id: 0,
-      name: this.searchFilter.name,
-      configurationItem: JSON.stringify(this.searchFilter)
-    };
-    let result: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      result = res;
-      configObj.id = result.id;
-      this.searchFilter.name = '';
-      this.filterList.push(configObj);
-    });
-  }
-
-
-
-  expandDetails() {
-    this.showFiles = true;
-    this.yadeFilters.showFiles = true;
-    this.load();
-  }
-
-  collapseDetails() {
-    this.showFiles = false;
-    this.yadeFilters.showFiles = false;
-
-    this.fileTransfers.forEach(function (value) {
-      value.show = false;
-    });
-  }
-
-  /** ------------------Action------------------- */
-
-  restartAllTransfer(){
-
-  }
-  restartTransfer(data){
-
-  }
-
-  /* ---- Customization ------ */
-  createCustomization() {
-    const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.allFilter = this.filterList;
-    modalRef.componentInstance.new = true;
-    modalRef.result.then((configObj) => {
-      if (this.filterList.length == 1) {
-        this.savedFilter.selected = configObj.id;
-        this.yadeFilters.selectedView = true;
-        this.selectedFiltered = configObj;
-        this.isCustomizationSelected(true);
-        this.load();
-        this.saveService.setYade(this.savedFilter);
-        this.saveService.save();
-      }
-    }, (reason) => {
-      console.log('close...', reason)
-    });
-  }
-
-  editFilters() {
-    const modalRef = this.modalService.open(EditFilterModal, {backdrop: "static"});
-    modalRef.componentInstance.filterList = this.filterList;
-    modalRef.componentInstance.favorite = this.savedFilter.favorite;
-    modalRef.componentInstance.permission = this.permission;
-    modalRef.componentInstance.username = this.permission.user;
-    modalRef.componentInstance.action = this.action;
-    modalRef.componentInstance.self = this;
-
-    modalRef.result.then((obj) => {
-      if (obj.type === 'EDIT') {
-        this.editFilter(obj)
-      } else if (obj.type === 'COPY') {
-        this.copyFilter(obj)
-      }
-    }, (reason) => {
-      console.log('close...', reason)
-    });
-  }
-
-  action(type, obj, self) {
-    if (type === 'DELETE') {
-      if (self.savedFilter.selected == obj.id) {
-        self.savedFilter.selected = undefined;
-        self.isCustomizationSelected(false);
-        self.yadeFilters.selectedView = false;
-        self.selectedFiltered = undefined;
-        self.setDateRange(null);
-        self.load();
-      } else {
-        if (self.filterList.length == 0) {
-          self.isCustomizationSelected(false);
-          self.savedFilter.selected = undefined;
-          self.yadeFilters.selectedView = false;
-          self.selectedFiltered = undefined;
-        }
-      }
-      self.saveService.setYade(self.savedFilter);
-      self.saveService.save();
-    } else if (type === 'MAKEFAV') {
-      self.savedFilter.favorite = obj.id;
-      self.yadeFilters.selectedView = true;
-      self.saveService.setYade(self.savedFilter);
-      self.saveService.save();
-      self.load();
-    } else if (type === 'REMOVEFAV') {
-      self.savedFilter.favorite = '';
-      self.saveService.setYade(self.savedFilter);
-      self.saveService.save();
-    }
-  }
-
   private editFilter(filter) {
     let filterObj: any = {};
     let result: any;
@@ -1067,7 +1094,7 @@ let result:any;
       filterObj = JSON.parse(result.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
-      const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
@@ -1076,7 +1103,7 @@ let result:any;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
     });
   }
@@ -1090,7 +1117,7 @@ let result:any;
       filterObj.shared = filter.shared;
       filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
 
-      const modalRef = this.modalService.open(FilterModal, {backdrop: "static", size: "lg"});
+      const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
       modalRef.componentInstance.permission = this.permission;
       modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
       modalRef.componentInstance.allFilter = this.filterList;
@@ -1098,40 +1125,9 @@ let result:any;
       modalRef.result.then((configObj) => {
 
       }, (reason) => {
-        console.log('close...', reason)
+        console.log('close...', reason);
       });
     });
   }
-
-
-
-  changeFilter(filter) {
-    this.cancel();
-    if (filter) {
-      this.savedFilter.selected = filter.id;
-      this.yadeFilters.selectedView = true;
-      let result:any;
-      this.coreService.post('configuration',
-     {
-        jobschedulerId: filter.jobschedulerId,
-        id: filter.id
-      }).subscribe( (conf)=> {
-        result = conf;
-        this.selectedFiltered = JSON.parse(result.configuration.configurationItem);
-        this.selectedFiltered.account = filter.account;
-        this.load();
-      });
-    }
-    else {
-      this.isCustomizationSelected(false);
-      this.savedFilter.selected = filter;
-      this.yadeFilters.selectedView = false;
-      this.selectedFiltered = filter;
-      this.load();
-    }
-
-    this.saveService.setYade(this.savedFilter);
-    this.saveService.save();
-  };
 
 }

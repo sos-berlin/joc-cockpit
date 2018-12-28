@@ -1,108 +1,108 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from '../data.service';
-import { DeleteModal } from '../../../components/delete-modal/delete.component';
+import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {NgbModal, NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {DataService} from '../data.service';
+import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
 import * as _ from 'underscore';
 
 @Component({
-    selector: 'ngbd-modal-content',
-    templateUrl: './user-dialog.html'
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './user-dialog.html'
 })
-export class AccountModal implements OnInit {
-    submitted:boolean = false;
-    isUnique:boolean = true;
-    currentUser:any={};
-    roles:any= [];
+export class AccountModalComponent implements OnInit {
+  submitted = false;
+  isUnique = true;
+  currentUser: any = {};
+  roles: any = [];
 
-    @Input() newUser = false;
-    @Input() copy = false;
-    @Input() userDetail:any;
-    @Input() oldUser:any;
+  @Input() newUser = false;
+  @Input() copy = false;
+  @Input() userDetail: any;
+  @Input() oldUser: any;
 
-    constructor(public activeModal:NgbActiveModal, private coreService:CoreService) {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    if (this.oldUser) {
+      this.currentUser = _.clone(this.oldUser);
+      this.currentUser.fakePassword = '00000000';
+      this.currentUser.userName = this.currentUser.user;
+      if (this.copy) {
+        this.currentUser.user = '';
+      }
+      this.roles = _.clone(this.currentUser.roles);
+
+    } else {
+      this.currentUser = {
+        user: '',
+        fakePassword: '',
+        roles: []
+      };
+    }
+  }
+
+  checkUser(newUser, existingUser) {
+    this.isUnique = true;
+    for (let i = 0; i < this.userDetail.users.length; i++) {
+      if (this.userDetail.users[i].user === newUser && newUser !== existingUser) {
+        this.isUnique = false;
+        break;
+      }
+    }
+  }
+
+  onSubmit(obj): void {
+    this.submitted = true;
+    this.isUnique = true;
+
+    if (obj.fakePassword !== '00000000') {
+      obj.password = obj.fakePassword || '';
     }
 
-    ngOnInit() {
-        if (this.oldUser) {
-            this.currentUser = _.clone(this.oldUser);
-            this.currentUser.fakePassword = "00000000";
-            this.currentUser.userName = this.currentUser.user;
-            if(this.copy){
-                this.currentUser.user ='';
-            }
-            this.roles =  _.clone(this.currentUser.roles);
-
-        } else {
-            this.currentUser = {
-                user: '',
-                fakePassword: '',
-                roles: []
-            };
+    if (this.newUser || this.copy) {
+      let data = {
+        user: obj.user,
+        password: obj.password,
+        roles: this.roles
+      };
+      this.userDetail.users.push(data);
+    } else {
+      for (let i = 0; i < this.userDetail.users.length; i++) {
+        if (this.userDetail.users[i] === this.oldUser || _.isEqual(this.userDetail.users[i], this.oldUser)) {
+          this.userDetail.users[i].user = obj.user;
+          this.userDetail.users[i].password = obj.password;
+          this.userDetail.users[i].roles = this.roles;
+          break;
         }
+      }
     }
 
-    checkUser(newUser, existingUser) {
-        this.isUnique = true;
-        for (let i = 0; i < this.userDetail.users.length; i++) {
-            if (this.userDetail.users[i].user === newUser && newUser !== existingUser) {
-                this.isUnique = false;
-                break;
-            }
-        }
-    }
+    this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
+      this.submitted = false;
+      this.activeModal.close(this.userDetail.users);
+    }, err => {
+      this.submitted = false;
+    });
+  }
 
-    onSubmit(obj):void {
-        this.submitted = true;
-        this.isUnique = true;
+  selected(value: any): void {
+    this.roles.push(value.text);
+  }
 
-        if (obj.fakePassword != '00000000') {
-            obj.password = obj.fakePassword || '';
-        }
-
-        if (this.newUser || this.copy) {
-            let data ={
-                user:obj.user,
-                password:obj.password,
-                roles:this.roles
-            };
-            this.userDetail.users.push(data);
-        }else {
-            for (let i = 0; i < this.userDetail.users.length; i++) {
-                if (this.userDetail.users[i] === this.oldUser ||  _.isEqual(this.userDetail.users[i], this.oldUser)) {
-                    this.userDetail.users[i].user = obj.user;
-                    this.userDetail.users[i].password = obj.password;
-                    this.userDetail.users[i].roles = this.roles;
-                    break;
-                }
-            }
-        }
-
-        this.coreService.post('security_configuration/write', this.userDetail).subscribe(res => {
-            this.submitted = false;
-            this.activeModal.close(this.userDetail.users);
-        }, err => {
-            this.submitted = false;
-        });
-    }
-
-    selected(value:any):void {
-        this.roles.push(value.text);
-    }
-
-    removed(value:any):void {
-        this.roles.splice(this.roles.indexOf(value.text), 1);
-    }
+  removed(value: any): void {
+    this.roles.splice(this.roles.indexOf(value.text), 1);
+  }
 }
 
-//Main Component
+// Main Component
 @Component({
-    selector: 'app-accounts-all',
-    templateUrl: 'accounts.component.html',
-    styleUrls: ['./accounts.component.css'],
+  selector: 'app-accounts-all',
+  templateUrl: 'accounts.component.html',
+  styleUrls: ['./accounts.component.css'],
 
 })
 export class AccountsComponent implements OnInit, OnDestroy {
@@ -125,12 +125,14 @@ export class AccountsComponent implements OnInit, OnDestroy {
       this.searchKey = res;
     });
     this.subscription2 = this.dataService.dataAnnounced$.subscribe(res => {
-      if (res)
+      if (res) {
         this.setUserData(res);
+      }
     });
     this.subscription3 = this.dataService.functionAnnounced$.subscribe(res => {
-      if (res === 'ADD')
+      if (res === 'ADD') {
         this.addUser();
+      }
     });
   }
 
@@ -160,7 +162,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     };
 
     this.coreService.post('security_configuration/write', obj).subscribe(res => {
-      console.log(res)
+      console.log(res);
     }, err => {
 
     });
@@ -180,51 +182,51 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   addUser() {
-    const modalRef = this.modalService.open(AccountModal, {backdrop: "static"});
+    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.newUser = true;
     modalRef.result.then((result) => {
       this.users = result;
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
   editUser(user) {
 
-    const modalRef = this.modalService.open(AccountModal, {backdrop: "static"});
+    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.allRoles = this.roles;
     modalRef.componentInstance.oldUser = user;
     modalRef.result.then((result) => {
       this.users = result;
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
   copyUser(user) {
 
-    const modalRef = this.modalService.open(AccountModal, {backdrop: "static"});
+    const modalRef = this.modalService.open(AccountModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.userDetail = this.userDetail;
     modalRef.componentInstance.copy = true;
     modalRef.componentInstance.oldUser = user;
     modalRef.result.then((result) => {
       this.users = result;
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 
   deleteUser(user, i) {
-    const modalRef = this.modalService.open(DeleteModal);
+    const modalRef = this.modalService.open(DeleteModalComponent);
     modalRef.componentInstance.user = user;
     modalRef.result.then((result) => {
       this.users.splice(i, 1);
       this.saveInfo();
     }, (reason) => {
-      console.log('close...', reason)
+      console.log('close...', reason);
     });
   }
 

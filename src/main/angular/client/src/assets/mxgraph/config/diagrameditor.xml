@@ -156,7 +156,7 @@
         <add as="align" value="center"/>
         <add as="verticalAlign" value="center"/>
         <add as="rounded" value="1"/>
-        <add as="labelBackgroundColor" value="#fafafa"/>
+        <add as="labelBackgroundColor" value="#fff"/>
         <add as="strokeColor" value="#36393D"/>
         <add as="strokeWidth" value="1"/>
         <add as="edgeStyle" value="elbowEdgeStyle"/>

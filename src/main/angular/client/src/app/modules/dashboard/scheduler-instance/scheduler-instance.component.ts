@@ -1,26 +1,26 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { DataService } from '../../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import {Subscription} from 'rxjs';
 import * as _ from 'underscore';
 
 @Component({
   selector: 'app-scheduler-instance',
-  templateUrl: './scheduler-instance.component.html',
-  styleUrls: ['./scheduler-instance.component.css']
+  templateUrl: './scheduler-instance.component.html'
 })
-export class SchedulerInstanceComponent implements OnInit,OnDestroy {
+export class SchedulerInstanceComponent implements OnInit, OnDestroy {
   mastersList: any = [];
-  isLoaded: boolean = false;
+  isLoaded = false;
   subscription: Subscription;
   // tslint:disable-next-line:no-input-rename
   @Input('sizeY') ybody: number;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
-      if (res)
+      if (res) {
         this.refresh(res);
+      }
     });
   }
 
@@ -37,7 +37,7 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
       if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
         let flag = false;
         for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-          if (args[i].eventSnapshots[j].eventType === "SchedulerStateChanged") {
+          if (args[i].eventSnapshots[j].eventType === 'SchedulerStateChanged') {
             this.getInstances();
             flag = true;
             break;
@@ -57,13 +57,15 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     }
     if (result) {
       for (let i = 0; i < result.masters.length; i++) {
-        if (this.authService.getPermission(result.masters[i].jobschedulerId))
+        if (this.authService.getPermission(result.masters[i].jobschedulerId)) {
           result.masters[i].permission = this.authService.getPermission(result.masters[i].jobschedulerId).JobschedulerMaster;
+        }
         if (res) {
           for (let j = 0; j < res.masters.length; j++) {
-            if (result.masters[i].jobschedulerId == res.masters[j].jobschedulerId && _.isEqual(result.masters[i].clusterType, res.masters[j].clusterType)) {
+            if (result.masters[i].jobschedulerId === res.masters[j].jobschedulerId &&
+              _.isEqual(result.masters[i].clusterType, res.masters[j].clusterType)) {
               this.mastersList.push(_.extend(result.masters[i], res.masters[j]));
-              break
+              break;
             }
           }
         } else {
@@ -73,8 +75,9 @@ export class SchedulerInstanceComponent implements OnInit,OnDestroy {
     } else {
 
       for (let i = 0; i < res.masters.length; i++) {
-        if (this.authService.getPermission(res.masters[i].jobschedulerId))
+        if (this.authService.getPermission(res.masters[i].jobschedulerId)) {
           res.masters[i].permission = this.authService.getPermission(res.masters[i].jobschedulerId).JobschedulerMaster;
+        }
         this.mastersList.push(res.masters[i]);
       }
     }

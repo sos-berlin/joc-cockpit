@@ -1,19 +1,18 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard/auth.service';
-import { DataService } from '../../../services/data.service';
-import { Subscription }   from 'rxjs/Subscription';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {DataService} from '../../../services/data.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-file-overview',
-  templateUrl: './file-overview.component.html',
-  styleUrls: ['./file-overview.component.css']
+  templateUrl: './file-overview.component.html'
 })
-export class FileOverviewComponent implements OnInit,OnDestroy {
+export class FileOverviewComponent implements OnInit, OnDestroy {
   yadeOverview: any = {};
   schedulerIds: any = {};
-  notAuthenticate: boolean = false;
-  isLoaded: boolean = false;
+  notAuthenticate = false;
+  isLoaded = false;
   subscription: Subscription;
 
   constructor(public authService: AuthService, public coreService: CoreService, private dataService: DataService) {
@@ -27,13 +26,13 @@ export class FileOverviewComponent implements OnInit,OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "YADEFileStateChanged") {
+            if (args[i].eventSnapshots[j].eventType === 'YADEFileStateChanged') {
               this.getSnapshot();
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }

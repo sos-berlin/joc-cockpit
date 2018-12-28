@@ -1,21 +1,20 @@
-import { Component, OnInit,OnDestroy, Input } from '@angular/core';
-import { CoreService } from '../../../services/core.service';
-import { AuthService } from '../../../components/guard';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription }   from 'rxjs/Subscription';
-import { DataService } from '../../../services/data.service';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
+import {TranslateService} from '@ngx-translate/core';
+import {Subscription} from 'rxjs';
+import {DataService} from '../../../services/data.service';
 
 @Component({
   selector: 'app-agent-status',
-  templateUrl: './agent-status.component.html',
-  styleUrls: ['./agent-status.component.css']
+  templateUrl: './agent-status.component.html'
 })
 export class AgentStatusComponent implements OnInit, OnDestroy {
   @Input('sizeY') ybody: number;
-  schedulerIds: any ={};
-  agentClusters: any ={};
+  schedulerIds: any = {};
+  agentClusters: any = {};
   subscription: Subscription;
-  isLoaded: boolean = false;
+  isLoaded = false;
   data: any[];
   view: any[] = [180, 180];
   showLegend = false;
@@ -35,16 +34,16 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
 
   refresh(args) {
     for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+      if (args[i].jobschedulerId === this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if (args[i].eventSnapshots[j].eventType === "FileBasedActivated" && args[i].eventSnapshots[i].objectType === "PROCESSCLASS") {
+            if (args[i].eventSnapshots[j].eventType === 'FileBasedActivated' && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
               this.getStatus();
               break;
             }
           }
         }
-        break
+        break;
       }
     }
   }
@@ -52,25 +51,24 @@ export class AgentStatusComponent implements OnInit, OnDestroy {
   groupBy(data) {
     let results = [];
     if (!(data)) return;
-    let _self = this;
-    data.forEach(function (value) {
+    data.forEach( (value) => {
       let result = {count: 1, _text: '', color: ''};
       let text: any;
-      if (value.state._text == "ALL_AGENTS_ARE_RUNNING") {
-        text = _self.translate.get('label.healthyAgentCluster');
+      if (value.state._text === 'ALL_AGENTS_ARE_RUNNING') {
+        text = this.translate.get('label.healthyAgentCluster');
         result.color = '#7ab97a';
-      } else if (value.state._text.toLowerCase() == "all_agents_are_unreachable") {
-        text = _self.translate.get('label.unreachableAgentCluster');
+      } else if (value.state._text.toLowerCase() === 'all_agents_are_unreachable') {
+        text = this.translate.get('label.unreachableAgentCluster');
         result.color = '#e86680';
       } else {
-        text = _self.translate.get('label.unhealthyAgentCluster');
+        text = this.translate.get('label.unhealthyAgentCluster');
         result.color = 'rgba(255, 195, 0, 0.9)';
       }
       result._text = text.value;
 
       if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
-          if (results[i]._text == result._text) {
+          if (results[i]._text === result._text) {
             result.count = result.count + results[i].count;
             results.splice(i, 1);
             break;

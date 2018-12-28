@@ -1,15 +1,16 @@
 import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { CoreService } from '../../services/core.service';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {CoreService} from '../../services/core.service';
 
 import * as _ from 'underscore';
+
 declare const $;
 
 @Component({
-    selector: 'ngbd-modal-content',
-    templateUrl: './tree.component.html'
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './tree.component.html'
 })
-export class TreeModal implements OnInit,OnDestroy {
+export class TreeModalComponent implements OnInit, OnDestroy {
   tree: any = [];
 
   @Input() schedulerId;
@@ -34,22 +35,22 @@ export class TreeModal implements OnInit,OnDestroy {
       compact: true,
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
-      this.prepareTree(res)
+      this.prepareTree(res);
     });
   }
 
   onNodeSelected(e): void {
-    this.activeModal.close(e.node.data.path)
+    this.activeModal.close(e.node.data.path);
   }
 
   onNodeChecked(e): void {
-     if(e.data.isChecked) {
-       if (this.paths.indexOf(e.data.path) === -1) {
-         this.paths.push(e.data.path);
-       }
-     }else{
-       this.paths.splice(this.paths.indexOf(e.data.path), 1);
-     }
+    if (e.data.isChecked) {
+      if (this.paths.indexOf(e.data.path) === -1) {
+        this.paths.push(e.data.path);
+      }
+    } else {
+      this.paths.splice(this.paths.indexOf(e.data.path), 1);
+    }
   }
 
   expandAll(): void {
@@ -64,7 +65,7 @@ export class TreeModal implements OnInit,OnDestroy {
   private prepareTree(actualData) {
     const self = this;
     let output = [{
-      id:1,
+      id: 1,
       name: actualData.folders[0].path,
       path: actualData.folders[0].path,
       children: []
@@ -76,7 +77,7 @@ export class TreeModal implements OnInit,OnDestroy {
     setTimeout(function () {
       let node = self.treeCtrl.treeModel.getNodeById(1);
       node.expand();
-    }, 10)
+    }, 10);
   }
 
   private recursive(data, output) {

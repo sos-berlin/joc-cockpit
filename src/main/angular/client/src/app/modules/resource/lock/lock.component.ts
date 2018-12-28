@@ -1,9 +1,9 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {TreeComponent} from "../../../components/tree-navigation/tree.component";
+import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
 import * as _ from 'underscore';
 
@@ -16,12 +16,12 @@ import * as _ from 'underscore';
 })
 export class LockComponent implements OnInit, OnDestroy {
 
-  isLoading: boolean = false;
+  isLoading = false;
   loading: boolean;
-  schedulerIds: any  = {};
+  schedulerIds: any = {};
   tree: any = [];
-  preferences: any  = {};
-  permission: any  = {};
+  preferences: any = {};
+  permission: any = {};
   pageView: any;
   locks: any = [];
   locksFilters: any = {};
@@ -44,28 +44,28 @@ export class LockComponent implements OnInit, OnDestroy {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
         if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
           for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
+            if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
               this.initTree();
               break;
-            } else if (args[i].eventSnapshots[j].eventType === "JobStateChanged" && args[i].eventSnapshots[j].path) {
-              if(this.locks.length>0) {
+            } else if (args[i].eventSnapshots[j].eventType === 'JobStateChanged' && args[i].eventSnapshots[j].path) {
+              if (this.locks.length > 0) {
                 for (let x = 0; x < this.locks.length; x++) {
                   if (this.locks[x].path === args[i].eventSnapshots[j].path) {
                     let obj = {
                       jobschedulerId: this.schedulerIds.selected,
                       folders: [{folder: this.locks[x].path, recursive: false}]
                     };
-                    this.coreService.post('locks',obj).subscribe(res=>{
+                    this.coreService.post('locks', obj).subscribe(res => {
                       //TODO merge
-                      console.log(res)
-                    })
+                      console.log(res);
+                    });
                   }
                 }
               }
             }
           }
         }
-        break
+        break;
       }
     }
   }
@@ -78,7 +78,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.locksFilters = this.coreService.getResourceTab().locks;
     if (sessionStorage.preferences)
       this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds)  || {};
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     if (localStorage.views)
       this.pageView = JSON.parse(localStorage.views).lock;
@@ -96,7 +96,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
-      types: ["LOCK"]
+      types: ['LOCK']
     }).subscribe(res => {
       this.filteredTreeData(this.coreService.prepareTree(res));
       this.isLoading = true;
@@ -108,14 +108,14 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private filteredTreeData(output) {
     if (_.isEmpty(this.locksFilters.expand_to)) {
-        this.tree = output;
-        this.locksFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.locksFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.locksFilters.expand_to);
-        this.tree = this.locksFilters.expand_to;
-        this.expandTree();
-      }
+      this.tree = output;
+      this.locksFilters.expand_to = this.tree;
+      this.checkExpand();
+    } else {
+      this.locksFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.locksFilters.expand_to);
+      this.tree = this.locksFilters.expand_to;
+      this.expandTree();
+    }
   }
 
 
@@ -143,12 +143,12 @@ export class LockComponent implements OnInit, OnDestroy {
   private checkExpand() {
     const self = this;
     setTimeout(function () {
-      if(self.child && self.child.getNodeById(1)) {
+      if (self.child && self.child.getNodeById(1)) {
         const node = self.child.getNodeById(1);
         node.expand();
         node.setActiveAndVisible(true);
       }
-    }, 10)
+    }, 10);
   }
 
   private startTraverseNode(data) {
@@ -194,10 +194,10 @@ export class LockComponent implements OnInit, OnDestroy {
 
 
   receiveAction($event) {
-    if($event.action === 'NODE')
-     this.getLocks($event.data);
+    if ($event.action === 'NODE')
+      this.getLocks($event.data);
     else
-      this.expandNode($event)
+      this.expandNode($event);
 
   }
 
@@ -241,7 +241,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
-  showConfiguration(lock){
+  showConfiguration(lock) {
 
   }
 }

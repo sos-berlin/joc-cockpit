@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.method === 'POST' || req.url.match('jobscheduler/log?')) {
       req = req.clone({
-        url: './api/' + req.url,
+        url: 'http://localhost:4446/joc/api/' + req.url,
         headers: req.headers.set('Content-Type', 'application/json')
       });
       if (req.url.match('security/login')) {
@@ -45,7 +45,6 @@ export class AuthInterceptor implements HttpInterceptor {
               msg = translatedValue;
             });
             this.toasterService.pop('error', title, msg);
-            localStorage.$SOS$URL = this.router.url;
             this.authService.clearUser();
             this.authService.clearStorage();
             return this.router.navigate(['/login']);

@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterConfig} from 'angular2-toaster';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
+
 declare const $;
 
 @Component({
@@ -11,18 +12,6 @@ declare const $;
 })
 
 export class AppComponent {
-  static themeInit() {
-    if (localStorage.$SOS$THEME != null) {
-      $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
-      if (localStorage.$SOS$MENUTHEME != null) {
-        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
-        if (localStorage.$SOS$AVATARTHEME != null) {
-          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
-        }
-      }
-    }
-  }
-
   public config: ToasterConfig = new ToasterConfig({
     positionClass: 'toast-top-center',
     limit: 2
@@ -35,6 +24,18 @@ export class AppComponent {
       const index = window.location.href.lastIndexOf('#/');
       if (index > 0) {
         this.router.navigate([window.location.href.substring(index + 1)]);
+      }
+    }
+  }
+
+  static themeInit() {
+    if (localStorage.$SOS$THEME != null) {
+      $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
+      if (localStorage.$SOS$MENUTHEME != null) {
+        $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);
+        if (localStorage.$SOS$AVATARTHEME != null) {
+          $('#avatarBg').addClass(window.localStorage.$SOS$AVATARTHEME);
+        }
       }
     }
   }

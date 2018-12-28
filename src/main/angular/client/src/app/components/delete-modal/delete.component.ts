@@ -1,25 +1,26 @@
 import {Component, OnDestroy, OnInit, Input} from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 declare var $;
 
 @Component({
-    selector: 'ngbd-modal-content',
-     templateUrl: './delete.component.html'
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './delete.component.html'
 })
-export class DeleteModal implements OnInit, OnDestroy {
+export class DeleteModalComponent implements OnInit, OnDestroy {
 
-  @Input() calendar:any;
-  @Input() importCalendars:any;
-  @Input() calendarArr:any;
-  @Input() user:any;
-  @Input() role:any;
-  @Input() master:any;
-  @Input() entry:any;
-  @Input() folder:any;
-  @Input() permission:any;
-  @Input() object:any;
+  @Input() calendar: any;
+  @Input() importCalendars: any;
+  @Input() calendarArr: any;
+  @Input() user: any;
+  @Input() role: any;
+  @Input() master: any;
+  @Input() entry: any;
+  @Input() folder: any;
+  @Input() permission: any;
+  @Input() object: any;
   profiles = 'profiles';
+
   constructor(public activeModal: NgbActiveModal) {
   }
 

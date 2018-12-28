@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../../services/data.service';
-import {TreeComponent} from "../../../components/tree-navigation/tree.component";
+import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 
 import * as _ from 'underscore';
 
@@ -17,7 +17,7 @@ import * as _ from 'underscore';
 })
 export class AgentClusterComponent implements OnInit, OnDestroy {
 
-  isLoading: boolean = false;
+  isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
   tree: any = [];
@@ -40,36 +40,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refresh(args) {
-    for (let i = 0; i < args.length; i++) {
-      if (args[i].jobschedulerId == this.schedulerIds.selected) {
-        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
-          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
-            if ((args[i].eventSnapshots[j].eventType == "FileBasedActivated" || args[i].eventSnapshots[j].eventType == "FileBasedRemoved") && args[i].eventSnapshots[j].objectType === "PROCESSCLASS") {
-              this.init();
-              break;
-            }
-          }
-        }
-        break
-      }
-    }
-  }
-
   ngOnInit() {
     this.init();
-  }
-
-  private init() {
-    this.agentsFilters = this.coreService.getResourceTab().agents;
-    if (sessionStorage.preferences)
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission)  || {};
-    if (localStorage.views)
-      this.pageView = JSON.parse(localStorage.views).agent;
-
-    this.initTree(null);
   }
 
   ngOnDestroy() {
@@ -77,11 +49,148 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     this.subscription2.unsubscribe();
   }
 
+  loadAgents(status) {
+    if (status) {
+      this.agentsFilters.filter.state = status;
+    }
+    let self = this;
+    let obj = {
+      folders: [],
+      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
+    };
+
+    this.agentClusters = [];
+    this.loading = true;
+    this.tree.forEach(function (value) {
+      if (value.isExpanded || value.isSelected)
+        self.getExpandTreeForUpdates(value, obj);
+    });
+    this.getAgentClassList(obj, null);
+  }
+
+  loadAgentsV(data, type) {
+    let self = this;
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      folders: [{folder: data.path, recursive: type}],
+      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
+    };
+    let result: any;
+    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res) => {
+      result = res;
+      data.agentClusters = result.agentClusters;
+      data.agentClusters.forEach(function (value) {
+        value.path1 = data.path;
+        self.agentClusters.push(value);
+      });
+      this.loading = false;
+
+    }, () => {
+      this.loading = false;
+
+    });
+  }
+
+  expandNode(node): void {
+    this.agentClusters = [];
+    this.loading = true;
+
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      folders: [{folder: node.data.path, recursive: true}],
+      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
+      compact: true
+    };
+    this.getAgentClassList(obj, node);
+  }
+
+  getAgents(data) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: false}],
+      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
+    };
+
+    this.getAgentClassList(obj, null);
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  sortBy(propertyName) {
+    this.agentsFilters.reverse = !this.agentsFilters.reverse;
+    this.agentsFilters.filter.sortBy = propertyName;
+  }
+
+  expandDetails() {
+    this.agentClusters.forEach(function (value) {
+      value.show = true;
+    });
+  }
+
+  collapseDetails() {
+    this.agentClusters.forEach(function (value) {
+      value.show = false;
+    });
+  }
+
+  showAgents(cluster) {
+    cluster.show = true;
+  }
+
+  hideAgents(cluster) {
+    cluster.show = false;
+  }
+
+  /** ---------------------------- Broadcast messages ----------------------------------*/
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
+
+  receiveAction($event) {
+    if ($event.action === 'NODE')
+      this.getAgents($event.data);
+    else
+      this.expandNode($event);
+  }
+
+  private refresh(args) {
+    for (let i = 0; i < args.length; i++) {
+      if (args[i].jobschedulerId == this.schedulerIds.selected) {
+        if (args[i].eventSnapshots && args[i].eventSnapshots.length > 0) {
+          for (let j = 0; j < args[i].eventSnapshots.length; j++) {
+            if ((args[i].eventSnapshots[j].eventType == 'FileBasedActivated' || args[i].eventSnapshots[j].eventType == 'FileBasedRemoved') && args[i].eventSnapshots[j].objectType === 'PROCESSCLASS') {
+              this.init();
+              break;
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  private init() {
+    this.agentsFilters = this.coreService.getResourceTab().agents;
+    if (sessionStorage.preferences)
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    if (localStorage.views)
+      this.pageView = JSON.parse(localStorage.views).agent;
+
+    this.initTree(null);
+  }
+
   private initTree(type) {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
-      types: ["AGENTCLUSTER"]
+      types: ['AGENTCLUSTER']
     }).subscribe(res => {
       this.filteredTreeData(this.coreService.prepareTree(res), type);
       this.isLoading = true;
@@ -146,13 +255,13 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   private checkExpand() {
     const self = this;
     setTimeout(function () {
-      if(self.child && self.child.getNodeById(1)) {
+      if (self.child && self.child.getNodeById(1)) {
         const node = self.child.getNodeById(1);
         node.expand();
         node.setActiveAndVisible(true);
       }
-      console.log(self.tree)
-    }, 10)
+      console.log(self.tree);
+    }, 10);
   }
 
   private getExpandTreeForUpdates(data, obj) {
@@ -163,50 +272,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     data.children.forEach(function (value) {
       if (value.isExpanded || value.isSelected)
         self.getExpandTreeForUpdates(value, obj);
-    });
-  }
-
-  loadAgents(status) {
-    if (status) {
-      this.agentsFilters.filter.state = status;
-    }
-    let self = this;
-    let obj = {
-      folders: [],
-      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
-    };
-
-    this.agentClusters = [];
-    this.loading = true;
-    this.tree.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
-    });
-    this.getAgentClassList(obj, null);
-  }
-
-  loadAgentsV(data, type) {
-     let self = this;
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: data.path, recursive: type}],
-      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
-    };
-    let result: any;
-    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res) => {
-      result = res;
-      data.agentClusters = result.agentClusters;
-      data.agentClusters.forEach(function (value) {
-        value.path1 = data.path;
-        self.agentClusters.push(value);
-      });
-      this.loading = false;
-
-    }, () => {
-      this.loading = false;
-
     });
   }
 
@@ -233,73 +298,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     }, () => {
       this.loading = false;
     });
-  }
-
-
-  expandNode(node): void {
-    this.agentClusters = [];
-    this.loading = true;
-
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
-      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
-      compact: true
-    };
-    this.getAgentClassList(obj, node);
-  }
-
-  getAgents(data) {
-    data.isSelected = true;
-    this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: false}],
-      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
-    };
-
-    this.getAgentClassList(obj, null);
-  }
-
-  /** ---------------------------- Action ----------------------------------*/
-
-  sortBy(propertyName) {
-    this.agentsFilters.reverse = !this.agentsFilters.reverse;
-    this.agentsFilters.filter.sortBy = propertyName;
-  }
-
-  expandDetails() {
-    this.agentClusters.forEach(function (value) {
-      value.show = true;
-    });
-  }
-
-  collapseDetails() {
-    this.agentClusters.forEach(function (value) {
-      value.show = false;
-    });
-  }
-
-
-  showAgents(cluster) {
-    cluster.show = true;
-  }
-
-  hideAgents(cluster) {
-    cluster.show = false;
-  }
-
-  /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
-    this.pageView = $event;
-  }
-
-  receiveAction($event) {
-    if ($event.action === 'NODE')
-      this.getAgents($event.data);
-    else
-      this.expandNode($event)
   }
 
 }

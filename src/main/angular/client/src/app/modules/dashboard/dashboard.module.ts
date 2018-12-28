@@ -1,7 +1,8 @@
 import {NgModule} from '@angular/core';
 import {GridsterModule} from 'angular-gridster2';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
-import {DashboardComponent, AddWidgetModal} from './dashboard.component';
+import {DashboardRoutingModule} from './dashboard-routing.module';
+import {DashboardComponent, AddWidgetModalComponent} from './dashboard.component';
 import {TaskOverviewComponent} from './task-overview/task-overview.component';
 import {TaskSummaryComponent} from './task-summary/task-summary.component';
 import {OrderSummaryComponent} from './order-summary/order-summary.component';
@@ -13,14 +14,15 @@ import {AgentStatusComponent} from './agent-status/agent-status.component';
 import {AgentRunningTaskComponent} from './agent-running-task/agent-running-task.component';
 import {MasterClusterComponent} from './master-cluster/master-cluster.component';
 import {SchedulerInstanceComponent} from './scheduler-instance/scheduler-instance.component';
-import {ActionComponent, CommentModal} from './action/action.component';
-import {SharedModule} from "../shared/shared.module";
+import {ActionComponent, CommentModalComponent} from './action/action.component';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
     NgxChartsModule,
     GridsterModule,
-    SharedModule
+    SharedModule,
+    DashboardRoutingModule
   ],
   declarations: [
     DashboardComponent,
@@ -36,12 +38,12 @@ import {SharedModule} from "../shared/shared.module";
     MasterClusterComponent,
     SchedulerInstanceComponent,
     ActionComponent,
-    CommentModal,
-    AddWidgetModal
+    CommentModalComponent,
+    AddWidgetModalComponent
   ],
   entryComponents: [
-    CommentModal,
-    AddWidgetModal
+    CommentModalComponent,
+    AddWidgetModalComponent
   ],
 })
 export class DashboardModule {
