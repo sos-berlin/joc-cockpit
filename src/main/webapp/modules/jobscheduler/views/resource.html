@@ -460,15 +460,15 @@
                         </button>
                     </div>
                     <div class="inline pull-right search-filed-w">
-                        <div  ng-if="resourceFilters.state == 'agent'">
+                        <div style="display: inline-table" ng-if="resourceFilters.state == 'agent'">
                             <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="agentsFilters.searchText">
                             <i ng-if="agentsFilters.searchText" class="fa fa-times search-close" ng-click="agentsFilters.searchText = ''"></i>
                         </div>
-                        <div ng-if="resourceFilters.state == 'processClass'">
+                        <div style="display: inline-table" ng-if="resourceFilters.state == 'processClass'">
                             <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="processFilters.searchText">
                             <i ng-if="processFilters.searchText" class="fa fa-times search-close" ng-click="processFilters.searchText = ''"></i>
                         </div>
-                        <div ng-if="resourceFilters.state == 'schedules'">
+                        <div style="display: inline-table" ng-if="resourceFilters.state == 'schedules'">
                             <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="scheduleFilters.searchText">
                             <i ng-if="scheduleFilters.searchText" class="fa fa-times search-close" ng-click="scheduleFilters.searchText = ''"></i>
                         </div>
@@ -481,7 +481,7 @@
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                         <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
                     </button>
-                    <div class="pull-right" style="width: 180px">
+                    <div class="pull-right search-box-field">
                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="agentJobExecutionFilters.searchText">
                         <i ng-if="agentJobExecutionFilters.searchText" class="fa fa-times search-close" ng-click="agentJobExecutionFilters.searchText = ''"></i>
                     </div>
@@ -493,25 +493,25 @@
                      <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancelEventSearch()" ng-if="showSearchEventPanel">
                          <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
                      </button>
-                     <div class="pull-right" style="width: 180px">
+                     <div class="pull-right search-box-field">
                          <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="eventFilters.searchText">
                          <i ng-if="eventFilters.searchText" class="fa fa-times search-close" ng-click="eventFilters.searchText = ''"></i>
                      </div>
                 </div>
                 <div ng-if="resourceFilters.state == 'documentations'">
-                     <div class="pull-right" style="width: 180px">
+                     <div class="pull-right search-box-field">
                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="documentFilters.searchText">
                         <i ng-if="documentFilters.searchText" class="fa fa-times search-close" ng-click="documentFilters.searchText = ''"></i>
                     </div>
                 </div>
                 <div ng-if="resourceFilters.state == 'locks'">
-                    <div class="pull-right" style="width: 180px">
+                    <div class="pull-right search-box-field">
                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="locksFilters.searchText">
                         <i ng-if="locksFilters.searchText" class="fa fa-times search-close" ng-click="locksFilters.searchText = ''"></i>
                     </div>
                 </div>
                 <div ng-if="resourceFilters.state == 'calendars'">
-                    <div class="pull-right" style="width: 180px" >
+                    <div class="pull-right search-box-field">
                         <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="calendarFilters.searchText">
                         <i ng-if="calendarFilters.searchText" class="fa fa-times search-close" ng-click="calendarFilters.searchText = ''"></i>
                     </div>

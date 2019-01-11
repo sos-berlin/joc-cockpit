@@ -138,9 +138,11 @@
                 <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
-                <div class="pull-right hide" ng-class="{'show-block': pageView=='list'}" style="width: 180px">
-                    <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="dailyPlanFilters.searchText" >
-                    <i ng-if="dailyPlanFilters.searchText" class="fa fa-times search-close" ng-click="dailyPlanFilters.searchText = ''"></i>
+                <div class="pull-right hide" ng-class="{'show-block': pageView=='list'}">
+                    <div class="search-box-field">
+                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="dailyPlanFilters.searchText" >
+                        <i ng-if="dailyPlanFilters.searchText" class="fa fa-times search-close" ng-click="dailyPlanFilters.searchText = ''"></i>
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,6 +22,7 @@
         tabs._jobChain.searchText = '';
         tabs._jobChain.selectedView = true;
         tabs._jobChain.showHistoryPanel = undefined;
+        tabs._jobChain.historyPanelState = {};
 
         tabs._job = {};
         tabs._job.filter = {};
@@ -132,7 +133,6 @@
         tabs._yadeDetail.currentPage = '1';
         tabs._yadeDetail.pageView = 'grid';
         tabs._yadeDetail.showErrorNodes = true;
-        tabs._yadeDetail.fitToScreen = false;
 
         tabs._auditLog = {};
         tabs._auditLog.filter = {};
@@ -220,6 +220,7 @@
         tempTabs._jobChain.searchText = '';
         tempTabs._jobChain.selectedView = true;
         tempTabs._jobChain.showHistoryPanel = undefined;
+        tempTabs._jobChain.historyPanelState = {};
 
         tempTabs._job = {};
         tempTabs._job.filter = {};
