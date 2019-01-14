@@ -343,7 +343,6 @@
                     scope.borderTop = 1;
                     var orderLeft = left;
 
-
                     if (scope.jobChainData.fileOrderSources && scope.jobChainData.fileOrderSources.length > 0) {
                         orderLeft = margin + avatarW;
                         rectangleTemplate = rectangleTemplate +
@@ -1028,16 +1027,33 @@
                                     width = div1.offsetLeft - left;
                                     createLine(top, left, width, 2, index, item);
                                 } else {
-                                    var parallels = 0;
+                                    let parallels = 0;
+                                    let flag = false;
                                     angular.forEach(vm.coords, function (obj) {
                                         if (obj.actual == item.name) {
                                             parallels = obj.parallels;
+                                        } else if ((item.nextNode === obj.actual) && (item.name === obj.next)) {
+                                            flag = true;
                                         }
                                     });
-                                  if (!(vm.jobChainData.nodes.length - 1 > index && parallels > 0)) {
-                                    createLine(div2.offsetTop + div2.clientHeight / 2, div1.offsetLeft + div1.clientWidth + vm.border,
-                                      div2.offsetLeft - div1.offsetLeft - div1.clientWidth, 2, index, item);
-                                  }
+                                    if (!(vm.jobChainData.nodes.length - 1 > index && parallels > 0)) {
+                                        let _top = div2.offsetTop + div2.clientHeight / 2,
+                                            _left = div1.offsetLeft + div1.clientWidth + vm.border, _width = 0,
+                                            _height = 2, reverse =false;
+                                        if (!flag) {
+                                            _width = div2.offsetLeft - div1.offsetLeft - div1.clientWidth;
+                                        } else {
+                                            if (div2.offsetLeft > div1.offsetLeft) {
+                                                _width = div2.offsetLeft - div1.offsetLeft - div1.clientWidth;
+                                            } else {
+                                                _top = _top + 15;
+                                                _left = div2.offsetLeft + div2.clientWidth + vm.border;
+                                                _width = div1.offsetLeft - div2.offsetLeft - div1.clientWidth;
+                                                reverse = true;
+                                            }
+                                        }
+                                        createLine(_top, _left, _width, _height, index, item, reverse);
+                                    }
                                 }
                             }
 
@@ -1071,8 +1087,6 @@
                                     width = errNode.offsetLeft - left;
                                     top = top + (height > 0 ? height : 0 );
                                     createErrorLine(top, left, width, 2,index, item);
-
-
                                 } else {
                                     var node1 = div1;
                                     var node2 = errNode;
@@ -1127,63 +1141,68 @@
                             }
                         });
 
-                        function createLine(top, left, width, height, index, item) {
+                        function createLine(top, left, width, height, index, item, reverse) {
                             let errorLinkCls = '';
-                            if(vm.jobChainData.endNodes && vm.jobChainData.endNodes.length){
-                                angular.forEach(vm.jobChainData.endNodes,function(val){
-                                   if(val.name == item.errorNode && (item.nextNode == val.name)){
-                                       errorLinkCls = 'error-link1';
-                                   }
+                            if (vm.jobChainData.endNodes && vm.jobChainData.endNodes.length) {
+                                angular.forEach(vm.jobChainData.endNodes, function (val) {
+                                    if (val.name == item.errorNode && (item.nextNode == val.name)) {
+                                        errorLinkCls = 'error-link1';
+                                    }
                                 });
                             }
                             var node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link ' + errorLinkCls + (index > 0 && item.isErrorNode && vm.jobChainData.nodes[(index - 1)].nextNode !== item.name ? ' error-node' : ''));
                             if (height == 2) {
-                                node.setAttribute('ng-style', '{"height":(fitToScreen?4:2)+"px"}');
+                                node.setAttribute('ng-style', '{"height":(fitToScreen ? 4 : 2)+"px"}');
                             } else {
-                                node.setAttribute('ng-style', '{"width":(fitToScreen?4:2)+"px"}');
+                                node.setAttribute('ng-style', '{"width":(fitToScreen ? 4 : 2)+"px"}');
                             }
                             node.style['top'] = top + 'px';
                             node.style['left'] = left + 'px';
                             node.style['width'] = width + 'px';
                             node.style['height'] = height + 'px';
 
-                                if (item.onError == "setback") {
-                                    if ((width == 40) || height == 25) {
-                                        if (height > width) {
-                                            node.style['border-left'] = '2px dotted #a5a5a5';
-                                        } else {
-                                            node.style['border-top'] = '2px dotted #a5a5a5';
-                                        }
-                                        node.style['background'] = 'transparent';
+                            if (item.onError == "setback") {
+                                if ((width == 40) || height == 25) {
+                                    if (height > width) {
+                                        node.style['border-left'] = '2px dotted #a5a5a5';
                                     } else {
-                                        var i = document.createElement('i');
-                                        i.style['position'] = 'absolute';
-                                        i.style['margin-top'] = '-11px';
-                                        i.style['font-size'] = '22px';
-                                        i.style['color'] = '#a5a5a5';
-
-                                        if (width > height) {
-                                            i.style['left'] = width - 7 + 'px';
-                                            i.setAttribute('class', 'fa fa-angle-right');
-                                        }else if(!width){
-                                             i.style['left'] = left + 'px';
-                                             i.setAttribute('class', 'fa fa-angle-right');
-                                        }
-                                        node.appendChild(i);
+                                        node.style['border-top'] = '2px dotted #a5a5a5';
                                     }
+                                    node.style['background'] = 'transparent';
                                 } else {
+                                    var i = document.createElement('i');
+                                    i.style['position'] = 'absolute';
+                                    i.style['margin-top'] = '-11px';
+                                    i.style['font-size'] = '22px';
+                                    i.style['color'] = '#a5a5a5';
+
                                     if (width > height) {
-                                        let i = document.createElement('i');
-                                        i.style['font-size'] = '22px';
-                                        i.style['color'] = '#a5a5a5';
-                                        i.style['position'] = 'absolute';
-                                        i.style['margin-top'] = '-11px';
                                         i.style['left'] = width - 7 + 'px';
                                         i.setAttribute('class', 'fa fa-angle-right');
-                                        node.appendChild(i);
+                                    } else if (!width) {
+                                        i.style['left'] = left + 'px';
+                                        i.setAttribute('class', 'fa fa-angle-right');
                                     }
+                                    node.appendChild(i);
                                 }
+                            } else {
+                                if (width > height) {
+                                    let i = document.createElement('i');
+                                    i.style['font-size'] = '22px';
+                                    i.style['color'] = '#a5a5a5';
+                                    i.style['position'] = 'absolute';
+                                    i.style['margin-top'] = '-11px';
+                                    if (reverse) {
+                                        i.style['left'] = '0px';
+                                        i.setAttribute('class', 'fa fa-angle-left');
+                                    } else {
+                                        i.style['left'] = width - 7 + 'px';
+                                        i.setAttribute('class', 'fa fa-angle-right');
+                                    }
+                                    node.appendChild(i);
+                                }
+                            }
 
                             mainContainer.appendChild(node);
                             $compile(node)(vm);
@@ -1192,7 +1211,7 @@
                         function createErrorLine(top, left, width, height,index,item) {
                             let errorLinkCls = '';
                             if(vm.jobChainData.endNodes && vm.jobChainData.endNodes.length){
-                                angular.forEach(vm.jobChainData.endNodes,function(val, index){
+                                angular.forEach(vm.jobChainData.endNodes,function(val){
                                    if(val.name == item.errorNode){
                                        errorLinkCls = 'error-link1';
                                    }

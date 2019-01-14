@@ -252,7 +252,7 @@
         function getFilteredData(flag) {
             let tempArr = [];
             vm.reset();
-            if (vm.jobChainFilters.searchText && vm.jobChainFilters.searchText != '' && !flag) {
+            if (vm.jobChainFilters.searchText && vm.jobChainFilters.searchText !== '' && !flag) {
                 tempArr = $filter('filter')(vm.allJobChains, {path: vm.jobChainFilters.searchText}, false);
                 let tempArr1 = $filter('filter')(vm.allJobChains, {nodes: {$: vm.jobChainFilters.searchText}}, false);
                 if (tempArr1.length > 0) {
@@ -511,10 +511,12 @@
                     vm.allJobChains[i].path1 = vm.allJobChains[i].path.substring(0, vm.allJobChains[i].path.lastIndexOf('/')) || vm.allJobChains[i].path.substring(0, vm.allJobChains[i].path.lastIndexOf('/') + 1);
                     jobChainPath.push({jobChain: vm.allJobChains[i].path});
                 }
-                if (res.jobChains && res.jobChains.length > 0)
+                if (res.jobChains && res.jobChains.length > 0) {
                     mergePermanentRes(jobChainPath, obj, data);
+                }else{
+                    getFilteredData();
+                }
                 vm.loading = false;
-                getFilteredData();
                 updatePanelHeight();
             }, function () {
                 vm.loading = false;
@@ -802,8 +804,8 @@
 
                 updateTreeData(expandNode, treeUpdate);
                 if (treeUpdate) {
-                    angular.forEach(vm.allJobChains, function (jobChain, x) {
-                        if (jobChain.show && vm.userPreferences.showTasks) {
+                    for(let x =0; x < vm.allJobChains.length; x++) {
+                        if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
                             angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
                                 if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                     JobService.get({
@@ -817,8 +819,9 @@
                                 }
                             });
                         }
-                    });
+                    }
                 }
+
                 updatePanelHeight();
             }, function () {
                 updateTreeData(expandNode, treeUpdate);
@@ -2882,6 +2885,7 @@
             obj.orders = [{
                 jobChain: jobChain.path
             }];
+
             if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
 
                 obj = vm.taskHistoryRequestObj;
@@ -3457,10 +3461,10 @@
             })
         }
 
-        function getFilteredData() {
+        function getFilteredData(flag) {
             let tempArr = [];
             vm.reset();
-            if (vm.jobFilters.searchText) {
+            if (vm.jobFilters.searchText && vm.jobFilters.searchText !== '' && !flag) {
                 tempArr = $filter('filter')(vm.allJobs, {path: vm.jobFilters.searchText}, false);
             } else {
                 tempArr = vm.allJobs;
@@ -3967,7 +3971,9 @@
                 } else {
                     vm.allJobs = res.jobs;
                 }
-
+                if(!expandNode && treeUpdate) {
+                    getFilteredData();
+                }
                 updateTreeData(expandNode, treeUpdate);
             }, function () {
                 updateTreeData(expandNode, treeUpdate);
@@ -4085,7 +4091,7 @@
                 }
                 vm.allJobs = result.jobs;
 
-                getFilteredData();
+                getFilteredData(true);
                 vm.loading = false;
                 vm.isLoaded = true;
                 volatileInformation(obj, null, true);
