@@ -32,6 +32,8 @@ declare const mxEventObject;
 declare const X2JS;
 declare const $;
 
+const x2js = new X2JS();
+
 @Component({
   selector: 'app-joe',
   templateUrl: './joe.component.html',
@@ -69,41 +71,13 @@ export class JoeComponent implements OnInit, OnDestroy {
     JoeComponent.setGraphHt();
     let json: any = {};
     this.coreService.get('workflow.json').subscribe((data) => {
-      if (sessionStorage.$SOS$WORKFLOW && !_.isEmpty(sessionStorage.$SOS$WORKFLOW) && JSON.parse(sessionStorage.$SOS$WORKFLOW)) {
-        let _json = JSON.parse(sessionStorage.$SOS$WORKFLOW);
-        this.appendIdInJson(_json);
-        this.count = 2;
-        json = _json;
-        let mxJson = {
-          mxGraphModel: {
-            root: {
-              mxCell: [
-                {_id: '0'},
-                {
-                  _id: '1',
-                  _parent: '0'
-                }
-              ]
-            }
-          }
-        };
-        this.jsonParser(json, mxJson.mxGraphModel.root, '', '');
-        data = mxJson;
-      }
-      const x2js = new X2JS();
       this.xmlTest = x2js.json2xml_str(data);
     });
   }
 
-  clearWorkflow() {
-    sessionStorage.removeItem('$SOS$WORKFLOW');
-  }
 
   ngOnDestroy() {
     // this.xmlToJsonParser();
-    if (!_.isEmpty(this.json)) {
-      sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.json);
-    }
     try {
       if (this.editor) {
         mxEvent.removeAllListeners(this.editor.graph);
@@ -155,7 +129,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         mxObjectCodec.allowEval = true;
-        let node = mxUtils.load(config).getDocumentElement();
+        const node = mxUtils.load(config).getDocumentElement();
         editor = new mxEditor(node);
         this.editor = editor;
 
@@ -305,7 +279,8 @@ export class JoeComponent implements OnInit, OnDestroy {
           obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
           obj.mxCell._style = 'rounded';
           if (parentId) {
-            obj.mxCell._parent = parentId;
+            obj.mxCell._parent = _.clone(parentId);
+            parentId = '';
           }
           obj.mxCell.mxGeometry._width = '200';
           obj.mxCell.mxGeometry._height = '50';
@@ -1020,7 +995,6 @@ export class JoeComponent implements OnInit, OnDestroy {
       const enc = new mxCodec();
       const node = enc.encode(_graph.getModel());
       const xml = mxUtils.getXml(node);
-      const x2js = new X2JS();
       let _json: any;
       try {
         _json = x2js.xml_str2json(xml);
@@ -2538,7 +2512,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                   if (attrs) {
                     for (let j = 0; j < attrs.length; j++) {
                       if (attrs[j].nodeName === 'label') {
-                        _label = attrs[j].nodeValue;
+                        _label = '';
                       } else if (attrs[j].nodeName === 'type') {
                         _type = attrs[j].nodeValue;
                       }
@@ -2549,7 +2523,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
             }
           }
-          if (_sour && (_tar || _targetNode)) {
+          if (_sour && (_tar || !_.isEmpty(_targetNode))) {
             if (!_tar) {
               _tar = _targetNode;
             }
@@ -2643,13 +2617,12 @@ export class JoeComponent implements OnInit, OnDestroy {
      */
     mxUndoManager.prototype.undoableEditHappened = function (undoableEdit) {
       if (isUndoable) {
-        // console.log(this.indexOfNextAdd + ' this.indexOfNextAdd');
         if (this.history.length === 10) {
           this.history.shift();
         }
-        const enc = new mxCodec();
-        const nodeModel = enc.encode(graph.getModel());
-        const xml = mxUtils.getXml(nodeModel);
+        const _enc = new mxCodec();
+        const _nodeModel = _enc.encode(graph.getModel());
+        const xml = mxUtils.getXml(_nodeModel);
         this.history.push(xml);
         this.indexOfNextAdd = this.history.length;
         isUndoable = false;
@@ -2664,17 +2637,16 @@ export class JoeComponent implements OnInit, OnDestroy {
     mxUndoManager.prototype.undo = function () {
       if (this.indexOfNextAdd > 0) {
         const xml = this.history[--this.indexOfNextAdd];
-        // console.log(this.indexOfNextAdd + ' undo');
         const parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
         try {
           const _doc = mxUtils.parseXml(xml);
           const dec = new mxCodec(_doc);
-          let model = dec.decode(_doc.documentElement);
+          const model = dec.decode(_doc.documentElement);
           isProgrammaticallyDelete = true;
           // Removes all cells which are not in the response
           for (let key in graph.getModel().cells) {
-            let tmp = graph.getModel().getCell(key);
+            const tmp = graph.getModel().getCell(key);
             if (graph.getModel().isVertex(tmp)) {
               graph.removeCells([tmp]);
             }
@@ -2684,9 +2656,11 @@ export class JoeComponent implements OnInit, OnDestroy {
         } finally {
           graph.getModel().endUpdate();
         }
+        if (this.indexOfNextAdd < this.history.length) {
+          $('#redoBtn').prop('disabled', false);
+        }
       } else {
         $('#undoBtn').prop('disabled', true);
-        $('#redoBtn').prop('disabled', false);
       }
     };
 
@@ -2705,10 +2679,10 @@ export class JoeComponent implements OnInit, OnDestroy {
           const _doc = mxUtils.parseXml(xml);
           const dec = new mxCodec(_doc);
           isProgrammaticallyDelete = true;
-          let model = dec.decode(_doc.documentElement);
+          const model = dec.decode(_doc.documentElement);
           // Removes all cells which are not in the response
           for (let key in graph.getModel().cells) {
-            let tmp = graph.getModel().getCell(key);
+            const tmp = graph.getModel().getCell(key);
             if (graph.getModel().isVertex(tmp)) {
               graph.removeCells([tmp]);
             }
@@ -2718,8 +2692,10 @@ export class JoeComponent implements OnInit, OnDestroy {
         } finally {
           graph.getModel().endUpdate();
         }
+        if (this.indexOfNextAdd > 0) {
+          $('#undoBtn').prop('disabled', false);
+        }
       } else {
-        $('#undoBtn').prop('disabled', false);
         $('#redoBtn').prop('disabled', true);
       }
     };
@@ -2744,14 +2720,11 @@ export class JoeComponent implements OnInit, OnDestroy {
       let isCollapsed = this.graph.isCellCollapsed(cell);
 
       let childCount = model.getChildCount(cell);
-      console.log(cell.value.tagName, 'isCollapsed ' + isCollapsed + ' >>>> ' + childCount);
       for (let i = 0; i < childCount; i++) {
         let child = model.getChildAt(cell, i);
         if (this.isPort(child)) {
-          console.log('if...');
           edges = edges.concat(model.getEdges(child, true, true));
         } else if (isCollapsed || !this.graph.isCellVisible(child)) {
-          console.log('else...');
           edges = edges.concat(model.getEdges(child, true, true));
         }
       }
@@ -2761,10 +2734,10 @@ export class JoeComponent implements OnInit, OnDestroy {
       for (let i = 0; i < edges.length; i++) {
         let source = this.getVisibleTerminal(edges[i], true);
         let target = this.getVisibleTerminal(edges[i], false);
-        if ((source == target) ||
-          ((source != target) &&
-            ((target == cell && (this.parent == null || this.isAncestor(this.parent, source, this.traverseAncestors))) ||
-              (source == cell && (this.parent == null || this.isAncestor(this.parent, target, this.traverseAncestors)))))) {
+        if ((source === target) ||
+          ((source !== target) &&
+            ((target === cell && (this.parent == null || this.isAncestor(this.parent, source, this.traverseAncestors))) ||
+              (source === cell && (this.parent == null || this.isAncestor(this.parent, target, this.traverseAncestors)))))) {
           result.push(edges[i]);
         }
       }
@@ -2792,7 +2765,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           graph.clearSelection();
           if (cells && cells.length > 0) {
             if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
-              const parent = graph.getDefaultParent();
+              const parent = cells[0].getParent() || graph.getDefaultParent();
               let v1, label = '', type = '', v2, v3;
               const attr = cell.value.attributes;
               if (attr) {
@@ -2935,7 +2908,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           type = 'branch';
         }
 
-        const parent = dropTarget.parent || graph.getDefaultParent();
+        const parent = cell.getParent() || graph.getDefaultParent();
         if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
           let v1, v2, v3, _label;
           if (cell.value.tagName === 'Fork') {
@@ -3134,7 +3107,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               if (cell.edges[i].target.value.tagName === checkLabel) {
                 const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'RetryEnd' ? 'retryEnd' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
                 if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry') {
-                  cell.edges[i].value.attributes[0].nodeValue = _label;
+                  cell.edges[i].value.attributes[0].nodeValue = '';
                   cell.edges[i].value.attributes[1].nodeValue = _label;
                 }
               }
@@ -3168,7 +3141,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       try {
         const label = new mxCellAttributeChange(
           cell, 'label',
-          data);
+          '');
         const type = new mxCellAttributeChange(
           cell, 'type',
           data);
@@ -3383,7 +3356,7 @@ export class JoeComponent implements OnInit, OnDestroy {
 
       mxEvent.addListener(input, 'keypress', function (evt) {
         // Needs to take shift into account for textareas
-        if (evt.keyCode == /*enter*/13 &&
+        if (evt.which == /*enter*/13 &&
           !mxEvent.isShiftDown(evt)) {
           input.blur();
         }
@@ -3419,8 +3392,7 @@ export class JoeComponent implements OnInit, OnDestroy {
 
       mxEvent.addListener(input, 'keypress', function (evt) {
         // Needs to take shift into account for textareas
-        if (evt.keyCode == /*enter*/13 &&
-          !mxEvent.isShiftDown(evt)) {
+        if (evt.which === /*enter*/13 && !mxEvent.isShiftDown(evt)) {
           input.blur();
         }
       });
@@ -3435,12 +3407,11 @@ export class JoeComponent implements OnInit, OnDestroy {
     const doc = mxUtils.parseXml(this.xmlTest);
     const codec = new mxCodec(doc);
     codec.decode(doc.documentElement, graph.getModel());
-    let vertices = graph.getChildVertices(graph.getDefaultParent());
+    const vertices = graph.getChildVertices(graph.getDefaultParent());
 
     graph.getModel().beginUpdate();
     try {
       for (let i = 0; i < vertices.length; i++) {
-        console.log(vertices[i]);
         if (vertices[i].value.tagName === 'Fork' || vertices[i].value.tagName === 'If' || vertices[i].value.tagName === 'Try' || vertices[i].value.tagName === 'Retry') {
           vertices[i].collapsed = true;
         }
@@ -3456,9 +3427,8 @@ export class JoeComponent implements OnInit, OnDestroy {
     executeLayout();
 
     makeCenter();
-    const enc = new mxCodec();
-    const nodeModel = enc.encode(graph.getModel());
-    console.log(mxUtils.getXml(nodeModel));
+
+   
 
     /**
      * Reload dummy xml
@@ -3467,24 +3437,33 @@ export class JoeComponent implements OnInit, OnDestroy {
       const _enc = new mxCodec();
       const _nodeModel = _enc.encode(graph.getModel());
       const xml = mxUtils.getXml(_nodeModel);
-      const x2js = new X2JS();
       let json = x2js.xml_str2json(xml);
       if (!json.mxGraphModel.root.Connector) {
-        self.nodeMap.clear();
-        mxUndoManager.prototype.clear();
         graph.getModel().beginUpdate();
+
         try {
-          const doc = mxUtils.parseXml(dummyXml);
-          const model = enc.decode(doc.documentElement);
           const parent = graph.getDefaultParent();
-          // Merges the old model with the dummy model
+          const _doc = mxUtils.parseXml(dummyXml);
+          const dec = new mxCodec(_doc);
+          const model = dec.decode(_doc.documentElement);
+          isProgrammaticallyDelete = true;
+          // Removes all cells which are not in the response
+          for (let key in graph.getModel().cells) {
+            const tmp = graph.getModel().getCell(key);
+            if (graph.getModel().isVertex(tmp)) {
+              graph.removeCells([tmp]);
+            }
+          }
+          isProgrammaticallyDelete = false;
           graph.getModel().mergeChildren(model.getRoot().getChildAt(0), parent);
         } finally {
           graph.getModel().endUpdate();
-          executeLayout();
+          const layout = new mxHierarchicalLayout(graph);
+          layout.execute(graph.getDefaultParent());
+          makeCenter();
         }
       }
-      makeCenter();
+
     }
 
     const mgr = new mxAutoSaveManager(graph);
@@ -3493,7 +3472,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         self.xmlToJsonParser();
         if (self.json && self.json.instructions && self.json.instructions.length > 0) {
           graph.setEnabled(true);
-        } else if (self.json && self.json.instructions && self.json.instructions.length == 0) {
+        } else if (self.json && self.json.instructions && self.json.instructions.length === 0) {
           graph.setEnabled(false);
           reloadDummyXml(self.xmlTest);
         }

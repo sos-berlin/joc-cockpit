@@ -39,13 +39,7 @@
                 <img *ngIf="isPropertyHide" src="./assets/mxgraph/images/format-hide.png">
                 <img *ngIf="!isPropertyHide" src="./assets/mxgraph/images/format-show.png">
               </button>
-              <button class="btn btn-grey btn-sm" (click)="toggleView()">
-                <i *ngIf="view=='list'" class="fa fa-bars"></i>
-                <i *ngIf="view=='grid'" class="fa fa-th-large"></i>
-              </button>
-              <button class="btn btn-grey btn-sm m-l-sm" (click)="clearWorkflow()">
-                <i class="fa fa-refresh"></i> Reload
-              </button>
+            
             </div>
             <div id="zoomActions" class="inline" [hidden]="view !== 'grid'"></div>
             <div id="mainActions" class="inline" [hidden]="view !== 'grid'"></div>
