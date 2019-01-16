@@ -879,8 +879,6 @@ dp-day-calendar .dp-day-calendar-container, dp-month-calendar .dp-month-calendar
 	background-color: #46525f !important;
 }
 
-
-
 dp-day-calendar.dp-material .dp-calendar-day,  dp-day-calendar.dp-material .dp-calendar-month, dp-day-calendar.dp-material .dp-calendar-year{
 	background-color: #46525f !important;
 }
@@ -912,4 +910,7 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 
 .dp-calendar-weekday {
 	color: orange !important;
+}
+#graph {
+  background-color: #46525f !important;
 }

@@ -1250,5 +1250,7 @@
   "message.uniqueError": "Name is already taken",
   "message.validDate": "'Valid from' must be older than 'Valid to'",
   "message.validFromError": "'Valid from' is required ",
-  "message.validToError": "'Valid to' is required"
+  "message.validToError": "'Valid to' is required",
+  "label.properties" : "Properties",
+  "label.invalidTarget" : "Invalid Target"
 }

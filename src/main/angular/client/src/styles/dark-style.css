@@ -859,7 +859,6 @@ gridster-item {
   background-color: #1d1d1c !important;
   box-sizing: border-box;
   position: absolute;
-  overflow: hidden;
   transition: .3s;
   display: none;
   user-select: text;
@@ -882,8 +881,6 @@ gridster-item {
 dp-day-calendar .dp-day-calendar-container, dp-month-calendar .dp-month-calendar-container, dp-year-calendar .dp-year-calendar-container {
 	background-color: #1d1d1c !important;
 }
-
-
 
 dp-day-calendar.dp-material .dp-calendar-day,  dp-day-calendar.dp-material .dp-calendar-month, dp-day-calendar.dp-material .dp-calendar-year{
 	background-color: #1d1d1c !important;
@@ -916,4 +913,7 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 
 .dp-calendar-weekday {
 	color: #1395BE !important;
+}
+#graph {
+  background-color: #1d1d1c !important;
 }

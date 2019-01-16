@@ -1,0 +1,249 @@
+<mxEditor defaultGroup="group" defaultEdge="connector">
+  <include name="./assets/mxgraph/config/editor-commons.xml"/>
+  <ui>
+    <add as="graph" element="graph"/>
+    <add as="toolbar" element="toolbar"/>
+  </ui>
+  <Array as="templates">
+    <add as="group">
+      <Group label="Cluster">
+        <mxCell vertex="1" style="group" connectable="0"/>
+      </Group>
+    </add>
+    <add as="connector">
+      <Connector label="" type="">
+        <mxCell edge="1">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+      </Connector>
+    </add>
+    <add as="container">
+      <Container label="Container">
+        <mxCell vertex="1" style="swimlane" connectable="0">
+          <mxGeometry as="geometry" width="200" height="200"/>
+        </mxCell>
+      </Container>
+    </add>
+    <add as="rectangle">
+      <Rect label="rectangle">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="120" height="60"/>
+        </mxCell>
+      </Rect>
+    </add>
+    <add as="rounded">
+      <Job path="/Job" title="" agent="">
+        <mxCell vertex="1" style="rounded">
+          <mxGeometry as="geometry" width="200" height="50"/>
+        </mxCell>
+      </Job>
+    </add>
+    <add as="If">
+      <If predicate="returnCode > 0">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="150" height="70"/>
+        </mxCell>
+      </If>
+    </add>
+    <add as="Retry">
+      <Retry repeat="10" delay="0">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="180" height="70"/>
+        </mxCell>
+      </Retry>
+    </add>
+    <add as="Exit">
+      <Exit label="Exit" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="60" height="60"/>
+        </mxCell>
+      </Exit>
+    </add>
+    <add as="Fork">
+      <Fork label="Fork">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Fork>
+    </add>
+    <add as="Await">
+      <Await label="Await">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Await>
+    </add>
+    <add as="Try">
+      <Try label="Try">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="90" height="70"/>
+        </mxCell>
+      </Try>
+    </add>
+    <add as="symbol">
+      <Symbol label="Instruction" description="">
+        <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Symbol>
+    </add>
+  </Array>
+  <mxGraph as="graph" alternateEdgeStyle="verticalConnector" allowLoops="1" dropEnabled="1">
+    <add as="isAutoSizeCell"><![CDATA[
+			function(cell)
+			{
+				return mxUtils.isNode(this.model.getValue(cell), 'text');
+			}
+		]]></add>
+    <add as="isSwimlane"><![CDATA[
+			function (cell)
+			{
+				return mxUtils.isNode(this.model.getValue(cell), 'container');
+			}
+		]]></add>
+    <add as="getTooltipForCell"><![CDATA[
+			function(cell)
+			{
+				var label = cell.getAttribute('label');
+				var style = cell.getStyle();
+
+				return ((label != null) ? ('<b>' + label +
+						'</b> : '') +
+						'Connections: ' + cell.getEdgeCount()+
+						'<br>Children: ' + cell.getChildCount();
+			}
+		]]></add>
+    <add as="convertValueToString"><![CDATA[
+			function(cell)
+			{
+				return cell.getAttribute('label');
+			}
+		]]></add>
+    <mxStylesheet as="stylesheet">
+      <add as="text">
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="top"/>
+        <add as="shadow" value="0"/>
+        <add as="strokeColor" value="none"/>
+        <add as="fillColor" value="transparent"/>
+        <add as="gradientColor" value="none"/>
+      </add>
+      <add as="defaultVertex" extend="text">
+        <add as="shape" value="rectangle"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="middle"/>
+        <add as="shadow" value="1"/>
+        <add as="strokeColor" value="#fff"/>
+        <add as="fillColor" value="#333"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+      <add as="group">
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="middle"/>
+        <add as="strokeColor" value="#fff"/>
+        <add as="dashed" value="1"/>
+      </add>
+      <add as="defaultEdge">
+        <add as="shape" value="connector"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="center"/>
+        <add as="rounded" value="1"/>
+        <add as="labelBackgroundColor" value="#333"/>
+        <add as="strokeColor" value="#fff"/>
+        <add as="strokeWidth" value="1"/>
+        <add as="edgeStyle" value="elbowEdgeStyle"/>
+        <add as="endArrow" value="classic"/>
+      </add>
+      <add as="verticalConnector">
+        <add as="elbow" value="vertical"/>
+      </add>
+      <add as="straightConnector">
+        <add as="shape" value="connector"/>
+        <add as="endArrow" value="classic"/>
+        <add as="edgeStyle">null</add>
+      </add>
+      <add as="arrowConnector">
+        <add as="shape" value="arrow"/>
+        <add as="fillColor" value="#fff"/>
+        <add as="endSize" value="20"/>
+        <remove as="edgeStyle"/>
+      </add>
+      <add as="swimlane">
+        <add as="shape" value="swimlane"/>
+        <add as="shadow" value="0"/>
+        <add as="startSize" value="23"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="top"/>
+      </add>
+      <add as="rounded">
+        <add as="rounded" value="1"/>
+        <add as="shape" value="label"/>
+        <add as="image" value="./assets/mxgraph/images/job.png"/>
+        <add as="imageWidth" value="16"/>
+        <add as="imageHeight" value="16"/>
+      </add>
+      <add as="rectangle" extend="rhombus">
+				<add as="shape" value="rectangle"/>
+				<add as="perimeter" value="rectanglePerimeter"/>
+				<add as="align" value="center"/>
+			</add>
+      <add as="dashRectangle" extend="rhombus">
+				<add as="shape" value="rectangle"/>
+				<add as="perimeter" value="rectanglePerimeter"/>
+				<add as="align" value="center"/>
+				<add as="dashed" value="1"/>
+				<add as="shadow" value="0"/>
+				<add as="opacity" value="70"/>
+			</add>
+      <add as="ellipse">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="fillColor" value="transparent"/>
+      </add>
+      <add as="rhombus">
+        <add as="shape" value="rhombus"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+      </add>
+      <add as="symbol">
+        <add as="shape" value="image"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="labelBackgroundColor" value="#fff"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="top"/>
+        <add as="verticalLabelPosition" value="bottom"/>
+      </add>
+    </mxStylesheet>
+    <mxGraphModel as="model">
+      <root>
+        <mxCell id="0"/>
+        <mxCell parent="0"/>
+      </root>
+    </mxGraphModel>
+  </mxGraph>
+  <mxDefaultToolbar as="toolbar">
+    <add as="show" action="show" icon="./assets/mxgraph/images/preview.gif"/>
+    <hr/>
+    <add as="connect" mode="connect" icon="./assets/mxgraph/images/connect.gif"/>
+    <hr/>
+    <add as="Job" template="rounded" icon="./assets/mxgraph/images/rounded.gif"/>
+    <add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
+    <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png"
+         icon="./assets/mxgraph/images/symbols/small_timer.gif"/>
+    <add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png"
+         icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
+    <hr/>
+    <add as="Try" template="Try" style="rhombus" icon="./assets/mxgraph/images/symbols/small_triangle.gif"/>
+    <add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/small_inclusive.gif"/>
+    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png"
+         icon="./assets/mxgraph/images/symbols/small_fork.gif"/>
+  </mxDefaultToolbar>
+</mxEditor>

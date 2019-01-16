@@ -41,9 +41,10 @@ const x2js = new X2JS();
 })
 export class JoeComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
+  preferences: any = {};
   tree: any = [];
   isLoading = true;
-  view: string;
+  view: string = 'grid';
   editor: any;
   xmlTest: any;
   workFlows: any = [];
@@ -67,6 +68,9 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.init();
     JoeComponent.setGraphHt();
     let json: any = {};
@@ -91,7 +95,9 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   init() {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    this.view = JSON.parse(localStorage.views).joe || 'grid';
+    if (localStorage.views) {
+      this.view = JSON.parse(localStorage.views).joe;
+    }
 
     this.workFlows = [
       {id: 1, job: 'Job 1', path: '/test/test101/job1'},
@@ -115,7 +121,11 @@ export class JoeComponent implements OnInit, OnDestroy {
         }
       }, 5);
       this.isLoading = false;
-      this.createEditor('./assets/mxgraph/config/diagrameditor.xml');
+      if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
+        this.createEditor('./assets/mxgraph/config/diagrameditor.xml');
+      } else {
+        this.createEditor('./assets/mxgraph/config/diagrameditor-dark.xml');
+      }
     }, () => this.isLoading = false);
   }
 
@@ -550,12 +560,11 @@ export class JoeComponent implements OnInit, OnDestroy {
     } else {
       mxJson.Connection = [];
     }
-
     let obj: any = {
       _label: label === 'then' ? 'true' : label === 'else' ? 'false' : label,
       _type: label,
       mxCell: {
-        _parent: '1',
+        _parent: parentId ? parentId : '1',
         _source: source.id,
         _target: source.TYPE === 'ForkJoin' ? target.instructions[0].id : target.id,
         _edge: '1',
@@ -565,9 +574,6 @@ export class JoeComponent implements OnInit, OnDestroy {
         }
       }
     };
-    if (parentId) {
-      obj.mxCell._parent = parentId;
-    }
     mxJson.Connection.push(obj);
   }
 
@@ -1899,6 +1905,9 @@ export class JoeComponent implements OnInit, OnDestroy {
     mxHierarchicalLayout.prototype.fineTuning = true;
     mxHierarchicalLayout.prototype.disableEdgeStyle = true;
     mxConstants.DROP_TARGET_COLOR = 'green';
+    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
+      mxConstants.STYLE_FONTCOLOR = 'white';
+    }
 
     // Enables snapping waypoints to terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
@@ -1910,6 +1919,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     graph.constrainChildren = false;
     graph.extendParentsOnAdd = false;
     graph.extendParents = false;
+
 
     // Changes the zoom on mouseWheel events
     mxEvent.addMouseWheelListener(function (evt, up) {
@@ -1974,25 +1984,25 @@ export class JoeComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < buttons.length; i++) {
       let button = document.createElement('button');
-      let dom = document.createElement('img');
+      let dom = document.createElement('i');
       let icon: any;
       if (buttons[i] === 'undo') {
-        icon = './assets/mxgraph/images/undo.gif';
+        icon = 'fa fa-undo';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Undo');
         button.setAttribute('id', 'undoBtn');
       } else if (buttons[i] === 'redo') {
-        icon = './assets/mxgraph/images/redo.gif';
+        icon = 'fa fa-repeat';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Redo');
         button.setAttribute('id', 'redoBtn');
       } else if (buttons[i] === 'delete') {
-        icon = './assets/mxgraph/images/delete.gif';
+        icon = 'fa fa-times';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Delete');
       }
 
-      dom.setAttribute('src', icon);
+      dom.setAttribute('class', icon);
       button.appendChild(dom);
       mxUtils.write(button, '');
       const factory = function (name) {
@@ -2011,27 +2021,27 @@ export class JoeComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < zoomButtons.length; i++) {
       let button = document.createElement('button');
-      let dom = document.createElement('img');
+      let dom = document.createElement('i');
       let icon: any;
       if (zoomButtons[i] === 'zoomIn') {
-        icon = './assets/mxgraph/images/zoomin.gif';
+        icon = 'fa fa-search-plus';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('title', 'Zoom In');
       } else if (zoomButtons[i] === 'zoomOut') {
-        icon = './assets/mxgraph/images/zoomout.gif';
+        icon = 'fa fa-search-minus';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Zoom Out');
       } else if (zoomButtons[i] === 'actualSize') {
-        icon = './assets/mxgraph/images/zoomactual.gif';
+        icon = 'fa fa-search';
         button.setAttribute('class', 'btn btn-sm btn-grey');
         button.setAttribute('id', 'actual');
         button.setAttribute('title', 'Actual');
       } else if (zoomButtons[i] === 'fit') {
-        icon = './assets/mxgraph/images/zoom.gif';
+        icon = 'fa  fa-arrows-alt';
         button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
         button.setAttribute('title', 'Fit');
       }
-      dom.setAttribute('src', icon);
+      dom.setAttribute('class', icon);
       button.appendChild(dom);
       mxUtils.write(button, '');
       const factory = function (name) {
@@ -2291,16 +2301,20 @@ export class JoeComponent implements OnInit, OnDestroy {
       let flag = false;
       if (drpTargt) {
         if (drpTargt.value.tagName !== 'Connection') {
+          let title = '';
+          self.translate.get('label.invalidTarget').subscribe(translatedValue => {
+            title = translatedValue;
+          });
           if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Exit') {
             for (let i = 0; i < drpTargt.edges.length; i++) {
               if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                self.toasterService.pop('error', 'Invalid target!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
+                self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
                 return;
               }
             }
           } else if (drpTargt.value.tagName === 'If') {
             if (drpTargt.edges.length > 2) {
-              self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one condition');
+              self.toasterService.pop('error', title + '!!', 'Cannot have more than one condition');
               return;
             }
           } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf' || drpTargt.value.tagName === 'RetryEnd' ||
@@ -2308,7 +2322,7 @@ export class JoeComponent implements OnInit, OnDestroy {
             if (drpTargt.edges.length > 1) {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                  self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
+                  self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
                   return;
                 }
               }
@@ -2323,7 +2337,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
             }
             if (!flag1) {
-              self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
+              self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
               return;
             }
           } else if (drpTargt.value.tagName === 'Try') {
@@ -2336,7 +2350,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
             }
             if (!flag1) {
-              self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
+              self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
               return;
             }
           } else if (drpTargt.value.tagName === 'Catch') {
@@ -2349,7 +2363,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
             }
             if (!flag1) {
-              self.toasterService.pop('error', 'Invalid target!!', 'Cannot have more than one out going Edge');
+              self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
               return;
             }
           } else if (drpTargt.value.tagName === 'Process') {
@@ -2444,7 +2458,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                           _targetNode = _edges[x].target;
                         }
                       }
-                      // console.log(attrs[i].nodeValue + ' targetId >>>');
+
                       self.nodeMap.delete(attrs[i].nodeValue);
                       graph.removeCells([edges[j].target]);
                       flag = true;
@@ -2764,8 +2778,14 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (cell.value && cell.value.tagName === 'Connection') {
           graph.clearSelection();
           if (cells && cells.length > 0) {
+            if (cell.source) {
+              if (cell.getParent().id == '1' && cell.source.getParent().id != '1') {
+                cell.setParent(cell.source.getParent());
+              }
+            }
             if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
-              const parent = cells[0].getParent() || graph.getDefaultParent();
+              let parent = cell.getParent() || graph.getDefaultParent();
+
               let v1, label = '', type = '', v2, v3;
               const attr = cell.value.attributes;
               if (attr) {
@@ -2790,6 +2810,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                 graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cells[0], v2);
                 graph.insertEdge(parent, null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
                 graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
+
               }
               graph.insertEdge(parent, null, getConnectionNode(label, type), cell.source, cells[0]);
               if (cells[0].value.tagName !== 'Try') {
@@ -2797,7 +2818,13 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
               graph.insertEdge(parent, null, getConnectionNode('', ''), v1, cell.target);
               isProgrammaticallyDelete = true;
-              graph.getModel().remove(cell);
+              for (let x = 0; x < cell.source.edges.length; x++) {
+                if (cell.source.edges[x].id === cell.id) {
+                  cell.source.removeEdge(cell.source.edges[x], true);
+                  executeLayout();
+                  break;
+                }
+              }
               isProgrammaticallyDelete = false;
               setTimeout(() => {
                 graph.getModel().beginUpdate();
@@ -2908,7 +2935,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           type = 'branch';
         }
 
-        const parent = cell.getParent() || graph.getDefaultParent();
+        let parent = cell.getParent() || graph.getDefaultParent();
         if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
           let v1, v2, v3, _label;
           if (cell.value.tagName === 'Fork') {
@@ -2969,6 +2996,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         }
 
         if (dropTarget.value.tagName === 'Process') {
+          parent = graph.getDefaultParent();
           let flag = false;
           for (let i = 0; i < dropTarget.edges.length; i++) {
             if (dropTarget.edges[i].source.id !== dropTarget.id) {
@@ -3095,7 +3123,6 @@ export class JoeComponent implements OnInit, OnDestroy {
                 break;
               }
             }
-
             if (!flag && self.nodeMap.has(dropTarget.id)) {
               const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
               graph.insertEdge(parent, null, getConnectionNode(label, type), cell, target);
@@ -3300,17 +3327,22 @@ export class JoeComponent implements OnInit, OnDestroy {
       div.innerHTML = '';
 
       // Gets the selection cell
-      let cell = _graph.getSelectionCell();
-
+      const cell = _graph.getSelectionCell();
       if (cell == null) {
         mxUtils.writeln(div, 'Nothing selected.');
       } else {
+        if (cell.value.tagName === 'Fork') {
+          mxUtils.writeln(div, 'Nothing selected.');
+          return;
+        }
         const form = new mxForm('property-table');
         let attrs = cell.value.attributes;
         let flg1 = false, flg2 = false;
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
-            createTextField(_graph, form, cell, attrs[i]);
+            if (attrs[i].nodeName !== 'label') {
+              createTextField(_graph, form, cell, attrs[i]);
+            }
             if (attrs[i].nodeName === 'success') {
               flg1 = true;
             }
@@ -3409,16 +3441,6 @@ export class JoeComponent implements OnInit, OnDestroy {
     codec.decode(doc.documentElement, graph.getModel());
     const vertices = graph.getChildVertices(graph.getDefaultParent());
 
-    graph.getModel().beginUpdate();
-    try {
-      for (let i = 0; i < vertices.length; i++) {
-        if (vertices[i].value.tagName === 'Fork' || vertices[i].value.tagName === 'If' || vertices[i].value.tagName === 'Try' || vertices[i].value.tagName === 'Retry') {
-          vertices[i].collapsed = true;
-        }
-      }
-    } finally {
-      graph.getModel().endUpdate();
-    }
     if (vertices.length > 3) {
       graph.setEnabled(true);
     }

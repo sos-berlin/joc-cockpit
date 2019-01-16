@@ -24,8 +24,9 @@ export class CommentModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (sessionStorage.comments)
+    if (sessionStorage.comments) {
       this.messageList = JSON.parse(sessionStorage.comments);
+    }
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
@@ -41,7 +42,7 @@ export class CommentModalComponent implements OnInit {
     if (this.action === 'terminateAndRestartWithin' || this.action === 'terminateWithin' || this.action === 'reactivatePrimaryJobschedulerWithIn') {
       obj.timeout = result.timeout;
       let url = 'jobscheduler/terminate';
-      if (this.action == 'terminateAndRestartWithTimeout') {
+      if (this.action === 'terminateAndRestartWithTimeout') {
         url = 'jobscheduler/restart';
       }
       if (this.action === 'reactivatePrimaryJobschedulerWithIn') {
@@ -75,6 +76,9 @@ export class ActionComponent implements OnInit {
   preferences: any = {};
   schedulerIds: any;
 
+  constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
+  }
+
   static saveToFileSystem(res, obj) {
     let name = 'jobscheduler.' + obj.jobschedulerId + '.main.log';
     let fileType = 'application/octet-stream';
@@ -89,12 +93,10 @@ export class ActionComponent implements OnInit {
     saveAs(data, name);
   }
 
-  constructor(public modalService: NgbModal, private coreService: CoreService, private authService: AuthService) {
-  }
-
   ngOnInit() {
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     if (this.authService.scheduleIds) {
       this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     } else {
@@ -134,30 +136,6 @@ export class ActionComponent implements OnInit {
     } else {
       this.performAction(action, obj);
     }
-  }
-
-  private postCall(url, obj) {
-    this.coreService.post(url, obj).subscribe(() => {
-    });
-  }
-
-  private getTimeout(action, obj) {
-    let comments = {
-      radio: 'predefined'
-    };
-
-    const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.comments = comments;
-    modalRef.componentInstance.action = action;
-    modalRef.componentInstance.show = this.preferences.auditLog;
-    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')';
-    modalRef.componentInstance.obj = obj;
-
-    modalRef.result.then(() => {
-
-    }, (reason) => {
-      console.log('close...', reason);
-    });
   }
 
   performAction(action, obj): void {
@@ -204,4 +182,27 @@ export class ActionComponent implements OnInit {
     }
   }
 
+  private postCall(url, obj) {
+    this.coreService.post(url, obj).subscribe(() => {
+    });
+  }
+
+  private getTimeout(action, obj) {
+    let comments = {
+      radio: 'predefined'
+    };
+
+    const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.comments = comments;
+    modalRef.componentInstance.action = action;
+    modalRef.componentInstance.show = this.preferences.auditLog;
+    modalRef.componentInstance.jobScheduleID = obj.jobschedulerId + ' (' + obj.host + ':' + obj.port + ')';
+    modalRef.componentInstance.obj = obj;
+
+    modalRef.result.then(() => {
+
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
 }

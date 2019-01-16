@@ -74,9 +74,11 @@ export class TreeModalComponent implements OnInit, OnDestroy {
     this.recursive(actualData.folders[0], output[0].children);
     this.tree = output;
 
-    setTimeout(function () {
+    setTimeout(() => {
       let node = self.treeCtrl.treeModel.getNodeById(1);
-      node.expand();
+      if (node) {
+        node.expand();
+      }
     }, 10);
   }
 

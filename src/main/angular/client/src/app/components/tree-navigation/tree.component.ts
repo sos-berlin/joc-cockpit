@@ -36,8 +36,10 @@ export class TreeComponent implements OnInit {
     const interval = setInterval(() => {
       if (this.treeCtrl && this.treeCtrl.treeModel) {
         const node = this.treeCtrl.treeModel.getNodeById(1);
-        node.expand();
-        clearInterval(interval);
+        if (node) {
+          node.expand();
+          clearInterval(interval);
+        }
       }
     }, 5);
   }

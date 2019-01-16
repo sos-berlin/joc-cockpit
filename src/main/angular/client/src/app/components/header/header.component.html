@@ -151,7 +151,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link text-white" data-toggle="dropdown">
                  <span class="avatar" id="avatarBg" [innerHtml]="username | slice:0:1"></span>
-                  <span class="text-left p-l-xs">
+                  <span class="text-left p-l-sm">
                         <span class="_500 text-md" >{{username | decodeSpace}}</span>
                         <i class="fa fa-caret-down p-l-xs"></i>
                   </span>
@@ -161,7 +161,7 @@
                         <s class="fa fa-user"></s>
                         {{'button.profile' | translate}}
                     </a>
-                    <a class="dropdown-item" *ngIf="permission.JobschedulerMaster.administration.editPermissions" href="#/users/account">
+                    <a class="dropdown-item" *ngIf="permission && permission.JobschedulerMaster && permission.JobschedulerMaster.administration.editPermissions" href="#/users/account">
                         <s class="fa fa-users"></s>
                         {{'button.manageUser' | translate}}
                     </a>

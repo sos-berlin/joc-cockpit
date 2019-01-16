@@ -916,4 +916,6 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 .dp-calendar-weekday {
 	color: #337ab7 !important;
 }
-
+#graph {
+  background-color: #32465a !important;
+}
