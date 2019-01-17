@@ -39,9 +39,6 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   `
 })
 export class AboutModalComponent {
-
-  @Input() type: string;
-  @Input() configuration: any;
   @Input() versionData: any;
 
   constructor(public activeModal: NgbActiveModal) {

@@ -12,6 +12,7 @@ const routes: Routes = [
       {path: 'lock', loadChildren: './lock/lock.module#LockModule'},
       {path: 'process_class', loadChildren: './process-class/process-class.module#ProcessClassModule'},
       {path: 'calendar', loadChildren: './calendar/calendar.module#CalendarModule'},
+      {path: 'documentation', loadChildren: './documentation/documentation.module#DocumentationModule'},
     ]
   },
 ];

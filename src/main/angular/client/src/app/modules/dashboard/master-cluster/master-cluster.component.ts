@@ -413,7 +413,6 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           }
         }
       }
-      //$rootScope.$broadcast('reloadScheduleDetail', self.clusterStatusData.members);
     }
 
     function refreshMasterState(master) {

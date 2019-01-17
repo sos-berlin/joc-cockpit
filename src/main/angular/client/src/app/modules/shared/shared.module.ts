@@ -27,11 +27,14 @@ import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {DeleteModalComponent} from '../../components/delete-modal/delete.component';
 import {ConfigurationModalComponent} from '../../components/configuration-modal/configuration.component';
 import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDirective} from '../../directives/core.directive';
+import {SubLinkComponent} from '../resource/sub-link/sub-link.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     ChecklistModule,
     Ng2SearchPipeModule,
     DpDatePickerModule,
@@ -56,6 +59,7 @@ import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDire
     TreeModalComponent,
     ConfigurationModalComponent,
     TreeComponent,
+    SubLinkComponent,
     TimeValidatorDirective,
     RegexValidator,
     DropdownDirective,
@@ -64,7 +68,7 @@ import {DropdownDirective, RegexValidator, ResizableDirective, TimeValidatorDire
   exports: [CommonModule, FormsModule, DurationPipe, StringDatePipe, DecodeSpacePipe,
     ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe, OrderModule,
     NgxPaginationModule, StringDateFormatePipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent,
-    DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent,
+    DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent, SubLinkComponent,
     TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective],
   entryComponents: [CommentModalComponent, EditFilterModalComponent, DeleteModalComponent, TreeModalComponent, ConfigurationModalComponent]
 })

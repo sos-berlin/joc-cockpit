@@ -5756,3 +5756,10 @@ General CSS
     }
   }
 }
+
+.bottom-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    transition: all .3s;
+}

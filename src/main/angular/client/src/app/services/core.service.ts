@@ -168,6 +168,14 @@ export class CoreService {
     this.tabs._resource.calendars.searchText = '';
     this.tabs._resource.calendars.currentPage = '1';
     this.tabs._resource.calendars.expand_to = [];
+    this.tabs._resource.documents = {};
+    this.tabs._resource.documents.filter = {};
+    this.tabs._resource.documents.filter.type = 'ALL';
+    this.tabs._resource.documents.filter.sortBy = 'path';
+    this.tabs._resource.documents.reverse = false;
+    this.tabs._resource.documents.searchText = '';
+    this.tabs._resource.documents.currentPage = '1';
+    this.tabs._resource.documents.selectedView = true;
     this.tabs._resource.state = 'agent';
 
     this.tempTabs._job = {};
@@ -305,6 +313,14 @@ export class CoreService {
     this.tempTabs._resource.calendars.reverse = false;
     this.tempTabs._resource.calendars.currentPage = '1';
     this.tempTabs._resource.calendars.expand_to = [];
+    this.tempTabs._resource.documents = {};
+    this.tempTabs._resource.documents.filter = {};
+    this.tempTabs._resource.documents.filter.type = 'ALL';
+    this.tempTabs._resource.documents.filter.sortBy = 'path';
+    this.tempTabs._resource.documents.reverse = false;
+    this.tempTabs._resource.documents.searchText = '';
+    this.tempTabs._resource.documents.currentPage = '1';
+    this.tempTabs._resource.documents.selectedView = true;
     this.tempTabs._resource.state = 'agent';
 
     this.dashboard._dashboard = {};

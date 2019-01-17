@@ -44,7 +44,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   preferences: any = {};
   tree: any = [];
   isLoading = true;
-  view: string = 'grid';
+  view = 'grid';
   editor: any;
   xmlTest: any;
   workFlows: any = [];
@@ -164,6 +164,17 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
   }
 
+  submitWorkFlow () {
+    this.coreService.post('workflow/store', {
+      jobschedulerId: this.schedulerIds.selected,
+      workflow: this.json
+    }).subscribe(res => {
+      console.log(res);
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
   toggleView() {
     this.view = this.view !== 'list' ? 'list' : 'grid';
   }
@@ -263,7 +274,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       for (let x = 0; x < json.instructions.length; x++) {
         let obj: any = {
           mxCell: {
-            _parent: '1',
+            _parent: parentId ? parentId : '1',
             _vertex: '1',
             mxGeometry: {
               _as: 'geometry'
@@ -288,10 +299,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           obj._title = json.instructions[x].title ? json.instructions[x].title : '';
           obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
           obj.mxCell._style = 'rounded';
-          if (parentId) {
-            obj.mxCell._parent = _.clone(parentId);
-            parentId = '';
-          }
+
           obj.mxCell.mxGeometry._width = '200';
           obj.mxCell.mxGeometry._height = '50';
           mxJson.Job.push(obj);
@@ -319,7 +327,7 @@ export class JoeComponent implements OnInit, OnDestroy {
             self.jsonParser(json.instructions[x].else, mxJson, 'endIf', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].else.instructions[0], mxJson, 'else', obj._id);
           }
-          self.endIf(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id);
+          self.endIf(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.If.push(obj);
         } else if (json.instructions[x].TYPE === 'ForkJoin') {
           if (mxJson.Fork) {
@@ -343,7 +351,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               self.connectInstruction(json.instructions[x], json.instructions[x].branches[i], mxJson, 'branch', obj._id);
             }
 
-            self.joinFork(json.instructions[x].branches, mxJson, json.instructions, x, json.instructions[x].id);
+            self.joinFork(json.instructions[x].branches, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           }
           mxJson.Fork.push(obj);
         } else if (json.instructions[x].TYPE === 'Retry') {
@@ -367,7 +375,7 @@ export class JoeComponent implements OnInit, OnDestroy {
             self.jsonParser(json.instructions[x], mxJson, '', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'retry', obj._id);
           }
-          self.endRetry(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id);
+          self.endRetry(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Retry.push(obj);
         } else if (json.instructions[x].TYPE === 'Try') {
           if (mxJson.Try) {
@@ -415,7 +423,7 @@ export class JoeComponent implements OnInit, OnDestroy {
               self.jsonParser(json.instructions[x].catch, mxJson, 'endCatch', obj._id);
               self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
             }
-            _id = self.endCatch(json.instructions[x].catch, mxJson, json.instructions, x, json.instructions[x].catch.id);
+            _id = self.endCatch(json.instructions[x].catch, mxJson, json.instructions, x, json.instructions[x].catch.id, parentId);
             mxJson.Catch.push(catchObj);
           }
 
@@ -467,7 +475,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           } else {
             self.connectInstruction(json.instructions[x], json.instructions[x].catch, mxJson, 'try', obj._id);
           }
-          self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id);
+          self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
         } else if (json.instructions[x].TYPE === 'Exit') {
           if (mxJson.Exit) {
@@ -513,7 +521,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           console.log('Workflow yet to parse : ' + json.instructions[x].TYPE);
         }
         if (json.instructions[x].TYPE !== 'ForkJoin' && json.instructions[x].TYPE !== 'If' && json.instructions[x].TYPE !== 'Try' && json.instructions[x].TYPE !== 'Retry') {
-          self.connectEdges(json.instructions, x, mxJson, type);
+          self.connectEdges(json.instructions, x, mxJson, type, parentId);
         }
       }
     } else {
@@ -521,7 +529,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private connectEdges(list, index, mxJson, type) {
+  private connectEdges(list, index, mxJson, type, parentId) {
     if (mxJson.Connection) {
       if (!_.isArray(mxJson.Connection)) {
         const _tempJob = _.clone(mxJson.Connection);
@@ -531,12 +539,13 @@ export class JoeComponent implements OnInit, OnDestroy {
     } else {
       mxJson.Connection = [];
     }
+
     if (list.length > (index + 1)) {
       let obj: any = {
         _label: type,
         _type: type,
         mxCell: {
-          _parent: '1',
+          _parent: parentId ? parentId : '1',
           _source: list[index].id,
           _target: list[index + 1].id,
           _edge: '1',
@@ -577,7 +586,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     mxJson.Connection.push(obj);
   }
 
-  private endRetry(branchs, mxJson, list, index, targetId) {
+  private endRetry(branchs, mxJson, list, index, targetId, parentId) {
     if (mxJson.RetryEnd) {
       if (!_.isArray(mxJson.RetryEnd)) {
         const _tempRetryEnd = _.clone(mxJson.RetryEnd);
@@ -615,7 +624,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.EndIf && mxJson.EndIf.length) {
         for (let j = 0; j < mxJson.EndIf.length; j++) {
           if (x.id === mxJson.EndIf[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'retryEnd', '');
+            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
             break;
           }
         }
@@ -624,7 +633,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
         for (let j = 0; j < mxJson.RetryEnd.length; j++) {
           if (x.id === mxJson.RetryEnd[j]._targetId) {
-            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd', '');
+            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
             break;
           }
         }
@@ -633,7 +642,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.EndTry && mxJson.EndTry.length) {
         for (let j = 0; j < mxJson.EndTry.length; j++) {
           if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'retryEnd', '');
+            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
             break;
           }
         }
@@ -642,21 +651,21 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'retryEnd', '');
+            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
             break;
           }
         }
       }
     } else {
-      this.connectInstruction(x, {id: id}, mxJson, 'retryEnd', '');
+      this.connectInstruction(x, {id: id}, mxJson, 'retryEnd', parentId);
     }
 
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', '');
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
     }
   }
 
-  private joinFork(branchs, mxJson, list, index, targetId) {
+  private joinFork(branchs, mxJson, list, index, targetId, parentId) {
     if (mxJson.Join) {
       if (!_.isArray(mxJson.Join)) {
         const _tempJoin = _.clone(mxJson.Join);
@@ -676,7 +685,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       _label: 'Join',
       _targetId: targetId,
       mxCell: {
-        _parent: '1',
+        _parent: parentId ? parentId : '1',
         _vertex: '1',
         _style: 'symbol;image=./assets/mxgraph/images/symbols/merge.png',
         mxGeometry: {
@@ -693,7 +702,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
             if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'join', '');
+              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'join', parentId);
               break;
             }
           }
@@ -702,7 +711,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join', '');
+              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join', parentId);
               break;
             }
           }
@@ -711,7 +720,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'join', '');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'join', parentId);
               break;
             }
           }
@@ -720,22 +729,22 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join', '');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join', parentId);
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'join', '');
+        this.connectInstruction(x, {id: id}, mxJson, 'join', parentId);
       }
     }
 
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', '');
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
     }
   }
 
-  private endIf(branchs, mxJson, list, index, targetId) {
+  private endIf(branchs, mxJson, list, index, targetId, parentId) {
     if (mxJson.EndIf) {
       if (!_.isArray(mxJson.EndIf)) {
         const _tempJoin = _.clone(mxJson.EndIf);
@@ -771,7 +780,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
             if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -780,7 +789,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -789,7 +798,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -798,13 +807,13 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf', '');
+        this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
     if (branchs.else && branchs.else.instructions) {
@@ -813,7 +822,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
             if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -822,7 +831,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -831,7 +840,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
           for (let j = 0; j < mxJson.RetryEnd.length; j++) {
             if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -840,21 +849,21 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', '');
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf', '');
+        this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', '');
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
     }
   }
 
-  private endTry(x, mxJson, list, index, targetId) {
+  private endTry(x, mxJson, list, index, targetId, parentId) {
     if (mxJson.EndTry) {
       if (!_.isArray(mxJson.EndTry)) {
         const _tempEndTry = _.clone(mxJson.EndTry);
@@ -884,13 +893,13 @@ export class JoeComponent implements OnInit, OnDestroy {
     };
 
     mxJson.EndTry.push(joinObj);
-    this.connectInstruction({id: x}, {id: id}, mxJson, 'endTry', '');
+    this.connectInstruction({id: x}, {id: id}, mxJson, 'endTry', parentId);
     if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', '');
+      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
     }
   }
 
-  private endCatch(branchs, mxJson, list, index, targetId): number {
+  private endCatch(branchs, mxJson, list, index, targetId, parentId): number {
     if (mxJson.EndCatch) {
       if (!_.isArray(mxJson.EndCatch)) {
         const _tempEndCatch = _.clone(mxJson.EndCatch);
@@ -928,7 +937,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.EndIf && mxJson.EndIf.length) {
         for (let j = 0; j < mxJson.EndIf.length; j++) {
           if (x.id === mxJson.EndIf[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endCatch', '');
+            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
             break;
           }
         }
@@ -937,7 +946,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
         for (let j = 0; j < mxJson.RetryEnd.length; j++) {
           if (x.id === mxJson.RetryEnd[j]._targetId) {
-            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endCatch', '');
+            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
             break;
           }
         }
@@ -946,7 +955,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.EndTry && mxJson.EndTry.length) {
         for (let j = 0; j < mxJson.EndTry.length; j++) {
           if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endCatch', '');
+            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
             break;
           }
         }
@@ -955,13 +964,13 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endCatch', '');
+            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
             break;
           }
         }
       }
     } else if (x) {
-      this.connectInstruction(x, {id: id}, mxJson, 'endCatch', '');
+      this.connectInstruction(x, {id: id}, mxJson, 'endCatch', parentId);
     }
 
     return id;
@@ -2120,13 +2129,7 @@ export class JoeComponent implements OnInit, OnDestroy {
      */
     graph.convertValueToString = function (cell) {
       if (mxUtils.isNode(cell.value)) {
-        if (cell.value.nodeName.toLowerCase() === 'process') {
-          let title = cell.getAttribute('title', '');
-          if (title != null && title.length > 0) {
-            return title;
-          }
-          return '';
-        } else if (cell.value.nodeName.toLowerCase() === 'job') {
+        if (cell.value.nodeName.toLowerCase() === 'job') {
           let path = cell.getAttribute('path', '');
           let title = cell.getAttribute('title', '');
           if (title != null && title.length > 0) {
@@ -2416,7 +2419,6 @@ export class JoeComponent implements OnInit, OnDestroy {
 
     function recursiveDeleteFn(selectedCell, target) {
       let flag = false;
-      // console.log(target.value.tagName + ' >> ' + target.id);
       const edges = target.edges;
       if ((selectedCell.value.tagName === 'Fork' && target.value.tagName === 'Join') ||
         (selectedCell.value.tagName === 'If' && target.value.tagName === 'EndIf') ||
@@ -2779,7 +2781,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           graph.clearSelection();
           if (cells && cells.length > 0) {
             if (cell.source) {
-              if (cell.getParent().id == '1' && cell.source.getParent().id != '1') {
+              if (cell.source.getParent().id !== '1') {
                 cell.setParent(cell.source.getParent());
               }
             }

@@ -81,57 +81,19 @@
     </div>
 </div>
 <div class="sub-link">
-    <div class="row">
-            <div class="col-md-8">
-                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-                        <a class="nav-link" [routerLink]="['/resources/agent_cluster']">
-                            <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
-                        <a class="nav-link active">
-                            <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="permission.Lock.view.status && ( permission.ProcessClass.view.status || permission.Calendar.view.status)">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.Lock.view.status">
-                        <a class="nav-link" [routerLink]="['/resources/lock']">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="permission.ProcessClass.view.status && (permission.Calendar.view.status)">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
-                        <a class="nav-link" [routerLink]="['/resources/process_class']">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.Calendar.view.status">
-                        <a class="nav-link" [routerLink]="['/resources/calendar']">
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4 text-right">
-               <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-                   <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-               </button>
-                <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-                    <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
-                </button>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-md-8">
+      <app-links></app-links>
+    </div>
+    <div class="col-md-4 text-right">
+      <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
+        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+      </button>
+      <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
+        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+      </button>
+    </div>
+  </div>
 </div>
 <div class="scroll-y max-ht2">
     <div class="padding p-b-0">
