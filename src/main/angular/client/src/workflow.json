@@ -20,14 +20,14 @@
             "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;",
             "mxGeometry": {
               "_as": "geometry",
-              "_width": "80",
-              "_height": "80"
+              "_width": "75",
+              "_height": "75"
             }
           }
         },
         {
           "_id": "4",
-          "_title": "",
+          "_title": "Drag and Drop here",
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
@@ -35,7 +35,7 @@
             "mxGeometry": {
               "_as": "geometry",
               "_width": "200",
-              "_height": "60"
+              "_height": "50"
             }
           }
         },
@@ -48,8 +48,8 @@
             "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;",
             "mxGeometry": {
               "_as": "geometry",
-              "_width": "80",
-              "_height": "80"
+              "_width": "75",
+              "_height": "75"
             }
           }
         }

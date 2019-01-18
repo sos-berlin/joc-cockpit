@@ -2492,8 +2492,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private filteredTreeData(output) {
     if (!_.isEmpty(this.calendar_expand_to)) {
       this.tree = output;
-      if (this.tree.length > 0)
+      if (this.tree.length > 0) {
         this.navigateToPath();
+      }
     } else {
       if (_.isEmpty(this.calendarFilters.expand_to)) {
         this.tree = output;

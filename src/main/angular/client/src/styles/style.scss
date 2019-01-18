@@ -2045,11 +2045,15 @@ pre.log {
 .w-10 {
   width: 10px !important;
 }
-
+.w-15 {
+  width: 15px !important;
+}
 .w-16 {
   width: 16px !important;
 }
-
+.w-18 {
+  width: 20px !important;
+}
 .w-xxs {
   width: 60px;
 }
@@ -3577,7 +3581,10 @@ aside {
   left: auto;
   height: 100%;
 }
-
+.editor-tree{
+  height: calc(100vh - 100px);
+  overflow: auto;
+}
 #rightPanel, #rightPanel1, .m-l-290 {
   margin-left: 290px;
 }
@@ -5332,7 +5339,7 @@ div.bar-chart div {
 }
 
 .node-wrapper {
-  display: flex;
+  display: inline-flex;
   align-items: flex-start;
 }
 
@@ -5487,9 +5494,9 @@ tree-node-checkbox {
 
 .rg-bottom, .rg-right {
   display: block;
-  width: 14px;
-  height: 14px;
-  line-height: 14px;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
   position: absolute;
   z-index: 1;
   -moz-user-select: -moz-none;
@@ -5529,7 +5536,7 @@ tree-node-checkbox {
   height: 100%;
   right: 0;
   top: 0;
-  margin-right: -4px;
+  margin-right: 0;
   background: #f0f0f0;
 }
 
@@ -5760,6 +5767,6 @@ General CSS
 .bottom-btn {
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    bottom: 16px;
     transition: all .3s;
 }

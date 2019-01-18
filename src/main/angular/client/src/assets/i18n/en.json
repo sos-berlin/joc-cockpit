@@ -1280,5 +1280,6 @@
   "label.deleteAllDocument": "Delete all Documentation",
   "tooltip.removeFile": "Remove file",
   "button.compactView": "Compact View",
+  "button.submitWorkFlow": "Submit WorkFlow",
   "label.showDocumentations": "Show Documentation"
 }
