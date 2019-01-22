@@ -427,14 +427,7 @@
                                     <span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                                 </td>
                             </tr>
-                            <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">
-                                <td></td>
-                                <td></td>
-                                <td colspan="13" class="p-a-0">
-                                    <span translate>message.noDataFound</span>
-                                </td>
-                            </tr>
-                            <tr ng-if="(job.runningTasks && job.showJobChains) && job.runningTasks.length>0">
+                            <tr ng-if="job.runningTasks && job.runningTasks.length>0 && (jobFilters.filter.state === 'RUNNING' || job.showJobChains)">
                                 <td></td>
                                 <td></td>
                                 <td colspan="13" class="p-a-0">
@@ -491,6 +484,13 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                </td>
+                            </tr>
+                            <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)">
+                                <td></td>
+                                <td></td>
+                                <td colspan="13" class="p-a-0">
+                                    <span translate>message.noDataFound</span>
                                 </td>
                             </tr>
                             <tr ng-if="job.showJobChains && job.jobChains && job.jobChains.length>0">

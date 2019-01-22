@@ -275,7 +275,7 @@
     });
 
     window.setTimeout(function () {
-        if (window.localStorage.$SOS$THEME == 'lighter') {
+        if (window.localStorage.$SOS$THEME === 'lighter' || (window.localStorage.$SOS$THEME === 'light' && window.localStorage.$SOS$HEADERTHEME === 'header-yellow')) {
             $('#orders_id img').attr("src", 'images/order.png');
             $('#jobs_id img').attr("src", 'images/job.png');
             $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');

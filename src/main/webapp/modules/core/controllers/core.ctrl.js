@@ -343,7 +343,8 @@
                         }
                         $window.sessionStorage.preferences = JSON.stringify(preferences);
                         $window.localStorage.$SOS$THEME = preferences.theme;
-                        if (preferences.theme === 'lighter') {
+                        $window.localStorage.$SOS$HEADERTHEME = preferences.headerColor;
+                        if (preferences.theme === 'lighter' || (preferences.theme === 'light' && preferences.headerColor === 'header-yellow')) {
                             $('#orders_id img').attr("src", 'images/order.png');
                             $('#jobs_id img').attr("src", 'images/job.png');
                             $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
