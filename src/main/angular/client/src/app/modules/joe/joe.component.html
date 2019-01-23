@@ -56,10 +56,10 @@
                 <div id="outlineContainer"></div>
               </div>
             </div>
-            <div [hidden]="pageView === 'grid'">
-              <div class="box p-a" style="height: 82vh">
+            <div *ngIf="pageView !== 'grid'">
+              <div class="box p-a">
                 <div class="table-responsive">
-                  <table class="table table-hover table-bordered">
+                  <table class="table table-hover table-bordered" *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
                     <thead>
                     <tr>
                       <th width="30">
@@ -68,12 +68,12 @@
                           class="primary"></i>
                         </label>
                       </th>
-                      <th><span translate>label.job</span></th>
+                      <th><span translate>label.type</span></th>
                       <th><span translate>label.path</span></th>
                     </tr>
                     </thead>
-                    <tbody *ngFor="let workflow of workFlows">
-                    <tr>
+                    <tbody >
+                    <tr *ngFor="let workflow of workFlowJson.instructions">
                       <td>
                         <label class="md-check">
                           <input type="checkbox" [(checklist)]="object.workflows" [checklistValue]="workflow"
@@ -81,11 +81,14 @@
                           <i class="primary"></i>
                         </label>
                       </td>
-                      <td>{{workflow.job}}</td>
-                      <td>{{workflow.path}}</td>
+                      <td>{{workflow.TYPE}}</td>
+                      <td>{{workflow.jobPath}}</td>
                     </tr>
                     </tbody>
                   </table>
+                </div>
+                <div *ngIf="!workFlowJson.instructions || workFlowJson.instructions.length == 0" class="text text-center text-uppercase p-a-md">
+                  No workflow Added to <span class="text-primary">{{selectedPath}}</span>
                 </div>
               </div>
             </div>
@@ -93,21 +96,11 @@
         </div>
         <div class="col-md-3" [ngClass]="{'hide':isPropertyHide}">
           <div class="box">
-            <div class="box-header b-b p-t-sm p-b-sm">
+            <div class="box-header b-b p-a">
               <h3 translate>label.properties</h3>
             </div>
             <div class="box-body p-a">
               <div id="properties"></div>
-            </div>
-          </div>
-          <div class="m-t">
-            <div class="box">
-              <div class="box-header b-b p-t-sm p-b-sm">
-                <h3 translate>Source</h3>
-              </div>
-              <div class="box-body" style="max-height: 500px; overflow: auto">
-                <pre>{{workFlowJson | json}}</pre>
-              </div>
             </div>
           </div>
         </div>
