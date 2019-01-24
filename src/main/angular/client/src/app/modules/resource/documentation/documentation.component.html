@@ -15,31 +15,48 @@
                   <span>{{'label.resources' | translate }}</span>
                 </li>
                 <li class="active">
-                  <span>{{'label.documents' | translate }}</span>
+                  <span>{{'label.documentations' | translate }}</span>
                 </li>
               </ol>
             </span>
           </div>
           <div class="inline">
-            <div class="btn-group dropdown">
-              <button class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
-                <span class="text-primary">
-                  <span *ngIf="documentFilters.filter.sortBy =='name'">
-                    {{'label.name' | translate}}
-                    <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                  <span *ngIf="documentFilters.filter.sortBy =='path'">
-                    {{'label.path' | translate}}
-                    <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                </span>
-              </button>
-              <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                <a class="dropdown-item" (click)="sortBy('name')" translate>label.name</a>
-                <a class="dropdown-item" (click)="sortBy('path')" translate>label.path</a>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.export" class="btn btn-grey btn-sm m-l-sm" (click)="exportDocument()"><i class="fa fa-download"></i>&nbsp; {{'button.exportDocument' | translate}}</button>
+            <button *ngIf="object.documents.length>0 && permission.Documentation.delete" class="btn btn-grey btn-sm m-l-sm" (click)="deleteDocumentations()"><i class="fa fa-trash"></i>&nbsp; {{'button.deleteDocument' | translate}}</button>
+            <div class="inline" [ngClass]="{'hide':object.documents.length>0}">
+              <div class="btn-group dropdown m-l-sm">
+                <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">
+                  <span translate> label.type</span>&nbsp;
+                  <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                  <a class="dropdown-item" (click)="loadDocument()" *ngFor="let type of documentTypes"
+                     [ngClass]="{'btn-primary': documentFilters.filter.type==type}">
+                    <span>{{type}}</span>
+                  </a>
+                </div>
               </div>
+              <div class="btn-group dropdown">
+                <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                  <span class="text-primary">
+                    <span *ngIf="documentFilters.filter.sortBy =='path'">
+                      {{'label.path' | translate}}&nbsp;
+                      <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
+                    <span *ngIf="documentFilters.filter.sortBy =='type'">
+                      {{'label.type' | translate}}&nbsp;
+                      <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
+                      <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
+                    </span>
+                  </span>
+                </a>
+                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                  <a class="dropdown-item" href (click)="sortBy('path')" translate>label.path</a>
+                  <a class="dropdown-item" href (click)="sortBy('type')" translate>label.type</a>
+                </div>
+              </div>
+              <button *ngIf="permission.Documentation.import" class="btn btn-grey btn-sm m-l-sm" (click)="importDocument()"><i class="fa fa-upload"></i>&nbsp; {{'button.importDocument' | translate}}</button>
             </div>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -88,9 +105,12 @@
                         <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
                           class="text fa fa-ellipsis-h"></i></a>
                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                          <a *ngIf="permission.Lock.view.configuration"
-                             (click)="showConfiguration(document)" class="dropdown-item" translate>button.showConfiguration</a>
-                          <a (click)="coreService.copyLink('document',document.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
+                          <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
+                          <a class="dropdown-item" *ngIf="permission.Documentation.export" (click)="exportDocument(document)" translate>button.exportDocument</a>
+                          <a class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
+                          <a class="dropdown-item" (click)="showDocumentUsage(document)" translate>button.showUsage</a>
+                          <a (click)="coreService.copyLink('document',document.path)"
+                             class="dropdown-item" translate>button.copyLinkToObject</a>
                         </div>
                       </div>
                       <div class="text-sm  text-left text-muted p-t-sm">
@@ -103,8 +123,14 @@
                      </div>
                     </div>
                     <div class="box-footer b-t" >
-                      <a href class="text-left primary-text-hover-color " *ngIf="permission.Documentation.export" (click)="exportDocument(document)"><i class="fa fa-download text-black-lt"></i> <span class="text-black-lt" translate>button.exportDocument</span></a>
-                      <a href class="pull-right text-hover-color " *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteDocument</span></a>
+                      <a href class="text-left primary-text-hover-color " *ngIf="permission.Documentation.export" (click)="exportDocument(document)">
+                        <i class="fa fa-download text-black-lt"></i> &nbsp;
+                        <span class="text-black-lt" translate>button.exportDocument</span>
+                      </a>
+                      <a href class="pull-right text-hover-color " *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)">
+                        <i class="fa fa-trash text-black-lt"></i> &nbsp;
+                        <span class="text-black-lt" translate>button.deleteDocument</span>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -115,26 +141,31 @@
                 <table class="table table-hover table-bordered" id="documentTableId">
                   <thead>
                   <tr>
-                    <th class="noExl" width="45"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.documentName</span>
+                    <th class="chk">
+                      <label class="md-check lg-check">
+                        <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
+                      </label>
+                    </th>
+                    <th class="menu"><span translate>label.action</span></th>
+                    <th (click)="sortBy('name')"><a><span translate>label.documentName</span>&nbsp;
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>
+                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
                       <i *ngIf="documentFilters.filter.sortBy == 'path' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'path' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('type')"><a><span translate>label.type</span>
+                    <th (click)="sortBy('type')"><a><span translate>label.type</span>&nbsp;
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('modified')"><a><span translate>label.lastUpdateTime</span>
+                    <th (click)="sortBy('modified')"><a><span translate>label.lastUpdateTime</span>&nbsp;
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
@@ -145,11 +176,17 @@
                   <tbody>
                   <tr *ngFor="let document of documents | orderBy: documentFilters.filter.sortBy:documentFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: documentFilters.currentPage }">
                     <td>
+                      <label class="md-check">
+                        <input type="checkbox" [(checklist)]="object.documents"
+                               [checklistValue]="document" (change)="checkMainCheckbox()"><i class="primary"></i>
+                      </label>
+                    </td>
+                    <td>
                       <div class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                           <i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                         <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
+                          <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
                           <a class="dropdown-item" *ngIf="permission.Documentation.export" (click)="exportDocument(document)" translate>button.exportDocument</a>
                           <a class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>
                           <a class="dropdown-item" (click)="showDocumentUsage(document)" translate>button.showUsage</a>
@@ -193,19 +230,19 @@
                 </div>
                 <div class="inline text-sm m-l-xs p-t-xxs" [ngClass]="{'m-t-xs m-l-sm': documents.length > 10}"
                      *ngIf="documents.length >0"><span translate>label.total</span> {{documents.length}}
-                  <span translate *ngIf="documents.length >1">label.documentsFound</span>
-                  <span translate *ngIf="documents.length ==1">label.documentFound</span>
+                  <span translate *ngIf="documents.length >1">label.documentationsFound</span>
+                  <span translate *ngIf="documents.length ==1">label.documentationFound</span>
                 </div>
               </div>
             </div>
             <div *ngIf="isLoading && !loading  && documents.length==0 && tree.length>0"
                  class="text-center m-t h6">
-              <span translate>message.noLocksFound</span>
+              <span translate>message.noDocumentationFound</span>
             </div>
           </div>
         </div>
         <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>
-          message.noDocumnetationsFound
+          message.noDocumentationFound
         </div>
       </div>
     </div>

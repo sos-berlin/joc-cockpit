@@ -198,12 +198,12 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                   <tr>
-                    <th width="30">
+                    <th class="chk">
                       <label class="md-check lg-check">
                         <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                       </label>
                     </th>
-                    <th width="45"><span translate>label.action</span></th>
+                    <th class="menu"><span translate>label.action</span></th>
                     <th (click)="sortBy('name')"><a><span translate>label.name</span>
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>

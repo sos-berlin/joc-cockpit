@@ -7,7 +7,7 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 
 import * as _ from 'underscore';
 
-//Main Component
+// Main Component
 @Component({
   selector: 'app-lock',
   templateUrl: 'lock.component.html',
@@ -37,6 +37,80 @@ export class LockComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
+  }
+
+  ngOnInit() {
+    this.init();
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  initTree() {
+    this.coreService.post('tree', {
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true,
+      types: ['LOCK']
+    }).subscribe(res => {
+      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.isLoading = true;
+    }, () => {
+      this.isLoading = true;
+    });
+  }
+
+  expandNode(node): void {
+    this.navFullTree();
+    const someNode = this.child.getNodeById(node.data.id);
+    someNode.expandAll();
+    this.locks = [];
+    this.loading = true;
+
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      folders: [{folder: node.data.path, recursive: true}],
+      compact: true
+    };
+
+    this.getLocksList(obj, node);
+  }
+
+  receiveAction($event) {
+    if ($event.action === 'NODE') {
+      this.getLocks($event.data);
+    } else {
+      this.expandNode($event);
+    }
+
+  }
+
+  getLocks(data) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: false}],
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true
+    };
+
+    this.getLocksList(obj, null);
+  }
+
+  sortBy(propertyName) {
+    this.locksFilters.reverse = !this.locksFilters.reverse;
+    this.locksFilters.filter.sortBy = propertyName;
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
+
+  showConfiguration(lock) {
+
   }
 
   private refresh(args) {
@@ -70,41 +144,19 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    this.init();
-  }
-
   private init() {
     this.locksFilters = this.coreService.getResourceTab().locks;
-    if (sessionStorage.preferences)
+    this.coreService.getResourceTab().state = 'locks';
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views)
+    if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).lock;
-
+    }
     this.initTree();
   }
-
-
-  ngOnDestroy() {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
-  }
-
-  initTree() {
-    this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true,
-      types: ['LOCK']
-    }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-    });
-  }
-
 
   private filteredTreeData(output) {
     if (_.isEmpty(this.locksFilters.expand_to)) {
@@ -118,21 +170,19 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-
   private expandTree() {
-    const self = this;
-    setTimeout(function () {
-      self.tree.forEach(function (data) {
+    setTimeout(() => {
+      this.tree.forEach( (data) => {
         recursive(data);
       });
     }, 10);
 
     function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
+      if (data.isExpanded && this.child) {
+        let node = this.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
-          data.children.forEach(function (child) {
+          data.children.forEach((child) => {
             recursive(child);
           });
         }
@@ -141,10 +191,9 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    const self = this;
-    setTimeout(function () {
-      if (self.child && self.child.getNodeById(1)) {
-        const node = self.child.getNodeById(1);
+    setTimeout(() => {
+      if (this.child && this.child.getNodeById(1)) {
+        const node = this.child.getNodeById(1);
         node.expand();
         node.setActiveAndVisible(true);
       }
@@ -152,10 +201,9 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private startTraverseNode(data) {
-    let self = this;
     data.isSelected = true;
-    data.children.forEach(function (a) {
-      self.startTraverseNode(a);
+    data.children.forEach((a) => {
+      this.startTraverseNode(a);
     });
   }
 
@@ -164,7 +212,7 @@ export class LockComponent implements OnInit, OnDestroy {
     this.coreService.post('locks', obj).subscribe(res => {
       this.loading = false;
       result = res;
-      result.locks.forEach(function (value) {
+      result.locks.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.locks = result.locks;
@@ -176,73 +224,18 @@ export class LockComponent implements OnInit, OnDestroy {
     });
   }
 
-  expandNode(node): void {
-    this.navFullTree();
-    const someNode = this.child.getNodeById(node.data.id);
-    someNode.expandAll();
-    this.locks = [];
-    this.loading = true;
-
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}],
-      compact: true
-    };
-
-    this.getLocksList(obj, node);
-  }
-
-
-  receiveAction($event) {
-    if ($event.action === 'NODE')
-      this.getLocks($event.data);
-    else
-      this.expandNode($event);
-
-  }
-
-  getLocks(data) {
-    data.isSelected = true;
-    this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: false}],
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true
-    };
-
-    this.getLocksList(obj, null);
-  }
-
   private traverseTree(data) {
-    let self = this;
-    data.children.forEach(function (value) {
+    data.children.forEach((value) => {
       value.isSelected = false;
-      self.traverseTree(value);
+      this.traverseTree(value);
     });
   }
 
   private navFullTree() {
-    let self = this;
-    this.tree.forEach(function (value) {
+    this.tree.forEach((value) => {
       value.isSelected = false;
-      self.traverseTree(value);
+      this.traverseTree(value);
     });
-  }
-
-  sortBy(propertyName) {
-    this.locksFilters.reverse = !this.locksFilters.reverse;
-    this.locksFilters.filter.sortBy = propertyName;
-  }
-
-
-  /** ---------------------------- Action ----------------------------------*/
-
-  receiveMessage($event) {
-    this.pageView = $event;
-  }
-
-  showConfiguration(lock) {
-
   }
 }
 

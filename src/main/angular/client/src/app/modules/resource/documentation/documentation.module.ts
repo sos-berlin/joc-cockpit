@@ -1,15 +1,17 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../../shared/shared.module';
-import {DocumentationComponent} from './documentation.component';
+import {DocumentationComponent, ImportModalComponent} from './documentation.component';
 import {DocumentationRoutingModule} from './documentation-routing.module';
-import {SubLinkComponent} from '../sub-link/sub-link.component';
+import {FileUploadModule} from 'ng2-file-upload';
 
 @NgModule({
   imports: [
     SharedModule,
-    DocumentationRoutingModule
+    DocumentationRoutingModule,
+    FileUploadModule
   ],
-  declarations: [DocumentationComponent]
+  declarations: [DocumentationComponent, ImportModalComponent],
+  entryComponents: [ImportModalComponent]
 })
 export class DocumentationModule {
 }

@@ -219,7 +219,7 @@
                 </li>
                 <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
                     permission.Lock.view.status  || permission.Calendar.view.status">
-                    <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']">
+                    <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
                         <span class="nav-text">
                             <img src="./assets/images/resources.png" height="16" alt="R">
                             <i class="fa fa-links text-white"></i>

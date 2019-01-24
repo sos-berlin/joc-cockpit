@@ -67,7 +67,55 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isLogout = true;
     this.myLogout.emit();
   }
-
+  navigateToResource() {
+    const resourceFilters = this.coreService.getResourceTab();
+    if (resourceFilters.state === 'agent') {
+      if (this.permission.JobschedulerUniversalAgent.view.status) {
+        this.router.navigate(['/resources/agent_cluster']);
+        return;
+      } else {
+        resourceFilters.state = 'agentJobExecutions';
+      }
+    }
+    if (resourceFilters.state === 'agentJobExecutions') {
+      if (this.permission.JobschedulerUniversalAgent.view.status) {
+        this.router.navigate(['/resources/agent_job_execution']);
+        return;
+      } else {
+        resourceFilters.state = 'processClass';
+      }
+    }
+    if (resourceFilters.state === 'processClass') {
+      if (this.permission.ProcessClass.view.status) {
+        this.router.navigate(['/resources/process_class']);
+        return;
+      } else {
+        resourceFilters.state = 'locks';
+      }
+    }
+    if (resourceFilters.state === 'locks') {
+      if (this.permission.Lock.view.status) {
+        this.router.navigate(['/resources/lock']);
+        return;
+      } else {
+        resourceFilters.state = 'calendars';
+      }
+    }
+    if (resourceFilters.state === 'calendars') {
+      if (this.permission.Calendar.view.status) {
+        this.router.navigate(['/resources/calendar']);
+        return;
+      } else {
+        resourceFilters.state = 'documentations';
+      }
+    }
+    if (resourceFilters.state === 'documentations') {
+      if (this.permission.Documentation.view) {
+        this.router.navigate(['/resources/documentation']);
+        return;
+      }
+    }
+  }
   filterEventResult(res): void {
     for (let i = 0; i < res.events.length; i++) {
       if (res.events[i].jobschedulerId === this.schedulerIds.selected) {

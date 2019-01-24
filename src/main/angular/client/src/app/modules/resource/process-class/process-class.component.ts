@@ -78,13 +78,15 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
 
   private init() {
     this.processFilters = this.coreService.getResourceTab().processClasses;
-    if (sessionStorage.preferences)
+    this.coreService.getResourceTab().state = 'processClass';
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views)
+    if (localStorage.views) {
       this.pageView = JSON.parse(localStorage.views).processClass;
-
+    }
     this.initTree();
   }
 

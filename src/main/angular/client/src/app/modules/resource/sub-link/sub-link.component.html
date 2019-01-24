@@ -1,4 +1,4 @@
-  <div>
+<div>
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
       <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_cluster']" [routerLinkActive]="['active']">
@@ -43,9 +43,9 @@
         <span class="separator"></span>
       </li>
       <li class="nav-item" *ngIf="permission.Documentation.view">
-        <a class="nav-link" routerLink="/resources/documentation" [routerLinkActive]="['active']">
+        <a class="nav-link" [routerLink]="['/resources/documentation']" [routerLinkActive]="['active']">
           <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
         </a>
       </li>
     </ul>
-  </div>
+</div>

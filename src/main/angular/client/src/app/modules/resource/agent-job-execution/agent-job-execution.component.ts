@@ -155,6 +155,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
 
   private init() {
     this.agentJobExecutionFilters = this.coreService.getResourceTab().agentJobExecution;
+    this.coreService.getResourceTab().state = 'agentJobExecutions';
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }

@@ -2191,8 +2191,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.calendars = [];
     this.loading = true;
     for (let x = 0; x < this.tree.length; x++) {
-      if (this.tree[x].isExpanded || this.tree[x].isSelected)
+      if (this.tree[x].isExpanded || this.tree[x].isSelected) {
         self.getExpandTreeForUpdates(this.tree[x], obj);
+      }
     }
     this.getCalendarsList(obj, null);
   }
@@ -2477,6 +2478,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   private init() {
     this.calendarFilters = this.coreService.getResourceTab().calendars;
+    this.coreService.getResourceTab().state = 'calendars';
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
     }
@@ -2511,11 +2513,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPath() {
-    let self = this;
     this.calendars = [];
     setTimeout(() => {
-      for (let x = 0; x < self.tree.length; x++) {
-        self.navigatePath(self.tree[x]);
+      for (let x = 0; x < this.tree.length; x++) {
+        this.navigatePath(this.tree[x]);
       }
     }, 10);
   }
