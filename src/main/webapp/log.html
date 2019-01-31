@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myapp" ng-strict-di>
+<html lang="en" ng-app="myapp">
 <head>
     <meta charset="utf-8"/>
     <title>JobScheduler</title>
@@ -9,70 +9,80 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        body{
-            background: #fff;
-            overflow-x: auto ;
-        }
-        pre.logs {
-            color: #3d464d;
-            margin-bottom: 8px;
-            font-family: Lucida Console, monospace;
-            font-size: 12px;
-            margin-top: 8px;
-            background: #fff;
-        }
-        .loading-img {
-            top: 30px;
-            background-color: #fff;
-        }
+      #upper-header,body,pre.logs{background:#fff}body{overflow-x:auto}pre.logs{color:#3d464d;margin-bottom:8px;font-family:Lucida Console,monospace;font-size:12px;margin-top:28px}.loading-img{top:30px;background-color:#fff}a:hover{text-decoration:underline}#upper-header{position:fixed;width:100%;z-index:99;padding:4px 0}.md-check input{width:15px;height:15px}.md-check>i{height:14px;margin-top:3px}.md-check1>i:before,.md-check>i:before{content:"";width:14px}.md-check input[type=checkbox]:checked+i:after{left:5px;top:2px;width:4px;height:8px}
     </style>
 </head>
 <body ng-controller="LogCtrl">
-    <div style="display: none" class="p-t-sm "  ng-class="{show : !loading && !error}">
-        <div class="p-l-sm ">
-            <label class="text- _600">Modify Log Viewing Criteria</label>
-            <a href ng-if="!isCancel && !finished" ng-click="cancel()" class="m-l m-r pull-right"><i class="fa fa-times"></i> <span> Cancel</span></a>
-            <a href ng-class="{'show-block': isCancel || finished}"  class="hide m-l m-r pull-right" ng-click="reload()"><i class="fa fa-refresh"></i> <span> Reload</span></a>
-            <a href ng-click="download()" class="text-primary text-u-l pull-right"><i class="fa fa-download"></i> <span> Download</span></a>
-        </div>
-        <div class="m-a-sm w-full show-block p-t-sm b-t">
-            <label class="md-check m-r">
+<div style="display: none" ng-class="{'show-block' : !loading && !error}">
+    <div id="upper-header">
+        <div class="inline w-full">
+            <label class="_600 m-l-sm m-r-sm">Modify Log Viewing Criteria -</label>
+            <label class="md-check m-r-sm">
                 <input type="checkbox" ng-model="object.checkBoxs.scheduler" ng-change="checkLogLevel('SCHEDULER')">
                 <i class="primary"></i><span translate>Main</span>
             </label>
-            <label class="md-check m-r">
+            <label class="md-check m-r-sm">
                 <input type="checkbox" ng-model="object.checkBoxs.stdout" ng-change="checkLogLevel('STDOUT')">
                 <i class="primary"></i><span>Stdout</span>
             </label>
-            <label class="md-check m-r" ng-if="isStdErrLevel">
+            <label class="md-check m-r-sm" ng-if="isStdErrLevel">
                 <input type="checkbox" ng-model="object.checkBoxs.stderr" ng-change="checkLogLevel('STDERR')">
                 <i class="primary"></i><span>Stderr</span>
             </label>
-            <label class="md-check m-r">
+            <label class="md-check m-r-sm">
                 <input type="checkbox" ng-model="object.checkBoxs.info" ng-change="checkLogLevel('INFO')">
                 <i class="primary"></i><span translate>Info</span>
             </label>
-            <label class="md-check m-r" ng-if="isDeBugLevel">
+            <label class="md-check m-r-sm" ng-if="isDeBugLevel">
                 <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
                 <i class="primary"></i><span translate>Debug</span>
             </label>
-        </div>
-        <div class="m-a-sm w-full show-block b-b p-b-sm" ng-if="isDeBugLevel">
-            <label class="md-check m-r" ng-repeat="level in debugLevels">
-                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
+            <label class="md-check m-r-sm" ng-if="isDeBugLevel" ng-repeat="level in debugLevels">
+                <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug"
+                       value="{{level}}" ng-change="changeDebugLevel()">
                 <i class="primary"></i><span ng-bind="level"></span>
             </label>
+            <a href ng-if="!isCancel && !finished" class="m-l-sm m-r-sm pull-right" ng-click="cancel()">
+                <i class="fa fa-times"></i>
+                <span> Cancel</span>
+            </a>
+            <a href ng-class="{'show-block': isCancel || finished}" class="hide m-l-sm m-r-sm text-primary pull-right"
+               ng-click="reload()">
+                <i class="fa fa-refresh"></i>
+                <span> Reload</span>
+            </a>
+            <a href class="text-primary pull-right" ng-click="download()">
+                <i class="fa fa-download"></i>
+                <span> Download</span>
+            </a>
         </div>
-        <pre id="logs" class="p-l-sm logs" style="margin-top: 0"></pre>
     </div>
-    <div class="text-center hide" ng-class="{'show' : error && !loading}">
-        <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px" ><span ng-bind="errStatus"></span></div>
-        <div style="display: none" class="text-lg text-muted" ng-class="{'show' : errStatus}">Error!</div>
-        <div class="text m-t" ng-bind="error"></div>
-    </div>
-    <div ng-if="loading" class="loading-img"></div>
-    <iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
+    <pre id="logs" class="p-l-sm logs"></pre>
+</div>
+<div class="text-center hide" ng-class="{'show' : error && !loading}">
+    <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px"><span ng-bind="errStatus"></span></div>
+    <div style="display: none" class="text-lg text-muted" ng-class="{'show' : errStatus}">Error!</div>
+    <div class="text m-t" ng-bind="error"></div>
+</div>
+<div ng-if="loading" class="loading-img"></div>
+<iframe name="tmpFrame" id="tmpFrame" width="1" height="1"
+        style="visibility:hidden;position:absolute;display:none"></iframe>
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="modules/log.js"></script>
+<script>
+    (function () {
+        function setMarginTop(){
+            console.log(document.getElementById('upper-header').clientHeight);
+            document.getElementById('logs').style.marginTop = (document.getElementById('upper-header').clientHeight + 1) +'px';
+        }
+        // handle resize event
+        window.addEventListener("resize", function() {
+          setMarginTop();
+        });
+        setTimeout(function () {
+            setMarginTop();
+        },800);
+    })();
+</script>
 </body>
 </html>

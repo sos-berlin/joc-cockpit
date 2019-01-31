@@ -244,7 +244,7 @@
                                 <i class="cursor fa fa-history tableexport-ignore" ng-click="showHistory(jobChain,node, null, null, 'noToggle')"></i>
                                 <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
                                 <div class="p-l-sm">
-                                    <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
+                                    <div ng-repeat="order in node.orders | limitTo : userPreferences.maxOrderPerJobchain | orderBy:'orderId'" class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                          <div class="btn-group dropdown ">
                                             <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                                 <i class="fa fa-ellipsis-h"></i>
@@ -317,7 +317,7 @@
                                         </span>
                                         <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                     </div>
-                                    <i class="cursor text-xs" ng-if="node.numOfOrders>limitNum" ng-click="showOrderPanelFuc(jobChain.path)"><span translate>label.showMoreOrders</span><br></i>
+                                    <i class="cursor text-xs" ng-if="node.numOfOrders>userPreferences.maxOrderPerJobchain" ng-click="showOrderPanelFuc(jobChain.path)"><span translate>label.showMoreOrders</span><br></i>
                                 </div>
                                 <table class="table table-hover table-bordered m-t-xs m-b-sm" ng-if="node.job.runningTasks && node.orders && node.orders.length>0">
                                     <thead>
@@ -567,7 +567,7 @@
                                                         <a class="text-hover-primary"
                                                            ng-click="showJob(nestedNode.job.path)">{{nestedNode.job.path}}</a>
                                                         <div class="p-l-sm ">
-                                                            <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'"
+                                                            <div ng-repeat="order in nestedNode.orders | limitTo : userPreferences.maxOrderPerJobchain | orderBy:'orderId'"
                                                                  ng-if="order.path.split(',')[0]==nestedJobChain.path || order.path.split(',')[0]==jobChain.path " class="{{jobChain.showHistory == order.orderId ? 'light-bg':''}}">
                                                                 <div class="btn-group dropdown ">
                                                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown" dropdown>
@@ -639,7 +639,7 @@
                                                                 <div class="text-sm p-l-sm"
                                                                      ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                             </div>
-                                                            <i class="cursor text-xs" ng-if="nestedNode.numOfOrders>limitNum" ng-click="showOrderPanelFuc(jobChain.path)">
+                                                            <i class="cursor text-xs" ng-if="nestedNode.numOfOrders>userPreferences.maxOrderPerJobchain" ng-click="showOrderPanelFuc(jobChain.path)">
                                                                 <span translate>label.showMoreOrders</span><br></i>
                                                         </div>
                                                         <table class="table table-hover table-bordered m-t-xs m-b-sm"

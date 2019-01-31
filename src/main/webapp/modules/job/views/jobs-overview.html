@@ -427,11 +427,11 @@
                                     <span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                                 </td>
                             </tr>
-                            <tr ng-if="job.runningTasks && job.runningTasks.length>0 && (jobFilters.filter.state === 'RUNNING' || job.showJobChains)">
+                            <tr ng-if="job.runningTasks && job.runningTasks.length>0 && (jobFilters.filter.state=='RUNNING' || job.showJobChains)">
                                 <td></td>
                                 <td></td>
                                 <td colspan="13" class="p-a-0">
-                                    <table class="table table-hover table-bordered m-t-xs m-b-sm">
+                                    <table class="table table-hover table-bordered m-t-xs m-b-xs">
                                         <thead>
                                         <tr>
                                             <th class="menu" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate"><span translate>label.action</span></th>

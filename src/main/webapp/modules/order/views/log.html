@@ -55,9 +55,7 @@
                 <input type="checkbox" ng-model="object.checkBoxs.debug" ng-change="checkLogLevel('DEBUG')">
                 <i class="primary"></i><span translate>Debug</span>
             </label>
-        </div>
-        <div class="col-sm-12 m-t" ng-if="isDeBugLevel">
-            <label class="md-check m-r" ng-repeat="level in debugLevels">
+            <label class="md-check m-r"  ng-if="isDeBugLevel" ng-repeat="level in debugLevels">
                 <input type="radio" ng-disabled="!object.checkBoxs.debug" ng-model="object.debug" name="debug" value="{{level}}" ng-change="changeDebugLevel()">
                 <i class="primary"></i><span ng-bind="level"></span>
             </label>
@@ -85,7 +83,7 @@
         var $topHeader = $('.top-header-bar').height() || 16;
         var $subHeaderHt = 59;
         $(window).on('resize', function(){
-           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +174);
+           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +138);
            $('.log').height(height);
         }).trigger('resize'); //on page load
     });

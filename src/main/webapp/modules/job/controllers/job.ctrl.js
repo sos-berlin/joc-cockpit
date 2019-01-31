@@ -4812,7 +4812,7 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
-                obj.compactView = vm.jobFilters.isCompact;
+                jobs.compactView = vm.jobFilters.isCompact;
                 JobService.get(jobs).then(function (result) {
                     job = mergePermanentAndVolatile(result.jobs[0], job);
                     updatePanelHeight();
@@ -6336,6 +6336,10 @@
             if (vm.jobFilters.filter.state !== 'ALL') {
                 obj.states.push(vm.jobFilters.filter.state);
                 obj.compactView = vm.jobFilters.isCompact;
+                if(vm.jobFilters.filter.state == 'RUNNING'){
+                    obj.compact = false;
+                }
+
                 JobService.get(obj).then(function (res) {
                     obj.jobs = [];
                     angular.forEach(res.jobs, function (value) {
@@ -6617,9 +6621,10 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
-                obj.compactView = vm.jobFilters.isCompact;
-                JobService.get(jobs).then(function (res) {
-                    job = mergePermanentAndVolatile(res.jobs[0], job);
+                jobs.compactView = vm.jobFilters.isCompact;
+                JobService.get(jobs).then(function (res1) {
+                    console.log(res1);
+                    job = mergePermanentAndVolatile(res1.jobs[0], job);
                     updatePanelHeight();
                 });
             });
@@ -6627,7 +6632,6 @@
 
         vm.hideJobChains = function (job) {
             job.showJobChains = false;
-            job.runningTasks = [];
             setTimeout(function () {
                 updatePanelHeight();
             }, 1)
@@ -6982,7 +6986,6 @@
         };
 
         function terminateTaskWithTimeout(job, task, path) {
-
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
@@ -7332,13 +7335,11 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-
             jobs.jobs.push({
                 job: job.path,
                 runTime: vkbeautify.xmlmin(job.runTime),
                 calendars: job.calendars
             });
-
             jobs.auditLog = {};
             if (vm.comments.comment) {
                 jobs.auditLog.comment = vm.comments.comment;
@@ -7741,9 +7742,7 @@
                                             flag = true;
                                             if (vm.jobFilters.filter.state === 'ALL' || res.jobs[0].state._text === vm.jobFilters.filter.state) {
                                                 vm.allJobs[i] = mergePermanentAndVolatile(res.jobs[0], vm.allJobs[i]);
-                                                if (vm.allJobs[i].state && vm.allJobs[i].state._text === 'RUNNING' && vm.showTask) {
-                                                    vm.allJobs[i].showJobChains = true;
-                                                }
+                                                
                                                 if (vm.showTaskPanel && (vm.showTaskPanel.path === vm.allJobs[i].path)) {
                                                     vm.showTaskPanel = vm.allJobs[i];
                                                 }
@@ -7839,9 +7838,6 @@
                             flag = true;
                             if (vm.jobFilters.filter.state === 'ALL' || res.jobs[0].state._text === vm.jobFilters.filter.state) {
                                 vm.allJobs[i] = mergePermanentAndVolatile(res.jobs[0], vm.allJobs[i]);
-                                if (vm.allJobs[i].state && vm.allJobs[i].state._text === 'RUNNING' && vm.showTask) {
-                                    vm.allJobs[i].showJobChains = true;
-                                }
                                 if (vm.showTaskPanel && (vm.showTaskPanel.path === vm.allJobs[i].path)) {
                                     vm.showTaskPanel = vm.allJobs[i];
                                 }
