@@ -19,6 +19,12 @@
         <span class="text-capitalize" translate>label.importAllCalendar</span>?
       </span>
     </span>
+    <span *ngIf="document && document.delete">
+      <span class="text-capitalize" translate>label.delete</span> {{document.name}} ?
+    </span>
+    <span *ngIf="documentArr && documentArr.length>0">
+      <span class="text-capitalize" translate>label.deleteAllDocument</span>?
+    </span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -40,7 +46,6 @@
         <span class="text-danger">This operation can not be undone.</span>
         </p>
       </span>
-
       <div *ngIf="calendar">
         <div *ngIf="calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
           <div class="row text-center">
@@ -178,6 +183,44 @@
           </div>
         </div>
         <div>
+        </div>
+      </div>
+      <div *ngIf="document && !documentArr">
+        <div class="row form-group">
+          <span *ngIf="document.delete" translate class="text">message.deleteDocument</span>
+        </div>
+        <div class="text-left row">
+          <div class="col-sm-12">
+            <div class="row" *ngFor="let doc of document.usedIn">
+              <label class="col-md-2 _600">
+                {{doc.type}} :
+              </label>
+              <div class="col-md-10">
+                <a class="text-hover-primary"(click)="showDocument(doc)">{{doc.path}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="documentArr && documentArr.length>0 && !document">
+        <div class="row form-group">
+          <span  translate class="text">message.deleteAllDocument</span>
+        </div>
+        <div class="text-left row" *ngFor="let document of documentArr" [ngClass]="{'b-t p-t': $index !=0}">
+          <div class="row col-sm-12">
+            <span class="col-md-3" translate="">label.documentation</span>
+            <label class="col-md-9">{{document.path}}</label>
+          </div>
+          <div class="col-sm-12">
+            <div class="row" *ngFor="let doc of document.usedIn">
+              <label class="col-md-2 _600">
+                {{doc.type}} :
+              </label>
+              <div class="col-md-10">
+                <a class="text-hover-primary"(click)="showDocument(doc)">{{doc.path}}</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

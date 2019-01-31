@@ -23,12 +23,13 @@
           <div class="inline">
             <div class="show-block">
               <button *ngIf="object.calendars.length>0" class="btn btn-grey btn-sm m-l-sm"
-                      (click)="exportCalendar()"><i class="fa fa-download"></i>
+                      (click)="exportCalendar()"><i class="fa fa-download"></i>&nbsp;
                 {{'button.exportCalendar' | translate}}
               </button>
               <button *ngIf="object.calendars.length>0 && permission.Calendar.edit.delete"
-                      class="btn btn-grey btn-sm m-l-sm bg-hover-color" (click)="deleteCalendar()"><i
-                class="fa fa-trash"></i> {{'button.deleteCalendar' | translate}}
+                      class="btn btn-grey btn-sm m-l-sm bg-hover-color" (click)="deleteCalendar()">
+                <i class="fa fa-trash"></i>&nbsp;
+                {{'button.deleteCalendar' | translate}}
               </button>
               <div class="inline" [ngClass]="{'hide':object.calendars.length>0}">
                 <div class="btn-group ">
@@ -54,13 +55,11 @@
                     <span class="text-primary">{{calendarFilters.filter.category}}</span>
                   </button>
                   <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                    <a class="dropdown-item"
-                       (click)="changeCategory(category)" *ngFor="let category of categories"
+                    <a class="dropdown-item" (click)="changeCategory(category)" *ngFor="let category of categories"
                        [ngClass]="{'btn-primary': calendarFilters.filter.category==category}">
                       <span>{{category}}</span>
                       <i (click)="loadCalendar('remove');$event.stopPropagation();"
-                         *ngIf="calendarFilters.filter.category == category"
-                         class="fa fa-times-circle-o remove"></i>
+                         *ngIf="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
                     </a>
                   </div>
                 </div>
@@ -88,12 +87,12 @@
                   </div>
                 </div>
                 <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm"
-                        (click)="importCalendar()"><i class="fa fa-upload"></i>
+                        (click)="importCalendar()"><i class="fa fa-upload"></i>&nbsp;
                   {{'button.importCalendar' | translate}}
                 </button>
                 <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm"
-                        (click)="addCalendar()"><i class="fa fa-plus"></i> {{'button.addCalendar' |
-                  translate}}
+                        (click)="addCalendar()"><i class="fa fa-plus"></i>&nbsp;
+                  {{'button.addCalendar' | translate}}
                 </button>
                 <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
               </div>
@@ -125,8 +124,8 @@
         </div>
         <div id="rightPanel">
           <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-            <div class="hide row" [ngClass]="{'show': pageView!='list'}">
-              <div *ngFor="let item of calendars  | groupBy: 'path1'">
+            <div class="row" *ngIf="pageView=='grid'">
+              <div class="w-full" *ngFor="let item of calendars  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -140,25 +139,24 @@
                           class="primary"></i>
                         </label>
                         <div class="text-left block-ellipsis m-l-md">
-                          <span class="text-sm fa"
-                                [ngClass]="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
+                          <span class="text-sm fa" [ngClass]="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>&nbsp;
                           <span ngbTooltip="{{calendar.title}}" [innerHtml]="calendar.name"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <a class=" more-option text-black-lt" data-toggle="dropdown"><i
                             class="text fa fa-ellipsis-h"></i></a>
-                          <div class="dropdown-menu dropdown-ac dropdown-more">
-                            <a class="hide dropdown-item" [ngClass]="{show:permission.Calendar.edit.change}"
-                               (click)="editCalendar(calendar)" translate>button.editCalendar</a>
-                            <a class="hide dropdown-item bg-hover-color"
-                               [ngClass]="{show:permission.Calendar.edit.delete}" (click)="deleteCalendar(calendar)"
-                               translate>button.deleteCalendar</a>
-                            <a class="dropdown-item" (click)="exportCalendar(calendar)"
-                               translate>button.exportCalendar</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" (click)="showUsage(calendar)" translate>button.showUsage</a>
-                            <a class="dropdown-item" (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
-                          </div>
+                          <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
+                              <a class="hide dropdown-item" [ngClass]="{show:permission.Calendar.edit.change}"
+                                 (click)="editCalendar(calendar)" translate>button.editCalendar</a>
+                              <a class="hide dropdown-item bg-hover-color"
+                                 [ngClass]="{show:permission.Calendar.edit.delete}" (click)="deleteCalendar(calendar)"
+                                 translate>button.deleteCalendar</a>
+                              <a class="dropdown-item" (click)="exportCalendar(calendar)"
+                                 translate>button.exportCalendar</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" (click)="showUsage(calendar)" translate>button.showUsage</a>
+                              <a class="dropdown-item" (click)="coreService.copyLink('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                            </div>
                         </div>
                       </div>
                       <div class="text-sm text-left p-t-sm">
@@ -182,11 +180,12 @@
                     <div class="box-footer b-t">
                       <div>
                         <a class="text-left primary-text-hover-color " *ngIf="permission.Calendar.edit.change"
-                           (click)="editCalendar(calendar)"><i class="fa fa-pencil text-black-lt"></i> <span
-                          class="text-black-lt" translate>button.editCalendar</span></a>
+                           (click)="editCalendar(calendar)">
+                          <i class="fa fa-pencil text-black-lt"></i>&nbsp;
+                          <span class="text-black-lt" translate>button.editCalendar</span></a>
                         <a class="pull-right text-hover-color " *ngIf="permission.Calendar.edit.delete"
-                           (click)="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i> <span
-                          class="text-black-lt" translate>button.deleteCalendar</span></a>
+                           (click)="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
+                          <span class="text-black-lt" translate>button.deleteCalendar</span></a>
                       </div>
                     </div>
                   </div>
@@ -204,37 +203,37 @@
                       </label>
                     </th>
                     <th class="menu"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.name</span>
+                    <th (click)="sortBy('name')"><a><span translate>label.name</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>
+                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('type')"><a><span translate>label.type</span>
+                    <th (click)="sortBy('type')"><a><span translate>label.type</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('category')"><a><span translate>label.category</span>
+                    <th (click)="sortBy('category')"><a><span translate>label.category</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('from')"><a><span translate>label.validityFrom</span>
+                    <th (click)="sortBy('from')"><a><span translate>label.validityFrom</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('to')"><a><span translate>label.validityTo</span>
+                    <th (click)="sortBy('to')"><a><span translate>label.validityTo</span>&nbsp;
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
@@ -269,15 +268,13 @@
                     </td>
                     <td>
                       <span>
-                        <a class="text-dark "
-                           (click)="loadAuditLogs(calendar)">{{calendar.name}}</a>
+                        <a class="text-dark" (click)="loadAuditLogs(calendar)">{{calendar.name}}</a>
                         <span *ngIf="calendar.title">-</span>
                         <i class="text-muted">{{calendar.title}}</i>
                       </span>
                     </td>
                     <td [innerHtml]="calendar.path"></td>
-                    <td><span class="label "
-                              [ngClass]="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
+                    <td><span class="label " [ngClass]="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
                               [innerHtml]="calendar.type | translate"></span></td>
                     <td [innerHtml]="calendar.category"></td>
                     <td [innerHtml]="calendar.from | stringToDate1"></td>
@@ -333,7 +330,7 @@
                   <div class="box-tool">
                     <ul class="nav text-muted text-md">
                       <li class="nav-item inline m-l-sm">
-                        <a (click)="hideAuditPanel()"><img src="./assets/images/remove.png"></a>
+                        <a (click)="hideAuditPanel()"><img src="./assets/images/remove.png" alt=""></a>
                       </li>
                     </ul>
                   </div>
@@ -369,6 +366,7 @@
                                      (click)="auditLog.show =true"></i>
                                   <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
                                      *ngIf="auditLog.show" (click)="auditLog.show =false"></i>
+                                  &nbsp;
                                   <span [innerHtml]="auditLog.created | stringToDate"></span>
                                 </td>
                                 <td><span [innerHtml]="auditLog.account"></span></td>
@@ -380,8 +378,9 @@
                                     <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
                                   </span>
                                 </td>
-                                <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
-                                       target="_blank" [innerHtml]="auditLog.ticketLink"></a></td>
+                                <td>
+                                  <a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" [innerHtml]="auditLog.ticketLink"></a>
+                                </td>
                               </tr>
                               <tr class="tableexport-ignore" *ngIf="auditLog.show">
                                 <td colspan="7">
@@ -421,7 +420,6 @@
     </div>
   </div>
 </div>
-
 <div id="spinner" *ngIf="loading || !isLoading">
   <div></div>
 </div>

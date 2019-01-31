@@ -450,6 +450,10 @@ export class CoreService {
     return this.http.post(url, object);
   }
 
+  log(url, object, headers) {
+    return this.http.post(url, object, headers);
+  }
+
   getColor(d: number, type: string): string {
     if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
@@ -506,7 +510,7 @@ export class CoreService {
 
   getTimeFormat(timeFormat: string): string {
     if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
-      let result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
+      const result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
       if (result.match(/hh/g)) {
         return result + ' a';
       } else {
@@ -520,7 +524,7 @@ export class CoreService {
   }
 
   hidePanel() {
-    let dom = $('#rightPanel');
+    const dom = $('#rightPanel');
     dom.addClass('m-l-0 fade-in');
     dom.find('.parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
     $('#leftPanel').hide();
@@ -528,7 +532,7 @@ export class CoreService {
   }
 
   showLeftPanel() {
-    let dom = $('#rightPanel');
+    const dom = $('#rightPanel');
     dom.removeClass('fade-in m-l-0');
     dom.find('.parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
     $('#leftPanel').show();
@@ -575,23 +579,22 @@ export class CoreService {
     }
     this.refreshParent();
 
-    let preferenceObj = JSON.parse(sessionStorage.preferences);
-    let schedulerId = JSON.parse(this.authService.scheduleIds).selected;
+    const preferenceObj = JSON.parse(sessionStorage.preferences);
+    const schedulerId = JSON.parse(this.authService.scheduleIds).selected;
     let url = null;
-    if (preferenceObj.isNewWindow == 'newWindow') {
-
+    if (preferenceObj.isNewWindow === 'newWindow') {
       try {
         if (typeof this.newWindow == 'undefined' || this.newWindow == null || this.newWindow.closed == true) {
-
           if (order && order.historyId && order.orderId) {
-            url = 'log.html/?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + encodeURIComponent(order.jobChain);
+            url = 'log.html/?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain);
           } else if (task && task.taskId) {
-            if (task.job)
-              url = 'log.html/?taskId=' + task.taskId + '&job=' + task.job;
-            else if (job)
-              url = 'log.html/?taskId=' + task.taskId + '&job=' + job;
-            else
-              url = 'log.html/?taskId=' + task.taskId;
+            if (task.job) {
+              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job);
+            } else if (job) {
+              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job;
+            } else {
+              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId);
+            }
           } else {
             return;
           }
@@ -602,40 +605,40 @@ export class CoreService {
 
           this.newWindow = window.open(url, 'Log', 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
 
-          const self = this;
           setTimeout(() => {
-            self.calWindowSize();
+            this.calWindowSize();
           }, 500);
         }
       } catch (e) {
         throw new Error(e.message);
       }
-    } else {
+    } else if (preferenceObj.isNewWindow === 'newTab') {
       if (order && order.historyId && order.orderId) {
-
-        url = '/workflow/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || schedulerId);
+        url = '#/log?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || schedulerId);
       } else if (task && task.taskId) {
-
         if (transfer) {
-          if (task.job)
-            url = '/file_transfer/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
-          else if (job)
-            url = '/file_transfer/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
-          else
-            url = '/file_transfer/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
+          if (task.job) {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || schedulerId);
+          } else if (job) {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&schedulerId=' + (id || schedulerId);
+          } else {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || schedulerId);
+          }
         } else {
-          if (task.job)
-            url = '/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || schedulerId);
-          else if (job)
-            url = '/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || schedulerId);
-          else
-            url = '/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || schedulerId);
+          if (task.job) {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || schedulerId);
+          } else if (job) {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + (id || schedulerId);
+          } else {
+            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || schedulerId);
+          }
         }
-
       } else {
         return;
       }
       window.open(url, '_blank');
+    } else {
+      console.log('Always download..........');
     }
   }
 
@@ -669,13 +672,13 @@ export class CoreService {
       date = new Date();
       let seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2], 10);
       date.setSeconds(fromDate.getSeconds() - seconds);
-    } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+    } else if (/^\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = regex;
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       date = '0d';
     } else if (/^\s*(now)\s*$/i.test(regex)) {
       date = new Date();
-    } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+    } else if (/^\s*[-,+](\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = regex;
     }
     return date;
@@ -684,13 +687,12 @@ export class CoreService {
   parseProcessExecutedRegex(regex, obj): any {
     let fromDate, toDate, date, arr;
 
-    if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
-    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+    if (/^\s*(-)\s*(\d+)([shdwMy])\s*$/.test(regex)) {
+      fromDate = /^\s*(-)\s*(\d+)([shdwMy])\s*$/.exec(regex)[0];
+    } else if (/^\s*(now\s*-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
+      let seconds = parseInt(/^\s*(now\s*-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -701,49 +703,35 @@ export class CoreService {
     } else if (/^\s*(now)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+    } else if (/^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.exec(regex);
       arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+    } else if (/^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.exec(regex);
       arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+    } else if (/^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*$/.exec(regex);
       arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
-
-    } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-      date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+    } else if (/^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
+      date = /^\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*to\s*(-)(\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.exec(regex);
       arr = date[0].split('to');
       fromDate = arr[0].trim();
       toDate = arr[1].trim();
+    } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(regex)) {
+      let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(regex);
+      let arr = reg[0].split('to');
+      let fromTime = moment(arr[0].trim(), 'HH:mm:ss:a');
+      let toTime = moment(arr[1].trim(), 'HH:mm:ss:a');
 
-    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-      let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-      fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1], 10) != 12) {
-        fromDate.setHours(parseInt(time[1], 10) - 12);
-      } else {
-        fromDate.setHours(parseInt(time[1]));
-      }
-
-      fromDate.setMinutes(parseInt(time[2], 10));
-      toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4], 10) != 12) {
-        toDate.setHours(parseInt(time[4], 10) - 12);
-      } else {
-        toDate.setHours(parseInt(time[4], 10));
-      }
-      toDate.setMinutes(parseInt(time[5], 10));
+      fromDate = moment.utc(fromTime);
+      toDate = moment.utc(toTime);
     }
-
     if (fromDate) {
       obj.dateFrom = fromDate;
     }
@@ -872,8 +860,17 @@ export class CoreService {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
   }
 
-  private recursive(data, output) {
+  getParam(name) {
+    let url = window.location.href;
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+    let regexS = '[\\?&]' + name + '=([^&]*)';
+    let regex = new RegExp(regexS);
+    let results = regex.exec(url);
+    return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ''));
+  }
 
+  private recursive(data, output) {
     if (data.folders && data.folders.length > 0) {
       data.folders = _.sortBy(data.folders, 'name');
       for (let i = 0; i < data.folders.length; i++) {

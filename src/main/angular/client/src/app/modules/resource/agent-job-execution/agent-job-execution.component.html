@@ -87,10 +87,12 @@
     </div>
     <div class="col-md-4 text-right">
       <button class="btn btn-sm btn-grey" (click)="advancedSearch()" *ngIf="!showSearchPanel">
-        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+        <span translate>button.advancedSearch</span>&nbsp;
+        <i class="fa fa-angle-down p-l-xs"></i>
       </button>
       <button class="btn btn-sm btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
-        <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
+        <span translate>button.advancedSearch</span>&nbsp;
+        <i class="fa fa-angle-down p-l-xs"></i>
       </button>
     </div>
   </div>
@@ -156,25 +158,25 @@
                               <table class="table table-hover table-bordered" id="agentJobExecution">
                                   <thead>
                                   <tr>
-                                      <th *ngIf="!agentJobExecutionFilters.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                      <th *ngIf="!agentJobExecutionFilters.current" (click)="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>&nbsp;
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && !agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-up "></i>
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'jobschedulerId' && agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-down "></i></a>
                                       </th>
-                                      <th (click)="sortBy('agent')"><a><span translate>label.agentUrl</span>
+                                      <th (click)="sortBy('agent')"><a><span translate>label.agentUrl</span>&nbsp;
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && !agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-up "></i>
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'agent' && agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-down "></i></a>
                                       </th>
-                                      <th (click)="sortBy('cause')"><a><span translate>label.causeOfTheTaskStart</span>
+                                      <th (click)="sortBy('cause')"><a><span translate>label.causeOfTheTaskStart</span>&nbsp;
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && !agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-up "></i>
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'cause' && agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-down "></i></a>
                                       </th>
-                                      <th (click)="sortBy('numOfSuccessfulTasks')"><a><span translate>label.numberOfSuccessfullyExecutedTask</span>
+                                      <th (click)="sortBy('numOfSuccessfulTasks')"><a><span translate>label.numberOfSuccessfullyExecutedTask</span>&nbsp;
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentJobExecutionFilters.reverse"
                                              class="fa fa-caret-up "></i>
                                           <i *ngIf="agentJobExecutionFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentJobExecutionFilters.reverse"

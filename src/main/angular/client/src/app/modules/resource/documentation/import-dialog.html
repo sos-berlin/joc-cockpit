@@ -1,16 +1,15 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.importCalendar</span>
+    <span translate>label.importDocument</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+<form #myForm="ngForm">
   <div class="modal-body p-a" style="min-height: 240px">
-
-    <div class="row hide" [ngClass]="{'show': display}">
-      <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12 hide" [ngClass]="{'show': display}">
         <div class="form-group row">
           <label class="col-sm-3 " translate>label.selectComments</label>
           <div class=" col-sm-9">
@@ -29,7 +28,6 @@
         <div class="form-group row" *ngIf="comments.radio=='predefined'"
              [ngClass]="{'has-error' : ((comment.dirty || comment.touched) && comment.invalid)}">
           <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
-
           <div class="col-sm-9">
             <select class="form-control" [(ngModel)]="comments.comment" name="comment" #comment="ngModel"
                     [required]="required && comments.radio=='predefined'">
@@ -97,86 +95,88 @@
           </div>
         </div>
       </div>
-    </div>
-    <div [hidden]="fileLoading">
-      <div class="table-responsive" *ngIf="uploader.queue.length>0"
-           style="min-height: 250px; max-height: 600px; overflow: auto">
-        <table class="table table-hover table-bordered  ">
-          <thead>
-          <tr>
-            <th width="30">
-              <label class="md-check lg-check">
-                <input type="checkbox" name="check" [(ngModel)]="checkImportCalendar.checkbox"
-                       (change)="checkImportCalendarFn()">
-                <i class="primary"></i>
-              </label>
-            </th>
-            <th><span translate>label.name</span></th>
-            <th><span translate>label.path</span></th>
-            <th><span translate>label.type</span></th>
-            <th><span translate>label.category</span></th>
-            <th><span translate>label.validityFrom</span></th>
-            <th><span translate>label.validityTo</span></th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let calendar of fileContentCalendars">
-          <tr>
-            <td>
-              <label class="md-check">
-                <input type="checkbox" [(checklist)]="importCalendarObj.calendars"
-                       [checklistValue]="calendar" (change)="importCalendarObjChange()"><i class="primary"></i>
-              </label>
-            </td>
-            <td>
-              <span>
-                <span class="text-dark ">{{calendar.path.substring(calendar.path.lastIndexOf('/')+1)}}</span>
-                <span *ngIf="calendar.title">-</span>
-                <i class="text-muted" [innerHtml]="calendar.title"></i>
-                <label class="label label-warning" *ngIf="calendar.isExit"
-                       translate="">label.exist</label>
-              </span>
-            </td>
-            <td [innerHtml]="calendar.path"></td>
-            <td><span class="label "
-                      [ngClass]="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}"
-                      [innerHtml]="calendar.type | translate"></span></td>
-            <td [innerHtml]="calendar.category"></td>
-            <td [innerHtml]="calendar.from | stringToDate1"></td>
-            <td [innerHtml]="calendar.to | stringToDate1"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div ng2FileDrop (fileOver)="onFileSelected($event)"
-           [uploader]="uploader" class="drop-box-full" [hidden]="uploader.queue.length>0">
-        <div><img src="./assets/images/upload.png"></div>
-        <div translate>button.dropFileToUpload</div>
-      </div>
-      <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
-        <div class="upload-btn-wrapper">
-          <button type="button" class="btn btn-grey btn-sm" onclick="openFileOption()">
-            <span translate>button.chooseFileToUpload</span>
-          </button>
-          <input type="file" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
+      <div class="col-md-12">
+        <div class="form-group row" [ngClass]="{ 'has-error' : ((folder.dirty || folder.touched) && folder.invalid) }">
+          <label class="col-sm-3 form-control-label" translate>label.path</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" required name="folder" #folder="ngModel"
+                   placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
+                   [(ngModel)]="document.path">
+            <div *ngIf="folder.invalid && (folder.dirty || folder.touched)"
+                 class="text-danger help-block">
+              <div *ngIf="folder.errors.required" translate>
+                message.requiredError
+              </div>
+              <div *ngIf="folder.invalid && !folder.errors.required" translate>
+                message.invalid
+              </div>
+            </div>
+          </div>
+          <div style="position: absolute; right: 25px;margin-top:6px">
+            <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg cursor"></i></a>
+          </div>
         </div>
       </div>
-
-      <div class="row m-t-md" *ngIf="uploader.queue.length>0">
-        <div class="b-t"></div>
+      <div class="col-md-12" *ngIf="uploader.queue.length === 0">
+        <div class="col-md-12">
+          <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
+            <div><img src="./assets/images/upload.png"></div>
+            <div translate>button.dragAndDropFileToUpload</div>
+          </div>
+          <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
+            <div class="upload-btn-wrapper">
+              <button type="button" class="btn btn-grey btn-sm" >
+                <span translate>button.chooseFileToUpload</span>
+              </button>
+              <input type="file" ng2FileSelect [uploader]="uploader">
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group m-t m-b-xs" *ngIf="uploader.queue.length>0">
-        <button type="submit" class="btn btn-primary btn-sm"
-                [disabled]="importCalendarObj.calendars.length==0 || !myForm.form.valid || submitted" translate>
-          <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-          {{'button.import' | translate}}
-        </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="uploader.queue[0].remove();cancel()"
-                translate>button.cancel
-        </button>
+      <div class="col-md-12">
+        <div class="table-responsive" *ngIf="uploader.queue.length>0"
+             style="min-height: 250px; max-height: 600px; overflow: auto">
+          <table class="table table-hover table-bordered  ">
+            <thead>
+            <tr>
+              <th><span translate>label.name</span></th>
+              <th><span translate>label.size</span></th>
+              <th><span class="text-capitalize" translate>label.progress</span></th>
+              <th><span translate>label.status</span></th>
+              <th *ngIf="uploader.queue[0].isError"><span translate>label.action</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <td><strong>{{item.file.name }}</strong></td>
+              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
+              <td nowrap>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+              </td>
+              <td>
+                <span class="text-success" *ngIf="item.isSuccess"><i class="fa fa-check"></i></span>
+                <span class="text-warn" *ngIf="item.isCancel"><i class="fa fa-ban"></i></span>
+                <span class="text-danger" *ngIf="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+              </td>
+              <td *ngIf="item.isError">
+                <a href="" class="text-hover-color" (click)="item.remove();"><i class="fa fa-remove"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <div *ngIf="fileLoading" class="text-center m-t-lg m-b-md">
-      <div class="cssload-loading text-sm">{{'message.readingContentOfFile' | translate}}...</div>
-    </div>
+  </div>
+  <div class="modal-footer text-left" *ngIf="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" (click)="uploader.uploadAll();" translate>
+      <i class="fa fa-spin fa-spinner" *ngIf="uploader.isUploading"></i>
+       button.import
+    </button>
+    <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="uploader.queue[0].remove();cancel()" translate>
+      button.cancel
+    </button>
   </div>
 </form>

@@ -130,7 +130,7 @@ export class ImportModalComponent implements OnInit {
         jobschedulerId: self.schedulerId
       };
       let result: any;
-      self.coreService.post('/calendar/used', obj).subscribe((res) => {
+      self.coreService.post('calendar/used', obj).subscribe((res) => {
         result = res;
         self.calendrs = result.calendars;
         for (let x = 0; x < result.calendars.length; x++) {
@@ -155,7 +155,7 @@ export class ImportModalComponent implements OnInit {
     } else {
       this.importCalendarObj.calendars = [];
     }
-  };
+  }
 
   importCalendarObjChange() {
     if (this.importCalendarObj.calendars && this.importCalendarObj.calendars.length > 0 && this.fileContentCalendars) {
@@ -2585,7 +2585,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   private startTraverseNode(data) {
-    let self = this;
+    const self = this;
     data.isSelected = true;
     for (let x = 0; x < data.length; x++) {
       self.startTraverseNode(data[x]);
@@ -2594,13 +2594,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   private getCalendarsList(obj, node) {
     let result: any;
-    this.coreService.post('calendars', obj).subscribe(res => {
+    this.coreService.post('calendars', obj).subscribe((res: any) => {
       this.loading = false;
-      result = res;
+      result = res.calendars;
       for (let i = 0; i < result.length; i++) {
         result[i].path1 = result[i].path.substring(0, result[i].path.lastIndexOf('/')) || result[i].path.substring(0, result[i].path.lastIndexOf('/') + 1);
       }
-      this.calendars = result.calendars;
+      this.calendars = result;
       if (node) {
         this.startTraverseNode(node.data);
       }

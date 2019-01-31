@@ -49,11 +49,11 @@
                             <span translate>button.addUser</span>
                         </button>
                         <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addMaster()" >
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.addMaster</span>
                         </button>
                         <button *ngIf="route.match('/users/master')" class="btn btn-grey btn-sm m-l-sm" (click) = "addRole()" >
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.addRole</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" [disabled]="!isLdapRealmEnable" (click)="addLdapRealm()"
@@ -65,15 +65,15 @@
                             <span translate>button.enableJOCCluster</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="editMainSection()">
-                            <i class="fa fa-pencil"></i>
+                            <i class="fa fa-pencil"></i>&nbsp;
                             <span translate>button.updateSection</span>
                         </button>
                         <button *ngIf="route === '/users/main_section'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="addMainSection()">
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.addEntry</span>
                         </button>
-                        <button *ngIf="route === '/users/profiles'" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="deleteProfiles()">
-                            <i class="fa fa-trash"></i>
+                        <button *ngIf="route === '/users/profiles' && isButtonShow" type="button" class="btn btn-sm btn-grey m-l-sm" (click)="deleteProfiles()">
+                            <i class="fa fa-trash"></i>&nbsp;
                             <span translate>button.deleteProfile</span>
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" (click)="addFolder()">
@@ -81,7 +81,7 @@
                             {{'button.addFolder' | translate}}
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-l-sm" *ngIf="route.match('/users/permissions')" [hidden]="pageView=='grid'" (click)="addPermission();" >
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"></i>&nbsp;
                             {{'button.addPermission' | translate}}
                         </button>
                         <div class="hide" [ngClass]="{'show-block': route.match('/users/permissions')}">
@@ -97,7 +97,7 @@
 <div>
     <div class="padding p-b-0">
         <div *ngIf = "showTabs" class="row m-b m-t-xs">
-            <div class="col-md-8 col-sm-8">
+            <div class="col-md-12">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
                         <a class="nav-link" routerLink = "account" routerLinkActive="active" >
@@ -129,9 +129,10 @@
                         </a>
                     </li>
                 </ul>
-            </div>
-            <div *ngIf = "route === '/users/account'" class="col-md-4 col-sm-4">
-                <input type="search" #input (keyup) = "searchBar(input.value)" id="searchBar"  class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
+              <div *ngIf = "route === '/users/account'" class="inline pull-right search-box-field">
+                <input type="search" #input (keyup) = "searchBar(input.value)" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey">
+                 <i *ngIf="searchKey" class="fa fa-times search-close" (click)="searchKey = ''"></i>
+              </div>
             </div>
         </div>
         <div class="row m-t-sm">

@@ -1,6 +1,6 @@
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +11,7 @@ import * as _ from 'underscore';
   templateUrl: './profiles.component.html',
   styleUrls: ['./profiles.component.css']
 })
-export class ProfilesComponent implements OnInit {
+export class ProfilesComponent implements OnInit, OnDestroy {
   preferences: any = {};
   profiles: any = [];
   subscription1: Subscription;
@@ -29,8 +29,9 @@ export class ProfilesComponent implements OnInit {
     });
 
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
-      if (res === 'DELETE_PROFILES')
+      if (res === 'DELETE_PROFILES') {
         this.deleteMainProfile();
+      }
     });
   }
 
@@ -39,41 +40,39 @@ export class ProfilesComponent implements OnInit {
     this.preferences = JSON.parse(sessionStorage.preferences);
   }
 
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
   setUserData(res) {
     this.users = res;
-    if (res)
+    if (res) {
       this.profiles = res.profiles;
+    }
   }
 
   checkAllProfileFnc() {
-    if (!this.checkAll.checkbox && this.profiles.length > 0) {
-      let data = this.profiles.slice((this.preferences.entryPerPage * (this.prof.currentPage - 1)), (this.preferences.entryPerPage * this.prof.currentPage));
-      this.object.profiles = [];
-      let self = this;
-      data.forEach(function (data) {
-        self.object.profiles.push(data);
-      });
+    if (this.checkAll.checkbox && this.profiles.length > 0) {
+      this.object.profiles = this.profiles.slice((this.preferences.entryPerPage * (this.prof.currentPage - 1)), (this.preferences.entryPerPage * this.prof.currentPage));
+      this.dataService.announceFunction('IS_DELETE_PROFILES_TRUE');
     } else {
       this.object.profiles = [];
+      this.dataService.announceFunction('IS_DELETE_PROFILES_FALSE');
     }
   }
 
   checkProfileFnc(profile, i, event) {
-    let checked = event.target.checked;
-    if (checked) {
-      if (this.object.profile) {
-      } else {
-        this.object.profile = [];
-        this.object.profiles = [];
-      }
-      this.object.profile.push(profile);
-      this.object.profiles = _.clone(this.object.profile);
+    if (event.target.checked) {
+      this.checkAll.checkbox = this.object.profiles.length === this.profiles.slice((this.preferences.entryPerPage * (this.prof.currentPage - 1)), (this.preferences.entryPerPage * this.prof.currentPage)).length;
     } else {
-      for (let j = 0; j < this.object.profile.length; j++) {
-        if (profile.account == this.object.profile[j].account)
-          this.object.profile.splice(j, 1);
-        this.object.profiles = _.clone(this.object.profile);
-      }
+      this.object.profiles = [];
+      this.checkAll.checkbox = false;
+    }
+    if (this.object.profiles.length > 0) {
+      this.dataService.announceFunction('IS_DELETE_PROFILES_TRUE');
+    } else {
+      this.dataService.announceFunction('IS_DELETE_PROFILES_FALSE');
     }
   }
 
@@ -109,13 +108,11 @@ export class ProfilesComponent implements OnInit {
       main: this.users.main,
       profiles: this.profiles
     };
-    console.log(obj);
     this.coreService.post('security_configuration/write', obj).subscribe(res => {
       console.log(res);
     }, err => {
 
     });
   }
-
 
 }

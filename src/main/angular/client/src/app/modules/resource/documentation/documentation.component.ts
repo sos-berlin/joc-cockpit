@@ -9,7 +9,24 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
+import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
+import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import * as _ from 'underscore';
+
+declare const $;
+const API_URL = './api/';
+
+@Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './show-dialog.html'
+})
+export class ShowModalComponent {
+  @Input() document: any;
+
+  constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
+  }
+}
 
 @Component({
   selector: 'app-ngbd-modal-content',
@@ -19,16 +36,20 @@ export class ImportModalComponent implements OnInit {
 
   @Input() schedulerId: any;
   @Input() display: any;
+  @Input() selectedPath: any;
 
+  uploader: FileUploader;
   fileLoading = false;
   messageList: any;
   required = false;
   submitted = false;
   comments: any = {};
-  uploader: FileUploader;
+  document = {path: ''};
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
-    this.uploader = new FileUploader({url: ''});
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService, public modalService: NgbModal, private authService: AuthService, public translate: TranslateService, public toasterService: ToasterService) {
+    this.uploader = new FileUploader({
+      url: API_URL + 'documentations/import'
+    });
   }
 
   ngOnInit() {
@@ -39,18 +60,57 @@ export class ImportModalComponent implements OnInit {
     if (sessionStorage.$SOS$FORCELOGING == 'true') {
       this.required = true;
     }
-  }
 
-  onSubmit() {
+    this.document.path = this.selectedPath;
+    this.uploader.onBeforeUploadItem = (item: any) => {
+      let obj: any = {
+        folder: this.document.path,
+        jobschedulerId: this.schedulerId,
+        accessToken: this.authService.accessTokenId,
+        name: item.file.name
+      };
+      if (this.comments.comment) {
+        obj.comment = this.comments.comment;
+      }
+      if (this.comments.timeSpent) {
+        obj.timeSpent = this.comments.timeSpent;
+      }
+      if (this.comments.ticketLink) {
+        obj.ticketLink = this.comments.ticketLink;
+      }
+      item.file.name = encodeURIComponent(item.file.name);
+      this.uploader.options.additionalParameter = obj;
+    };
 
-  }
+    this.uploader.onCompleteItem = (fileItem: any, response, status, headers) => {
+      if (status === 200) {
+        this.activeModal.close('success');
+      }
+    };
 
-  onFileSelected(event: any): void {
-
+    this.uploader.onErrorItem = (fileItem, response: any, status, headers) => {
+      if (response.error) {
+        this.toasterService.pop('error', response.error.code, response.error.message);
+      }
+    };
   }
 
   cancel() {
     this.activeModal.close('');
+  }
+
+  getFolderTree() {
+    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.paths = [];
+    modalRef.componentInstance.isCollapsed = true;
+    modalRef.componentInstance.showCheckBox = false;
+    modalRef.componentInstance.type = 'DOCUMENTATION';
+    modalRef.result.then((path) => {
+      this.document.path = path;
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 }
 
@@ -76,6 +136,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   document_expand_to: any = {};
   documentTypes = ['ALL', 'HTML', 'XML', 'XSL', 'XSD', 'JAVASCRIPT', 'JSON', 'CSS', 'MARKDOWN', 'GIF', 'JPEG', 'PNG'];
   subscription: Subscription;
+  selectedPath: string;
 
   @ViewChild(TreeComponent) child;
 
@@ -147,7 +208,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
       folders: [{folder: node.data.path, recursive: true}],
       compact: true
     };
-
+    this.selectedPath = node.data.path;
     this.getDocumentationsList(obj, node);
   }
 
@@ -333,164 +394,166 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     });
   }
 
+  previewDocument(document) {
+    const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&jobschedulerId=' + this.schedulerIds.selected;
+    if (this.preferences.isDocNewWindow === 'newWindow') {
+      window.open(link, 'Documenation, top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+    } else {
+      window.open(link, '_blank');
+    }
+
+  }
+
   showDocumentUsage(document) {
-    /*    vm.document = angular.copy(document);
-        ResourceService.documentationUsed({
-          documentation: vm.document.path,
-          jobschedulerId: vm.schedulerIds.selected
-        }).then(function (res) {
-          vm.document.usedIn = res.objects;
+    let documentObj = _.clone(document);
+    this.coreService.post('documentation/used', {
+      documentation: document.path,
+      jobschedulerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      documentObj.usedIn = res.objects || [];
 
-        });
-        var modalInstance1 = $uibModal.open({
-          templateUrl: 'modules/core/template/show-usage-document-dialog.html',
-          controller: 'DialogCtrl',
-          scope: vm,
-          backdrop: 'static'
-        });
-        modalInstance1.result.then(function () {
+      const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
+      modalRef.componentInstance.document = documentObj;
+      modalRef.result.then(() => {
 
-        }, function () {
+      }, () => {
 
-        });*/
+      });
+    });
   }
 
   exportDocument(document) {
-    /*    let obj = {jobschedulerId: vm.schedulerIds.selected, documentations: []};
-        if (document) {
-          obj.documentations.push(document.path);
-        } else {
-          angular.forEach(vm.object.documents, function (value) {
-            obj.documentations.push(value.path);
-          });
-        }
-        ResourceService.exportDocumentations(obj).then(function (res) {
-          $("#tmpFrame").attr('src', './api/documentations/export?jobschedulerId=' + vm.schedulerIds.selected + '&filename=' + res.filename + '&accessToken=' + SOSAuth.accessTokenId);
-        });*/
+    let obj = {jobschedulerId: this.schedulerIds.selected, documentations: []};
+    if (document) {
+      obj.documentations.push(document.path);
+    } else {
+      this.object.documents.forEach((value) => {
+        obj.documentations.push(value.path);
+      });
+    }
+    this.coreService.post('documentations/export/info', obj).subscribe((res: any) => {
+      $('#tmpFrame').attr('src', API_URL + 'documentations/export?jobschedulerId=' +
+        this.schedulerIds.selected + '&filename=' + res.filename + '&accessToken=' +
+        this.authService.accessTokenId);
+    });
   }
 
   importDocument() {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.display = this.preferences.auditLog;
-    modalRef.result.then(() => {
-
+    modalRef.componentInstance.selectedPath = this.selectedPath;
+    modalRef.result.then((res) => {
+      if (res === 'success') {
+        console.log(res);
+        this.init();
+      }
     }, function () {
 
     });
   }
 
   deleteDocumentations(document) {
-/*    let obj = {};
-    obj.jobschedulerId = vm.schedulerIds.selected;
-    obj.documentations = [];
+    let obj: any = {
+      jobschedulerId: this.schedulerIds.selected,
+      documentations: []
+    };
     if (document) {
       obj.documentations.push(document.path);
     } else {
-      angular.forEach(vm.object.documents, function (value) {
+      this.object.documents.forEach((value) => {
         obj.documentations.push(value.path);
       });
     }
-    vm.document = angular.copy(document);
+    let documentObj = _.clone(document);
     if (document) {
-      vm.documentArr = undefined;
-      vm.document.delete = true;
-      ResourceService.documentationUsed({
-        documentation: vm.document.path,
-        jobschedulerId: vm.schedulerIds.selected
-      }).then(function (res) {
-        vm.document.usedIn = res.objects;
-
+      documentObj.delete = true;
+      this.coreService.post('documentation/used', {
+        documentation: documentObj.path,
+        jobschedulerId: this.schedulerIds.selected
+      }).subscribe((res: any) => {
+        documentObj.usedIn = res.objects || [];
+        this.deleteDocumentFn(obj, documentObj, null);
       });
     } else {
-      vm.documentArr = angular.copy(vm.object.documents);
-      angular.forEach(vm.documentArr, function (value) {
-        ResourceService.documentationUsed({
-          documentation: value.path,
-          jobschedulerId: vm.schedulerIds.selected
-        }).then(function (res) {
-          value.usedIn = res.objects;
+      let documentArr = _.clone(this.object.documents);
+      for (let i = 0; i < documentArr.length; i++) {
+        this.coreService.post('documentation/used', {
+          documentation: documentArr[i].path,
+          jobschedulerId: this.schedulerIds.selected
+        }).subscribe((res: any) => {
+          documentArr[i].usedIn = res.objects || [];
+          if (i === documentArr.length - 1) {
+            this.deleteDocumentFn(obj, null, documentArr);
+          }
         });
-      });
-
-    }*/
-    // this.deleteDocumentFn(obj, document);
+      }
+    }
   }
 
   deleteDocument(obj, document) {
-    /*    ResourceService.deleteDocumentations(obj).then(function () {
-          if (document) {
-            for (let i = 0; i < vm.allDocumentations.length; i++) {
-              if (vm.allDocumentations[i].path === document.path) {
-                vm.allDocumentations.splice(i, 1);
-                break;
-              }
-            }
-          } else {
-            for (let i = 0; i < vm.object.documents.length; i++) {
-              for (let j = 0; j < vm.allDocumentations.length; j++) {
-                if (vm.allDocumentations[j].path === vm.object.documents[i].path) {
-                  vm.allDocumentations.splice(j, 1);
-                  break;
-                }
-              }
+    this.coreService.post('documentations/delete', obj).subscribe(res => {
+      if (document) {
+        for (let i = 0; i < this.documents.length; i++) {
+          if (this.documents[i].path === document.path) {
+            this.documents.splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        for (let i = 0; i < this.object.documents.length; i++) {
+          for (let j = 0; j < this.documents.length; j++) {
+            if (this.documents[j].path === this.object.documents[i].path) {
+              this.documents.splice(j, 1);
+              break;
             }
           }
-        });*/
+        }
+      }
+    });
   }
 
-  private deleteDocumentFn(obj, document) {
-    /*    const self = this;
-        if (vm.userPreferences.auditLog) {
-          vm.comments = {};
-          vm.comments.radio = 'predefined';
-          vm.comments.type = 'Documentation';
-          vm.comments.operation = 'Delete';
-          if (document) {
-            vm.comments.name = document.path;
+  private deleteDocumentFn(obj, document, arr) {
+    const self = this;
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: 'Documentation',
+        operation: 'Delete',
+        name: document ? document.path : ''
+      };
+      if (!document) {
+        this.object.documents.forEach((value, index) => {
+          if (index === this.object.documents.length - 1) {
+            comments.name = comments.name + ' ' + value.path;
           } else {
-            vm.comments.name = '';
-            angular.forEach(vm.object.documents, function (value, index) {
-              if (index == vm.object.documents.length - 1) {
-                vm.comments.name = vm.comments.name + ' ' + value.path;
-              } else {
-                vm.comments.name = value.path + ', ' + vm.comments.name;
-              }
-            });
+            comments.name = value.path + ', ' + comments.name;
           }
-          var modalInstance = $uibModal.open({
-            templateUrl: 'modules/core/template/comment-dialog.html',
-            controller: 'DialogCtrl',
-            scope: vm,
-            backdrop: 'static'
-          });
-          modalInstance.result.then(function () {
-            obj.auditLog = {};
-            if (vm.comments.comment)
-              obj.auditLog.comment = vm.comments.comment;
-            if (vm.comments.timeSpent)
-              obj.auditLog.timeSpent = vm.comments.timeSpent;
+        });
+      }
 
-            if (vm.comments.ticketLink)
-              obj.auditLog.ticketLink = vm.comments.ticketLink;
-            self.deleteDocument(obj, document);
-          }, function () {
+      const modalRef = this.modalService.open(CommentModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.document = document;
+      modalRef.componentInstance.documentArr = arr;
+      modalRef.componentInstance.comments = comments;
+      modalRef.componentInstance.obj = obj;
+      modalRef.componentInstance.url = 'documentations/delete';
+      modalRef.result.then(() => {
+          this.deleteDocument(obj, document);
+      }, function () {
 
-          });
+      });
 
-        } else {
-          var modalInstance1 = $uibModal.open({
-            templateUrl: 'modules/core/template/confirm-dialog.html',
-            controller: 'DialogCtrl1',
-            scope: vm,
-            backdrop: 'static'
-          });
-          modalInstance1.result.then(function () {
-            self.deleteDocument(obj, document);
-          }, function () {
+    } else {
+      const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static'});
+      modalRef.componentInstance.document = document;
+      modalRef.componentInstance.documentArr = arr;
+      modalRef.result.then(() => {
+        this.deleteDocument(obj, null);
+      }, function () {
 
-          });
-        }*/
+      });
+    }
   }
 }
 

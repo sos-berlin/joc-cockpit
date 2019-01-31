@@ -56,7 +56,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let self = this;
     let obj = {
       folders: [],
-      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
+      state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
       jobschedulerId: this.schedulerIds.selected,
       compact: true
     };
@@ -75,7 +75,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
       folders: [{folder: data.path, recursive: type}],
-      state: this.agentsFilters.filter.state != 'all' ? this.agentsFilters.filter.state : undefined,
+      state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
     };
     let result: any;
     this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res) => {
@@ -100,7 +100,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
       folders: [{folder: node.data.path, recursive: true}],
-      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
+      type: this.agentsFilters.filter.type !== 'ALL' ? this.agentsFilters.filter.type : undefined,
       compact: true
     };
     this.getAgentClassList(obj, node);
@@ -111,7 +111,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     this.loading = true;
     let obj = {
       folders: [{folder: data.path, recursive: false}],
-      type: this.agentsFilters.filter.type != 'ALL' ? this.agentsFilters.filter.type : undefined,
+      type: this.agentsFilters.filter.type !== 'ALL' ? this.agentsFilters.filter.type : undefined,
       jobschedulerId: this.schedulerIds.selected,
       compact: true
     };

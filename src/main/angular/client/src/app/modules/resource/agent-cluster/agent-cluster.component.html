@@ -23,8 +23,8 @@
                     <div class="inline">
                         <div class="show-block">
                             <div class="btn-group hidden-btn-group">
-                              <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='all'}"
-                                      (click)="loadAgents('all')" translate>button.allAgentCluster
+                              <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}"
+                                      (click)="loadAgents('ALL')" translate>button.allAgentCluster
                               </button>
                               <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}"
                                       (click)="loadAgents('0')" translate>button.healthyAgentCluster
@@ -41,7 +41,7 @@
                                       translate>label.status
                               </button>
                               <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='all'}" (click)="loadAgents('all')"
+                                <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}" (click)="loadAgents('ALL')"
                                    translate>button.allAgentCluster
                                 </a>
                                 <a class="dropdown-item" [ngClass]="{'btn-primary': agentsFilters.filter.state=='0'}" (click)="loadAgents('0')"
@@ -90,11 +90,11 @@
     </div>
     <div class="col-md-4 text-right" *ngIf="agentClusters && agentClusters.length>0 && pageView=='list'">
       <button class="btn btn-sm btn-grey" (click)="expandDetails()">
-        <i class="fa fa fa-caret-down"></i>
+        <i class="fa fa-caret-down"></i>&nbsp;
         <span translate>button.expandDetails</span>
       </button>
       <button class="btn btn-sm btn-grey m-l-sm" (click)="collapseDetails()">
-        <i class="fa fa fa-caret-up"></i>
+        <i class="fa fa-caret-up"></i>&nbsp;
         <span translate>button.collapseDetails</span>
       </button>
     </div>
@@ -114,10 +114,10 @@
                 </div>
                 <div id="rightPanel">
                     <div class="hide m-t-xs" [ngClass]="{'show': isLoading}" [hidden]="loading">
-                        <div class="hide row " [ngClass]="{'show': pageView=='grid'}">
-                            <div *ngFor="let item of agentClusters | groupBy: 'path1'">
+                        <div class="row " *ngIf="pageView=='grid'">
+                            <div class="w-full" *ngFor="let item of agentClusters | groupBy: 'path1'">
                                 <div class="col-sm-12" style="margin-bottom: 10px">
-                                    <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
+                                    <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                                 </div>
                                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                                      *ngFor="let cluster of item.value | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
@@ -125,8 +125,8 @@
                                         <div class="box-body">
                                             <div>
                                                 <span class="text-left ">
-                                                    <span class="fa fa-stop pos-abt m-t-xs text-xs" [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>
-                                                    <i class="fa fa-server m-l m-r-xs"></i>
+                                                    <span class="fa fa-stop pos-abt m-t-xs text-xs" [ngClass]="coreService.getColor(cluster.state.severity,'text')"></span>&nbsp;
+                                                    <i class="fa fa-server m-l m-r-xs"></i>&nbsp;
                                                     <span ngbTooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
                                                           [innerHtml]="cluster.path.substring(cluster.path.lastIndexOf('/')+1)"></span>
                                                     <span class="text-sm _600 pull-right" ngbTooltip="{{cluster._type | translate}}"></span>
@@ -163,55 +163,55 @@
                                         <thead>
                                         <tr>
                                             <th width="45"><span translate>label.action</span></th>
-                                            <th (click)="sortBy('path')"><a><span translate>label.agentCluster</span>
+                                            <th (click)="sortBy('path')"><a><span translate>label.agentCluster</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('state._text')"><a><span translate>label.status</span>
+                                            <th (click)="sortBy('state._text')"><a><span translate>label.status</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
                                                            class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('numOfAgents.any')"><a><span translate>label.totalAgents</span>
+                                            <th (click)="sortBy('numOfAgents.any')"><a><span translate>label.totalAgents</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('numOfAgents.running')"><a><span translate>label.runningAgents</span>
+                                            <th (click)="sortBy('numOfAgents.running')"><a><span translate>label.runningAgents</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
+                                            <th (click)="sortBy('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('_type')"><a><span translate>label.schedulingType</span>
+                                            <th (click)="sortBy('_type')"><a><span translate>label.schedulingType</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('surveyDate')"><a><span translate>label.lastUpdateTime</span>
+                                            <th (click)="sortBy('surveyDate')"><a><span translate>label.lastUpdateTime</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'surveyDate' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'surveyDate' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('maxProcesses')"><a><span translate>label.maxProcesses</span>
+                                            <th (click)="sortBy('maxProcesses')"><a><span translate>label.maxProcesses</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'maxProcesses' && agentsFilters.reverse"
                                                    class="fa fa-caret-down "></i></a>
                                             </th>
-                                            <th (click)="sortBy('numOfProcesses')"><a><span translate>label.runningProcesses</span>
+                                            <th (click)="sortBy('numOfProcesses')"><a><span translate>label.runningProcesses</span>&nbsp;
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && !agentsFilters.reverse"
                                                    class="fa fa-caret-up "></i>
                                                 <i *ngIf="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
@@ -233,7 +233,7 @@
                                             </td>
                                             <td>
                                                 <i class="cursor fa fa-caret-down noExl" *ngIf="!cluster.show" (click)="showAgents(cluster)"></i>
-                                                <i class="cursor fa fa-caret-up noExl" *ngIf="cluster.show" (click)="hideAgents(cluster)"></i>
+                                                <i class="cursor fa fa-caret-up noExl" *ngIf="cluster.show" (click)="hideAgents(cluster)"></i>&nbsp;
                                                 <a class="text-hover-primary" [innerHtml]="cluster.path" (click)="showProcessClass(cluster.path)"></a>
                                             </td>
                                             <td><span class="label" [ngClass]="coreService.getColor(cluster.state.severity,'bg')">

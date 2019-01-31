@@ -19,6 +19,7 @@ const routes: Routes = [
       {path: 'resources', loadChildren: './../resource/resource.module#ResourceModule'},
       {path: 'user', loadChildren: './../user/user.module#UserModule'},
       {path: 'error', loadChildren: './../error/error.module#ErrorModule'},
+      {path: 'log', loadChildren: './../log/log.module#LogModule'},
       {path: 'users', loadChildren: './../admin/admin.module#AdminModule'}
     ]
   }

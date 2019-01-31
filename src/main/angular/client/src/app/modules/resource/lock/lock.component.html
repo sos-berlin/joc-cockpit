@@ -72,7 +72,7 @@
             <div class="hide row " [ngClass]="{'show': pageView=='grid'}">
               <div *ngFor="let item of locks  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
-                  <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
+                  <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
                 </div>
                 <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                      *ngFor="let lock of item.value | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
@@ -80,7 +80,7 @@
                     <div class="box-body">
                       <div class="text-left block-ellipsis">
                         <span class="text-left">
-                          <i class="fa fa-lock text-sm "></i>
+                          <i class="fa fa-lock text-sm "></i>&nbsp;
                           <span [innerHtml]="lock.name"></span>
                         </span>
                       </div>
@@ -119,37 +119,37 @@
                   <thead>
                   <tr>
                     <th class="noExl" width="45"><span translate>label.action</span></th>
-                    <th (click)="sortBy('name')"><a><span translate>label.lockName</span>
+                    <th (click)="sortBy('name')"><a><span translate>label.lockName</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'name' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('path')"><a><span translate>label.path</span>
+                    <th (click)="sortBy('path')"><a><span translate>label.path</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('status')"><a><span translate>label.status</span>
+                    <th (click)="sortBy('status')"><a><span translate>label.status</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'status' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'status' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
+                    <th (click)="sortBy('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
+                    <th (click)="sortBy('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
                          class="fa fa-caret-down "></i></a>
                     </th>
-                    <th (click)="sortBy('queue.length')"><a><span translate>label.numberQueued</span>
+                    <th (click)="sortBy('queue.length')"><a><span translate>label.numberQueued</span>&nbsp;
                       <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
                          class="fa fa-caret-up "></i>
                       <i *ngIf="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"

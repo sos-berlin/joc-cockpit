@@ -30,8 +30,8 @@
                   <span class="text-primary" [innerHTML]="documentFilters.filter.type"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                  <a class="dropdown-item" (click)="loadDocument()" *ngFor="let type of documentTypes"
-                     [ngClass]="{'btn-primary': documentFilters.filter.type==type}">
+                  <a class="dropdown-item" (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes"
+                     [ngClass]="{'btn-primary': documentFilters.filter.type == type}">
                     <span>{{type}}</span>
                   </a>
                 </div>
@@ -76,7 +76,7 @@
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-        <div class="hide-bdocument sidebar-btn resize-cursor">
+        <div class="hide-block sidebar-btn resize-cursor">
           <i class="fa fa-angle-double-right p-l-sm" (click)="coreService.showLeftPanel()"></i>
         </div>
         <div appResizable id="leftPanel" class="sticky leftPanel resource">
@@ -85,9 +85,9 @@
            </div>
         </div>
         <div id="rightPanel">
-          <div class="hide m-t-xs" [ngClass]="{'show': isLoading}" [hidden]="loading">
-            <div class="hide row " [ngClass]="{'show': pageView=='grid'}">
-              <div *ngFor="let item of documents  | groupBy: 'path1'">
+          <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
+            <div class="row" *ngIf="pageView=='grid'">
+              <div class="w-full" *ngFor="let item of documents  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                   <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
               </div>
             </div>
-            <div class=" box p-a" *ngIf="pageView=='list' && documents.length>0">
+            <div class=" box p-a m-t-xs" *ngIf="pageView=='list' && documents.length>0">
               <div class="table-responsive" id="documentDivId">
                 <table class="table table-hover table-bordered" id="documentTableId">
                   <thead>
@@ -182,10 +182,10 @@
                       </label>
                     </td>
                     <td>
-                      <div class="btn-group dropdown">
+                      <div appDropdown class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                           <i class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                           <a class="dropdown-item" (click)="previewDocument(document)" translate>button.previewDocument</a>
                           <a class="dropdown-item" *ngIf="permission.Documentation.export" (click)="exportDocument(document)" translate>button.exportDocument</a>
                           <a class="dropdown-item bg-hover-color" *ngIf="permission.Documentation.delete" (click)="deleteDocumentations(document)" translate>button.deleteDocument</a>

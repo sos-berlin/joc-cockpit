@@ -3,19 +3,10 @@
       <table class="table table-hover table-bordered ">
           <thead>
           <tr>
-              <th width="55"><span translate>label.action</span></th>
-              <th [class.active]="order === 'user'" (click)="sortBy('user')">
-                <span translate>label.user</span>
-                <i class = "arrows fa fa-caret-up" [hidden]="reverse"></i>
-                <i class = "arrows fa fa-caret-down" [hidden]="!reverse"></i>
-             </th>
-             <th><span translate>label.password</span></th>
-             <th [class.active]="order === 'roles'"
-                (click)="sortBy('roles')">
-                <span translate>label.roles</span>
-                <i class = "arrows fa fa-caret-up" [hidden]="reverse"></i>
-                <i class = "arrows fa fa-caret-down" [hidden]="!reverse"></i>
-            </th>
+            <th class="menu"><span translate>label.action</span></th>
+            <th><span translate>label.user</span></th>
+            <th><span translate>label.password</span></th>
+            <th><span translate>label.roles</span></th>
           </tr>
           </thead>
            <tbody *ngFor="let user of users | filter: searchKey | orderBy: order:reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage, currentPage: usr.currentPage }; let i = index">
@@ -30,7 +21,7 @@
                         </div>
                     </div>
                   </td>
-                  <td><a  (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
+                  <td><a (click)="showMaster(user.user)" class="text-hover-primary" [innerHtml]="user.user  | decodeSpace"></a></td>
                   <td><span>********</span></td>
                   <td>
                      <div *ngFor="let role of user.roles"><span [innerHtml] = "role"></span></div>
@@ -69,7 +60,6 @@
        <!-- Entries per page end -->
       <div class="inline text-sm" [ngClass]="{'m-t-xs p-t-xxs m-l-sm': (users | filter: searchKey).length > 10}"  *ngIf="(users | filter: searchKey).length >0">
             <span translate>label.total</span> <span> {{(users | filter: searchKey).length}} </span>
-
             <span translate *ngIf="(users | filter: searchKey).length >1">label.usersFound</span>
           <span translate *ngIf="(users | filter: searchKey).length ===1">label.userFound</span>
       </div>

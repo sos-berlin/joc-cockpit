@@ -10,8 +10,10 @@ declare var $;
 export class DeleteModalComponent implements OnInit, OnDestroy {
 
   @Input() calendar: any;
+  @Input() document: any;
   @Input() importCalendars: any;
   @Input() calendarArr: any;
+  @Input() documentArr: any;
   @Input() user: any;
   @Input() role: any;
   @Input() master: any;

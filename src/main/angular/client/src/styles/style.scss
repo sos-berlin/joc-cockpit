@@ -5770,3 +5770,29 @@ General CSS
     bottom: 16px;
     transition: all .3s;
 }
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+  &:hover {
+    color: rgba(0, 0, 0, 0.9);
+    background-color: #e0e0e0;
+    border-color: #d0d0d0;
+  }
+}
+.progress-bar{
+  height: 10px;
+  border-radius: 50px;
+  background: rgba(0, 128, 0, 0.2);
+  margin-top: 5px;
+}
+.search-box-field,.search-filed-w{width:180px;display:inline-table}.show-in-single-line i{padding-top:3px;padding-right:4px;opacity:.9}
+.search-close{position:absolute;opacity:.6;margin-left:-12px;margin-top:3px;cursor:pointer}.search-close:hover{opacity:.9!important}
