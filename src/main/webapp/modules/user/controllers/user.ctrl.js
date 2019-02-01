@@ -2356,8 +2356,8 @@
 
             vm.folder = {};
             vm.folder.recursive = true;
+            vm.folder.calendar = false;
             vm.newFolder = true;
-
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
                 controller: 'DialogCtrl',
@@ -2366,12 +2366,19 @@
             });
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
-                    vm.folderArr.push(vm.folder);
+                    if (vm.folder.calendar && vm.folder.folder.indexOf('/*calendar') == -1) {
+                        vm.folderArr.push({folder:'/*calendar' + vm.folder.folder, recursive: vm.folder.recursive});
+                    } else {
+                        vm.folderArr.push({folder: vm.folder.folder, recursive: vm.folder.recursive});
+                    }
                 }
-
                 if (vm.folderObj.paths && vm.folderObj.paths.length > 0) {
                     angular.forEach(vm.folderObj.paths, function (path) {
-                        vm.folderArr.push({folder: path, recursive: vm.folder.recursive});
+                        if (vm.folder.calendar && path.indexOf('/*calendar') == -1) {
+                            vm.folderArr.push({folder: '/*calendar' + path, recursive: vm.folder.recursive});
+                        } else {
+                            vm.folderArr.push({folder: path, recursive: vm.folder.recursive});
+                        }
                     });
                 }
                 saveInfo();
@@ -2383,12 +2390,14 @@
                 vm.object = {};
                 vm.folderObj.paths = [];
             });
-
         });
         vm.editFolder = function (folder) {
             vm.folder = angular.copy(folder);
             vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
             vm.newFolder = false;
+            if (vm.folder.folder.indexOf('/*calendar') == 0) {
+                vm.folder.calendar = true;
+            }
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
                 controller: 'DialogCtrl',
@@ -2397,8 +2406,22 @@
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.folderArr, function (fold, index) {
-                    if (angular.equals(folder, fold))
-                        vm.folderArr[index] = vm.folder;
+                    if (angular.equals(folder, fold)) {
+                        if (vm.folder.calendar) {
+                            if (vm.folder.folder.indexOf('/*calendar') == -1) {
+                                vm.folderArr[index].folder = '/*calendar' + vm.folder.folder;
+                            } else {
+                                vm.folderArr[index].folder = vm.folder.folder;
+                            }
+                        } else {
+                            if (vm.folder.folder.indexOf('/*calendar') == 0) {
+                                vm.folderArr[index].folder = vm.folder.folder.substring(10);
+                            }else {
+                                vm.folderArr[index].folder = vm.folder.folder;
+                            }
+                        }
+                        vm.folderArr[index].recursive = vm.folder.recursive;
+                    }
                 });
                 saveInfo();
                 vm.folder = {};

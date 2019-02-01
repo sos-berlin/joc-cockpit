@@ -62,6 +62,37 @@
                                ng-bind="jobChain.ordersSummary.blacklist"></a>
                         </td>
                     </tr>
+                    <tr ng-repeat="node in jobChain.nodes track by $index" ng-if="node.orders && node.orders.length>0 && orderFilters.pageView !='list'">
+                        <td colspan="10" style="border-bottom: none !important;">
+                            <div class="p-l-sm p-t-xs">
+                                <div ng-repeat="order in node.orders | limitTo : userPreferences.maxOrderPerJobchain">
+                                    <span>
+                                        <span class="text-sm"><span>
+                                            {{'label.order'| translate}}:&nbsp;</span>
+                                            <a class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="order.orderId"></a>
+                                            <i class="text-muted text-sm" ng-if="order.title">-
+                                                <span ng-bind-html="order.title | linky:'_blank'"></span></i> -
+                                            <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
+                                                 order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}"
+                                                  ng-if="order.processingState._text" ng-bind="order.processingState._text | translate"></span>
+                                            <span class="{{order.configurationStatus.severity==0 ? 'green' : order.configurationStatus.severity==1 ? 'gold' : order.configurationStatus.severity==2 ? 'crimson': order.configurationStatus.severity==3 ?'dimgrey':
+                                                  order.configurationStatus.severity==4 ? 'text-dark': order.configurationStatus.severity==5 ? 'dark-orange' : order.configurationStatus.severity==6 ? 'corn-flower-blue' :order.configurationStatus.severity==7 ? 'dark-magenta' : order.configurationStatus.severity==8 ? 'chocolate' : ''}}"
+                                                  ng-if="order.configurationStatus._text" ng-bind="order.configurationStatus._text | translate"></span>
+                                            <span class="text-success text-xs" ng-if="order.nextStartTime">{{'label.nextStart' | translate}}: {{order.nextStartTime | stringToDate}}
+                                                (<span time="{{order.nextStartTime}}"></span>)</span>
+                                            <span class="text-success text-xs"
+                                                  ng-if="order.nextStartNever" translate>label.nextStartNever</span>
+                                            <span class="text-success text-xs"
+                                                  ng-if="order.startedAt">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span
+                                                    time="{{order.startedAt}}"></span>)</span>
+                                        </span>
+                                    </span>
+                                    <div class="text-sm p-l-md m-l" ng-bind-html="order.stateText | linky:'_blank'"></div>
+                                </div>
+                                <i class="cursor text-xs text-hover-primary" ng-if="node.numOfOrders > userPreferences.maxOrderPerJobchain" ng-click="viewJobChainOrder()"><span translate>label.showMoreOrders</span><br></i>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

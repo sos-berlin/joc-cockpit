@@ -27,9 +27,32 @@
             <div class="col-sm-12 m-t-sm" ng-show="!showPanel2" >
                 <div class="box p-a m-b-0">
                     <div class="row ">
-                        <div class="col-md-12 role" ng-repeat="f in folderArr track by $index">
+                        <div class="col-md-12 role" ng-repeat="f in folderArr track by $index" ng-if="f.folder.indexOf('/*calendar') == -1">
                             <span>
                                 {{f.folder}}<span ng-if="f.recursive && f.folder != '/'">/*</span><span ng-if="f.recursive && f.folder == '/'">*</span>
+                                <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" ></i>
+                                <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center" ng-if="folderArr.length==0" >
+                            <span translate="">message.noFolderFound</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m-t folder">
+            <div class="col-md-12">
+                <span class="text _600" ng-bind="'label.folderPermissionForCalendars' | translate"></span>
+                <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel3" ng-click="showPanel3=true"></i>
+                <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel3" ng-click="showPanel3=false"></i>
+            </div>
+            <div class="col-sm-12 m-t-sm" ng-show="!showPanel3" >
+                <div class="box p-a m-b-0">
+                    <div class="row ">
+                        <div class="col-md-12 role" ng-repeat="f in folderArr track by $index" ng-if="f.folder.indexOf('/*calendar') == 0">
+                            <span>
+                                {{f.folder.substring(10)}}<span ng-if="f.recursive && f.folder != '/'">/*</span><span ng-if="f.recursive && f.folder == '/'">*</span>
                                 <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" ></i>
                                 <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
                             </span>

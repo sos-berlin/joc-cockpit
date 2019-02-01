@@ -1877,11 +1877,11 @@
                     if (vm.userPreferences.historyTab === 'order' || skip) {
                         vm.isTaskHistory = false;
                     } else {
-                        vm.showJobHistory(nestedJobChain, node, order);
+                        showJobHistory(nestedJobChain, node, order);
                         return;
                     }
                 } else {
-                    vm.showJobHistory(nestedJobChain, node, order);
+                    showJobHistory(nestedJobChain, node, order);
                     return;
                 }
                 if (vm.userPreferences.historyTab === 'order' || skip) {
