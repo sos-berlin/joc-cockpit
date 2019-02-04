@@ -1027,7 +1027,8 @@
   "unreachable": "nicht erreichbar",
   "button.expandSelected": "Aktive ausklappen",
   "button.collapseUnselected": "Inaktive einklappen",
-  "label.export": "Exportieren",
+  "button.export": "Exportieren",
+  "label.export": "exportieren",
   "label.pdf": "PDF",
   "label.png": "PNG",
   "label.calendarViewForPlannedJob": "Kalenderansicht für geplanten Job",
@@ -1374,5 +1375,6 @@
   "label.deleteAllDocument": "Alle Dokumentationen löschen",
   "tooltip.removeFile": "Datei löschen",
   "button.compactView": "Kompakte Ansicht",
-  "label.showDocumentations": "Dokumentationen anzeigen"
+  "label.showDocumentations": "Dokumentationen anzeigen",
+  "label.folderPermissionForCalendars": "Folder Permission for Calendars"
 }

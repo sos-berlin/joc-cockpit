@@ -808,7 +808,7 @@
   "label.successfulLate": "Réussi et Retardé",
   "label.successfulOrders": "Ordres reussis",
   "label.sunday": "Dimanche",
-  "label.surveyDate": "Date de l&quot;enquête",
+  "label.surveyDate": "Date de l&#39;enquête",
   "label.suspend": "suspendre",
   "label.suspendAllTasks": "suspendre toutes les Tâches",
   "label.suspended": "Suspendu",
@@ -1027,7 +1027,8 @@
   "unreachable": "non accessibles",
   "button.collapseUnselected": "Déplier les entrées inactives",
   "button.expandSelected": "Développer les entrées actives",
-  "label.export": "Exporter",
+  "button.export": "Exporter",
+  "label.export": "exporter",
   "label.pdf": "PDF",
   "label.png": "PNG",
   "label.calendarViewForPlannedJob": "Calendrier de la Tâche planifié",
@@ -1374,5 +1375,6 @@
   "label.deleteAllDocument": "Supprimer toute la Documentation",
   "tooltip.removeFile": "Supprimer le fichier",
   "button.compactView": "Vue Compacte",
-  "label.showDocumentations": "Visualiser la Documentation"
+  "label.showDocumentations": "Visualiser la Documentation",
+  "label.folderPermissionForCalendars": "Folder Permission for Calendars"
 }

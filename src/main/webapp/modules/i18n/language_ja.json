@@ -1027,6 +1027,7 @@
   "message.noRoleAssign": "選択ユーザーはロールを割り当てられていません",
   "message.cannotDeleteLastFolderOrPermission": "ロールの最後のフォルダまたはパーミッションは削除できません",
   "message.permissionIsAlreadyCovered": "パーミッションは既にあります",
+  "button.export": "エキスポート",
   "label.export": "エキスポート",
   "label.pdf": "PDF",
   "label.png": "PNG",
@@ -1374,5 +1375,6 @@
   "label.deleteAllDocument": "全てのドキュメントを削除",
   "tooltip.removeFile": "ファイル削除",
   "button.compactView": "表示を最小化",
-  "label.showDocumentations": "ドキュメント表示"
+  "label.showDocumentations": "ドキュメント表示",
+  "label.folderPermissionForCalendars": "Folder Permission for Calendars"
 }

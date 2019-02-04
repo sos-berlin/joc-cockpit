@@ -2367,7 +2367,20 @@
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
                     if (vm.folder.calendar && vm.folder.folder.indexOf('/*calendar') == -1) {
-                        vm.folderArr.push({folder:'/*calendar' + vm.folder.folder, recursive: vm.folder.recursive});
+                       
+                        if (vm.folder.folder.substring(0,1) == '/') {
+                            console.log('if')
+                            vm.folderArr.push({
+                                folder: '/*calendar' + vm.folder.folder,
+                                recursive: vm.folder.recursive
+                            });
+                        } else {
+                            console.log('else')
+                            vm.folderArr.push({
+                                folder: '/*calendar/' + vm.folder.folder,
+                                recursive: vm.folder.recursive
+                            });
+                        }
                     } else {
                         vm.folderArr.push({folder: vm.folder.folder, recursive: vm.folder.recursive});
                     }
@@ -2409,14 +2422,18 @@
                     if (angular.equals(folder, fold)) {
                         if (vm.folder.calendar) {
                             if (vm.folder.folder.indexOf('/*calendar') == -1) {
-                                vm.folderArr[index].folder = '/*calendar' + vm.folder.folder;
+                                if (vm.folder.folder.substring(0, 1) == '/') {
+                                    vm.folderArr[index].folder = '/*calendar' + vm.folder.folder;
+                                } else {
+                                    vm.folderArr[index].folder = '/*calendar/' + vm.folder.folder;
+                                }
                             } else {
                                 vm.folderArr[index].folder = vm.folder.folder;
                             }
                         } else {
                             if (vm.folder.folder.indexOf('/*calendar') == 0) {
                                 vm.folderArr[index].folder = vm.folder.folder.substring(10);
-                            }else {
+                            } else {
                                 vm.folderArr[index].folder = vm.folder.folder;
                             }
                         }

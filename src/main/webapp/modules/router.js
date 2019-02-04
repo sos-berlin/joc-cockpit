@@ -128,7 +128,7 @@
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}", parent: "app.jobs"}
         }).state("app.jobsOverview", {
-            url: "/tasks_overview/:name",
+            url: "/jobs_overview/:name",
             templateUrl: "modules/job/views/jobs-overview.html",
             controller: "JobOverviewCtrl",
             resolve: {

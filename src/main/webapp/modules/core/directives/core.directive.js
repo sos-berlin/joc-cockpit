@@ -300,7 +300,7 @@
                     t.pageView = views.jobChainOrder;
                 } else if (l.path().match('/orders_overview')) {
                     t.pageView = views.orderOverView;
-                }else if (l.path().match('/tasks_overview')) {
+                }else if (l.path().match('/jobs_overview')) {
                     t.pageView = views.jobOverView || 'list';
                 }else if (l.path().match('/users/')) {
                     t.pageView = views.permission;
@@ -332,7 +332,7 @@
                         views.jobChainOrder = t.pageView;
                     } else if (l.path().match('/orders_overview')) {
                         views.orderOverView = t.pageView;
-                    }else if (l.path().match('/tasks_overview')) {
+                    }else if (l.path().match('/jobs_overview')) {
                         views.jobOverView = t.pageView;
                     }else if (l.path().match('/users/')) {
                         views.permission =t.pageView;

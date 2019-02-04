@@ -1027,6 +1027,7 @@
   "unreachable": "unreachable",
   "button.collapseUnselected": "Collapse inactive",
   "button.expandSelected": "Expand active",
+  "button.export": "Export",
   "label.export": "export",
   "label.pdf": "PDF",
   "label.png": "PNG",
@@ -1374,5 +1375,6 @@
   "label.deleteAllDocument": "Delete all Documentation",
   "tooltip.removeFile": "Remove file",
   "button.compactView": "Compact View",
-  "label.showDocumentations": "Show Documentation"
+  "label.showDocumentations": "Show Documentation",
+  "label.folderPermissionForCalendars": "Folder Permission for Calendars"
 }
