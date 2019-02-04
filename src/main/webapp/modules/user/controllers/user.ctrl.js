@@ -2367,15 +2367,12 @@
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
                     if (vm.folder.calendar && vm.folder.folder.indexOf('/*calendar') == -1) {
-                       
                         if (vm.folder.folder.substring(0,1) == '/') {
-                            console.log('if')
                             vm.folderArr.push({
                                 folder: '/*calendar' + vm.folder.folder,
                                 recursive: vm.folder.recursive
                             });
                         } else {
-                            console.log('else')
                             vm.folderArr.push({
                                 folder: '/*calendar/' + vm.folder.folder,
                                 recursive: vm.folder.recursive
@@ -2407,9 +2404,11 @@
         vm.editFolder = function (folder) {
             vm.folder = angular.copy(folder);
             vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
+
             vm.newFolder = false;
             if (vm.folder.folder.indexOf('/*calendar') == 0) {
                 vm.folder.calendar = true;
+                vm.folder.folder = vm.folder.folder.substring(10);
             }
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
