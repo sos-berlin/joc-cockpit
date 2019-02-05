@@ -5,11 +5,13 @@ import {HeaderComponent} from '../../components/header/header.component';
 import {SharedModule} from '../shared/shared.module';
 import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
+import {LogModule} from '../log/log.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    LayoutRoutingModule
+    LayoutRoutingModule,
+    LogModule
   ],
   declarations: [
     LayoutComponent,

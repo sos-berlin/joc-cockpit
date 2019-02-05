@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CoreService} from '../../services/core.service';
 
 @Component({
   selector: 'app-job',
@@ -6,10 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./job.component.css']
 })
 export class JobComponent implements OnInit {
+  pageView: string;
 
-  constructor() { }
+  constructor(public coreService: CoreService) {
+  }
 
   ngOnInit() {
   }
 
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
 }

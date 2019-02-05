@@ -573,6 +573,14 @@ export class CoreService {
     return scrTree;
   }
 
+  isIE() {
+    return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
+  }
+
+  isFF() {
+    return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  }
+
   showLogWindow(order, task, job, id, transfer) {
     if (!order && !task) {
       return;
@@ -580,87 +588,93 @@ export class CoreService {
     this.refreshParent();
 
     const preferenceObj = JSON.parse(sessionStorage.preferences);
-    const schedulerId = JSON.parse(this.authService.scheduleIds).selected;
-    let url = null;
-    if (preferenceObj.isNewWindow === 'newWindow') {
-      try {
-        if (typeof this.newWindow == 'undefined' || this.newWindow == null || this.newWindow.closed == true) {
-          if (order && order.historyId && order.orderId) {
-            url = 'log.html/?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain);
-          } else if (task && task.taskId) {
-            if (task.job) {
-              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job);
-            } else if (job) {
-              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job;
-            } else {
-              url = 'log.html/?taskId=' + encodeURIComponent(task.taskId);
-            }
-          } else {
-            return;
-          }
-          document.cookie = '$SOS$scheduleId=' + (id || schedulerId) + ';path=/';
-          document.cookie = '$SOS$accessTokenId=' + this.authService.accessTokenId + ';path=/';
-          document.cookie = '$SOS$accountName=' + this.authService.currentUserData + ';path=/';
-          console.log(url);
+    const schedulerId = id || JSON.parse(this.authService.scheduleIds).selected;
+    let url = '';
 
-          this.newWindow = window.open(url, 'Log', 'top=' + window.localStorage.log_window_y + ',left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
-
-          setTimeout(() => {
-            this.calWindowSize();
-          }, 500);
-        }
-      } catch (e) {
-        throw new Error(e.message);
-      }
-    } else if (preferenceObj.isNewWindow === 'newTab') {
-      if (order && order.historyId && order.orderId) {
-        url = '#/log?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + (id || schedulerId);
-      } else if (task && task.taskId) {
-        if (transfer) {
-          if (task.job) {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || schedulerId);
-          } else if (job) {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&schedulerId=' + (id || schedulerId);
-          } else {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || schedulerId);
-          }
+    if (order && order.historyId && order.orderId) {
+      url = '?historyId=' + encodeURIComponent(order.historyId) + '&orderId=' + encodeURIComponent(order.orderId) + '&jobChain=' + encodeURIComponent(order.jobChain) + '&schedulerId=' + schedulerId;
+    } else if (task && task.taskId) {
+      if (transfer) {
+        if (task.job) {
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + schedulerId;
+        } else if (job) {
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + job + '&schedulerId=' + schedulerId;
         } else {
-          if (task.job) {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + (id || schedulerId);
-          } else if (job) {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + (id || schedulerId);
-          } else {
-            url = '#/log?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + (id || schedulerId);
-          }
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + schedulerId;
         }
       } else {
-        return;
+        if (task.job) {
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(task.job) + '&schedulerId=' + schedulerId;
+        } else if (job) {
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&job=' + encodeURIComponent(job) + '&schedulerId=' + schedulerId;
+        } else {
+          url = '?taskId=' + encodeURIComponent(task.taskId) + '&schedulerId=' + schedulerId;
+        }
       }
-      window.open(url, '_blank');
     } else {
-      console.log('Always download..........');
+      return;
+    }
+
+    if (preferenceObj.isNewWindow === 'newWindow') {
+      this.newWindow = window.open('#/log2' + url, '', 'top=' + window.localStorage.log_window_y + ',' +
+        'left=' + window.localStorage.log_window_x + ',innerwidth=' + window.localStorage.log_window_wt + ',' +
+        'innerheight=' + window.localStorage.log_window_ht + this.windowProperties, true);
+      setTimeout(() => {
+        this.calWindowSize();
+      }, 500);
+    } else if (preferenceObj.isNewWindow === 'newTab') {
+      window.open('#/log' + url, '_blank');
+    } else {
+      let data = order || task || job || transfer;
+      this.downloadLog(data, schedulerId);
     }
   }
 
-  calWindowSize() {
-    const self = this;
+  private downloadLog(data, id) {
+    if (data.orderId) {
+      this.post('order/log/info', {
+        jobschedulerId: id,
+        orderId: data.orderId,
+        jobChain: data.jobChain,
+        historyId: data.historyId
+      }).subscribe((res: any) => {
+        $('#tmpFrame').attr('src', './api/order/log/download?jobschedulerId=' + id + '&filename=' + res.log.filename +
+          '&accessToken=' + this.authService.accessTokenId);
+      });
+    } else if (data.taskId) {
+      this.post('task/log/info', {
+        jobschedulerId: id,
+        taskId: data.taskId
+      }).subscribe((res: any) => {
+        $('#tmpFrame').attr('src', './api/task/log/download?&jobschedulerId=' + id + '&filename=' + res.log.filename +
+          '&accessToken=' + this.authService.accessTokenId);
+      });
+    }
+  }
+
+  private calWindowSize() {
     if (this.newWindow) {
       try {
-        this.newWindow.onbeforeunload = function () {
-          window.localStorage.log_window_wt = self.newWindow.innerWidth;
-          window.localStorage.log_window_ht = self.newWindow.innerHeight;
-          window.localStorage.log_window_x = self.newWindow.screenX;
-          window.localStorage.log_window_y = self.newWindow.screenY;
-          return;
-        };
-        this.newWindow.addEventListener('resize', function () {
-          window.localStorage.log_window_wt = self.newWindow.innerWidth;
-          window.localStorage.log_window_ht = self.newWindow.innerHeight;
-          window.localStorage.log_window_x = self.newWindow.screenX;
-          window.localStorage.log_window_y = self.newWindow.screenY;
+        this.newWindow.addEventListener('beforeunload', () => {
+          if (this.newWindow.innerWidth > 0 && this.newWindow.screenX > 0) {
+            if (window.localStorage.log_window_ht == (this.newWindow.innerHeight - 3)) {
+              this.newWindow.innerHeight = this.newWindow.innerHeight - 3;
+            }
+            window.localStorage.log_window_wt = this.newWindow.innerWidth + (this.isFF() ? 2 : 0);
+            window.localStorage.log_window_ht = this.newWindow.innerHeight + (this.isFF() ? 1 : 0);
+            window.localStorage.log_window_x = this.newWindow.screenX;
+            window.localStorage.log_window_y = this.newWindow.screenY;
+          }
+          return null;
         });
+        this.newWindow.addEventListener('resize', () => {
+          window.localStorage.log_window_wt = this.newWindow.innerWidth;
+          window.localStorage.log_window_ht = this.newWindow.innerHeight;
+          window.localStorage.log_window_x = this.newWindow.screenX;
+          window.localStorage.log_window_y = this.newWindow.screenY;
+        }, false);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   }
@@ -860,16 +874,6 @@ export class CoreService {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
   }
 
-  getParam(name) {
-    let url = window.location.href;
-    if (!url) url = location.href;
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    let regexS = '[\\?&]' + name + '=([^&]*)';
-    let regex = new RegExp(regexS);
-    let results = regex.exec(url);
-    return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ''));
-  }
-
   private recursive(data, output) {
     if (data.folders && data.folders.length > 0) {
       data.folders = _.sortBy(data.folders, 'name');
@@ -889,14 +893,19 @@ export class CoreService {
   private refreshParent() {
     try {
       if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
-        window.localStorage.log_window_wt = this.newWindow.innerWidth;
-        window.localStorage.log_window_ht = this.newWindow.innerHeight;
-        window.localStorage.log_window_x = this.newWindow.screenX;
-        window.localStorage.log_window_y = this.newWindow.screenY;
+        if (this.newWindow.innerWidth > 0 && this.newWindow.screenX > 0) {
+          if (window.localStorage.log_window_ht == (this.newWindow.innerHeight - 3)) {
+            this.newWindow.innerHeight = this.newWindow.innerHeight - 3;
+          }
+          window.localStorage.log_window_wt = this.newWindow.innerWidth;
+          window.localStorage.log_window_ht = this.newWindow.innerHeight;
+          window.localStorage.log_window_x = this.newWindow.screenX;
+          window.localStorage.log_window_y = this.newWindow.screenY;
+        }
         this.newWindow.close();
       }
     } catch (x) {
-      console.log(x);
+      console.error(x);
     }
   }
 

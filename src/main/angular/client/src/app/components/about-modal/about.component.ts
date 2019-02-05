@@ -15,7 +15,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
     <div class="modal-body p-a">
       <div class="row" *ngIf="versionData">
         <div class=" col-sm-3">
-          <img src="./assets/images/job_scheduler_rabbit_circle_colour.png" class="p-l" width="100">
+          <img src="./assets/images/job_scheduler_rabbit_circle_colour.png" alt="" class="p-l" width="100">
         </div>
         <div class=" col-sm-9">
           <div class="row">
@@ -29,7 +29,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
           <div class="row">
             <label class="col-sm-3">JOC Cockpit</label>
             <div class=" col-sm-9">
-              <span>{{versionData.gitHash}}</span>
+              <span>{{versionData.gitHash}}</span>&nbsp;
               <span>{{versionData.version}} ({{versionData.date}})</span>
             </div>
           </div>

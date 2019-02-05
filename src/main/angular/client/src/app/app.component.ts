@@ -20,12 +20,6 @@ export class AppComponent {
   constructor(public translate: TranslateService, private router: Router) {
     this.getTranslate();
     AppComponent.themeInit();
-    if (window.location.href) {
-      const index = window.location.href.lastIndexOf('#/');
-      if (index > 0) {
-        this.router.navigate([window.location.href.substring(index + 1)]);
-      }
-    }
   }
 
   static themeInit() {

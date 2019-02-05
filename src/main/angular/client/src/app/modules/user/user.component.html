@@ -322,6 +322,23 @@
                        (change)="changeConfiguration(false)">
                 <i class="primary"></i> <span translate>label.newTab</span>
               </label>
+              <label class="md-check w w-md">
+                <input type="radio" name="log" [(ngModel)]="preferences.isNewWindow" value="download" (change)="changeConfiguration(false)">
+                <i class="primary"></i> <span translate>button.download</span>
+              </label>
+            </div>
+          </div>
+          <div class="row m-t">
+            <div class="col-sm-3 text-dark" translate>label.showDocumentations</div>
+            <div class="col-sm-6">
+              <label class="md-check w">
+                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newWindow" (change)="changeConfiguration(false)">
+                <i class="primary"></i> <span translate>label.newWindow</span>
+              </label>
+              <label class="md-check w">
+                <input type="radio" name="doc" [(ngModel)]="preferences.isDocNewWindow" value="newTab" (change)="changeConfiguration(false)">
+                <i class="primary"></i> <span translate>label.newTab</span>
+              </label>
             </div>
           </div>
           <div class="row m-t">
@@ -332,7 +349,7 @@
                        (change)="changeConfiguration(false)">
                 <i class="primary"></i> <span translate>label.folderContents</span>
               </label>
-              <label class="md-check w">
+              <label class="md-check">
                 <input type="radio" name="tree" [(ngModel)]="preferences.expandOption" value="both"
                        (change)="changeConfiguration(false)">
                 <i class="primary"></i> <span translate>label.subFolderAndFolderContents</span>
@@ -459,26 +476,26 @@
           <div class="row m-t">
             <div class="col-sm-3"><span class="text-dark " translate>label.job</span></div>
             <div class="col-sm-9">
-                      <span class="md-check w-md">
-                          <input type="checkbox" [(ngModel)]="selectAllJobModel"
-                                 (change)="selectAllJobFunction()"/> <i class="primary"></i> <span translate>label.selectAll</span>
-                      </span>
+              <span class="md-check w-md">
+                <input type="checkbox" [(ngModel)]="selectAllJobModel"
+                       (change)="selectAllJobFunction()"/> <i class="primary"></i> <span translate>label.selectAll</span>
+              </span>
               <span class="md-check w-md" *ngFor="let job of jobs">
-                          <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
-                                 (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
-                      </span>
+                <input type="checkbox" [(checklist)]="object.jobs" [checklistValue]="job.value"
+                       (change)="selectJobFunction()"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
+              </span>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-sm-3"><span class="text-dark " translate>label.jobChain</span></div>
             <div class="col-sm-9">
-                      <span class="md-check  w-md">
-                          <input type="checkbox" [(ngModel)]="selectAllJobChainModel"
-                                 (change)="selectAllJobChainFunction()"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+              <span class="md-check  w-md">
+                <input type="checkbox" [(ngModel)]="selectAllJobChainModel"
+                       (change)="selectAllJobChainFunction()"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
               <span class="md-check  w-md" *ngFor="let jobChain of jobChains">
-                          <input type="checkbox" [(checklist)]="object.jobChains" [checklistValue]="jobChain.value"
-                                 (change)="selectJobChainFunction()"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
-                      </span>
+                <input type="checkbox" [(checklist)]="object.jobChains" [checklistValue]="jobChain.value"
+                       (change)="selectJobChainFunction()"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
+              </span>
             </div>
           </div>
           <div class="row m-t">
@@ -487,36 +504,35 @@
             </div>
             <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.onProcessing </span></div>
             <div class="col-sm-9">
-                          <span class="md-check w-md">
-                              <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
-                                     (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
-                              <span translate>label.selectAll</span>
-                          </span>
+              <span class="md-check w-md">
+                <input type="checkbox" [(ngModel)]="selectAllPositiveOrderModel"
+                       (change)="selectAllPositiveOrderFunction()"/> <i class="primary"></i>
+                <span translate>label.selectAll</span>
+              </span>
               <span class="md-check w-md" *ngFor="let positiveOrder of positiveOrders"
                     [ngClass]="{'m-t-sm' : $index == positiveOrders.length-1}">
-                              <input type="checkbox" [(checklist)]="object.positiveOrders"
-                                     [checklistValue]="positiveOrder.value"
-                                     (change)="selectPositiveOrderFunction()"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
-                          </span>
+                <input type="checkbox" [(checklist)]="object.positiveOrders"
+                       [checklistValue]="positiveOrder.value"
+                       (change)="selectPositiveOrderFunction()"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
+              </span>
             </div>
-
           </div>
           <div class="row m-t">
             <div class="col-sm-12 m-b-sm"><span class="text-dark" translate>label.failedOrders</span></div>
             <div class="col-sm-3 "><span class="text-dark p-l-md" translate>label.onProcessing</span></div>
             <div class="col-sm-9">
-                          <span class="md-check w-md">
-                              <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
-                                     (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i> <span
-                            translate>label.selectAll</span>
-                          </span>
+              <span class="md-check w-md">
+                <input type="checkbox" [(ngModel)]="selectAllNegativeOrderModel"
+                       (change)="selectAllNegativeOrdersFunction()"/> <i class="primary"></i>
+                <span translate>label.selectAll</span>
+              </span>
               <span class="md-check w-md" *ngFor="let negativeOrder of negativeOrders">
-                              <input type="checkbox" [(checklist)]="object.negativeOrders"
-                                     [checklistValue]="negativeOrder.value" (change)="selectNegativeOrderFunction()"/><i
-                class="primary"></i>  <span>{{negativeOrder.label  | translate}}</span>
-                          </span>
+                <input type="checkbox" [(checklist)]="object.negativeOrders"
+                       [checklistValue]="negativeOrder.value" (change)="selectNegativeOrderFunction()"/>
+                <i class="primary"></i>
+                <span>{{negativeOrder.label  | translate}}</span>
+              </span>
             </div>
-
           </div>
           <hr>
           <h5 translate>label.roles</h5>
@@ -533,37 +549,37 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.status}"></i>&nbsp;<span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.mainlog}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.mainlog}"></i>&nbsp; <span
                 translate>label.viewMainLog</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.pause}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.pause}"></i>&nbsp; <span
                 translate>label.pause</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.continue}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.continue}"></i> &nbsp;<span
                 translate>label.continue</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.terminate}"></i>&nbsp; <span
                 translate>label.terminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.abort}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.abort}"></i>&nbsp; <span
                 translate>label.abort</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.restart.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.restart.terminate}"></i>&nbsp; <span
                 translate>label.restartTerminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.restart.abort}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.execute.restart.abort}"></i>&nbsp; <span
                 translate>label.restartAbort</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.removeOldInstances}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.removeOldInstances}"></i>&nbsp; <span
                 translate>label.removeOldInstances</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.manageCategories}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.manageCategories}"></i>&nbsp; <span
                 translate>label.manageCategories</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.editPermissions}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMaster.administration.editPermissions}"></i>&nbsp; <span
                 translate>label.editPermissions</span></span>
             </div>
           </div>
@@ -571,16 +587,16 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerMasterCluster</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.view.status}"></i>&nbsp; <span
                 translate>label.viewClusterStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.terminate}"></i>&nbsp; <span
                 translate>label.terminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.terminateFailSafe}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.terminateFailSafe}"></i>&nbsp; <span
                 translate>label.terminateFailsafe</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.restart}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.execute.restart}"></i>&nbsp; <span
                 translate>label.restart</span></span>
             </div>
           </div>
@@ -588,19 +604,19 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerUniversalAgent</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.terminate}"></i>&nbsp; <span
                 translate>label.terminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.abort}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.abort}"></i>&nbsp; <span
                 translate>label.abort</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.restart.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.restart.terminate}"></i>&nbsp; <span
                 translate>label.restartTerminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.restart.abort}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.execute.restart.abort}"></i>&nbsp; <span
                 translate>label.restartAbort</span></span>
             </div>
           </div>
@@ -608,7 +624,7 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.dailyPlan</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.DailyPlan.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.DailyPlan.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
             </div>
           </div>
@@ -617,7 +633,7 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i> <span translate>label.viewStatus</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.History.view.status}"></i>&nbsp; <span translate>label.viewStatus</span></span>
             </div>
           </div>
           <div class="row m-t">
@@ -625,52 +641,52 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i>&nbsp; <span
                 translate>label.viewOrderLog</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.startAndEndNode}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.startAndEndNode}"></i>&nbsp; <span
                 translate>label.changeStartAndEndNode</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.timeForAdhocOrder}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.timeForAdhocOrder}"></i>&nbsp; <span
                 translate>label.changeTimeForAdhocOrder</span></span>
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i> <span translate>label.changeParameters</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i>&nbsp; <span translate>label.changeParameters</span></span>
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.start}"></i> <span
+                [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.start}"></i>&nbsp; <span
                 translate>label.start</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.update}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.update}"></i>&nbsp; <span
                 translate>label.update</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.suspend}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.suspend}"></i>&nbsp; <span
                 translate>label.suspend</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.resume}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.resume}"></i>&nbsp; <span
                 translate>label.resume</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.permanent}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.permanent}"></i>&nbsp; <span
                 translate>label.deletePermanent</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.temporary}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.delete.temporary}"></i>&nbsp; <span
                 translate>label.deleteTemporary</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.removeSetback}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.removeSetback}"></i>&nbsp; <span
                 translate>label.removeSetback</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.runTime}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.runTime}"></i>&nbsp; <span
                 translate>label.setRunTime</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.state}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.change.state}"></i>&nbsp; <span
                 translate>label.setState</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.reset}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Order.execute.reset}"></i>&nbsp; <span
                 translate>label.reset</span></span>
             </div>
           </div>
@@ -679,30 +695,30 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i> <span translate>label.viewHistory</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stop}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stop}"></i>&nbsp; <span
                 translate>label.stop</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.unstop}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.unstop}"></i>&nbsp; <span
                 translate>label.unstop</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.addOrder}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.addOrder}"></i>&nbsp; <span
                 translate>label.addOrder</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.skipJobChainNode}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.skipJobChainNode}"></i>&nbsp; <span
                 translate>label.skipJobChainNode</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.processJobChainNode}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.processJobChainNode}"></i>&nbsp; <span
                 translate>label.processJobChainNode</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stopJobChainNode}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JobChain.execute.stopJobChainNode}"></i>&nbsp; <span
                 translate>label.stopJobChainNode</span></span>
             </div>
           </div>
@@ -711,42 +727,42 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i> <span translate>label.viewHistory</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Job.view.history}"></i>&nbsp; <span translate>label.viewHistory</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i>&nbsp; <span
                 translate>label.viewTaskLog</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.start}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.start}"></i>&nbsp; <span
                 translate>label.startTask</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.stop}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.stop}"></i>&nbsp; <span
                 translate>label.stop</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.unstop}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.unstop}"></i>&nbsp; <span
                 translate>label.unstop</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.terminate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.terminate}"></i>&nbsp; <span
                 translate>label.terminate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.kill}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.kill}"></i>&nbsp; <span
                 translate>label.kill</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.change.runTime}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.change.runTime}"></i>&nbsp; <span
                 translate>label.setRunTime</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.endAllTasks}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.endAllTasks}"></i>&nbsp; <span
                 translate>label.endAllTasks</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.suspendAllTasks}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.suspendAllTasks}"></i>&nbsp; <span
                 translate>label.suspendAllTasks</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.continueAllTasks}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Job.execute.continueAllTasks}"></i>&nbsp; <span
                 translate>label.continueAllTasks</span></span>
             </div>
           </div>
@@ -755,10 +771,10 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i> <span
+                [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i>&nbsp; <span
                 translate>label.viewConfiguration</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
             </div>
           </div>
@@ -767,34 +783,17 @@
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
                 class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i>&nbsp; <span translate>label.viewConfiguration</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Lock.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
-            </div>
-          </div>
-          <div class="row m-t">
-            <div class="col-sm-3"><span class="text-dark" translate>label.schedule</span></div>
-            <div class="row col-sm-9">
-              <span class="col-sm-3 text-black-lt" [ngClass]="{'text-l-c' : preferences.locale.lang=='en'}"><i
-                class="fa fa-check text-success"
-                [ngClass]="{'fa-times text-black-lt': !permission.Schedule.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Schedule.view.status}"></i> <span
-                translate>label.viewStatus</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Schedule.change.editContent}"></i> <span
-                translate>label.edit</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Schedule.change.addSubstitute}"></i> <span
-                translate>label.addSubstitute</span></span>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-sm-3"><span class="text-dark" translate>label.holidayCalendar</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
             </div>
           </div>
@@ -802,7 +801,7 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
             </div>
           </div>
@@ -810,19 +809,19 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.JOCConfiguration</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.editContent}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.editContent}"></i>&nbsp; <span
                 translate>label.edit</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.delete}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.delete}"></i>&nbsp; <span
                 translate>label.delete</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makePrivate}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makePrivate}"></i>&nbsp; <span
                 translate>label.makePrivate</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makeShared}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makeShared}"></i>&nbsp; <span
                 translate>label.makeShared</span></span>
             </div>
           </div>
@@ -830,25 +829,25 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.calendar</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.create}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.create}"></i>&nbsp; <span
                 translate>label.create</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.change}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.change}"></i>&nbsp; <span
                 translate>label.edit</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.delete}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.delete}"></i>&nbsp; <span
                 translate>label.delete</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.runtime}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.runtime}"></i>&nbsp; <span
                 translate>label.assignRuntime</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.nonworking}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.nonworking}"></i>&nbsp; <span
                 translate>label.assignNonworking</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.change}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.Calendar.edit.assign.change}"></i>&nbsp; <span
                 translate>label.assignChange</span></span>
             </div>
           </div>
@@ -856,41 +855,30 @@
             <div class="col-sm-3"><span class="text-dark" translate>label.yade</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.status}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.status}"></i>&nbsp; <span
                 translate>label.viewStatus</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.transfers}"></i> <span
-                translate>label.viewTransfers</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.files}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.files}"></i>&nbsp; <span
                 translate>label.viewFiles</span></span>
               <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.view.log}"></i> <span
-                translate>label.viewLog</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i> <span
+                                                      [ngClass]="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i>&nbsp; <span
                 translate>label.start</span></span>
             </div>
           </div>
           <div class="row m-t">
-            <div class="col-sm-3"><span class="text-dark" translate>label.event</span></div>
+            <div class="col-sm-3"><span class="text-dark" translate>label.documentation</span></div>
             <div class="row col-sm-9">
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Event.view.status}"></i> <span
-                translate>label.viewStatus</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Event.execute.add}"></i> <span
-                translate>label.create</span></span>
-              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success"
-                                                      [ngClass]="{'fa-times text-black-lt': !permission.Event.execute.delete}"></i> <span
-                translate>label.delete</span></span>
+              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Documentation.view}"></i>&nbsp; <span translate>label.viewStatus</span></span>
+              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Documentation.import}"></i>&nbsp; <span translate>label.import</span></span>
+              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Documentation.export}"></i>&nbsp; <span translate>label.export</span></span>
+              <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Documentation.delete}"></i>&nbsp; <span translate>label.delete</span></span>
             </div>
           </div>
           <div class="row m-t">
             <div class="col-sm-3"><span class="text-dark" translate>label.runTime</span></div>
             <div class="row col-sm-9">
               <span class="col-sm-3 text-black-lt">
-                <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Runtime.execute.editXml}"></i>
+                <i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Runtime.execute.editXml}"></i>&nbsp;
                 <span translate>label.edit</span>
               </span>
             </div>
@@ -898,9 +886,7 @@
           <div class="row m-t">
               <div class="col-sm-3"><span class="text-dark" translate>label.joc</span></div>
               <div class="row col-sm-9">
-<!--
-                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Joc.view.log}"></i> <span translate>label.downloadLog</span></span>
--->
+                  <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" [ngClass]="{'fa-times text-black-lt': !permission.Joc.view.log}"></i>&nbsp; <span translate>label.downloadLog</span></span>
               </div>
           </div>
         </div>

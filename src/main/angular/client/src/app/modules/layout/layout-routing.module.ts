@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {LayoutComponent} from './layout.component';
+import {LogComponent} from '../log/log.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,7 @@ const routes: Routes = [
       {path: 'resources', loadChildren: './../resource/resource.module#ResourceModule'},
       {path: 'user', loadChildren: './../user/user.module#UserModule'},
       {path: 'error', loadChildren: './../error/error.module#ErrorModule'},
-      {path: 'log', loadChildren: './../log/log.module#LogModule'},
+      {path: 'log', component: LogComponent},
       {path: 'users', loadChildren: './../admin/admin.module#AdminModule'}
     ]
   }

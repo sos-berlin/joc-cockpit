@@ -1,0 +1,53 @@
+#upper-header, ::ng-deep body, pre.log {
+  background: #fff !important;
+}
+
+::ng-deep body {
+  overflow-x: auto !important;
+}
+
+pre.log {
+  color: #3d464d;
+  margin-bottom: 8px;
+  font-family: Lucida Console, monospace;
+  font-size: 12px;
+  margin-top: 28px
+}
+
+.loading-img {
+  top: 30px;
+  background-color: #fff
+}
+
+a:hover {
+  text-decoration: underline
+}
+
+#upper-header {
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+  padding: 4px 0
+}
+
+.md-check input {
+  width: 15px;
+  height: 15px
+}
+
+.md-check > i {
+  height: 14px;
+  margin-top: 3px
+}
+
+.md-check1 > i:before, .md-check > i:before {
+  content: "";
+  width: 14px
+}
+
+.md-check input[type=checkbox]:checked + i:after {
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px
+}

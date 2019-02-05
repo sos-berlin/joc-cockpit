@@ -1,0 +1,53 @@
+<div style="display: none" [ngClass]="{'show-block' : !loading && !error}">
+  <div id="upper-header" *ngIf="!error">
+    <div class="inline w-full">
+      <label class="_600 m-l-sm m-r-sm">Modify Log Viewing Criteria -</label>
+      <label class="md-check m-r">
+        <input type="checkbox" [(ngModel)]="object.checkBoxs.scheduler" (change)="checkLogLevel('SCHEDULER')">
+        <i class="primary"></i><span translate>Main</span>
+      </label>
+      <label class="md-check m-r">
+        <input type="checkbox" [(ngModel)]="object.checkBoxs.stdout" (change)="checkLogLevel('STDOUT')">
+        <i class="primary"></i><span>Stdout</span>
+      </label>
+      <label class="md-check m-r" *ngIf="isStdErrLevel">
+        <input type="checkbox" [(ngModel)]="object.checkBoxs.stderr" (change)="checkLogLevel('STDERR')">
+        <i class="primary"></i><span>Stderr</span>
+      </label>
+      <label class="md-check m-r">
+        <input type="checkbox" [(ngModel)]="object.checkBoxs.info" (change)="checkLogLevel('INFO')">
+        <i class="primary"></i><span translate>Info</span>
+      </label>
+      <label class="md-check m-r" *ngIf="isDeBugLevel">
+        <input type="checkbox" [(ngModel)]="object.checkBoxs.debug" (change)="checkLogLevel('DEBUG')">
+        <i class="primary"></i><span translate>Debug</span>
+      </label>
+      <div class="inline" *ngIf="isDeBugLevel">
+        <label class="md-check m-r" *ngFor="let level of debugLevels">
+          <input type="radio" [disabled]="!object.checkBoxs.debug" [(ngModel)]="object.debug" name="debug"
+                 value="{{level}}" (change)="changeDebugLevel()">
+          <i class="primary"></i><span [innerHtml]="level"></span>
+        </label>
+      </div>
+      <a href *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
+        <i class="fa fa-times"></i>&nbsp;
+        <span translate>button.cancel</span>
+      </a>
+      <a href *ngIf="isCancel || finished" class="m-l m-r text-primary pull-right" (click)="reload()">
+        <i class="fa fa-refresh"></i>&nbsp;
+        <span translate>button.reload</span>
+      </a>
+      <a href class="text-primary pull-right" (click)="downloadLog()">
+        <i class="fa fa-download"></i>&nbsp;
+        <span translate>button.download</span>
+      </a>
+    </div>
+  </div>
+  <pre id="logs" *ngIf="!error" class="log p-a-sm"></pre>
+</div>
+<div class="text-center hide" [ngClass]="{'show' : error && !loading}">
+    <div class="text-dark p-t" style="font-size: 38px;margin-bottom: -8px"><span [innerHtml]="errStatus"></span></div>
+    <div style="display: none" class="text-lg text-muted" [ngClass]="{'show' : errStatus}">Error!</div>
+    <div class="text m-t" [innerHtml]="error"></div>
+</div>
+<div id="spinner" *ngIf="loading"><div></div></div>

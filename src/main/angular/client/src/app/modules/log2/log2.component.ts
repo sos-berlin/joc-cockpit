@@ -7,10 +7,11 @@ import {ActivatedRoute} from '@angular/router';
 declare const $;
 
 @Component({
-  selector: 'app-log',
-  templateUrl: './log.component.html'
+  selector: 'app-log2',
+  templateUrl: './log2.component.html',
+  styleUrls: ['./log2.component.css']
 })
-export class LogComponent implements OnInit, OnDestroy {
+export class Log2Component implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   permission: any = {};
@@ -41,16 +42,13 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight() {
-    const $header = $('app-header').height() || 60;
-    const $topHeader = $('.top-header-bar').height() || 16;
-    const $subHeaderHt = $('.sub-header').height() || 59;
-    const height = window.innerHeight - ($header + $topHeader + $subHeaderHt + 144);
-    $('.log').height(height);
+    const $header = $('.upper-header').height() || 30;
+    $('.log').css('margin-top', $header + ' px');
   }
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    LogComponent.calculateHeight();
+    Log2Component.calculateHeight();
   }
 
   ngOnInit() {
@@ -102,7 +100,7 @@ export class LogComponent implements OnInit, OnDestroy {
     orders.jobChain = this.jobChain;
     orders.orderId = this.orderId;
     orders.historyId = this.route.snapshot.queryParams['historyId'];
-    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json' }).subscribe((res) => {
+    this.canceller = this.coreService.log('order/log', orders, {responseType: 'text' as 'json'}).subscribe((res) => {
 
       this.renderData(res);
     }, (err) => {
@@ -123,7 +121,7 @@ export class LogComponent implements OnInit, OnDestroy {
     jobs.jobschedulerId = this.route.snapshot.queryParams['schedulerId'];
     jobs.taskId = this.taskId;
 
-    this.canceller = this.coreService.log('task/log', jobs, {responseType: 'text' as 'json' }).subscribe((res) => {
+    this.canceller = this.coreService.log('task/log', jobs, {responseType: 'text' as 'json'}).subscribe((res) => {
       this.renderData(res);
     }, (err) => {
       window.document.getElementById('logs').innerHTML = '';
@@ -139,7 +137,7 @@ export class LogComponent implements OnInit, OnDestroy {
 
   renderData(res) {
     this.loading = false;
-    LogComponent.calculateHeight();
+    Log2Component.calculateHeight();
     window.document.getElementById('logs').innerHTML = '';
     res = ('\n' + res).replace(/\r?\n([^\r\n]+\[)(error|info\s?|warn\s?|debug\d?|trace|stdout|stderr)(\][^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div = window.document.createElement('div'); // Now create a div element and append it to a non-appended span.
@@ -265,10 +263,11 @@ export class LogComponent implements OnInit, OnDestroy {
   reload() {
     this.isCancel = false;
     this.finished = false;
+    this.init();
   }
 
   downloadLog() {
-    this.cancel();
+    console.log('downloadLog............')
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
       const orderId = this.route.snapshot.queryParams['orderId'];
@@ -280,7 +279,7 @@ export class LogComponent implements OnInit, OnDestroy {
         jobChain: jobChain,
         historyId: historyId
       }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&jobChain=' + jobChain + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
+        $('#tmpFrame').attr('src', 'http://localhost:4447/joc/api/order/log/download?orderId=' + orderId + '&jobChain=' + jobChain + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
           '&accessToken=' + this.authService.accessTokenId);
       });
     } else if (this.route.snapshot.queryParams['taskId']) {
@@ -289,7 +288,7 @@ export class LogComponent implements OnInit, OnDestroy {
         jobschedulerId: schedulerId,
         taskId: taskId
       }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
+        $('#tmpFrame').attr('src', 'http://localhost:4447/joc/api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
           '&accessToken=' + this.authService.accessTokenId);
       });
     }
@@ -425,4 +424,6 @@ export class LogComponent implements OnInit, OnDestroy {
 
     });
   }
+
+
 }
