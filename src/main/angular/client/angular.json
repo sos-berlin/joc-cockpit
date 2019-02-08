@@ -23,7 +23,9 @@
               "src/assets",
               "src/styles",
               "src/workflow.json",
-              "src/version.json"
+              "src/version.json",
+              "src/SystemMonitorNotification_v1.0.main.xsd",
+              "src/yade_v1.12.xsd"
             ],
             "styles": [
               "node_modules/font-awesome/css/font-awesome.css",
@@ -35,6 +37,7 @@
               "src/styles/style.responsive.css"
             ],
             "scripts": [
+              "src/assets/js/vkbeautify.js",
               "src/assets/js/jquery.min.js",
               "src/assets/js/tether.min.js",
               "src/assets/js/jquery-ui.min.js",
