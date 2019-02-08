@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import * as moment from 'moment-timezone';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Pipe({
   name: 'stringToDate'
@@ -140,5 +141,14 @@ export class GroupByPipe implements PipeTransform {
       return prev;
     }, {});
     return Object.keys(groupedObj).map(key => ({key, value: groupedObj[key]}));
+  }
+}
+
+
+@Pipe({ name: 'safeHtml'})
+export class SafeHtmlPipe implements PipeTransform  {
+  constructor(private sanitized: DomSanitizer) {}
+  transform(value) {
+    return this.sanitized.bypassSecurityTrustHtml(value);
   }
 }

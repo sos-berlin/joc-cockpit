@@ -2,7 +2,7 @@
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
       <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_cluster']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.agentClusters</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator" *ngIf="permission.JobschedulerUniversalAgent.view.status">
@@ -10,7 +10,7 @@
       </li>
       <li class="nav-item" *ngIf="permission.JobschedulerUniversalAgent.view.status">
         <a class="nav-link" [routerLink]="['/resources/agent_job_execution']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.agentJobExecution</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator"
@@ -19,7 +19,7 @@
       </li>
       <li class="nav-item" *ngIf="permission.Lock.view.status">
         <a class="nav-link" [routerLink]="['/resources/lock']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.locks</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator"
@@ -28,7 +28,7 @@
       </li>
       <li class="nav-item" *ngIf="permission.ProcessClass.view.status">
         <a class="nav-link" [routerLink]="['/resources/process_class']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.processClasses</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status">
@@ -36,7 +36,7 @@
       </li>
       <li class="nav-item" *ngIf="permission.Calendar.view.status">
         <a class="nav-link" [routerLink]="['/resources/calendar']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.calendars</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.calendars</span></span>
         </a>
       </li>
       <li class="nav-item dropdown-separator" *ngIf="permission.Calendar.view.status && permission.Documentation.view">
@@ -44,7 +44,7 @@
       </li>
       <li class="nav-item" *ngIf="permission.Documentation.view">
         <a class="nav-link" [routerLink]="['/resources/documentation']" [routerLinkActive]="['active']">
-          <span class="nav-text text-dark p-b-sm"><span class="" translate>label.documentations</span></span>
+          <span class="nav-text text-dark p-b-sm"><span translate>label.documentations</span></span>
         </a>
       </li>
     </ul>

@@ -1,0 +1,31 @@
+
+#lefSidePanel {
+  position: absolute;
+  margin-top: 8px;
+}
+
+.centerPanel {
+  margin-left: 290px
+}
+
+#cke_35, #cke_71, #cke_25, #cke_26, #cke_27, #cke_86, #cke_17, #cke_18, #cke_19, #cke_20, #cke_21, #cke_20 ~ .cke_toolbar_separator, #cke_16 ~ .cke_toolbar_separator {
+  display: none !important;
+}
+
+/* width */
+tree-root::-webkit-scrollbar {
+  width: 3px !important;
+  height: 8px !important;
+  background-color: #aaa !important; /* or add it to the track */
+}
+
+.highlight {
+  color: #ffc300 !important;
+}
+
+span#doc a {
+  color: #007da6 !important;
+  &:active, &:hover {
+    text-decoration: underline;
+  }
+}

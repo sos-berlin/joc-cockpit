@@ -15,19 +15,24 @@ export class TreeComponent implements OnInit {
   @Output() messageEvent = new EventEmitter<string>();
 
   constructor(public coreService: CoreService) {
-
   }
 
   static setGraphHt() {
     let top = $('.scroll-y').position().top + 16;
     top = top - $(window).scrollTop();
     if (top < 1) {
-      top = 8;
+      top = 64;
     }
     $('.sticky').css('top', top);
     const ht = window.innerHeight - top;
     if (ht > 400) {
       $('#tre').height(ht + 'px');
+    }
+    if (top < 140 && top > 65) {
+      console.log('setGraphHt ' + top);
+      setTimeout(() => {
+        TreeComponent.setGraphHt();
+      }, 5);
     }
   }
 

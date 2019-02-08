@@ -29,15 +29,15 @@
           <i class="primary"></i><span [innerHtml]="level"></span>
         </label>
       </div>
-      <a href *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
+      <a *ngIf="!isCancel && !finished" class="m-l m-r pull-right" (click)="cancel()">
         <i class="fa fa-times"></i>&nbsp;
         <span translate>button.cancel</span>
       </a>
-      <a href *ngIf="isCancel || finished" class="m-l m-r text-primary pull-right" (click)="reload()">
+      <a *ngIf="isCancel || finished" class="m-l m-r text-primary pull-right" (click)="reload()">
         <i class="fa fa-refresh"></i>&nbsp;
         <span translate>button.reload</span>
       </a>
-      <a href class="text-primary pull-right" (click)="downloadLog()">
+      <a class="text-primary pull-right" (click)="downloadLog()">
         <i class="fa fa-download"></i>&nbsp;
         <span translate>button.download</span>
       </a>
@@ -51,3 +51,4 @@
     <div class="text m-t" [innerHtml]="error"></div>
 </div>
 <div id="spinner" *ngIf="loading"><div></div></div>
+<iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>

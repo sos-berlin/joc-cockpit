@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CoreService} from '../../services/core.service';
-import {AuthService} from '../../components/guard';
+import {CoreService} from '../../../services/core.service';
+import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {saveAs} from 'file-saver';
@@ -216,7 +216,8 @@ export class JoeComponent implements OnInit, OnDestroy {
   initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
-      compact: true
+      compact: true,
+      types: ['JOBCHAIN']
     }).subscribe((res) => {
       this.tree = this.coreService.prepareTree(res);
       const interval = setInterval(() => {
@@ -1224,6 +1225,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (!_json.mxGraphModel) {
         return;
       }
+      console.log(_json)
 
       let objects = _json.mxGraphModel.root;
 
@@ -2794,7 +2796,6 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
               if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
                 const parent = cell.getParent() || graph.getDefaultParent();
-
                 let v1, label = '', type = '', v2, v3;
                 const attr = cell.value.attributes;
                 if (attr) {
@@ -2828,7 +2829,8 @@ export class JoeComponent implements OnInit, OnDestroy {
                 isProgrammaticallyDelete = true;
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
-                    cell.source.removeEdge(cell.source.edges[x], true);
+                   // cell.source.removeEdge(cell.source.edges[x], true); // Sometime remove sometimes not need testing...
+                    graph.getModel().remove(cell.source.edges[x]);
                     break;
                   }
                 }
@@ -3123,7 +3125,10 @@ export class JoeComponent implements OnInit, OnDestroy {
                         }
                       }
                     }
-                    graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
+
+                    if(cell && dropTarget.edges[i].target) {
+                      graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
+                    }
                     isProgrammaticallyDelete = true;
                     graph.getModel().remove(dropTarget.edges[i]);
                     isProgrammaticallyDelete = false;
@@ -3133,7 +3138,9 @@ export class JoeComponent implements OnInit, OnDestroy {
               }
               if (!flag && self.nodeMap.has(dropTarget.id)) {
                 const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
-                graph.insertEdge(parent, null, getConnectionNode(label, type), cell, target);
+                if (cell && target) {
+                  graph.insertEdge(parent, null, getConnectionNode(label, type), cell, target);
+                }
               }
             }
 
@@ -3148,7 +3155,10 @@ export class JoeComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget, cell);
+
+            if (cell && dropTarget) {
+              graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget, cell);
+            }
           }
           if (cell.value.tagName === 'Try') {
             for (let j = 0; j < cell.edges.length; j++) {

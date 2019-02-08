@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
     if (localStorage.$SOS$REMEMBER === 'true' || localStorage.$SOS$REMEMBER === true) {
       const urs = crypto.AES.decrypt(localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER2');
       const pwd = crypto.AES.decrypt(localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER2');
-      this.user.userName = urs.toString();
-      this.user.password = pwd.toString();
+      this.user.userName = urs.toString(crypto.enc.Utf8);
+      this.user.password = pwd.toString(crypto.enc.Utf8);
       this.rememberMe = true;
     }
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';

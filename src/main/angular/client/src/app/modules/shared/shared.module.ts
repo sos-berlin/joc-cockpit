@@ -20,7 +20,7 @@ import {
   DurationFromCurrentPipe,
   ConvertTimePipe,
   StringDateFormatePipe,
-  GroupByPipe
+  GroupByPipe, SafeHtmlPipe
 } from '../../filters/filter.pipe';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
@@ -52,6 +52,7 @@ import {RouterModule} from '@angular/router';
     ConvertTimePipe,
     GroupByPipe,
     StringDateFormatePipe,
+    SafeHtmlPipe,
     ToggleComponent,
     CommentModalComponent,
     EditFilterModalComponent,
@@ -67,7 +68,7 @@ import {RouterModule} from '@angular/router';
   ],
   exports: [CommonModule, FormsModule, DurationPipe, StringDatePipe, DecodeSpacePipe,
     ByteToSizePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe, OrderModule,
-    NgxPaginationModule, StringDateFormatePipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent,
+    NgxPaginationModule, StringDateFormatePipe, SafeHtmlPipe, Ng2SearchPipeModule, ChecklistModule, ToggleComponent,
     DpDatePickerModule, TreeModule, TranslateModule, NgbModule, TreeComponent, SubLinkComponent,
     TimeValidatorDirective, RegexValidator, DropdownDirective, ResizableDirective],
   entryComponents: [CommentModalComponent, EditFilterModalComponent, DeleteModalComponent, TreeModalComponent, ConfigurationModalComponent]

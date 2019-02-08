@@ -172,16 +172,6 @@ export class ResizableDirective implements OnInit {
   constructor(private el: ElementRef) {
   }
 
-  @HostListener('window:scroll', ['$event'])
-  scroll(event) {
-    let dom: any;
-    if (this.el.nativeElement.attributes.class.value.match('resource')) {
-      dom = $('#leftPanel');
-      if (dom && dom.offset() && dom.offset().top > 88)
-        dom.css('top', 192 - event.pageY + 'px');
-    }
-  }
-
   ngOnInit() {
     let dom: any;
     if (this.el.nativeElement.attributes.class.value.match('resource')) {
@@ -200,7 +190,7 @@ export class ResizableDirective implements OnInit {
     } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
       dom = $('#leftSidePanel');
       if (dom) {
-        dom.css('top', '96px');
+        dom.css('top', '130px');
         dom.resizable({
           handles: 'e',
           maxWidth: 500,

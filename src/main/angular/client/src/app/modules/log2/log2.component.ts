@@ -267,7 +267,6 @@ export class Log2Component implements OnInit, OnDestroy {
   }
 
   downloadLog() {
-    console.log('downloadLog............')
     const schedulerId = this.route.snapshot.queryParams['schedulerId'];
     if (this.route.snapshot.queryParams['orderId']) {
       const orderId = this.route.snapshot.queryParams['orderId'];
@@ -279,8 +278,8 @@ export class Log2Component implements OnInit, OnDestroy {
         jobChain: jobChain,
         historyId: historyId
       }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', 'http://localhost:4447/joc/api/order/log/download?orderId=' + orderId + '&jobChain=' + jobChain + '&historyId=' + historyId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
-          '&accessToken=' + this.authService.accessTokenId);
+        $('#tmpFrame').attr('src', './api/order/log/download?orderId=' + orderId + '&jobChain=' + jobChain + '&historyId=' + historyId
+          + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename + '&accessToken=' + this.authService.accessTokenId);
       });
     } else if (this.route.snapshot.queryParams['taskId']) {
       const taskId = this.route.snapshot.queryParams['taskId'];
@@ -288,8 +287,8 @@ export class Log2Component implements OnInit, OnDestroy {
         jobschedulerId: schedulerId,
         taskId: taskId
       }).subscribe((res: any) => {
-        $('#tmpFrame').attr('src', 'http://localhost:4447/joc/api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId + '&filename=' + res.log.filename +
-          '&accessToken=' + this.authService.accessTokenId);
+        $('#tmpFrame').attr('src', './api/task/log/download?taskId=' + taskId + '&jobschedulerId=' + schedulerId
+          + '&filename=' + res.log.filename + '&accessToken=' + this.authService.accessTokenId);
       });
     }
   }
@@ -416,14 +415,12 @@ export class Log2Component implements OnInit, OnDestroy {
       jobschedulerId: this.schedulerIds.selected,
       account: this.permission.user,
       configurationType: 'PROFILE',
-      id: parseInt(window.sessionStorage.preferenceId, 10)
+      id: window.sessionStorage.preferenceId,
+      configurationItem : JSON.stringify(this.preferences)
     };
-    window.sessionStorage.preferences = JSON.stringify(this.preferences);
-    configObj.configurationItem = JSON.stringify(this.preferences);
+    sessionStorage.setItem('changedPreferences', configObj.configurationItem);
     this.coreService.post('configuration/save', configObj).subscribe(res => {
 
     });
   }
-
-
 }

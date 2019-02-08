@@ -397,11 +397,10 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   previewDocument(document) {
     const link = API_URL + 'documentation/preview?documentation=' + encodeURIComponent(document.path) + '&accessToken=' + this.authService.accessTokenId + '&jobschedulerId=' + this.schedulerIds.selected;
     if (this.preferences.isDocNewWindow === 'newWindow') {
-      window.open(link, 'Documenation, top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no');
+      window.open(link, '', 'top=0,left=0,scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no', true);
     } else {
       window.open(link, '_blank');
     }
-
   }
 
   showDocumentUsage(document) {

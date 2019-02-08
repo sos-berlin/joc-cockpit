@@ -1343,5 +1343,15 @@
   "tooltip.removeFile": "Remove file",
   "button.compactView": "Compact View",
   "button.submitWorkFlow": "Submit WorkFlow",
-  "label.showDocumentations": "Show Documentation"
+  "label.showDocumentations": "Show Documentation",
+  "button.expand": "Expand",
+  "button.collapse": "Collapse",
+  "button.cut": "Cut",
+  "button.paste": "Paste",
+  "button.addChild": "Add Child",
+  "button.validate": "Validate",
+  "button.showXML": "Show XML",
+  "button.importXML": "Import XML",
+  "button.export": "Export",
+  "button.showAllChildNodes": "Show all Child Nodes of Selected Node"
 }

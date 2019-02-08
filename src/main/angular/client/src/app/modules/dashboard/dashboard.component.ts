@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.init();
-    $('.gridster').height(window.innerHeight - 160 + 'px');
+    $('.gridster').height(window.innerHeight - 150 + 'px');
   }
 
   ngOnDestroy() {

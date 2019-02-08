@@ -11,7 +11,7 @@ const routes: Routes = [
       {path: '', pathMatch: 'full', redirectTo: 'dashboard'},
       {path: 'dashboard', loadChildren: './../dashboard/dashboard.module#DashboardModule'},
       {path: 'daily_plan', loadChildren: './../daily-plan/daily-plan.module#DailyPlanModule'},
-      {path: 'joe', loadChildren: './../joe/joe.module#JoeModule'},
+      {path: 'configuration', loadChildren: './../configuration/configuration.module#ConfigurationModule'},
       {path: 'job', loadChildren: './../job/job.module#JobModule'},
       {path: 'workflow', loadChildren: './../workflow/workflow.module#WorkflowModule'},
       {path: 'history', loadChildren: './../history/history.module#HistoryModule'},

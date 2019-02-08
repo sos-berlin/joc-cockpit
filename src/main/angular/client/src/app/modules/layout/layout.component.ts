@@ -118,6 +118,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('window:beforeunload')
+  onUnload() {
+    this.coreService.refreshParent();
+    return true;
+  }
+
   getScheduleDetail(refresh: boolean): void {
     this.coreService.post('jobscheduler/p', {jobschedulerId: this.schedulerIds.selected}).subscribe(result => {
       this.getVolatileData(result, refresh);

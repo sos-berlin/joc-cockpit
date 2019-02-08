@@ -665,6 +665,11 @@ export class CoreService {
             window.localStorage.log_window_x = this.newWindow.screenX;
             window.localStorage.log_window_y = this.newWindow.screenY;
           }
+          if (this.newWindow.sessionStorage.changedPreferences) {
+            let preferences = JSON.parse(sessionStorage.preferences);
+            preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
+            window.sessionStorage.preferences = JSON.stringify(preferences);
+          }
           return null;
         });
         this.newWindow.addEventListener('resize', () => {
@@ -890,7 +895,7 @@ export class CoreService {
     }
   }
 
-  private refreshParent() {
+  refreshParent() {
     try {
       if (typeof this.newWindow != 'undefined' && this.newWindow != null && this.newWindow.closed == false) {
         if (this.newWindow.innerWidth > 0 && this.newWindow.screenX > 0) {
@@ -902,11 +907,15 @@ export class CoreService {
           window.localStorage.log_window_x = this.newWindow.screenX;
           window.localStorage.log_window_y = this.newWindow.screenY;
         }
+        if (this.newWindow.sessionStorage.changedPreferences) {
+          let preferences = JSON.parse(sessionStorage.preferences);
+          preferences.logFilter = JSON.parse(this.newWindow.sessionStorage.changedPreferences).logFilter;
+          window.sessionStorage.preferences = JSON.stringify(preferences);
+        }
         this.newWindow.close();
       }
     } catch (x) {
       console.error(x);
     }
   }
-
 }

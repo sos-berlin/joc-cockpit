@@ -566,7 +566,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
     let result: any;
-    this.coreService.post('plan', obj).subscribe((res) => {
+    this.coreService.post('orders/plan', obj).subscribe((res) => {
       result = res;
       this.plans = result.planItems;
       this.plans = this.sortByKey(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
