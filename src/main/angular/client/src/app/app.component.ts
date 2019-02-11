@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterConfig} from 'angular2-toaster';
 import {Router} from '@angular/router';
+import {DataService} from './modules/admin/data.service';
 
 declare const $;
 
@@ -17,7 +18,7 @@ export class AppComponent {
     limit: 2
   });
 
-  constructor(public translate: TranslateService, private router: Router) {
+  constructor(public translate: TranslateService, private router: Router, private dataService:DataService) {
     this.getTranslate();
     AppComponent.themeInit();
   }
@@ -42,6 +43,10 @@ export class AppComponent {
     }
     this.translate.setDefaultLang(lang);
     this.translate.use(lang);
+  }
+
+  gotoErrorLocation() {
+    this.dataService.announceFunction('xmlEditor');
   }
 
 }

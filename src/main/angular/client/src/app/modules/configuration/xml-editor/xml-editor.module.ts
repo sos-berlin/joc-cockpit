@@ -1,20 +1,25 @@
 import {NgModule} from '@angular/core';
-import {XmlEditorComponent} from './xml-editor.component';
-import {SharedModule} from '../../shared/shared.module';
-import {XmlEditorRoutingModule} from './xml-editor-routing.module';
 import {FileUploadModule} from 'ng2-file-upload';
 import {CKEditorModule} from 'ng2-ckeditor';
+import {ImportModalComponent, ShowModalComponent,
+  XmlEditorComponent, ShowChildModalComponent} from './xml-editor.component';
+import {SharedModule} from '../../shared/shared.module';
+import {XmlEditorRoutingModule} from './xml-editor-routing.module';
 
 @NgModule({
   declarations: [
-    XmlEditorComponent
+    XmlEditorComponent,
+    ImportModalComponent,
+    ShowModalComponent,
+    ShowChildModalComponent
   ],
   imports: [
     SharedModule,
     XmlEditorRoutingModule,
     FileUploadModule,
     CKEditorModule
-  ]
+  ],
+  entryComponents: [ImportModalComponent, ShowModalComponent, ShowChildModalComponent]
 })
 export class XmlEditorModule {
 }

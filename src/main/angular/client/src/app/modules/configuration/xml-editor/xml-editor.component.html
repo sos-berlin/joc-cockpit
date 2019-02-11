@@ -20,7 +20,6 @@
     <div class="inline w-full" [ngClass]="submitXsd ? 'show': 'hide'">
       <div appResizable class="sticky leftPanel editor" id="leftSidePanel">
         <div class="editor-tree">
-          <div>
             <div class="row" *ngIf="nodes.length > 0">
               <div class="col-12">
                 <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
@@ -31,403 +30,250 @@
                 </a>
               </div>
             </div>
-            <tree-root #treeCtrl (activate)="onNodeSelected($event)" [options]="options" (toggleExpanded)="toggleExpanded($event)"
-                       [nodes]="nodes">
-              <ng-template #treeNodeWrapperTemplate let-index="index" let-node>
-                <div class="node-wrapper">
-                  <span *ngIf="node.hasChildren"
-                        [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                        [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
-                        (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
-                    <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
-                    <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
-                  </span>
-                  <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                  <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
-                    <span (click)="getData(node.data)"
-                          [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
-                          (mouseover)="tooltip(node.data)" data-toggle="tooltip" data-placement="top" [title]="tooltipAttrData? tooltipAttrData: ''">{{node.data.ref}}
+            <div class="tree-block">
+              <tree-root #treeCtrl [options]="options" (toggleExpanded)="toggleExpanded($event)"
+                         [nodes]="nodes">
+                <ng-template #treeNodeWrapperTemplate let-index="index" let-node>
+                  <div class="node-wrapper">
+                    <span *ngIf="node.hasChildren"
+                          [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                          [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                          (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                      <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                      <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                     </span>
-                    <span class="attr-font-size pl-2" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
-                      {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
-                    </span>
-                  </div>
-                  <div appDropdown class="btn-group dropdown">
-                    <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)"><i
-                      class="fa fa-ellipsis-h"></i></button>
-                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                      <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
-                        <div translate>button.addChild</div>
-                      </a>
-                      <div *ngIf="childNode && childNode.length>0">
-                        <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
-                          <div class="p-l-sm">
-                            <a [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data)"><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
-                          </div>
+                    <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
+                    <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
+                      <span (click)="getData(node.data)"
+                            [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
+                            (mouseover)="tooltip(node.data)" data-toggle="tooltip" data-placement="top" [title]="tooltipAttrData? tooltipAttrData: ''">{{node.data.ref}}
+                      </span>
+                      <span class="text-sm pl-2" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
+                        {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
+                      </span>
+                    </div>
+                    <div appDropdown class="btn-group dropdown">
+                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)"><i
+                        class="fa fa-ellipsis-h"></i></button>
+                      <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                        <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                          <div translate>button.addChild</div>
+                        </a>
+                        <div *ngIf="childNode && childNode.length>0">
+                          <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
+                            <div class="p-l-sm">
+                              <a [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data)"><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
+                            </div>
+                          </a>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" (click)="showAllChildNode(node.data)">
+                          <div translate>button.showAllChildNodes</div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a (click)="expandNode(node.data)"
+                           [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
+                           class="dropdown-item">
+                          <div translate>button.expand</div>
+                        </a>
+                        <a (click)="collapseNode(node.data)"
+                           [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
+                           class="dropdown-item">
+                          <div translate>button.collapse</div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a (click)="cutNode(node.data)" *ngIf="node.data && node.data.parent !=='#'"
+                           [ngClass]="cutData? 'disabled' : ''" class="dropdown-item">
+                          <div translate>button.cut</div>
+                        </a>
+                        <div *ngIf="node.data && node.data.parent !=='#'" class="dropdown-divider"></div>
+                        <a (click)="copyNode(node.data)" class="dropdown-item">
+                          <div translate>button.copy</div>
+                        </a>
+                        <a (click)="pasteNode(node.data)" [ngClass]="checkRule == true? '':'disabled'"
+                           class="dropdown-item">
+                          <div translate>button.paste</div>
+                        </a>
+                        <a (click)="removeNode(node.data, treeCtrl)"
+                           [ngClass]="node.data && node.data.parent!=='#'? '':'disabled'"
+                           class="dropdown-item">
+                          <div translate>button.remove</div>
                         </a>
                       </div>
-                      <div class="dropdown-divider"></div>
-                      <a (click)="showAllChildNode(node.data)" class="dropdown-item" data-target="#showAllChildNodes"
-                         data-toggle="modal">
-                        <div translate>button.showAllChildNodes</div>
-                      </a>
-                      <div class="dropdown-divider"></div>
-                      <a (click)="expandNode(node.data)"
-                         [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
-                         class="dropdown-item">
-                        <div translate>button.expand</div>
-                      </a>
-                      <a (click)="collapseNode(node.data)"
-                         [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
-                         class="dropdown-item">
-                        <div translate>button.collapse</div>
-                      </a>
-                      <div class="dropdown-divider"></div>
-                      <a (click)="cutNode(node.data)" *ngIf="node.data && node.data.parent !=='#'"
-                         [ngClass]="cutData? 'disabled' : ''" class="dropdown-item">
-                        <div translate>button.cut</div>
-                      </a>
-                      <div *ngIf="node.data && node.data.parent !=='#'" class="dropdown-divider"></div>
-                      <a (click)="copyNode(node.data)" class="dropdown-item">
-                        <div translate>button.copy</div>
-                      </a>
-                      <a (click)="pasteNode(node.data)" [ngClass]="checkRule == true? '':'disabled'"
-                         class="dropdown-item">
-                        <div translate>button.paste</div>
-                      </a>
-                      <a (click)="removeNode(node.data, treeCtrl)"
-                         [ngClass]="node.data && node.data.parent!=='#'? '':'disabled'"
-                         class="dropdown-item">
-                        <div translate>button.remove</div>
-                      </a>
                     </div>
                   </div>
-                </div>
-              </ng-template>
-            </tree-root>
+                </ng-template>
+              </tree-root>
+            </div>
           </div>
           <div class="rg-right"><span></span></div>
-        </div>
       </div>
       <div class="centerPanel" id="centerPanel">
-        <div class="row pos-abt w-full" style="right: 20px; margin-top: -20px">
+        <div class="row pos-abt w-full m-t-n-20">
           <div class="col-md-12 m-b-sm">
             <div class="m-b-sm p-b-sm">
               <div class="inline w-full">
                   <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'button.export' | translate}}" (click)="save()">
-                    <i class="fa fa-save"></i>
+                    <i class="fa fa-download"></i>
                   </button>
                   <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'button.validate' | translate}}" (click)="validate()">
                     <i class="fa fa-check"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" data-toggle="modal" data-target="#xmlModal" (click)="showXml()" placement="bottom" ngbTooltip="{{'button.showXML' | translate}}">
-                    <i class="fa fa-chrome"></i>
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'button.showXML' | translate}}">
+                    <i class="fa fa-television"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey pull-right" data-toggle="modal" data-target="#upload" placement="bottom" ngbTooltip="{{'button.importXML' | translate}}">
+                  <button class="btn btn-sm btn-grey pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'button.importXML' | translate}}">
                     <i class="fa fa-upload"></i>
                   </button>
+                  <span class="badge float-right mr-2"  [ngClass]="validConfig?'badge-success':'badge-danger'">{{validConfig?'Validate':'Non-Validate'}}</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="row" style="margin-top: -20px">
+        <div class="row" style="margin-top: -4px">
           <div *ngIf="selectedNode" class="col-12">
-            <h4 *ngIf="selectedNode" class="mt-3">{{selectedNode.ref}}</h4>
-            <hr *ngIf="selectedNode">
+            <div *ngIf="selectedNode" class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
           </div>
           <div class="col-12">
-            <h5 *ngIf="selectedNode && selectedNode.text" class="text" translate>label.documentation</h5>
-            <span id="doc">
-              <ul *ngIf="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
-                <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
-              </ul>
-              <div *ngIf="selectedNode && selectedNode.text">
-                <div [innerHTML]="selectedNode.text.doc | safeHtml"></div>
-              </div>
-            </span>
-            <div class="b-b w-full" *ngIf="selectedNode && selectedNode.text"></div>
-          </div>
-          <div class="col-12" id="attr">
-            <div *ngIf="selectedNode">
-              <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="p-t p-b">Attributes</div>
-              <div *ngFor="let node of selectedNode.attributes" class="form-group">
-                <label *ngIf="node.name && node.id">{{node.name}}<sup
-                  *ngIf="node.use==='required' || !node.use" class="text-danger text-sm">*</sup></label>
-                <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
-                <span (click)="gotoKeyref(node)" *ngIf="node.refElement"
-                      class="pull-right"><a>Goto ref Element</a></span>
-                <span (mouseover)="getpos()" *ngIf="node.text" [ngClass]="(node.refer || node.refElement) ? 'pr-3': ''"
-                      class="pull-right" data-toggle="tooltip" data-placement="top" title="{{node.text.doc}}">
-                      <i class="fa fa-info-circle"></i>
-                </span>
-                <input #localref1 (blur)="validateAttr(localref1.value, node)"
-                       (change)="submitData(localref1.value, node)"
-                       *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string'"
-                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                       [required]="node.use ==='required'"
-                       class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
-                       value="{{node.data? node.data:node.default}}">
-                <input #localref1 (blur)="validateAttr(localref1.value, node)"
-                       (change)="submitData(localref1.value, node)"
-                       *ngIf="node.values && node.values.length==0 && node.name && !node.type"
-                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                       [required]="node.use ==='required'" class="form-control"
-                       id="{{node.name}}" placeholder="Example input" type="text"
-                       value="{{node.data? node.data:node.default}}">
-
-                <input #localref2 (blur)="validateAttr(localref2.value, node)"
-                       (change)="submitData(localref2.value, node)"
-                       *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
-                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                       [required]="node.use ==='required'" class="form-control"
-                       id="{{node.name}}" placeholder="Example input" title="{{node.name}} should not contain spaces"
-                       type="text" value="{{node.data? node.data:node.default}}">
-
-                <select #localref6 (blur)="validateAttr(localref6.value, node)"
-                        (change)="submitData(localref6.value, node)" (focus)="getDataAttr(node.refer)"
-                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NMTOKEN' && node.refer"
-                        [ngClass]="error && errorName === node.name? 'invalid': ''"
-                        [ngModel]="node.data? node.data: node.default"
-                        [required]="node.use ==='required'" class="form-control" id="{{node.name}}">
-                  <option value=""></option>
-                  <option *ngFor="let key of tempArr" value="{{key}}">{{key}}</option>
-                </select>
-                <input #localref3 (blur)="validateAttr(localref3.value, node)"
-                       (change)="submitData(localref3.value, node)"
-                       *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
-                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                       [required]="node.use ==='required'" class="form-control"
-                       id="{{node.name}}" placeholder="Example input" required
-                       type="number" value="{{node.data? node.data:node.default}}">
-
-                <input #localref4 (blur)="validateAttr(localref4.value, node)"
-                       (change)="submitData(localref4.value, node)"
-                       *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
-                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                       [required]="node.use ==='required'" class="form-control"
-                       id="{{node.name}}" min="0" placeholder="Example input" type="number"
-                       value="{{node.data?node.data:node.default}}">
-                <select #localref5 (blur)="validateAttr(localref5.value, node)"
-                        (change)="submitData(localref5.value, node)"
-                        *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
-                        [ngClass]="error && errorName === node.name? 'invalid': ''"
-                        [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
-                        class="form-control" id="{{node.name}}">
-                  <option>true</option>
-                  <option>false</option>
-                </select>
-                <select #localref6 (blur)="validateAttr(localref6.value, node)"
-                        (change)="submitData(localref6.value, node)" *ngIf="node.values && node.values.length > 0"
-                        [ngClass]="error && errorName === node.name? 'invalid': ''"
-                        [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
-                        class="form-control" id="{{node.name}}">
-                  <option *ngFor="let value of node.values" [ngClass]="value.base ? 'hide':''">{{value.value}}</option>
-                </select>
-                <div *ngIf="error && errorName === node.name" [innerText]="text" class="col-4 text-danger"
-                     id="{{node.name}}Alert"
-                     role="alert">
+            <div class="box p-a">
+              <div *ngIf="selectedNode && selectedNode.text" class="text _600" translate>label.documentation</div>
+              <span id="doc">
+                <ul *ngIf="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
+                  <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
+                </ul>
+                <div *ngIf="selectedNode && selectedNode.text">
+                  <div [innerHTML]="selectedNode.text.doc | safeHtml"></div>
                 </div>
-              </div>
-            </div>
-            <div *ngIf="selectedNode">
-              <h6 *ngIf="selectedNode.values && selectedNode.values.length>0" class="mt-3">Value<sup
-                *ngIf="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></h6>
-              <div class="form-group">
-                <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                       (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                       *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === nodes.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
-                       [ngClass]="error? 'invalid': ''"
-                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                       type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
-
-                <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                       (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                       *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === nodes.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
-                       [ngClass]="error? 'invalid': ''"
-                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                       type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
-
-                <div *ngIf="nodes.ref === 'Body'" [ngClass]="{ 'has-error': myckeditor.invalid && myckeditor.touched }"
-                     class="form-group has-feedback">
-                  <ckeditor #myckeditor="ngModel" (change)="onChange($event, selectedNode)" [(ngModel)]="myContent"
-                            [config]="ckeConfig"
-                            [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor"></ckeditor>
-                  <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
-                </div>
-                <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                        (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                        *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
-                        [ngClass]="error? 'invalid': ''" class="form-control" id="{{selectedNode.ref}}"
-                        value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
-                  <option>true</option>
-                  <option>false</option>
-                </select>
-                <textarea #localref8 (blur)="validValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
-                          (change)="submitValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
-                          *ngIf="nodes.ref === 'Message'" [ngClass]="error? 'invalid': ''" class="form-control"
-                          id="{{selectedNode.ref}}" rows="4"
-                          value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"></textarea>
-                <div *ngIf="error && errorName === nodes.ref" [innerText]="text" class="mt-2 col-4 text-danger pl-0"
-                     id="{{nodes.ref}}Alert"
-                     role="alert">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal for Showing all Child Nodes -->
-<div class="modal fade" id="showAllChildNodes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">XSD Element</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-6">
-                    <a class="rounded-circle circle mt-2" (click)="modelExpandAll()">
-                        <i  class="fa fa-angle-double-down text-dark"></i>
-                    </a>
-                    <a class="rounded-circle circle mt-2" (click)="modelCollapseAll()">
-                        <i class="fa fa-angle-double-up text-dark"></i>
-                    </a>
-                </div>
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6">
-                            <input class="form-control mr-sm-2" type="search" name="search" [(ngModel)]="sData" placeholder="Search" aria-label="Search">
-                        </div>
-                        <div class="col-2">
-                            <button class="btn my-2 my-sm-0" (click)="search(sData)">Search</button>
-                        </div>
-                        <div class="col-4 pt-2">
-                            <span class="text-success mt-5" *ngIf="counter>0 && sData !== ''">Match Found {{counter}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6 abc">
-                    <tree-root #treeCtrl [nodes]="sat" [options]="options" (toggleExpanded)="toggleExpanded($event)" class="width-100 tree-node-focused">
-                        <ng-template #treeNodeTemplate1 let-node let-index="index">
-                            <span></span> <span>{{node.data.ref}}</span>
-                        </ng-template>
-                    </tree-root>
-                </div>
-                <div class="col-6 mt-1">
-                    <div [innerHTML]="innerTreeStruc | safeHtml" id="innertext" class="fullNodeView">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-        </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Show XML Model -->
-<div class="modal fade" id="xmlModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">XML</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body pl-4 pr-4">
-        <pre>{{xml}}</pre>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" translate>button.close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Upload Model -->
-<div class="modal fade" id="upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Import XML</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-        <div class="modal-body">
-          <div>
-            <div class="table-responsive" *ngIf="uploader && uploader.queue && uploader.queue.length>0 && selectedXMLFile" [hidden]="fileLoading">
-              <table class="table table-hover table-bordered">
-                <thead>
-                <tr>
-                  <th><span translate>File Name</span></th>
-                  <th><span translate>Size</span></th>
-                  <th><span translate>Type</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>{{selectedXMLFile.name}}</td>
-                  <td>{{selectedXMLFile.size}} bytes</td>
-                  <td>{{selectedXMLFile.type}}</td>
-                </tr>
-                </tbody>
-              </table>
-              <label for="exampleFormControlSelect1" *ngIf="dataLoad">Assign XSD Schema <sup class="text-danger text-sm">*</sup></label>
-              <span class="form-group" *ngIf="dataLoad">
-                <select class="form-control" [(ngModel)]="selectedXsd" name="schema"
-                        (change)="reassignxsd(selectedXsd)" id="exampleFormControlSelect1">
-                  <option><---Choose one of the file---></option>
-                  <option>systemMonitorNotification</option>
-                  <option>yade</option>
-                </select>
               </span>
             </div>
-            <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)"
-                 [hidden]="uploader && uploader.queue.length>0">
-              <div><img src="./assets/images/upload.png"></div>
-              <div translate>button.dragAndDropFileToUpload</div>
-            </div>
-            <div class="p-l-sm p-t-sm" [hidden]="uploader && uploader.queue.length>0">
-              <div class="upload-btn-wrapper">
-                <button type="button" class="btn btn-grey btn-sm">
-                  <span translate>button.chooseFileToUpload</span>
-                </button>
-                <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onFileSelected($event)">
+          </div>
+          <div class="col-12" id="attr">
+            <div class="box p-a">
+              <div *ngIf="selectedNode">
+                <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm">Attributes</div>
+                <div *ngFor="let node of selectedNode.attributes" class="form-group">
+                  <label *ngIf="node.name && node.id">{{node.name}}<sup
+                    *ngIf="node.use==='required' || !node.use" class="text-danger text-sm">*</sup></label>
+                  <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
+                  <span (click)="gotoKeyref(node)" *ngIf="node.refElement"
+                        class="pull-right"><a>Goto ref Element</a></span>
+                  <span (mouseover)="getpos()" *ngIf="node.text" [ngClass]="(node.refer || node.refElement) ? 'pr-3': ''"
+                        class="pull-right" data-toggle="tooltip" data-placement="left" title="{{node.text.doc}}">
+                        <i class="fa fa-info-circle"></i>
+                  </span>
+                  <input #localref1 (blur)="validateAttr(localref1.value, node)"
+                         (change)="submitData(localref1.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string'"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'"
+                         class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
+                         value="{{node.data? node.data:node.default}}">
+                  <input #localref1 (blur)="validateAttr(localref1.value, node)"
+                         (change)="submitData(localref1.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && !node.type"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" placeholder="Example input" type="text"
+                         value="{{node.data? node.data:node.default}}">
+                  <input #localref2 (blur)="validateAttr(localref2.value, node)"
+                         (change)="submitData(localref2.value, node)"
+                         *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" placeholder="Example input" title="{{node.name}} should not contain spaces"
+                         type="text" value="{{node.data? node.data:node.default}}">
+                  <select #localref6 (blur)="validateAttr(localref6.value, node)"
+                          (change)="submitData(localref6.value, node)" (focus)="getDataAttr(node.refer)"
+                          *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NMTOKEN' && node.refer"
+                          [ngClass]="error && errorName === node.name? 'invalid': ''"
+                          [ngModel]="node.data? node.data: node.default"
+                          [required]="node.use ==='required'" class="form-control" id="{{node.name}}">
+                    <option value=""></option>
+                    <option *ngFor="let key of tempArr" value="{{key}}">{{key}}</option>
+                  </select>
+                  <input #localref3 (blur)="validateAttr(localref3.value, node)"
+                         (change)="submitData(localref3.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" placeholder="Example input" required
+                         type="number" value="{{node.data? node.data:node.default}}">
+                  <input #localref4 (blur)="validateAttr(localref4.value, node)"
+                         (change)="submitData(localref4.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" min="0" placeholder="Example input" type="number"
+                         value="{{node.data?node.data:node.default}}">
+                  <select #localref5 (blur)="validateAttr(localref5.value, node)"
+                          (change)="submitData(localref5.value, node)"
+                          *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
+                          [ngClass]="error && errorName === node.name? 'invalid': ''"
+                          [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
+                          class="form-control" id="{{node.name}}">
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                  <select #localref6 (blur)="validateAttr(localref6.value, node)"
+                          (change)="submitData(localref6.value, node)" *ngIf="node.values && node.values.length > 0"
+                          [ngClass]="error && errorName === node.name? 'invalid': ''"
+                          [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
+                          class="form-control" id="{{node.name}}">
+                    <option *ngFor="let value of node.values" [ngClass]="value.base ? 'hide':''">{{value.value}}</option>
+                  </select>
+                  <div *ngIf="error && errorName === node.name" [innerText]="text" class="col-4 text-danger"
+                       id="{{node.name}}Alert" role="alert">
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="row m-t-md" *ngIf="uploader && uploader.queue.length>0">
-              <div class="b-t"></div>
-            </div>
-            <div class="form-group m-t m-b-xs" *ngIf="uploader && uploader.queue.length>0">
-              <button type="submit" class="btn btn-primary btn-sm" [disabled]="!dataLoad || !assignXsd"><i
-                *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-                Import
-              </button>
-              <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="uploader.queue[0].remove();">Cancel
-              </button>
+              <div *ngIf="selectedNode">
+                <div *ngIf="selectedNode.values && selectedNode.values.length>0" class="text m-b-sm">Value<sup
+                  *ngIf="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
+                <div class="form-group">
+                  <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                         (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
+                         [ngClass]="error? 'invalid': ''"
+                         class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                         type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+
+                  <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                         (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
+                         [ngClass]="error? 'invalid': ''"
+                         class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                         type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+
+                  <div *ngIf="selectedNode.ref === 'Body'" [ngClass]="{ 'has-error': myckeditor.invalid && myckeditor.touched }"
+                       class="form-group has-feedback">
+                    <ckeditor #myckeditor="ngModel" (change)="onChange($event, selectedNode)" [(ngModel)]="myContent"
+                              [config]="ckeConfig"
+                              [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor"></ckeditor>
+                    <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
+                  </div>
+                  <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                          *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
+                          [ngClass]="error? 'invalid': ''" class="form-control" id="{{selectedNode.ref}}"
+                          value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                    <option>true</option>
+                    <option>false</option>
+                  </select>
+                  <textarea #localref8 (blur)="validValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
+                            (change)="submitValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
+                            *ngIf="selectedNode.ref === 'Message'" [ngClass]="error? 'invalid': ''" class="form-control"
+                            id="{{selectedNode.ref}}" rows="4"
+                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"></textarea>
+                  <div *ngIf="error && errorName === nodes.ref" [innerText]="text" class="mt-2 col-4 text-danger pl-0"
+                       id="{{nodes.ref}}Alert"
+                       role="alert">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer ">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                  (click)="uploader && uploader.queue[0].remove()" #uploadModelClose>Close
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>

@@ -42,6 +42,84 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnInit() {
+    this.init();
+  }
+
+  ngOnDestroy() {
+    this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
+  }
+
+  loadProcessClass(status) {
+    let obj = {
+      folders: [],
+      jobschedulerId: this.schedulerIds.selected
+    };
+
+    this.processClasses = [];
+    this.loading = true;
+    this.tree.forEach((value) => {
+      if (value.isExpanded || value.isSelected) {
+        this.getExpandTreeForUpdates(value, obj);
+      }
+    });
+    this.getProcessClassList(obj, null);
+  }
+
+  expandNode(node): void {
+    this.processClasses = [];
+    this.loading = true;
+    let obj = {
+      jobschedulerId: this.schedulerIds.selected,
+      folders: [{folder: node.data.path, recursive: true}]
+    };
+    this.getProcessClassList(obj, node);
+  }
+
+  getProcessClass(data) {
+    data.isSelected = true;
+    this.loading = true;
+    let obj = {
+      folders: [{folder: data.path, recursive: false}],
+      jobschedulerId: this.schedulerIds.selected
+    };
+
+    this.getProcessClassList(obj, null);
+  }
+
+  receiveAction($event) {
+    if ($event.action === 'NODE') {
+      this.getProcessClass($event.data);
+    } else {
+      this.expandNode($event);
+    }
+  }
+
+  /** ---------------------------- Action ----------------------------------*/
+
+  sortBy(propertyName) {
+    this.processFilters.reverse = !this.processFilters.reverse;
+    this.processFilters.filter.sortBy = propertyName;
+  }
+
+ expandDetails() {
+   this.processClasses.forEach((value) => {
+     value.show = true;
+   });
+ }
+
+  collapseDetails() {
+    this.processClasses.forEach((value) => {
+      value.show = false;
+    });
+  }
+
+  /** ---------------------------- Broadcast messages ----------------------------------*/
+  receiveMessage($event) {
+    this.pageView = $event;
+  }
+
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId == this.schedulerIds.selected) {
@@ -72,10 +150,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    this.init();
-  }
-
   private init() {
     this.processFilters = this.coreService.getResourceTab().processClasses;
     this.coreService.getResourceTab().state = 'processClass';
@@ -88,12 +162,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
       this.pageView = JSON.parse(localStorage.views).processClass;
     }
     this.initTree();
-  }
-
-
-  ngOnDestroy() {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
   }
 
   private initTree() {
@@ -128,39 +196,37 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPath() {
-    let self = this;
     this.processClasses = [];
-    setTimeout(function () {
-      self.tree.forEach(function (value) {
-        self.navigatePath(value);
+    setTimeout(() => {
+      this.tree.forEach((value) => {
+        this.navigatePath(value);
       });
     }, 10);
   }
 
   private navigatePath(data) {
-    const self = this;
-    if (this.process_class_expand_to && self.child) {
+    if (this.process_class_expand_to && this.child) {
 
-      let node = self.child.getNodeById(data.id);
-      if (self.process_class_expand_to.path.indexOf(data.path) != -1) {
+      let node = this.child.getNodeById(data.id);
+      if (this.process_class_expand_to.path.indexOf(data.path) != -1) {
         node.expand();
       }
       if ((data.path === this.process_class_expand_to.path)) {
         node.setActiveAndVisible(true);
-        self.process_class_expand_to = undefined;
+        this.process_class_expand_to = undefined;
       }
 
       if (data.children && data.children.length > 0)
-        data.children.forEach(function (value) {
-          self.navigatePath(value);
+        data.children.forEach((value) => {
+          this.navigatePath(value);
         });
     }
   }
 
   private expandTree() {
     const self = this;
-    setTimeout(function () {
-      self.tree.forEach(function (data) {
+    setTimeout(() => {
+      this.tree.forEach((data) => {
         recursive(data);
       });
     }, 10);
@@ -170,7 +236,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
-          data.children.forEach(function (child) {
+          data.children.forEach((child) => {
             recursive(child);
           });
         }
@@ -179,46 +245,30 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    const self = this;
-    setTimeout(function () {
-      const node = self.child.getNodeById(1);
-      node.expand();
-      node.setActiveAndVisible(true);
+    setTimeout(() => {
+      if (this.child && this.child.getNodeById(1)) {
+        const node = this.child.getNodeById(1);
+        node.expand();
+        node.setActiveAndVisible(true);
+      }
     }, 10);
   }
 
   private getExpandTreeForUpdates(data, obj) {
-    const self = this;
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
-    data.children.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
+    data.children.forEach((value) => {
+      if (value.isExpanded || value.isSelected) {
+        this.getExpandTreeForUpdates(value, obj);
+      }
     });
-  }
-
-  loadProcessClass(status) {
-    let self = this;
-    let obj = {
-      folders: [],
-      jobschedulerId: this.schedulerIds.selected
-    };
-
-    this.processClasses = [];
-    this.loading = true;
-    this.tree.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
-    });
-    this.getProcessClassList(obj, null);
   }
 
   private startTraverseNode(data) {
-    let self = this;
     data.isSelected = true;
-    data.children.forEach(function (a) {
-      self.startTraverseNode(a);
+    data.children.forEach((a) => {
+      this.startTraverseNode(a);
     });
   }
 
@@ -227,7 +277,7 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     this.coreService.post('process_classes', obj).subscribe(res => {
       this.loading = false;
       result = res;
-      result.processClasses.forEach(function (value) {
+      result.processClasses.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.processClasses = result.processClasses;
@@ -237,57 +287,6 @@ export class ProcessClassComponent implements OnInit, OnDestroy {
     }, () => {
       this.loading = false;
     });
-  }
-
-
-  expandNode(node): void {
-    this.processClasses = [];
-    this.loading = true;
-
-    let obj = {
-      jobschedulerId: this.schedulerIds.selected,
-      folders: [{folder: node.data.path, recursive: true}]
-    };
-    this.getProcessClassList(obj, node);
-  }
-
-  getProcessClass(data) {
-    data.isSelected = true;
-    this.loading = true;
-    let obj = {
-      folders: [{folder: data.path, recursive: false}],
-      jobschedulerId: this.schedulerIds.selected
-    };
-
-    this.getProcessClassList(obj, null);
-  }
-
-  receiveAction($event) {
-    if ($event.action === 'NODE')
-      this.getProcessClass($event.data);
-    else
-      this.expandNode($event);
-
-  }
-
-  /** ---------------------------- Action ----------------------------------*/
-
-  sortBy(propertyName) {
-    this.processFilters.reverse = !this.processFilters.reverse;
-    this.processFilters.filter.sortBy = propertyName;
-  }
-
-  expandDetails() {
-
-  }
-
-  collapseDetails() {
-
-  }
-
-  /** ---------------------------- Broadcast messages ----------------------------------*/
-  receiveMessage($event) {
-    this.pageView = $event;
   }
 
 }

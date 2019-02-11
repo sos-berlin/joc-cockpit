@@ -171,10 +171,8 @@ export class SearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -360,12 +358,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
-    obj.limit = parseInt(this.preferences.maxRecords);
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
 
-    let result: any;
-    this.coreService.post('yade/transfers', obj).subscribe((res) => {
-      result = res;
-      this.fileTransfers = result.transfers;
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+
+      this.fileTransfers = res.transfers;
 
       this.fileTransfers.forEach(function (transfer) {
         let id = transfer.jobschedulerId || self.schedulerIds.selected;
@@ -386,9 +383,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       transferIds: [transfer.id]
 
     };
-    let res: any;
-    this.coreService.post('yade/transfers', obj).subscribe((result) => {
-      res = result;
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
       if (res.transfers && res.transfers.length > 0) {
         transfer.states = res.transfers[0].states;
         transfer.operations = res.transfers[0].operations;
@@ -408,9 +403,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       jobschedulerId: this.schedulerIds.selected,
       transferIds: [transferId]
     };
-    let result: any;
-    this.coreService.post('yade/transfers', obj).subscribe((res) => {
-      result = res;
+    this.coreService.post('yade/transfers', obj).subscribe((result: any) => {
       this.fileTransfers = result.transfers;
       this.fileTransfers[0].permission = this.authService.getPermission(this.schedulerIds.selected).YADE;
       this.isLoading = true;
@@ -419,13 +412,11 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   getFiles(value) {
     let ids = [value.id];
-    let result: any;
     this.coreService.post('yade/files', {
       transferIds: ids,
       jobschedulerId: value.jobschedulerId || this.schedulerIds.selected
-    }).subscribe((res) => {
-      result = res;
-      value.files = result.files;
+    }).subscribe((res: any) => {
+      value.files = res.files;
     });
   }
 
@@ -528,10 +519,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       jobschedulerId: value.jobschedulerId || this.schedulerIds.selected,
       transferIds: [value.id]
     };
-    let result: any;
-    this.coreService.post('yade/transfers', obj).subscribe((res) => {
-      result = res;
-      value = _.extend(value, result.transfers[0]);
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+      value = _.extend(value, res.transfers[0]);
       this.isLoading = true;
     }, () => this.isLoading = true);
     value.show = true;
@@ -542,7 +531,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
     let filter: any = {
       jobschedulerId: this.yadeView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords)
+      limit: parseInt(this.preferences.maxRecords, 10)
     };
 
     this.yadeFilters.filter.states = '';
@@ -646,18 +635,15 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if ((filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
       filter.dateTo = moment(filter.dateTo).tz(this.preferences.zone);
     }
-    let result: any;
-    this.coreService.post('yade/transfers', filter).subscribe((res) => {
-      result = res;
-      this.fileTransfers = result.transfers;
+    this.coreService.post('yade/transfers', filter).subscribe((res: any) => {
+      this.fileTransfers = res.transfers;
       this.loading = false;
       this.isLoaded = true;
     }, () => {
       this.loading = false;
       this.isLoaded = true;
     });
-
-  };
+  }
 
   /* ------------- Advance search ------------------- */
   advancedSearch() {
@@ -695,11 +681,10 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         objectType: 'YADE',
         shared: true
       };
-      let result: any;
-      this.coreService.post('configurations', obj).subscribe((res) => {
-        result = res;
-        if (result.configurations && result.configurations.length > 0)
-          this.filterList = result.configurations;
+      this.coreService.post('configurations', obj).subscribe((res: any) => {
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = res.configurations;
+        }
         this.getYadeCustomizations();
       }, () => {
         this.filterList = [];
@@ -718,15 +703,12 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       configurationType: 'CUSTOMIZATION',
       objectType: 'YADE'
     };
-    let result: any;
-    this.coreService.post('configurations', obj).subscribe((res) => {
-      result = res;
+    this.coreService.post('configurations', obj).subscribe((res: any) => {
       if (this.filterList && this.filterList.length > 0) {
-        if (result.configurations && result.configurations.length > 0) {
-          this.filterList = this.filterList.concat(result.configurations);
+        if (res.configurations && res.configurations.length > 0) {
+          this.filterList = this.filterList.concat(res.configurations);
         }
         let data = [];
-
         for (let i = 0; i < this.filterList.length; i++) {
           let flag = true;
           for (let j = 0; j < data.length; j++) {
@@ -740,23 +722,22 @@ export class FileTransferComponent implements OnInit, OnDestroy {
         }
         this.filterList = data;
       } else {
-        this.filterList = result.configurations;
+        this.filterList = res.configurations;
       }
 
       if (this.savedFilter.selected) {
         let flag = true;
-        const self = this;
-        this.filterList.forEach(function (value) {
-          if (value.id == self.savedFilter.selected) {
+        this.filterList.forEach((value) => {
+          if (value.id == this.savedFilter.selected) {
             flag = false;
             this.coreService.post('configuration', {
               jobschedulerId: value.jobschedulerId,
               id: value.id
-            }).subscribe((conf) => {
-              self.loadConfig = true;
-              self.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
-              self.selectedFiltered.account = value.account;
-              self.load();
+            }).subscribe((conf: any) => {
+              this.loadConfig = true;
+              this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+              this.selectedFiltered.account = value.account;
+              this.load();
             });
           }
         });
@@ -788,10 +769,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
       name: this.searchFilter.name,
       configurationItem: JSON.stringify(this.searchFilter)
     };
-    let result: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      result = res;
-      configObj.id = result.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.searchFilter.name = '';
       this.filterList.push(configObj);
     });
@@ -901,14 +880,12 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.yadeFilters.selectedView = true;
-      let result: any;
       this.coreService.post('configuration',
         {
           jobschedulerId: filter.jobschedulerId,
           id: filter.id
-        }).subscribe((conf) => {
-        result = conf;
-        this.selectedFiltered = JSON.parse(result.configuration.configurationItem);
+        }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.load();
       });
@@ -1023,7 +1000,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
       fromDate = new Date();
       toDate = new Date();
-      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+      let seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2], 10);
       fromDate.setSeconds(toDate.getSeconds() - seconds);
     } else if (/^\s*(Today)\s*$/i.test(regex)) {
       fromDate = '0d';
@@ -1061,20 +1038,20 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
       let time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
       fromDate = new Date();
-      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-        fromDate.setHours(parseInt(time[1]) - 12);
+      if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12, 10) {
+        fromDate.setHours(parseInt(time[1]) - 12, 10);
       } else {
-        fromDate.setHours(parseInt(time[1]));
+        fromDate.setHours(parseInt(time[1], 10));
       }
 
-      fromDate.setMinutes(parseInt(time[2]));
+      fromDate.setMinutes(parseInt(time[2], 10));
       toDate = new Date();
-      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-        toDate.setHours(parseInt(time[4]) - 12);
+      if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12, 10) {
+        toDate.setHours(parseInt(time[4]) - 12, 10);
       } else {
-        toDate.setHours(parseInt(time[4]));
+        toDate.setHours(parseInt(time[4], 10));
       }
-      toDate.setMinutes(parseInt(time[5]));
+      toDate.setMinutes(parseInt(time[5], 10));
     }
 
     if (fromDate) {
@@ -1088,10 +1065,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private editFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1110,10 +1085,8 @@ export class FileTransferComponent implements OnInit, OnDestroy {
 
   private copyFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
 

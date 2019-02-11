@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>XSD Element</span>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body" style="overflow: auto; max-height: 650px">
+  <div class="p-a">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="col-md-12">
+          <a (click)="expandAll()" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+            <i  class="fa fa-angle-double-down fa-lg" ></i>
+          </a>
+          <a class="m-l-xs" (click)="collapseAll()" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+          </a>
+        </div>
+        <div class="col-md-12">
+          <tree-root #treeCtrl [nodes]="nodes" [options]="options" (toggleExpanded)="toggleExpanded($event)">
+            <ng-template #treeNodeTemplate1 let-node let-index="index">
+              <span></span> <span>{{node.data.ref}}</span>
+            </ng-template>
+          </tree-root>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-6">
+              <input class="form-control" type="search" name="search" [(ngModel)]="sData" placeholder="Search" aria-label="Search">
+            </div>
+            <div class="col-2">
+              <button class="btn my-2 my-sm-0" (click)="search(sData)">Search</button>
+            </div>
+            <div class="col-4 pt-2">
+              <span class="text-success mt-5" *ngIf="counter>0 && sData !== ''">Match Found {{counter}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div [innerHTML]="innerTreeStruct | safeHtml" id="innertext" class="fullNodeView"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
+          translate>button.close
+  </button>
+</div>

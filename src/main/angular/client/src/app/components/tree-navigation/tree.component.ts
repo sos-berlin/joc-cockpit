@@ -29,7 +29,6 @@ export class TreeComponent implements OnInit {
       $('#tre').height(ht + 'px');
     }
     if (top < 140 && top > 65) {
-      console.log('setGraphHt ' + top);
       setTimeout(() => {
         TreeComponent.setGraphHt();
       }, 5);

@@ -163,10 +163,8 @@ export class OrderSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -290,10 +288,8 @@ export class TaskSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -417,10 +413,8 @@ export class YadeSearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -633,7 +627,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
-    obj.limit = parseInt(this.preferences.maxRecords);
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       delete obj['timeZone'];
@@ -644,7 +638,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
-    this.coreService.post('orders/history', obj).subscribe((res) => {
+    this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.historys = this.setDuration(res);
       this.isLoading = true;
       this.isLoaded = true;
@@ -738,7 +732,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         obj.historyStates.push(this.task.filter.historyStates);
       }
     }
-    obj.limit = parseInt(this.preferences.maxRecords);
+    obj.limit = parseInt(this.preferences.maxRecords, 10);
     obj.timeZone = this.preferences.zone;
 
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
@@ -815,10 +809,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
     obj.compact = true;
-    let result: any;
-    this.coreService.post('yade/transfers', obj).subscribe((res) => {
-      result = res;
-      this.yadeHistorys = result.transfers;
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+      this.yadeHistorys = res.transfers;
       this.isLoading = true;
       this.isLoaded = true;
     }, () => {
@@ -828,11 +820,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   search(flag) {
-    if (!flag)
+    if (!flag) {
       this.loading = true;
+    }
     let obj = {
       jobschedulerId: this.historyView.current == true ? this.schedulerIds.selected : '',
-      limit: parseInt(this.preferences.maxRecords)
+      limit: parseInt(this.preferences.maxRecords, 10)
     };
   }
 
@@ -960,10 +953,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
       orderId: data.orderId,
       historyId: data.historyId
     };
-    let result: any;
-    this.coreService.post('order/history', obj).subscribe((res) => {
-      result = res;
-      data.steps = result.history.steps;
+    this.coreService.post('order/history', obj).subscribe((res: any) => {
+      data.steps = res.history.steps;
     });
   }
 
@@ -972,20 +963,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
       jobschedulerId: data.jobschedulerId || this.schedulerIds.selected,
       transferIds: [data.id]
     };
-    let result: any;
-    this.coreService.post('yade/transfers', obj).subscribe((res) => {
-      result = res;
-      data = _.extend(data, result.transfers[0]);
+    this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
+      data = _.extend(data, res.transfers[0]);
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
     data.show = true;
     data.files = [];
-    let result1: any;
-    this.coreService.post('yade/files', obj).subscribe((res) => {
-      result1 = res;
-      data.files = result1.files;
+    this.coreService.post('yade/files', obj).subscribe((res: any) => {
+      data.files = res.files;
     });
   };
 
@@ -1297,13 +1284,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (filter) {
         this.savedHistoryFilter.selected = filter.id;
         this.historyFilters.order.selectedView = true;
-        let result: any;
         this.coreService.post('configuration', {
           jobschedulerId: filter.jobschedulerId,
           id: filter.id
-        }).subscribe((conf) => {
-          result = conf;
-          this.selectedFiltered1 = JSON.parse(result.configuration.configurationItem);
+        }).subscribe((conf: any) => {
+          this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered1.account = filter.account;
           this.init();
         });
@@ -1319,13 +1304,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (filter) {
         this.savedJobHistoryFilter.selected = filter.id;
         this.historyFilters.task.selectedView = true;
-        let result: any;
         this.coreService.post('configuration', {
           jobschedulerId: filter.jobschedulerId,
           id: filter.id
-        }).subscribe((conf) => {
-          result = conf;
-          this.selectedFiltered2 = JSON.parse(result.configuration.configurationItem);
+        }).subscribe((conf: any) => {
+          this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered2.account = filter.account;
           this.init();
         });
@@ -1341,13 +1324,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       if (filter) {
         this.savedYadeHistoryFilter.selected = filter.id;
         this.historyFilters.yade.selectedView = true;
-        let result: any;
         this.coreService.post('configuration', {
           jobschedulerId: filter.jobschedulerId,
           id: filter.id
-        }).subscribe((conf) => {
-          result = conf;
-          this.selectedFiltered3 = JSON.parse(result.configuration.configurationItem);
+        }).subscribe((conf: any) => {
+          this.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
           this.selectedFiltered3.account = filter.account;
           this.init();
         });
@@ -1470,7 +1451,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       shared: true
     };
     if (this.permission.JOCConfigurations.share.view) {
-      this.coreService.post('configurations', obj).subscribe((res) => {
+      this.coreService.post('configurations', obj).subscribe((res: any) => {
         this.checkCurrentTab(type, res, obj);
       }, (err) => {
         this.checkCurrentTab(type, null, obj);
@@ -1494,7 +1475,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private getCustomizations(type, obj) {
     obj.account = this.permission.user;
     obj.shared = false;
-    this.coreService.post('configurations', obj).subscribe((result) => {
+    this.coreService.post('configurations', obj).subscribe((result: any) => {
       if (type === 'ORDER') {
         this.checkOrderCustomization(result);
       } else if (type === 'TASK') {
@@ -1539,14 +1520,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.orderHistoryFilterList.length; i++) {
         if (this.orderHistoryFilterList[i].id == this.savedHistoryFilter.selected) {
           flag = false;
-          let result: any;
           this.coreService.post('configuration', {
             jobschedulerId: this.orderHistoryFilterList[i].jobschedulerId,
             id: this.orderHistoryFilterList[i].id
-          }).subscribe((conf) => {
-            result = conf;
+          }).subscribe((conf: any) => {
             this.loadConfig = true;
-            this.selectedFiltered1 = JSON.parse(result.configuration.configurationItem);
+            this.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered1.account = this.orderHistoryFilterList[i].account;
             this.init();
           });
@@ -1596,14 +1575,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.jobHistoryFilterList.length; i++) {
         if (this.jobHistoryFilterList[i].id == this.savedJobHistoryFilter.selected) {
           flag = false;
-          let result: any;
           this.coreService.post('configuration', {
             jobschedulerId: this.jobHistoryFilterList[i].jobschedulerId,
             id: this.jobHistoryFilterList[i].id
-          }).subscribe((conf) => {
-            result = conf;
+          }).subscribe((conf: any) => {
             this.loadConfig = true;
-            this.selectedFiltered2 = JSON.parse(result.configuration.configurationItem);
+            this.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered2.account = this.jobHistoryFilterList[i].account;
             this.init();
           });
@@ -1658,12 +1635,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.yadeHistoryFilterList.length; i++) {
         if (this.yadeHistoryFilterList[i].id == this.savedYadeHistoryFilter.selected) {
           flag = false;
-          let result: any;
           this.coreService.post('configuration', {
             jobschedulerId: this.yadeHistoryFilterList[i].jobschedulerId,
             id: this.yadeHistoryFilterList[i].id
-          }).subscribe((conf) => {
-            result = conf;
+          }).subscribe((conf: any) => {
             this.loadConfig = true;
             this.selectedFiltered3 = JSON.parse(result.configuration.configurationItem);
             this.selectedFiltered3.account = this.yadeHistoryFilterList[i].account;
@@ -1691,17 +1666,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
       account: this.permission.user,
       configurationType: 'IGNORELIST'
     };
-    let result: any;
-    this.coreService.post('configurations', configObj).subscribe((res) => {
-      result = res;
+    this.coreService.post('configurations', configObj).subscribe((result: any) => {
       if (result.configurations && result.configurations.length > 0) {
         this.ignoreListConfigId = result.configurations[0].id;
-        let result1: any;
         this.coreService.post('configuration', {
           jobschedulerId: this.schedulerIds.selected,
           id: result.configurations[0].id
-        }).subscribe((res1) => {
-          result1 = res1;
+        }).subscribe((result1: any) => {
           if (result1.configuration && result1.configuration.configurationItem) {
             this.savedIgnoreList = JSON.parse(result1.configuration.configurationItem) || {};
           }
@@ -1748,10 +1719,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private editFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1776,10 +1745,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   private copyFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       if (this.historyFilters.type == 'ORDER') {
         filterObj.name = this.coreService.checkCopyName(this.orderHistoryFilterList, filter.name);

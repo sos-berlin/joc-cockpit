@@ -11,9 +11,10 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthGuard, AuthService, AuthInterceptor} from './components/guard';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AboutModalComponent} from './components/about-modal/about.component';
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {HttpErrorResponse} from '@angular/common/http';
+import {AboutModalComponent} from './components/about-modal/about.component';
+import {DataService} from './modules/admin/data.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -73,6 +74,7 @@ export class GlobalErrorHandler extends ErrorHandler {
     AuthGuard,
     AuthService,
     CoreService,
+    DataService,
     // register global error handler
     GlobalErrorHandler,
     // register global error log service

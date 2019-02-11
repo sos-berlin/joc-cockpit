@@ -146,10 +146,8 @@ export class SearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -347,10 +345,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       timeZone: this.preferences.zone
     };
     obj = this.setDateRange(obj);
-    let result: any;
-    this.coreService.post('audit_log', obj).subscribe(res => {
-      result = res;
-      this.auditLogs = result.auditLog;
+    this.coreService.post('audit_log', obj).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
@@ -482,10 +478,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
       filter = this.parseDate(this.searchFilter, filter);
     }
 
-    let result: any;
-    this.coreService.post('audit_log', filter).subscribe(res => {
-      result = res;
-      this.auditLogs = result.auditLog;
+    this.coreService.post('audit_log', filter).subscribe((res: any) => {
+      this.auditLogs = res.auditLog;
       //  this.isLoaded = false;
     }, (err) => {
       console.log(err);
@@ -570,10 +564,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   private editFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -592,10 +584,8 @@ export class AuditLogComponent implements OnInit, OnDestroy {
 
   private copyFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
 
@@ -616,13 +606,11 @@ export class AuditLogComponent implements OnInit, OnDestroy {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.adtLog.selectedView = true;
-      let result: any;
       this.coreService.post('configuration', {
         jobschedulerId: filter.jobschedulerId,
         id: filter.id
-      }).subscribe((conf) => {
-        result = conf;
-        this.selectedFiltered = JSON.parse(result.configuration.configurationItem);
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         //   this.load();
       });

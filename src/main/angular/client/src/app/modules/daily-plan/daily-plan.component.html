@@ -118,7 +118,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="pageView==='grid' || (plans | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(plans | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
                         <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                     </div>
                 </div>
@@ -149,23 +149,22 @@
           </div>
         </div>
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
-            <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
+<!--            <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
                 <div class="box p-a">
                     <div id="embedded-Gantt"></div>
                 </div>
-            </div>
-            <div class="hide box p-a " [ngClass]="{'show': pageView==='list' && plans.length>0}">
+            </div>-->
+            <div class="hide box p-a " [ngClass]="{'show': plans.length>0}">
                 <div class="table-responsive" *ngIf="plans.length>0">
                     <table class="table table-hover table-bordered " id="dailyPlanTableId">
                         <thead>
                         <tr>
-                            <th (click)="sortBy('processedPlanned')"><a><span
-                                    translate>label.jobChain</span><span>/</span><span translate>label.job</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'processedPlanned' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'processedPlanned' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
+                            <th class="tableexport-ignore chk">
+                              <label class="md-check lg-check">
+                                <input type="checkbox" [(ngModel)]="object.checkbox" (click)="checkAll()"><i class="primary"></i>
+                              </label>
                             </th>
+                            <th class="tableexport-ignore menu"><span translate>label.action</span></th>
                             <th (click)="sortBy('orderId')"><a><span translate>label.orderId</span>&nbsp;
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && !dailyPlanFilters.reverse"
                                    class="fa fa-caret-up "></i>
@@ -235,17 +234,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let plan of plans | filter: searchKey | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }"
-                            (click)="coreService.showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)"
-                            [ngClass]="{'cursor':plan.historyId}">
+                        <tr *ngFor="let plan of plans | filter: searchKey | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }">
                             <td>
-                                <span class="hide text-hover-primary" (click)="coreService.showJobChain(plan.jobChain);$event.stopPropagation()"
-                                      [ngClass]="{show:plan.jobChain!=undefined}" [innerHtml]="plan.jobChain"></span>
-                                <span class="hide text-hover-primary" (click)="coreService.showJob(plan.job);$event.stopPropagation()"
-                                      [ngClass]="{show:plan.job!=undefined}" [innerHtml]="plan.job"></span>
+                                <label class="md-check">
+                                    <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="plan" (click)="checkPlan(plan)"><i class="primary"></i>
+                                </label>
                             </td>
-                            <td><span class="text-hover-primary" (click)="coreService.showOrderLink(plan.jobChain,plan.orderId);$event.stopPropagation()"
-                                      [innerHtml]="plan.orderId"></span></td>
+                            <td class="tableexport-ignore">
+                                <div class="btn-group dropdown"  >
+                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                        <a *ngIf="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
+                                           (click)="restartTransfer(transfer)" translate>button.restart</a>
+                                         <a class="dropdown-item" (click)="coreService.copyLink('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span [innerHtml]="plan.orderId"></span></td>
                             <td>
                                 <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"
                                       [innerHtml]="plan.state._text | translate"> </span>

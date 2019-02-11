@@ -364,14 +364,12 @@ export class DocumentationComponent implements OnInit, OnDestroy {
   }
 
   private getDocumentationsList(obj, node) {
-    let result: any;
-    this.coreService.post('documentations', obj).subscribe(res => {
+    this.coreService.post('documentations', obj).subscribe((res: any) => {
       this.loading = false;
-      result = res;
-      result.documentations.forEach((value) => {
+      res.documentations.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
-      this.documents = result.documentations;
+      this.documents = res.documentations;
       if (node) {
         this.startTraverseNode(node.data);
       }

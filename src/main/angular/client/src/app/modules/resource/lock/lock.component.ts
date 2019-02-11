@@ -62,9 +62,6 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   expandNode(node): void {
-    this.navFullTree();
-    const someNode = this.child.getNodeById(node.data.id);
-    someNode.expandAll();
     this.locks = [];
     this.loading = true;
 
@@ -172,7 +169,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private expandTree() {
     setTimeout(() => {
-      this.tree.forEach( (data) => {
+      this.tree.forEach((data) => {
         recursive(data);
       });
     }, 10);
@@ -208,14 +205,12 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private getLocksList(obj, node) {
-    let result: any;
-    this.coreService.post('locks', obj).subscribe(res => {
+    this.coreService.post('locks', obj).subscribe((res: any) => {
       this.loading = false;
-      result = res;
-      result.locks.forEach((value) => {
+      res.locks.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
-      this.locks = result.locks;
+      this.locks = res.locks;
       if (node) {
         this.startTraverseNode(node.data);
       }
@@ -224,18 +219,5 @@ export class LockComponent implements OnInit, OnDestroy {
     });
   }
 
-  private traverseTree(data) {
-    data.children.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
-    });
-  }
-
-  private navFullTree() {
-    this.tree.forEach((value) => {
-      value.isSelected = false;
-      this.traverseTree(value);
-    });
-  }
 }
 

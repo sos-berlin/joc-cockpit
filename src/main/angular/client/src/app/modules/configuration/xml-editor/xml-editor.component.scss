@@ -19,13 +19,38 @@ tree-root::-webkit-scrollbar {
   background-color: #aaa !important; /* or add it to the track */
 }
 
-.highlight {
+#innertext span.highlight , #innertext .highlight{
   color: #ffc300 !important;
 }
 
-span#doc a {
+span ul li a {
   color: #007da6 !important;
   &:active, &:hover {
     text-decoration: underline;
   }
+}
+span p{
+  padding-left: 32px;
+}
+strong{
+  font-weight: 600;
+}
+tree-viewport {
+  -webkit-tap-highlight-color: transparent;
+  height: 100%;
+  overflow: auto;
+  display: inline !important;
+}
+.badge-success {
+  background-color: #28a745;
+  color: white;
+  padding: 2px 5px;
+  margin-top: 0.15rem;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 5px;
+  margin-top: 0.15rem;
 }

@@ -166,10 +166,8 @@ export class SearchComponent implements OnInit {
       obj.to1 = '0d';
     }
     configObj.configurationItem = JSON.stringify(obj);
-    let data: any;
-    this.coreService.post('configuration/save', configObj).subscribe((res) => {
-      data = res;
-      configObj.id = data.id;
+    this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+      configObj.id = res.id;
       this.allFilter.push(configObj);
       if (this.isSearch) {
         this.filter.name = '';
@@ -215,6 +213,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   searchKey: string;
   dateFormatM: any;
   maxPlannedTime: any;
+  object: any = {orders: [], checkbox: false};
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -565,14 +564,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if ((obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
-    let result: any;
-    this.coreService.post('orders/plan', obj).subscribe((res) => {
-      result = res;
-      this.plans = result.planItems;
+    this.coreService.post('orders/plan', obj).subscribe((res: any) => {
+      this.plans = res.planItems;
       this.plans = this.sortByKey(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-      this.prepareGanttData(this.plans);
-      if (result.created) {
-        this.maxPlannedTime = new Date(result.deliveryDate);
+      // this.prepareGanttData(this.plans);
+      if (res.created) {
+        this.maxPlannedTime = new Date(res.deliveryDate);
       } else {
         this.maxPlannedTime = undefined;
       }
@@ -667,13 +664,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (filter) {
       this.savedFilter.selected = filter.id;
       this.dailyPlanFilters.selectedView = true;
-      let result: any;
       this.coreService.post('configuration', {
         jobschedulerId: filter.jobschedulerId,
         id: filter.id
-      }).subscribe((conf) => {
-        result = conf;
-        this.selectedFiltered = JSON.parse(result.configuration.configurationItem);
+      }).subscribe((conf: any) => {
+        this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.load();
       });
@@ -754,7 +749,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     this.setDateRange(obj);
 
-    this.coreService.post('plan', obj).subscribe(res => {
+    this.coreService.post('orders/plan', obj).subscribe(res => {
       this.filterData(res);
       this.isLoaded = true;
     }, (err) => {
@@ -1066,7 +1061,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private filterData(res): void {
     this.plans = this.sortByKey(res.planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    this.prepareGanttData(this.plans);
+    // this.prepareGanttData(this.plans);
+  }
+
+  checkAll() {
+
+  }
+
+  checkPlan(plan) {
+
   }
 
   private setDateRange(obj) {
@@ -1111,10 +1114,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private editFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
 
       const modalRef = this.modalService.open(FilterModalComponent, {backdrop: 'static', size: 'lg'});
@@ -1133,10 +1134,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private copyFilter(filter) {
     let filterObj: any = {};
-    let result: any;
-    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf) => {
-      result = conf;
-      filterObj = JSON.parse(result.configuration.configurationItem);
+    this.coreService.post('configuration', {jobschedulerId: filter.jobschedulerId, id: filter.id}).subscribe((conf: any) => {
+      filterObj = JSON.parse(conf.configuration.configurationItem);
       filterObj.shared = filter.shared;
       filterObj.name = this.coreService.checkCopyName(this.filterList, filter.name);
 

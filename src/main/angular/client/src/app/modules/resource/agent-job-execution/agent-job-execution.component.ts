@@ -26,6 +26,7 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   totalJobExecution: any;
+  totalNumOfJobs: any;
   dateFormat: any;
   dateFormatM: any;
   config: any = {};
@@ -91,11 +92,10 @@ export class AgentJobExecutionComponent implements OnInit, OnDestroy {
       jobschedulerId: this.agentJobExecutionFilters.current === true ? this.schedulerIds.selected : ''
     };
     obj = this.setDateRange(obj);
-    let result: any;
-    this.coreService.post('report/agents', obj).subscribe((res) => {
-      result = res;
-      this.agentTasks = result.agents;
-      this.totalJobExecution = result.totalNumOfSuccessfulTasks;
+    this.coreService.post('report/agents', obj).subscribe((res: any) => {
+      this.agentTasks = res.agents || [];
+      this.totalJobExecution = res.totalNumOfSuccessfulTasks;
+      this.totalNumOfJobs = res.totalNumOfJobs;
       this.isLoading = true;
     }, () => {
       this.isLoading = true;

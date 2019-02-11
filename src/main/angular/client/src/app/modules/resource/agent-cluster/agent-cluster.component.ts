@@ -53,7 +53,6 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     if (status) {
       this.agentsFilters.filter.state = status;
     }
-    let self = this;
     let obj = {
       folders: [],
       state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
@@ -63,27 +62,25 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
     this.agentClusters = [];
     this.loading = true;
-    this.tree.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
+    this.tree.forEach((value) => {
+      if (value.isExpanded || value.isSelected) {
+        this.getExpandTreeForUpdates(value, obj);
+      }
     });
     this.getAgentClassList(obj, null);
   }
 
   loadAgentsV(data, type) {
-    let self = this;
     let obj = {
       jobschedulerId: this.schedulerIds.selected,
       folders: [{folder: data.path, recursive: type}],
       state: this.agentsFilters.filter.state !== 'ALL' ? this.agentsFilters.filter.state : undefined,
     };
-    let result: any;
-    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res) => {
-      result = res;
-      data.agentClusters = result.agentClusters;
-      data.agentClusters.forEach(function (value) {
+    this.coreService.post('jobscheduler/agent_clusters', obj).subscribe((res: any) => {
+      data.agentClusters = res.agentClusters;
+      data.agentClusters.forEach((value) => {
         value.path1 = data.path;
-        self.agentClusters.push(value);
+        this.agentClusters.push(value);
       });
       this.loading = false;
 
@@ -127,13 +124,13 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   expandDetails() {
-    this.agentClusters.forEach(function (value) {
+    this.agentClusters.forEach((value) => {
       value.show = true;
     });
   }
 
   collapseDetails() {
-    this.agentClusters.forEach(function (value) {
+    this.agentClusters.forEach((value) => {
       value.show = false;
     });
   }
@@ -218,11 +215,10 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   private navigateToPath() {
-    let self = this;
     this.agentClusters = [];
-    setTimeout(function () {
-      self.tree.forEach(function (value) {
-        self.navigatePath(value);
+    setTimeout(() => {
+      this.tree.forEach((value) => {
+        this.navigatePath(value);
       });
     }, 10);
   }
@@ -233,8 +229,8 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
 
   private expandTree() {
     const self = this;
-    setTimeout(function () {
-      self.tree.forEach(function (data) {
+    setTimeout(() => {
+      this.tree.forEach((data) => {
         recursive(data);
       });
     }, 10);
@@ -244,7 +240,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
         let node = self.child.getNodeById(data.id);
         node.expand();
         if (data.children && data.children.length > 0) {
-          data.children.forEach(function (child) {
+          data.children.forEach((child) => {
             recursive(child);
           });
         }
@@ -253,33 +249,30 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
   }
 
   private checkExpand() {
-    const self = this;
-    setTimeout(function () {
-      if (self.child && self.child.getNodeById(1)) {
-        const node = self.child.getNodeById(1);
+    setTimeout(() => {
+      if (this.child && this.child.getNodeById(1)) {
+        const node = this.child.getNodeById(1);
         node.expand();
         node.setActiveAndVisible(true);
       }
-      console.log(self.tree);
     }, 10);
   }
 
   private getExpandTreeForUpdates(data, obj) {
-    let self = this;
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
-    data.children.forEach(function (value) {
-      if (value.isExpanded || value.isSelected)
-        self.getExpandTreeForUpdates(value, obj);
+    data.children.forEach((value) => {
+      if (value.isExpanded || value.isSelected) {
+        this.getExpandTreeForUpdates(value, obj);
+      }
     });
   }
 
   private startTraverseNode(data) {
-    let self = this;
     data.isSelected = true;
-    data.children.forEach(function (a) {
-      self.startTraverseNode(a);
+    data.children.forEach((a) => {
+      this.startTraverseNode(a);
     });
   }
 
@@ -288,7 +281,7 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     this.coreService.post('jobscheduler/agent_clusters', obj).subscribe(res => {
       this.loading = false;
       result = res;
-      result.agentClusters.forEach(function (value) {
+      result.agentClusters.forEach((value) => {
         value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
       });
       this.agentClusters = result.agentClusters;

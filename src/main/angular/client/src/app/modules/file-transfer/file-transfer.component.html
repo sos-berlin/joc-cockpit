@@ -156,7 +156,7 @@
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th class="chk" *ngIf="permission.YADE.execute.transferStart">
+                                <th class="tableexport-ignore chk" *ngIf="permission.YADE.execute.transferStart">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" [(ngModel)]="checkAllFileTransfers.checkbox" (click)="checkAllFileTransfersFnc()"><i class="primary"></i>
                                     </label>

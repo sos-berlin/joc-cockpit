@@ -247,10 +247,8 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   getRoles() {
-    let obj: any;
-    this.coreService.post('security/permissions', {}).subscribe(res => {
-      obj = res;
-      this.roles = obj.SOSPermissionRoles.SOSPermissionRole;
+    this.coreService.post('security/permissions', {}).subscribe((res : any) => {
+      this.roles = res.SOSPermissionRoles.SOSPermissionRole;
     });
   }
 
