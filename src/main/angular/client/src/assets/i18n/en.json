@@ -1261,7 +1261,7 @@
   "label.assignADocumentation": "Assign Documentation",
   "label.documentationFound": "Document found",
   "label.documentationsFound": "Documents found",
-  "label.dragAndDropFileToUpload": "Drag And Drop File To Upload",
+  "button.dragAndDropFileToUpload": "Drag And Drop File To Upload",
   "label.import": "import",
   "label.importDocument": "Import Documentation",
   "button.importDocument": "Import Documentation",
@@ -1356,6 +1356,7 @@
   "button.showXML": "Show XML",
   "button.importXML": "Import XML",
   "button.export": "Export",
-  "button.showAllChildNodes" : "Show all Child Nodes of Selected Node"
+  "button.showAllChildNodes" : "Show all Child Nodes of Selected Node",
+  "label.importXML": "Import XML"
 }
 
