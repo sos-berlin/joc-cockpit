@@ -15,7 +15,7 @@
                             </ol>
                         </span>
                     </div>
-                    <div class="inline m-l-sm">
+                    <div class="inline m-l-sm" [ngClass]="{'hide':object.orders.length>0}">
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button [disabled]="savedFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.status==='ALL'}" (click)="dailyPlanFilters.filter.state='';getPlans('ALL',null)" translate>button.allStatus
@@ -118,9 +118,20 @@
                                 </a>
                             </div>
                         </div>
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="removeAllOrder()"><i class="fa fa-trash"></i>&nbsp;
+                            <span class="hidden-sm-down" translate>button.removeOrder</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="removeAllPlan()"><i class="fa fa-times"></i>&nbsp;
+                            <span class="hidden-sm-down" translate>button.removePlan</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(plans | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
-                        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+
                     </div>
+                    <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
+                        <button class="btn btn-grey btn-sm" (click)="removeSelectedOrder()"><i class="fa fa-trash"></i>&nbsp;
+                            <span class="hidden-sm-down" translate>button.removeOrder</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" (click)="removeSelectedPlan()"><i class="fa fa-times"></i>&nbsp;
+                            <span class="hidden-sm-down" translate>button.removePlan</span></button>
+                    </div>
+                    <!--<app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>-->
                 </div>
             </div>
         </div>
@@ -137,7 +148,7 @@
                 <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="cancel()" *ngIf="showSearchPanel">
                     <span translate>button.advancedSearch</span>&nbsp;<i class="fa fa-angle-down p-l-xs"></i>
                 </button>
-                <input type="search" class="pull-right hide" [ngClass]="{'show-block': pageView==='list'}"  placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" [(ngModel)]="searchKey" style="width: 180px">
             </div>
         </div>
         <div class="row hide" [ngClass]="{'show':showSearchPanel}">
@@ -161,7 +172,7 @@
                         <tr>
                             <th class="tableexport-ignore chk">
                               <label class="md-check lg-check">
-                                <input type="checkbox" [(ngModel)]="object.checkbox" (click)="checkAll()"><i class="primary"></i>
+                                <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i class="primary"></i>
                               </label>
                             </th>
                             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
@@ -235,19 +246,18 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let plan of plans | filter: searchKey | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }">
-                            <td>
+                            <td class="tableexport-ignore">
                                 <label class="md-check">
-                                    <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="plan" (click)="checkPlan(plan)"><i class="primary"></i>
+                                    <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="plan" (change)="checkPlan()"><i class="primary"></i>
                                 </label>
                             </td>
                             <td class="tableexport-ignore">
-                                <div class="btn-group dropdown"  >
+                                <div appDropdown class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
-                                        <a *ngIf="transfer.permission.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
-                                           (click)="restartTransfer(transfer)" translate>button.restart</a>
-                                         <a class="dropdown-item" (click)="coreService.copyLink('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a class="dropdown-item" (click)="removeOrder(plan)" translate>button.removeOrder</a>
+                                        <a class="dropdown-item" (click)="removePlan(plan)" translate>button.removePlan</a>
                                     </div>
                                 </div>
                             </td>
@@ -272,7 +282,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <pagination-controls class="pagination" (pageChange)="dailyPlanFilters.currentPage = $event" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
+                    <pagination-controls class="pagination" (pageChange)="dailyPlanFilters.currentPage = $event;object.orders = []" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
                     <div class="pull-left m-b" *ngIf="(plans | filter: searchKey).length > 10">
                         <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic"
                              [(ngModel)]="preferences.entryPerPage">

@@ -10,7 +10,7 @@
   <div class="modal-body p-a" style="min-height: 240px">
     <div class="row">
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
-          <div ng2FileDrop [uploader]="uploader" class="drop-box-full">
+          <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)">
             <div><img src="./assets/images/upload.png"></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
@@ -19,7 +19,7 @@
               <button type="button" class="btn btn-grey btn-sm" >
                 <span translate>button.chooseFileToUpload</span>
               </button>
-              <input type="file" ng2FileSelect [uploader]="uploader">
+              <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onFileSelected($event)">
             </div>
           </div>
       </div>

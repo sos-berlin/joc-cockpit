@@ -20,28 +20,40 @@
         </div>
         <div class="col-md-12">
           <tree-root #treeCtrl [nodes]="nodes" [options]="options" (toggleExpanded)="toggleExpanded($event)">
-            <ng-template #treeNodeTemplate1 let-node let-index="index">
-              <span></span> <span>{{node.data.ref}}</span>
+            <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+              <div class="node-wrapper">
+                <span *ngIf="node.hasChildren"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                      [class.toggle-children-wrapper-collapsed]="node.isCollapsed"
+                      (click)="node.mouseAction('expanderClick', $event)" class="w-15 cursor">
+                  <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
+                  <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
+                </span>
+                <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
+                <div class="node-content-wrapper">
+                  <span>{{node.data.ref}}</span>
+                </div>
+              </div>
             </ng-template>
           </tree-root>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 b-l">
         <div class="col-md-12">
           <div class="row">
             <div class="col-6">
-              <input class="form-control" type="search" name="search" [(ngModel)]="sData" placeholder="Search" aria-label="Search">
+              <input type="search" name="search" [(ngModel)]="sData" placeholder="Search">
             </div>
-            <div class="col-2">
-              <button class="btn my-2 my-sm-0" (click)="search(sData)">Search</button>
+            <div class="col-2 p-l-0">
+              <button class="btn btn-sm" (click)="search(sData)" translate>button.search</button>
             </div>
-            <div class="col-4 pt-2">
-              <span class="text-success mt-5" *ngIf="counter>0 && sData !== ''">Match Found {{counter}}</span>
+            <div class="col-4 p-t-xs">
+              <span class="text-success text-sm" *ngIf="counter>0 && sData !== ''">Match Found {{counter}}</span>
             </div>
           </div>
         </div>
         <div class="col-md-12">
-          <div [innerHTML]="innerTreeStruct | safeHtml" id="innertext" class="fullNodeView"></div>
+          <div [innerHTML]="innerTreeStruct | safeHtml" id="innertext" class="m-t"></div>
         </div>
       </div>
     </div>

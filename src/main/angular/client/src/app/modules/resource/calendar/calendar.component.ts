@@ -400,6 +400,13 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       if (this.frequencyList[i].endOnS)
         this.frequency.endOnS = moment(this.frequencyList[i].endOnS).format(this.dateFormatM);
     }
+    if (this.frequency.tab === 'specificDays') {
+      $('#calendar').calendar({
+        clickDay: (e) => {
+          this.selectDate(e);
+        }
+      }).setDataSource(this.tempItems);
+    }
   }
 
   generateFrequencyObj() {
@@ -411,6 +418,9 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
 
   onFrequencyChange() {
     if (this.frequency) {
+      if(!this.frequency.isUltimos){
+        this.frequency.isUltimos = 'months';
+      }
       if (this.frequency.tab == 'monthDays') {
         if (this.frequency.isUltimos != 'months') {
           this.str = 'label.ultimos';
@@ -525,7 +535,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   }
 
   changeFrequency(str) {
-
     this.frequency.tab = str;
     this.onFrequencyChange();
 
@@ -931,7 +940,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     this.frequency = _.clone(data);
 
     if (data.tab == 'weekDays') {
-      this.frequency = _.clone(data);
       let StartDate = moment(data.startingWithW).format('YYYY-MM-DD');
       let endDate = moment(data.endOnW).format('YYYY-MM-DD');
       let startingWithW = _.clone(StartDate.split('-').reverse().join('.'));
@@ -939,7 +947,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       this.frequency.startingWithW = startingWithW;
       this.frequency.endOnW = endOnW;
     } else if (data.tab == 'every') {
-      this.frequency = _.clone(data);
       let StartDate = moment(data.startingWith).format('YYYY-MM-DD');
       let endDate = moment(data.endOn).format('YYYY-MM-DD');
       let startingWith = _.clone(StartDate.split('-').reverse().join('.'));
@@ -947,7 +954,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       this.frequency.startingWith = startingWith;
       this.frequency.endOn = endOn;
     } else if (data.tab == 'specificWeekDays') {
-      this.frequency = _.clone(data);
       let StartDate = moment(data.startingWithS).format('YYYY-MM-DD');
       let endDate = moment(data.endOnS).format('YYYY-MM-DD');
       let startingWithS = _.clone(StartDate.split('-').reverse().join('.'));
@@ -955,7 +961,6 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       this.frequency.startingWithS = startingWithS;
       this.frequency.endOnS = endOnS;
     } else if (data.tab == 'monthDays') {
-      this.frequency = _.clone(data);
       let StartDate = moment(data.startingWithM).format('YYYY-MM-DD');
       let endDate = moment(data.endOnM).format('YYYY-MM-DD');
       let startingWithM = _.clone(StartDate.split('-').reverse().join('.'));

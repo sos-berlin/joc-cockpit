@@ -1,8 +1,11 @@
 <div class="scroll-y">
   <div class="padding p-b-0" [hidden]="isLoading">
-
-    <div class="row" [ngClass]="!submitXsd ? 'show': 'hide'">
-      <div class="col-md-offset-4 col-md-4">
+    <div class="row open" [ngClass]="!submitXsd ? 'show': 'hide'">
+      <div class="col-md-offset-2 col-md-8 m-t-lg">
+        <h1 class="text-center"><strong translate>label.assignSchema</strong></h1>
+        <hr>
+      </div>
+      <div class="col-md-offset-2 col-md-8 m-t-md">
         <span class="form-group">
           <select class="form-control" [(ngModel)]="selectedXsd" name="schema" (change)="changeXSD(selectedXsd)">
             <option [value]="''"><---Choose one of the file---></option>
@@ -11,9 +14,9 @@
           </select>
         </span>
       </div>
-      <div class="col-1">
+      <div class="col-md-offset-2 col-md-8 m-t-md">
         <span class="form-group">
-          <a class="btn btn-primary btn-sm" (click)="submit()">Submit</a>
+          <a class="btn btn-primary btn-sm" (click)="submit()" translate>button.assign</a>
         </span>
       </div>
     </div>
@@ -122,21 +125,24 @@
                   <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'button.showXML' | translate}}">
                     <i class="fa fa-television"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'button.importXML' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-sm  pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'button.importXML' | translate}}">
                     <i class="fa fa-upload"></i>
                   </button>
-                  <span class="badge float-right mr-2"  [ngClass]="validConfig?'badge-success':'badge-danger'">{{validConfig?'Validate':'Non-Validate'}}</span>
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="newFile()" placement="bottom" ngbTooltip="{{'button.new' | translate}}">
+                      <i class="fa fa-file"></i>
+                  </button>
+                  <span class="badge float-right"  [ngClass]="validConfig?'badge-success':'badge-danger'">{{validConfig?'Validate':'Non-Validate'}}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="row" style="margin-top: -4px">
-          <div *ngIf="selectedNode" class="col-12">
-            <div *ngIf="selectedNode" class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
+          <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
+            <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
           </div>
           <div class="col-12">
-            <div class="box p-a">
-              <div *ngIf="selectedNode && selectedNode.text" class="text _600" translate>label.documentation</div>
+            <div class="box p-a" *ngIf="selectedNode && selectedNode.text">
+              <div class="text _600" translate>label.documentation</div>
               <span id="doc">
                 <ul *ngIf="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
                   <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
@@ -148,8 +154,8 @@
             </div>
           </div>
           <div class="col-12" id="attr">
-            <div class="box p-a">
-              <div *ngIf="selectedNode">
+            <div class="box p-a" *ngIf="selectedNode && selectedNode.attributes && selectedNode.attributes.length>0">
+              <div>
                 <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm">Attributes</div>
                 <div *ngFor="let node of selectedNode.attributes" class="form-group">
                   <label *ngIf="node.name && node.id">{{node.name}}<sup

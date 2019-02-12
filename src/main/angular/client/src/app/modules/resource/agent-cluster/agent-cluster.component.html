@@ -222,10 +222,10 @@
                                         <tbody *ngFor="let cluster of agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse:'case-insensitive' | paginate: { itemsPerPage: preferences.entryPerPage  , currentPage: agentsFilters.currentPage }" [ngClass]="{'light-bg':cluster.show}">
                                         <tr>
                                             <td>
-                                                <div class="btn-group dropdown">
+                                                <div appDropdown class="btn-group dropdown">
                                                   <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                                     <i class="fa fa-ellipsis-h"></i></button>
-                                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                  <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                                     <a (click)="coreService.copyLink('agentCluster',cluster.path)"
                                                        class="dropdown-item" translate>button.copyLinkToObject</a>
                                                   </div>

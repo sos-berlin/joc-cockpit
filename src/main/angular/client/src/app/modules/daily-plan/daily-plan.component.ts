@@ -15,10 +15,106 @@ declare const JSGantt: any;
 declare const $;
 
 @Component({
+  selector: 'app-plan-modal-content',
+  templateUrl: './remove-plan-dialog.html',
+})
+export class PlanModalComponent implements OnInit {
+  permission: any = {};
+  preferences: any = {};
+  object: any = {};
+  config: any = {};
+  dateFormat: any;
+  submitted = false;
+  @Input() type: string;
+  @Input() schedulerId: string;
+
+  constructor(private authService: AuthService, public activeModal: NgbActiveModal, public  coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.object = {
+      radio: 'planned',
+      paths: [],
+      state: [],
+      from1: 'today',
+      to1: 'today'
+    };
+    this.dateFormat = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    this.config = {
+      format: this.coreService.getDateFormatMom(this.preferences.dateFormat)
+    };
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    let fromDate;
+    let toDate;
+
+    if (this.object.radio === 'current') {
+      if (this.object.from) {
+        fromDate = new Date(this.object.from);
+        if (this.object.fromTime) {
+          fromDate.setHours(moment(this.object.fromTime, 'HH:mm:ss').hours());
+          fromDate.setMinutes(moment(this.object.fromTime, 'HH:mm:ss').minutes());
+          fromDate.setSeconds(moment(this.object.fromTime, 'HH:mm:ss').seconds());
+          fromDate.setMilliseconds(0);
+        } else {
+          fromDate.setHours(0);
+          fromDate.setMinutes(0);
+          fromDate.setSeconds(0);
+          fromDate.setMilliseconds(0);
+        }
+
+      }
+      if (this.object.to) {
+        toDate = new Date(this.object.to);
+        if (this.object.toTime) {
+          toDate.setHours(moment(this.object.toTime, 'HH:mm:ss').hours());
+          toDate.setMinutes(moment(this.object.toTime, 'HH:mm:ss').minutes());
+          toDate.setSeconds(moment(this.object.toTime, 'HH:mm:ss').seconds());
+          toDate.setMilliseconds(0);
+        } else {
+          toDate.setHours(0);
+          toDate.setMinutes(0);
+          toDate.setSeconds(0);
+          toDate.setMilliseconds(0);
+        }
+      }
+    } else {
+      if (this.object.from1) {
+        fromDate = this.coreService.parseProcessExecuted(this.object.from1);
+      }
+      if (this.object.to1) {
+        toDate = this.coreService.parseProcessExecuted(this.object.to1);
+      }
+    }
+
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      timeZone: this.preferences.zone,
+      dateFrom: fromDate,
+      dateTo: toDate
+    };
+    this.coreService.post('orders/remove_' + this.type, obj).subscribe((res) => {
+      this.submitted = false;
+      this.activeModal.close('');
+    }, () => {
+      this.submitted = false;
+    });
+  }
+
+  cancel() {
+    this.activeModal.dismiss('');
+  }
+
+}
+
+@Component({
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
-
 export class FilterModalComponent implements OnInit {
   schedulerIds: any = {};
   preferences: any = {};
@@ -1065,11 +1161,80 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   checkAll() {
-
+    if (this.object.checkbox && this.plans.length > 0) {
+      this.object.orders = this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+    } else {
+      this.object.orders = [];
+    }
   }
 
-  checkPlan(plan) {
+  checkPlan() {
+    this.object.checkbox = this.object.orders.length === this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage)).length;
+  }
 
+  removeAllPlan() {
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.type = 'plan';
+    modalRef.result.then((res) => {
+      this.load();
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  removeAllOrder() {
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.type = 'orders';
+    modalRef.result.then((res) => {
+      this.load();
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  removeSelectedPlan() {
+    console.log(this.object.orders);
+    let orders = [];
+    this.object.orders.forEach((order) => {
+      orders.push(order.orderId);
+    });
+    this.coreService.post('orders/remove_plan', {jobschedulerId: this.schedulerIds.selected, orders: orders}).subscribe((res: any) => {
+      this.object.orders = [];
+      this.load();
+    });
+  }
+
+  removePlan(plan) {
+    console.log(plan);
+    this.coreService.post('orders/remove_plan', {
+      jobschedulerId: this.schedulerIds.selected,
+      orderId: plan.orderId
+    }).subscribe((res: any) => {
+      this.load();
+    });
+  }
+
+  removeSelectedOrder() {
+    let orders = [];
+    this.object.orders.forEach((order) => {
+      orders.push(order.orderId);
+    });
+    this.coreService.post('orders/remove_orders', {jobschedulerId: this.schedulerIds.selected, orders: orders}).subscribe((res: any) => {
+      this.object.orders = [];
+      this.load();
+    });
+  }
+
+  removeOrder(plan) {
+    console.log(plan);
+    this.coreService.post('orders/remove_orders', {
+      jobschedulerId: this.schedulerIds.selected,
+      orderId: plan.orderId
+    }).subscribe((res: any) => {
+      this.load();
+    });
   }
 
   private setDateRange(obj) {

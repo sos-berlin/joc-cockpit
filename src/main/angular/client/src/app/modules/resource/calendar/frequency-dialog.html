@@ -669,7 +669,7 @@
 </div>
 <div class="modal-footer">
     <button *ngIf="!editor.showYearView" type="submit" class="btn orange btn-sm"
-            [disabled]="!myForm.form.valid ||frequencyList.length==0">
+            [disabled]="frequencyList.length==0">
         <span translate>button.close</span>
     </button>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()"

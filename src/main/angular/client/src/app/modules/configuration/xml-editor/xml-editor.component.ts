@@ -39,7 +39,6 @@ export class ShowChildModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.showAllChild);
     this.createTJson(this.showAllChild);
   }
 
@@ -224,7 +223,6 @@ export class ImportModalComponent implements OnInit {
 
   // import xml
   onFileSelected(event: any): void {
-    let self = this;
     let item = event['0'];
     let fileExt = item.name.slice(item.name.lastIndexOf('.') + 1).toUpperCase();
     if (fileExt != 'XML') {
@@ -233,23 +231,19 @@ export class ImportModalComponent implements OnInit {
       this.fileLoading = false;
       let reader = new FileReader();
       reader.readAsText(item, 'UTF-8');
-      reader.onload = onLoadFile;
-      setTimeout(() => {
+      reader.onload = (_event: any) => {
+        this.uploadData = _event.target.result;
         if (this.uploadData !== undefined && this.uploadData !== '') {
         } else {
           this.toasterService.pop('error', 'Invalid xml file or file must be empty');
         }
-      }, 50);
-    }
-
-    function onLoadFile(_event) {
-      self.uploadData = _event.target.result;
+      };
     }
   }
 
   // submit data
   onSubmit() {
-    this.activeModal.close(this.uploadData);
+    this.activeModal.close({data: this.uploadData, xsd: this.selectedXsd});
   }
 
 
@@ -261,6 +255,28 @@ export class ImportModalComponent implements OnInit {
 
   cancel() {
     this.activeModal.close('');
+  }
+}
+
+@Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './confirmation-dialog.html'
+})
+export class ConfirmationModalComponent implements OnInit {
+  @Input() save;
+  @Input() self;
+  @Input() assignXsd;
+  constructor(public activeModal: NgbActiveModal) {}
+  ngOnInit() {}
+
+  confirmMessage(message) {
+    if(message === 'yes') {
+      this.save(this.self);
+      this.activeModal.close('success');
+    } else {
+      this.assignXsd(this.self);
+      this.activeModal.close('success');
+    }
   }
 }
 
@@ -332,7 +348,6 @@ export class XmlEditorComponent implements OnInit {
     if (ht > 400) {
       $('.tree-block').height(ht + 'px');
     }
-    console.log('top ' + top);
     if (top < 130 && top > 50) {
       setTimeout(() => {
         XmlEditorComponent.setGraphHt();
@@ -397,7 +412,6 @@ export class XmlEditorComponent implements OnInit {
   }
 
   loadTree(xml) {
-    this.isLoading = false;
     XmlEditorComponent.setGraphHt();
     const DOMParser = xmldom.DOMParser;
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
@@ -406,9 +420,12 @@ export class XmlEditorComponent implements OnInit {
     this.xpath();
     this.AddKeyRefrencing();
     this.selectedNode = this.nodes[0];
+    this.isLoading = false;
   }
 
   reassignSchema() {
+    this.nodes = [];
+    this.isLoading = true;
     this.getInitTree();
   }
 
@@ -1385,7 +1402,6 @@ export class XmlEditorComponent implements OnInit {
   // to send data in details component
   getData(event) {
     this.selectedNode = event;
-    console.log(this.selectedNode);
   }
 
   // Expand automatically on add children
@@ -2487,19 +2503,36 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
+  // import xml model
   importXML() {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.result.then((res) => {
-      console.log('>><><><');
-      this.nodes = [];
+    modalRef.result.then((res: any) => {
+      this.selectedXsd = res.xsd;
       this.reassignSchema();
       setTimeout(() => {
-        console.log(res);
-        this.createJsonfromXml(res);
-      }, 400);
+        this.createJsonfromXml(res.data);
+      }, 300);
     }, function () {
 
     });
+  }
+
+  // open new Confimation model
+  newFile() {
+    const modalRef = this.modalService.open(ConfirmationModalComponent, {backdrop: 'static', size: 'sm'});
+    modalRef.componentInstance.save = this.save2;
+    modalRef.componentInstance.assignXsd = this.newXsdAssign;
+    modalRef.componentInstance.self = this;
+    modalRef.result.then((res) => {
+    }, function () {
+
+    });
+  }
+
+  newXsdAssign(self) {
+    self.nodes =  [];
+    self.selectedNode = [];
+    self.submitXsd = false;
   }
 
   // create Xml from Json
@@ -2523,24 +2556,24 @@ export class XmlEditorComponent implements OnInit {
           peopleElem.setAttribute(this.nodes[0].attributes[i].name, this.nodes[0].attributes[i].data);
         }
       }
-      if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
-        for (let i = 0; i < this.nodes[0].values.length; i++) {
-          if (this.nodes[0].values[0].data) {
-            peopleElem.createCDATASection(this.nodes[0].values[0].data);
-          }
+    }
+    if (this.nodes[0] && this.nodes[0].values && this.nodes[0].values.length >= 0) {
+      for (let i = 0; i < this.nodes[0].values.length; i++) {
+        if (this.nodes[0].values[0].data) {
+          peopleElem.createCDATASection(this.nodes[0].values[0].data);
         }
       }
-      if (this.nodes[0].children.length > 0) {
-        for (let i = 0; i < this.nodes[0].children.length; i++) {
-          this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
-        }
+    }
+    if (this.nodes[0].children.length > 0) {
+      for (let i = 0; i < this.nodes[0].children.length; i++) {
+        this.createChildJson(peopleElem, this.nodes[0].children[i], doc.createElement(this.nodes[0].children[i].ref), doc);
       }
     }
     return peopleElem;
   }
 
   createChildJson(node, childrenNode, curentNode, doc) {
-    if (childrenNode.attributes) {
+    if (childrenNode && childrenNode.attributes) {
       for (let i = 0; i < childrenNode.attributes.length; i++) {
         if (childrenNode.attributes[i].data) {
           curentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
@@ -2574,11 +2607,16 @@ export class XmlEditorComponent implements OnInit {
     saveAs(blob, name);
   }
 
+  save2(self) {
+    self.save();
+    self.nodes =  [];
+    self.selectedNode = [];
+    self.submitXsd = false;
+  }
+
   // validate xml
   validate() {
     this.autoValidate();
-    console.log(this.nonValidattribute);
-    console.log(_.isEmpty(this.nonValidattribute), this.validConfig);
     if (_.isEmpty(this.nonValidattribute)) {
       this.validConfig = true;
       this.successPopToast();

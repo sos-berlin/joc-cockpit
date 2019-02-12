@@ -158,7 +158,7 @@
                             <tr>
                                 <th class="tableexport-ignore chk" *ngIf="permission.YADE.execute.transferStart">
                                     <label class="md-check lg-check">
-                                        <input type="checkbox" [(ngModel)]="checkAllFileTransfers.checkbox" (click)="checkAllFileTransfersFnc()"><i class="primary"></i>
+                                        <input type="checkbox" [(ngModel)]="checkAllFileTransfers.checkbox" (change)="checkAllFileTransfersFnc()"><i class="primary"></i>
                                     </label>
                                 </th>
                                 <th class="tableexport-ignore menu"><span translate>label.action</span></th>
@@ -242,7 +242,7 @@
                             <td *ngIf="permission.YADE.execute.transferStart">
                                 <label class="md-check">
                                     <input type="checkbox" id="{{transfer.id}}" [(checklist)]="object.fileTransfers" [disabled]="transfer.state._text=='SUCCESSFUL'"
-                                           [checklistValue]="transfer" data-checklist-comparator=".id" (click)="checkALLFilesFnc(transfer)"><i class="primary"></i>
+                                           [checklistValue]="transfer" data-checklist-comparator=".id" (change)="checkALLFilesFnc(transfer)"><i class="primary"></i>
                                 </label>
                             </td>
                             <td class="tableexport-ignore">

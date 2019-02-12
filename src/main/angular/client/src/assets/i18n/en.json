@@ -207,7 +207,6 @@
   "button.remove": "Remove",
   "button.removeInstance": "Remove JobScheduler Master from inventory",
   "button.downloadDebugLog": "Download Debug Log",
-  "button.removeOrder": "Remove Setback",
   "button.reset": "Reset",
   "button.resetIgnoreList": "Reset Ignore List",
   "button.resetOrder": "Reset Order",
@@ -1356,7 +1355,16 @@
   "button.showXML": "Show XML",
   "button.importXML": "Import XML",
   "button.export": "Export",
-  "button.showAllChildNodes" : "Show all Child Nodes of Selected Node",
-  "label.importXML": "Import XML"
+  "button.showAllChildNodes": "Show all Child Nodes of Selected Node",
+  "label.importXML": "Import XML",
+  "button.assign": "Assign",
+  "label.assignSchema": "Assign Schema",
+  "button.new": "New",
+  "button.yes": "Yes",
+  "button.no": "No",
+  "label.WouldYouLikeToSaveCurrentXml": "Would you like to save current xml ?",
+  "button.removeOrder": "Remove Order",
+  "button.removePlan": "Remove Plan",
+  "label.removeOrder": "Remove Plan",
+  "label.removePlan": "Remove Plan"
 }
-
