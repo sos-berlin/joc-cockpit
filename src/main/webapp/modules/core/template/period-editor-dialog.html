@@ -16,9 +16,9 @@
                             <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -8px; top: -17px; font-size: 27px; opacity: .5"><i class="fa fa-times-circle"></i></a>
                         </div>
                         <div class="form-group row" ng-if="period.frequency != 'time_slot'">
-                            <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
+                            <label class="col-sm-4 form-control-label" translate>label.repeatInterval</label>
 
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <select class="form-control" ng-model="period.frequency" ng-change="changeFrequency()">
                                     <option value="single_start" translate>label.singleStart</option>
                                     <option value="repeat" translate>label.repeatStartEnd</option>
@@ -27,28 +27,28 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-show="period.frequency=='single_start'" ng-class="{ 'has-error' : form1.startTime.$invalid && form1.startTime.$dirty }">
-                            <label class="col-sm-3 form-control-label" translate>label.startTime</label>
-                            <div class="col-sm-3" >
+                            <label class="col-sm-4 form-control-label" translate>label.startTime</label>
+                            <div class="col-sm-4" >
                                 <input valid-time maxlength="8" class="form-control" name="startTime" ng-model="period.period._single_start"
                                        placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row" ng-show="period.frequency=='repeat'" ng-class="{ 'has-error' : form1.repeat.$invalid && form1.repeat.$dirty }">
-                            <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
-                            <div class="col-sm-3">
+                            <label class="col-sm-4 form-control-label" translate>label.repeatTime</label>
+                            <div class="col-sm-4">
                                 <input valid-time maxlength="8" class="form-control" name="repeat" ng-model="period.period._repeat"
                                        placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row" ng-show="period.frequency=='absolute_repeat'" ng-class="{ 'has-error' : form1.absolute.$invalid && form1.absolute.$dirty }">
-                            <label class="col-sm-3 form-control-label" translate>label.interval</label>
-                            <div class="col-sm-3" >
+                            <label class="col-sm-4 form-control-label" translate>label.interval</label>
+                            <div class="col-sm-4" >
                                 <input valid-time maxlength="8" class="form-control" name="absolute" ng-model="period.period._absolute_repeat"
                                        placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row" ng-hide="period.frequency=='single_start'" ng-class="{'has-error': (form1.begin.$invalid && form1.begin.$dirty) || (form1.end.$invalid && form1.end.$dirty)}">
-                            <label class="col-sm-3 form-control-label" translate>label.begin</label>
+                            <label class="col-sm-4 form-control-label" translate>label.begin</label>
                             <div class="col-sm-3">
                                 <input valid-time maxlength="8" class="form-control" name="begin" ng-model="period.period._begin"
                                        placeholder="HH:MM:SS" type="text">
@@ -60,9 +60,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 form-control-label" translate>label.onHoliday</label>
+                            <label class="col-sm-4 form-control-label" translate>label.onHoliday</label>
 
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <select class="form-control" ng-model="period.period._when_holiday">
                                     <option value="{{k}}" ng-repeat="(k,v) in editor.when_holiday_options" translate>
                                         {{v}}

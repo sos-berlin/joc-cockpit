@@ -1603,7 +1603,6 @@
                 getScheduleDetail();
             }
             vm.checkNavHeader();
-            $uibModalStack.dismissAll();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
         });
@@ -1995,6 +1994,7 @@
 
 
         $scope.$on('$destroy', function () {
+            $uibModalStack.dismissAll();
             $interval.cancel(interval);
             if (eventTimeOut)
                 $timeout.cancel(eventTimeOut);
