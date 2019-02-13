@@ -436,6 +436,10 @@ export class CoreService {
     return this.tabs._resource;
   }
 
+  getConfigurationTab() {
+    return this.tabs._configuration;
+  }
+
   getAuditLogTab() {
     return this.tabs._auditLog;
   }
