@@ -183,7 +183,7 @@ export class ResizableDirective implements OnInit {
           maxWidth: 450,
           minWidth: 180,
           resize: function () {
-            $('#rightPanel').css('margin-left', $('#leftPanel').width() + 20 + 'px');
+            $('#rightPanel').css('margin-left', dom.width() + 20 + 'px');
           }
         });
       }
@@ -197,9 +197,6 @@ export class ResizableDirective implements OnInit {
           minWidth: 10,
           resize: function () {
             $('#centerPanel').css({'margin-left': dom.width() + 20 + 'px'});
-            if (dom.width() > 250) {
-              $('.angular-tree-component').css({'width': dom.width() + 'px', 'heigth': dom.height() + 'px'});
-            }
           }
         });
       }

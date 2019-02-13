@@ -116,6 +116,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  navigateToConfiguration() {
+    const confFilters = this.coreService.getConfigurationTab();
+    if (confFilters.state === 'joe') {
+      this.router.navigate(['/configuration/joe']);
+    } else {
+      this.router.navigate(['/configuration/xml']);
+    }
+  }
+
   filterEventResult(res): void {
     for (let i = 0; i < res.events.length; i++) {
       if (res.events[i].jobschedulerId === this.schedulerIds.selected) {

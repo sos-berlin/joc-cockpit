@@ -2,8 +2,7 @@
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable id="leftSidePanel" class="sticky leftPanel editor">
-        <div *ngIf="tree.length>0" class="editor-tree">
-          <!-- <input type="search" class="form-control" placeholder="Search" style="width: 90%">-->
+        <div class="editor-tree">
           <div class="tree-block">
             <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
               <ng-template #treeNodeWrapperTemplate let-node let-index="index">

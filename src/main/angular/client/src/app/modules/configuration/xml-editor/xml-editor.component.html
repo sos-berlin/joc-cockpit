@@ -46,10 +46,15 @@
                       <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                     </span>
                     <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                    <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}">
+                    <div class="node-content-wrapper" [ngClass]="{'node-content-wrapper-active' :selectedNode && selectedNode.ref === node.data.ref && selectedNode.uuid === node.data.uuid}"
+                        (treeDrop)="node.onDrop($event)"
+                        [treeAllowDrop]="node.allowDrop"
+                        (treeDropDragOver)="node.mouseAction('dragOver', $event)"
+                        [treeDrag]="node"
+                        [treeDragEnabled]="node.allowDrag()">
                       <span (click)="getData(node.data)"
                             [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
-                            (mouseover)="tooltip(node.data)" data-toggle="tooltip" data-placement="top" [title]="tooltipAttrData? tooltipAttrData: ''">{{node.data.ref}}
+                            (mouseover)="tooltip(node.data)" placement="bottom" ngbTooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.data.ref}}
                       </span>
                       <span class="text-sm pl-2" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
                         {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
@@ -89,7 +94,6 @@
                            [ngClass]="cutData? 'disabled' : ''" class="dropdown-item">
                           <div translate>button.cut</div>
                         </a>
-                        <div *ngIf="node.data && node.data.parent !=='#'" class="dropdown-divider"></div>
                         <a (click)="copyNode(node.data)" class="dropdown-item">
                           <div translate>button.copy</div>
                         </a>
@@ -97,6 +101,7 @@
                            class="dropdown-item">
                           <div translate>button.paste</div>
                         </a>
+                        <div class="dropdown-divider"></div>
                         <a (click)="removeNode(node.data, treeCtrl)"
                            [ngClass]="node.data && node.data.parent!=='#'? '':'disabled'"
                            class="dropdown-item">
@@ -112,7 +117,7 @@
           <div class="rg-right"><span></span></div>
       </div>
       <div class="centerPanel" id="centerPanel">
-        <div class="row pos-abt w-full m-t-n-20">
+        <div class="row pos-abt w-full m-t-n-40">
           <div class="col-md-12 m-b-sm">
             <div class="m-b-sm p-b-sm">
               <div class="inline w-full">
@@ -136,7 +141,7 @@
             </div>
           </div>
         </div>
-        <div class="row" style="margin-top: -4px">
+        <div class="row">
           <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
             <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
           </div>
@@ -163,8 +168,8 @@
                   <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
                   <span (click)="gotoKeyref(node)" *ngIf="node.refElement"
                         class="pull-right"><a>Goto ref Element</a></span>
-                  <span (mouseover)="getpos()" *ngIf="node.text" [ngClass]="(node.refer || node.refElement) ? 'pr-3': ''"
-                        class="pull-right" data-toggle="tooltip" data-placement="left" title="{{node.text.doc}}">
+                  <span *ngIf="node.text" [ngClass]="(node.refer || node.refElement) ? 'pr-3': ''"
+                        class="pull-right" placement="left" ngbTooltip="{{node.text.doc | safeHtml}}">
                         <i class="fa fa-info-circle"></i>
                   </span>
                   <input #localref1 (blur)="validateAttr(localref1.value, node)"

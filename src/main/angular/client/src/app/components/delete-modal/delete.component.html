@@ -39,13 +39,6 @@
       <span translate class="text" *ngIf="master">message.deleteMaster</span>
       <span translate class="text" *ngIf="folder">message.deleteFolder</span>
       <span translate class="text" *ngIf="permission">message.deletePermission</span>
-      <span class="text" *ngIf="object && object.profiles">
-        <div translate class="text"></div>
-        <p><strong translate="">message.deleteProfiles1 <span class="text-danger" *ngFor="let profile of object.profiles; let i = index">{{profile.account}}<span *ngIf="i!=object.profiles.length-1">,&nbsp;</span></span> message.deleteProfiles2</strong></p>
-        <p>All information associated to this user profile will be permanently deleted.
-        <span class="text-danger">This operation can not be undone.</span>
-        </p>
-      </span>
       <div *ngIf="calendar">
         <div *ngIf="calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
           <div class="row text-center">
@@ -223,6 +216,23 @@
           </div>
         </div>
       </div>
+      <div *ngIf="object && object.profiles">
+        <div class="row form-group">
+          <span  translate class="text">message.deleteAllProfiles</span>
+        </div>
+        <div class="text-left row" >
+          <div class="col-sm-12">
+            <label class="col-md-3 col-md-offset-3" translate="">
+              label.account
+            </label>
+            <div class="col-md-6">
+              <div *ngFor="let profile of object.profiles; let i = index">
+                {{i+1}} - {{profile.account}} <span *ngIf="i!=object.profiles.length-1">,&nbsp;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -233,7 +243,7 @@
   <button type="button" *ngIf="calendar" class="btn btn-primary btn-sm" (click)="activeModal.close()" translate>
     {{'button.confirm' | translate}}
   </button>
-  <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
     button.cancel
   </button>
 </div>

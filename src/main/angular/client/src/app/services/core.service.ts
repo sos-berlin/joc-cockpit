@@ -178,6 +178,9 @@ export class CoreService {
     this.tabs._resource.documents.selectedView = true;
     this.tabs._resource.state = 'agent';
 
+    this.tabs._configuration = {};
+    this.tabs._configuration.state = 'joe';
+
     this.tempTabs._job = {};
     this.tempTabs._job.filter = {};
     this.tempTabs._job.filter.state = 'ALL';
@@ -322,6 +325,9 @@ export class CoreService {
     this.tempTabs._resource.documents.currentPage = '1';
     this.tempTabs._resource.documents.selectedView = true;
     this.tempTabs._resource.state = 'agent';
+
+    this.tempTabs._configuration = {};
+    this.tempTabs._configuration.state = 'joe';
 
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};

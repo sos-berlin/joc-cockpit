@@ -42,13 +42,13 @@
         <div class="col-md-12">
           <div class="row">
             <div class="col-6">
-              <input type="search" name="search" [(ngModel)]="sData" placeholder="Search">
+              <input type="search" name="search" [(ngModel)]="data" placeholder="Search">
             </div>
             <div class="col-2 p-l-0">
-              <button class="btn btn-sm" (click)="search(sData)" translate>button.search</button>
+              <button class="btn btn-sm" (click)="search(data)" translate>button.search</button>
             </div>
             <div class="col-4 p-t-xs">
-              <span class="text-success text-sm" *ngIf="counter>0 && sData !== ''">Match Found {{counter}}</span>
+              <span class="text-success text-sm" *ngIf="counter>0 && data !== ''">Match Found {{counter}}</span>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')"
           translate>button.close
   </button>
 </div>

@@ -5798,10 +5798,13 @@ General CSS
 .z-index{
   z-index: 9;
 }
-.m-t-n-20{
-  margin-top: -38px;
+.m-t-n-40{
+  margin-top: -40px;
   right: 20px;
 }
 #innertext span.highlight , #innertext .highlight{
   color: #ffc300 !important;
+}
+pre#pre{
+  background: #fff;
 }

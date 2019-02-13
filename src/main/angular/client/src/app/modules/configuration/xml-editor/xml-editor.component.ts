@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit, ViewChild, Input} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
@@ -14,7 +14,6 @@ import {Subscription} from 'rxjs';
 
 declare const require;
 declare const vkbeautify;
-declare const $;
 
 const xpath = require('xpath');
 const convert = require('xml-js');
@@ -28,7 +27,7 @@ const xmldom = require('xmldom');
 export class ShowChildModalComponent implements OnInit {
   @ViewChild('treeCtrl') treeCtrl;
   counter = 0;
-  sData: string;
+  data: string;
   innerTreeStruct: any = [];
   options: any = {};
   nodes = [];
@@ -337,24 +336,6 @@ export class XmlEditorComponent implements OnInit {
     });
   }
 
-  static setGraphHt() {
-    let top = $('.scroll-y').position().top + 16;
-    top = top - $(window).scrollTop();
-    if (top < 1) {
-      top = 64;
-    }
-    $('.sticky').css('top', top);
-    const ht = window.innerHeight - top - 30;
-    if (ht > 400) {
-      $('.tree-block').height(ht + 'px');
-    }
-    if (top < 130 && top > 50) {
-      setTimeout(() => {
-        XmlEditorComponent.setGraphHt();
-      }, 5);
-    }
-  }
-
   ngOnInit() {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
@@ -412,7 +393,6 @@ export class XmlEditorComponent implements OnInit {
   }
 
   loadTree(xml) {
-    XmlEditorComponent.setGraphHt();
     const DOMParser = xmldom.DOMParser;
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
     this.getRootNode(this.doc);
@@ -956,7 +936,7 @@ export class XmlEditorComponent implements OnInit {
       this.attachTypeAttrs(attrsType, nodeArr.children);
     }
     this.autoExpand(nodeArr);
-    this.printArraya();
+    this.printArraya(false);
   }
 
   autoAddChild(child) {
@@ -973,7 +953,7 @@ export class XmlEditorComponent implements OnInit {
           }
         }
       }
-      this.printArraya();
+      this.printArraya(false);
     }
   }
 
@@ -1003,7 +983,7 @@ export class XmlEditorComponent implements OnInit {
             this.counting++;
             child[i].attributes.push(attrs[j]);
           }
-          this.printArraya();
+          this.printArraya(false);
         }
       }
     }
@@ -1036,7 +1016,7 @@ export class XmlEditorComponent implements OnInit {
               this.counting++;
               child[i].values.push(value[j]);
             }
-            this.printArraya();
+            this.printArraya(false);
           }
         }
       }
@@ -1051,7 +1031,7 @@ export class XmlEditorComponent implements OnInit {
                 this.counting++;
                 child[i].values.push(value[j]);
               }
-              this.printArraya();
+              this.printArraya(false);
             }
           }
         }
@@ -1232,9 +1212,16 @@ export class XmlEditorComponent implements OnInit {
   }
 
   printArray(rootchildrensattrArr) {
+    this.nodes.push(rootchildrensattrArr);
+    this.printArraya(true);
+  }
+
+  printArraya(flag) {
+    if (!flag) {
+      this.autoAddCount = 0;
+    }
     this.xpath();
     this.AddKeyRefrencing();
-    this.nodes.push(rootchildrensattrArr);
     this.options = {
       displayField: 'ref',
       isExpandedField: 'expanded',
@@ -1260,34 +1247,6 @@ export class XmlEditorComponent implements OnInit {
     this.autoValidate();
   }
 
-  printArraya() {
-    this.autoAddCount = 0;
-    this.xpath();
-    this.AddKeyRefrencing();
-    this.options = {
-      displayField: 'ref',
-      isExpandedField: 'expanded',
-      idField: 'uuid',
-      allowDrag: true,
-      actionMapping: {
-        mouse: {
-          drop: (tree: TreeModel, node: TreeNode, $event: any, {from, to}) => {
-            if (this.dropCheck) {
-              this.dropData(from, to);
-            }
-          },
-          dragStart: (tree: TreeModel, node: TreeNode, $event: any) => {
-            this.dragFrom = node.data;
-          },
-          dragOver: (tree: TreeModel, node: TreeNode, $event: any) => {
-            this.dragTo = node.data;
-            this.dropCheck = this.dragAnddropRules(this.dragFrom, this.dragTo);
-          }
-        }
-      }
-    };
-    this.autoValidate();
-  }
 
   // autoValidate 
   autoValidate() {
@@ -1391,12 +1350,13 @@ export class XmlEditorComponent implements OnInit {
   dropData(from, to) {
     this.dropDataNode(from, to, this.treeCtrl);
     this.removeNode(from.data, this.treeCtrl);
+    from.data.parentId = to.parent.data.uuid;
   }
 
   dropDataNode(from, to, tree) {
     to.parent.data.children.push(from.data);
     tree.treeModel.update();
-    this.printArraya();
+    this.printArraya(false);
   }
 
   // to send data in details component
@@ -1480,7 +1440,7 @@ export class XmlEditorComponent implements OnInit {
         if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
           parentNode.splice(i, 1);
           tree.treeModel.update();
-          this.printArraya();
+          this.printArraya(false);
           let temp = {};
           this.getData(temp);
           this.isNext = false;
@@ -1703,7 +1663,7 @@ export class XmlEditorComponent implements OnInit {
     node.children.push(this.copyItem);
     this.cutData = false;
     this.checkRule = true;
-    this.printArraya();
+    this.printArraya(false);
   }
 
   // attibutes popover
@@ -2511,7 +2471,7 @@ export class XmlEditorComponent implements OnInit {
       this.reassignSchema();
       setTimeout(() => {
         this.createJsonfromXml(res.data);
-      }, 300);
+      }, 600);
     }, function () {
 
     });
@@ -2626,14 +2586,6 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
-  getpos() {
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip({
-        html: true
-      });
-    });
-  }
-
   // toaster pop toast
   popToast(node) {
     let msg = '';
@@ -2668,21 +2620,95 @@ export class XmlEditorComponent implements OnInit {
       alwaysChildren: true
     });
     let rootNode;
+    let r_node;
     let x: any = JSON.parse(result1);
     for (let key in x) {
       rootNode = key;
     }
+    let json = this.createTempJson(x, rootNode);
+    for (let key in json) {
+      r_node = key;
+    }
     if (this.nodes[0] && this.nodes[0].ref === rootNode) {
-      this.createJsonAccToXsd(x, rootNode, this.nodes[0]);
+      this.createJsonAccToXsd(json, r_node, this.nodes[0]);
     } else {
       this.nodes = [{}];
-      this.createNormalTreeJson(x, rootNode, this.nodes[0], '#');
+      this.createNormalTreeJson(json, r_node, this.nodes[0], '#');
+    }
+  }
+
+  createTempJson(editJson, rootNode) {
+    let temp: any = {};
+    if(_.isArray(editJson[rootNode])) {
+      for(let i=0; i<editJson[rootNode].length; i++) {
+        temp = Object.assign(temp, {[rootNode]: editJson[rootNode][i]});
+      }
+    } else {
+      for(let a in editJson[rootNode]) {
+        if(a == '_attributes' || a == '_cdata') {
+          if(temp[rootNode] == undefined) {
+            temp = Object.assign(temp, {[rootNode]: {[a]: editJson[rootNode][a]}});
+          } else {
+            temp[rootNode] = Object.assign(temp[rootNode], {[a]: editJson[rootNode][a]});
+          }
+        } else {
+          if(_.isArray(editJson[rootNode][a])) {
+            for(let i=0; i<editJson[rootNode][a].length; i++) {
+              let x= a+'*'+i;
+              if(temp[rootNode] == undefined) {
+                temp = Object.assign(temp, {[rootNode]: {[x]: {}}});
+              } else {
+                temp[rootNode] = Object.assign(temp[rootNode], {[x]: {}});
+              }
+              for(let key in editJson[rootNode][a][i]) {
+                this.createTempJsonRecursion(key, temp[rootNode][x], editJson[rootNode][a][i])
+              }
+            }
+          } else {
+            if(temp[rootNode] == undefined) {
+              temp = Object.assign(temp, {[rootNode]: {[a]: {}}});
+              for(let key in editJson[rootNode][a]) {
+                this.createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a])
+              }
+            } else {
+              temp[rootNode] = Object.assign(temp[rootNode], {[a]: {}});
+              for(let key in editJson[rootNode][a]) {
+                this.createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a])
+              }
+            }
+          }
+        } 
+      }
+    }
+    return temp;
+  }
+
+  createTempJsonRecursion(key, tempArr, editJson) {
+    if (key == '_attributes' || key == '_cdata') {
+      tempArr = Object.assign(tempArr, { [key]: editJson[key] });
+    } else {
+      if (editJson && _.isArray(editJson[key])) {
+        for (let i = 0; i < editJson[key].length; i++) {
+          let x = key + '*' + i
+          tempArr = Object.assign(tempArr, { [x]: {} });
+          if (editJson)
+            for (let as in editJson[key][i]) {
+              this.createTempJsonRecursion(as, tempArr[x], editJson[key][i])
+            }
+        }
+      } else {
+        tempArr = Object.assign(tempArr, { [key]: {} });
+        if (editJson)
+          for (let x in editJson[key]) {
+            this.createTempJsonRecursion(x, tempArr[key], editJson[key])
+          }
+      }
     }
   }
 
   createJsonAccToXsd(xmljson, rootNode, mainjson) {
     mainjson.children = [];
-    if (xmljson[rootNode]._attributes !== undefined) {
+    if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
       for (let key in xmljson[rootNode]._attributes) {
         for (let i = 0; i < mainjson.attributes.length; i++) {
           if (key === mainjson.attributes[i].name) {
@@ -2704,14 +2730,19 @@ export class XmlEditorComponent implements OnInit {
   }
 
   addChildForxml(key, rootNode, xmljson, mainjson) {
+    let a;
+    if(key.indexOf('*')) {
+       a = key.split('*')[0];
+    }
     this.checkChildNode(mainjson);
     for (let i = 0; i < this.childNode.length; i++) {
-      if (key === this.childNode[i].ref) {
+      if (a === this.childNode[i].ref) {
+        this.childNode[i].import = key;
         this.addChild(this.childNode[i], mainjson);
       }
     }
     for (let i = 0; i < mainjson.children.length; i++) {
-      if (mainjson.children[i].ref == key) {
+      if (mainjson.children[i].ref == a && mainjson.children[i].import == key) {
         this.createJsonAccToXsd(xmljson[rootNode], key, mainjson.children[i]);
       }
     }
@@ -2721,7 +2752,15 @@ export class XmlEditorComponent implements OnInit {
   createNormalTreeJson(xmljson, rootNode, mainjson, parent) {
     let temp = {};
     this.getData(temp);
-    mainjson = Object.assign(mainjson, {ref: rootNode, parent: parent});
+    let a = undefined;
+    if(rootNode.indexOf('*')) {
+      a = rootNode.split('*')[0];
+    }
+    if(a == undefined) {
+      mainjson = Object.assign(mainjson, {ref: rootNode, parent: parent});
+    } else {
+      mainjson = Object.assign(mainjson, {ref: a, parent: parent, import: rootNode})
+    }
     for (let key in xmljson[rootNode]) {
       if (key === '_attributes') {
         mainjson = Object.assign(mainjson, {attributes: []});
@@ -2745,23 +2784,21 @@ export class XmlEditorComponent implements OnInit {
 
   addChildToNormal(key, rootNode, xmljson, mainjson) {
     let temp: any = {};
-    temp = Object.assign(temp, {ref: key, parent: rootNode});
+    let a = undefined;
+    if(key.indexOf('*')) {
+      a = key.split('*')[0];
+    }
+    if(a == undefined) {
+      temp = Object.assign(temp, {ref: key, parent: rootNode, import: key});
+    } else {
+      temp = Object.assign(temp, {ref: a, parent: rootNode, import: key});
+    }
     mainjson.children.push(temp);
     for (let i = 0; i < mainjson.children.length; i++) {
-      if (mainjson.children[i].ref === key) {
+      if (mainjson.children[i].ref === a && mainjson.children[i].import == key) {
         this.createNormalTreeJson(xmljson[rootNode], key, mainjson.children[i], rootNode);
       }
     }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    XmlEditorComponent.setGraphHt();
-  }
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll() {
-    XmlEditorComponent.setGraphHt();
   }
 
   private _showXml() {

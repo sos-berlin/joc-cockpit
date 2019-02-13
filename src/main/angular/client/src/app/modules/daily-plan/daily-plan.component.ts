@@ -38,8 +38,8 @@ export class PlanModalComponent implements OnInit {
       radio: 'planned',
       paths: [],
       state: [],
-      from1: 'today',
-      to1: 'today'
+      from1: '+0d',
+      to1: '+0d'
     };
     this.dateFormat = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.config = {
@@ -55,32 +55,20 @@ export class PlanModalComponent implements OnInit {
     if (this.object.radio === 'current') {
       if (this.object.from) {
         fromDate = new Date(this.object.from);
-        if (this.object.fromTime) {
-          fromDate.setHours(moment(this.object.fromTime, 'HH:mm:ss').hours());
-          fromDate.setMinutes(moment(this.object.fromTime, 'HH:mm:ss').minutes());
-          fromDate.setSeconds(moment(this.object.fromTime, 'HH:mm:ss').seconds());
-          fromDate.setMilliseconds(0);
-        } else {
           fromDate.setHours(0);
           fromDate.setMinutes(0);
           fromDate.setSeconds(0);
           fromDate.setMilliseconds(0);
-        }
+
 
       }
       if (this.object.to) {
         toDate = new Date(this.object.to);
-        if (this.object.toTime) {
-          toDate.setHours(moment(this.object.toTime, 'HH:mm:ss').hours());
-          toDate.setMinutes(moment(this.object.toTime, 'HH:mm:ss').minutes());
-          toDate.setSeconds(moment(this.object.toTime, 'HH:mm:ss').seconds());
-          toDate.setMilliseconds(0);
-        } else {
           toDate.setHours(0);
           toDate.setMinutes(0);
           toDate.setSeconds(0);
           toDate.setMilliseconds(0);
-        }
+
       }
     } else {
       if (this.object.from1) {
@@ -1173,9 +1161,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   removeAllPlan() {
-    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.type = 'plan';
+    modalRef.componentInstance.type = 'plans';
     modalRef.result.then((res) => {
       this.load();
     }, (reason) => {
@@ -1184,7 +1172,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   removeAllOrder() {
-    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
     modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
     modalRef.componentInstance.type = 'orders';
     modalRef.result.then((res) => {
@@ -1194,27 +1182,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeSelectedPlan() {
-    console.log(this.object.orders);
-    let orders = [];
-    this.object.orders.forEach((order) => {
-      orders.push(order.orderId);
-    });
-    this.coreService.post('orders/remove_plan', {jobschedulerId: this.schedulerIds.selected, orders: orders}).subscribe((res: any) => {
-      this.object.orders = [];
-      this.load();
-    });
-  }
-
-  removePlan(plan) {
-    console.log(plan);
-    this.coreService.post('orders/remove_plan', {
-      jobschedulerId: this.schedulerIds.selected,
-      orderId: plan.orderId
-    }).subscribe((res: any) => {
-      this.load();
-    });
-  }
 
   removeSelectedOrder() {
     let orders = [];

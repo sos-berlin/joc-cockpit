@@ -8,7 +8,7 @@ const routes: Routes = [
     component: ConfigurationComponent,
     children: [
       {path: 'joe', loadChildren: './joe/joe.module#JoeModule'},
-      {path: 'xml', loadChildren: './xml-editor/xml-editor.module#XmlEditorModule'},
+      {path: 'xml', loadChildren: './xml-editor/xml-editor.module#XmlEditorModule'}
     ]
   },
 ];

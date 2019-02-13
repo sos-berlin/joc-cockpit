@@ -52,12 +52,12 @@
         </mxCell>
       </Retry>
     </add>
-    <add as="Exit">
-      <Exit label="Exit" message="">
+    <add as="Terminate">
+      <Terminate label="Terminate" message="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="60" height="60"/>
         </mxCell>
-      </Exit>
+      </Terminate>
     </add>
     <add as="Fork">
       <Fork label="Fork">
@@ -238,7 +238,7 @@
     <add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/rhombus.gif"/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png"
          icon="./assets/mxgraph/images/symbols/small_timer.gif"/>
-    <add as="Exit" template="Exit" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png"
+    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png"
          icon="./assets/mxgraph/images/symbols/small_cancel_end.gif"/>
     <hr/>
     <add as="Try" template="Try" style="rhombus" icon="./assets/mxgraph/images/symbols/small_triangle.gif"/>

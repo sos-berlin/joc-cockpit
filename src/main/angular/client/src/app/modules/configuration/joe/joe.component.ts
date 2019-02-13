@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
@@ -44,7 +44,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   preferences: any = {};
   tree: any = [];
   isLoading = true;
-  pageView: any;
+  pageView: any = 'grid';
   editor: any;
   dummyXml: any;
   workFlowJson: any = {};
@@ -61,13 +61,6 @@ export class JoeComponent implements OnInit, OnDestroy {
   @ViewChild('treeCtrl') treeCtrl;
 
   constructor(private authService: AuthService, public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
-  }
-
-  static setGraphHt() {
-    const ht = window.innerHeight - 168;
-    if (ht > 400) {
-      $('#graph').height(ht + 'px');
-    }
   }
 
   static getDummyNodes(): any {
@@ -184,7 +177,6 @@ export class JoeComponent implements OnInit, OnDestroy {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
     this.init();
-    JoeComponent.setGraphHt();
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
     });
@@ -205,7 +197,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   init() {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     if (localStorage.views) {
-      this.pageView = JSON.parse(localStorage.views).joe || 'grid';
+      // this.pageView = JSON.parse(localStorage.views).joe || 'grid';
     }
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
@@ -217,7 +209,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
-      types: ['JOBCHAIN']
+      types: ['WORKFLOW']
     }).subscribe((res) => {
       this.tree = this.coreService.prepareTree(res);
       const interval = setInterval(() => {
@@ -351,11 +343,6 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   toggleExpanded(e): void {
     e.node.data.isExpanded = e.isExpanded;
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    JoeComponent.setGraphHt();
   }
 
   receiveMessage($event) {
@@ -616,15 +603,15 @@ export class JoeComponent implements OnInit, OnDestroy {
           }
           self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
-        } else if (json.instructions[x].TYPE === 'Exit') {
-          if (mxJson.Exit) {
-            if (!_.isArray(mxJson.Exit)) {
-              const _tempExit = _.clone(mxJson.Exit);
-              mxJson.Exit = [];
-              mxJson.Exit.push(_tempExit);
+        } else if (json.instructions[x].TYPE === 'Terminate') {
+          if (mxJson.Terminate) {
+            if (!_.isArray(mxJson.Terminate)) {
+              const _tempExit = _.clone(mxJson.Terminate);
+              mxJson.Terminate = [];
+              mxJson.Terminate.push(_tempExit);
             }
           } else {
-            mxJson.Exit = [];
+            mxJson.Terminate = [];
           }
           obj._id = json.instructions[x].id;
           obj._label = json.instructions[x].TYPE;
@@ -632,7 +619,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           obj.mxCell._style = 'symbol;image=./assets/mxgraph/images/symbols/cancel_end.png';
           obj.mxCell.mxGeometry._width = '60';
           obj.mxCell.mxGeometry._height = '60';
-          mxJson.Exit.push(obj);
+          mxJson.Terminate.push(obj);
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
             if (!_.isArray(mxJson.Await)) {
@@ -1204,7 +1191,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     } else if (type === 'Retry') {
       obj.repeat = node._repeat;
       obj.delay = node._delay;
-    } else if (type === 'Exit') {
+    } else if (type === 'Terminate') {
       obj.message = node._message;
     }
     return obj;
@@ -1247,7 +1234,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         let _tryInstructions = _.clone(objects.Try);
         let _retryInstructions = _.clone(objects.Retry);
         let _awaitInstructions = _.clone(objects.Await);
-        let _exitInstructions = _.clone(objects.Exit);
+        let _exitInstructions = _.clone(objects.Terminate);
 
         for (let i = 0; i < connection.length; i++) {
           if (connection[i].mxCell._source == '3') {
@@ -1448,7 +1435,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         }
 
         if (!_.isEmpty(startNode)) {
-          jsonObj.instructions.push(this.createObject('Exit', startNode));
+          jsonObj.instructions.push(this.createObject('Terminate', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
         }
@@ -1460,7 +1447,7 @@ export class JoeComponent implements OnInit, OnDestroy {
         const retry = objects.Retry;
         const tryIns = objects.Try;
         const awaitIns = objects.Await;
-        const exit = objects.Exit;
+        const exit = objects.Terminate;
         if (job) {
           if (_.isArray(job)) {
             for (let i = 0; i < job.length; i++) {
@@ -1518,10 +1505,10 @@ export class JoeComponent implements OnInit, OnDestroy {
         if (exit) {
           if (_.isArray(exit)) {
             for (let i = 0; i < exit.length; i++) {
-              jsonObj.instructions.push(this.createObject('Exit', exit[i]));
+              jsonObj.instructions.push(this.createObject('Terminate', exit[i]));
             }
           } else {
-            jsonObj.instructions.push(this.createObject('Exit', exit));
+            jsonObj.instructions.push(this.createObject('Terminate', exit));
           }
         }
       }
@@ -1825,7 +1812,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     const tryEndInstructions = objects.EndTry;
     const awaitInstructions = objects.Await;
     const connection = objects.Connection;
-    const exitInstructions = objects.Exit;
+    const exitInstructions = objects.Terminate;
     let nextNode: any = {};
 
     if (jobs) {
@@ -2091,7 +2078,7 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
 
     if (nextNode && !_.isEmpty(nextNode)) {
-      instructionsArr.push(this.createObject('Exit', nextNode));
+      instructionsArr.push(this.createObject('Terminate', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
@@ -2336,7 +2323,7 @@ export class JoeComponent implements OnInit, OnDestroy {
           if (state && state.cell) {
             if (state.cell.value.tagName === 'Connector') {
               return;
-            } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Exit') {
+            } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Terminate') {
               if (state.cell.edges) {
                 for (let i = 0; i < state.cell.edges.length; i++) {
                   if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2477,7 +2464,7 @@ export class JoeComponent implements OnInit, OnDestroy {
             self.translate.get('label.invalidTarget').subscribe(translatedValue => {
               title = translatedValue;
             });
-            if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Exit') {
+            if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Terminate') {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
                   self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
@@ -2632,6 +2619,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       };
 
       /**
+       *
        * Function: undoableEditHappened
        *
        * Method to be called to add new undoable edits to the <history>.
@@ -2669,6 +2657,7 @@ export class JoeComponent implements OnInit, OnDestroy {
        */
       mxUndoManager.prototype.undo = function () {
         if (this.indexOfNextAdd > 0) {
+          
           const xml = this.history[--this.indexOfNextAdd];
 
           graph.getModel().beginUpdate();

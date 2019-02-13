@@ -80,7 +80,6 @@ export class LockComponent implements OnInit, OnDestroy {
     } else {
       this.expandNode($event);
     }
-
   }
 
   getLocks(data) {

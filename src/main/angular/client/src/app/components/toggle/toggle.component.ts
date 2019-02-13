@@ -49,8 +49,9 @@ export class ToggleComponent implements OnInit {
     }
     if (this.router.url === '/daily_plan') {
       this.pageView = this.views.dailyPlan;
-    } else if (this.router.url === '/joe') {
-      this.pageView = this.views.joe;
+    } else if (this.router.url === '/configuration/joe') {
+       // this.pageView = this.views.joe;
+        this.pageView = 'grid';
     } else if (this.router.url === '/job') {
       this.pageView = this.views.job;
     } else if (this.router.url === '/workflow') {

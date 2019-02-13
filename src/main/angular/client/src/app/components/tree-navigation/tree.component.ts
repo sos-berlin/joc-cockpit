@@ -18,20 +18,23 @@ export class TreeComponent implements OnInit {
   }
 
   static setGraphHt() {
-    let top = $('.scroll-y').position().top + 16;
-    top = top - $(window).scrollTop();
-    if (top < 1) {
-      top = 64;
-    }
-    $('.sticky').css('top', top);
-    const ht = window.innerHeight - top;
-    if (ht > 400) {
-      $('#tre').height(ht + 'px');
-    }
-    if (top < 140 && top > 65) {
-      setTimeout(() => {
-        TreeComponent.setGraphHt();
-      }, 5);
+    let dom = $('.scroll-y');
+    if (dom && dom.position()) {
+      let top = dom.position().top + 16;
+      top = top - $(window).scrollTop();
+      if (top < 1) {
+        top = 64;
+      }
+      $('.sticky').css('top', top);
+      const ht = window.innerHeight - top;
+      if (ht > 400) {
+        $('#tre').height(ht + 'px');
+      }
+      if (top < 140 && top > 65) {
+        setTimeout(() => {
+          TreeComponent.setGraphHt();
+        }, 5);
+      }
     }
   }
 

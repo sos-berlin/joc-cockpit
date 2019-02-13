@@ -119,17 +119,15 @@
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" (click)="removeAllOrder()"><i class="fa fa-trash"></i>&nbsp;
-                            <span class="hidden-sm-down" translate>button.removeOrder</span></button>
+                            <span class="hidden-sm-down" translate>button.removeOrders</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm" (click)="removeAllPlan()"><i class="fa fa-times"></i>&nbsp;
-                            <span class="hidden-sm-down" translate>button.removePlan</span></button>
+                            <span class="hidden-sm-down" translate>button.removePlans</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(plans | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
 
                     </div>
                     <div class="hide" [ngClass]="{'show-block':object.orders.length>0}">
                         <button class="btn btn-grey btn-sm" (click)="removeSelectedOrder()"><i class="fa fa-trash"></i>&nbsp;
-                            <span class="hidden-sm-down" translate>button.removeOrder</span></button>
-                        <button class="btn btn-grey btn-sm m-l-sm" (click)="removeSelectedPlan()"><i class="fa fa-times"></i>&nbsp;
-                            <span class="hidden-sm-down" translate>button.removePlan</span></button>
+                            <span class="hidden-sm-down" translate>button.removeSelectedOrder</span></button>
                     </div>
                     <!--<app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>-->
                 </div>
@@ -176,6 +174,12 @@
                               </label>
                             </th>
                             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
+                            <th (click)="sortBy('workflow')"><a><span translate>label.workflow</span>&nbsp;
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'workflow' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'workflow' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
                             <th (click)="sortBy('orderId')"><a><span translate>label.orderId</span>&nbsp;
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && !dailyPlanFilters.reverse"
                                    class="fa fa-caret-up "></i>
@@ -257,10 +261,10 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="dropdown-item" (click)="removeOrder(plan)" translate>button.removeOrder</a>
-                                        <a class="dropdown-item" (click)="removePlan(plan)" translate>button.removePlan</a>
                                     </div>
                                 </div>
                             </td>
+                            <td><span [innerHtml]="plan.workflow"></span></td>
                             <td><span [innerHtml]="plan.orderId"></span></td>
                             <td>
                                 <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"
