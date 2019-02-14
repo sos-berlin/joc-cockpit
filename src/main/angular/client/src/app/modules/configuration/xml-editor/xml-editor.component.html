@@ -70,7 +70,7 @@
                         <div *ngIf="childNode && childNode.length>0">
                           <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
                             <div class="p-l-sm">
-                              <a [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data)"><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
+                              <a [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true)"><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
                             </div>
                           </a>
                         </div>

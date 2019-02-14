@@ -86,10 +86,12 @@ export class PlanModalComponent implements OnInit {
       dateTo: toDate
     };
     this.coreService.post('orders/remove_' + this.type, obj).subscribe((res) => {
-      this.submitted = false;
-      this.activeModal.close('');
-    }, () => {
-      this.submitted = false;
+      this.coreService.post('orders/calculate_' + this.type, obj).subscribe((result) => {
+        this.submitted = false;
+        this.activeModal.close('');
+      }, () => {
+        this.submitted = false;
+      });
     });
   }
 

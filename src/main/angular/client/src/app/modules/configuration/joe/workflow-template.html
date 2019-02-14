@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-12 m-b-sm ">
+    <div [ngStyle]="{'padding-bottom' : (pageView !== 'grid') ? '15px' : '8px'}" class="m-b-sm b-b">
+      <div class="inline pull-right">
+        <button (click)="toggleRightSideBar()" class="btn btn-grey btn-sm">
+          <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
+          <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
+        </button>
+        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+      </div>
+      <div class="inline">
+        <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>
+        <div [hidden]="pageView !== 'grid'" class="inline" id="mainActions"></div>
+      </div>
+    </div>
+  </div>
+  <div [ngClass]="{'col-md-12':isPropertyHide}" class="col-md-9">
+    <div>
+      <div [hidden]="pageView !== 'grid'">
+        <div id="toolbar"></div>
+        <div class="graph-container">
+          <div id="graph"></div>
+          <!-- Creates a container for the outline -->
+          <div id="outlineContainer"></div>
+        </div>
+      </div>
+      <div *ngIf="pageView !== 'grid'">
+        <div class="box p-a">
+          <div class="table-responsive">
+            <table *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0"
+                   class="table table-hover table-bordered">
+              <thead>
+              <tr>
+                <th width="30">
+                  <label class="md-check lg-check">
+                    <input (change)="checkAll()" [(ngModel)]="object.checkbox" type="checkbox"><i
+                    class="primary"></i>
+                  </label>
+                </th>
+                <th><span translate>label.type</span></th>
+                <th><span translate>label.path</span></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let workflow of workFlowJson.instructions">
+                <td>
+                  <label class="md-check">
+                    <input (change)="checkMainCheckbox()" [(checklist)]="object.workflows" [checklistValue]="workflow"
+                           type="checkbox">
+                    <i class="primary"></i>
+                  </label>
+                </td>
+                <td>{{workflow.TYPE}}</td>
+                <td>{{workflow.jobPath}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="!workFlowJson.instructions || workFlowJson.instructions.length == 0"
+               class="text text-center text-uppercase p-a-md">
+            No workflow Added to <span class="text-primary">{{selectedPath}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div [ngClass]="{'hide':isPropertyHide}" class="col-md-3">
+    <div class="box">
+      <div class="box-header b-b p-a">
+        <h3 translate>label.properties</h3>
+      </div>
+      <div class="box-body p-a">
+        <div id="properties"></div>
+      </div>
+    </div>
+    <div class="m-t">
+      <div class="box">
+        <div class="box-header b-b p-t-sm p-b-sm">
+          <h3 translate>Source</h3>
+        </div>
+        <div class="box-body" style="max-height: 500px; overflow: auto">
+          <pre>{{workFlowJson | json}}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="bottom-btn">
+  <button type="button" class="btn btn-sm btn-grey" (click)="clearWorkFlow()" translate>button.clear</button>
+  <button type="button" class="btn btn-sm btn-primary m-l-sm" (click)="submitWorkFlow()" translate>
+    button.submitWorkFlow
+  </button>
+</div>

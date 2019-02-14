@@ -3,6 +3,16 @@
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable id="leftSidePanel" class="sticky leftPanel editor">
         <div class="editor-tree">
+          <div class="row" *ngIf="tree.length > 0">
+            <div class="col-12">
+              <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
+                <i class="fa fa-angle-double-down fa-lg"></i>
+              </a>
+              <a class="text m-l-xs" (click)="collapseAll();" placement="bottom" ngbTooltip="{{'tooltip.collapseAll' | translate}}">
+                <i class="fa fa-angle-double-up fa-lg"></i>
+              </a>
+            </div>
+          </div>
           <div class="tree-block">
             <tree-root #treeCtrl [nodes]="tree" (activate)="onNodeSelected($event)" (toggleExpanded)="toggleExpanded($event)">
               <ng-template #treeNodeWrapperTemplate let-node let-index="index">
@@ -14,12 +24,22 @@
                     <span *ngIf="node.isCollapsed" class="fa fa-angle-right fa-lg p-r-10"></span>
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
-                  <span *ngIf="!node.hasChildren" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
+                  <span *ngIf="!node.hasChildren && !node.data.type" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'workflow'" class="fa fa-sitemap w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'order'" class="fa fa-first-order w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'lock'" class="fa fa-lock w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'processClass'" class="fa fa-tasks w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'calendar'" class="fa fa-calendar w-15 m-t-xs"></span>
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.data.isSelected"
                        (click)="node.mouseAction('click', $event)">
-                    <i *ngIf="node.isExpanded" class="fa fa-folder-open-o w-18"></i>
-                    <i *ngIf="node.isCollapsed" class="fa fa-folder-o w-18"></i>
+                    <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18"></i>
+                    <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18"></i>
+                    <i *ngIf="node.data.object == 'workflow'" class="fa fa-sitemap w-15 m-t-xs"></i>
+                    <i *ngIf="node.data.object == 'order'" class="fa fa-first-order w-15 m-t-xs"></i>
+                    <i *ngIf="node.data.object == 'lock'" class="fa fa-lock w-15 m-t-xs"></i>
+                    <i *ngIf="node.data.object == 'processClass'" class="fa fa-tasks w-15 m-t-xs"></i>
+                    <i *ngIf="node.data.object == 'calendar'" class="fa fa-calendar w-15 m-t-xs"></i>
                     <tree-node-content [node]="node" [index]="index"></tree-node-content>
                   </div>
                 </div>
@@ -30,94 +50,17 @@
         </div>
       </div>
       <div id="centerPanel" class="centerPanel">
-        <div class="row m-t-xs">
-          <div class="col-md-12 m-b-sm ">
-            <div class="m-b-sm b-b" [ngStyle]="{'padding-bottom' : (pageView !== 'grid') ? '15px' : '8px'}">
-              <div class="inline pull-right">
-                <button class="btn btn-grey btn-sm" (click)="toggleRightSideBar()">
-                  <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
-                  <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
-                </button>
-                <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
-              </div>
-              <div class="inline">
-                <div id="zoomActions" class="inline" [hidden]="pageView !== 'grid'"></div>
-                <div id="mainActions" class="inline" [hidden]="pageView !== 'grid'"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-9" [ngClass]="{'col-md-12':isPropertyHide}">
-            <div>
-              <div [hidden]="pageView !== 'grid'">
-                <div id="toolbar"></div>
-                <div class="graph-container">
-                  <div id="graph"></div>
-                  <!-- Creates a container for the outline -->
-                  <div id="outlineContainer"></div>
-                </div>
-              </div>
-              <div *ngIf="pageView !== 'grid'">
-                <div class="box p-a">
-                  <div class="table-responsive">
-                    <table class="table table-hover table-bordered" *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
-                      <thead>
-                      <tr>
-                        <th width="30">
-                          <label class="md-check lg-check">
-                            <input type="checkbox" [(ngModel)]="object.checkbox" (change)="checkAll()"><i
-                            class="primary"></i>
-                          </label>
-                        </th>
-                        <th><span translate>label.type</span></th>
-                        <th><span translate>label.path</span></th>
-                      </tr>
-                      </thead>
-                      <tbody >
-                      <tr *ngFor="let workflow of workFlowJson.instructions">
-                        <td>
-                          <label class="md-check">
-                            <input type="checkbox" [(checklist)]="object.workflows" [checklistValue]="workflow"
-                                   (change)="checkMainCheckbox()">
-                            <i class="primary"></i>
-                          </label>
-                        </td>
-                        <td>{{workflow.TYPE}}</td>
-                        <td>{{workflow.jobPath}}</td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div *ngIf="!workFlowJson.instructions || workFlowJson.instructions.length == 0" class="text text-center text-uppercase p-a-md">
-                    No workflow Added to <span class="text-primary">{{selectedPath}}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3" [ngClass]="{'hide':isPropertyHide}">
-            <div class="box">
-              <div class="box-header b-b p-a">
-                <h3 translate>label.properties</h3>
-              </div>
-              <div class="box-body p-a">
-                <div id="properties"></div>
-              </div>
-            </div>
-            <div class="m-t">
-              <div class="box">
-                <div class="box-header b-b p-t-sm p-b-sm">
-                  <h3 translate>Source</h3>
-                </div>
-                <div class="box-body" style="max-height: 500px; overflow: auto">
-                  <pre>{{workFlowJson | json}}</pre>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div *ngIf="type == 'workflow'" >
+          <app-workflow-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [pageView]="pageView" [selectedPath]="selectedPath"></app-workflow-template>
         </div>
-        <div class="bottom-btn">
-          <button type="button" class="btn btn-sm btn-grey" (click)="clearWorkFlow()" translate>button.clear</button>
-          <button type="button" class="btn btn-sm btn-primary m-l-sm" (click)="submitWorkFlow()" translate>button.submitWorkFlow</button>
+        <div *ngIf="type == 'order'">
+          <app-order-template></app-order-template>
+        </div>
+        <div *ngIf="type == 'lock'">
+          <app-lock-template></app-lock-template>
+        </div>
+        <div *ngIf="type == 'processClass'">
+          <app-process-class-template></app-process-class-template>
         </div>
       </div>
     </div>

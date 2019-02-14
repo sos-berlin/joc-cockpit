@@ -322,7 +322,8 @@ export class XmlEditorComponent implements OnInit {
   subscription: Subscription;
   validConfig = false;
   nonValidattribute = {};
-
+  keyRefNodes;
+  keyNodes;
   @ViewChild('treeCtrl') treeCtrl;
   @ViewChild('myckeditor') ckeditor: any;
 
@@ -444,7 +445,7 @@ export class XmlEditorComponent implements OnInit {
           if (!temp.children) {
             temp.children = [];
           }
-          this.addChild(child[i], temp);
+          this.addChild(child[i], temp, true);
         }
       }
     }
@@ -910,7 +911,7 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
-  addChild(child, nodeArr) {
+  addChild(child, nodeArr, check) {
     let attrs = this.checkAttributes(child.ref);
     let text = this.checkText(child.ref);
     let value = this.getValues(child.ref);
@@ -922,7 +923,9 @@ export class XmlEditorComponent implements OnInit {
     this.counting++;
     this.attachAttrs(attrs, child);
     nodeArr.children.push(child);
-    this.autoAddChild(child);
+    if(check) {
+      this.autoAddChild(child);
+    }
     if (!(_.isEmpty(text))) {
       this.addText(text, nodeArr.children);
     }
@@ -948,7 +951,7 @@ export class XmlEditorComponent implements OnInit {
             if (!getCh[i].choice) {
               getCh[i].children = [];
               this.autoAddCount++;
-              this.addChild(getCh[i], child);
+              this.addChild(getCh[i], child, true);
             }
           }
         }
@@ -1845,26 +1848,34 @@ export class XmlEditorComponent implements OnInit {
   // key and Key Ref Implementation code
   xpath() {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let keyPath = '//xs:key/@name';
-    let keyRefPath = '//xs:keyref';
+    let a;
+    if(this.nodes[0]) {
+      a = this.nodes[0].ref;
+    }
+    let keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
+    let keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
     let keyattrs: any = {};
-    let keyRefNodes = select(keyRefPath, this.doc);
-    let keyNodes = select(keyPath, this.doc);
-    for (let i = 0; i < keyNodes.length; i++) {
-      let key = keyNodes[i].nodeName;
-      let value = this.strReplace(keyNodes[i].nodeValue);
+    if(this.keyRefNodes == undefined || this.keyRefNodes.length == 0) {
+      this.keyRefNodes = select(keyRefPath, this.doc);
+    } 
+    if(this.keyNodes == undefined || this.keyNodes.length == 0) {
+      this.keyNodes = select(keyPath, this.doc);
+    }
+    for (let i = 0; i < this.keyNodes.length; i++) {
+      let key = this.keyNodes[i].nodeName;
+      let value = this.strReplace(this.keyNodes[i].nodeValue);
       keyattrs = Object.assign(keyattrs, {[key]: value});
-      for (let j = 0; j < keyNodes[i].ownerElement.childNodes.length; j++) {
-        if (keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
-          for (let k = 0; k < keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-            keyattrs.key = this.strReplace(keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+      for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
+        if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
+          for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
+            keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
           }
         }
       }
       this.attachKey(keyattrs);
     }
-    for (let i = 0; i < keyRefNodes.length; i++) {
-      this.getKeyRef(keyRefNodes[i]);
+    for (let i = 0; i < this.keyRefNodes.length; i++) {
+      this.getKeyRef(this.keyRefNodes[i]);
     }
   }
 
@@ -2738,7 +2749,7 @@ export class XmlEditorComponent implements OnInit {
     for (let i = 0; i < this.childNode.length; i++) {
       if (a === this.childNode[i].ref) {
         this.childNode[i].import = key;
-        this.addChild(this.childNode[i], mainjson);
+        this.addChild(this.childNode[i], mainjson, false);
       }
     }
     for (let i = 0; i < mainjson.children.length; i++) {

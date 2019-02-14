@@ -8,12 +8,10 @@ declare const $;
   templateUrl: './configuration.component.html'
 })
 export class ConfigurationComponent {
-  private page: string;
 
   constructor(private router: Router) {
     router.events.subscribe((e: any) => {
       if (e.url) {
-        this.page = e.url === '/configuration/xml' ? 'xml' : 'joe';
         this.calcHeigth();
       }
     });
@@ -30,12 +28,10 @@ export class ConfigurationComponent {
       $('.sticky').css('top', top);
       const ht = window.innerHeight - top;
       if (ht > 400) {
-        if (this.page === 'joe') {
-          $('.tree-block').height(ht + 'px');
+        if ($('#graph')) {
           $('#graph').height(ht - 60 + 'px');
-        } else {
-          $('.tree-block').height((ht - 20) + 'px');
         }
+        $('.tree-block').height((ht - 20) + 'px');
       }
       if (top < 134 && top > 50) {
         setTimeout(() => {

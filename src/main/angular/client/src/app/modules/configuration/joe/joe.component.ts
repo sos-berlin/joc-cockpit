@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
@@ -35,33 +35,83 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
-  selector: 'app-joe',
-  templateUrl: './joe.component.html',
-  styleUrls: ['./joe.component.scss']
+  selector: 'app-order-template',
+  templateUrl: './order-template.html',
 })
-export class JoeComponent implements OnInit, OnDestroy {
-  schedulerIds: any = {};
-  preferences: any = {};
-  tree: any = [];
-  isLoading = true;
-  pageView: any = 'grid';
+export class OrderTemplateComponent implements OnInit, OnDestroy {
+  constructor() {
+
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnDestroy(): void {
+  }
+}
+
+@Component({
+  selector: 'app-lock-template',
+  templateUrl: './lock-template.html',
+})
+export class LockTemplateComponent implements OnInit, OnDestroy {
+  constructor() {
+
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnDestroy(): void {
+  }
+}
+
+@Component({
+  selector: 'app-process-class-template',
+  templateUrl: './process-class-template.html',
+})
+export class ProcessClassTemplateComponent implements OnInit, OnDestroy {
+  constructor() {
+
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnDestroy(): void {
+  }
+}
+
+@Component({
+  selector: 'app-workflow-template',
+  templateUrl: './workflow-template.html',
+  styleUrls: ['./workflow-template.scss']
+})
+export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   editor: any;
   dummyXml: any;
   workFlowJson: any = {};
   object: any = {checkbox: false, workflows: []};
   isPropertyHide = false;
-  options: any = {};
-  selectedPath: string;
+  count = 11;
+  nodeMap = new Map();
+
   isWorkflowReload = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
-  count = 11;
 
-  // Declare Map object to store fork and join Ids
-  nodeMap = new Map();
-  @ViewChild('treeCtrl') treeCtrl;
+  @Input() pageView: any;
+  @Input() selectedPath: any;
+  @Input() data: any;
+  @Input() preferences: any;
+  @Input() schedulerId: any;
 
-  constructor(private authService: AuthService, public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
+  constructor(public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
+
   }
+
 
   static getDummyNodes(): any {
     return [
@@ -172,58 +222,28 @@ export class JoeComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    this.init();
-    this.coreService.get('workflow.json').subscribe((data) => {
-      this.dummyXml = x2js.json2xml_str(data);
-    });
-  }
-
-  ngOnDestroy() {
-    try {
-      if (this.editor) {
-        mxEvent.removeAllListeners(this.editor.graph);
-        this.editor.destroy();
-        this.editor = null;
+  static calcHeigth() {
+    let dom = $('.scroll-y');
+    if (dom && dom.position()) {
+      let top = dom.position().top + 72;
+      const ht = window.innerHeight - top;
+      if (ht > 400) {
+        if ($('#graph')) {
+          $('#graph').height(ht + 'px');
+        }
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 
-  init() {
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
-    if (localStorage.views) {
-      // this.pageView = JSON.parse(localStorage.views).joe || 'grid';
-    }
+  ngOnInit(): void {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
-    this.initTree();
-  }
-
-  initTree() {
-    this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true,
-      types: ['WORKFLOW']
-    }).subscribe((res) => {
-      this.tree = this.coreService.prepareTree(res);
-      const interval = setInterval(() => {
-        if (this.treeCtrl && this.treeCtrl.treeModel) {
-          const node = this.treeCtrl.treeModel.getNodeById(1);
-          node.expand();
-          node.data.isSelected = true;
-          this.selectedPath = node.data.path;
-          clearInterval(interval);
-        }
-      }, 5);
-      this.isLoading = false;
-      this.createEditor(this.configXml);
-    }, () => this.isLoading = false);
+    this.coreService.get('workflow.json').subscribe((data) => {
+      this.dummyXml = x2js.json2xml_str(data);
+    });
+    this.createEditor(this.configXml);
+    WorkFlowTemplateComponent.calcHeigth();
   }
 
   /**
@@ -263,7 +283,7 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   submitWorkFlow() {
     this.coreService.post('workflow/store', {
-      jobschedulerId: this.schedulerIds.selected,
+      jobschedulerId: this.schedulerId,
       workflow: this.workFlowJson
     }).subscribe(res => {
       console.log(res);
@@ -274,79 +294,6 @@ export class JoeComponent implements OnInit, OnDestroy {
 
   clearWorkFlow() {
     this.initEditorConf(this.editor, this.dummyXml);
-  }
-
-  toggleRightSideBar() {
-    this.isPropertyHide = !this.isPropertyHide;
-  }
-
-  checkAll() {
-    console.log('Check all...');
-  }
-
-  checkMainCheckbox() {
-    console.log('Check all...');
-  }
-
-  navFullTree() {
-    const self = this;
-    this.tree.forEach((value) => {
-      if (this.selectedPath === value.path && this.workFlowJson.instructions && this.workFlowJson.instructions.length > 0) {
-        value.json = _.clone(this.workFlowJson);
-      }
-      value.isSelected = false;
-      traverseTree(value);
-    });
-
-    function traverseTree(data) {
-      data.children.forEach((value) => {
-        value.isSelected = false;
-        if (self.selectedPath === value.path && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
-          value.json = _.clone(self.workFlowJson);
-        }
-        traverseTree(value);
-      });
-    }
-  }
-
-  onNodeSelected(e): void {
-    this.navFullTree();
-    this.selectedPath = e.node.data.path;
-    e.node.data.isSelected = true;
-    this.count = 11;
-    if (e.node.data.json) {
-      let _json = e.node.data.json;
-      this.appendIdInJson(_json);
-      let mxJson = {
-        mxGraphModel: {
-          root: {
-            mxCell: [
-              {_id: '0'},
-              {
-                _id: '1',
-                _parent: '0'
-              }
-            ],
-            Process: []
-          }
-        }
-      };
-      mxJson.mxGraphModel.root.Process = JoeComponent.getDummyNodes();
-
-      this.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
-      JoeComponent.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
-      this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
-    } else {
-      this.initEditorConf(this.editor, this.dummyXml);
-    }
-  }
-
-  toggleExpanded(e): void {
-    e.node.data.isExpanded = e.isExpanded;
-  }
-
-  receiveMessage($event) {
-    this.pageView = $event;
   }
 
   // Function to generating dynamic unique Id
@@ -1212,7 +1159,7 @@ export class JoeComponent implements OnInit, OnDestroy {
       if (!_json.mxGraphModel) {
         return;
       }
-      console.log(_json)
+      console.log(_json);
 
       let objects = _json.mxGraphModel.root;
 
@@ -2657,7 +2604,7 @@ export class JoeComponent implements OnInit, OnDestroy {
        */
       mxUndoManager.prototype.undo = function () {
         if (this.indexOfNextAdd > 0) {
-          
+          console.log(this.indexOfNextAdd, this.history);
           const xml = this.history[--this.indexOfNextAdd];
 
           graph.getModel().beginUpdate();
@@ -2818,7 +2765,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                 isProgrammaticallyDelete = true;
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
-                   // cell.source.removeEdge(cell.source.edges[x], true); // Sometime remove sometimes not need testing...
+                    // cell.source.removeEdge(cell.source.edges[x], true); // Sometime remove sometimes not need testing...
                     graph.getModel().remove(cell.source.edges[x]);
                     break;
                   }
@@ -3115,7 +3062,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                       }
                     }
 
-                    if(cell && dropTarget.edges[i].target) {
+                    if (cell && dropTarget.edges[i].target) {
                       graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
                     }
                     isProgrammaticallyDelete = true;
@@ -3704,5 +3651,237 @@ export class JoeComponent implements OnInit, OnDestroy {
         mxEvent.addListener(input, 'blur', applyHandler);
       }
     }
+  }
+
+  toggleRightSideBar() {
+    this.isPropertyHide = !this.isPropertyHide;
+  }
+
+  checkAll() {
+    console.log('Check all...');
+  }
+
+  checkMainCheckbox() {
+    console.log('Check all...');
+  }
+
+  onNodeSelected(e): void {
+    e.node.data.isSelected = true;
+    this.count = 11;
+    if (e.node.data.json) {
+      let _json = e.node.data.json;
+      this.appendIdInJson(_json);
+      let mxJson = {
+        mxGraphModel: {
+          root: {
+            mxCell: [
+              {_id: '0'},
+              {
+                _id: '1',
+                _parent: '0'
+              }
+            ],
+            Process: []
+          }
+        }
+      };
+      mxJson.mxGraphModel.root.Process = WorkFlowTemplateComponent.getDummyNodes();
+
+      this.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
+      WorkFlowTemplateComponent.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+      this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
+    } else {
+      this.initEditorConf(this.editor, this.dummyXml);
+    }
+  }
+
+  ngOnDestroy() {
+    try {
+      if (this.editor) {
+        mxEvent.removeAllListeners(this.editor.graph);
+        this.editor.destroy();
+        this.editor = null;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+@Component({
+  selector: 'app-joe',
+  templateUrl: './joe.component.html',
+  styleUrls: ['./joe.component.scss']
+})
+export class JoeComponent implements OnInit, OnDestroy {
+  schedulerIds: any = {};
+  preferences: any = {};
+  tree: any = [];
+  isLoading = true;
+  pageView: any = 'grid';
+  options: any = {};
+  data: any = {};
+  selectedPath: string;
+  type: string;
+
+  // Declare Map object to store fork and join Ids
+
+  @ViewChild('treeCtrl') treeCtrl;
+
+  constructor(private authService: AuthService, public coreService: CoreService) {
+  }
+
+
+  ngOnInit() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds);
+    if (localStorage.views) {
+      // this.pageView = JSON.parse(localStorage.views).joe || 'grid';
+    }
+    this.initTree();
+  }
+
+  ngOnDestroy() {
+
+  }
+
+  initTree() {
+    this.coreService.post('tree', {
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true,
+      types: ['WORKFLOW']
+    }).subscribe((res) => {
+      // this.tree = this.coreService.prepareTree(res);
+      this.tree = [
+        {
+          id: 1, name: '/', path: '/', children: [
+            {
+              id: 2, name: 'sos', path: '/sos', children: [
+                {
+                  id: 4, name: 'Workflows', path: '/sos/Workflows', object: 'workflow', children: [
+                    {
+                      name: 'w1', type: 'workflow'
+                    }, {
+                      name: 'w2', type: 'workflow'
+                    }
+                  ]
+                }, {
+                  id: 5, name: 'Orders', path: '/sos/Orders', object: 'order', children: [
+                    {
+                      name: 'Template_1', type: 'order'
+                    }, {
+                      name: 'Template_2', type: 'order'
+                    }
+                  ]
+                }, {
+                  id: 6, name: 'Locks', path: '/sos/Locks', object: 'lock', children: [
+                    {
+                      name: 'lock_1', type: 'lock'
+                    }
+                  ]
+                }, {
+                  id: 7, name: 'Process_Class', path: '/sos/Process_Class', object: 'processClass', children: [
+                    {
+                      name: 'process_class_1', type: 'processClass'
+                    }
+                  ]
+                }, {
+                  id: 8, name: 'Calendars', path: '/sos/Calendars', object: 'calendar', children: []
+                }
+              ]
+            },
+            {
+              id: 3, name: 'zehntech', path: '/zehntech', children: [
+                {
+                  id: 9, name: 'Workflows', path: '/zehntech/Workflows', object: 'workflow', children: [
+                    {
+                      name: 'w1', type: 'workflow'
+                    }, {
+                      name: 'w2', type: 'workflow'
+                    }
+                  ]
+                }, {
+                  id: 10, name: 'Orders', path: '/zehntech/Orders', object: 'order', children: [
+                    {
+                      name: 'Template_1', type: 'order'
+                    }, {
+                      name: 'Template_2', type: 'order'
+                    }
+                  ]
+                }, {
+                  id: 11, name: 'Locks', path: '/zehntech/Locks', object: 'lock', children: []
+                }, {
+                  id: 12, name: 'Process_Class', path: '/zehntech/Process_Class', object: 'processClass', children: []
+                }, {
+                  id: 13, name: 'Calendars', path: '/zehntech/Calendars', object: 'calendar', children: [
+                    {
+                      name: 'Working calendar', type: 'calendar'
+                    }, {
+                      name: 'Non-working calendar', type: 'calendar'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ];
+      const interval = setInterval(() => {
+        if (this.treeCtrl && this.treeCtrl.treeModel) {
+          const node = this.treeCtrl.treeModel.getNodeById(1);
+          node.expand();
+          node.data.isSelected = true;
+          this.selectedPath = node.data.path;
+          clearInterval(interval);
+        }
+      }, 5);
+      this.isLoading = false;
+    }, () => this.isLoading = false);
+  }
+
+
+  expandAll(): void {
+    this.treeCtrl.treeModel.expandAll();
+  }
+
+  // Collapse all Node
+  collapseAll(): void {
+    this.treeCtrl.treeModel.collapseAll();
+  }
+
+  navFullTree() {
+    const self = this;
+    this.tree.forEach((value) => {
+      value.isSelected = false;
+      traverseTree(value);
+    });
+
+    function traverseTree(data) {
+      if (data.children) {
+        data.children.forEach((value) => {
+          value.isSelected = false;
+          traverseTree(value);
+        });
+      }
+    }
+  }
+
+  onNodeSelected(e): void {
+    this.navFullTree();
+    this.selectedPath = e.node.data.path;
+    e.node.data.isSelected = true;
+    this.data = e.node.data;
+    this.type = e.node.data.object || e.node.data.type;
+    console.log(this.data);
+  }
+
+  toggleExpanded(e): void {
+    e.node.data.isExpanded = e.isExpanded;
+  }
+
+  receiveMessage($event) {
+    this.pageView = $event;
   }
 }
