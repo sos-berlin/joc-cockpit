@@ -55,19 +55,19 @@ export class PlanModalComponent implements OnInit {
     if (this.object.radio === 'current') {
       if (this.object.from) {
         fromDate = new Date(this.object.from);
-          fromDate.setHours(0);
-          fromDate.setMinutes(0);
-          fromDate.setSeconds(0);
-          fromDate.setMilliseconds(0);
+        fromDate.setHours(0);
+        fromDate.setMinutes(0);
+        fromDate.setSeconds(0);
+        fromDate.setMilliseconds(0);
 
 
       }
       if (this.object.to) {
         toDate = new Date(this.object.to);
-          toDate.setHours(0);
-          toDate.setMinutes(0);
-          toDate.setSeconds(0);
-          toDate.setMilliseconds(0);
+        toDate.setHours(0);
+        toDate.setMinutes(0);
+        toDate.setSeconds(0);
+        toDate.setMilliseconds(0);
 
       }
     } else {
@@ -129,8 +129,8 @@ export class FilterModalComponent implements OnInit {
         radio: 'planned',
         paths: [],
         state: [],
-        from1: 'today',
-        to1: 'today',
+        from1: '+0d',
+        to1: '+0d',
         shared: false
       };
     } else {
@@ -143,7 +143,7 @@ export class FilterModalComponent implements OnInit {
     if (obj) {
       this.activeModal.close(obj);
     } else {
-      this.activeModal.dismiss('');
+      this.activeModal.dismiss('cancel');
     }
   }
 
@@ -190,7 +190,9 @@ export class SearchComponent implements OnInit {
     modalRef.componentInstance.type = 'DAILYPLAN';
     modalRef.componentInstance.showCheckBox = true;
     modalRef.result.then((result) => {
-      this.filter.paths = result;
+      if (_.isArray(result)) {
+        this.filter.paths = result;
+      }
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -239,8 +241,6 @@ export class SearchComponent implements OnInit {
         toDate = this.coreService.parseProcessExecuted(result.to1);
       }
     }
-    console.log(fromDate);
-    console.log(toDate);
     if (fromDate) {
       obj.from1 = fromDate;
     } else {
@@ -295,6 +295,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   temp_filter: any = {};
   filterList: any = [];
   showSearchPanel = false;
+  isSearchHit = false;
   late: boolean;
   searchKey: string;
   dateFormatM: any;
@@ -492,10 +493,51 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   /* ------------- Action ------------------- */
-  sortBy(propertyName) {
-    this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
-    this.dailyPlanFilters.filter.sortBy = propertyName;
-    this.plans = this.sortByKey(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+
+  removeAllPlan() {
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.type = 'plans';
+    modalRef.result.then((res) => {
+      this.load();
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  removeAllOrder() {
+    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
+    modalRef.componentInstance.type = 'orders';
+    modalRef.result.then((res) => {
+      this.load();
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  removeSelectedOrder() {
+    let orders = [];
+    this.object.orders.forEach((order) => {
+      orders.push(order.orderId);
+    });
+    this.coreService.post('orders/remove_orders', {
+      jobschedulerId: this.schedulerIds.selected,
+      orders: orders
+    }).subscribe((res: any) => {
+      this.resetCheckBox();
+      this.load();
+    });
+  }
+
+  removeOrder(plan) {
+    this.coreService.post('orders/remove_orders', {
+      jobschedulerId: this.schedulerIds.selected,
+      orderId: [plan.orderId]
+    }).subscribe((res: any) => {
+      this.resetCheckBox();
+      this.load();
+    });
   }
 
   exportToExcel() {
@@ -517,23 +559,25 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       from1: 'today',
       to1: 'today',
       from: moment().format(this.dateFormatM),
-      fromTime: '00:00',
+      fromTime: '00:00:00',
       to: moment().format(this.dateFormatM),
-      toTime: '24:00',
+      toTime: '24:00:00',
       paths: [],
       state: []
     };
   }
 
   applySearchFilter(obj) {
-    if (this.searchFilter.regex)
+    if (this.searchFilter.regex) {
       obj.regex = this.searchFilter.regex;
-    if (this.searchFilter.jobChain)
+    }
+    if (this.searchFilter.jobChain) {
+
       obj.jobChain = this.searchFilter.jobChain;
-    if (this.searchFilter.orderId)
+    }
+    if (this.searchFilter.orderId) {
       obj.orderId = this.searchFilter.orderId;
-    if (this.searchFilter.job)
-      obj.job = this.searchFilter.job;
+    }
 
     if (this.searchFilter.state && this.searchFilter.state.length > 0) {
       obj.states = [];
@@ -561,32 +605,37 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
     if (this.searchFilter.radio === 'current') {
       if (this.searchFilter.from) {
-        fromDate = new Date(this.searchFilter.from);
+        fromDate = moment(this.searchFilter.from, this.dateFormatM);
         if (this.searchFilter.fromTime) {
-          fromDate.setHours(moment(this.searchFilter.fromTime, 'HH:mm:ss').hours());
-          fromDate.setMinutes(moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes());
-          fromDate.setSeconds(moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds());
-          fromDate.setMilliseconds(0);
+          if (this.searchFilter.fromTime === '24:00' || this.searchFilter.fromTime === '24:00:00') {
+            fromDate.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+            fromDate.add(1, 'days');
+          } else {
+            fromDate.set({
+              hour: moment(this.searchFilter.fromTime, 'HH:mm:ss').hours(),
+              minute: moment(this.searchFilter.fromTime, 'HH:mm:ss').minutes(),
+              second: moment(this.searchFilter.fromTime, 'HH:mm:ss').seconds(), millisecond: 0
+            });
+          }
         } else {
-          fromDate.setHours(0);
-          fromDate.setMinutes(0);
-          fromDate.setSeconds(0);
-          fromDate.setMilliseconds(0);
+          fromDate.set({hour: 0, minute: 0, second: 0, millisecond: 0});
         }
-
       }
       if (this.searchFilter.to) {
-        toDate = new Date(this.searchFilter.to);
+        toDate = moment(this.searchFilter.to , this.dateFormatM);
         if (this.searchFilter.toTime) {
-          toDate.setHours(moment(this.searchFilter.toTime, 'HH:mm:ss').hours());
-          toDate.setMinutes(moment(this.searchFilter.toTime, 'HH:mm:ss').minutes());
-          toDate.setSeconds(moment(this.searchFilter.toTime, 'HH:mm:ss').seconds());
-          toDate.setMilliseconds(0);
+          if (this.searchFilter.toTime === '24:00' || this.searchFilter.toTime === '24:00:00') {
+            toDate.set({hour: 0, minute: 0, second: 0, millisecond: 0});
+            toDate.add(1, 'days');
+          } else {
+            toDate.set({
+              hour: moment(this.searchFilter.toTime, 'HH:mm:ss').hours(),
+              minute: moment(this.searchFilter.toTime, 'HH:mm:ss').minutes(),
+              second: moment(this.searchFilter.toTime, 'HH:mm:ss').seconds(), millisecond: 0
+            });
+          }
         } else {
-          toDate.setHours(0);
-          toDate.setMinutes(0);
-          toDate.setSeconds(0);
-          toDate.setMilliseconds(0);
+          toDate.set({hour: 0, minute: 0, second: 0, millisecond: 0});
         }
       }
     } else {
@@ -604,6 +653,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       fromDate.setSeconds(0);
       fromDate.setMilliseconds(0);
     }
+
     obj.dateFrom = fromDate;
     if (!toDate) {
       toDate = new Date();
@@ -620,6 +670,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   search() {
+    this.isSearchHit = true;
     let obj: any = {};
     obj.jobschedulerId = this.schedulerIds.selected;
     obj = this.applySearchFilter(obj);
@@ -640,7 +691,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
 
     obj.timeZone = this.preferences.zone;
-
     if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
       delete obj['timeZone'];
     }
@@ -651,8 +701,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       obj.dateTo = moment(obj.dateTo).tz(this.preferences.zone);
     }
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
-      this.plans = res.planItems;
-      this.plans = this.sortByKey(this.plans, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+      this.filterData(res.planItems);
       // this.prepareGanttData(this.plans);
       if (res.created) {
         this.maxPlannedTime = new Date(res.deliveryDate);
@@ -660,16 +709,18 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         this.maxPlannedTime = undefined;
       }
       this.isLoaded = true;
-
     }, () => {
       this.isLoaded = true;
-
     });
   }
 
   cancel() {
     this.showSearchPanel = false;
     this.searchFilter = {};
+    if (this.isSearchHit) {
+      this.isSearchHit = false;
+      this.load();
+    }
   }
 
   /* ---- Customization ------ */
@@ -775,6 +826,40 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.pageView = $event;
   }
 
+  checkAll() {
+    if (this.object.checkbox && this.plans.length > 0) {
+      this.object.orders = this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
+    } else {
+      this.object.orders = [];
+    }
+  }
+
+  checkPlan() {
+    this.object.checkbox = this.object.orders.length === this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage)).length;
+  }
+
+  pageChange($event) {
+    this.dailyPlanFilters.currentPage = $event;
+    if (this.object.checkbox) {
+      this.checkAll();
+    }
+  }
+
+  sortBy(propertyName) {
+    this.dailyPlanFilters.reverse = !this.dailyPlanFilters.reverse;
+    this.dailyPlanFilters.filter.sortBy = propertyName;
+    this.resetCheckBox();
+  }
+
+  changePage(pageNum) {
+    this.preferences.entryPerPage = pageNum;
+    if (this.object.checkbox) {
+      this.checkAll();
+    } else {
+      this.object.orders = [];
+    }
+  }
+
   private refresh(args) {
     for (let i = 0; i < args.length; i++) {
       if (args[i].jobschedulerId === this.schedulerIds.selected) {
@@ -835,8 +920,8 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     this.setDateRange(obj);
 
-    this.coreService.post('orders/plan', obj).subscribe(res => {
-      this.filterData(res);
+    this.coreService.post('orders/plan', obj).subscribe((res: any) => {
+      this.filterData(res.planItems);
       this.isLoaded = true;
     }, (err) => {
       console.log(err);
@@ -862,14 +947,15 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private applySavedFilter(obj) {
-    if (this.selectedFiltered.regex)
+    if (this.selectedFiltered.regex) {
       obj.regex = this.selectedFiltered.regex;
-    if (this.selectedFiltered.jobChain)
+    }
+    if (this.selectedFiltered.jobChain) {
       obj.jobChain = this.selectedFiltered.jobChain;
-    if (this.selectedFiltered.orderId)
+    }
+    if (this.selectedFiltered.orderId) {
       obj.orderId = this.selectedFiltered.orderId;
-    if (this.selectedFiltered.job)
-      obj.job = this.selectedFiltered.job;
+    }
     if (this.selectedFiltered.state && this.selectedFiltered.state.length > 0) {
       obj.states = [];
       if (this.selectedFiltered.state.indexOf('WAITING') !== -1) {
@@ -1037,66 +1123,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private sortByKey(array, key, order) {
     const reA = /[^a-zA-Z]/g;
     const self = this;
-    if (key === 'processedPlanned' || key === 'orderId') {
-      return array.sort(function (x, y) {
-        let key1 = key === 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
-
-        let a = x[key1];
-        let b = y[key1];
-        if (order) {
-          a = y[key1];
-          b = x[key1];
-        }
-
-        if (!a && b) {
-          if (key1 === 'job') {
-            a = x['jobChain'];
-            if (order) {
-              a = y['jobChain'];
-            }
-          } else if (key1 === 'jobChain') {
-            a = x['job'];
-            if (order) {
-              a = y['job'];
-            }
-          } else {
-            return -1;
-          }
-        } else if (a && !b) {
-          if (key1 === 'job') {
-            b = y['jobChain'];
-            if (order) {
-              b = x['jobChain'];
-            }
-          } else if (key1 === 'jobChain') {
-            b = y['job'];
-            if (order) {
-              b = x['job'];
-            }
-          } else {
-            return 1;
-          }
-        }
-
-        let AInt = parseInt(a, 10);
-        let BInt = parseInt(b, 10);
-
-        if (isNaN(AInt) && isNaN(BInt)) {
-          return self.naturalSorter(a, b);
-        } else if (isNaN(AInt)) {//A is not an Int
-          return 1;
-        } else if (isNaN(BInt)) {//B is not an Int
-          return -1;
-        } else if (AInt === BInt) {
-          let aA = a.replace(reA, '');
-          let bA = b.replace(reA, '');
-          return aA > bA ? 1 : -1;
-        } else {
-          return AInt > BInt ? 1 : -1;
-        }
-
-      });
-    } else if (key === 'duration') {
+    if (key === 'duration') {
       return array.sort(function (x, y) {
         let a = x;
         let b = y;
@@ -1145,65 +1172,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private filterData(res): void {
-    this.plans = this.sortByKey(res.planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
+  private filterData(planItems): void {
+    this.plans = this.sortByKey(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
     // this.prepareGanttData(this.plans);
   }
 
-  checkAll() {
-    if (this.object.checkbox && this.plans.length > 0) {
-      this.object.orders = this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage));
-    } else {
-      this.object.orders = [];
-    }
-  }
-
-  checkPlan() {
-    this.object.checkbox = this.object.orders.length === this.plans.slice((this.preferences.entryPerPage * (this.dailyPlanFilters.currentPage - 1)), (this.preferences.entryPerPage * this.dailyPlanFilters.currentPage)).length;
-  }
-
-  removeAllPlan() {
-    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.type = 'plans';
-    modalRef.result.then((res) => {
-      this.load();
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
-  removeAllOrder() {
-    const modalRef = this.modalService.open(PlanModalComponent, {backdrop: 'static'});
-    modalRef.componentInstance.schedulerId = this.schedulerIds.selected;
-    modalRef.componentInstance.type = 'orders';
-    modalRef.result.then((res) => {
-      this.load();
-    }, (reason) => {
-      console.log('close...', reason);
-    });
-  }
-
-
-  removeSelectedOrder() {
-    let orders = [];
-    this.object.orders.forEach((order) => {
-      orders.push(order.orderId);
-    });
-    this.coreService.post('orders/remove_orders', {jobschedulerId: this.schedulerIds.selected, orders: orders}).subscribe((res: any) => {
-      this.object.orders = [];
-      this.load();
-    });
-  }
-
-  removeOrder(plan) {
-    console.log(plan);
-    this.coreService.post('orders/remove_orders', {
-      jobschedulerId: this.schedulerIds.selected,
-      orderId: plan.orderId
-    }).subscribe((res: any) => {
-      this.load();
-    });
+  private resetCheckBox() {
+    this.object.orders = [];
+    this.object.checkbox = false;
   }
 
   private setDateRange(obj) {

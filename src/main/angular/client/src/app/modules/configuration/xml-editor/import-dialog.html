@@ -11,7 +11,7 @@
     <div class="row">
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
           <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)">
-            <div><img src="./assets/images/upload.png"></div>
+            <div><i class="icon-upload-ico"></i></div>
             <div translate>button.dragAndDropFileToUpload</div>
           </div>
           <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">

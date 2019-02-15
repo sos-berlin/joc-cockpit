@@ -6,7 +6,7 @@
           <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
           <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
         </button>
-        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+       <!-- <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>-->
       </div>
       <div class="inline">
         <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>

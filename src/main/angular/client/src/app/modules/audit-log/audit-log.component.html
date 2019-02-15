@@ -83,7 +83,8 @@
                         </a>
                       </div>
                     </div>
-                    <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(auditLogs | filter: searchKey).length===0" id="exportToExcelBtn" (click)="exportToExcel()"><i>.</i></button>
+                    <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(auditLogs | filter: searchKey).length===0" (click)="exportToExcel()">
+                      <i class="fa fa fa-share-square-o fa-lg"></i></button>
                 </div>
             </div>
         </div>

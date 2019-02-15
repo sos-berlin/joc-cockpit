@@ -198,17 +198,6 @@ export class UserComponent implements OnInit {
   changeTheme(theme) {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage.$SOS$THEME = theme;
-    if (theme == 'lighter') {
-      $('#orders_id img').attr('src', './assets/images/workflow.png');
-      $('#jobs_id img').attr('src', './assets/images/job.png');
-      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
-      $('#resources_id img').attr('src', './assets/images/resources1.png');
-    } else {
-      $('#orders_id img').attr('src', './assets/images/order1.png');
-      $('#jobs_id img').attr('src', './assets/images/job1.png');
-      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
-      $('#resources_id img').attr('src', './assets/images/resources.png');
-    }
     this.savePreferences();
   }
 
@@ -269,17 +258,6 @@ export class UserComponent implements OnInit {
       this.preferences.avatarColor = 'avatarbg-radical-red';
     }
     localStorage.$SOS$MENUTHEME = theme;
-    if (theme == 'lighter') {
-      $('#orders_id img').attr('src', './assets/images/workflow.png');
-      $('#jobs_id img').attr('src', './assets/images/job.png');
-      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
-      $('#resources_id img').attr('src', './assets/images/resources1.png');
-    } else {
-      $('#orders_id img').attr('src', './assets/images/order1.png');
-      $('#jobs_id img').attr('src', './assets/images/job1.png');
-      $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
-      $('#resources_id img').attr('src', './assets/images/resources.png');
-    }
     this.savePreferences();
   }
 

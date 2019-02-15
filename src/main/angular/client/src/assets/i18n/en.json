@@ -1370,5 +1370,11 @@
   "label.removeOrder": "Remove Order",
   "label.reCalculatePlan": "Re-calculate Plan",
   "label.saveXml": "Save XML",
-  "label.workflow": "Workflow"
+  "label.workflow": "Workflow",
+  "label.workflowPath": "Workflow Path",
+  "label.chooseCalendar": "Choose Calendars",
+  "label.variables": "Variables",
+  "label.nonWorkingCalendars": "Non Working Calendars",
+  "placeholder.orderName": "Enter order name",
+  "placeholder.workflowPath": "Enter workflow path"
 }

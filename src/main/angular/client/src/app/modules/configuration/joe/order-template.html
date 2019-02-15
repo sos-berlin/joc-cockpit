@@ -1,5 +1,75 @@
 <div class="row">
-  <div class="col-md-12 m-b-sm ">
-    Order Template
+  <div class="col-md-12">
+    <div class="box p-a">
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((master.dirty || master.touched) && master.invalid))}">
+          <label class="col-md-2 form-control-label" translate>label.jobSchedulerId</label>
+          <div class="col-sm-6">
+            <input required class="form-control" placeholder="{{'placeholder.master' | translate}}"
+                   name="master" [(ngModel)]="order.master" #master="ngModel">
+            <div *ngIf="master.invalid && (master.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="master.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
+          <label class="col-md-2 form-control-label" translate>label.workflowPath</label>
+          <div class="col-sm-6">
+            <input required class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
+                   name="path" [(ngModel)]="order.path" #path="ngModel">
+            <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
+              <div *ngIf="path.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row"
+             [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
+          <label class="col-md-2 form-control-label" translate>label.orderName</label>
+          <div class="col-sm-6">
+            <input required class="form-control" placeholder="{{'placeholder.orderName' | translate}}"
+                   name="name" [(ngModel)]="order.name" #name="ngModel">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+              <div *ngIf="name.errors.required">
+                <div translate>message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" translate>label.calendars</label>
+          <div class="col-sm-6">
+            <select class="form-control" [(ngModel)]="order.calendar" name="calendar">
+              <option value="" translate>label.chooseCalendar</option>
+              <option *ngFor="let cal of calendars" [ngValue]="cal"> {{ cal.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" translate>label.nonWorkingCalendars</label>
+          <div class="col-sm-6">
+            <select class="form-control" [(ngModel)]="order.nonWorkingCalendar" name="nonWorkingCalendar">
+              <option value="" translate>label.chooseCalendar</option>
+              <option *ngFor="let cal of nonWorkingCalendar" [ngValue]="cal"> {{ cal.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" translate>label.variables</label>
+          <div class="col-sm-6">
+            //TODO
+          </div>
+        </div>
+        <div class="form-group text-left">
+          <button type="submit" class="btn btn-sm btn-primary" translate>button.submit</button>
+          <button type="button" class="btn btn-sm btn-grey m-l-sm" translate>button.clear</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

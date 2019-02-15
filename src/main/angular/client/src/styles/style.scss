@@ -1091,10 +1091,12 @@ fieldset[disabled] .ui-check input + i {
   font-weight: 400;
 }
 
-.nav-text i.fa, .text {
+.nav-text .text {
   font-size: 14px;
 }
-
+.nav-text i {
+  font-size: 20px;
+}
 .list-body:after {
   position: absolute;
   left: 0;
@@ -1190,11 +1192,9 @@ fieldset[disabled] .ui-check input + i {
 }
 
 .nav-text {
-  i.fa {
-    margin-bottom: 8px;
-  }
-  img {
-    margin-bottom: 6px;
+  span.ico {
+    margin-top: 5px;
+    font-size: 11px;
   }
 }
 
@@ -3765,15 +3765,6 @@ table.folder-tree-grid {
   width: 270px;
 }
 
-.loading-img {
-  position: fixed;
-  overflow: hidden !important;
-  width: 100%;
-  height: 100%;
-  z-index: 1020;
-  background: url(../assets/images/loader.gif) 50% 50% no-repeat rgba(0, 0, 0, 0.1);
-}
-
 input {
   &[readonly=readonly], &[readonly] {
     background-color: #fff !important;
@@ -3902,20 +3893,6 @@ input[type=search] {
 
 .abc {
   color: #000;
-}
-
-.loading-img1 {
-  position: fixed;
-  overflow: hidden !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1020;
-  background: url(../assets/images/loader.gif) 50% 50% no-repeat;
-  background-size: 50px;
 }
 
 .block-ellipsis-cluster, .block-ellipsis-job, .form-control-label, .w, .w-half, table.fixed td {
@@ -4459,15 +4436,6 @@ a[href]:hover span.text-white {
   margin: 0.3em 0.1em 0.3em 35px;
 }
 
-button#exportToExcelBtn {
-  background: url(../assets/images/export.png) center center no-repeat #eee;
-  background-size: 16px 14px;
-  padding-right: 16px;
-  padding-left: 16px;
-  i {
-    visibility: hidden;
-  }
-}
 
 input[type=text][disabled] {
   background-color: transparent;
@@ -4682,11 +4650,10 @@ svg text {
     height: 250px;
     text-align: center;
   }
-  img {
-    margin-top: 40px;
-    margin-bottom: 10px;
-    width: 135px;
-    height: 100px;
+  i {
+    position: relative;
+    top: 25px;
+    font-size: 110px;
   }
 }
 
@@ -5806,9 +5773,12 @@ General CSS
   color: #ffc300 !important;
 }
 pre#pre{
-  background: #fff;
+  overflow-x: auto;
+  background-color: #efefef6e;
+  padding: 10px;
 }
-
-.nav-text svg{
-  margin-bottom: 4px;
+.tree-icon{
+  position: relative;
+  top: 2px;
+  padding-right: 5px;
 }

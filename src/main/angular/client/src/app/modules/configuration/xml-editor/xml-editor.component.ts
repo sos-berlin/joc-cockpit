@@ -135,12 +135,15 @@ export class ShowChildModalComponent implements OnInit {
         let innerHTML = inputText[i].innerHTML;
         let pattern = new RegExp('(' + sData + ')', 'gi');
         let searchPara = innerHTML.toString();
-        if (pattern.test(searchPara)) {
-          this.counter++;
+        if (pattern.test(searchPara)) {          
           innerHTML = searchPara.replace(pattern, function (str) {
             return '<span class=\'highlight\'>' + str + '</span>';
           });
           inputText[i].innerHTML = innerHTML;
+        }
+        if(searchPara.match(pattern)) {
+          let c = searchPara.match(pattern).length;
+          this.counter = this.counter + c;
         }
       }
     }, 0);
@@ -344,7 +347,7 @@ export class XmlEditorComponent implements OnInit {
     if (sessionStorage.$SOS$XSD) {
       this.submitXsd = true;
       this.selectedXsd = sessionStorage.$SOS$XSD;
-      this.getInitTree();
+      this.getInitTree(false);
     } else {
       this.isLoading = false;
     }
@@ -374,29 +377,29 @@ export class XmlEditorComponent implements OnInit {
   submit() {
     if (this.selectedXsd !== '') {
       this.submitXsd = true;
-      this.getInitTree();
+      this.getInitTree(false);
     }
   }
 
   // getInit tree
-  getInitTree() {
+  getInitTree(check) {
     if (this.selectedXsd == 'systemMonitorNotification') {
       this.http.get('SystemMonitorNotification_v1.0.main.xsd', {responseType: 'text'})
         .subscribe(data => {
-          this.loadTree(data);
+          this.loadTree(data, check);
         });
     } else {
       this.http.get('yade_v1.12.xsd', {responseType: 'text'})
         .subscribe(data => {
-          this.loadTree(data);
+          this.loadTree(data, check);
         });
     }
   }
 
-  loadTree(xml) {
+  loadTree(xml, check) {
     const DOMParser = xmldom.DOMParser;
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
-    this.getRootNode(this.doc);
+    this.getRootNode(this.doc, check);
     this.xsdXML = xml;
     this.xpath();
     this.AddKeyRefrencing();
@@ -407,10 +410,10 @@ export class XmlEditorComponent implements OnInit {
   reassignSchema() {
     this.nodes = [];
     this.isLoading = true;
-    this.getInitTree();
+    this.getInitTree(true);
   }
 
-  getRootNode(doc) {
+  getRootNode(doc, check) {
     let temp: any;
     let attrs: any;
     let child: any;
@@ -438,14 +441,16 @@ export class XmlEditorComponent implements OnInit {
     if (text) {
       temp.text = text;
     }
-    child = this.checkChildNode(temp);
-    if (child.length > 0) {
-      for (let i = 0; i < child.length; i++) {
-        if (child[i].minOccurs == undefined) {
-          if (!temp.children) {
-            temp.children = [];
+    if(!check) {
+      child = this.checkChildNode(temp);
+      if (child.length > 0) {
+        for (let i = 0; i < child.length; i++) {
+          if (child[i].minOccurs == undefined) {
+            if (!temp.children) {
+              temp.children = [];
+            }
+            this.addChild(child[i], temp, true);
           }
-          this.addChild(child[i], temp, true);
         }
       }
     }
@@ -1861,21 +1866,26 @@ export class XmlEditorComponent implements OnInit {
     if(this.keyNodes == undefined || this.keyNodes.length == 0) {
       this.keyNodes = select(keyPath, this.doc);
     }
-    for (let i = 0; i < this.keyNodes.length; i++) {
-      let key = this.keyNodes[i].nodeName;
-      let value = this.strReplace(this.keyNodes[i].nodeValue);
-      keyattrs = Object.assign(keyattrs, {[key]: value});
-      for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
-        if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
-          for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-            keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+    if(this.keyNodes.length>0) {      
+      for (let i = 0; i < this.keyNodes.length; i++) {
+        let key = this.keyNodes[i].nodeName;
+        let value = this.strReplace(this.keyNodes[i].nodeValue);
+        keyattrs = Object.assign(keyattrs, {[key]: value});
+        for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
+          if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
+            for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
+              keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+            }
+            break;
           }
         }
+        this.attachKey(keyattrs);
       }
-      this.attachKey(keyattrs);
     }
-    for (let i = 0; i < this.keyRefNodes.length; i++) {
-      this.getKeyRef(this.keyRefNodes[i]);
+    if(this.keyRefNodes.length>0) {      
+      for (let i = 0; i < this.keyRefNodes.length; i++) {
+        this.getKeyRef(this.keyRefNodes[i]);
+      }
     }
   }
 
@@ -1910,11 +1920,13 @@ export class XmlEditorComponent implements OnInit {
     for (let key in nodes) {
       if (key === 'key') {
         ke = true;
+        break;
       } else if (key === 'keyref') {
         keyref = true;
+        break;
       }
-    }
-    if (this.nodes[0]) {
+    }    
+    if (this.nodes[0] && this.nodes[0].children) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         if (this.nodes[0].children[i].ref === nodes.name) {
           if (ke) {
@@ -1937,8 +1949,10 @@ export class XmlEditorComponent implements OnInit {
       for (let key in _nodes) {
         if (key === 'key') {
           ke = true;
+          break;
         } else if (key === 'keyref') {
           keyref = true;
+          break;
         }
       }
       for (let i = 0; i < child.length; i++) {
@@ -1976,10 +1990,11 @@ export class XmlEditorComponent implements OnInit {
         if (this.nodes[0].attributes[i].refer) {
           key = Object.assign(key, {refe: this.nodes[0].ref, name: this.nodes[0].attributes[i].refer});
           this.attachKeyRefrencing(key);
+          break;
         }
       }
     } else {
-      if (this.nodes[0]) {
+      if (this.nodes[0] && this.nodes[0].children) {
         for (let i = 0; i < this.nodes[0].children.length; i++) {
           this.AddKeyRefrencingRecursion(this.nodes[0].children[i]);
         }
@@ -1994,10 +2009,11 @@ export class XmlEditorComponent implements OnInit {
         if (child.attributes[i].refer) {
           key = Object.assign(key, {refe: child.ref, name: child.attributes[i].refer});
           this.attachKeyRefrencing(key);
+          break;
         }
       }
     } else {
-      if (child.children) {
+      if (child && child.children) {
         for (let i = 0; i < child.children.length; i++) {
           this.AddKeyRefrencingRecursion(child.children[i]);
         }
@@ -2011,6 +2027,7 @@ export class XmlEditorComponent implements OnInit {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
           if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
             this.nodes[0].attributes[i].refElement = key.refe;
+            break;
           }
         }
       } else {
@@ -2028,6 +2045,7 @@ export class XmlEditorComponent implements OnInit {
           if (child.attributes[i].name === child.key) {
             var a = key.refe;
             child.attributes[i].refElement = a;
+            break;
           }
         }
       } else {
@@ -2509,7 +2527,7 @@ export class XmlEditorComponent implements OnInit {
   // create Xml from Json
   showXml() {
     let xml = this._showXml();
-    const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static'});
+    const modalRef = this.modalService.open(ShowModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.xml = xml;
     modalRef.result.then(() => {
 
@@ -2672,7 +2690,7 @@ export class XmlEditorComponent implements OnInit {
                 temp[rootNode] = Object.assign(temp[rootNode], {[x]: {}});
               }
               for(let key in editJson[rootNode][a][i]) {
-                this.createTempJsonRecursion(key, temp[rootNode][x], editJson[rootNode][a][i])
+                this.createTempJsonRecursion(key, temp[rootNode][x], editJson[rootNode][a][i]);
               }
             }
           } else {
@@ -2704,15 +2722,16 @@ export class XmlEditorComponent implements OnInit {
           tempArr = Object.assign(tempArr, { [x]: {} });
           if (editJson)
             for (let as in editJson[key][i]) {
-              this.createTempJsonRecursion(as, tempArr[x], editJson[key][i])
+              this.createTempJsonRecursion(as, tempArr[x], editJson[key][i]);
             }
         }
       } else {
         tempArr = Object.assign(tempArr, { [key]: {} });
-        if (editJson)
+        if (editJson) {
           for (let x in editJson[key]) {
-            this.createTempJsonRecursion(x, tempArr[key], editJson[key])
+            this.createTempJsonRecursion(x, tempArr[key], editJson[key]);
           }
+        }
       }
     }
   }

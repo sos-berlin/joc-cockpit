@@ -309,17 +309,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       localStorage.$SOS$MENUTHEME = preferences.headerColor;
       $('#avatarBg').addClass(preferences.avatarColor);
       localStorage.$SOS$AVATARTHEME = preferences.avatarColor;
-      if ($('#dailyPlan_id img')) {
-        if (preferences.theme === 'lighter') {
-          $('#jobs_id img').attr('src', './assets/images/job.png');
-          $('#dailyPlan_id img').attr('src', './assets/images/daily_plan1.png');
-          $('#resources_id img').attr('src', './assets/images/resources1.png');
-        } else {
-          $('#jobs_id img').attr('src', './assets/images/job1.png');
-          $('#dailyPlan_id img').attr('src', './assets/images/daily_plan.png');
-          $('#resources_id img').attr('src', './assets/images/resources.png');
-        }
-      }
       localStorage.$SOS$LANG = preferences.locale;
       this.translate.setDefaultLang(preferences.locale);
       this.translate.use(preferences.locale);

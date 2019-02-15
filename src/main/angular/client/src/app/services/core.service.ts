@@ -43,6 +43,7 @@ export class CoreService {
     this.tabs._daliyPlan.reverse = false;
     this.tabs._daliyPlan.currentPage = '1';
     this.tabs._daliyPlan.selectedView = true;
+    this.tabs._daliyPlan.searchText = '';
 
     this.tabs._order = {};
     this.tabs._order.filter = {};
@@ -202,6 +203,7 @@ export class CoreService {
     this.tempTabs._daliyPlan.reverse = false;
     this.tempTabs._daliyPlan.currentPage = '1';
     this.tempTabs._daliyPlan.selectedView = true;
+    this.tempTabs._daliyPlan.searchText = '';
 
     this.tempTabs._order = {};
     this.tempTabs._order.filter = {};

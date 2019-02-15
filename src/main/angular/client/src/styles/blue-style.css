@@ -214,16 +214,16 @@ pre.log {
 .search-box {
 	border: none;
 	box-shadow: none;
-	background: url(../images/Search.png) 9px 8px no-repeat #e8e8e8;
+	background: url(../assets/images/Search.png) 9px 8px no-repeat #e8e8e8;
 	padding: 5px 10px 4px 28px!important
 }
 
 input.input-date {
-	background-image: url(../images/calendar-lt.png)
+	background-image: url(../assets/images/calendar-lt.png)
 }
 
 input.input-time {
-	background-image: url(../images/clock-lt.png)
+	background-image: url(../assets/images/clock-lt.png)
 }
 
 .loader1 {
@@ -316,7 +316,7 @@ input[readonly] {
 }
 
 input[type=search] {
-	background: url(../images/Search.png) 6px center no-repeat;
+	background: url(../assets/images/Search.png) 6px center no-repeat;
 	color: #fff;
 	border-bottom: 1px solid #e8e8e8
 }
@@ -324,10 +324,6 @@ input[type=search] {
 input[type=search]:focus {
 	color: #fff;
 	border-bottom: 1px solid #337ab7
-}
-
-.loading-img1 {
-	background: url(../images/loader.gif) 50% 50% no-repeat
 }
 
 .table .table,
@@ -352,7 +348,6 @@ input[type=search]:focus {
 
 .table-bordered>tbody>tr {
 	border-bottom: 1px solid #3f5669;
-	border-color: #3f5669
 }
 
 .table-bordered,
@@ -747,10 +742,6 @@ pre.cdata {
 
 #cal-week-box {
 	background-color: #3f5669
-}
-
-button#exportToExcelBtn {
-	background: url(../images/export-lt.png) center center no-repeat #3f5669
 }
 
 .dropdown-divider {

@@ -25,21 +25,21 @@
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
                   <span *ngIf="!node.hasChildren && !node.data.type" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'workflow'" class="fa fa-sitemap w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'order'" class="fa fa-first-order w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'lock'" class="fa fa-lock w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'processClass'" class="fa fa-tasks w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'calendar'" class="fa fa-calendar w-15 m-t-xs"></span>
+                  <span *ngIf="node.data.type == 'workflow'" class="icon-hierarchical-ico tree-icon"></span>
+                  <span *ngIf="node.data.type == 'order'" class="icon-orders-ico tree-icon"></span>
+                  <span *ngIf="node.data.type == 'lock'" class="icon-lockedstate-ico tree-icon"></span>
+                  <span *ngIf="node.data.type == 'processClass'" class="icon-jobs-ico tree-icon"></span>
+                  <span *ngIf="node.data.type == 'calendar'" class="icon-dates-ico tree-icon"></span>
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.data.isSelected"
                        (click)="node.mouseAction('click', $event)">
                     <i *ngIf="node.isExpanded && !node.data.object && !node.data.type" class="fa fa-folder-open-o w-18"></i>
                     <i *ngIf="node.isCollapsed && !node.data.object && !node.data.type" class="fa fa-folder-o w-18"></i>
-                    <i *ngIf="node.data.object == 'workflow'" class="fa fa-sitemap w-15 m-t-xs"></i>
-                    <i *ngIf="node.data.object == 'order'" class="fa fa-first-order w-15 m-t-xs"></i>
-                    <i *ngIf="node.data.object == 'lock'" class="fa fa-lock w-15 m-t-xs"></i>
-                    <i *ngIf="node.data.object == 'processClass'" class="fa fa-tasks w-15 m-t-xs"></i>
-                    <i *ngIf="node.data.object == 'calendar'" class="fa fa-calendar w-15 m-t-xs"></i>
+                    <i *ngIf="node.data.object == 'workflow'" class="icon-hierarchical-ico tree-icon"></i>
+                    <i *ngIf="node.data.object == 'order'" class="icon-orders-ico tree-icon"></i>
+                    <i *ngIf="node.data.object == 'lock'" class="icon-lockedstate-ico tree-icon"></i>
+                    <i *ngIf="node.data.object == 'processClass'" class="icon-jobs-ico tree-icon"></i>
+                    <i *ngIf="node.data.object == 'calendar'" class="icon-dates-ico tree-icon"></i>
                     <tree-node-content [node]="node" [index]="index"></tree-node-content>
                   </div>
                 </div>

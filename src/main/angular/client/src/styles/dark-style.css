@@ -215,16 +215,16 @@ pre.log {
 .search-box {
 	border: none;
 	box-shadow: none;
-	background: url(../images/Search.png) 9px 8px no-repeat #e8e8e8;
+	background: url(../assets/images/Search.png) 9px 8px no-repeat #e8e8e8;
 	padding: 5px 10px 4px 28px!important
 }
 
 input.input-date {
-	background-image: url(../images/calendar-lt.png)
+	background-image: url(../assets/images/calendar-lt.png)
 }
 
 input.input-time {
-	background-image: url(../images/clock-lt.png)
+	background-image: url(../assets/images/clock-lt.png)
 }
 
 .loader1 {
@@ -317,7 +317,7 @@ input[readonly] {
 }
 
 input[type=search] {
-	background: url(../images/Search.png) 6px center no-repeat;
+	background: url(../assets/images/Search.png) 6px center no-repeat;
 	color: #3d464d;
 	border-bottom: 1px solid #ccc
 }
@@ -325,10 +325,6 @@ input[type=search] {
 input[type=search]:focus {
 	color: #3d464d;
 	border-bottom: 1px solid #1395BE
-}
-
-.loading-img1 {
-	background: url(../images/loader.gif) 50% 50% no-repeat
 }
 
 .notification {
@@ -743,9 +739,6 @@ pre.cdata {
 	background-color: #2b2b2b
 }
 
-button#exportToExcelBtn {
-	background: url(../images/export-lt.png) center center no-repeat #393937
-}
 
 .dropdown-divider {
 	background-color: rgba(233, 244, 255, .18)

@@ -1365,6 +1365,6 @@
   "label.WouldYouLikeToSaveCurrentXml": "Would you like to save current xml ?",
   "button.removeOrder": "Remove Order",
   "button.removePlan": "Remove Plan",
-  "label.removeOrder": "Remove Plan",
+  "label.removeOrder": "Remove Order",
   "label.removePlan": "Remove Plan"
 }

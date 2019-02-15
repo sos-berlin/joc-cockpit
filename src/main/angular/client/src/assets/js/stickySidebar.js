@@ -1,11 +1,22 @@
-!function (s) {
-  s.fn.stickySidebar = function (i) {
-    var e = s.extend({subHeaderSelector: ".sub-header", sidebarTopMargin: 20}, i), t = function () {
-      var i = s(this), t = s(e.subHeaderSelector).height();
-      95 != t ? 121 == t ? i.addClass("sticky").css("top", 216) : i.addClass("sticky").css("top", e.sidebarTopMargin) : i.addClass("sticky").css("top", 190)
-    };
-    return this.each(function () {
-      s(window).on("scroll", s.proxy(t, this)), s(window).on("resize", s.proxy(t, this)), s.proxy(t, this)()
-    })
-  }
+!function (a) {
+    a.fn.stickySidebar = function (b) {
+        var c = a.extend({subHeaderSelector: ".sub-header", sidebarTopMargin: 20}, b), d = function () {
+            let b = a(this), y = $('.scroll-y').position().top + 20;
+            if ($('.sub-header-2').height()) {
+                y = y - 20;
+            }
+            y = y - $(window).scrollTop();
+            if (y < 1) {
+                y = 8;
+            }
+            console.log('y '+y)
+            b.addClass("sticky").css("top", y);
+        }, x = function () {
+            let b = a(this);
+            b.addClass("sticky").css("top", c.sidebarTopMargin);
+        };
+        return this.each(function () {
+            a(window).on("scroll", a.proxy(d, this)), a(window).on("resize", a.proxy(d, this)), a.proxy(x, this)()
+        })
+    }
 }(jQuery);

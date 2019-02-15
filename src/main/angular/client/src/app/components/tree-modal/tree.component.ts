@@ -14,7 +14,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   tree: any = [];
 
   @Input() schedulerId;
-  @Input() paths: any;
+  @Input() paths: any = [];
   @Input() showCheckBox: boolean;
   @Input() type: string;
 
@@ -40,7 +40,9 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   onNodeSelected(e): void {
-    this.activeModal.close(e.node.data.path);
+    if(!this.showCheckBox) {
+      this.activeModal.close(e.node.data.path);
+    }
   }
 
   onNodeChecked(e): void {
@@ -83,7 +85,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   private recursive(data, output) {
-
     if (data.folders && data.folders.length > 0) {
       data.folders = _.sortBy(data.folders, 'name');
       for (let i = 0; i < data.folders.length; i++) {

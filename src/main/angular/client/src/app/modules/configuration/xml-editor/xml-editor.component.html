@@ -75,7 +75,7 @@
                           </a>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" (click)="showAllChildNode(node.data)">
+                        <a class="dropdown-item" (click)="showAllChildNode(node.data)" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                           <div translate>button.showAllChildNodes</div>
                         </a>
                         <div class="dropdown-divider"></div>
@@ -146,7 +146,7 @@
             <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
           </div>
           <div class="col-12">
-            <div class="box p-a" *ngIf="selectedNode && selectedNode.text">
+            <div class="box p-a documentation-height" *ngIf="selectedNode && selectedNode.text">
               <div class="text _600" translate>label.documentation</div>
               <span id="doc">
                 <ul *ngIf="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
@@ -159,8 +159,8 @@
             </div>
           </div>
           <div class="col-12" id="attr">
-            <div class="box p-a" *ngIf="selectedNode && selectedNode.attributes && selectedNode.attributes.length>0">
-              <div>
+            <div *ngIf="selectedNode">
+              <div class="box p-a" *ngIf="selectedNode.attributes && selectedNode.attributes.length>0">
                 <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm">Attributes</div>
                 <div *ngFor="let node of selectedNode.attributes" class="form-group">
                   <label *ngIf="node.name && node.id">{{node.name}}<sup
@@ -179,12 +179,19 @@
                          [required]="node.use ==='required'"
                          class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
                          value="{{node.data? node.data:node.default}}">
-                  <input #localref1 (blur)="validateAttr(localref1.value, node)"
-                         (change)="submitData(localref1.value, node)"
-                         *ngIf="node.values && node.values.length==0 && node.name && !node.type"
+                  <input #localref9 (blur)="validateAttr(localref9.value, node)"
+                         (change)="submitData(localref9.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" type="text"
+                         value="{{node.data? node.data:node.default}}">
+                  <input #localref10 (blur)="validateAttr(localref10.value, node)"
+                         (change)="submitData(localref10.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.name === 'password' && !node.type"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" placeholder="Example input" type="password"
                          value="{{node.data? node.data:node.default}}">
                   <input #localref2 (blur)="validateAttr(localref2.value, node)"
                          (change)="submitData(localref2.value, node)"
@@ -237,8 +244,8 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="selectedNode">
-                <div *ngIf="selectedNode.values && selectedNode.values.length>0" class="text m-b-sm">Value<sup
+              <div class="box p-a" *ngIf="selectedNode.values && selectedNode.values.length>0">
+                <div class="text m-b-sm">Value<sup
                   *ngIf="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
                 <div class="form-group">
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
@@ -288,7 +295,6 @@
     </div>
   </div>
 </div>
-
 <div id="spinner" *ngIf="isLoading">
   <div></div>
 </div>

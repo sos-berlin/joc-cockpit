@@ -39,6 +39,10 @@ const x2js = new X2JS();
   templateUrl: './order-template.html',
 })
 export class OrderTemplateComponent implements OnInit, OnDestroy {
+  order: any = {};
+  calendars: any = [];
+  nonWorkingCalendar: any = [];
+
   constructor() {
 
   }
@@ -48,6 +52,10 @@ export class OrderTemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  onSubmit(): void {
+
   }
 }
 
