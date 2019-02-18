@@ -180,7 +180,7 @@
                 <li class="nav-item" [ngClass]="{'disable-link':!schedulerIds.selected}">
                     <a class="nav-link" routerLink="/dashboard" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                             <i class="icon-dashboard-ico text-white" ></i>
+                             <i class="icon-dashboard-icon text-white" ></i>
                             <span  class="ico text-white text-u-c _600" translate>label.dashboard</span>
                         </span>
                     </a>
@@ -188,7 +188,7 @@
                 <li class="nav-item" *ngIf="permission.DailyPlan.view.status">
                     <a class="nav-link" routerLink="/daily_plan" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="icon-planner-ico text-white"></i>
+                            <i class="icon-daily-plan-icon text-white"></i>
                             <span  class="ico text-white text-u-c _600" translate>label.dailyPlan</span>
                         </span>
                     </a>
@@ -196,7 +196,7 @@
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/workflow" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                          <i class="icon-hierarchical-ico text-white"></i>
+                          <i class="icon-workflows-icon text-white"></i>
                           <span class="ico text-white text-u-c _600" translate>label.workflows</span>
                         </span>
                     </a>
@@ -204,7 +204,7 @@
                 <li class="nav-item" *ngIf="permission.Job.view.status">
                     <a class="nav-link" routerLink="/job" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="icon-jobs-ico text-white"></i>
+                            <i class="icon-jobs-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.jobs</span>
                         </span>
                     </a>
@@ -212,7 +212,7 @@
                 <li class="nav-item" *ngIf="permission.YADE.view.status">
                     <a class="nav-link" routerLink="/file_transfer" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="icon-transfer-ico text-white"></i>
+                            <i class="icon-file-transfers-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.fileTransfers</span>
                         </span>
                     </a>
@@ -221,7 +221,7 @@
                     permission.Lock.view.status  || permission.Calendar.view.status || permission.Documentation.view">
                     <a class="nav-link" routerLink="/resources" [routerLinkActive]="['active']" (click)="navigateToResource()">
                         <span class="nav-text">
-                            <i class="icon-resources-ico text-white"></i>
+                            <i class="icon-resources-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.resources</span>
                         </span>
                     </a>
@@ -229,7 +229,7 @@
                 <li class="nav-item" *ngIf="permission.History.view.status || permission.YADE.view.status">
                     <a class="nav-link" routerLink="/history" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="icon-timer-ico text-white"></i>
+                            <i class="icon-alarm-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.history</span>
                         </span>
                     </a>
@@ -237,7 +237,7 @@
                 <li class="nav-item" *ngIf="permission.AuditLog.view.status">
                     <a class="nav-link" routerLink="/audit_log" [routerLinkActive]="['active']">
                         <span class="nav-text">
-                            <i class="icon-audit-ico text-white"></i>
+                            <i class="icon-audit-log-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.auditLog</span>
                         </span>
                     </a>
@@ -245,7 +245,7 @@
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/configuration" [routerLinkActive]="['active']" (click)="navigateToConfiguration()">
                         <span class="nav-text" >
-                            <i class="icon-configs-ico text-white"></i>
+                            <i class="icon-configuration-icon text-white"></i>
                             <span class="ico text-white text-u-c _600" translate>label.configuration</span>
                         </span>
                     </a>

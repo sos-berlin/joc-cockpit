@@ -30,13 +30,19 @@
             <tree-node-content [node]="node" [index]="index"></tree-node-content>
           </div>
         </div>
+        <div class="m-l p-l-xs p-t-xs m-b-xs" *ngFor="let cal of node.data.calendars">
+          <label class="md-check" style="margin-right: 6px">
+            <input type="checkbox" [(checklist)]="objects" [checklistValue]="cal" />
+            <i class="primary"></i> <span class="fa fa-calendar text-sm">&nbsp;{{cal.name}}</span>
+          </label>
+        </div>
       </ng-template>
     </tree-root>
   </div>
 </div>
 <div class="modal-footer ">
-  <div *ngIf="showCheckBox">
-    <button type="button" class="btn btn-primary btn-sm"  (click)="activeModal.close(paths)"
+  <div *ngIf="showCheckBox || object">
+    <button type="button" class="btn btn-primary btn-sm"  (click)="submit()"
             translate>button.done
     </button>
     <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="activeModal.dismiss('Cross click')"
@@ -44,7 +50,7 @@
       button.cancel
     </button>
   </div>
-  <div *ngIf="!showCheckBox">
+  <div *ngIf="!showCheckBox && !object">
     <button type="button" class="btn btn-grey btn-sm " (click)="activeModal.dismiss('Cross click')"
             translate>
       button.close

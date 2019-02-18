@@ -285,7 +285,6 @@
   "button.waiting": "Waiting",
   "button.waitingForResource": "Waiting for Resource",
   "healthy": "healthy",
-  "ignore holiday": "ignore non-working day",
   "label.JOCConfiguration": "Shared Customization",
   "label.PlannedLate": "Planned Late",
   "label.aMinuteAgo": "a minute ago",
@@ -868,9 +867,6 @@
   "label.zoom": "Zoom",
   "label.sourceFileRegex": "Source File Regular Expression",
   "label.targetFileRegex": "Target File Regular Expression",
-  "next non holiday": "after non-working day",
-  "previous non holiday": "before non-working day",
-  "suppress execution (default)": "suppress execution (default)",
   "tooltip.collapseAll": "Collapse All",
   "tooltip.deactivateCustomization": "Deactivate Customization",
   "tooltip.expandAll": "Expand All",
@@ -1376,5 +1372,14 @@
   "label.variables": "Variables",
   "label.nonWorkingCalendars": "Non Working Calendars",
   "placeholder.orderName": "Enter order name",
-  "placeholder.workflowPath": "Enter workflow path"
+  "placeholder.workflowPath": "Enter workflow path",
+  "label.declareNewVariables": "Declare New Variables",
+  "button.addVariable": "Add Variable",
+  "button.addAnotherVariable": "Add another Variable",
+  "label.addPeriod": "Add Period",
+  "label.editPeriod": "Update Period",
+  "next_non_holiday": "after non-working day",
+  "previous_non_holiday": "before non-working day",
+  "suppress": "suppress execution (default)",
+  "ignore_holiday": "ignore non-working day"
 }

@@ -404,7 +404,11 @@ export class XmlEditorComponent implements OnInit {
     this.xpath();
     this.AddKeyRefrencing();
     this.selectedNode = this.nodes[0];
-    this.isLoading = false;
+    if(check) {
+      this.isLoading = true;
+    } else {
+      this.isLoading = false;
+    }
   }
 
   reassignSchema() {
@@ -1926,24 +1930,8 @@ export class XmlEditorComponent implements OnInit {
         break;
       }
     }    
-    if (this.nodes[0] && this.nodes[0].children) {
-      for (let i = 0; i < this.nodes[0].children.length; i++) {
-        if (this.nodes[0].children[i].ref === nodes.name) {
-          if (ke) {
-            this.nodes[0].children[i].key = nodes.key;
-          } else if (keyref) {
-            this.nodes[0].children[i].keyref = nodes.keyref;
-          }
-        } else {
-          if (this.nodes[0].children[i].children) {
-            recursion(nodes, this.nodes[0].children[i].children);
-          }
-        }
-      }
-    }
-
-
-    function recursion(_nodes, child) {
+    
+    const recursion = (_nodes, child) => {
       let ke = false;
       let keyref = false;
       for (let key in _nodes) {
@@ -1974,6 +1962,23 @@ export class XmlEditorComponent implements OnInit {
             recursion(_nodes, child[i].children);
           }
 
+        }
+      }
+    };
+
+    if (this.nodes[0] && this.nodes[0].children) {
+      for (let i = 0; i < this.nodes[0].children.length; i++) {
+        if (this.nodes[0].children[i].ref === nodes.name) {
+          if (ke) {
+            this.nodes[0].children[i].key = nodes.key;
+            this.nodes[0].children[i].key = nodes.key;
+          } else if (keyref) {
+            this.nodes[0].children[i].keyref = nodes.keyref;
+          }
+        } else {
+          if (this.nodes[0].children[i].children) {
+            recursion(nodes, this.nodes[0].children[i].children);
+          }
         }
       }
     }
@@ -2709,6 +2714,7 @@ export class XmlEditorComponent implements OnInit {
         } 
       }
     }
+    this.isLoading = false;
     return temp;
   }
 

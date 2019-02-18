@@ -1,0 +1,16 @@
+ul {
+    list-style-type: none;
+}
+ul {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+li {
+    padding-bottom: 5px;
+}
+
+.m-l-4 {
+    margin-left: 1.25rem !important;
+}

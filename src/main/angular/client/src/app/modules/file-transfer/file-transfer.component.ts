@@ -361,8 +361,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
     obj.limit = parseInt(this.preferences.maxRecords, 10);
 
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-
-      this.fileTransfers = res.transfers;
+      this.fileTransfers = res.transfers || [];
 
       this.fileTransfers.forEach(function (transfer) {
         let id = transfer.jobschedulerId || self.schedulerIds.selected;
@@ -372,6 +371,7 @@ export class FileTransferComponent implements OnInit, OnDestroy {
           self.getFiles(transfer);
         }
       });
+
 
       this.isLoading = true;
     }, () => this.isLoading = true);

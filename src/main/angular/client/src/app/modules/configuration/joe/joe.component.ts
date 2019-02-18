@@ -3,8 +3,10 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
+import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -35,27 +37,200 @@ declare const $;
 const x2js = new X2JS();
 
 @Component({
-  selector: 'app-order-template',
-  templateUrl: './order-template.html',
+  selector: 'app-period-template',
+  templateUrl: './period-editor-dialog.html',
 })
-export class OrderTemplateComponent implements OnInit, OnDestroy {
-  order: any = {};
-  calendars: any = [];
-  nonWorkingCalendar: any = [];
+export class PeriodEditorComponent implements OnInit, OnDestroy {
+  @Input() isNew: boolean;
+  @Input() period: any = {};
+  editor: any = {};
 
-  constructor() {
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
 
   }
 
   ngOnInit(): void {
-
+    if(this.isNew) {
+      this.period.frequency = 'single_start';
+      this.period.period = {};
+      this.period.period._begin = '00:00:00';
+      this.period.period._end = '24:00:00';
+      this.period.period._when_holiday = 'suppress';
+    }else{
+      console.log(this.period)
+    }
+    this.editor.when_holiday_options = [
+      'previous_non_holiday',
+      'next_non_holiday',
+      'suppress',
+      'ignore_holiday'
+    ];
   }
 
   ngOnDestroy(): void {
   }
 
-  onSubmit(): void {
+  static getTimeInString(time) {
+    if (time.toString().substring(0, 2) == '00' && time.toString().substring(3, 5) == '00') {
+      return time.toString().substring(6, time.length) + ' seconds';
+    } else if (time.toString().substring(0, 2) == '00') {
+      return time.toString().substring(3, time.length) + ' minutes';
+    } else if ((time.toString().substring(0, 2) != '00' && time.length == 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
+      return time.toString().substring(0, 5) + ' hours';
+    } else {
+      return time;
+    }
+  }
 
+  private getString(): string {
+    let str = '';
+    if (this.period.period._begin) {
+      str = this.period.period._begin;
+    }
+    if (this.period.period._end) {
+      str = str + '-' + this.period.period._end;
+    }
+    if (this.period.period._single_start) {
+      this.period.frequency = 'single_start';
+      str = 'Single start: ' + this.period.period._single_start;
+    } else if (this.period.period._absolute_repeat) {
+      this.period.frequency = 'absolute_repeat';
+      str = str + ' every ' + PeriodEditorComponent.getTimeInString(this.period.period._absolute_repeat);
+    } else if (this.period.period._repeat) {
+      this.period.frequency = 'repeat';
+      str = str + ' every ' + PeriodEditorComponent.getTimeInString(this.period.period._repeat);
+    } else {
+      this.period.frequency = 'time_slot';
+    }
+    return str;
+  }
+
+  onSubmit(): void {
+    this.period.str = this.getString();
+    this.activeModal.close(this.period);
+  }
+
+  cancel(): void {
+    this.activeModal.dismiss();
+  }
+
+}
+
+@Component({
+  selector: 'app-order-template',
+  templateUrl: './order-template.html',
+})
+export class OrderTemplateComponent implements OnInit, OnDestroy {
+  order: any = {};
+  variableObject: any = {};
+  @Input() preferences: any;
+  @Input() schedulerId: any;
+
+  constructor(private modalService: NgbModal) {
+
+  }
+
+  ngOnInit(): void {
+    this.order.variables = [];
+    this.order.calendars = [];
+    this.order.nonWorkingCalendars = [];
+    this.variableObject.variables = [];
+    this.addCriteria();
+  }
+
+  ngOnDestroy(): void {
+  }
+
+
+  onSubmit(): void {
+    if (this.order.variables) {
+      this.order.variables = this.order.variables.concat(this.variableObject.variables);
+    }
+    console.log(this.order);
+  }
+
+  showCalendarModel(type): void {
+    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.paths = this.order.calendar;
+    modalRef.componentInstance.type = type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
+    modalRef.componentInstance.object = 'Calendar';
+    modalRef.componentInstance.objects = type === 'WORKING_DAYS' ? this.order.calendars : this.order.nonWorkingCalendars;
+    modalRef.componentInstance.showCheckBox = false;
+    modalRef.result.then((result) => {
+      console.log(result);
+      if (_.isArray(result)) {
+        if (type === 'WORKING_DAYS') {
+          this.order.calendars = result;
+        } else {
+          this.order.nonWorkingCalendars = result;
+        }
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  addPeriodInCalendar(calendar): void {
+    const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
+    modalRef.componentInstance.isNew = true;
+    modalRef.componentInstance.period = {};
+    modalRef.result.then((result) => {
+      console.log(result);
+      if (!calendar.periods) {
+        calendar.periods = [];
+      }
+      calendar.periods.push(result);
+
+    }, (reason) => {
+      console.log('close...', reason);
+
+    });
+  }
+
+  updatePeriodInCalendar(calendar, index, period): void {
+    const modalRef = this.modalService.open(PeriodEditorComponent, {backdrop: 'static'});
+    modalRef.componentInstance.period = period;
+    modalRef.result.then((result) => {
+
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  removePeriodInCalendar(calendar, period): void {
+    for(let i =0; i < calendar.periods.length; i++){
+      if(calendar.periods[i] == period){
+        calendar.periods.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  previewCalendar(calendar): void {
+
+  }
+
+  removeWorkingCal(index): void {
+    this.order.calendars.splice(index, 1);
+  }
+
+  removeNonWorkingCal(index): void {
+    this.order.nonWorkingCalendars.splice(index, 1);
+  }
+
+  addCriteria(): void {
+    let param = {
+      name: '',
+      value: ''
+    };
+    if (this.variableObject.variables) {
+      this.variableObject.variables.push(param);
+    }
+  }
+
+  removeVariable(index): void {
+    this.variableObject.variables.splice(index, 1);
   }
 }
 
@@ -64,6 +239,8 @@ export class OrderTemplateComponent implements OnInit, OnDestroy {
   templateUrl: './lock-template.html',
 })
 export class LockTemplateComponent implements OnInit, OnDestroy {
+  @Input() schedulerId: any;
+
   constructor() {
 
   }
@@ -81,6 +258,8 @@ export class LockTemplateComponent implements OnInit, OnDestroy {
   templateUrl: './process-class-template.html',
 })
 export class ProcessClassTemplateComponent implements OnInit, OnDestroy {
+  @Input() schedulerId: any;
+
   constructor() {
 
   }
@@ -2300,12 +2479,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
               }
             } else if (state.cell.value.tagName === 'Connection') {
-              if ((state.cell.source.value.tagName === 'Fork' && state.cell.target.value.tagName === 'Join') ||
+              if (state.cell.source && state.cell.source.value && ((state.cell.source.value.tagName === 'Fork' && state.cell.target.value.tagName === 'Join') ||
                 (state.cell.source.value.tagName === 'If' && state.cell.target.value.tagName === 'EndIf') ||
                 (state.cell.source.value.tagName === 'Retry' && state.cell.target.value.tagName === 'RetryEnd') ||
                 (state.cell.source.value.tagName === 'Try' && state.cell.target.value.tagName === 'Catch') ||
                 (state.cell.source.value.tagName === 'Catch' && state.cell.target.value.tagName === 'EndCatch') ||
-                (state.cell.source.value.tagName === 'EndCatch' && state.cell.target.value.tagName === 'EndTry')) {
+                (state.cell.source.value.tagName === 'EndCatch' && state.cell.target.value.tagName === 'EndTry'))) {
                 return;
               }
             } else if (state.cell.value.tagName === 'Retry') {
@@ -2773,8 +2952,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 isProgrammaticallyDelete = true;
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
-                    // cell.source.removeEdge(cell.source.edges[x], true); // Sometime remove sometimes not need testing...
-                    graph.getModel().remove(cell.source.edges[x]);
+                    if (cell.source.value.tagName === 'Job' && cell.target && cell.target.value.tagName === 'Job') {
+                      graph.getModel().remove(cell.source.edges[x]);
+                    } else {
+                      cell.source.removeEdge(cell.source.edges[x], true);
+                    }
                     break;
                   }
                 }
@@ -3790,7 +3972,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                     }
                   ]
                 }, {
-                  id: 7, name: 'Process_Class', path: '/sos/Process_Class', object: 'processClass', children: [
+                  id: 7, name: 'Process_Classes', path: '/sos/Process_Classes', object: 'processClass', children: [
                     {
                       name: 'process_class_1', type: 'processClass'
                     }
@@ -3821,7 +4003,7 @@ export class JoeComponent implements OnInit, OnDestroy {
                 }, {
                   id: 11, name: 'Locks', path: '/zehntech/Locks', object: 'lock', children: []
                 }, {
-                  id: 12, name: 'Process_Class', path: '/zehntech/Process_Class', object: 'processClass', children: []
+                  id: 12, name: 'Process_Classes', path: '/zehntech/Process_Classes', object: 'processClass', children: []
                 }, {
                   id: 13, name: 'Calendars', path: '/zehntech/Calendars', object: 'calendar', children: [
                     {

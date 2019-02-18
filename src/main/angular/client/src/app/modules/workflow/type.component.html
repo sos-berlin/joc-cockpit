@@ -1,0 +1,48 @@
+<div *ngFor="let Type of workflowJson">
+  <ul>
+    <li>
+      <a *ngIf="Type.TYPE === 'ForkJoin' || Type.TYPE === 'If' || Type.TYPE === 'Try' || Type.TYPE === 'Retry'"
+         (click)="collapse(Type.id, 'undefined')" id="{{Type.TYPE}}_{{Type.id}}"><i class="fa fa-plus pr-2"
+                                                                                    aria-hidden="true"></i>{{Type.TYPE}}
+      </a>
+      <span *ngIf="Type.TYPE === 'Job' || Type.TYPE === 'Terminate'">{{Type.TYPE}}</span>
+      <span *ngIf="Type.TYPE === 'ForkJoin'" id="{{Type.id}}">
+        <span *ngFor="let branch of Type.branches">
+          <app-type [workflowJson]="branch.instructions" *ngIf="branch.instructions"></app-type>
+        </span>
+        <div>join</div>
+      </span>
+      <span *ngIf="Type.TYPE === 'If'">
+        <span *ngIf="Type.then" id="{{Type.id}}">
+          <app-type [workflowJson]="Type.then.instructions" *ngIf="Type.then.instructions"></app-type>
+        
+        <div class="m-l-4"><a *ngIf="Type.else" (click)="collapse(Type.id, 'else')"><i class="fa fa-plus pr-2"
+                                                                                       aria-hidden="true"></i>else</a></div>
+        <div *ngIf="Type.else" id="else-{{Type.id}}">
+          <app-type [workflowJson]="Type.else.instructions" *ngIf="Type.else.instructions"></app-type>
+        </div>
+        </span>
+        <div *ngIf="Type.else">End If</div>
+      </span>
+      <span *ngIf="Type.TYPE === 'Try'">
+        <span id="{{Type.id}}">
+        <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>
+        <div class="m-l-4"><a *ngIf="Type.catch" (click)="collapse(Type.id, 'catch')"><i class="fa fa-plus pr-2"
+                                                                                         aria-hidden="true"></i>Catch</a></div>
+        <span id="catch-{{Type.id}}">
+          <app-type [workflowJson]="Type.catch.instructions" *ngIf="Type.catch && Type.catch.instructions"></app-type>
+        </span>
+        <div class="m-l-4" *ngIf="Type.catch">End catch</div>
+        </span>
+        <div *ngIf="Type.TYPE === 'Try'">End Try</div>
+      </span>
+
+      <span *ngIf="Type.TYPE === 'Retry'">
+      <span id="{{Type.id}}">
+        <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>
+      </span>
+      <div *ngIf="Type.TYPE === 'Retry'">End Retry</div>
+      </span>
+    </li>
+  </ul>
+</div>

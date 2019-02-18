@@ -15,6 +15,7 @@ import {
   JoeComponent,
   LockTemplateComponent,
   OrderTemplateComponent,
+  PeriodEditorComponent,
   ProcessClassTemplateComponent,
   WorkFlowTemplateComponent
 } from './joe/joe.component';
@@ -37,9 +38,10 @@ import {
     WorkFlowTemplateComponent,
     OrderTemplateComponent,
     ProcessClassTemplateComponent,
-    LockTemplateComponent
+    LockTemplateComponent,
+    PeriodEditorComponent
   ],
-  entryComponents: [ImportModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent]
+  entryComponents: [ImportModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent]
 })
 export class ConfigurationModule {
 }

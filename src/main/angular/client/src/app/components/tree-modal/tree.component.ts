@@ -15,8 +15,10 @@ export class TreeModalComponent implements OnInit, OnDestroy {
 
   @Input() schedulerId;
   @Input() paths: any = [];
+  @Input() objects: any = [];
   @Input() showCheckBox: boolean;
   @Input() type: string;
+  @Input() object: string;
 
   @ViewChild('treeCtrl') treeCtrl;
 
@@ -40,7 +42,21 @@ export class TreeModalComponent implements OnInit, OnDestroy {
   }
 
   onNodeSelected(e): void {
-    if(!this.showCheckBox) {
+    if (this.showCheckBox) {
+
+    } else if (this.object) {
+      if (this.object === 'Calendar') {
+        this.coreService.post('calendars', {
+          jobschedulerId: this.schedulerId,
+          compact: true,
+          type: this.type === 'WORKINGDAYSCALENDAR' ? 'WORKING_DAYS' : 'NON_WORKING_DAYS',
+          folders: [{folder: e.node.data.path}]
+        }).subscribe((res: any) => {
+            console.log(res.calendars);
+            e.node.data.calendars = res.calendars;
+        });
+      }
+    } else {
       this.activeModal.close(e.node.data.path);
     }
   }
@@ -97,6 +113,14 @@ export class TreeModalComponent implements OnInit, OnDestroy {
           this.recursive(data.folders[i], output[i].children);
         }
       }
+    }
+  }
+
+  submit(): void {
+    if (this.paths && this.paths.length > 0) {
+      this.activeModal.close(this.paths);
+    } else {
+      this.activeModal.close(this.objects);
     }
   }
 
