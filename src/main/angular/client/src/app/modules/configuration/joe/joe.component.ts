@@ -19,6 +19,7 @@ declare const mxAutoSaveManager;
 declare const mxGraphHandler;
 declare const mxCellAttributeChange;
 declare const mxGraph;
+declare const mxImage;
 declare const mxForm;
 declare const mxHierarchicalLayout;
 declare const mxImageExport;
@@ -288,6 +289,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
   isWorkflowReload = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
+  merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.png';
 
   @Input() pageView: any;
   @Input() selectedPath: any;
@@ -298,7 +300,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   constructor(public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService) {
 
   }
-
 
   static getDummyNodes(): any {
     return [
@@ -425,11 +426,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.png';
     }
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
+      this.createEditor(this.configXml);
     });
-    this.createEditor(this.configXml);
+
     WorkFlowTemplateComponent.calcHeigth();
   }
 
@@ -959,7 +962,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxCell: {
         _parent: parentId ? parentId : '1',
         _vertex: '1',
-        _style: 'symbol;image=./assets/mxgraph/images/symbols/merge.png',
+        _style: this.merge,
         mxGeometry: {
           _as: 'geometry',
           _width: '70',
@@ -2262,8 +2265,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxHierarchicalLayout.prototype.fineTuning = true;
       mxHierarchicalLayout.prototype.disableEdgeStyle = true;
       mxConstants.DROP_TARGET_COLOR = 'green';
+      mxConstants.VERTEX_SELECTION_DASHED = false;
+      mxConstants.VERTEX_SELECTION_COLOR = '#007da6';
+      mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
+
       if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
-        mxConstants.STYLE_FONTCOLOR = 'white';
+        let style = graph.getStylesheet().getDefaultEdgeStyle();
+        style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 9, 9);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 9, 9);
+      } else {
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 9, 9);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 9, 9);
       }
 
       // Enables snapping waypoints to terminals
@@ -2931,7 +2944,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (cells[0].value.tagName === 'Fork') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, 'symbol;image=./assets/mxgraph/images/symbols/merge.png');
+                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, self.merge);
                 } else if (cells[0].value.tagName === 'If') {
                   v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 70, 'rhombus');
                 } else if (cells[0].value.tagName === 'Retry') {
@@ -3075,7 +3088,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
             let v1, v2, v3, _label;
             if (cell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, 'symbol;image=./assets/mxgraph/images/symbols/merge.png');
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, self.merge);
               graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
               if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch'
                 || dropTarget.value.tagName === 'Fork') {

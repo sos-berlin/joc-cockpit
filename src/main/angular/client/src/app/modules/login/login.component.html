@@ -5,7 +5,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown">
               <span class="text-left p-l-xs">
-                    <i class="fa fa-lg fa-question-circle-o" style="font-size: 20px"></i>
+                    <i class="fa fa-lg fa-question-circle" style="font-size: 20px"></i>
               </span>
             </a>
             <ul class="dropdown-menu pull-right dropdown-ac1">
@@ -67,7 +67,7 @@
                 </div>
                 <div style="margin-top: 65px"></div>
                 <div class="hide alert alert-danger" [ngClass]="{'show':errorMsg}">
-                    <span translate>{{errorMsg}}</span>
+                    <span translate>message.loginError</span>
                 </div>
                 <form  #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
 

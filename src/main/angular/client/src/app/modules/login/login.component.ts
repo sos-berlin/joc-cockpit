@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   schedulerIds: any = {};
   submitted = false;
   rememberMe = false;
-  errorMsg: string;
+  errorMsg = false;
   returnUrl: string;
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService, private authService: AuthService) {
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit(values): void {
     this.submitted = true;
-    this.errorMsg = '';
+    this.errorMsg = false;
     this.coreService.post('security/login', values).subscribe((data) => {
       this.authService.rememberMe = this.rememberMe;
       if (this.rememberMe) {
@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
       this.getSchedulerIds();
     }, () => {
       this.submitted = false;
-      this.errorMsg = 'message.loginError';
+      this.errorMsg = true;
     });
   }
 }

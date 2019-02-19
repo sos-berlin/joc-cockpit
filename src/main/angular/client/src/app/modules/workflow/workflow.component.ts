@@ -207,8 +207,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   pageView: any;
-  agentClusters: any = [];
-  agentsFilters: any = {};
 
   @ViewChild(TreeComponent) child;
 
@@ -235,49 +233,33 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
 
   private init() {
-    this.agentsFilters = this.coreService.getResourceTab().agents;
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences);
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    if (localStorage.views)
-      this.pageView = JSON.parse(localStorage.views).agent;
-
-    this.initTree(null);
+    this.initTree();
   }
 
-  private initTree(type) {
+  private initTree() {
     this.coreService.post('tree', {
       jobschedulerId: this.schedulerIds.selected,
       compact: true,
       types: ['WORKFLOW']
     }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res), type);
+      this.filteredTreeData(this.coreService.prepareTree(res));
       this.isLoading = true;
     }, () => {
       this.isLoading = true;
     });
   }
 
-  private filteredTreeData(output, type) {
-    if (type) {
-      this.tree = output;
-      this.navigateToPath();
-    } else {
-      if (_.isEmpty(this.agentsFilters.expand_to)) {
-        this.tree = output;
-        this.agentsFilters.expand_to = this.tree;
-        this.checkExpand();
-      } else {
-        this.agentsFilters.expand_to = this.coreService.recursiveTreeUpdate(output, this.agentsFilters.expand_to);
-        this.tree = this.agentsFilters.expand_to;
-        this.expandTree();
-      }
-    }
+  private filteredTreeData(output) {
+    this.tree = output;
+    this.checkExpand();
   }
 
   private navigateToPath() {
-    this.agentClusters = [];
     setTimeout(() => {
       this.tree.forEach((value) => {
         this.navigatePath(value);

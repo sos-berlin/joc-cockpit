@@ -95,3 +95,9 @@
     background-color: #FFF !important;
     color: #7B0D1E !important;
 }
+button.close {
+  color: #3a3a3a;
+}
+#outlineContainer{
+  background: #fff !important;
+}

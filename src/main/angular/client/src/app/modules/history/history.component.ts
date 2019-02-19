@@ -1390,6 +1390,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.preferences = JSON.parse(sessionStorage.preferences) || {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
+    if (this.preferences.dateFormat) {
+      this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    }
     this.historyFilters = this.coreService.getHistoryTab();
     this.order = this.historyFilters.order;
     this.task = this.historyFilters.task;
@@ -1709,12 +1712,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   private setDuration(histories): any {
-    histories.history.forEach(function (history, index) {
-      if (history.startTime && history.endTime) {
-        histories.history[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
-      }
-    });
-    return histories.history;
+    if(histories.history) {
+      histories.history.forEach(function (history, index) {
+        if (history.startTime && history.endTime) {
+          histories.history[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
+        }
+      });
+    }
+    return histories.history || [];
   }
 
   private editFilter(filter) {

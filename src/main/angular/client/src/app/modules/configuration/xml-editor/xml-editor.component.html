@@ -168,9 +168,8 @@
                   <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
                   <span (click)="gotoKeyref(node)" *ngIf="node.refElement"
                         class="pull-right"><a>Goto ref Element</a></span>
-                  <span *ngIf="node.text" [ngClass]="(node.refer || node.refElement) ? 'pr-3': ''"
-                        class="pull-right" placement="left" ngbTooltip="{{node.text.doc | safeHtml}}">
-                        <i class="fa fa-info-circle"></i>
+                  <span *ngIf="node.text" class="float-right" data-toggle="tooltip" data-placement="left" (mouseover)="getpos()" title="{{node.text.doc}}">
+                      <i class="fa fa-info-circle"></i>
                   </span>
                   <input #localref1 (blur)="validateAttr(localref1.value, node)"
                          (change)="submitData(localref1.value, node)"

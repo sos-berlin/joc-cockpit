@@ -908,5 +908,11 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 	color: #1395BE !important;
 }
 #graph {
-  background-color: #1d1d1c !important;
+  background-color: rgba(29, 29, 28, 0.5) !important;
+}
+button.close {
+  color: #3a3a3a;
+}
+#outlineContainer{
+  background: rgba(29, 29, 28, 0.91) !important;
 }

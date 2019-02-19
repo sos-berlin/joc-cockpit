@@ -17,11 +17,11 @@
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
-            "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;fillColor=white;",
+            "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;",
             "mxGeometry": {
               "_as": "geometry",
-              "_width": "75",
-              "_height": "75"
+              "_width": "68",
+              "_height": "68"
             }
           }
         },
@@ -31,7 +31,7 @@
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
-            "_style": "rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fillColor=white;",
+            "_style": "rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;",
             "mxGeometry": {
               "_as": "geometry",
               "_width": "200",
@@ -45,11 +45,11 @@
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
-            "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;fillColor=white;",
+            "_style": "ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;",
             "mxGeometry": {
               "_as": "geometry",
-              "_width": "75",
-              "_height": "75"
+              "_width": "68",
+              "_height": "68"
             }
           }
         }

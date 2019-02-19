@@ -389,11 +389,11 @@ a.list-group-item {
   }
 }
 
-.close {
+button.close {
   color: #fff;
-  opacity: 0.6;
+  opacity: 0.7;
   &:focus, &:hover {
-    opacity: 0.9;
+    opacity: 1;
   }
 }
 
@@ -407,8 +407,7 @@ a.list-group-item {
 
 .modal-header {
   padding: 15px 16px;
-  background: #0086b0;
-  color: rgba(255, 255, 255, 0.87);
+  background: #f5f5f5;
   h4 {
     font-size: 16px;
   }
@@ -4637,14 +4636,14 @@ svg text {
 
 .drop-box-full {
   margin: 10px;
-  background: #fff;
+  background: transparent;
   border: 2px dashed #cccccc;
   width: 97%;
   height: 250px;
   text-align: center;
   &:hover {
     margin: 10px;
-    background: #fafafa;
+    opacity: .8;
     border: 2px dashed #0096c8;
     width: 97%;
     height: 250px;
@@ -5519,16 +5518,22 @@ tree-node-checkbox {
   padding-right: 19px;
   padding-top: 17px;
 }
-
 #toolbar {
   img {
-    width: 18px;
+    width: 24px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    &:first-child{
+      display: none;
+    }
   }
   hr {
     margin: 10px 0 !important;
   }
 }
-
+#graph {
+  background-image: url('../assets/images/grid.svg');
+}
 .property-table {
   border: none !important;
   font-size: 13px;

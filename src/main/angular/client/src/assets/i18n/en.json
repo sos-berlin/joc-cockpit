@@ -1378,6 +1378,7 @@
   "button.addAnotherVariable": "Add another Variable",
   "label.addPeriod": "Add Period",
   "label.editPeriod": "Update Period",
+  "label.orderTemplate": "Create Order Template",
   "next_non_holiday": "after non-working day",
   "previous_non_holiday": "before non-working day",
   "suppress": "suppress execution (default)",

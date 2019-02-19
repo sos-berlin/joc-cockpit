@@ -14,6 +14,7 @@ import {Subscription} from 'rxjs';
 
 declare const require;
 declare const vkbeautify;
+declare const $;
 
 const xpath = require('xpath');
 const convert = require('xml-js');
@@ -327,6 +328,9 @@ export class XmlEditorComponent implements OnInit {
   nonValidattribute = {};
   keyRefNodes;
   keyNodes;
+  keyAttrs: any= {};
+  keyRefAttrs: any= {};
+  fl:boolean = false;
   @ViewChild('treeCtrl') treeCtrl;
   @ViewChild('myckeditor') ckeditor: any;
 
@@ -401,7 +405,7 @@ export class XmlEditorComponent implements OnInit {
     this.doc = new DOMParser().parseFromString(xml, 'application/xml');
     this.getRootNode(this.doc, check);
     this.xsdXML = xml;
-    this.xpath();
+    this.xpath(undefined);
     this.AddKeyRefrencing();
     this.selectedNode = this.nodes[0];
     if(check) {
@@ -930,7 +934,9 @@ export class XmlEditorComponent implements OnInit {
     child.uuid = this.counting;
     child.parentId = nodeArr.uuid;
     this.counting++;
-    this.attachAttrs(attrs, child);
+    if(!(_.isEmpty(attrs))) {
+      this.attachAttrs(attrs, child);
+    }
     nodeArr.children.push(child);
     if(check) {
       this.autoAddChild(child);
@@ -938,17 +944,20 @@ export class XmlEditorComponent implements OnInit {
     if (!(_.isEmpty(text))) {
       this.addText(text, nodeArr.children);
     }
-    if (value !== undefined) {
+    
+    if (!(_.isEmpty(value))) {
       this.attachValue(value, nodeArr.children);
     }
     if (valueType !== undefined) {
       this.attachValue(valueType, nodeArr.children);
     }
+    
     if (attrsType !== undefined) {
       this.attachTypeAttrs(attrsType, nodeArr.children);
     }
+    
     this.autoExpand(nodeArr);
-    this.printArraya(false);
+    this.printArraya(false, child);
   }
 
   autoAddChild(child) {
@@ -965,7 +974,7 @@ export class XmlEditorComponent implements OnInit {
           }
         }
       }
-      this.printArraya(false);
+      this.printArraya(false, undefined);
     }
   }
 
@@ -995,7 +1004,7 @@ export class XmlEditorComponent implements OnInit {
             this.counting++;
             child[i].attributes.push(attrs[j]);
           }
-          this.printArraya(false);
+          this.printArraya(false, undefined);
         }
       }
     }
@@ -1028,7 +1037,7 @@ export class XmlEditorComponent implements OnInit {
               this.counting++;
               child[i].values.push(value[j]);
             }
-            this.printArraya(false);
+            this.printArraya(false, undefined);
           }
         }
       }
@@ -1043,7 +1052,7 @@ export class XmlEditorComponent implements OnInit {
                 this.counting++;
                 child[i].values.push(value[j]);
               }
-              this.printArraya(false);
+              this.printArraya(false, undefined);
             }
           }
         }
@@ -1225,15 +1234,17 @@ export class XmlEditorComponent implements OnInit {
 
   printArray(rootchildrensattrArr) {
     this.nodes.push(rootchildrensattrArr);
-    this.printArraya(true);
+    this.printArraya(true, undefined);
   }
 
-  printArraya(flag) {
+  printArraya(flag, childNode) {
     if (!flag) {
       this.autoAddCount = 0;
     }
-    this.xpath();
-    this.AddKeyRefrencing();
+    if(childNode !== undefined) {
+      this.xpath(childNode);
+      this.AddKeyRefrencing();
+    }
     this.options = {
       displayField: 'ref',
       isExpandedField: 'expanded',
@@ -1368,7 +1379,7 @@ export class XmlEditorComponent implements OnInit {
   dropDataNode(from, to, tree) {
     to.parent.data.children.push(from.data);
     tree.treeModel.update();
-    this.printArraya(false);
+    this.printArraya(false, undefined);
   }
 
   // to send data in details component
@@ -1452,7 +1463,7 @@ export class XmlEditorComponent implements OnInit {
         if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
           parentNode.splice(i, 1);
           tree.treeModel.update();
-          this.printArraya(false);
+          this.printArraya(false, undefined);
           let temp = {};
           this.getData(temp);
           this.isNext = false;
@@ -1675,7 +1686,7 @@ export class XmlEditorComponent implements OnInit {
     node.children.push(this.copyItem);
     this.cutData = false;
     this.checkRule = true;
-    this.printArraya(false);
+    this.printArraya(false, undefined);
   }
 
   // attibutes popover
@@ -1855,70 +1866,78 @@ export class XmlEditorComponent implements OnInit {
 
 
   // key and Key Ref Implementation code
-  xpath() {
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+  xpath(childNode) {
+    if(childNode !== undefined)
+    {let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let a;
     if(this.nodes[0]) {
       a = this.nodes[0].ref;
     }
     let keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
     let keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
-    let keyattrs: any = {};
     if(this.keyRefNodes == undefined || this.keyRefNodes.length == 0) {
       this.keyRefNodes = select(keyRefPath, this.doc);
     } 
     if(this.keyNodes == undefined || this.keyNodes.length == 0) {
       this.keyNodes = select(keyPath, this.doc);
     }
-    if(this.keyNodes.length>0) {      
-      for (let i = 0; i < this.keyNodes.length; i++) {
-        let key = this.keyNodes[i].nodeName;
-        let value = this.strReplace(this.keyNodes[i].nodeValue);
-        keyattrs = Object.assign(keyattrs, {[key]: value});
-        for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
-          if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
-            for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
-              keyattrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+    
+    if(_.isEmpty(this.keyAttrs)) {
+      if(this.keyNodes.length>0) {      
+        for (let i = 0; i < this.keyNodes.length; i++) {
+          let key = this.keyNodes[i].nodeName;
+          let value = this.strReplace(this.keyNodes[i].nodeValue);
+          this.keyAttrs = Object.assign(this.keyAttrs, {[key]: value});
+          for (let j = 0; j < this.keyNodes[i].ownerElement.childNodes.length; j++) {
+            if (this.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
+              for (let k = 0; k < this.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
+                this.keyAttrs.key = this.strReplace(this.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+              }
+              break;
             }
-            break;
           }
+          this.attachKey(this.keyAttrs, childNode);
         }
-        this.attachKey(keyattrs);
       }
+    } else {
+      this.attachKey(this.keyAttrs, childNode);
     }
-    if(this.keyRefNodes.length>0) {      
-      for (let i = 0; i < this.keyRefNodes.length; i++) {
-        this.getKeyRef(this.keyRefNodes[i]);
+    if(_.isEmpty(this.keyRefAttrs)) {
+      if(this.keyRefNodes.length>0) {      
+        for (let i = 0; i < this.keyRefNodes.length; i++) {
+          this.getKeyRef(this.keyRefNodes[i], childNode);
+        }
       }
-    }
+    } else {
+      this.attachKeyRefNodes(this.keyRefAttrs, childNode);
+    }}
   }
 
-  getKeyRef(keyRefNodes) {
-    let attrs: any = {};
+  getKeyRef(keyRefNodes, childNode) {
     for (let i = 0; i < keyRefNodes.attributes.length; i++) {
       let key = keyRefNodes.attributes[i].nodeName;
       let value = this.strReplace(keyRefNodes.attributes[i].nodeValue);
-      attrs = Object.assign(attrs, {[key]: value});
+      this.keyRefAttrs = Object.assign(this.keyRefAttrs, {[key]: value});
       for (let j = 0; j < keyRefNodes.attributes[0].ownerElement.childNodes.length; j++) {
         if (keyRefNodes.attributes[0].ownerElement.childNodes[j].nodeName === 'xs:field') {
           for (let k = 0; k < keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes.length; k++) {
-            attrs.keyref = this.strReplace(keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes[k].nodeValue);
+            this.keyRefAttrs.keyref = this.strReplace(keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes[k].nodeValue);
           }
         }
       }
     }
-    this.attachKeyRefNodes(attrs);
+    this.attachKeyRefNodes(this.keyRefAttrs, childNode);
   }
 
-  attachKey(key) {
-    this.AddKeyAndKeyref(key);
+  attachKey(key, childNode) {
+    this.AddKeyAndKeyref(key, childNode);
   }
 
-  attachKeyRefNodes(keyrefnodes) {
-    this.AddKeyAndKeyref(keyrefnodes);
+  attachKeyRefNodes(keyrefnodes, childNode) {
+    this.AddKeyAndKeyref(keyrefnodes, childNode);
   }
 
-  AddKeyAndKeyref(nodes) {
+  AddKeyAndKeyref(nodes, childNode) {
     let ke = false;
     let keyref = false;
     for (let key in nodes) {
@@ -1930,54 +1949,20 @@ export class XmlEditorComponent implements OnInit {
         break;
       }
     }    
-    
-    const recursion = (_nodes, child) => {
-      let ke = false;
-      let keyref = false;
-      for (let key in _nodes) {
-        if (key === 'key') {
-          ke = true;
-          break;
-        } else if (key === 'keyref') {
-          keyref = true;
-          break;
-        }
-      }
-      for (let i = 0; i < child.length; i++) {
-        if (child[i].ref === _nodes.name) {
-          if (ke) {
-            child[i].key = _nodes.key;
-          } else if (keyref) {
-            child[i].keyref = _nodes.keyref;
-            if (child[i].attributes) {
-              for (let j = 0; j < child[i].attributes.length; j++) {
-                if (child[i].attributes[j].name === _nodes.keyref) {
-                  child[i].attributes[j].refer = _nodes.refer;
-                }
+
+    if (childNode !== undefined) {
+      if (childNode.ref === nodes.name) {
+        if (ke) {
+          childNode.key = nodes.key;
+          childNode.key = nodes.key;
+        } else if (keyref) {
+          childNode.keyref = nodes.keyref;
+          if (childNode.attributes) {
+            for (let j = 0; j < childNode.attributes.length; j++) {
+              if (childNode.attributes[j].name === nodes.keyref) {
+                childNode.attributes[j].refer = nodes.refer;
               }
             }
-          }
-        } else {
-          if (child[i].children) {
-            recursion(_nodes, child[i].children);
-          }
-
-        }
-      }
-    };
-
-    if (this.nodes[0] && this.nodes[0].children) {
-      for (let i = 0; i < this.nodes[0].children.length; i++) {
-        if (this.nodes[0].children[i].ref === nodes.name) {
-          if (ke) {
-            this.nodes[0].children[i].key = nodes.key;
-            this.nodes[0].children[i].key = nodes.key;
-          } else if (keyref) {
-            this.nodes[0].children[i].keyref = nodes.keyref;
-          }
-        } else {
-          if (this.nodes[0].children[i].children) {
-            recursion(nodes, this.nodes[0].children[i].children);
           }
         }
       }
@@ -1998,7 +1983,8 @@ export class XmlEditorComponent implements OnInit {
           break;
         }
       }
-    } else {
+    } 
+    else {
       if (this.nodes[0] && this.nodes[0].children) {
         for (let i = 0; i < this.nodes[0].children.length; i++) {
           this.AddKeyRefrencingRecursion(this.nodes[0].children[i]);
@@ -2048,8 +2034,7 @@ export class XmlEditorComponent implements OnInit {
       if (child.ref === key.name && child.key && child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
           if (child.attributes[i].name === child.key) {
-            var a = key.refe;
-            child.attributes[i].refElement = a;
+            child.attributes[i].refElement = key.refe;
             break;
           }
         }
@@ -2357,7 +2342,7 @@ export class XmlEditorComponent implements OnInit {
 
   getDataAttr(refer) {
     this.tempArr = [];
-    var temp;
+    let temp;
     for (let i = 0; i < this.nodes[0].children.length; i++) {
       if (this.nodes[0].children[i].ref === refer) {
         if (this.nodes[0].children[i].key) {
@@ -2379,7 +2364,7 @@ export class XmlEditorComponent implements OnInit {
   }
 
   keyrecursion(refer, childNode) {
-    var temp;
+    let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer) {
         if (childNode[i].key) {
@@ -2527,6 +2512,12 @@ export class XmlEditorComponent implements OnInit {
     self.nodes =  [];
     self.selectedNode = [];
     self.submitXsd = false;
+  }
+
+  getpos() {
+    $('[data-toggle="tooltip"]').tooltip({
+      html: true
+    });
   }
 
   // create Xml from Json
