@@ -36,7 +36,7 @@
         };
         l.$inject = ["$q", "$location", "SOSAuth", "$window", "$rootScope"];
         var t = function (e, r) {
-            var l = e.defer();
+            let l = e.defer();
             return r.accessTokenId ? l.reject() : l.resolve(), l.promise
         };
         t.$inject = ["$q", "SOSAuth"], r.otherwise(function (e, r) {
@@ -76,6 +76,11 @@
             url: "/",
             templateUrl: "modules/jobscheduler/views/dashboard.html",
             controller: "DashboardCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Dashboard');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.dashboard' | translate}}"}
         }).state("app.setting", {
             url: "/logging",

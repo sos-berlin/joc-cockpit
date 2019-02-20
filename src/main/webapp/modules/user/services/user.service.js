@@ -186,7 +186,7 @@
                     o.reject(e)
                 }), o.promise
             }, comments: function () {
-                var t = n.defer(), o = e("audit_log/comments");
+                var t = n.defer(), o = e("properties");
                 return o.save({}, function (e) {
                     t.resolve(e)
                 }, function (e) {
@@ -205,85 +205,151 @@
 
             permissionCheck: function (routePath) {
                 // we will return a promise .
-                var deferred = $q.defer();
-
-                var parentPointer = this;
-                if (SOSAuth.permission) {
-                    this.permissionModel.permission = JSON.parse(SOSAuth.permission);
-                    this.getPermission(this.permissionModel, routePath, deferred);
-                } else {
-                    var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-                    UserService.getPermissions(schedulerIds.selected).$promise.then(function (response) {
-                        parentPointer.permissionModel.permission = response;
-                        parentPointer.getPermission(parentPointer.permissionModel, routePath, deferred);
-                    });
+                let deferred = $q.defer();
+                let showViews = {};
+                if (window.sessionStorage.showViews) {
+                    showViews = JSON.parse(window.sessionStorage.showViews)
                 }
-                return deferred.promise;
-            },
-
-            getPermission: function (permissionModel, routePath, deferred) {
-                var ifPermissionPassed = false;
-                    switch (routePath) {
-                        case 'DailyPlan':
-                            if (permissionModel.permission.DailyPlan.view.status) {
+                let ifPermissionPassed = false;
+                this.permissionModel.permission = JSON.parse(SOSAuth.permission);
+                switch (routePath) {
+                    case 'Dashboard':
+                        if (showViews.dashboard !== undefined) {
+                            if (showViews.dashboard === true) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'JobChain':
-                            if (permissionModel.permission.JobChain.view.status) {
+                        } else {
+                            ifPermissionPassed = true;
+                        }
+                        break;
+                    case 'DailyPlan':
+                        if (showViews.dailyPlan !== undefined) {
+                            if (showViews.dailyPlan)
+                                ifPermissionPassed = true;
+                        } else {
+                            if (this.permissionModel.permission.DailyPlan && this.permissionModel.permission.DailyPlan.view.status) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'Job':
-                            if (permissionModel.permission.Job.view.status) {
+                        }
+                        break;
+                    case 'JobChain':
+                        if (showViews.jobChains !== undefined) {
+                            if (showViews.jobChains)
+                                ifPermissionPassed = true;
+                        } else {
+                            if (this.permissionModel.permission.JobChain && this.permissionModel.permission.JobChain.view.status) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'Order':
-                            if (permissionModel.permission.Order.view.status) {
+                        }
+                        break;
+                    case 'Job':
+                        if (showViews.jobs !== undefined) {
+                            if (showViews.jobs)
+                                ifPermissionPassed = true;
+                        } else {
+                            if (this.permissionModel.permission.Job && this.permissionModel.permission.Job.view.status) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'History':
-                            if (permissionModel.permission.History.view.status || permissionModel.permission.YADE.view.status) {
+                        }
+                        break;
+                    case 'Order':
+                        if (showViews.orders !== undefined) {
+                            if (showViews.orders)
+                                ifPermissionPassed = true;
+                        } else {
+                            if (this.permissionModel.permission.Order && this.permissionModel.permission.Order.view.status) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'Resource':
-                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status || permissionModel.permission.Calendar.view.status || permissionModel.permission.Event.view.status || permissionModel.permission.Documentation.view) {
+                        }
+                        break;
+                    case 'History':
+                        if (showViews.history !== undefined) {
+                            if (showViews.history === true)
+                                ifPermissionPassed = true;
+                        } else {
+                            if (this.permissionModel.permission.History && (this.permissionModel.permission.History.view.status || this.permissionModel.permission.YADE.view.status)) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'AuditLog':
-                            if (permissionModel.permission.AuditLog.view.status) {
+                        }
+                        break;
+                    case 'Resource':
+                        if (showViews.resources !== undefined) {
+                            if (showViews.resources === true) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'File Transfer':
-                            if (permissionModel.permission.YADE.view.status) {
+                        } else {
+                            if (this.permissionModel.permission.JobschedulerUniversalAgent && this.permissionModel.permission.JobschedulerUniversalAgent.view.status || this.permissionModel.permission.ProcessClass.view.status ||
+                                this.permissionModel.permission.Schedule.view.status || this.permissionModel.permission.Lock.view.status || this.permissionModel.permission.Calendar.view.status
+                                || this.permissionModel.permission.Event.view.status || this.permissionModel.permission.Documentation.view) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        case 'ManageAccount':
-                            if (permissionModel.permission.JobschedulerMaster.administration.editPermissions) {
+                        }
+                        break;
+                    case 'AuditLog':
+                        if (showViews.auditLog !== undefined) {
+                            if (showViews.auditLog === true) {
                                 ifPermissionPassed = true;
                             }
-                            break;
-                        default:
-                            ifPermissionPassed = false;
-                    }
-                if (!ifPermissionPassed) {
-                    if(SOSAuth.scheduleIds && JSON.parse(SOSAuth.scheduleIds))
-                        $location.path('/');
-                    else
-                        $location.path('/error');
-                    $rootScope.$on('$locationChangeSuccess', function () {
+                        } else {
+                            if (this.permissionModel.permission.AuditLog && this.permissionModel.permission.AuditLog.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                        }
+                        break;
+                    case 'File Transfer':
+                        if (showViews.fileTransfers !== undefined) {
+                            if (showViews.fileTransfers === true) {
+                                ifPermissionPassed = true;
+                            }
+                        } else {
+                            if (this.permissionModel.permission.YADE && this.permissionModel.permission.YADE.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                        }
+                        break;
+                    case 'ManageAccount':
+                        if (this.permissionModel.permission.JobschedulerMaster && this.permissionModel.permission.JobschedulerMaster.administration.editPermissions) {
+                            ifPermissionPassed = true;
+                        }
+                        break;
+                    default:
                         deferred.resolve();
+                }
+
+                if (!ifPermissionPassed) {
+                    if (!_.isEmpty(showViews) && routePath === 'Dashboard' && showViews.dashboard === false) {
+                        if (showViews.dailyPlan) {
+                            $location.path('/daily_plan');
+                        } else if (showViews.jobChains) {
+                            $location.path('/job_chains');
+                        } else if (showViews.jobs) {
+                            $location.path('/jobs');
+                        } else if (showViews.orders) {
+                            $location.path('/orders');
+                        } else if (showViews.history) {
+                            $location.path('/history');
+                        } else if (showViews.resources) {
+                            $location.path('/resources');
+                        } else if (showViews.auditLog) {
+                            $location.path('/audit_log');
+                        } else if (showViews.fileTransfers) {
+                            $location.path('/file_transfers');
+                        } else {
+                            $location.path('/user/profile');
+                        }
+                    }
+                    $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
+                        if (newUrl.substring(newUrl.lastIndexOf('#!') + 2) === $location.path()) {
+                            deferred.reject('skip');
+                        } else {
+                            deferred.resolve();
+                        }
                     });
                 } else {
                     deferred.resolve();
                 }
-            }
+                return deferred.promise;
+            },
         };
     }
 

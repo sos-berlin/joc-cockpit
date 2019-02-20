@@ -47,11 +47,14 @@
                         e.clientLogs.push(i)
                     }
                 }), e.$on("$stateChangeError", function (i, a, r, o, l, s) {
-                    if (n.addClass("hide"), "login" === s)t.go("login"); else if("error"==s) t.go("error"); else {if (e.clientLogFilter && e.clientLogFilter.isEnable) {
-                        var s = {message: "ERROR ON LOADING : " + a.url, logTime: new Date, level: "error"};
-                        e.clientLogs.push(s)
-                    }
-                        t.go("app.dashboard");
+                    if (n.addClass("hide"), "login" === s) t.go("login"); else if ("error" == s) t.go("error"); else {
+                        if (e.clientLogFilter && e.clientLogFilter.isEnable) {
+                            let s = {message: "ERROR ON LOADING : " + a.url, logTime: new Date, level: "error"};
+                            e.clientLogs.push(s)
+                        }
+                        if (s !== 'skip') {
+                            t.go("app.dashboard");
+                        }
                     }
                 })
             }

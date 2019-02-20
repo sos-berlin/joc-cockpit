@@ -418,6 +418,12 @@
         function setPreferences() {
             if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
                 vm.userPreferences = JSON.parse($window.sessionStorage.preferences);
+                if($window.sessionStorage.showViews) {
+                   let showViews = JSON.parse($window.sessionStorage.showViews);
+                   if(!_.isEmpty(showViews)){
+                       vm.showViews = showViews;
+                   }
+                }
             }
         }
 
@@ -2107,8 +2113,6 @@
                 }
             }
         }
-
-
 
         vm.toggleView = function(value) {
             vm.fullSection = value;

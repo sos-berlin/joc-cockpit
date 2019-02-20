@@ -40,6 +40,7 @@
             AuditLogService.comments().then(function (result) {
                 $window.sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
                 $window.sessionStorage.comments = JSON.stringify(result.comments);
+                $window.sessionStorage.showViews = JSON.stringify(result.showViews);
             });
         }
 

@@ -95,7 +95,6 @@ General CSS
 .inner-history-table > tbody > tr{
   border: none !important;
 }
-
 #yade th.status, #yade th.num{
   width: 100px;
 }
