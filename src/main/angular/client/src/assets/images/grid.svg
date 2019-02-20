@@ -1,0 +1,7 @@
+<svg width="41px" height="41px" viewBox="0 0 41 41" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="checks-pattern" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M40,0 L41,0 L41,41 L0,41 L0,40 L40,40 L40,0 Z" id="Combined-Shape" fill-opacity="0.1" fill="#000000"></path>
+        <path d="M30,0 L31,0 L31,40 L30,40 L30,0 Z M20,0 L21,0 L21,40 L20,40 L20,0 Z M10,0 L11,0 L11,40 L10,40 L10,0 Z" id="Combined-Shape" fill="#000000" opacity="0.05"></path>
+        <path d="M0,10 L40,10 L40,11 L0,11 L0,10 Z M0,20 L40,20 L40,21 L0,21 L0,20 Z M0,30 L40,30 L40,31 L0,31 L0,30 Z" id="Combined-Shape" fill="#000000" opacity="0.05"></path>
+    </g>
+</svg>
