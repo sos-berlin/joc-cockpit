@@ -2514,10 +2514,14 @@ export class XmlEditorComponent implements OnInit {
     self.submitXsd = false;
   }
 
-  getpos() {
+  getpos(id) {
     $('[data-toggle="tooltip"]').tooltip({
-      html: true
+      trigger: 'hover focus manual',
+      html: true,
+      delay: { 'show': 500, 'hide': 200 }
     });
+    const a = '#' + id;
+    $(a).tooltip('show');
   }
 
   // create Xml from Json

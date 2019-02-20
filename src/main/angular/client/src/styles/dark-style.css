@@ -871,7 +871,8 @@ gridster-item {
 	color: white !important;
 }
 
-dp-day-calendar .dp-day-calendar-container, dp-month-calendar .dp-month-calendar-container, dp-year-calendar .dp-year-calendar-container {
+dp-day-calendar .dp-day-calendar-container, dp-month-calendar .dp-month-calendar-container,
+dp-year-calendar .dp-year-calendar-container {
 	background-color: #1d1d1c !important;
 }
 
@@ -911,8 +912,49 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
   background-color: rgba(29, 29, 28, 0.5) !important;
 }
 button.close {
-  color: #3a3a3a;
+  color: white !important;
 }
 #outlineContainer{
   background: rgba(29, 29, 28, 0.91) !important;
+}
+input:-webkit-autofill, input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
+  -webkit-box-shadow: 0 0 0 100px #1d1d1c inset;
+}
+.ngx-pagination a, .ngx-pagination button {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+pre#pre {
+    background-color: #1d1d1c;
+}
+
+.avatar[_ngcontent-c2] {
+	background: #1395BE !important;
+}
+
+span ul li a {
+	color: #1395BE !important;
+}
+
+.row.open {	
+	background-color: transparent !important;
+	box-shadow: 1px 1px 20px #222222 !important;
+	border: 2px solid #ffffff94;
+}
+
+.input-time + a {
+	margin-left: 16px;
+}
+
+.ui-select-container {
+	background-color: transparent;
+}
+
+.ui-select-choices-row[_ngcontent-c5] > a[_ngcontent-c5] {
+	color: white !important;
+}
+
+.ui-select-match-item {
+	color: #1395BE;
 }

@@ -41,7 +41,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
-    this.pageView = JSON.parse(localStorage.views).permission;
+    if(localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).permission;
+    }
     this.getUsersData();
   }
 

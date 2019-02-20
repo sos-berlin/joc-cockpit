@@ -312,8 +312,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
           'mxGeometry': {
             '_as': 'geometry',
-            '_width': '75',
-            '_height': '75'
+            '_width': '70',
+            '_height': '70'
           }
         }
       }, {
@@ -325,8 +325,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
           'mxGeometry': {
             '_as': 'geometry',
-            '_width': '75',
-            '_height': '75'
+            '_width': '70',
+            '_height': '70'
           }
         }
       }

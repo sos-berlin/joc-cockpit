@@ -5,3 +5,10 @@ button.close {
 #outlineContainer{
   background: #fff !important;
 }
+.avatar[_ngcontent-c2] {
+	background: #1395BE !important;
+}
+span ul li a {
+	color: #1395BE !important;
+}
+

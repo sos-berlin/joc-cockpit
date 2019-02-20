@@ -34,7 +34,7 @@ pre {
 
 .dropdown-menu.datepicker .btn.btn-primary,
 .dropdown-menu.timepicker .btn.btn-primary {
-	background-color: #337ab7!important;
+	background-color: #337ab7 !important;
 	color: #fff
 }
 
@@ -97,7 +97,7 @@ pre {
 
 .text-primary,
 .text-primary-hover a:hover {
-	color: #337ab7!important
+	color: #FF9505 !important;
 }
 
 .md-input.focus,
@@ -134,7 +134,7 @@ pre {
 .dropdown-ac1 a:hover {
 	color: #fff;
 	text-shadow: 0 -1px rgba(0, 0, 0, .3);
-	background: #337ab7
+	background: #FF9505;
 }
 
 .loader {
@@ -316,14 +316,14 @@ input[readonly] {
 }
 
 input[type=search] {
-	background: url(../assets/images/Search.png) 6px center no-repeat;
+	background: url(../assets/images/search-lt.png) 6px center no-repeat;
 	color: #fff;
 	border-bottom: 1px solid #e8e8e8
 }
 
 input[type=search]:focus {
 	color: #fff;
-	border-bottom: 1px solid #337ab7
+	border-bottom: 1px solid #FF9505;
 }
 
 .table .table,
@@ -721,7 +721,7 @@ span.namespace_name {
 }
 
 span.attribute_val {
-	color: rgba(255, 195, 0, .9)
+	color: #FF9505;
 }
 
 span.namespace_val {
@@ -729,7 +729,7 @@ span.namespace_val {
 }
 
 span.element_name {
-	color: #ff9800
+	color: #FF9505;
 }
 
 span.cdata {
@@ -761,7 +761,7 @@ pre.cdata {
 }
 
 .btn-primary {
-	background-color: #337ab7!important;
+	background-color: #FF9505 !important;
 	color: #fff
 }
 
@@ -869,6 +869,10 @@ gridster-item {
 	color: white !important;
 }
 
+dp-day-calendar.dp-material .dp-current-day, dp-month-calendar.dp-material .dp-current-month {
+	border: 1px solid #FF9505;
+}
+
 dp-day-calendar .dp-day-calendar-container, dp-month-calendar .dp-month-calendar-container, dp-year-calendar .dp-year-calendar-container {
 	background-color: #32465a !important;
 }
@@ -880,7 +884,7 @@ dp-day-calendar.dp-material .dp-calendar-day,  dp-day-calendar.dp-material .dp-c
 }
 
 dp-day-calendar.dp-material .dp-calendar-day:hover, dp-month-calendar.dp-material .dp-calendar-month:hover {
-	background-color: #337ab7 !important;
+	background-color: #FF9505 !important;
 }
 
 dp-calendar-nav.dp-material .dp-nav-header-btn {
@@ -888,7 +892,7 @@ dp-calendar-nav.dp-material .dp-nav-header-btn {
 }
 
 dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
-	background-color: #337ab7 !important;
+	background-color: #FF9505 !important;
 }
 
 .dp-calendar-nav-left, .dp-calendar-nav-right {
@@ -896,17 +900,84 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 }
 
 .dp-calendar-nav-left:hover, .dp-calendar-nav-right:hover {
-	color: #337ab7 !important;
+	color: #FF9505 !important;
 }
 
 .dp-picker-input:focus {
-	border-color: #337ab7 !important;
+	border-color: #FF9505 !important;
 	outline:0 !important;
 }
 
+.dp-picker-input {
+	    background-image: url("../assets/images/calendar-lt.png");
+}
+
 .dp-calendar-weekday {
-	color: #337ab7 !important;
+	color: #FF9505 !important;
 }
 #graph {
-  background-color: #32465a !important;
+  background-color: rgba(50, 70, 90, 0.61) !important;
+}
+#outlineContainer{
+  background: rgba(50, 70, 90, 0.91) !important;
+}
+input:-webkit-autofill, input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
+  -webkit-box-shadow: 0 0 0 100px #32465a inset;
+}
+.ngx-pagination a, .ngx-pagination button {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+.ui-select-container {
+	background-color: #3f5669;
+}
+.ui-select-choices-row[_ngcontent-c5] > a[_ngcontent-c5] {
+	color: white !important;
+}
+.node-content-wrapper::after {
+	    border-bottom: solid 2px #FF9505;
+}
+
+.nav-active-border .nav-link.active:before, .nav-active-border .nav-link:focus:before, .nav-active-border .nav-link:hover:before {
+    border-bottom-color: #FF9505;
+}
+
+span ul li a {
+	color: #FF9505 !important;
+}
+
+.input-time + a {
+	margin-left: 16px;
+}
+
+.row.open {
+	background-color: #233446 !important;
+	box-shadow: 1px 1px 20px #222222 !important;
+	border: 2px solid #ffffff94;
+}
+
+.text-orange {
+	color: #FF9505 !important;
+}
+
+pre#pre {
+    background-color: #24313c;
+}
+
+.avatar[_ngcontent-c2] {
+	background: #FF9505 !important;
+}
+
+.ui-select-match-item {
+	background-color: #FF9505;
+	color: black;
+}
+
+.ui-select-match-item a {
+	color: black;
+}
+
+.primary {
+	background-color: #ff9505!important;
 }

@@ -919,10 +919,66 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 	outline:0 !important;
 }
 
+.dp-picker-input {
+	background-image: url("../assets/images/calendar-lt.png");
+}
+
 .dp-calendar-weekday {
 	color: #e98514 !important;
 }
-
 #graph {
-  background-color: #4e545c !important;
+  background-color: rgba(78, 84, 92, 0.62) !important;
+}
+#outlineContainer{
+  background: rgba(78, 84, 92, 0.91) !important;
+}
+input:-webkit-autofill, input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
+  -webkit-box-shadow: 0 0 0 100px #4e545c inset;
+}
+.ngx-pagination a, .ngx-pagination button {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+.ui-select-match-item {
+	background-color: #FF9505;
+	color: black;
+}
+
+.ui-select-match-item a {
+	color: rgb(49, 49, 49);
+}
+
+pre#pre {
+    background-color: #4e545c;
+}
+
+.avatar[_ngcontent-c2] {
+	background: orange !important;
+}
+
+span ul li a {
+	color: orange !important;
+}
+
+.row.open {	
+	background-color: transparent !important;
+	box-shadow: 1px 1px 20px #222222 !important;
+	border: 2px solid #ffffff94;
+}
+
+.ui-select-container {
+	background-color: transparent;
+}
+
+.ui-select-choices-row[_ngcontent-c5] > a[_ngcontent-c5] {
+	color: white !important;
+}
+
+.input-time + a {
+	margin-left: 16px;
+}
+
+.node-content-wrapper::after {
+	border-bottom: solid 2px orange;
 }

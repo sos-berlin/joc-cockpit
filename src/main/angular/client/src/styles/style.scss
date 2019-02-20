@@ -5787,3 +5787,7 @@ pre#pre{
   top: 2px;
   padding-right: 5px;
 }
+input:-webkit-autofill {
+  background-color: transparent;
+  -webkit-box-shadow: 0 0 0 100px white inset;
+}

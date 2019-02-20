@@ -905,7 +905,9 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
 .dp-calendar-nav-left:hover, .dp-calendar-nav-right:hover {
 	color: #e98514 !important;
 }
-
+.dp-picker-input {
+	    background-image: url("../assets/images/calendar-lt.png");
+}
 .dp-picker-input:focus {
 	border-color: #e98514 !important;
 	outline:0 !important;
@@ -918,5 +920,60 @@ dp-calendar-nav.dp-material .dp-nav-header-btn:hover {
   background-color: rgba(0, 48, 64, 0.51) !important;
 }
 #outlineContainer {
-  background-color: #003040 !important;
+  background-color: rgba(0, 48, 64, 0.94) !important;
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.87);
+  -webkit-box-shadow: 0 0 0 100px #003040 inset;
+}
+.ngx-pagination a, .ngx-pagination button {
+  color: rgba(255, 255, 255, 0.87) !important;
+}
+pre#pre {
+	background-color: #0000006e;
+}
+
+span ul li a {
+	color: #FF9505 !important;
+}
+
+.node-content-wrapper::after {
+	    border-bottom: solid 2px #FF9505;
+}
+
+.ui-select-container {
+	background-color: transparent;
+}
+
+.ui-select-choices-row[_ngcontent-c5] > a[_ngcontent-c5] {
+	color: white !important;
+}
+
+.avatar[_ngcontent-c2] {
+	background: #FF9505 !important;
+}
+
+.input-time + a {
+	margin-left: 16px;
+}
+
+.primary {
+	background-color: #ff9505!important;
+}
+
+.ui-select-match-item {
+	background-color: #ff9505;
+	color: black;
+}
+
+.ui-select-match-item a {
+	color: black;
+}
+
+.row.open {
+	background-color: transparent !important;
+	box-shadow: 1px 1px 20px #222222 !important;
+	border: 2px solid #ffffff94;
 }
