@@ -198,11 +198,9 @@
 
     function y(UserService, $q, $rootScope, $location,SOSAuth) {
         return {
-
             permissionModel: {
                 permission: {}
             },
-
             permissionCheck: function (routePath) {
                 // we will return a promise .
                 let deferred = $q.defer();
@@ -211,7 +209,9 @@
                     showViews = JSON.parse(window.sessionStorage.showViews)
                 }
                 let ifPermissionPassed = false;
-                this.permissionModel.permission = JSON.parse(SOSAuth.permission);
+                if(SOSAuth.permission) {
+                    this.permissionModel.permission = JSON.parse(SOSAuth.permission);
+                }
                 switch (routePath) {
                     case 'Dashboard':
                         if (showViews.dashboard !== undefined) {
@@ -278,9 +278,9 @@
                                 ifPermissionPassed = true;
                             }
                         } else {
-                            if (this.permissionModel.permission.JobschedulerUniversalAgent && this.permissionModel.permission.JobschedulerUniversalAgent.view.status || this.permissionModel.permission.ProcessClass.view.status ||
+                            if (this.permissionModel.permission.JobschedulerUniversalAgent && (this.permissionModel.permission.JobschedulerUniversalAgent.view.status || this.permissionModel.permission.ProcessClass.view.status ||
                                 this.permissionModel.permission.Schedule.view.status || this.permissionModel.permission.Lock.view.status || this.permissionModel.permission.Calendar.view.status
-                                || this.permissionModel.permission.Event.view.status || this.permissionModel.permission.Documentation.view) {
+                                || this.permissionModel.permission.Event.view.status || this.permissionModel.permission.Documentation.view)) {
                                 ifPermissionPassed = true;
                             }
                         }
@@ -339,7 +339,7 @@
                         }
                     }
                     $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
-                        if (newUrl.substring(newUrl.lastIndexOf('#!') + 2) === $location.path()) {
+                        if (newUrl && newUrl.substring(newUrl.lastIndexOf('#!') + 2) === $location.path()) {
                             deferred.reject('skip');
                         } else {
                             deferred.resolve();

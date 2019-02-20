@@ -120,6 +120,9 @@
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
+            if (vm.userPreferences.showOrders) {
+                obj.compact = false;
+            }
             obj.jobChains = [{jobChain: path}];
             JobChainService.getJobChainsP(obj).then(function (result) {
                 vm.jobChains = result.jobChains;
@@ -399,6 +402,9 @@
             }
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
+            if (vm.userPreferences.showOrders) {
+                obj.compact = false;
+            }
             JobChainService.getJobChainsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobChains.length; i++) {
                     result.jobChains[i].path1 = data.path;
@@ -463,6 +469,9 @@
             delete obj['folders'];
             delete obj['states'];
             obj.jobChains = arr;
+            if (vm.userPreferences.showOrders) {
+                obj.compact = false;
+            }
             JobChainService.getJobChainsP(obj).then(function (res) {
                 for (let m = 0; m < vm.allJobChains.length; m++) {
                     for (let i = 0; i < res.jobChains.length; i++) {
@@ -556,7 +565,9 @@
                     return
                 }
             }
-
+            if (vm.userPreferences.showOrders) {
+                obj.compact = false;
+            }
             JobChainService.getJobChainsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobChains.length; i++) {
                     result.jobChains[i].path1 = data.path;
@@ -2297,6 +2308,9 @@
                 for (let i = 0; i < vm.jobChainFilter.jobs.length; i++) {
                     obj.job.folders.push({folder: vm.jobChainFilter.jobs[i], recursive: true});
                 }
+            }
+            if (vm.userPreferences.showOrders) {
+                obj.compact = false;
             }
             vm.folderPath = '/';
             JobChainService.getJobChainsP(obj).then(function (result) {
