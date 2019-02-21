@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
+      useTransformPositioning: false,
       margin: 22,
       outerMargin: true,
       outerMarginTop: null,

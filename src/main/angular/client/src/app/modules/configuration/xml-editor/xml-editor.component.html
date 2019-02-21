@@ -249,24 +249,25 @@
                 <div class="form-group">
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
+                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                          type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
 
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
+                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                          type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
 
-                  <div *ngIf="selectedNode.ref === 'Body'" [ngClass]="{ 'has-error': myckeditor.invalid && myckeditor.touched }"
-                       class="form-group has-feedback">
-                    <ckeditor #myckeditor="ngModel" (change)="onChange($event, selectedNode)" [(ngModel)]="myContent"
-                              [config]="ckeConfig"
+                  <div *ngIf="selectedNode.ref === 'Body'" class="form-group has-feedback">
+                       <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent"  [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor" class="ckEditor"></ckeditor>
+                       <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
+                    <!-- <ckeditor #myckeditor="ngModel" (change)="onChange($event, selectedNode)" [(ngModel)]="myContent"
+                              [editor]="editor" data="<p>Hello, world!</p>"
                               [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor"></ckeditor>
-                    <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
+                    <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div> -->
                   </div>
                   <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                           (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
@@ -275,6 +276,13 @@
                           value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
                     <option>true</option>
                     <option>false</option>
+                  </select>
+                  <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
+                          *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
+                          [ngClass]="error? 'invalid': ''" class="form-control" id="{{selectedNode.ref}}"
+                          value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                    <option *ngFor="let value of selectedNode.values[0].values">{{value.value}}</option>
                   </select>
                   <textarea #localref8 (blur)="validValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
                             (change)="submitValue(localref8.value, selectedNode.ref, selectedNode.values[0])"

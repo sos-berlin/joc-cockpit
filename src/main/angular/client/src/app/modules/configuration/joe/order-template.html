@@ -101,7 +101,10 @@
               <tbody>
               <tr>
                 <td>
-                  <a><i class="fa fa-calendar text-danger"></i>&nbsp;{{calendar.path}}</a>&nbsp;
+                  <a (click)="previewCalendar(calendar);">
+                    <i class="fa fa-calendar text-danger"></i>&nbsp;
+                    {{calendar.path}}
+                  </a>&nbsp;
                   <a class="text-xs text-hover-primary m-l-sm"
                      (click)="removeNonWorkingCal(i)"><i class="fa fa-times text-hover-color"></i>
                   </a>

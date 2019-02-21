@@ -262,11 +262,11 @@ export class AgentClusterComponent implements OnInit, OnDestroy {
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
-    data.children.forEach((value) => {
-      if (value.isExpanded || value.isSelected) {
-        this.getExpandTreeForUpdates(value, obj);
+    for (let x = 0; x < data.children.length; x++) {
+      if (data.children[x].isExpanded || data.children[x].isSelected) {
+        this.getExpandTreeForUpdates(data.children[x], obj);
       }
-    });
+    }
   }
 
   private startTraverseNode(data) {

@@ -155,7 +155,7 @@ export class DropdownDirective implements OnDestroy {
     if (this.el.nativeElement.attributes.class.value.match(' open')) {
       $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
     }
-  };
+  }
 
   ngOnDestroy() {
     window.removeEventListener('scroll', this.scroll, true);

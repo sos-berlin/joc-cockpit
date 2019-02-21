@@ -7,6 +7,7 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
+import * as moment from 'moment';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -36,6 +37,101 @@ declare const X2JS;
 declare const $;
 
 const x2js = new X2JS();
+
+@Component({
+  selector: 'app-preview-calendar-template',
+  templateUrl: './preview-calendar-dialog.html',
+})
+export class PreviewCalendarComponent implements OnInit {
+  @Input() schedulerId: any;
+  @Input() calendar: any;
+  planItems = [];
+  tempList = [];
+  calendarTitle: number;
+  toDate: any;
+
+  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+    this.calendarTitle = new Date().getFullYear();
+  }
+
+  ngOnInit(): void {
+    $('#full-calendar').calendar({
+      renderEnd: (e) => {
+        this.calendarTitle = e.currentYear;
+        this.changeDate();
+
+      }
+    });
+    console.log(this.calendar);
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      dateFrom: this.calendar.from || moment().format('YYYY-MM-DD'),
+      dateTo: this.calendar.to,
+      path: this.calendar.path
+    };
+    this.toDate = _.clone(obj.dateTo);
+    if (new Date(obj.dateTo).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+      obj.dateTo = this.calendarTitle + '-12-31';
+    }
+    this.getDates(obj, true);
+  }
+
+  private getDates(obj, flag: boolean): void {
+
+    this.coreService.post('calendar/dates', obj).subscribe((result: any) => {
+      let color = '#007da6';
+      for (let i = 0; i < result.dates.length; i++) {
+        let x = result.dates[i];
+        let obj = {
+          startDate: moment(x),
+          endDate: moment(x),
+          color: color
+        };
+
+        this.planItems.push(obj);
+      }
+      for (let i = 0; i < result.withExcludes.length; i++) {
+        let x = result.withExcludes[i];
+        this.planItems.push({
+          startDate: moment(x),
+          endDate: moment(x),
+          color: '#eb8814'
+        });
+      }
+      if (flag) {
+        this.tempList = _.clone(this.planItems);
+      }
+      $('#full-calendar').data('calendar').setDataSource(this.planItems);
+    });
+  }
+
+  changeDate() {
+    let newDate = new Date();
+    newDate.setHours(0, 0, 0, 0);
+    let toDate: any;
+    if (new Date(this.toDate).getTime() > new Date(this.calendarTitle + '-12-31').getTime()) {
+      toDate = this.calendarTitle + '-12-31';
+    } else {
+      toDate = this.toDate;
+    }
+
+    if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
+      this.planItems = [];
+      let obj = {
+        jobschedulerId: this.schedulerId,
+        dateFrom: this.calendarTitle + '-01-01',
+        dateTo: toDate,
+        path: this.calendar.path
+      };
+      this.getDates(obj, false);
+    } else if (newDate.getFullYear() === this.calendarTitle) {
+      this.planItems = _.clone(this.tempList);
+      if ($('#full-calendar').data('calendar')) {
+        $('#full-calendar').data('calendar').setDataSource(this.planItems);
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'app-period-template',
@@ -121,7 +217,7 @@ export class PeriodEditorComponent implements OnInit, OnDestroy {
   selector: 'app-order-template',
   templateUrl: './order-template.html',
 })
-export class OrderTemplateComponent implements OnInit, OnDestroy {
+export class OrderTemplateComponent implements OnInit {
   order: any = {};
   variableObject: any = {};
   @Input() preferences: any;
@@ -138,10 +234,6 @@ export class OrderTemplateComponent implements OnInit, OnDestroy {
     this.variableObject.variables = [];
     this.addCriteria();
   }
-
-  ngOnDestroy(): void {
-  }
-
 
   onSubmit(): void {
     if (this.order.variables) {
@@ -209,7 +301,14 @@ export class OrderTemplateComponent implements OnInit, OnDestroy {
   }
 
   previewCalendar(calendar): void {
+    const modalRef = this.modalService.open(PreviewCalendarComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.calendar = calendar;
+    modalRef.result.then((result) => {
 
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   removeWorkingCal(index): void {
@@ -239,8 +338,9 @@ export class OrderTemplateComponent implements OnInit, OnDestroy {
   selector: 'app-lock-template',
   templateUrl: './lock-template.html',
 })
-export class LockTemplateComponent implements OnInit, OnDestroy {
+export class LockTemplateComponent implements OnInit {
   @Input() schedulerId: any;
+  lock: any = {};
 
   constructor() {
 
@@ -250,26 +350,47 @@ export class LockTemplateComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(): void {
+  onSubmit(): void {
+
   }
+  
 }
 
 @Component({
   selector: 'app-process-class-template',
   templateUrl: './process-class-template.html',
 })
-export class ProcessClassTemplateComponent implements OnInit, OnDestroy {
+export class ProcessClassTemplateComponent implements OnInit {
   @Input() schedulerId: any;
+  processClass: any = {};
+  object: any = {hosts: []};
 
   constructor() {
 
   }
 
   ngOnInit(): void {
-
+    this.addCriteria();
   }
 
-  ngOnDestroy(): void {
+  onSubmit(): void {
+
+    console.log(this.processClass);
+  }
+
+  addCriteria(): void {
+    let param = {
+      url: '',
+      timeout: '',
+      period: ''
+    };
+    if (this.object.hosts) {
+      this.object.hosts.push(param);
+    }
+  }
+
+  removeCriteria(index): void {
+    this.object.hosts.splice(index, 1);
   }
 }
 
@@ -290,6 +411,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   isWorkflowReload = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.png';
+  abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.png';
+  terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate.png';
+  await = 'symbol;image=./assets/mxgraph/images/symbols/timer.png';
+  fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.png';
 
   @Input() pageView: any;
   @Input() selectedPath: any;
@@ -427,6 +552,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.png';
+      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort-white.png';
+      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate-white.png';
+      this.await = 'symbol;image=./assets/mxgraph/images/symbols/timer-white.png';
+      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.png';
     }
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
@@ -547,7 +676,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
 
           obj._id = json.instructions[x].id;
-          obj._path = json.instructions[x].jobPath;
+          obj._name = json.instructions[x].jobName;
           obj._title = json.instructions[x].title ? json.instructions[x].title : '';
           obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
           obj.mxCell._style = 'rounded';
@@ -593,9 +722,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'Fork';
-          obj.mxCell._style = 'symbol;image=./assets/mxgraph/images/symbols/fork.png';
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
+          obj.mxCell._style = this.fork;
+          obj.mxCell.mxGeometry._width = '50';
+          obj.mxCell.mxGeometry._height = '50';
 
           if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
@@ -672,7 +801,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           };
           let _id = 0;
 
-
           if (!json.instructions[x].catch) {
             json.instructions[x].catch = {id: (json.instructions[x].id * 7777), instructions: []};
           }
@@ -740,6 +868,23 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
+        } else if (json.instructions[x].TYPE === 'Abort') {
+          if (mxJson.Abort) {
+            if (!_.isArray(mxJson.Abort)) {
+              const _tempExit = _.clone(mxJson.Abort);
+              mxJson.Abort = [];
+              mxJson.Abort.push(_tempExit);
+            }
+          } else {
+            mxJson.Abort = [];
+          }
+          obj._id = json.instructions[x].id;
+          obj._label = json.instructions[x].TYPE;
+          obj._message = json.instructions[x].message;
+          obj.mxCell._style = this.abort;
+          obj.mxCell.mxGeometry._width = '50';
+          obj.mxCell.mxGeometry._height = '50';
+          mxJson.Abort.push(obj);
         } else if (json.instructions[x].TYPE === 'Terminate') {
           if (mxJson.Terminate) {
             if (!_.isArray(mxJson.Terminate)) {
@@ -753,9 +898,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           obj._id = json.instructions[x].id;
           obj._label = json.instructions[x].TYPE;
           obj._message = json.instructions[x].message;
-          obj.mxCell._style = 'symbol;image=./assets/mxgraph/images/symbols/cancel_end.png';
-          obj.mxCell.mxGeometry._width = '60';
-          obj.mxCell.mxGeometry._height = '60';
+          obj.mxCell._style = this.terminate;
+          obj.mxCell.mxGeometry._width = '50';
+          obj.mxCell.mxGeometry._height = '50';
           mxJson.Terminate.push(obj);
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
@@ -769,9 +914,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           obj._id = json.instructions[x].id;
           obj._label = 'Await';
-          obj.mxCell._style = 'symbol;image=./assets/mxgraph/images/symbols/timer.png';
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
+          obj.mxCell._style = this.await;
+          obj.mxCell.mxGeometry._width = '50';
+          obj.mxCell.mxGeometry._height = '50';
 
           if (json.instructions[x].events && json.instructions[x].events.length > 0) {
             for (let i = 0; i < json.instructions[x].events.length; i++) {
@@ -965,8 +1110,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         _style: this.merge,
         mxGeometry: {
           _as: 'geometry',
-          _width: '70',
-          _height: '70'
+          _width: '50',
+          _height: '50'
         }
       }
     };
@@ -1272,6 +1417,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   private jsonParseForAwait(eventObj, mxJson, parentId) {
+    //TODO
     if (eventObj.TYPE) {
       if (eventObj.TYPE === 'OfferedOrder') {
         if (mxJson.OfferedOrder) {
@@ -1299,10 +1445,31 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         };
         mxJson.OfferedOrder.push(obj);
       }
-    } else if (eventObj.TYPE === 'TimePeriod') {
-      //TODO
     } else if (eventObj.TYPE === 'FileOrder') {
-      //TODO
+      if (mxJson.FileOrder) {
+        if (!_.isArray(mxJson.FileOrder)) {
+          const _tempFileOrder = _.clone(mxJson.FileOrder);
+          mxJson.FileOrder = [];
+          mxJson.FileOrder.push(_tempFileOrder);
+        }
+      } else {
+        mxJson.FileOrder = [];
+      }
+      let obj: any = {
+        _id: eventObj.id,
+        _label: 'File Order',
+        mxCell: {
+          _parent: parentId ? parentId : '1',
+          _vertex: '1',
+          _style: 'ellipse',
+          mxGeometry: {
+            _as: 'geometry',
+            _width: '80',
+            _height: '60'
+          }
+        }
+      };
+      mxJson.FileOrder.push(obj);
     }
   }
 
@@ -1312,7 +1479,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       TYPE: type,
     };
     if (type === 'Job') {
-      obj.jobPath = node._path;
+      obj.jobName = node._name;
       obj.title = node._title;
       obj.agentPath = node._agent;
       let successArr, failureArr;
@@ -1328,6 +1495,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     } else if (type === 'Retry') {
       obj.repeat = node._repeat;
       obj.delay = node._delay;
+    } else if (type === 'Abort') {
+      obj.message = node._message;
     } else if (type === 'Terminate') {
       obj.message = node._message;
     }
@@ -1372,6 +1541,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         let _retryInstructions = _.clone(objects.Retry);
         let _awaitInstructions = _.clone(objects.Await);
         let _exitInstructions = _.clone(objects.Terminate);
+        let _abortInstructions = _.clone(objects.Abort);
 
         for (let i = 0; i < connection.length; i++) {
           if (connection[i].mxCell._source == '3') {
@@ -1477,6 +1647,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
           }
+          if (_abortInstructions) {
+            if (_.isArray(_abortInstructions)) {
+              for (let j = 0; j < _abortInstructions.length; j++) {
+                if (connection[i].mxCell._target === _abortInstructions[j]._id) {
+                  _abortInstructions.splice(j, 1);
+                  break;
+                }
+              }
+            } else {
+              if (connection[i].mxCell._target === _abortInstructions._id) {
+                _abortInstructions = [];
+              }
+            }
+          }
         }
 
         if (_jobs) {
@@ -1575,8 +1759,21 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           jsonObj.instructions.push(this.createObject('Terminate', startNode));
           this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
           startNode = null;
+        } else {
+          if (_abortInstructions) {
+            if (_.isArray(_abortInstructions) && _abortInstructions.length > 0) {
+              startNode = _abortInstructions[0];
+            } else {
+              startNode = _abortInstructions;
+            }
+          }
         }
 
+        if (!_.isEmpty(startNode)) {
+          jsonObj.instructions.push(this.createObject('Abort', startNode));
+          this.findNextNode(connection, startNode, objects, jsonObj.instructions, jsonObj);
+          startNode = null;
+        }
       } else {
         const job = objects.Job;
         const ifIns = objects.If;
@@ -1585,6 +1782,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         const tryIns = objects.Try;
         const awaitIns = objects.Await;
         const exit = objects.Terminate;
+        const abort = objects.Abort;
         if (job) {
           if (_.isArray(job)) {
             for (let i = 0; i < job.length; i++) {
@@ -1646,6 +1844,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           } else {
             jsonObj.instructions.push(this.createObject('Terminate', exit));
+          }
+        }
+        if (abort) {
+          if (_.isArray(abort)) {
+            for (let i = 0; i < abort.length; i++) {
+              jsonObj.instructions.push(this.createObject('Abort', abort[i]));
+            }
+          } else {
+            jsonObj.instructions.push(this.createObject('Abort', abort));
           }
         }
       }
@@ -1867,6 +2074,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 recursive(_id, _instructionsArr[i].branches[j].instructions);
               }
             }
+          } if (_instructionsArr[i].TYPE === 'Await') {
+            if (_instructionsArr[i].events) {
+              recursive(_id, _instructionsArr[i].events);
+            }
           } else if (_instructionsArr[i].TYPE === 'If') {
             if (_instructionsArr[i].then) {
               recursive(_id, _instructionsArr[i].then.instructions);
@@ -1936,6 +2147,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   private getNextNode(id, objects, instructionsArr: Array<any>, jsonObj) {
+    const connection = objects.Connection;
     const jobs = objects.Job;
     const ifInstructions = objects.If;
     const endIfInstructions = objects.EndIf;
@@ -1948,8 +2160,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     const catchEndInstructions = objects.EndCatch;
     const tryEndInstructions = objects.EndTry;
     const awaitInstructions = objects.Await;
-    const connection = objects.Connection;
     const exitInstructions = objects.Terminate;
+    const abortInstructions = objects.Abort;
     let nextNode: any = {};
 
     if (jobs) {
@@ -2219,6 +2431,27 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
+      if (abortInstructions) {
+        if (_.isArray(abortInstructions)) {
+          for (let i = 0; i < abortInstructions.length; i++) {
+            if (abortInstructions[i]._id === id) {
+              nextNode = abortInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (abortInstructions._id === id) {
+            nextNode = abortInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !_.isEmpty(nextNode)) {
+      instructionsArr.push(this.createObject('Abort', nextNode));
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
       this.findNextNode(connection, id, objects, instructionsArr, jsonObj);
     }
   }
@@ -2427,12 +2660,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
             return '';
           } else if (cell.value.nodeName.toLowerCase() === 'job') {
-            let path = cell.getAttribute('path', '');
+            let name = cell.getAttribute('name', '');
             let title = cell.getAttribute('title', '');
             if (title != null && title.length > 0) {
-              return path + ' - ' + title;
+              return name + ' - ' + title;
             }
-            return path;
+            return name;
           } else if (cell.value.nodeName.toLowerCase() === 'retry') {
             let str = 'Repeat ' + cell.getAttribute('repeat', '') + ' times';
             if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
@@ -2470,7 +2703,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (state && state.cell) {
             if (state.cell.value.tagName === 'Connector') {
               return;
-            } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Terminate') {
+            } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Abort' || state.cell.value.tagName === 'Terminate') {
               if (state.cell.edges) {
                 for (let i = 0; i < state.cell.edges.length; i++) {
                   if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -2478,7 +2711,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
               }
-            } else if (state.cell.value.tagName === 'If') {
+            } else if (state.cell.value.tagName === 'Await') {
+               console.log('>>>>>>>>>>>',evt)
+            }  else if (state.cell.value.tagName === 'If') {
               if (state.cell.edges && state.cell.edges.length > 2) {
                 this.currentHighlight.highlightColor = '#ff0000';
               }
@@ -2611,13 +2846,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             self.translate.get('label.invalidTarget').subscribe(translatedValue => {
               title = translatedValue;
             });
-            if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Terminate') {
+            if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Abort' || drpTargt.value.tagName === 'Terminate') {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
                   self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
                   return;
                 }
               }
+            } else if (drpTargt.value.tagName === 'Await') {
+              console.log(evt);
             } else if (drpTargt.value.tagName === 'If') {
               if (drpTargt.edges.length > 2) {
                 self.toasterService.pop('error', title + '!!', 'Cannot have more than one condition');
@@ -2944,7 +3181,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (cells[0].value.tagName === 'Fork') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, self.merge);
+                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 50, 50, self.merge);
                 } else if (cells[0].value.tagName === 'If') {
                   v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 70, 'rhombus');
                 } else if (cells[0].value.tagName === 'Retry') {
@@ -3088,7 +3325,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
             let v1, v2, v3, _label;
             if (cell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, self.merge);
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 50, 50, self.merge);
               graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
               if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch'
                 || dropTarget.value.tagName === 'Fork') {
@@ -3748,7 +3985,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         div.setAttribute('class', 'text-center text-orange');
         mxUtils.writeln(div, 'Nothing selected.');
       } else {
-        if (cell.value.tagName === 'Fork') {
+        if (cell.value.tagName === 'Fork' || cell.value.tagName === 'Await') {
           div.setAttribute('class', 'text-center text-orange');
           mxUtils.writeln(div, 'Nothing selected.');
           return;
@@ -3776,7 +4013,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (!flg2) {
               createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
             }
-            createTextAreaField(_graph, form, cell, 'Script', '');
+            // createTextAreaField(_graph, form, cell, 'Script', '');
           }
         }
         div.appendChild(form.getTable());

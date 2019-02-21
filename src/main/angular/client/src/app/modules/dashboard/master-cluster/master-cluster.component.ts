@@ -612,6 +612,8 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       if (master.state && master.state._text) {
         colorClass = master.state._text === 'RUNNING' ? 'text-success' : master.state._text === 'STOPPED' ? 'text-danger' :
           (master.state._text === 'STOPPING' || master.state._text === 'STARTING' || master.state._text === 'TERMINATING' || master.state._text === 'UNREACHABLE') ? 'text-danger1' : 'text-warn';
+      }else{
+        master.state = {};
       }
 
       if (self.permission.JobschedulerMaster.execute.restart.terminate || self.permission.JobschedulerMaster.execute.restart.abort || self.permission.JobschedulerMaster.execute.abort ||

@@ -17,22 +17,15 @@
         </mxCell>
       </Connector>
     </add>
-    <add as="container">
-      <Container label="Container">
-        <mxCell vertex="1" style="swimlane" connectable="0">
-          <mxGeometry as="geometry" width="200" height="200"/>
-        </mxCell>
-      </Container>
-    </add>
     <add as="rectangle">
-      <Rect label="rectangle">
+      <FileOrder regex="" agent="" checkSteadyState="true" directory="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="120" height="60"/>
+          <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>
-      </Rect>
+      </FileOrder>
     </add>
     <add as="rounded">
-      <Job path="/Job" title="" agent="">
+      <Job name="/Job" title="" agent="">
         <mxCell vertex="1" style="rounded">
           <mxGeometry as="geometry" width="200" height="50"/>
         </mxCell>
@@ -58,6 +51,13 @@
           <mxGeometry as="geometry" width="60" height="60"/>
         </mxCell>
       </Terminate>
+    </add>
+    <add as="Abort">
+      <Abort label="Abort" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="60" height="60"/>
+        </mxCell>
+      </Abort>
     </add>
     <add as="Fork">
       <Fork label="Fork">
@@ -230,9 +230,11 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="show" action="show" icon="./assets/mxgraph/images/preview.png"/>
     <hr/>
+    <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort.png"
+         icon="./assets/mxgraph/images/symbols/abort.png"/>
     <add as="Job" template="rounded" icon="./assets/mxgraph/images/symbols/job.png"/>
-    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/cancel_end.png"
-         icon="./assets/mxgraph/images/symbols/cancel_end.png"/>
+    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate.png"
+         icon="./assets/mxgraph/images/symbols/terminate.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer.png"
          icon="./assets/mxgraph/images/symbols/timer.png"/>

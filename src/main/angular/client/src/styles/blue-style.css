@@ -849,7 +849,6 @@ gridster-item {
   background-color: #32465a !important;
   box-sizing: border-box;
   position: absolute;
-  overflow: hidden;
   transition: .3s;
   display: none;
   user-select: text;

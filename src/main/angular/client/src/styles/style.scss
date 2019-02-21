@@ -2895,7 +2895,9 @@ div.order-panel div {
   padding: 10px;
   position: absolute;
 }
-
+.calendar {
+  margin-top: 12px;
+}
 .calendar-body {
   margin-top: 15px;
 }
@@ -5791,3 +5793,16 @@ input:-webkit-autofill {
   background-color: transparent;
   -webkit-box-shadow: 0 0 0 100px white inset;
 }
+
+.ck-editor__main .ck-content {
+  height: 250px;
+  color: black;
+}
+
+.ck-file-dialog-button, .ck-dropdown {
+  display: none !important;
+}
+
+ .ck-heading-dropdown {
+   display: inline-block !important;
+ }

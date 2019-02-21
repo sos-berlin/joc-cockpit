@@ -189,9 +189,9 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     if (data.isSelected) {
       obj.folders.push({folder: data.path, recursive: false});
     }
-    for (let x = 0; x < data.length; x++) {
-      if (data[x].isExpanded || data[x].isSelected) {
-        self.getExpandTreeForUpdates(data[x], obj);
+    for (let x = 0; x < data.children.length; x++) {
+      if (data.children[x].isExpanded || data.children[x].isSelected) {
+        self.getExpandTreeForUpdates(data.children[x], obj);
       }
     }
   }

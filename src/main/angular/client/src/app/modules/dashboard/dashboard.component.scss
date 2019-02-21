@@ -23,6 +23,11 @@ gridster-item[style] {
   z-index: unset !important;
 }
 
+gridster.scrollVertical {
+    overflow-x: unset;
+    overflow-y: unset;
+}
+
 :host {
     width: 100%;
     height: 100%;
