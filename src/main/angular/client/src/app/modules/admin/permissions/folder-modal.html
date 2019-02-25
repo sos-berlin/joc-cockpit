@@ -11,7 +11,7 @@
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(currentFolder)">
-    <div class="modal-body container">
+    <div class="modal-body p-a">
         <div class="form-group row" [ngClass]="{'has-error' : ((folder.dirty || folder.touched) && folder.invalid)}">
             <label class="col-sm-4 form-control-label" translate>label.folders</label>
             <div class="col-sm-6">

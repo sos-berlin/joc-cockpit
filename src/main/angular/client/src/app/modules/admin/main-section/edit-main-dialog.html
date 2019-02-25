@@ -8,7 +8,7 @@
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(entry)">
-    <div class="modal-body container">
+    <div class="modal-body p-a">
         <div class="form-group row" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}">
             <div class="row col-md-12">
                 <label class="col-md-4 form-control-label" translate>label.entryName</label>

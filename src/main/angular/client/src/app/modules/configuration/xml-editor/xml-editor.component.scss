@@ -46,7 +46,8 @@ strong{
   padding: 3px 8px;
   margin-top: 0.15rem;
 }
-.row.open{
+
+.row.open {
   width: 30%;
   height: 30%;
   position: absolute;
@@ -60,4 +61,14 @@ strong{
 .documentation-height {
   height: 250px !important;
   overflow: auto !important;
+}
+
+.disabled {
+    pointer-events: none !important;
+    cursor: auto !important;
+}
+
+
+.invalid {
+  border: 1px solid #dc3545;
 }

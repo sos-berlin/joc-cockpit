@@ -45,9 +45,19 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-2 col-sm-4" translate>label.calendars</label>
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.calendars</label>
           <div class="col-md-6 col-sm-8">
-            <i (click)="showCalendarModel('WORKING_DAYS')" class="fa fa-folder-o fa-lg"></i>
+            <ng-template #rt1 let-r="result" let-t="term">
+              <i class="fa fa-calendar m-r-sm"></i>
+              <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
+              <i *ngIf="r.title"> - </i> {{r.title}}
+            </ng-template>
+            <input type="text" class="form-control" name="calendar" placeholder="Search Working Calendars" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
+            <span *ngIf="searching"><i class="fa fa-spin fa-spinner"></i> searching...</span>
+            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+          </div>
+          <div>
+            <i (click)="showCalendarModel('WORKING_DAYS')" class="fa fa-folder-o fa-lg p-t-10"></i>
           </div>
         </div>
         <div class="form-group row m-b-0" *ngIf="order.calendars && order.calendars.length>0">
@@ -90,16 +100,26 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-2 col-sm-4" translate>label.nonWorkingCalendars</label>
+          <label class="col-md-2 col-sm-4 form-control-label" translate>label.nonWorkingCalendars</label>
           <div class="col-md-6 col-sm-8">
-            <i (click)="showCalendarModel('NON_WORKING_DAYS')" class="fa fa-folder-o fa-lg"></i>
+            <ng-template #rt2 let-r="result" let-t="term">
+              <i class="fa fa-calendar m-r-sm"></i>
+              <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
+              <i *ngIf="r.title"> - </i> {{r.title}}
+            </ng-template>
+            <input type="text" class="form-control" name="nonCalendar" placeholder="Search Non Working Calendars" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatter">
+            <span *ngIf="searchingNon"><i class="fa fa-spin fa-spinner"></i> searching...</span>
+            <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+          </div>
+          <div>
+            <i (click)="showCalendarModel('NON_WORKING_DAYS')" class="fa fa-folder-o fa-lg p-t-10"></i>
           </div>
         </div>
-        <div class="form-group row m-b-0" *ngFor="let calendar of order.nonWorkingCalendars; let i = index">
-          <div class="col-md-10 m-b-sm">
+        <div class="form-group row m-b-0" *ngIf="order.nonWorkingCalendars && order.nonWorkingCalendars.length>0">
+          <div class="col-md-8 m-b-sm">
             <table class="table table-hover table-bordered ">
               <tbody>
-              <tr>
+              <tr *ngFor="let calendar of order.nonWorkingCalendars; let i = index">
                 <td>
                   <a (click)="previewCalendar(calendar);">
                     <i class="fa fa-calendar text-danger"></i>&nbsp;
@@ -157,4 +177,8 @@
       </form>
     </div>
   </div>
+</div>
+<div id="rightSideBar" *ngIf="previewCalendarView" class="slideInRight">
+    <div class="close-btn" (click)="closeCalendarView()"></div>
+    <app-preview-calendar-template [schedulerId]="schedulerId" [calendar]="calendarObj"></app-preview-calendar-template>
 </div>

@@ -138,8 +138,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.usr = {currentPage: 1};
-    if (sessionStorage.preferences)
+    if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
   }
 
   setUserData(res) {

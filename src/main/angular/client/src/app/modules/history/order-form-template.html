@@ -4,7 +4,7 @@
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>label.filterName</label>
       <div class="col-sm-6">
         <input ngbTooltip="Max: 25 characters" triggers="click:blur" class="form-control"
-               placeholder="{{'placeholder.name' | translate}}"
+               placeholder="{{'placeholder.name' | translate}}" required
                name="filtername" maxlength="25" [(ngModel)]="filter.name" #name="ngModel"
                (blur)="checkFilterName()">
         <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">

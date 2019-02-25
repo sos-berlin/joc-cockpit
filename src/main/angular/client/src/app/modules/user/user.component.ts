@@ -63,7 +63,7 @@ export class UserComponent implements OnInit {
     sessionStorage.preferences = JSON.stringify(this.preferences);
     this.coreService.post('configuration/save', this.configObj).subscribe(res => {
     }, (err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 
@@ -116,7 +116,11 @@ export class UserComponent implements OnInit {
       this.eventFilter = this.preferences.events.filter;
     } else {
       if (this.preferences.events) {
-        this.eventFilter = JSON.parse(this.preferences.events.filter);
+        if(this.preferences.events.filter) {
+          this.eventFilter = JSON.parse(this.preferences.events.filter);
+        }
+      } else {
+        this.preferences.events = {};
       }
     }
 
@@ -127,7 +131,7 @@ export class UserComponent implements OnInit {
             this.object.jobChains.push(name);
           } else if (name.match('Job')) {
             this.object.jobs.push(name);
-          } else if (name.match('OrderS')) {
+          } else if (name.match('OrderSetback') || name.match('OrderSuspended')) {
             this.object.negativeOrders.push(name);
           } else {
             this.object.positiveOrders.push(name);

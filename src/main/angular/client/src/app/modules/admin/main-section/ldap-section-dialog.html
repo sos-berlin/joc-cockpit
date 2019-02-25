@@ -10,7 +10,7 @@
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(mainSection)">
-    <div class="modal-body container">
+    <div class="modal-body p-a">
         <div class="form-group row m-b-0" *ngFor="let param of mainSection; let pIndex = index">
             <div class="col-sm-6 m-b-sm" *ngIf="pIndex==0" translate>label.name</div>
             <div class="col-sm-6 m-b-sm" *ngIf="pIndex==0" translate>label.value</div>

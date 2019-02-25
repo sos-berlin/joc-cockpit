@@ -1,0 +1,133 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="box p-a">
+      <div class="b-b p-b m-b">
+        <span translate>Calendar Template</span>
+      </div>
+      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group row"
+                 [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid) || !isUnique}">
+              <label class="col-md-2 col-sm-4 form-control-label" translate>label.name</label>
+              <div class="col-md-6 col-sm-8">
+                <input type="text" class="form-control" required name="name" #cname="ngModel"
+                       placeholder="{{'placeholder.enterCalendarName' | translate}}"
+                       [(ngModel)]="calendar.name">
+                <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
+                  <div *ngIf="cname.errors.required">
+                    <div translate>message.requiredError</div>
+                  </div>
+                </div>
+                <div *ngIf="!isUnique" class="text-danger help-block">
+                  <div translate>message.uniqueError</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-sm-4 form-control-label" translate>label.title</label>
+              <div class="col-md-6 col-sm-8">
+                <input type="text" class="form-control" placeholder="{{'placeholder.title' | translate}}"
+                       [(ngModel)]="calendar.title" name="title">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-sm-4 form-control-label" translate>label.path</label>
+              <div class="col-md-6 col-sm-8" [ngClass]="{'has-error' : ((calendarPath.dirty || calendarPath.touched) && calendarPath.invalid)}">
+                <input type="text" class="form-control" required name="path" #calendarPath="ngModel"
+                       placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}" [(ngModel)]="calendar.path">
+                <div *ngIf="calendarPath.invalid && (calendarPath.dirty || calendarPath.touched)"
+                     class="text-danger help-block">
+                  <div *ngIf="calendarPath.errors.required">
+                    <div translate>message.requiredError</div>
+                  </div>
+                </div>
+              </div>
+              <a class="p-t-xs" (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-sm-4" translate>label.type</label>
+              <div class="col-md-6 col-sm-8">
+                <select class="form-control" [(ngModel)]="calendar.type" name="cType">
+                  <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
+                  <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-sm-4 form-control-label" translate>label.category</label>
+              <div class="col-md-6 col-sm-8">
+         <!--   <select class="form-control" style="border: none" [(ngModel)]="calendar.category" name="cCate">
+                  <option [value]="" translate>label.chooseCategories</option>
+                  <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+                </select>-->
+                <input class="form-control" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
+                       [(ngModel)]="calendar.category" name="cCategory">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-sm-4 form-control-label" translate>label.validFrom</label>
+              <div class="col-md-2 col-sm-4">
+                <dp-date-picker [theme]="'dp-material dp-main calendar'"
+                                placeholder="{{'placeholder.setStartDate' | translate}}" [(ngModel)]="calendar.from"
+                                name="from" required=true [config]="config"></dp-date-picker>
+              </div>
+              <label class="col-md-2 col-sm-4 form-control-label text-center" translate>label.validTo</label>
+              <div class="col-md-2 col-sm-4" [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}">
+                <dp-date-picker id="to" [theme]="'dp-material dp-main calendar'"
+                                placeholder="{{'placeholder.setEndDate' | translate}}" [(ngModel)]="calendar.to"
+                                required=true [minDate]="calendar.from" name="to" #to="ngModel"
+                                [config]="config"></dp-date-picker>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-12">
+            <div class="btn-group hidden-btn-group">
+              <button type="button" class="btn btn-grey btn-sm "
+                      [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
+                      (click)="changeFrequencyType('INCLUDE')" translate>
+                button.includedFrequencies
+              </button>
+              <button type="button" class="btn btn-grey btn-sm "
+                      [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
+                      (click)="changeFrequencyType('EXCLUDE')" translate>
+                button.excludedFrequencies
+              </button>
+            </div>
+            <button type="button" class="btn btn-sm pull-right btn-grey" [disabled]="!(calendar.to)"
+                    (click)="createNewFrequency()" translate>button.addNewFrequency
+            </button>
+            <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
+                    (click)="showYearView()" translate>button.showYearView
+            </button>
+          </div>
+          <div class="col-md-8 col-sm-12" style="max-height: 450px; overflow: auto">
+            <div class="text-center"
+                 *ngIf="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
+              <span translate>message.noFrequencyFound</span>
+            </div>
+            <div class="text-center"
+                 *ngIf="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
+              <span translate>message.noFrequencyFound</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12 text-left m-t">
+            <button type="submit" [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm">
+              <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+              {{'button.submit' | translate}}
+            </button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm"
+                    translate>button.clear
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="rightSideBar" *ngIf="previewCalendarView" class="slideInRight">>
+  <div class="close-btn" (click)="closeCalendarView()" ></div>
+  <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
+</div>

@@ -8,7 +8,7 @@
     </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body container" style="max-height: 640px;overflow: auto">
+    <div class="modal-body p-a">
         <div *ngFor="let entry of mainSection; let PIndex = index " [ngClass]="{'b-t p-t': PIndex>0}" class="p-l-sm">
 
             <div class="pos-abt cursor text-hover-color" style="right: 28px" (click)="removeEntry(PIndex)"><i

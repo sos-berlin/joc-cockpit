@@ -982,3 +982,6 @@ span ul li a {
 .node-content-wrapper::after {
 	border-bottom: solid 2px orange;
 }
+#rightSideBar {
+  background: #4e545c;
+}

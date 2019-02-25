@@ -67,7 +67,7 @@
                        <span class="label label-sm up notification" *ngIf="allSessionEvent.eventUnReadCount>0">
                            {{allSessionEvent.eventUnReadCount}}
                        </span>
-                        <i class="fa fa-lg fa-bell"></i>
+                      <i id ="notifyBell" class="fa fa-lg fa-bell notify"></i>
                   </span>
                 </a>
                 <div class="dropdown-menu pull-right dropdown-ac" id="notification">
@@ -77,7 +77,7 @@
                             <h5 style="padding-top: 7px; margin-bottom: 0"><span translate>label.notifications </span></h5>
                         </div>
                         <div class="col-sm-6 cursor" (click)="collapseNotification()" *ngIf="showEvent">
-                            <h5 style="padding-top: 7px; margin-bottom: 0"><i class=" fa fa-angle-left "></i>
+                            <h5 style="padding-top: 7px; margin-bottom: 0"><i class=" fa fa-angle-left "></i>&nbsp;
                                 <span translate>label.backToNotifications </span></h5>
                         </div>
                         <div class="col-sm-6 ">
@@ -99,44 +99,42 @@
                         <tr *ngFor="let group of allSessionEvent.group">
                             <td (click)="expandNotification(group)" class="cursor" [hidden]="showEvent">
                                 <span>
-                                    <span class="_600" *ngIf="group.readCount>9">{{group.readCount}}</span>
-                                    <span class="_600" *ngIf="group.readCount<9">0{{group.readCount}}</span>
-                                    <span translate>label.newEventsOn</span> <span class="text-black-dk">{{group.jobschedulerId}}</span>
-                                    <span >{{group.objectType | translate}}:</span>
-                                    <span class="text-primary">{{group.path}}</span>
-                                    <span class="text-muted">{{group.eventId/1000}}</span>
-                                </span>
-                                <i class="cursor  fa fa-angle-right"></i>
-
+                                    <span class="_600" *ngIf="group.readCount>9">{{group.readCount}}&nbsp;</span>
+                                    <span class="_600" *ngIf="group.readCount<9">0{{group.readCount}}&nbsp;</span>
+                                    <span translate>label.newEventsOn</span>
+                                    <span class="text-black-dk">&nbsp;{{group.jobschedulerId}}</span>
+                                    <span>&nbsp;{{group.objectType | translate}}:</span>
+                                    <span class="text-primary">&nbsp;{{group.path}}</span>
+                                    <span class="text-muted">&nbsp;{{group.eventId/1000 | stringToDate}}</span>
+                                </span>&nbsp;
+                                <i class="cursor fa fa-angle-right"></i>
                             </td>
                         </tr>
                         <tr class="_600" *ngIf="showEvent">
                             <td style="font-size: 14px;padding-bottom: 6px">
                                 <span>{{showGroupEvent.objectType | translate}}</span>
-                                {{showGroupEvent.path}}
-                                <span class="_600">{{showGroupEvent.readCount}}</span>
+                                &nbsp;{{showGroupEvent.path}}
+                                <span class="_600">&nbsp;{{showGroupEvent.readCount}}</span>
                             </td>
                         </tr>
                         <tr *ngFor="let value of showGroupEvent.events" style="margin-top: 10px">
                             <td>
                                 <span class="cursor p-l p-r _600" *ngIf="value.read==false" (click)="readEvent(showGroupEvent,value,allSessionEvent)">
-                                    <span>{{value.objectType | translate}}:</span>
+                                    <span>{{value.objectType | translate}} : &nbsp;</span>
                                     <span class="text-primary">{{value.path}}</span>
-                                    {{value.eventType | translate}}
-                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
-
+                                    &nbsp;{{value.eventType | translate}}
+                                    <span class="text-muted">&nbsp;{{(value.eventId/1000) | stringToDate}}</span>
                                 </span>
                                 <span class="p-l p-r" *ngIf="value.read==true">
-                                    <span>{{value.objectType | translate}}:</span>
+                                    <span>{{value.objectType | translate}} :&nbsp;</span>
                                     <span class="text-primary">{{value.path}}</span>
-                                    {{value.eventType | translate}}
-                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
+                                    &nbsp;{{value.eventType | translate}}
+                                    <span class="text-muted">&nbsp;{{(value.eventId/1000) | stringToDate}}</span>
                                 </span>
                             </td>
                             <td>
                                 <span class="p-r-sm">
                                     <i class="cursor fa fa-file-o" (click)="viewObject(showGroupEvent,value,allSessionEvent)" title="{{'tooltip.viewObject' | translate}}"></i>
-
                                 </span>
                             </td>
                         </tr>

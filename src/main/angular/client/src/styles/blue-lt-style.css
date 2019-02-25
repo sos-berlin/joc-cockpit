@@ -974,3 +974,6 @@ pre#pre {
 .input-time + a {
 	margin-left: 16px;
 }
+#rightSideBar {
+  background: #46525f;
+}

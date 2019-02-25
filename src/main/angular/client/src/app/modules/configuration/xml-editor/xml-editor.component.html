@@ -142,6 +142,11 @@
           </div>
         </div>
         <div class="row">
+          <nav class="col-12" aria-label="breadcrumb" *ngIf="breadCrumbArray.length>0">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item" *ngFor="let crumb of breadCrumbArray; let i = index" [ngClass]="i==breadCrumbArray.length-1? 'text-primary' : ''" aria-current="page"><a (click)="getData(crumb)">{{crumb.ref}}</a></li>
+            </ol>
+          </nav>
           <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
             <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
           </div>
@@ -162,7 +167,7 @@
             <div *ngIf="selectedNode">
               <div class="box p-a" *ngIf="selectedNode.attributes && selectedNode.attributes.length>0">
                 <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm">Attributes</div>
-                <div *ngFor="let node of selectedNode.attributes" class="form-group">
+                <div *ngFor="let node of selectedNode.attributes; let i= index" class="form-group">
                   <label *ngIf="node.name && node.id">{{node.name}}<sup
                     *ngIf="node.use==='required' || !node.use" class="text-danger text-sm">*</sup></label>
                   <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
@@ -177,28 +182,28 @@
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'"
                          class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
-                         value="{{node.data? node.data:node.default}}">
+                         value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref9 (blur)="validateAttr(localref9.value, node)"
                          (change)="submitData(localref9.value, node)"
                          *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" type="text"
-                         value="{{node.data? node.data:node.default}}">
+                         value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref10 (blur)="validateAttr(localref10.value, node)"
                          (change)="submitData(localref10.value, node)"
                          *ngIf="node.values && node.values.length==0 && node.name && node.name === 'password' && !node.type"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" type="password"
-                         value="{{node.data? node.data:node.default}}">
+                         value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref2 (blur)="validateAttr(localref2.value, node)"
                          (change)="submitData(localref2.value, node)"
                          *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" title="{{node.name}} should not contain spaces"
-                         type="text" value="{{node.data? node.data:node.default}}">
+                         type="text" value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <select #localref6 (blur)="validateAttr(localref6.value, node)"
                           (change)="submitData(localref6.value, node)" (focus)="getDataAttr(node.refer)"
                           *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NMTOKEN' && node.refer"
@@ -214,14 +219,14 @@
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" required
-                         type="number" value="{{node.data? node.data:node.default}}">
+                         type="number" value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref4 (blur)="validateAttr(localref4.value, node)"
                          (change)="submitData(localref4.value, node)"
                          *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" min="0" placeholder="Example input" type="number"
-                         value="{{node.data?node.data:node.default}}">
+                         value="{{node.data?node.data:node.default}}" [autofocus]="i==0">
                   <select #localref5 (blur)="validateAttr(localref5.value, node)"
                           (change)="submitData(localref5.value, node)"
                           *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
@@ -238,7 +243,7 @@
                           class="form-control" id="{{node.name}}">
                     <option *ngFor="let value of node.values" [ngClass]="value.base ? 'hide':''">{{value.value}}</option>
                   </select>
-                  <div *ngIf="error && errorName === node.name" [innerText]="text" class="col-4 text-danger"
+                  <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
                        id="{{node.name}}Alert" role="alert">
                   </div>
                 </div>
@@ -252,22 +257,18 @@
                          *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                         type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                         type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" [autofocus]="!selectedNode.attributes">
 
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                         type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                         type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" [autofocus]="!selectedNode.attributes">
 
                   <div *ngIf="selectedNode.ref === 'Body'" class="form-group has-feedback">
                        <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent"  [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor" class="ckEditor"></ckeditor>
                        <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
-                    <!-- <ckeditor #myckeditor="ngModel" (change)="onChange($event, selectedNode)" [(ngModel)]="myContent"
-                              [editor]="editor" data="<p>Hello, world!</p>"
-                              [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor"></ckeditor>
-                    <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div> -->
                   </div>
                   <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                           (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
@@ -288,8 +289,8 @@
                             (change)="submitValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
                             *ngIf="selectedNode.ref === 'Message'" [ngClass]="error? 'invalid': ''" class="form-control"
                             id="{{selectedNode.ref}}" rows="4"
-                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"></textarea>
-                  <div *ngIf="error && errorName === nodes.ref" [innerText]="text" class="mt-2 col-4 text-danger pl-0"
+                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" autofocus></textarea>
+                  <div *ngIf="error && errorName === selectedNode.ref" [innerText]="text" class="help-block text-danger"
                        id="{{nodes.ref}}Alert"
                        role="alert">
                   </div>
@@ -302,6 +303,8 @@
     </div>
   </div>
 </div>
-<div id="spinner" *ngIf="isLoading">
-  <div></div>
-</div>
+  <div class="spinner" *ngIf="isLoading">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>

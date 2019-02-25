@@ -8,6 +8,9 @@ import {saveAs} from 'file-saver';
 import * as _ from 'underscore';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import * as moment from 'moment';
+import {Observable, of} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} from 'rxjs/operators';
+
 
 declare const mxEditor;
 declare const mxUtils;
@@ -40,7 +43,7 @@ const x2js = new X2JS();
 
 @Component({
   selector: 'app-preview-calendar-template',
-  templateUrl: './preview-calendar-dialog.html',
+  template: ' <div id="full-calendar"></div>',
 })
 export class PreviewCalendarComponent implements OnInit {
   @Input() schedulerId: any;
@@ -50,7 +53,7 @@ export class PreviewCalendarComponent implements OnInit {
   calendarTitle: number;
   toDate: any;
 
-  constructor(public activeModal: NgbActiveModal, private coreService: CoreService) {
+  constructor(private coreService: CoreService) {
     this.calendarTitle = new Date().getFullYear();
   }
 
@@ -222,8 +225,15 @@ export class OrderTemplateComponent implements OnInit {
   variableObject: any = {};
   @Input() preferences: any;
   @Input() schedulerId: any;
+  calendarSearch: any;
+  nonCalendarSearch: any;
+  searching = false;
+  searchFailed = false;
+  searchingNon = false;
+  previewCalendarView = false;
+  calendarObj: any;
 
-  constructor(private modalService: NgbModal) {
+  constructor(private modalService: NgbModal, private coreService: CoreService) {
 
   }
 
@@ -292,23 +302,98 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   removePeriodInCalendar(calendar, period): void {
-    for(let i =0; i < calendar.periods.length; i++){
-      if(calendar.periods[i] == period){
+    for (let i = 0; i < calendar.periods.length; i++) {
+      if (calendar.periods[i] == period) {
         calendar.periods.splice(i, 1);
         break;
       }
     }
   }
 
-  previewCalendar(calendar): void {
-    const modalRef = this.modalService.open(PreviewCalendarComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.schedulerId = this.schedulerId;
-    modalRef.componentInstance.calendar = calendar;
-    modalRef.result.then((result) => {
+  search(term: string, type: string) {
+    if (term === '') {
+      return of([]);
+    }
+    let obj = {
+      jobschedulerId: this.schedulerId,
+      regex: term,
+      type: type
+    };
+    return this.coreService.post('calendars', obj).pipe(
+      map((response: any) => response.calendars)
+    );
+  }
 
-    }, (reason) => {
-      console.log('close...', reason);
-    });
+  searchCalendars = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      switchMap(term =>
+        this.search(term, 'WORKING_DAYS').pipe(
+          tap(() => this.searchFailed = false),
+          catchError(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      ),
+      tap(() => this.searching = false)
+    )
+
+  searchNonCalendars = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.searchingNon = true),
+      switchMap(term =>
+        this.search(term, 'NON_WORKING_DAYS').pipe(
+          tap(() => this.searchFailed = false),
+          catchError(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      ),
+      tap(() => this.searchingNon = false)
+    )
+
+  formatter = (x: { path: string }) => {
+    let flag = false;
+    if (this.calendarSearch) {
+      if (this.order.calendars.length > 0) {
+        for (let i = 0; i < this.order.calendars.length; i++) {
+          if (this.order.calendars[i].path === x.path) {
+            flag = true;
+            break;
+          }
+        }
+      }
+      if (!flag) {
+        this.order.calendars.push(x);
+      }
+      this.calendarSearch = '';
+    } else {
+      if (this.order.nonWorkingCalendars.length > 0) {
+        for (let i = 0; i < this.order.nonWorkingCalendars.length; i++) {
+          if (this.order.nonWorkingCalendars[i].path === x.path) {
+            flag = true;
+            break;
+          }
+        }
+      }
+      if (!flag) {
+        console.log(x);
+        this.order.nonWorkingCalendars.push(x);
+      }
+    }
+  }
+
+  previewCalendar(calendar): void {
+    this.calendarObj = calendar;
+    this.previewCalendarView = true;
+  }
+
+  closeCalendarView() {
+    this.previewCalendarView = false;
   }
 
   removeWorkingCal(index): void {
@@ -347,13 +432,13 @@ export class LockTemplateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.lock.nonExclusive = true;
   }
 
   onSubmit(): void {
 
   }
-  
+
 }
 
 @Component({
@@ -393,6 +478,152 @@ export class ProcessClassTemplateComponent implements OnInit {
     this.object.hosts.splice(index, 1);
   }
 }
+
+@Component({
+  selector: 'app-calendar-template',
+  templateUrl: './calendar-template.html',
+})
+export class CalendarTemplateComponent implements OnInit {
+
+  submitted = false;
+  required = false;
+  display = false;
+  isUnique = true;
+  logError: boolean;
+  calendar: any = {};
+  dateFormat: any;
+  dateFormatM: any;
+  editor: any = {isEnable: false, frequencyType: 'INCLUDE'};
+  config: any = {};
+  previewCalendarView = false;
+
+  @Input() schedulerId: any;
+  @Input() preferences: any;
+
+  constructor(public coreService: CoreService, public modalService: NgbModal) {
+
+  }
+
+  ngOnInit(): void {
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    this.calendar = {
+      path: '/',
+      type: 'WORKING_DAYS',
+      includesFrequency: [],
+      excludesFrequency: [],
+      to: moment().format(this.dateFormatM)
+    };
+    this.config = {
+      format: this.dateFormatM
+    };
+  }
+
+  onSubmit(): void {
+
+    console.log(this.calendar);
+  }
+
+  createNewFrequency() {
+
+  }
+
+  getFolderTree() {
+    const modalRef = this.modalService.open(TreeModalComponent, {backdrop: 'static'});
+    modalRef.componentInstance.schedulerId = this.schedulerId;
+    modalRef.componentInstance.paths = [];
+    modalRef.componentInstance.isCollapsed = true;
+    modalRef.componentInstance.showCheckBox = false;
+    modalRef.componentInstance.type = this.calendar.type === 'WORKING_DAYS' ? 'WORKINGDAYSCALENDAR' : 'NONWORKINGDAYSCALENDAR';
+    modalRef.result.then((path) => {
+      this.calendar.path = path;
+    }, (reason) => {
+      console.log('close...', reason);
+    });
+  }
+
+  changeFrequencyType(type: string) {
+    this.editor.frequencyType = type;
+  }
+
+  showYearView() {
+    this.previewCalendarView = true;
+  }
+
+  closeCalendarView() {
+    this.previewCalendarView = false;
+  }
+}
+
+@Component({
+  selector: 'app-type',
+  template: '<div *ngFor="let Type of workflowJson">\n' +
+    '  <ul>\n' +
+    '    <li>\n' +
+    '      <a *ngIf="Type.TYPE === \'ForkJoin\' || Type.TYPE === \'If\' || Type.TYPE === \'Try\' || Type.TYPE === \'Retry\'"\n' +
+    '         (click)="collapse(Type.id, \'undefined\')" id="{{Type.TYPE}}_{{Type.id}}"><i class="fa fa-plus pr-2"\n' +
+    '                                                                                    aria-hidden="true"></i>{{Type.TYPE}}\n' +
+    '      </a>\n' +
+    '      <span *ngIf="Type.TYPE === \'Job\' || Type.TYPE === \'Terminate\' || Type.TYPE === \'Abort\'">{{Type.TYPE}}</span>\n' +
+    '      <span *ngIf="Type.TYPE === \'ForkJoin\'" id="{{Type.id}}">\n' +
+    '        <span *ngFor="let branch of Type.branches">\n' +
+    '          <app-type [workflowJson]="branch.instructions" *ngIf="branch.instructions"></app-type>\n' +
+    '        </span>\n' +
+    '        <div>join</div>\n' +
+    '      </span>\n' +
+    '      <span *ngIf="Type.TYPE === \'If\'">\n' +
+    '        <span *ngIf="Type.then" id="{{Type.id}}">\n' +
+    '          <app-type [workflowJson]="Type.then.instructions" *ngIf="Type.then.instructions"></app-type>\n' +
+    '        \n' +
+    '        <div class="m-l-4"><a *ngIf="Type.else" (click)="collapse(Type.id, \'else\')"><i class="fa fa-plus pr-2"\n' +
+    '                                                                                       aria-hidden="true"></i>else</a></div>\n' +
+    '        <div *ngIf="Type.else" id="else-{{Type.id}}">\n' +
+    '          <app-type [workflowJson]="Type.else.instructions" *ngIf="Type.else.instructions"></app-type>\n' +
+    '        </div>\n' +
+    '        </span>\n' +
+    '        <div *ngIf="Type.else">End If</div>\n' +
+    '      </span>\n' +
+    '      <span *ngIf="Type.TYPE === \'Try\'">\n' +
+    '        <span id="{{Type.id}}">\n' +
+    '        <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>\n' +
+    '        <div class="m-l-4"><a *ngIf="Type.catch" (click)="collapse(Type.id, \'catch\')"><i class="fa fa-plus pr-2"\n' +
+    '                                                                                         aria-hidden="true"></i>Catch</a></div>\n' +
+    '        <span id="catch-{{Type.id}}">\n' +
+    '          <app-type [workflowJson]="Type.catch.instructions" *ngIf="Type.catch && Type.catch.instructions"></app-type>\n' +
+    '        </span>\n' +
+    '        <div class="m-l-4" *ngIf="Type.catch">End catch</div>\n' +
+    '        </span>\n' +
+    '        <div *ngIf="Type.TYPE === \'Try\'">End Try</div>\n' +
+    '      </span>\n' +
+    '\n' +
+    '      <span *ngIf="Type.TYPE === \'Retry\'">\n' +
+    '      <span id="{{Type.id}}">\n' +
+    '        <app-type [workflowJson]="Type.instructions" *ngIf="Type.instructions"></app-type>\n' +
+    '      </span>\n' +
+    '      <div *ngIf="Type.TYPE === \'Retry\'">End Retry</div>\n' +
+    '      </span>\n' +
+    '    </li>\n' +
+    '  </ul>\n' +
+    '</div>'
+})
+export class TypeComponent implements OnInit {
+  @Input() workflowJson;
+
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
+  collapse(typeId, node) {
+    if (node == 'undefined') {
+      $('#' + typeId).toggle();
+    } else {
+      $('#' + node + '-' + typeId).toggle();
+    }
+  }
+}
+
 
 @Component({
   selector: 'app-workflow-template',
@@ -535,7 +766,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     }
   }
 
-  static calcHeigth() {
+  static calcHeight() {
     let dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 72;
@@ -561,8 +792,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       this.dummyXml = x2js.json2xml_str(data);
       this.createEditor(this.configXml);
     });
-
-    WorkFlowTemplateComponent.calcHeigth();
+    WorkFlowTemplateComponent.calcHeight();
   }
 
   /**
@@ -613,6 +843,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
   clearWorkFlow() {
     this.initEditorConf(this.editor, this.dummyXml);
+  }
+
+  receiveMessage($event) {
+    this.pageView = $event;
   }
 
   // Function to generating dynamic unique Id
@@ -2074,7 +2308,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 recursive(_id, _instructionsArr[i].branches[j].instructions);
               }
             }
-          } if (_instructionsArr[i].TYPE === 'Await') {
+          }
+          if (_instructionsArr[i].TYPE === 'Await') {
             if (_instructionsArr[i].events) {
               recursive(_id, _instructionsArr[i].events);
             }
@@ -2494,7 +2729,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxGraph.prototype.allowDanglingEdges = false;
       mxGraph.prototype.cellsLocked = true;
       mxGraph.prototype.foldingEnabled = true;
-      mxHierarchicalLayout.prototype.interRankCellSpacing = 60;
+      mxHierarchicalLayout.prototype.interRankCellSpacing = 54;
       mxHierarchicalLayout.prototype.fineTuning = true;
       mxHierarchicalLayout.prototype.disableEdgeStyle = true;
       mxConstants.DROP_TARGET_COLOR = 'green';
@@ -2712,7 +2947,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
               }
             } else if (state.cell.value.tagName === 'Await') {
-               console.log('>>>>>>>>>>>',evt)
+            
             }  else if (state.cell.value.tagName === 'If') {
               if (state.cell.edges && state.cell.edges.length > 2) {
                 this.currentHighlight.highlightColor = '#ff0000';
@@ -3202,7 +3437,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 isProgrammaticallyDelete = true;
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
-                    if (cell.source.value.tagName === 'Job' && cell.target && cell.target.value.tagName === 'Job') {
+                    if (cell.target && ((cell.source.value.tagName === 'Job' && cell.target.value.tagName === 'Job') ||
+                      (cell.source.value.tagName === 'Abort' && cell.target.value.tagName === 'Abort') ||
+                      (cell.source.value.tagName === 'Terminate' && cell.target.value.tagName === 'Terminate'))) {
                       graph.getModel().remove(cell.source.edges[x]);
                     } else {
                       cell.source.removeEdge(cell.source.edges[x], true);
@@ -3560,7 +3797,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       selectionChanged(graph);
 
       executeLayout();
-      makeCenter();
+      // makeCenter();
 
       mgr.save = function () {
         if (!self.isWorkflowReload) {

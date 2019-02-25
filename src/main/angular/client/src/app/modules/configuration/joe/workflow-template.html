@@ -6,7 +6,7 @@
           <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
           <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
         </button>
-       <!-- <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>-->
+        <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
       </div>
       <div class="inline">
         <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>
@@ -26,35 +26,10 @@
       </div>
       <div *ngIf="pageView !== 'grid'">
         <div class="box p-a">
-          <div class="table-responsive">
-            <table *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0"
-                   class="table table-hover table-bordered">
-              <thead>
-              <tr>
-                <th width="30">
-                  <label class="md-check lg-check">
-                    <input (change)="checkAll()" [(ngModel)]="object.checkbox" type="checkbox"><i
-                    class="primary"></i>
-                  </label>
-                </th>
-                <th><span translate>label.type</span></th>
-                <th><span translate>label.path</span></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let workflow of workFlowJson.instructions">
-                <td>
-                  <label class="md-check">
-                    <input (change)="checkMainCheckbox()" [(checklist)]="object.workflows" [checklistValue]="workflow"
-                           type="checkbox">
-                    <i class="primary"></i>
-                  </label>
-                </td>
-                <td>{{workflow.TYPE}}</td>
-                <td>{{workflow.jobPath}}</td>
-              </tr>
-              </tbody>
-            </table>
+          <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
+            <div class="text-primary">Start</div>
+            <app-type [workflowJson]="workFlowJson.instructions"></app-type>
+            <div class="text-primary">End</div>
           </div>
           <div *ngIf="!workFlowJson.instructions || workFlowJson.instructions.length == 0"
                class="text text-center text-uppercase p-a-md">
@@ -73,7 +48,7 @@
         <div id="properties"></div>
       </div>
     </div>
-    <div class="m-t">
+<!--    <div class="m-t">
       <div class="box">
         <div class="box-header b-b p-t-sm p-b-sm">
           <h3 translate>Source</h3>
@@ -82,7 +57,7 @@
           <pre>{{workFlowJson | json}}</pre>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </div>
 <div class="bottom-btn">

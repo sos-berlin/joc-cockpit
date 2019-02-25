@@ -38,11 +38,6 @@
                 </div>
                 <div id="rightPanel">
                     <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-                        <div class="row" *ngIf="pageView=='grid'">
-                            <div class="w-full">
-                                        
-                            </div>
-                        </div>
                         <div class=" box p-a m-t-xs">
                             <div class="text-primary">Start</div>
                             <app-type [workflowJson]="WorkflowJson.instructions"></app-type>

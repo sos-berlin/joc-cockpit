@@ -1537,7 +1537,10 @@ export class CalendarModalComponent implements OnInit {
       this.predefinedMessageList = JSON.parse(sessionStorage.comments);
     }
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-
+    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
+    this.config = {
+      format: this.dateFormatM
+    };
     if (this.new) {
       this.calendar = {
         path: '/',
@@ -1557,18 +1560,12 @@ export class CalendarModalComponent implements OnInit {
       if (this.calendar && this.calendar.type) {
         this.oldType = _.clone(this.calendar.type);
       }
-    }
-
-    this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
-    this.config = {
-      format: this.dateFormatM
-    };
-
-    if (this.calendar.from) {
-      this.calendar.from = moment(this.calendar.from).format(this.dateFormatM);
-    }
-    if (this.calendar.to) {
-      this.calendar.to = moment(this.calendar.to).format(this.dateFormatM);
+      if (this.calendar.from) {
+        this.calendar.from = moment(this.calendar.from).format(this.dateFormatM);
+      }
+      if (this.calendar.to) {
+        this.calendar.to = moment(this.calendar.to).format(this.dateFormatM);
+      }
     }
   }
 
@@ -1743,7 +1740,6 @@ export class CalendarModalComponent implements OnInit {
       }
     } else {
       this.storeCalendar();
-
     }
   }
 

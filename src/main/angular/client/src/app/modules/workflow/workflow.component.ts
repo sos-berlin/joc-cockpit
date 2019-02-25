@@ -4,7 +4,6 @@ import {AuthService} from '../../components/guard';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DataService} from '../../services/data.service';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
-import * as _ from 'underscore';
 
 declare const $;
 

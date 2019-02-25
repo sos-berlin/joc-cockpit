@@ -50,7 +50,7 @@
         </div>
       </div>
       <div id="centerPanel" class="centerPanel">
-        <div *ngIf="type == 'workflow'" >
+        <div [hidden]="type !== 'workflow'" >
           <app-workflow-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [pageView]="pageView" [selectedPath]="selectedPath"></app-workflow-template>
         </div>
         <div *ngIf="type == 'order'">
@@ -62,10 +62,16 @@
         <div *ngIf="type == 'processClass'">
           <app-process-class-template [schedulerId]="schedulerIds.selected"></app-process-class-template>
         </div>
+        <div *ngIf="type == 'calendar'">
+          <app-calendar-template [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-calendar-template>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div id="spinner" *ngIf="isLoading">
-  <div></div>
+
+<div class="spinner" *ngIf="isLoading">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
 </div>

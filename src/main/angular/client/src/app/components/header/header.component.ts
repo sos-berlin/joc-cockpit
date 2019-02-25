@@ -179,6 +179,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               this.allSessionEvent.group[x].eventId = eventByPath.eventId;
               this.allSessionEvent.group[x].readCount++;
               this.allSessionEvent.eventUnReadCount++;
+              $('#notifyBell').toggleClass('notify');
               eventByPath.events[m].read = false;
               this.allSessionEvent.group[x].events.push(eventByPath.events[m]);
             }
@@ -190,6 +191,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (flag) {
       eventByPath.readCount = 1;
       this.allSessionEvent.eventUnReadCount++;
+      $('#notifyBell').toggleClass('notify');
       this.allSessionEvent.group.push(eventByPath);
     }
 

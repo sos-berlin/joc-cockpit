@@ -326,9 +326,10 @@ export class XmlEditorComponent implements OnInit {
   text;
   subscription: Subscription;
   validConfig = false;
-  nonValidattribute = {};
+  nonValidattribute: any = {};
   keyRefNodes;
   keyNodes;
+  breadCrumbArray: any = [];
   public Editor = ClassicEditor;
   @ViewChild('treeCtrl') treeCtrl;
   @ViewChild('myckeditor') ckeditor: any;
@@ -404,7 +405,8 @@ export class XmlEditorComponent implements OnInit {
     this.xpath();
     this.AddKeyRefrencing();
     this.selectedNode = this.nodes[0];
-    if(check) {
+    this.getData(this.nodes[0]);
+    if (check) {
       this.isLoading = true;
     } else {
       this.isLoading = false;
@@ -934,13 +936,13 @@ export class XmlEditorComponent implements OnInit {
       this.attachAttrs(attrs, child);
     }
     nodeArr.children.push(child);
-    if(check) {
+    if (check) {
       this.autoAddChild(child);
     }
     if (!(_.isEmpty(text))) {
       this.addText(text, nodeArr.children);
     }
-    
+
     if (!(_.isEmpty(value))) {
       this.attachValue(value, nodeArr.children);
     }
@@ -968,6 +970,7 @@ export class XmlEditorComponent implements OnInit {
           }
         }
       }
+      this.getData(child);
       this.printArraya(false);
     }
   }
@@ -1400,6 +1403,36 @@ export class XmlEditorComponent implements OnInit {
   // to send data in details component
   getData(event) {
     this.selectedNode = event;
+    console.log('***************\n', this.selectedNode, '\n***************');
+    this.breadCrumbArray = [];
+    this.createBreadCrumb(event);
+    this.breadCrumbArray.reverse();
+  }
+
+  // BreadCrumb
+  createBreadCrumb(node) {
+    if (this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid === node.parentId) {
+      this.breadCrumbArray.push(this.nodes[0]);
+    } else {
+      if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
+        for (let i = 0; i < this.nodes[0].children.length; i++) {
+          this.createBreadCrumbRecursion(node, this.nodes[0].children[i]);
+        }
+      }
+    }
+  }
+
+  createBreadCrumbRecursion(node, nodes) {
+    if (nodes.ref === node.parent && nodes.uuid === node.parentId) {
+      this.breadCrumbArray.push(nodes);
+      this.createBreadCrumb(nodes);
+    } else {
+      if (nodes.children && nodes.children.length > 0) {
+        for (let i = 0; i < nodes.children.length; i++) {
+          this.createBreadCrumbRecursion(node, nodes.children[i]);
+        }
+      }
+    }
   }
 
   // Expand automatically on add children
@@ -1458,12 +1491,12 @@ export class XmlEditorComponent implements OnInit {
 
   getParent(node, tree, list) {
     if (node.parentId === list.uuid && list.parent == '#') {
-      this.deleteData(list.children, tree, node);
+      this.deleteData(list.children, tree, node, list);
     } else {
       if (list.children) {
         for (let i = 0; i < list.children.length; i++) {
           if (node.parentId === list.children[i].uuid) {
-            this.deleteData(list.children[i].children, tree, node);
+            this.deleteData(list.children[i].children, tree, node, list.children[i]);
           } else {
             this.getParent(node, tree, list.children[i]);
           }
@@ -1472,15 +1505,14 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
-  deleteData(parentNode, tree, node) {
+  deleteData(parentNode, tree, node, parent) {
     if (parentNode) {
       for (let i = 0; i < parentNode.length; i++) {
         if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
           parentNode.splice(i, 1);
           tree.treeModel.update();
           this.printArraya(false);
-          let temp = {};
-          this.getData(temp);
+          this.getData(parent);
           this.isNext = false;
         }
       }
@@ -2345,7 +2377,11 @@ export class XmlEditorComponent implements OnInit {
     this.error = false;
     if (/[a-zA-Z0-9_]+.*$/.test(value)) {
       this.error = false;
-    } else {
+    } else if (ref == 'FileSpec') {
+        if (/[(a-zA-Z0-9_*.)]+.*$/.test(value)) {
+           this.error = false;
+        }
+      } else {      
       this.error = true;
       this.text = 'Required Field';
       this.errorName = ref;
@@ -2365,6 +2401,12 @@ export class XmlEditorComponent implements OnInit {
       this.error = false;
       tag = Object.assign(tag, {data: value});
       this.autoValidate();
+    } else if (ref == 'FileSpec') {
+        if (/[(a-zA-Z0-9_*.)]+.*$/.test(value)) {
+          this.error = false;
+          tag = Object.assign(tag, {data: value});
+          this.autoValidate();
+        }
     } else {
       this.error = true;
       this.text = 'Required Field';
@@ -2433,6 +2475,7 @@ export class XmlEditorComponent implements OnInit {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].key) {
               if (node.data === this.nodes[0].attributes[i].data) {
+                this.getData(this.nodes[0]);
                 this.selectedNode = this.nodes[0];
               }
             }
@@ -2457,6 +2500,7 @@ export class XmlEditorComponent implements OnInit {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.key) {
               if (node.data === child.attributes[i].data) {
+                this.getData(child);
                 this.selectedNode = child;
               }
             }
@@ -2481,6 +2525,7 @@ export class XmlEditorComponent implements OnInit {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyref) {
               if (node.data === this.nodes[0].attributes[i].data) {
+                this.getData(this.nodes[0]);
                 this.selectedNode = this.nodes[0];
               }
             }
@@ -2506,6 +2551,7 @@ export class XmlEditorComponent implements OnInit {
             if (child.attributes[i].name === child.keyref) {
               if (node.data === child.attributes[i].data) {
                 this.selectedNode = child;
+                this.getData(child)
               }
             }
           }
@@ -2646,12 +2692,14 @@ export class XmlEditorComponent implements OnInit {
   // validate xml
   validate() {
     this.autoValidate();
+
     if (_.isEmpty(this.nonValidattribute)) {
       this.validConfig = true;
       this.successPopToast();
     } else {
-      this.validateAttr('', this.nonValidattribute);
       this.popToast(this.nonValidattribute);
+      if(this.nonValidattribute.name)
+      this.validateAttr('', this.nonValidattribute);
     }
   }
 
@@ -2674,6 +2722,7 @@ export class XmlEditorComponent implements OnInit {
   // goto error location
   gotoErrorLocation() {
     if (this.errorLocation && this.errorLocation.ref) {
+      this.getData(this.errorLocation);
       this.selectedNode = this.errorLocation;
       this.errorLocation = {};
     }

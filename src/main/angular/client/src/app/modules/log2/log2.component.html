@@ -50,5 +50,9 @@
     <div style="display: none" class="text-lg text-muted" [ngClass]="{'show' : errStatus}">Error!</div>
     <div class="text m-t" [innerHtml]="error"></div>
 </div>
-<div id="spinner" *ngIf="loading"><div></div></div>
 <iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
+  <div class="spinner" *ngIf="loading">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>

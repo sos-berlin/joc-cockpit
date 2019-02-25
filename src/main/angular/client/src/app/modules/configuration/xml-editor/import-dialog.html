@@ -7,7 +7,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-  <div class="modal-body p-a" style="min-height: 240px">
+  <div class="modal-body p-a" style="min-height: 300px">
     <div class="row">
       <div class="col-md-12" *ngIf="uploader.queue.length === 0">
           <div ng2FileDrop [uploader]="uploader" class="drop-box-full" (onFileDrop)="onFileSelected($event)">
