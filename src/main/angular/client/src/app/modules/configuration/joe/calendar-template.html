@@ -6,6 +6,69 @@
       </div>
       <form #myForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="row">
+          <div class="col-md-12 hide" [ngClass]="{'show': display}">
+                <div class="form-group row">
+                    <label class="col-sm-3" translate>label.selectComments</label>
+
+                    <div class=" col-sm-9">
+                        <div>
+                            <label class="md-check w w-md">
+                                <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="predefined">
+                                <i class="primary"></i> <span translate>label.predefined</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="radio" name="radio1" [(ngModel)]="comments.radio" value="new">
+                                <i class="primary"></i> <span translate>label.individual</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" *ngIf="comments.radio=='predefined'"
+                     [ngClass]="{'has-error' : logError}">
+                    <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
+
+                    <div class="col-sm-9">
+                        <select class="form-control" [(ngModel)]="comments.comment" name="comment1" (change)="logError = false">
+                            <option value="" selected translate>label.selectPredefinedReason</option>
+                            <option *ngFor="let list of predefinedMessageList" value="{{list}}">{{list}}</option>
+                        </select>
+
+                        <div class="help-block text-danger" *ngIf="logError">
+                            <div translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : logError}">
+                    <label class="col-sm-3 " translate>label.comment</label>
+
+                    <div class=" col-sm-9">
+                        <textarea rows="3" class="form-control" maxlength="2000" name="comment"
+                                  [(ngModel)]="comments.comment"
+                                  placeholder="{{'placeholder.enterComment' | translate}}"
+                                  (focus)="logError = false"></textarea>
+                        <div class="help-block text-danger" *ngIf="logError">
+                            <div translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
+                    <div class="col-sm-9">
+                        <input type="text" pattern="/^(\d)+$/" class="form-control" name="timeSpend"
+                               placeholder="{{'placeholder.timeSpend' | translate}}"
+                               [(ngModel)]="comments.timeSpent">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
+
+                    <div class="col-sm-9">
+                        <input type="url" class="form-control" name="ticketLink"
+                               placeholder="{{'placeholder.ticketLink' | translate}}"
+                               [(ngModel)]="comments.ticketLink">
+                    </div>
+                </div>
+            </div>
           <div class="col-md-12">
             <div class="form-group row"
                  [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid) || !isUnique}">
@@ -42,8 +105,10 @@
                     <div translate>message.requiredError</div>
                   </div>
                 </div>
+                <div class="inside-input-field">
+                  <a (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
+                </div>
               </div>
-              <a class="p-t-xs" (click)="getFolderTree()"><i class="fa fa-folder-o fa-lg"></i></a>
             </div>
             <div class="form-group row">
               <label class="col-md-2 col-sm-4" translate>label.type</label>
@@ -57,12 +122,14 @@
             <div class="form-group row">
               <label class="col-md-2 col-sm-4 form-control-label" translate>label.category</label>
               <div class="col-md-6 col-sm-8">
-         <!--   <select class="form-control" style="border: none" [(ngModel)]="calendar.category" name="cCate">
+                <select class="form-control" style="border-top: none; border-bottom: none" [(ngModel)]="calendar.category" name="cCate">
                   <option [value]="" translate>label.chooseCategories</option>
                   <option *ngFor="let category of categories" [value]="category">{{category}}</option>
-                </select>-->
-                <input class="form-control" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
-                       [(ngModel)]="calendar.category" name="cCategory">
+                </select>
+                <div class="input-dropdown" style="margin-bottom: -25px">
+                  <input class="form-control" type="text" placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
+                         [(ngModel)]="calendar.category" name="cCategory">
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -97,11 +164,82 @@
             <button type="button" class="btn btn-sm pull-right btn-grey" [disabled]="!(calendar.to)"
                     (click)="createNewFrequency()" translate>button.addNewFrequency
             </button>
-            <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
+            <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b" [disabled]="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
                     (click)="showYearView()" translate>button.showYearView
             </button>
           </div>
           <div class="col-md-8 col-sm-12" style="max-height: 450px; overflow: auto">
+
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered ">
+                <thead>
+                <tr>
+                  <th translate>label.listOfFrequencies</th>
+                  <th translate>label.validFrom</th>
+                  <th translate>label.validTo</th>
+                  <th width="80" translate>label.action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let data of calendar.includesFrequency;let i = index;"
+                    [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
+                  <td class="cursor"
+                      style="border-right: none !important;vertical-align: top !important; ">
+                    <a (click)="updateFrequency(data);">{{data.str}}</a>
+                  </td>
+                  <td>
+                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1}}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary ">
+                      <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                    </a>
+                    <a><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a class="text-hover-color">
+                      <i (click)="removeFrequency(i)" class="fa fa-times "></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr *ngFor="let data of calendar.excludesFrequency;let i = index;"
+                    [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
+                  <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                    <i *ngIf="data.exclude" class="fa fa-minus"> </i>
+                    <a (click)="updateFrequency(data);">{{data.str}}</a>
+                  </td>
+                  <td>
+                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                    <span *ngIf="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
+                  </td>
+                  <td>
+                    <a class="text-hover-primary ">
+                      <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                    </a>
+                    <a><i (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a class="text-hover-color">
+                      <i (click)="removeFrequency(i)" class="fa fa-times "></i>
+                    </a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
             <div class="text-center"
                  *ngIf="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
               <span translate>message.noFrequencyFound</span>
@@ -126,8 +264,4 @@
       </form>
     </div>
   </div>
-</div>
-<div id="rightSideBar" *ngIf="previewCalendarView" class="slideInRight">>
-  <div class="close-btn" (click)="closeCalendarView()" ></div>
-  <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
 </div>

@@ -20,8 +20,11 @@ import {
   PreviewCalendarComponent,
   ProcessClassTemplateComponent,
   WorkFlowTemplateComponent,
-  TypeComponent
+  TypeComponent,
+  FrequencyModalComponent
 } from './joe/joe.component';
+import {CalendarService} from '../../services/calendar.service';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   imports: [
@@ -30,11 +33,13 @@ import {
     FileUploadModule,
     CKEditorModule
   ],
+  providers: [DatePipe, CalendarService],
   declarations: [
     ConfigurationComponent,
     XmlEditorComponent,
     JoeComponent,
     ImportModalComponent,
+    FrequencyModalComponent,
     ShowModalComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
@@ -47,7 +52,7 @@ import {
     PreviewCalendarComponent,
     CalendarTemplateComponent
   ],
-  entryComponents: [ImportModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, CalendarTemplateComponent]
+  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, CalendarTemplateComponent]
 })
 export class ConfigurationModule {
 }

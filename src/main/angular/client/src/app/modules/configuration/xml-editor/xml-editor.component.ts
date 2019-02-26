@@ -270,11 +270,15 @@ export class ConfirmationModalComponent implements OnInit {
   @Input() save;
   @Input() self;
   @Input() assignXsd;
-  constructor(public activeModal: NgbActiveModal) {}
-  ngOnInit() {}
+
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+  }
 
   confirmMessage(message) {
-    if(message === 'yes') {
+    if (message === 'yes') {
       this.save(this.self);
       this.activeModal.close('success');
     } else {
@@ -1407,6 +1411,12 @@ export class XmlEditorComponent implements OnInit {
     this.breadCrumbArray = [];
     this.createBreadCrumb(event);
     this.breadCrumbArray.reverse();
+    if (this.preferences.expandOption === 'both') {
+      const someNode = this.treeCtrl.treeModel.getNodeById(event.uuid);
+      if (someNode) {
+        someNode.expand();
+      }
+    }
   }
 
   // BreadCrumb

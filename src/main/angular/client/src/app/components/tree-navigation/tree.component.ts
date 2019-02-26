@@ -8,7 +8,7 @@ declare const $;
   templateUrl: './tree.component.html'
 })
 export class TreeComponent implements OnInit {
-
+  preferences: any;
   @Input() tree;
   @ViewChild('treeCtrl') treeCtrl;
 
@@ -18,7 +18,7 @@ export class TreeComponent implements OnInit {
   }
 
   static setGraphHt() {
-    let dom = $('.scroll-y');
+    const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 16;
       top = top - $(window).scrollTop();
@@ -39,6 +39,9 @@ export class TreeComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
     this.onResize();
     const interval = setInterval(() => {
       if (this.treeCtrl && this.treeCtrl.treeModel) {
@@ -74,6 +77,11 @@ export class TreeComponent implements OnInit {
 
   onNodeSelected(e): void {
     this.navFullTree();
+    if (this.preferences.expandOption === 'both') {
+      const someNode = this.treeCtrl.treeModel.getNodeById(e.node.data.id);
+      someNode.expand();
+     
+    }
     e.node.action = 'NODE';
     this.messageEvent.emit(e.node);
   }

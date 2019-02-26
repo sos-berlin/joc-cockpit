@@ -236,7 +236,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       abortAndRestartBtn: any,
       terminateAndRestartBtn: any, terminateAndRestartWithinBtn: any, pauseBtn: any, continueBtn: any,
       removeInstanceBtn: any, downloadLogBtn: any, downloadDebugLogBtn: any, labelDatabase: any, labelArchitecture: any
-      , labelDistribution: any, labelSurveyDate: any, labelVersion: any, labelStartedAt: any;
+      , labelDistribution: any, labelSurveyDate: any, labelVersion: any, labelStartedAt: any, labelUrl:any;
 
     self.translate.get('label.state').subscribe(translatedValue => {
       labelState = translatedValue;
@@ -292,6 +292,9 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
     });
     self.translate.get('label.startedAt').subscribe(translatedValue => {
       labelStartedAt = translatedValue;
+    });
+    self.translate.get('label.url').subscribe(translatedValue => {
+      labelUrl = translatedValue;
     });
 
     for (let i = 0; i < this.clusterStatusData.members.masters.length; i++) {
@@ -510,10 +513,23 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
           status = translatedValue;
         });
 
+        let d1 = ' - ', dis = ' - ', arc = ' - ';
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.startedAt) {
+          d1 = moment(self.clusterStatusData.supervisors[i].data.jobscheduler.startedAt).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
+        }
+        if (self.clusterStatusData.supervisors[i].data.jobscheduler.os) {
+          arc = self.clusterStatusData.supervisors[i].data.jobscheduler.os.architecture;
+          dis = self.clusterStatusData.supervisors[i].data.jobscheduler.os.distribution;
+        }
         self.lastId = self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port;
-
+        let popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
+        '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
+        '<br> <span class="_600">' + labelUrl + ' : </span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.url +
+        '<br><span class="_600">' + labelVersion + ' :</span>' + self.clusterStatusData.supervisors[i].data.jobscheduler.version +
+        '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
+        '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(self.clusterStatusData.supervisors[i].data.jobscheduler.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);
         self.template = self.template +
-          ' <div class="cluster-rect" ' +
+          ' <div class="cluster-rect" data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
           'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '">' +
           '<span id="' + 'sp' + self.clusterStatusData.supervisors[i].host + self.clusterStatusData.supervisors[i].port + '"  class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
           '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
@@ -668,6 +684,7 @@ export class MasterClusterComponent implements OnInit, OnDestroy {
       }
       let popoverTemplate = '<span class="_600">' + labelArchitecture + ' :</span> ' + arc +
         '<br> <span class="_600">' + labelDistribution + ' : </span>' + dis +
+        '<br> <span class="_600">' + labelUrl + ' : </span>' + master.url +
         '<br><span class="_600">' + labelVersion + ' :</span>' + master.version +
         '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
         '<br><span class="_600">' + labelSurveyDate + ' : </span>' + moment(master.surveyDate).tz(JSON.parse(sessionStorage.preferences).zone).format(JSON.parse(sessionStorage.preferences).dateFormat);

@@ -37,7 +37,13 @@ export class TreeModalComponent implements OnInit, OnDestroy {
       compact: true,
       types: this.type ? [this.type] : undefined
     }).subscribe(res => {
-      this.prepareTree(res);
+      this.tree = this.coreService.prepareTree(res);
+      setTimeout(() => {
+        let node = this.treeCtrl.treeModel.getNodeById(1);
+        if (node) {
+          node.expand();
+        }
+      }, 10);
     });
   }
 
@@ -52,8 +58,7 @@ export class TreeModalComponent implements OnInit, OnDestroy {
           type: this.type === 'WORKINGDAYSCALENDAR' ? 'WORKING_DAYS' : 'NON_WORKING_DAYS',
           folders: [{folder: e.node.data.path}]
         }).subscribe((res: any) => {
-            console.log(res.calendars);
-            e.node.data.calendars = res.calendars;
+          e.node.data.calendars = res.calendars;
         });
       }
     } else {
@@ -77,43 +82,6 @@ export class TreeModalComponent implements OnInit, OnDestroy {
 
   collapseAll(): void {
     this.treeCtrl.treeModel.collapseAll();
-  }
-
-
-  private prepareTree(actualData) {
-    const self = this;
-    let output = [{
-      id: 1,
-      name: actualData.folders[0].path,
-      path: actualData.folders[0].path,
-      children: []
-    }];
-
-    this.recursive(actualData.folders[0], output[0].children);
-    this.tree = output;
-
-    setTimeout(() => {
-      let node = self.treeCtrl.treeModel.getNodeById(1);
-      if (node) {
-        node.expand();
-      }
-    }, 10);
-  }
-
-  private recursive(data, output) {
-    if (data.folders && data.folders.length > 0) {
-      data.folders = _.sortBy(data.folders, 'name');
-      for (let i = 0; i < data.folders.length; i++) {
-        output.push({
-          name: data.folders[i].name,
-          path: data.folders[i].path,
-          children: []
-        });
-        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children);
-        }
-      }
-    }
   }
 
   submit(): void {

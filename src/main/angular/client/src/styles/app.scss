@@ -196,135 +196,227 @@
   }
 }
 
-@font-face {
-  font-family: "joc";
-  src: url("../assets/fonts/joc.eot");
-  src: url("../assets/fonts/joc.eot?#iefix") format("embedded-opentype"),
-  url("../assets/fonts/joc.woff") format("woff"),
-  url("../assets/fonts/joc.ttf") format("truetype"),
-  url("../assets/fonts/joc.svg#joc") format("svg");
-  font-weight: normal;
-  font-style: normal;
+/* Notifications */
+
+.notify {
+  -webkit-animation: ring .5s ease;
+  animation: ring .5s ease;
 }
 
-[data-icon]:before {
-  font-family: "joc" !important;
-  content: attr(data-icon);
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  speak: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@-webkit-keyframes ring {
+  0% {
+    -webkit-transform: rotate(35deg);
+  }
+  12.5% {
+    -webkit-transform: rotate(-30deg);
+  }
+  25% {
+    -webkit-transform: rotate(25deg);
+  }
+  37.5% {
+    -webkit-transform: rotate(-20deg);
+  }
+  50% {
+    -webkit-transform: rotate(15deg);
+  }
+  62.5% {
+    -webkit-transform: rotate(-10deg);
+  }
+  75% {
+    -webkit-transform: rotate(5deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
 }
 
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
-  font-family: "joc" !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  speak: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@keyframes ring {
+  0% {
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+  }
+  12.5% {
+    -webkit-transform: rotate(-30deg);
+    transform: rotate(-30deg);
+  }
+  25% {
+    -webkit-transform: rotate(25deg);
+    transform: rotate(25deg);
+  }
+  37.5% {
+    -webkit-transform: rotate(-20deg);
+    transform: rotate(-20deg);
+  }
+  50% {
+    -webkit-transform: rotate(15deg);
+    transform: rotate(15deg);
+  }
+  62.5% {
+    -webkit-transform: rotate(-10deg);
+    transform: rotate(-10deg);
+  }
+  75% {
+    -webkit-transform: rotate(5deg);
+    transform: rotate(5deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
 }
 
-.icon-alarm-icon:before {
-  content: "\e000";
+/* modal animation */
+.modal-content {
+  animation-name: zoom;
+  animation-duration: 0.3s;
 }
 
-.icon-jobs-icon:before {
-  content: "\e001";
+@keyframes zoom {
+  0% {
+    transform: scale(0.5)
+  }
+  75% {
+    transform: scale(1.1)
+  }
+  100% {
+    transform: scale(1)
+  }
 }
 
-.icon-lock-icon:before {
-  content: "\e002";
+@-webkit-keyframes slideInRight {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+    visibility: visible
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
 }
 
-.icon-audit-log-icon:before {
-  content: "\e003";
+@keyframes slideInRight {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+    visibility: visible
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
 }
 
-.icon-bell-icon:before {
-  content: "\e004";
+.slideInRight {
+  -webkit-animation-name: slideInRight;
+  animation-name: slideInRight
 }
 
-.icon-merge-icon:before {
-  content: "\e005";
+$trans: cubic-bezier(0.3, 0, 0.7, 1);
+.alert {
+  animation: shake 1s cubic-bezier(.36, .07, .19, .97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  @keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
 }
 
-.icon-orders-icon:before {
-  content: "\e006";
+.dropdown-menu {
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-name: slideUpIn;
+  animation-name: slideUpIn;
 }
 
-.icon-category-icon:before {
-  content: "\e007";
+@-webkit-keyframes slideUpIn {
+  0% {
+
+    -webkit-transform: translateY(20px);
+  }
+  100% {
+
+    -webkit-transform: translateY(0);
+  }
+
+  0% {
+    -webkit-transform: translateY(20px);
+  }
 }
 
-.icon-configuration-icon:before {
-  content: "\e008";
+@keyframes slideUpIn {
+  0% {
+    transform: translateY(20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+  0% {
+    transform: translateY(20px);
+  }
 }
 
-.icon-resources-icon:before {
-  content: "\e009";
+.animated {
+  -webkit-animation-duration: .5s;
+  animation-duration: 0.5s;
 }
 
-.icon-restore-clock-icon:before {
-  content: "\e00a";
+.fade-in {
+  opacity: 0;
+  -webkit-animation: fadeIn ease-in 1;
+  -moz-animation: fadeIn ease-in 1;
+  animation: fadeIn ease-in 1;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-duration: .5s;
+  -moz-animation-duration: .5s;
+  animation-duration: 0.5s;
 }
 
-.icon-daily-plan-icon:before {
-  content: "\e00b";
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-.icon-dashboard-icon:before {
-  content: "\e00c";
+@-moz-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-.icon-upload-icon:before {
-  content: "\e00d";
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
 
-.icon-waiting-icon:before {
-  content: "\e00e";
-}
-
-.icon-end-start-icon:before {
-  content: "\e00f";
-}
-
-.icon-export-icon:before {
-  content: "\e010";
-}
-
-.icon-workflows-icon:before {
-  content: "\e011";
-}
-
-.icon-file-transfers-icon:before {
-  content: "\e012";
-}
-
-.icon-fork-icon:before {
-  content: "\e013";
-}
-
-.icon-help-icon:before {
-  content: "\e014";
-}
-
-.icon-inclusive-icon:before {
-  content: "\e015";
-}
-
-.icon-calendar-icon:before {
-  content: "\e016";
-}
-
-.icon-process-class-icon:before {
-  content: "\e017";
+  to {
+    opacity: 1;
+  }
 }

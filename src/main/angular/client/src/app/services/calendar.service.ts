@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {CoreService} from '../../../services/core.service';
+import {CoreService} from './core.service';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 

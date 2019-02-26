@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import {Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class DataService {
@@ -7,6 +7,7 @@ export class DataService {
   private eventAnnouncedSource = new Subject<any>();
   private refreshUISource = new Subject<any>();
   private switchSchedulerSource = new Subject<any>();
+  public isWorkFlowReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   // Observable string streams
   eventAnnounced$ = this.eventAnnouncedSource.asObservable();

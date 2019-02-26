@@ -36,7 +36,7 @@
         <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setStartDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]="filter.from" name="from" [config]="config"></dp-date-picker>
         <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.from" #fromTime="ngModel"
                class="form-control input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" >
-        <a class="text-sm text-primary" *ngIf="filter.from || filter.fromTime"
+        <a class="text-sm text-primary p-l-sm" *ngIf="filter.from || filter.fromTime"
            (click)="filter.from='';filter.fromTime=''; " translate>button.clear</a>
       </div>
     </div>
@@ -46,7 +46,7 @@
         <dp-date-picker [theme]="'dp-material dp-main'" placeholder="{{'placeholder.setEndDate' | translate}} ({{dateFormat | uppercase}})" [(ngModel)]="filter.to" name="to" [config]="config"></dp-date-picker>
         <input type="text" timevalidator maxlength="8" pattern="([01]?[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]" [disabled]="!filter.to" #toTime="ngModel"
                class="form-control input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" >
-        <a class="text-sm text-primary" *ngIf="filter.to || filter.toTime"
+        <a class="text-sm text-primary p-l-sm" *ngIf="filter.to || filter.toTime"
            (click)="filter.to='';filter.toTime=''; " translate>button.clear</a>
       </div>
     </div>

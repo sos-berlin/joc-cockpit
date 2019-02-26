@@ -90,10 +90,6 @@
                         (click)="importCalendar()"><i class="fa fa-upload"></i>&nbsp;
                   {{'button.importCalendar' | translate}}
                 </button>
-                <button *ngIf="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm"
-                        (click)="addCalendar()"><i class="fa fa-plus"></i>&nbsp;
-                  {{'button.addCalendar' | translate}}
-                </button>
                 <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
               </div>
             </div>
@@ -146,8 +142,6 @@
                           <a class=" more-option text-black-lt" data-toggle="dropdown"><i
                             class="text fa fa-ellipsis-h"></i></a>
                           <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
-                              <a class="hide dropdown-item" [ngClass]="{show:permission.Calendar.edit.change}"
-                                 (click)="editCalendar(calendar)" translate>button.editCalendar</a>
                               <a class="hide dropdown-item bg-hover-color"
                                  [ngClass]="{show:permission.Calendar.edit.delete}" (click)="deleteCalendar(calendar)"
                                  translate>button.deleteCalendar</a>
@@ -179,10 +173,10 @@
                     </div>
                     <div class="box-footer b-t">
                       <div>
-                        <a class="text-left primary-text-hover-color " *ngIf="permission.Calendar.edit.change"
-                           (click)="editCalendar(calendar)">
-                          <i class="fa fa-pencil text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>button.editCalendar</span></a>
+                        <a class="text-left primary-text-hover-color"
+                           (click)="exportCalendar(calendar)">
+                          <i class="fa fa-download text-black-lt"></i>&nbsp;
+                          <span class="text-black-lt" translate>button.exportCalendar</span></a>
                         <a class="pull-right text-hover-color " *ngIf="permission.Calendar.edit.delete"
                            (click)="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i>&nbsp;
                           <span class="text-black-lt" translate>button.deleteCalendar</span></a>
@@ -255,8 +249,6 @@
                             <i class="fa fa-ellipsis-h"></i>
                         </button>
                         <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                          <a class="hide dropdown-item" [ngClass]="{show:permission.Calendar.edit.change}"
-                             (click)="editCalendar(calendar)" translate>button.editCalendar</a>
                           <a class="hide dropdown-item  bg-hover-color" [ngClass]="{show:permission.Calendar.edit.delete}"
                              (click)="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                           <a class="dropdown-item" (click)="exportCalendar(calendar)" translate>button.exportCalendar</a>

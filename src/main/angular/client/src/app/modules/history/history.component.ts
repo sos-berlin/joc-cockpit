@@ -840,25 +840,25 @@ export class HistoryComponent implements OnInit, OnDestroy {
       radio: 'current',
       planned: 'today',
       from: moment().format(this.dateFormatM),
-      fromTime: '00:00',
+      fromTime: '00:00:00',
       to: moment().format(this.dateFormatM),
-      toTime: '24:00'
+      toTime: '24:00:00'
     };
     this.jobSearch = {
       radio: 'current',
       planned: 'today',
       from: moment().format(this.dateFormatM),
-      fromTime: '00:00',
+      fromTime: '00:00:00',
       to: moment().format(this.dateFormatM),
-      toTime: '24:00'
+      toTime: '24:00:00'
     };
     this.yadeSearch = {
       radio: 'current',
       planned: 'today',
       from: moment().format(this.dateFormatM),
-      fromTime: '00:00',
+      fromTime: '00:00:00',
       to: moment().format(this.dateFormatM),
-      toTime: '24:00'
+      toTime: '24:00:00'
     };
 
   }

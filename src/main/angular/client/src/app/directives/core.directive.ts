@@ -177,7 +177,7 @@ export class ResizableDirective implements OnInit {
     if (this.el.nativeElement.attributes.class.value.match('resource')) {
       dom = $('#leftPanel');
       if (dom) {
-        dom.css('top', '192px');
+        dom.css('top', '191px');
         dom.resizable({
           handles: 'e',
           maxWidth: 450,

@@ -42,7 +42,7 @@
                [disabled]="!filter.from" #fromTime="ngModel"
                class="form-control input-time m-l time-picker" [(ngModel)]="filter.fromTime" name="fromTime"
                placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)">
-        <a class="text-sm text-primary" *ngIf="filter.from || filter.fromTime"
+        <a class="text-sm text-primary p-l-sm" *ngIf="filter.from || filter.fromTime"
            (click)="filter.from='';filter.fromTime=''; " translate>button.clear</a>
       </div>
     </div>
@@ -56,7 +56,7 @@
                [disabled]="!filter.to" #toTime="ngModel"
                class="form-control input-time m-l time-picker" [(ngModel)]="filter.toTime" name="toTime"
                placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)">
-        <a class="text-sm text-primary" *ngIf="filter.to || filter.toTime"
+        <a class="text-sm text-primary p-l-sm" *ngIf="filter.to || filter.toTime"
            (click)="filter.to='';filter.toTime=''; " translate>button.clear</a>
       </div>
     </div>
@@ -86,9 +86,10 @@
       <div class=" col-sm-6">
         <input type="text" class="form-control" name="regex" #regex="ngModel"
                placeholder="{{'placeholder.regexAndChooseTree' | translate}}" [(ngModel)]="filter.regex">
+        <div class="inside-input-field">
+          <a (click)="getFolderTree(false)"><i class="fa fa-folder-o fa-lg"></i></a>
+        </div>
       </div>
-      <div class="col-sm-1 p-l-0 p-t-sm"><a (click)="getFolderTree(false)"><i
-        class="fa fa-folder-o fa-lg"></i></a></div>
     </div>
     <div class="form-group row" *ngIf="filter.paths && filter.paths.length>0">
       <label class="col-sm-4" [ngClass]="{'col-md-2': isSearch}" translate>label.folders</label>
@@ -108,10 +109,9 @@
             <i class="pull-right fa fa-remove m-l text-hover-primary" (click)="remove(job,'job')"></i>
           </div>
         </div>
-      </div>
-      <div class="col-sm-1" [ngClass]="{'p-l-0': filter.jobs && filter.jobs.length>0}">
-        <a (click)="getFolderTree(true)">
-          <i class="fa fa-folder-o fa-lg"></i></a>
+        <div class="inside-input-field">
+          <a (click)="getFolderTree(true)"><i class="fa fa-folder-o fa-lg"></i></a>
+        </div>
       </div>
     </div>
     <div class="form-group row">

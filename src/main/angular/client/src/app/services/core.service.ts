@@ -551,6 +551,24 @@ export class CoreService {
     $('.sidebar-btn').hide();
   }
 
+  private recursive(data, output) {
+    if (data.folders && data.folders.length > 0) {
+      for (let i = 0; i < data.folders.length; i++) {
+        output.push({
+          name: data.folders[i].name,
+          path: data.folders[i].path,
+          children: []
+        });
+        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
+          this.recursive(data.folders[i], output[i].children);
+          output[i].children = _.sortBy(output[i].children, function (x) {
+            return x.name.toLowerCase();
+          });
+        }
+      }
+    }
+  }
+
   prepareTree(actualData): any {
     if (actualData.folders && actualData.folders.length > 0) {
       let output = [{
@@ -561,6 +579,9 @@ export class CoreService {
       }];
 
       this.recursive(actualData.folders[0], output[0].children);
+      output[0].children = _.sortBy(output[0].children, function (i) {
+        return i.name.toLowerCase();
+      });
       return output;
     } else {
       return [];
@@ -889,22 +910,6 @@ export class CoreService {
 
   getProtocols() {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
-  }
-
-  private recursive(data, output) {
-    if (data.folders && data.folders.length > 0) {
-      data.folders = _.sortBy(data.folders, 'name');
-      for (let i = 0; i < data.folders.length; i++) {
-        output.push({
-          name: data.folders[i].name,
-          path: data.folders[i].path,
-          children: []
-        });
-        if (data.folders[i].folders && data.folders[i].folders.length > 0) {
-          this.recursive(data.folders[i], output[i].children);
-        }
-      }
-    }
   }
 
   refreshParent() {

@@ -12,7 +12,7 @@
         <div class="form-group row" [ngClass]="{'has-error' : ((masterName.dirty || masterName.touched) && masterName.invalid)}">
             <label class="col-sm-4 form-control-label" translate>label.master</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" name="name" placeholder="{{'placeholder.master' | translate}}" [(ngModel)]="currentMaster.master" required #masterName="ngModel"
+                <input type="text" class="form-control" name="name" placeholder="{{'placeholder.master' | translate}}"  [(ngModel)]="currentMaster.master" required autofocus autocomplete="false" #masterName="ngModel"
                        (blur)="checkMaster(currentMaster.master)"/>
                  <div *ngIf="masterName.invalid && (masterName.dirty || masterName.touched)" class= "text-danger help-block">
                      <div *ngIf="masterName.errors.required" translate>
