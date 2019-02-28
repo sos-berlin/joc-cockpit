@@ -18,7 +18,7 @@
       </Connector>
     </add>
     <add as="rectangle">
-      <FileOrder regex="" agent="" checkSteadyState="true" directory="">
+      <FileOrder label="File Order" regex="" agent="" checkSteadyState="true" directory="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>
@@ -234,6 +234,7 @@
     <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.png"
          icon="./assets/mxgraph/images/symbols/abort-white.png"/>
     <add as="Job" template="rounded" icon="./assets/mxgraph/images/symbols/job-white.png"/>
+    <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/symbols/order-white.png"/>
     <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.png"
          icon="./assets/mxgraph/images/symbols/terminate-white.png"/>
     <hr/>

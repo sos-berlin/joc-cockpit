@@ -50,8 +50,8 @@
         </div>
       </div>
       <div id="centerPanel" class="centerPanel">
-        <div [hidden]="type !== 'workflow'" >
-          <app-workflow-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [pageView]="pageView" [selectedPath]="selectedPath"></app-workflow-template>
+        <div *ngIf="type == 'workflow'" >
+          <app-workflow-template [preferences]="preferences" [schedulerId]="schedulerIds.selected" [selectedPath]="selectedPath"></app-workflow-template>
         </div>
         <div *ngIf="type == 'order'">
           <app-order-template [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-template>

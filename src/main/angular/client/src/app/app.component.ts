@@ -24,7 +24,7 @@ export class AppComponent {
   }
 
   static themeInit() {
-    if (localStorage.$SOS$THEME != null) {
+    if (localStorage.$SOS$THEME != null && localStorage.$SOS$THEME != 'undefined') {
       $('#style-color').attr('href', './styles/' + window.localStorage.$SOS$THEME + '-style.css');
       if (localStorage.$SOS$MENUTHEME != null) {
         $('#headerColor').addClass(window.localStorage.$SOS$MENUTHEME);

@@ -20,7 +20,6 @@ import {
   PreviewCalendarComponent,
   ProcessClassTemplateComponent,
   WorkFlowTemplateComponent,
-  TypeComponent,
   FrequencyModalComponent
 } from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
@@ -44,7 +43,6 @@ import {DatePipe} from '@angular/common';
     ShowChildModalComponent,
     ConfirmationModalComponent,
     WorkFlowTemplateComponent,
-    TypeComponent,
     OrderTemplateComponent,
     ProcessClassTemplateComponent,
     LockTemplateComponent,

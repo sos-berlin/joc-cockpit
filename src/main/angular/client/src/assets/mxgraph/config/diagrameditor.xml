@@ -18,7 +18,7 @@
       </Connector>
     </add>
     <add as="rectangle">
-      <FileOrder regex="" agent="" checkSteadyState="true" directory="">
+      <FileOrder label="File Order" regex="" agent="" checkSteadyState="true" directory="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>
@@ -32,14 +32,14 @@
       </Job>
     </add>
     <add as="If">
-      <If predicate="returnCode > 0">
+      <If label="If" predicate="returnCode > 0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="150" height="70"/>
         </mxCell>
       </If>
     </add>
     <add as="Retry">
-      <Retry repeat="10" delay="0">
+      <Retry label="Retry" repeat="10" delay="0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="180" height="70"/>
         </mxCell>
@@ -233,6 +233,7 @@
     <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort.png"
          icon="./assets/mxgraph/images/symbols/abort.png"/>
     <add as="Job" template="rounded" icon="./assets/mxgraph/images/symbols/job.png"/>
+    <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/symbols/order.png"/>
     <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate.png"
          icon="./assets/mxgraph/images/symbols/terminate.png"/>
     <hr/>

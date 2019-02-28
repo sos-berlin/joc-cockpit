@@ -251,7 +251,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private setUserPreferences(preferences, configObj) {
-    if (sessionStorage.preferenceId === 0) {
+    if (sessionStorage.preferenceId === 0 || sessionStorage.preferenceId == '0') {
       const timezone = jstz.determine();
       if (timezone) {
         preferences.zone = timezone.name() || this.selectedJobScheduler.timeZone;
@@ -282,15 +282,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
         preferences.auditLog = true;
       }
       preferences.events = {};
-
-      preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
-      preferences.events.taskCount = 0;
-      preferences.events.jobCount = 0;
-      preferences.events.jobChainCount = 1;
-      preferences.events.positiveOrderCount = 1;
-      preferences.events.negativeOrderCount = 2;
+      preferences.events.filter = [];
       configObj.configurationItem = JSON.stringify(preferences);
-
       configObj.id = 0;
       sessionStorage.preferences = configObj.configurationItem;
       this.coreService.post('configuration/save', configObj).subscribe(res => {
@@ -299,9 +292,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setUserObject(preferences, res, configObj) {
-    if (res.configuration && res.configuration.configurationItem) {
-      sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
+  private setUserObject(preferences, conf, configObj) {
+    if (conf.configurationItem) {
+      sessionStorage.preferences = JSON.parse(JSON.stringify(conf.configurationItem));
       preferences = JSON.parse(sessionStorage.preferences);
       $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
       localStorage.$SOS$THEME = preferences.theme;
@@ -317,33 +310,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setUserProfileConfiguration(configObj, preferences, res1, id) {
-    if (res1.configurations && res1.configurations.length > 0) {
-      sessionStorage.preferenceId = res1.configurations[0].id;
-      this.coreService.post('configuration', {
-        jobschedulerId: id,
-        id: sessionStorage.preferenceId
-      }).subscribe(res => {
-        this.setUserObject(preferences, res, configObj);
-
-      }, (err) => {
-        this.setUserPreferences(preferences, configObj);
-      });
-    } else {
-      this.setUserPreferences(preferences, configObj);
-    }
-  }
-
   private getUserProfileConfiguration(id, user) {
     const configObj = {
       jobschedulerId: id,
       account: user,
       configurationType: 'PROFILE'
     };
-    const preferences = {};
-    this.coreService.post('configurations', configObj).subscribe(res1 => {
+    let preferences: any = {};
+    this.coreService.post('configurations', configObj).subscribe((res: any) => {
       sessionStorage.preferenceId = 0;
-      this.setUserProfileConfiguration(configObj, preferences, res1, id);
+      if (res.configurations && res.configurations.length > 0) {
+        let conf = res.configurations[0];
+        sessionStorage.preferenceId = conf.id;
+        this.setUserObject(preferences, conf, configObj);
+      } else {
+        this.setUserPreferences(preferences, configObj);
+      }
     }, () => {
       this.setUserPreferences(preferences, configObj);
     });

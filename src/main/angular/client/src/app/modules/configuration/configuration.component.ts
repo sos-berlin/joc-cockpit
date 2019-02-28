@@ -18,12 +18,12 @@ export class ConfigurationComponent {
   }
 
   calcHeigth() {
-    let dom = $('.scroll-y');
+    const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 12;
       top = top - $(window).scrollTop();
-      if (top < 1) {
-        top = 64;
+      if (top < 70) {
+        top = 92;
       }
       $('.sticky').css('top', top);
       const ht = window.innerHeight - top;
@@ -31,9 +31,9 @@ export class ConfigurationComponent {
         if ($('#graph')) {
           $('#graph').height(ht - 60 + 'px');
         }
-        $('.tree-block').height((ht - 20) + 'px');
+        $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
       }
-      if (top < 132 && top > 50) {
+      if (top < 132 && top > 92) {
         setTimeout(() => {
           this.calcHeigth();
         }, 5);

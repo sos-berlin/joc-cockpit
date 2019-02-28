@@ -3,7 +3,6 @@
     <div class="m-b-sm p-b-sm">
       <div class="inline w-full">
         <div class="inline pull-right">
-          <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           <button (click)="toggleRightSideBar()" class="btn btn-grey btn-sm m-l-sm">
             <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
             <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
@@ -23,32 +22,19 @@
   <div class="col-md-12 m-b-sm ">
     <div class="m-b-sm b-b p-b-sm">
       <div class="inline">
-        <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>
-        <div [hidden]="pageView !== 'grid'" class="inline" id="mainActions"></div>
+        <div class="inline" id="zoomActions"></div>
+        <div class="inline" id="mainActions"></div>
       </div>
     </div>
   </div>
   <div [ngClass]="{'col-md-12':isPropertyHide}" class="col-md-9">
     <div>
-      <div [hidden]="pageView !== 'grid'">
+      <div>
         <div id="toolbar"></div>
         <div class="graph-container">
           <div id="graph"></div>
           <!-- Creates a container for the outline -->
           <div id="outlineContainer"></div>
-        </div>
-      </div>
-      <div *ngIf="pageView !== 'grid'">
-        <div class="box p-a">
-          <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
-            <div class="text-primary">Start</div>
-            <app-type [workflowJson]="workFlowJson.instructions"></app-type>
-            <div class="text-primary">End</div>
-          </div>
-          <div *ngIf="!workFlowJson.instructions || workFlowJson.instructions.length == 0"
-               class="text text-center text-uppercase p-a-md">
-            No workflow Added to <span class="text-primary">{{selectedPath}}</span>
-          </div>
         </div>
       </div>
     </div>

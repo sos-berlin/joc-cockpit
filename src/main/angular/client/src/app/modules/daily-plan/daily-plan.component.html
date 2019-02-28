@@ -124,7 +124,7 @@
                         <button class="btn btn-grey btn-sm bg-hover-color" (click)="removeSelectedOrder()"><i class="fa fa-trash"></i>&nbsp;
                             <span class="hidden-sm-down" translate>button.removeSelectedOrder</span></button>
                     </div>
-                    <!--<app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>-->
+                    <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
                 </div>
             </div>
         </div>
@@ -156,12 +156,12 @@
           </div>
         </div>
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
-<!--            <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
+            <div class=" hide " [ngClass]="{'show': pageView==='grid' && plans.length>0}">
                 <div class="box p-a">
                     <div id="embedded-Gantt"></div>
                 </div>
-            </div>-->
-            <div class="hide box p-a " [ngClass]="{'show': plans.length>0}">
+            </div>
+            <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid' && plans.length>0}">
                 <div class="table-responsive" *ngIf="plans.length>0">
                     <table class="table table-hover table-bordered " id="dailyPlanTableId">
                         <thead>

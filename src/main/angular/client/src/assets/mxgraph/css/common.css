@@ -7,7 +7,6 @@ div.mxRubberband {
 	background: #0077FF;
 }
 .mxCellEditor {
-	background: url('../images/transparent.gif');
 	border-color: transparent;
 	border-style: solid;
 	display: inline-block;
@@ -68,7 +67,6 @@ td.mxWindowPane input, td.mxWindowPane select, td.mxWindowPane textarea, td.mxWi
   padding: 1px;
 }
 td.mxWindowPane button {
-  background: url('../images/button.gif') repeat-x;
   font-size: 8pt;
   padding: 2px;
   float: left;

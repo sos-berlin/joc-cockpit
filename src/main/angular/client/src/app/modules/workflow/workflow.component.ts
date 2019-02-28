@@ -38,7 +38,7 @@ export class TypeComponent implements OnInit {
 })
 export class WorkflowComponent implements OnInit, OnDestroy {
 
-  WorkflowJson: any = {
+  workFlowJson: any = {
     'id': '',
     'instructions': [
       {
@@ -205,7 +205,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   tree: any = [];
   preferences: any = {};
   permission: any = {};
-  pageView: any;
+  pageView = 'grid';
 
   @ViewChild(TreeComponent) child;
 
@@ -214,6 +214,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (sessionStorage.$SOS$WORKFLOW) {
+      this.workFlowJson = JSON.parse(sessionStorage.$SOS$WORKFLOW);
+    }
     this.init();
   }
 

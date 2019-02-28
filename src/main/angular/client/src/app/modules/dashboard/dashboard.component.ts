@@ -69,8 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.options = {
       gridType: GridType.VerticalFixed,
       compactType: CompactType.None,
-      useTransformPositioning: false,
-      margin: 22,
+      margin: 20,
       outerMargin: true,
       outerMarginTop: null,
       outerMarginRight: null,
@@ -93,6 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       fixedRowHeight: 128,
       keepFixedHeightInMobile: false,
       keepFixedWidthInMobile: false,
+      useTransformPositioning: false,
       scrollSensitivity: 10,
       scrollSpeed: 20,
       ignoreMarginInRow: false,

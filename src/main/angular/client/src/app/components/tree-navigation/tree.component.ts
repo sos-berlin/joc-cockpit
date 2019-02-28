@@ -20,17 +20,17 @@ export class TreeComponent implements OnInit {
   static setGraphHt() {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
-      let top = dom.position().top + 16;
+      let top = dom.position().top + 12;
       top = top - $(window).scrollTop();
-      if (top < 1) {
-        top = 64;
+      if (top < 70) {
+        top = 92;
       }
       $('.sticky').css('top', top);
       const ht = window.innerHeight - top;
       if (ht > 400) {
-        $('#tre').height(ht + 'px');
+         $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
       }
-      if (top < 140 && top > 65) {
+      if (top < 140 && top > 92) {
         setTimeout(() => {
           TreeComponent.setGraphHt();
         }, 5);
@@ -42,12 +42,13 @@ export class TreeComponent implements OnInit {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    this.onResize();
+    TreeComponent.setGraphHt();
     const interval = setInterval(() => {
       if (this.treeCtrl && this.treeCtrl.treeModel) {
         const node = this.treeCtrl.treeModel.getNodeById(1);
         if (node) {
           node.expand();
+          TreeComponent.setGraphHt();
           clearInterval(interval);
         }
       }

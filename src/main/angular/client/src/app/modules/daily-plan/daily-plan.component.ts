@@ -1123,7 +1123,66 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   private sortByKey(array, key, order) {
     const reA = /[^a-zA-Z]/g;
     const self = this;
-    if (key === 'duration') {
+    if (key === 'processedPlanned' || key === 'orderId') {
+      return array.sort(function (x, y) {
+        let key1 = key === 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
+
+        let a = x[key1];
+        let b = y[key1];
+        if (order) {
+          a = y[key1];
+          b = x[key1];
+        }
+
+        if (!a && b) {
+          if (key1 === 'job') {
+            a = x['jobChain'];
+            if (order) {
+              a = y['jobChain'];
+            }
+          } else if (key1 === 'jobChain') {
+            a = x['job'];
+            if (order) {
+              a = y['job'];
+            }
+          } else {
+            return -1;
+          }
+        } else if (a && !b) {
+          if (key1 === 'job') {
+            b = y['jobChain'];
+            if (order) {
+              b = x['jobChain'];
+            }
+          } else if (key1 === 'jobChain') {
+            b = y['job'];
+            if (order) {
+              b = x['job'];
+            }
+          } else {
+            return 1;
+          }
+        }
+
+        let AInt = parseInt(a, 10);
+        let BInt = parseInt(b, 10);
+
+        if (isNaN(AInt) && isNaN(BInt)) {
+          return self.naturalSorter(a, b);
+        } else if (isNaN(AInt)) {//A is not an Int
+          return 1;
+        } else if (isNaN(BInt)) {//B is not an Int
+          return -1;
+        } else if (AInt === BInt) {
+          let aA = a.replace(reA, '');
+          let bA = b.replace(reA, '');
+          return aA > bA ? 1 : -1;
+        } else {
+          return AInt > BInt ? 1 : -1;
+        }
+
+      });
+    } else if (key === 'duration') {
       return array.sort(function (x, y) {
         let a = x;
         let b = y;
@@ -1174,7 +1233,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private filterData(planItems): void {
     this.plans = this.sortByKey(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    // this.prepareGanttData(this.plans);
+    this.prepareGanttData(this.plans);
   }
 
   private resetCheckBox() {

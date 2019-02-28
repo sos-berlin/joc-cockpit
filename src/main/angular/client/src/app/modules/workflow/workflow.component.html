@@ -38,14 +38,40 @@
                 </div>
                 <div id="rightPanel">
                     <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
-                        <div class=" box p-a m-t-xs">
-                            <div class="text-primary">Start</div>
-                            <app-type [workflowJson]="WorkflowJson.instructions"></app-type>
-                            <div class="text-primary">End</div>
+                      <div class="row">
+                        <div class="col-md-12 m-b-sm ">
+                          <div class="m-b-sm b-b p-b-sm">
+                            <div class="inline">
+                              <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>
+                            </div>
+                          </div>
                         </div>
+                        <div class="col-md-12">
+                          <div>
+                            <div [hidden]="pageView !== 'grid'">
+                              <div id="toolbar"></div>
+                              <div class="graph-container">
+                                <div id="graph"></div>
+                                <!-- Creates a container for the outline -->
+                                <div id="outlineContainer"></div>
+                              </div>
+                            </div>
+                            <div *ngIf="pageView !== 'grid'">
+                              <div class="box p-a">
+                                <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
+                                  <div class="text-primary">Start</div>
+                                  <app-type [workflowJson]="workFlowJson.instructions"></app-type>
+                                  <div class="text-primary">End</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
