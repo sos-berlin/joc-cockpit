@@ -1,4 +1,4 @@
-<div class="white box-shadow sub-header">
+<div class="white box-shadow sub-header m-b-sm">
     <div class="row">
         <div class="col-md-12">
             <div class="padding">
@@ -23,7 +23,6 @@
         </div>
     </div>
 </div>
-
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row">
@@ -39,16 +38,16 @@
                 <div id="rightPanel">
                     <div class="hide" [ngClass]="{'show': isLoading}" [hidden]="loading">
                       <div class="row">
-                        <div class="col-md-12 m-b-sm ">
+                        <div class="col-md-12 m-b-sm " [hidden]="pageView !== 'grid'">
                           <div class="m-b-sm b-b p-b-sm">
                             <div class="inline">
-                              <div [hidden]="pageView !== 'grid'" class="inline" id="zoomActions"></div>
+                              <div class="inline" id="zoomActions"></div>
                             </div>
                           </div>
                         </div>
                         <div class="col-md-12">
                           <div>
-                            <div [hidden]="pageView !== 'grid'">
+                            <div [hidden]="pageView !== 'grid' || !workFlowJson">
                               <div id="toolbar"></div>
                               <div class="graph-container">
                                 <div id="graph"></div>
@@ -56,7 +55,7 @@
                                 <div id="outlineContainer"></div>
                               </div>
                             </div>
-                            <div *ngIf="pageView !== 'grid'">
+                            <div *ngIf="pageView !== 'grid' && workFlowJson">
                               <div class="box p-a">
                                 <div *ngIf="workFlowJson.instructions && workFlowJson.instructions.length > 0">
                                   <div class="text-primary">Start</div>
@@ -64,6 +63,9 @@
                                   <div class="text-primary">End</div>
                                 </div>
                               </div>
+                            </div>
+                            <div *ngIf="!workFlowJson" class="text text-center text-uppercase p-a-md">
+                              No workflow Added to <span class="text-primary">{{selectedPath}}</span>
                             </div>
                           </div>
                         </div>
@@ -75,3 +77,8 @@
     </div>
 </div>
 
+  <div class="spinner" *ngIf="loading || !isLoading">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>

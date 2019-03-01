@@ -889,7 +889,9 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.savedFilter.selected = undefined;
     }
-    this.pageView = JSON.parse(localStorage.views).dailyPlan;
+    if (localStorage.views) {
+      this.pageView = JSON.parse(localStorage.views).dailyPlan;
+    }
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
     this.checkSharedFilters();
   }

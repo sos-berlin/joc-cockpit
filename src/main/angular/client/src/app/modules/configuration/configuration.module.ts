@@ -24,6 +24,7 @@ import {
 } from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
 import {DatePipe} from '@angular/common';
+import {WorkflowService} from '../../services/workflow.service';
 
 @NgModule({
   imports: [
@@ -32,7 +33,7 @@ import {DatePipe} from '@angular/common';
     FileUploadModule,
     CKEditorModule
   ],
-  providers: [DatePipe, CalendarService],
+  providers: [DatePipe, CalendarService, WorkflowService],
   declarations: [
     ConfigurationComponent,
     XmlEditorComponent,

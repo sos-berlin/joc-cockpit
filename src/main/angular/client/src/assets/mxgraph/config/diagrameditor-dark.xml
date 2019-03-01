@@ -24,7 +24,7 @@
         </mxCell>
       </FileOrder>
     </add>
-    <add as="rounded">
+    <add as="Job">
       <Job name="/Job" title="" agent="">
         <mxCell vertex="1" style="rounded">
           <mxGeometry as="geometry" width="200" height="50"/>
@@ -32,51 +32,51 @@
       </Job>
     </add>
     <add as="If">
-      <If predicate="returnCode > 0">
+      <If label="If" predicate="returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="150" height="70"/>
+          <mxGeometry as="geometry" width="150" height="80"/>
         </mxCell>
       </If>
     </add>
     <add as="Retry">
-      <Retry repeat="10" delay="0">
+      <Retry label="Retry" repeat="10" delay="0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="180" height="70"/>
+          <mxGeometry as="geometry" width="150" height="80"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Terminate">
       <Terminate label="Terminate" message="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="60" height="60"/>
+          <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </Terminate>
     </add>
     <add as="Abort">
       <Abort label="Abort" message="">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="60" height="60"/>
+          <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </Abort>
     </add>
     <add as="Fork">
       <Fork label="Fork">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="90" height="90"/>
         </mxCell>
       </Fork>
     </add>
     <add as="Await">
       <Await label="Await">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="90" height="90"/>
         </mxCell>
       </Await>
     </add>
     <add as="Try">
       <Try label="Try">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="90" height="70"/>
+          <mxGeometry as="geometry" width="94" height="94"/>
         </mxCell>
       </Try>
     </add>
@@ -136,8 +136,8 @@
         <add as="fontSize" value="12"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="middle"/>
-        <add as="strokeColor" value="#fff"/>
-        <add as="fontColor" value="#ffffff"/>
+        <add as="strokeColor" value="#fafafa"/>
+        <add as="fontColor" value="#fafafa"/>
       </add>
       <add as="group">
         <add as="shape" value="rectangle"/>
@@ -145,7 +145,7 @@
         <add as="fontSize" value="12"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="middle"/>
-        <add as="strokeColor" value="#fff"/>
+        <add as="strokeColor" value="#fafafa"/>
         <add as="dashed" value="1"/>
       </add>
       <add as="defaultEdge">
@@ -155,7 +155,7 @@
         <add as="verticalAlign" value="center"/>
         <add as="rounded" value="1"/>
         <add as="labelBackgroundColor" value="#333"/>
-        <add as="strokeColor" value="#fff"/>
+        <add as="strokeColor" value="#fafafa"/>
         <add as="strokeWidth" value="1"/>
         <add as="edgeStyle" value="elbowEdgeStyle"/>
         <add as="endArrow" value="classic"/>
@@ -170,7 +170,7 @@
       </add>
       <add as="arrowConnector">
         <add as="shape" value="arrow"/>
-        <add as="fillColor" value="#fff"/>
+        <add as="fillColor" value="#fafafa"/>
         <add as="endSize" value="20"/>
         <remove as="edgeStyle"/>
       </add>
@@ -181,12 +181,15 @@
         <add as="align" value="center"/>
         <add as="verticalAlign" value="top"/>
       </add>
-      <add as="rounded">
+      <add as="job">
         <add as="rounded" value="1"/>
         <add as="shape" value="label"/>
         <add as="image" value="./assets/mxgraph/images/symbols/job-white.png"/>
         <add as="imageWidth" value="20"/>
         <add as="imageHeight" value="20"/>
+         <add as="strokeColor" value="#C3D9FF"/>
+				<add as="fillColor" value="#C3D9FF"/>
+        <add as="gradientColor" value="white"/>
       </add>
       <add as="rectangle" extend="rhombus">
 				<add as="shape" value="rectangle"/>
@@ -200,15 +203,54 @@
 				<add as="dashed" value="1"/>
 				<add as="shadow" value="0"/>
 				<add as="opacity" value="70"/>
+         <add as="strokeColor" value="#FFCF8c"/>
+				<add as="fillColor" value="#FFCF8c"/>
+        <add as="gradientColor" value="white"/>
+			</add>
+      <add as="catch" extend="rhombus">
+				<add as="shape" value="rectangle"/>
+				<add as="perimeter" value="rectanglePerimeter"/>
+				<add as="align" value="center"/>
+        <add as="strokeColor" value="#FFCF8c"/>
+				<add as="fillColor" value="#FFCF8c"/>
+        <add as="gradientColor" value="white"/>
 			</add>
       <add as="ellipse">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
         <add as="fillColor" value="transparent"/>
       </add>
-      <add as="rhombus">
+        <add as="if">
         <add as="shape" value="rhombus"/>
         <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#CDEB8B"/>
+				<add as="fillColor" value="#CDEB8B"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="white"/>
+      </add>
+      <add as="retry">
+        <add as="shape" value="rhombus"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+	      <add as="strokeColor" value="#FFC7C7"/>
+				<add as="fillColor" value="#FFC7C7"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="white"/>
+      </add>
+      <add as="try">
+        <add as="shape" value="rhombus"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#FFCF8A"/>
+				<add as="fillColor" value="#FFCF8A"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="white"/>
+      </add>
+      <add as="fork">
+        <add as="shape" value="rhombus"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#8fb0f2"/>
+				<add as="fillColor" value="#8fb0f2"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="white"/>
       </add>
       <add as="symbol">
         <add as="shape" value="image"/>
@@ -217,7 +259,7 @@
         <add as="align" value="center"/>
         <add as="verticalAlign" value="top"/>
         <add as="verticalLabelPosition" value="bottom"/>
-        <add as="fontColor" value="#ffffff"/>
+        <add as="fontColor" value="#fafafa"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">
@@ -233,7 +275,7 @@
     <hr/>
     <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.png"
          icon="./assets/mxgraph/images/symbols/abort-white.png"/>
-    <add as="Job" template="rounded" icon="./assets/mxgraph/images/symbols/job-white.png"/>
+    <add as="Job" template="job" icon="./assets/mxgraph/images/symbols/job-white.png"/>
     <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/symbols/order-white.png"/>
     <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.png"
          icon="./assets/mxgraph/images/symbols/terminate-white.png"/>
@@ -242,8 +284,8 @@
          icon="./assets/mxgraph/images/symbols/timer-white.png"/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.png"
          icon="./assets/mxgraph/images/symbols/fork-white.png"/>
-    <add as="If" template="If" style="rhombus" icon="./assets/mxgraph/images/symbols/inclusive-white.png"/>
-    <add as="Retry" template="Retry" style="rhombus" icon="./assets/mxgraph/images/symbols/retry-white.png"/>
-     <add as="Try" template="Try" style="rhombus" icon="./assets/mxgraph/images/symbols/try-white.png"/>
+    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/symbols/inclusive-white.png"/>
+    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/symbols/retry-white.png"/>
+     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/symbols/try-white.png"/>
   </mxDefaultToolbar>
 </mxEditor>

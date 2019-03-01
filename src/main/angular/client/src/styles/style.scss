@@ -5466,14 +5466,16 @@ tree-node-checkbox {
   position: absolute;
   box-sizing: border-box;
   display: block;
-  border: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
 
 .rg-right span {
   position: absolute;
   box-sizing: border-box;
   display: block;
-  border: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
   top: 41%;
   margin: -10px 0 0 3px;
   height: 20px;

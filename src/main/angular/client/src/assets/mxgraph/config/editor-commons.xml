@@ -1,7 +1,4 @@
 <mxEditor>
-	<ui>
-		<resource basename="./assets/mxgraph/resources/app"/>
-	</ui>
 	<mxDefaultPopupMenu as="popupHandler">
 		<add as="delete" action="delete" icon="./assets/mxgraph/images/delete.gif" if="cell"/>
 	</mxDefaultPopupMenu>

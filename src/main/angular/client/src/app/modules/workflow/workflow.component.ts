@@ -1,16 +1,31 @@
 import {Component, OnInit, ViewChild, OnDestroy, Input} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {DataService} from '../../services/data.service';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
+import {WorkflowService} from '../../services/workflow.service';
 
+declare const mxEditor;
+declare const mxUtils;
+declare const mxEvent;
+declare const mxClient;
+declare const mxObjectCodec;
+declare const mxEdgeHandler;
+declare const mxGraphHandler;
+declare const mxGraph;
+declare const mxCodec;
+declare const mxImage;
+declare const mxOutline;
+declare const mxConstants;
+declare const mxEventObject;
+
+declare const X2JS;
 declare const $;
+
+const x2js = new X2JS();
 
 @Component({
   selector: 'app-type',
-  templateUrl: './type.component.html',
-  styleUrls: ['./workflow.component.css']
+  templateUrl: './type.component.html'
 })
 export class TypeComponent implements OnInit {
   @Input() workflowJson;
@@ -31,174 +46,13 @@ export class TypeComponent implements OnInit {
 
 }
 
-
 @Component({
   selector: 'app-order',
-  templateUrl: './workflow.component.html'
+  templateUrl: './workflow.component.html',
+  styleUrls: ['./workflow.component.css']
 })
 export class WorkflowComponent implements OnInit, OnDestroy {
-
-  workFlowJson: any = {
-    'id': '',
-    'instructions': [
-      {
-        'id': '8',
-        'TYPE': 'Job',
-        'jobPath': '/Job',
-        'title': '',
-        'agentPath': '',
-        'returnCodeMeaning': {}
-      },
-      {
-        'id': '15',
-        'TYPE': 'ForkJoin',
-        'branches': [
-          {
-            'instructions': [
-              {
-                'id': '16',
-                'TYPE': 'Job',
-                'jobPath': '/Job',
-                'title': '',
-                'agentPath': '',
-                'returnCodeMeaning': {}
-              },
-              {
-                'id': '31',
-                'TYPE': 'If',
-                'predicate': 'returnCode > 0',
-                'then': {
-                  'instructions': [
-                    {
-                      'id': '37',
-                      'TYPE': 'Job',
-                      'jobPath': '/Job',
-                      'title': '',
-                      'agentPath': '',
-                      'returnCodeMeaning': {}
-                    }
-                  ]
-                },
-                'else': {
-                  'instructions': [
-                    {
-                      'id': '40',
-                      'TYPE': 'Terminate',
-                      'message': ''
-                    }
-                  ]
-                }
-              }
-            ],
-            'id': 'branch 1'
-          },
-          {
-            'instructions': [
-              {
-                'id': '19',
-                'TYPE': 'Job',
-                'jobPath': '/Job',
-                'title': '',
-                'agentPath': '',
-                'returnCodeMeaning': {}
-              },
-              {
-                'id': '36',
-                'TYPE': 'ForkJoin',
-                'branches': [
-                  {
-                    'instructions': [
-                      {
-                        'id': '43',
-                        'TYPE': 'Job',
-                        'jobPath': '/Job',
-                        'title': '',
-                        'agentPath': '',
-                        'returnCodeMeaning': {}
-                      }
-                    ],
-                    'id': 'branch 1'
-                  },
-                  {
-                    'instructions': [
-                      {
-                        'id': '46',
-                        'TYPE': 'Job',
-                        'jobPath': '/Job',
-                        'title': '',
-                        'agentPath': '',
-                        'returnCodeMeaning': {}
-                      }
-                    ],
-                    'id': 'branch 2'
-                  },
-                  {
-                    'instructions': [
-                      {
-                        'id': '49',
-                        'TYPE': 'Job',
-                        'jobPath': '/Job',
-                        'title': '',
-                        'agentPath': '',
-                        'returnCodeMeaning': {}
-                      }
-                    ],
-                    'id': 'branch 3'
-                  }
-                ]
-              }
-            ],
-            'id': 'branch 2'
-          },
-          {
-            'instructions': [
-              {
-                'id': '22',
-                'TYPE': 'Job',
-                'jobPath': '/Job',
-                'title': '',
-                'agentPath': '',
-                'returnCodeMeaning': {}
-              },
-              {
-                'id': '60',
-                'TYPE': 'Try',
-                'instructions': [
-                  {
-                    'id': '61',
-                    'TYPE': 'Job',
-                    'jobPath': '/Job',
-                    'title': '',
-                    'agentPath': '',
-                    'returnCodeMeaning': {}
-                  }
-                ],
-                'catch': {
-                  'instructions': [
-                    {
-                      'id': '64',
-                      'TYPE': 'Terminate',
-                      'message': ''
-                    }
-                  ],
-                  'id': '53'
-                }
-              }
-            ],
-            'id': 'branch 3'
-          }
-        ]
-      },
-      {
-        'id': '25',
-        'TYPE': 'Job',
-        'jobPath': '/Job',
-        'title': '',
-        'agentPath': '',
-        'returnCodeMeaning': {}
-      }
-    ]
-  };
+  workFlowJson: any;
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};
@@ -206,10 +60,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   preferences: any = {};
   permission: any = {};
   pageView = 'grid';
+  editor: any;
+  selectedPath: string;
+  configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   @ViewChild(TreeComponent) child;
 
-  constructor(private authService: AuthService, public coreService: CoreService, public modalService: NgbModal, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
 
   }
 
@@ -217,12 +74,30 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (sessionStorage.$SOS$WORKFLOW) {
       this.workFlowJson = JSON.parse(sessionStorage.$SOS$WORKFLOW);
     }
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+      this.workflowService.init('dark');
+    } else {
+      this.workflowService.init('light');
+    }
     this.init();
   }
 
   ngOnDestroy() {
-
+    try {
+      if (this.editor) {
+        mxEvent.removeAllListeners(this.editor.graph);
+        this.editor.destroy();
+        this.editor = null;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
+
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event) {
@@ -230,9 +105,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   receiveAction($event) {
+    if ($event.action === 'NODE') {
 
+    }
+    console.log($event);
   }
-
 
   private init() {
     if (sessionStorage.preferences) {
@@ -241,6 +118,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.initTree();
+    this.createEditor(this.configXml);
+    this.isWorkflowStored();
   }
 
   private initTree() {
@@ -261,39 +140,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     this.checkExpand();
   }
 
-  private navigateToPath() {
-    setTimeout(() => {
-      this.tree.forEach((value) => {
-        this.navigatePath(value);
-      });
-    }, 10);
-  }
-
-  private navigatePath(data) {
-
-  }
-
-  private expandTree() {
-    const self = this;
-    setTimeout(() => {
-      this.tree.forEach((data) => {
-        recursive(data);
-      });
-    }, 10);
-
-    function recursive(data) {
-      if (data.isExpanded && self.child) {
-        let node = self.child.getNodeById(data.id);
-        node.expand();
-        if (data.children && data.children.length > 0) {
-          data.children.forEach((child) => {
-            recursive(child);
-          });
-        }
-      }
-    }
-  }
-
   private checkExpand() {
     setTimeout(() => {
       if (this.child && this.child.getNodeById(1)) {
@@ -304,21 +150,239 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }, 10);
   }
 
-  private getExpandTreeForUpdates(data, obj) {
-    if (data.isSelected) {
-      obj.folders.push({folder: data.path, recursive: false});
+  isWorkflowStored(): void {
+    let _json: any;
+    if (sessionStorage.$SOS$WORKFLOW) {
+      _json = JSON.parse(sessionStorage.$SOS$WORKFLOW);
+      this.workFlowJson = _json;
     }
-    data.children.forEach((value) => {
-      if (value.isExpanded || value.isSelected) {
-        this.getExpandTreeForUpdates(value, obj);
-      }
-    });
+    if (_json) {
+      this.workflowService.appendIdInJson(_json);
+      let mxJson = {
+        mxGraphModel: {
+          root: {
+            mxCell: [
+              {_id: '0'},
+              {
+                _id: '1',
+                _parent: '0'
+              }
+            ],
+            Process: []
+          }
+        }
+      };
+      mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+      this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
+      WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+      this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
+    }
   }
 
-  private startTraverseNode(data) {
-    data.isSelected = true;
-    data.children.forEach((a) => {
-      this.startTraverseNode(a);
-    });
+  /**
+   * Constructs a new application (returns an mxEditor instance)
+   */
+  createEditor(config) {
+    let editor = null;
+    try {
+      if (!mxClient.isBrowserSupported()) {
+        mxUtils.error('Browser is not supported!', 200, false);
+      } else {
+        mxObjectCodec.allowEval = true;
+        const node = mxUtils.load(config).getDocumentElement();
+        editor = new mxEditor(node);
+        this.editor = editor;
+        this.initEditorConf(editor, null);
+        mxObjectCodec.allowEval = false;
+
+        const outln = document.getElementById('outlineContainer');
+        outln.style['border'] = '1px solid lightgray';
+        outln.style['background'] = '#FFFFFF';
+        new mxOutline(editor.graph, outln);
+        editor.graph.allowAutoPanning = true;
+      }
+    } catch (e) {
+      // Shows an error message if the editor cannot start
+      mxUtils.alert('Cannot start application: ' + e.message);
+      throw e; // for debugging
+    }
+  }
+
+  private initEditorConf(editor, _xml: any) {
+    const graph = editor.graph;
+    const doc = mxUtils.createXmlDocument();
+    if (!_xml) {
+
+      // Alt disables guides
+      mxGraphHandler.prototype.guidesEnabled = true;
+      mxGraph.prototype.cellsResizable = false;
+      mxGraph.prototype.multigraph = false;
+      mxGraph.prototype.allowDanglingEdges = false;
+      mxGraph.prototype.cellsLocked = true;
+      mxGraph.prototype.foldingEnabled = true;
+      mxConstants.VERTEX_SELECTION_COLOR = null;
+
+      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
+        let style = graph.getStylesheet().getDefaultEdgeStyle();
+        style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
+      } else {
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
+      }
+
+      // Enables snapping waypoints to terminals
+      mxEdgeHandler.prototype.snapToTerminals = true;
+
+      graph.setConnectable(false);
+      graph.setDisconnectOnMove(false);
+      graph.collapseToPreferredSize = false;
+      graph.constrainChildren = false;
+      graph.extendParentsOnAdd = false;
+      graph.extendParents = false;
+
+      // Create zoom actions in page
+      let zoomNode = document.getElementById('zoomActions');
+      const zoomButtons = ['zoomIn', 'zoomOut', 'actualSize', 'fit'];
+
+      for (let i = 0; i < zoomButtons.length; i++) {
+        let button = document.createElement('button');
+        let dom = document.createElement('i');
+        let icon: any;
+        if (zoomButtons[i] === 'zoomIn') {
+          icon = 'fa fa-search-plus';
+          button.setAttribute('class', 'btn btn-sm btn-grey');
+          button.setAttribute('title', 'Zoom In');
+        } else if (zoomButtons[i] === 'zoomOut') {
+          icon = 'fa fa-search-minus';
+          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
+          button.setAttribute('title', 'Zoom Out');
+        } else if (zoomButtons[i] === 'actualSize') {
+          icon = 'fa fa-search';
+          button.setAttribute('class', 'btn btn-sm btn-grey');
+          button.setAttribute('id', 'actual');
+          button.setAttribute('title', 'Actual');
+        } else if (zoomButtons[i] === 'fit') {
+          icon = 'fa  fa-arrows-alt';
+          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
+          button.setAttribute('title', 'Fit');
+        }
+        dom.setAttribute('class', icon);
+        button.appendChild(dom);
+        mxUtils.write(button, '');
+        const factory = function (name) {
+          return function () {
+            editor.execute(name);
+          };
+        };
+
+        mxEvent.addListener(button, 'click', factory(zoomButtons[i]));
+        zoomNode.appendChild(button);
+      }
+
+      /**
+       * Overrides method to provide a cell label in the display
+       * @param cell
+       */
+      graph.convertValueToString = function (cell) {
+        if (mxUtils.isNode(cell.value)) {
+          if (cell.value.nodeName.toLowerCase() === 'process') {
+            let title = cell.getAttribute('title', '');
+            if (title != null && title.length > 0) {
+              return title;
+            }
+            return '';
+          } else if (cell.value.nodeName.toLowerCase() === 'job') {
+            let name = cell.getAttribute('name', '');
+            let title = cell.getAttribute('title', '');
+            if (title != null && title.length > 0) {
+              return name + ' - ' + title;
+            }
+            return name;
+          } else if (cell.value.nodeName.toLowerCase() === 'retry') {
+            let str = 'Repeat ' + cell.getAttribute('repeat', '') + ' times';
+            if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
+              str = str + '\nwith delay ' + cell.getAttribute('delay', '');
+            }
+            return str;
+          } else if (cell.value.nodeName.toLowerCase() === 'fileorder') {
+            let str = 'File Order';
+            if (cell.getAttribute('regex', '') && cell.getAttribute('directory', '')) {
+              str = cell.getAttribute('regex', '') + ' - ' + cell.getAttribute('directory', '');
+            }
+            return str;
+          } else if (cell.value.nodeName.toLowerCase() === 'if') {
+            return cell.getAttribute('predicate', '');
+          } else {
+            return cell.getAttribute('label', '');
+          }
+        }
+        return '';
+      };
+
+      /**
+       * Changes the zoom on mouseWheel events
+       */
+      mxEvent.addMouseWheelListener(function (evt, up) {
+        if (evt && evt.path && evt.path.length === 22) {
+          if (!mxEvent.isConsumed(evt)) {
+            if (up) {
+              editor.execute('zoomIn');
+            } else {
+              editor.execute('zoomOut');
+            }
+
+            mxEvent.consume(evt);
+          }
+        }
+      });
+
+      /**
+       * Function: foldCells to collapse/expand
+       */
+      mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
+        recurse = (recurse != null) ? recurse : true;
+
+        if (cells == null) {
+          cells = this.getFoldableCells(this.getSelectionCells(), collapse);
+        }
+        this.stopEditing(false);
+        this.model.beginUpdate();
+        try {
+          this.cellsFolded(cells, collapse, recurse, checkFoldable);
+          this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
+            'collapse', collapse, 'recurse', recurse, 'cells', cells));
+        } finally {
+          this.model.endUpdate();
+        }
+        WorkflowService.executeLayout(graph);
+        return cells;
+      };
+      WorkflowService.makeCenter(graph);
+      WorkflowService.executeLayout(graph);
+    } else {
+      reloadXml(_xml);
+    }
+
+    /**
+     * Reload dummy xml
+     */
+    function reloadXml(xml) {
+      graph.getModel().beginUpdate();
+      try {
+        // Removes all cells
+        graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
+        const _doc = mxUtils.parseXml(xml);
+        const dec = new mxCodec(_doc);
+        const model = dec.decode(_doc.documentElement);
+        // Merges the response model with the client model
+        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+      } finally {
+        // Updates the display
+        graph.getModel().endUpdate();
+        WorkflowService.executeLayout(graph);
+      }
+    }
   }
 }

@@ -14,7 +14,7 @@ import * as _ from 'underscore';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {CalendarService} from '../../../services/calendar.service';
 import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
-
+import {WorkflowService} from '../../../services/workflow.service';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -29,7 +29,6 @@ declare const mxCellAttributeChange;
 declare const mxGraph;
 declare const mxImage;
 declare const mxForm;
-declare const mxHierarchicalLayout;
 declare const mxImageExport;
 declare const mxXmlCanvas2D;
 declare const mxOutline;
@@ -489,7 +488,6 @@ export class ProcessClassTemplateComponent implements OnInit {
   templateUrl: './frequency-dialog.html'
 })
 export class FrequencyModalComponent implements OnInit, OnDestroy {
-
   planItems: any = [];
   Math = Math;
   calObj: any = {};
@@ -2357,152 +2355,26 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   dummyXml: any;
   workFlowJson: any = {};
   isPropertyHide = false;
-  count = 11;
-
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
-
   isWorkflowReload = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
-  merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.png';
-  abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.png';
-  terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate.png';
-  await = 'symbol;image=./assets/mxgraph/images/symbols/timer.png';
-  fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.png';
 
   @Input() selectedPath: any;
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService, private dataService: DataService) {
-    this.dataService.isWorkFlowReload.subscribe(value => {
-      if (this.editor && this.editor.graph) {
-        setTimeout(() => {
-          this.editor.graph.zoomActual();
-          this.editor.graph.center(true, true, 0.5, 0.2);
-        }, 0);
-      }
-    });
-  }
+  constructor(public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService, private workflowService: WorkflowService) {
 
-  static getDummyNodes(): any {
-    return [
-      {
-        '_id': '3',
-        '_title': 'Start',
-        'mxCell': {
-          '_parent': '1',
-          '_vertex': '1',
-          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
-          'mxGeometry': {
-            '_as': 'geometry',
-            '_width': '70',
-            '_height': '70'
-          }
-        }
-      }, {
-        '_id': '5',
-        '_title': 'End',
-        'mxCell': {
-          '_parent': '1',
-          '_vertex': '1',
-          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
-          'mxGeometry': {
-            '_as': 'geometry',
-            '_width': '70',
-            '_height': '70'
-          }
-        }
-      }
-    ];
-  }
-
-  /**
-   * Function to add Start and End nodes
-   *
-   * @param json
-   * @param mxJson
-   */
-  static connectWithDummyNodes(json, mxJson) {
-    if (json.instructions && json.instructions.length > 0) {
-      if (mxJson.Connection) {
-        if (!_.isArray(mxJson.Connection)) {
-          const _tempConn = _.clone(mxJson.Connection);
-          mxJson.Connection = [];
-          mxJson.Connection.push(_tempConn);
-        }
-      } else {
-        mxJson.Connection = [];
-      }
-      const startObj: any = {
-        _label: '',
-        _type: '',
-        _id: '4',
-        mxCell: {
-          _parent: '1',
-          _source: '3',
-          _target: json.instructions[0].id,
-          _edge: '1',
-          mxGeometry: {
-            _relative: 1,
-            _as: 'geometry'
-          }
-        }
-      };
-      const last = json.instructions[json.instructions.length - 1];
-      let targetId = last.id;
-      if (last.TYPE === 'ForkJoin' || last.TYPE === 'If' || last.TYPE === 'Try' || last.TYPE === 'Retry') {
-        let z: any;
-        if (last.TYPE === 'ForkJoin') {
-          z = mxJson.Join;
-        } else if (last.TYPE === 'If') {
-          z = mxJson.EndIf;
-        } else if (last.TYPE === 'Try') {
-          z = mxJson.EndTry;
-        } else if (last.TYPE === 'Retry') {
-          z = mxJson.RetryEnd;
-        }
-        if (z && _.isArray(z)) {
-          for (let i = 0; i < z.length; i++) {
-            if (z[i]._targetId === last.id) {
-              targetId = z[i]._id;
-              break;
-            }
-          }
-        } else if (z) {
-          targetId = z._id;
-        }
-      }
-
-      const endObj: any = {
-        _label: '',
-        _type: '',
-        _id: 6,
-        mxCell: {
-          _parent: '1',
-          _source: targetId,
-          _target: '5',
-          _edge: '1',
-          mxGeometry: {
-            _relative: 1,
-            _as: 'geometry'
-          }
-        }
-      };
-      mxJson.Connection.push(startObj);
-      mxJson.Connection.push(endObj);
-    }
   }
 
   ngOnInit(): void {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.png';
-      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort-white.png';
-      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate-white.png';
-      this.await = 'symbol;image=./assets/mxgraph/images/symbols/timer-white.png';
-      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.png';
+      this.workflowService.init('dark');
+    } else {
+      this.workflowService.init('light');
     }
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
@@ -2558,6 +2430,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   clearWorkFlow() {
+    sessionStorage.$SOS$WORKFLOW = null;
+    this.workFlowJson = {};
     this.initEditorConf(this.editor, this.dummyXml);
   }
 
@@ -2566,14 +2440,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   isWorkflowStored(): void {
-    this.count = 11;
     let _json: any;
     if (sessionStorage.$SOS$WORKFLOW) {
       _json = JSON.parse(sessionStorage.$SOS$WORKFLOW);
       this.workFlowJson = _json;
     }
     if (_json) {
-      this.appendIdInJson(_json);
+      this.workflowService.appendIdInJson(_json);
       let mxJson = {
         mxGraphModel: {
           root: {
@@ -2588,10 +2461,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
       };
-      mxJson.mxGraphModel.root.Process = WorkFlowTemplateComponent.getDummyNodes();
-      this.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
-      WorkFlowTemplateComponent.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
+      mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+      this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
+      // this.nodeMap = this.workFlowJson.nodeMap;
+      console.log(this.workflowService.nodeMap, ' test.......');
+      WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
       this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
+      this.editor.graph.setEnabled(true);
     }
   }
 
@@ -2605,863 +2481,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
     } catch (e) {
       console.log(e);
-    }
-  }
-
-  // Function to generating dynamic unique Id
-  private appendIdInJson(json) {
-    for (let x = 0; x < json.instructions.length; x++) {
-      json.instructions[x].id = ++this.count;
-      if (json.instructions[x].instructions) {
-        this.appendIdInJson(json.instructions[x]);
-      }
-      if (json.instructions[x].catch) {
-        if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-          this.appendIdInJson(json.instructions[x].catch);
-        }
-      }
-      if (json.instructions[x].then) {
-        this.appendIdInJson(json.instructions[x].then);
-      }
-      if (json.instructions[x].else) {
-        this.appendIdInJson(json.instructions[x].else);
-      }
-      if (json.instructions[x].branches) {
-        for (let i = 0; i < json.instructions[x].branches.length; i++) {
-          this.appendIdInJson(json.instructions[x].branches[i]);
-        }
-      }
-    }
-  }
-
-  /**
-   * Function to generate flow diagram with the help of JSON
-   *
-   * @param json
-   * @param mxJson
-   * @param type
-   * @param parentId
-   */
-  private jsonParser(json, mxJson, type, parentId) {
-    const self = this;
-    if (json.instructions) {
-      for (let x = 0; x < json.instructions.length; x++) {
-        let obj: any = {
-          mxCell: {
-            _parent: parentId ? parentId : '1',
-            _vertex: '1',
-            mxGeometry: {
-              _as: 'geometry'
-            }
-          }
-        };
-
-        if (json.instructions[x].TYPE === 'Job') {
-          if (mxJson.Job) {
-            if (!_.isArray(mxJson.Job)) {
-              let _tempJob = _.clone(mxJson.Job);
-              mxJson.Job = [];
-              mxJson.Job.push(_tempJob);
-            }
-
-          } else {
-            mxJson.Job = [];
-          }
-
-          obj._id = json.instructions[x].id;
-          obj._name = json.instructions[x].jobName;
-          obj._title = json.instructions[x].title ? json.instructions[x].title : '';
-          obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
-          obj.mxCell._style = 'rounded';
-          obj.mxCell.mxGeometry._width = '200';
-          obj.mxCell.mxGeometry._height = '50';
-          mxJson.Job.push(obj);
-        } else if (json.instructions[x].TYPE === 'If') {
-          if (mxJson.If) {
-            if (!_.isArray(mxJson.If)) {
-              let _tempIf = _.clone(mxJson.If);
-              mxJson.If = [];
-              mxJson.If.push(_tempIf);
-            }
-          } else {
-            mxJson.If = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._predicate = json.instructions[x].predicate;
-          obj.mxCell._style = 'rhombus';
-          obj.mxCell.mxGeometry._width = '150';
-          obj.mxCell.mxGeometry._height = '70';
-
-          if (json.instructions[x].then && json.instructions[x].then.instructions) {
-            self.jsonParser(json.instructions[x].then, mxJson, 'endIf', obj._id);
-            self.connectInstruction(json.instructions[x], json.instructions[x].then.instructions[0], mxJson, 'then', obj._id);
-          }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
-            self.jsonParser(json.instructions[x].else, mxJson, 'endIf', obj._id);
-            self.connectInstruction(json.instructions[x], json.instructions[x].else.instructions[0], mxJson, 'else', obj._id);
-          }
-          self.endIf(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
-          mxJson.If.push(obj);
-        } else if (json.instructions[x].TYPE === 'ForkJoin') {
-          if (mxJson.Fork) {
-            if (!_.isArray(mxJson.Fork)) {
-              let _tempFork = _.clone(mxJson.Fork);
-              mxJson.Fork = [];
-              mxJson.Fork.push(_tempFork);
-            }
-          } else {
-            mxJson.Fork = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._label = 'Fork';
-          obj.mxCell._style = this.fork;
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
-
-          if (json.instructions[x].branches && json.instructions[x].branches.length > 0) {
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              self.jsonParser(json.instructions[x].branches[i], mxJson, 'branch', obj._id);
-              self.connectInstruction(json.instructions[x], json.instructions[x].branches[i], mxJson, 'branch', obj._id);
-            }
-
-            self.joinFork(json.instructions[x].branches, mxJson, json.instructions, x, json.instructions[x].id, parentId);
-          } else {
-            self.joinFork(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
-          }
-          mxJson.Fork.push(obj);
-        } else if (json.instructions[x].TYPE === 'Retry') {
-          if (mxJson.Retry) {
-            if (!_.isArray(mxJson.Retry)) {
-              const _tempRetry = _.clone(mxJson.Retry);
-              mxJson.Retry = [];
-              mxJson.Retry.push(_tempRetry);
-            }
-          } else {
-            mxJson.Retry = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._repeat = json.instructions[x].repeat;
-          obj._delay = json.instructions[x].delay;
-          obj.mxCell._style = 'rhombus';
-          obj.mxCell.mxGeometry._width = '180';
-          obj.mxCell.mxGeometry._height = '70';
-
-          if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-            self.jsonParser(json.instructions[x], mxJson, '', obj._id);
-            self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'retry', obj._id);
-          }
-
-          self.endRetry(json.instructions[x], mxJson, json.instructions, x, json.instructions[x].id, parentId);
-          mxJson.Retry.push(obj);
-        } else if (json.instructions[x].TYPE === 'Try') {
-          if (mxJson.Try) {
-            if (!_.isArray(mxJson.Try)) {
-              const _tempRetry = _.clone(mxJson.Try);
-              mxJson.Try = [];
-              mxJson.Try.push(_tempRetry);
-            }
-          } else {
-            mxJson.Try = [];
-          }
-          if (mxJson.Catch) {
-            if (!_.isArray(mxJson.Catch)) {
-              const _tempRetry = _.clone(mxJson.Catch);
-              mxJson.Catch = [];
-              mxJson.Catch.push(_tempRetry);
-            }
-          } else {
-            mxJson.Catch = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._label = 'Try';
-          obj.mxCell._style = 'rhombus';
-          obj.mxCell.mxGeometry._width = '90';
-          obj.mxCell.mxGeometry._height = '70';
-
-          let catchObj: any = {
-            mxCell: {
-              _parent: obj._id,
-              _vertex: '1',
-              _style: 'rectangle',
-              mxGeometry: {
-                _as: 'geometry',
-                _width: '90',
-                _height: '40'
-              }
-            },
-            _label: 'Catch'
-          };
-          let _id = 0;
-
-          if (!json.instructions[x].catch) {
-            json.instructions[x].catch = {id: (json.instructions[x].id * 7777), instructions: []};
-          }
-
-          if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
-            catchObj._id = json.instructions[x].catch.id;
-            catchObj._targetId = json.instructions[x].id;
-            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              self.jsonParser(json.instructions[x].catch, mxJson, 'endCatch', obj._id);
-              self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
-            } else {
-              catchObj.mxCell._style = 'dashRectangle';
-            }
-            _id = self.endCatch(json.instructions[x].catch, mxJson, json.instructions, json.instructions[x].catch.id, obj._id);
-            mxJson.Catch.push(catchObj);
-          }
-
-          if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
-            self.jsonParser(json.instructions[x], mxJson, '', obj._id);
-            self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'try', obj._id);
-            const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-            if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'try') {
-              self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try', obj._id);
-            } else {
-              if (_lastNode && (_lastNode.TYPE === 'If')) {
-                if (mxJson.EndIf && mxJson.EndIf.length) {
-                  for (let j = 0; j < mxJson.EndIf.length; j++) {
-                    if (_lastNode.id === mxJson.EndIf[j]._targetId) {
-                      this.connectInstruction({id: mxJson.EndIf[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
-                      break;
-                    }
-                  }
-                }
-              } else if (_lastNode && (_lastNode.TYPE === 'Retry')) {
-                if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-                  for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-                    if (_lastNode.id === mxJson.RetryEnd[j]._targetId) {
-                      this.connectInstruction({id: mxJson.RetryEnd[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
-                      break;
-                    }
-                  }
-                }
-              } else if (_lastNode && (_lastNode.TYPE === 'Try')) {
-                if (mxJson.EndTry && mxJson.EndTry.length) {
-                  for (let j = 0; j < mxJson.EndTry.length; j++) {
-                    if (_lastNode.id === mxJson.EndTry[j]._targetId) {
-                      this.connectInstruction({id: mxJson.EndTry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
-                      break;
-                    }
-                  }
-                }
-              } else if (_lastNode && (_lastNode.TYPE === 'ForkJoin')) {
-                if (mxJson.Join && mxJson.Join.length) {
-                  for (let j = 0; j < mxJson.Join.length; j++) {
-                    if (_lastNode.id === mxJson.Join[j]._targetId) {
-                      this.connectInstruction({id: mxJson.Join[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-          } else {
-            self.connectInstruction(json.instructions[x], json.instructions[x].catch, mxJson, 'try', obj._id);
-          }
-          self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
-          mxJson.Try.push(obj);
-        } else if (json.instructions[x].TYPE === 'Abort') {
-          if (mxJson.Abort) {
-            if (!_.isArray(mxJson.Abort)) {
-              const _tempExit = _.clone(mxJson.Abort);
-              mxJson.Abort = [];
-              mxJson.Abort.push(_tempExit);
-            }
-          } else {
-            mxJson.Abort = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._label = json.instructions[x].TYPE;
-          obj._message = json.instructions[x].message;
-          obj.mxCell._style = this.abort;
-          obj.mxCell.mxGeometry._width = '60';
-          obj.mxCell.mxGeometry._height = '60';
-          mxJson.Abort.push(obj);
-        } else if (json.instructions[x].TYPE === 'Terminate') {
-          if (mxJson.Terminate) {
-            if (!_.isArray(mxJson.Terminate)) {
-              const _tempExit = _.clone(mxJson.Terminate);
-              mxJson.Terminate = [];
-              mxJson.Terminate.push(_tempExit);
-            }
-          } else {
-            mxJson.Terminate = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._label = json.instructions[x].TYPE;
-          obj._message = json.instructions[x].message;
-          obj.mxCell._style = this.terminate;
-          obj.mxCell.mxGeometry._width = '60';
-          obj.mxCell.mxGeometry._height = '60';
-          mxJson.Terminate.push(obj);
-        } else if (json.instructions[x].TYPE === 'Await') {
-          if (mxJson.Await) {
-            if (!_.isArray(mxJson.Await)) {
-              const _tempAwait = _.clone(mxJson.Await);
-              mxJson.Await = [];
-              mxJson.Await.push(_tempAwait);
-            }
-          } else {
-            mxJson.Await = [];
-          }
-          obj._id = json.instructions[x].id;
-          obj._label = 'Await';
-          obj.mxCell._style = this.await;
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
-
-          if (json.instructions[x].events && json.instructions[x].events.length > 0) {
-            for (let i = 0; i < json.instructions[x].events.length; i++) {
-              self.jsonParseForAwait(json.instructions[x].events[i], mxJson, parentId);
-              self.connectInstruction(json.instructions[x], json.instructions[x].events[i], mxJson, 'await', parentId);
-            }
-          }
-          mxJson.Await.push(obj);
-        } else {
-          console.log('Workflow yet to parse : ' + json.instructions[x].TYPE);
-        }
-        if (json.instructions[x].TYPE !== 'ForkJoin' && json.instructions[x].TYPE !== 'If' && json.instructions[x].TYPE !== 'Try' && json.instructions[x].TYPE !== 'Retry') {
-          self.connectEdges(json.instructions, x, mxJson, type, parentId);
-        }
-      }
-    } else {
-      console.log('No instruction..');
-    }
-  }
-
-  private connectEdges(list, index, mxJson, type, parentId) {
-    if (mxJson.Connection) {
-      if (!_.isArray(mxJson.Connection)) {
-        const _tempJob = _.clone(mxJson.Connection);
-        mxJson.Connection = [];
-        mxJson.Connection.push(_tempJob);
-      }
-    } else {
-      mxJson.Connection = [];
-    }
-
-    if (list.length > (index + 1)) {
-      let obj: any = {
-        _label: type,
-        _type: type,
-        _id: ++this.count,
-        mxCell: {
-          _parent: parentId ? parentId : '1',
-          _source: list[index].id,
-          _target: list[index + 1].id,
-          _edge: '1',
-          mxGeometry: {
-            _relative: 1,
-            _as: 'geometry'
-          }
-        }
-      };
-      mxJson.Connection.push(obj);
-    }
-  }
-
-  private connectInstruction(source, target, mxJson, label, parentId) {
-    if (mxJson.Connection) {
-      if (!_.isArray(mxJson.Connection)) {
-        const _tempJob = _.clone(mxJson.Connection);
-        mxJson.Connection = [];
-        mxJson.Connection.push(_tempJob);
-      }
-    } else {
-      mxJson.Connection = [];
-    }
-    let obj: any = {
-      _label: label === 'then' ? 'true' : label === 'else' ? 'false' : label,
-      _type: label,
-      _id: ++this.count,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _source: source.id,
-        _target: (source.TYPE === 'ForkJoin' && target.instructions) ? target.instructions[0].id : target.id,
-        _edge: '1',
-        mxGeometry: {
-          _relative: 1,
-          _as: 'geometry'
-        }
-      }
-    };
-
-    if (label === 'endCatch' && source.instructions.length === 0) {
-      obj._label = '';
-      obj._type = '';
-      obj.mxCell._style = 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;';
-    }
-    mxJson.Connection.push(obj);
-  }
-
-  private endRetry(branches, mxJson, list, index, targetId, parentId) {
-    if (mxJson.RetryEnd) {
-      if (!_.isArray(mxJson.RetryEnd)) {
-        const _tempRetryEnd = _.clone(mxJson.RetryEnd);
-        mxJson.RetryEnd = [];
-        mxJson.RetryEnd.push(_tempRetryEnd);
-      }
-
-    } else {
-      mxJson.RetryEnd = [];
-    }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 3000;
-
-    this.nodeMap.set(targetId.toString(), id.toString());
-
-    let joinObj: any = {
-      _id: id,
-      _label: 'Retry-End',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: 'rhombus',
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '150',
-          _height: '70'
-        }
-      }
-    };
-    mxJson.RetryEnd.push(joinObj);
-
-    if (branches.instructions && branches.instructions.length > 0) {
-      const x = branches.instructions[branches.instructions.length - 1];
-      if (x && (x.TYPE === 'If')) {
-        if (mxJson.EndIf && mxJson.EndIf.length) {
-          for (let j = 0; j < mxJson.EndIf.length; j++) {
-            if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Try')) {
-        if (mxJson.EndTry && mxJson.EndTry.length) {
-          for (let j = 0; j < mxJson.EndTry.length; j++) {
-            if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
-        if (mxJson.Join && mxJson.Join.length) {
-          for (let j = 0; j < mxJson.Join.length; j++) {
-            if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
-              break;
-            }
-          }
-        }
-      } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'retryEnd', parentId);
-      }
-    } else {
-      this.connectInstruction(branches, {id: id}, mxJson, '', parentId);
-    }
-
-    if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
-    }
-  }
-
-  private joinFork(branches, mxJson, list, index, targetId, parentId) {
-    if (mxJson.Join) {
-      if (!_.isArray(mxJson.Join)) {
-        const _tempJoin = _.clone(mxJson.Join);
-        mxJson.Join = [];
-        mxJson.Join.push(_tempJoin);
-      }
-
-    } else {
-      mxJson.Join = [];
-    }
-
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 1000;
-    this.nodeMap.set(targetId.toString(), id.toString());
-    let joinObj: any = {
-      _id: id,
-      _label: 'Join',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: this.merge,
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '70',
-          _height: '70'
-        }
-      }
-    };
-    mxJson.Join.push(joinObj);
-    if (_.isArray(branches)) {
-
-
-      for (let i = 0; i < branches.length; i++) {
-        const x = branches[i].instructions[branches[i].instructions.length - 1];
-        if (x && (x.TYPE === 'If')) {
-          if (mxJson.EndIf && mxJson.EndIf.length) {
-            for (let j = 0; j < mxJson.EndIf.length; j++) {
-              if (x.id === mxJson.EndIf[j]._targetId) {
-                this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'join', parentId);
-                break;
-              }
-            }
-          }
-        } else if (x && (x.TYPE === 'ForkJoin')) {
-          if (mxJson.Join && mxJson.Join.length) {
-            for (let j = 0; j < mxJson.Join.length; j++) {
-              if (x.id === mxJson.Join[j]._targetId) {
-                this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'join', parentId);
-                break;
-              }
-            }
-          }
-        } else if (x && (x.TYPE === 'Retry')) {
-          if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-            for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-              if (x.id === mxJson.RetryEnd[j]._targetId) {
-                this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'join', parentId);
-                break;
-              }
-            }
-          }
-        } else if (x && (x.TYPE === 'Try')) {
-          if (mxJson.EndTry && mxJson.EndTry.length) {
-            for (let j = 0; j < mxJson.EndTry.length; j++) {
-              if (x.id === mxJson.EndTry[j]._targetId) {
-                this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'join', parentId);
-                break;
-              }
-            }
-          }
-        } else {
-          this.connectInstruction(x, {id: id}, mxJson, 'join', parentId);
-        }
-      }
-    } else {
-      this.connectInstruction(branches, {id: id}, mxJson, '', parentId);
-    }
-
-    if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
-    }
-  }
-
-  private endIf(branches, mxJson, list, index, targetId, parentId) {
-    if (mxJson.EndIf) {
-      if (!_.isArray(mxJson.EndIf)) {
-        const _tempJoin = _.clone(mxJson.EndIf);
-        mxJson.EndIf = [];
-        mxJson.EndIf.push(_tempJoin);
-      }
-
-    } else {
-      mxJson.EndIf = [];
-    }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 2000;
-    this.nodeMap.set(targetId.toString(), id.toString());
-    let endIfObj: any = {
-      _id: id,
-      _label: 'EndIf',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: 'rhombus',
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '150',
-          _height: '70'
-        }
-      }
-    };
-    mxJson.EndIf.push(endIfObj);
-
-    let flag = true;
-    if (branches.then && branches.then.instructions) {
-      flag = false;
-      const x = branches.then.instructions[branches.then.instructions.length - 1];
-      if (x && (x.TYPE === 'If')) {
-        if (mxJson.EndIf && mxJson.EndIf.length) {
-          for (let j = 0; j < mxJson.EndIf.length; j++) {
-            if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
-        if (mxJson.Join && mxJson.Join.length) {
-          for (let j = 0; j < mxJson.Join.length; j++) {
-            if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Try')) {
-        if (mxJson.EndTry && mxJson.EndTry.length) {
-          for (let j = 0; j < mxJson.EndTry.length; j++) {
-            if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
-      }
-    }
-    if (branches.else && branches.else.instructions) {
-      flag = false;
-      const x = branches.else.instructions[branches.else.instructions.length - 1];
-      if (x && (x.TYPE === 'If')) {
-        if (mxJson.EndIf && mxJson.EndIf.length) {
-          for (let j = 0; j < mxJson.EndIf.length; j++) {
-            if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'ForkJoin')) {
-        if (mxJson.Join && mxJson.Join.length) {
-          for (let j = 0; j < mxJson.Join.length; j++) {
-            if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else if (x && (x.TYPE === 'Try')) {
-        if (mxJson.EndTry && mxJson.EndTry.length) {
-          for (let j = 0; j < mxJson.EndTry.length; j++) {
-            if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
-              break;
-            }
-          }
-        }
-      } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
-      }
-    }
-
-    if (flag) {
-      this.connectInstruction(branches, {id: id}, mxJson, '', parentId);
-    }
-    if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
-    }
-  }
-
-  private endTry(x, mxJson, list, index, targetId, parentId) {
-    if (mxJson.EndTry) {
-      if (!_.isArray(mxJson.EndTry)) {
-        const _tempEndTry = _.clone(mxJson.EndTry);
-        mxJson.EndTry = [];
-        mxJson.EndTry.push(_tempEndTry);
-      }
-    } else {
-      mxJson.EndTry = [];
-    }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 5000;
-    this.nodeMap.set(targetId.toString(), id.toString());
-    let joinObj: any = {
-      _id: id,
-      _label: 'Try-End',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: 'rhombus',
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '90',
-          _height: '70'
-        }
-      }
-    };
-
-    mxJson.EndTry.push(joinObj);
-    this.connectInstruction({id: x}, {id: id}, mxJson, 'endTry', parentId);
-    if (list.length > (index + 1)) {
-      this.connectInstruction({id: id}, list[index + 1], mxJson, '', parentId);
-    }
-  }
-
-  private endCatch(branches, mxJson, list, targetId, parentId): number {
-    if (mxJson.EndCatch) {
-      if (!_.isArray(mxJson.EndCatch)) {
-        const _tempEndCatch = _.clone(mxJson.EndCatch);
-        mxJson.EndCatch = [];
-        mxJson.EndCatch.push(_tempEndCatch);
-      }
-
-    } else {
-      mxJson.EndCatch = [];
-    }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 4000;
-    this.nodeMap.set(targetId.toString(), id.toString());
-    let joinObj: any = {
-      _id: id,
-      _label: 'Catch-End',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: 'rectangle',
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '90',
-          _height: '40'
-        }
-      }
-    };
-
-    if (branches.instructions.length === 0) {
-      joinObj.mxCell._style = 'dashRectangle';
-    }
-
-    mxJson.EndCatch.push(joinObj);
-
-    let x = branches.instructions[branches.instructions.length - 1];
-    if (!x) {
-      x = branches;
-    }
-
-    if (x && (x.TYPE === 'If')) {
-      if (mxJson.EndIf && mxJson.EndIf.length) {
-        for (let j = 0; j < mxJson.EndIf.length; j++) {
-          if (x.id === mxJson.EndIf[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
-            break;
-          }
-        }
-      }
-    } else if (x && (x.TYPE === 'Retry')) {
-      if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-        for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-          if (x.id === mxJson.RetryEnd[j]._targetId) {
-            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
-            break;
-          }
-        }
-      }
-    } else if (x && (x.TYPE === 'Try')) {
-      if (mxJson.EndTry && mxJson.EndTry.length) {
-        for (let j = 0; j < mxJson.EndTry.length; j++) {
-          if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
-            break;
-          }
-        }
-      }
-    } else if (x && (x.TYPE === 'ForkJoin')) {
-      if (mxJson.Join && mxJson.Join.length) {
-        for (let j = 0; j < mxJson.Join.length; j++) {
-          if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
-            break;
-          }
-        }
-      }
-    } else if (x) {
-      this.connectInstruction(x, {id: id}, mxJson, 'endCatch', parentId);
-    }
-    return id;
-  }
-
-  private jsonParseForAwait(eventObj, mxJson, parentId) {
-    //TODO
-    if (eventObj.TYPE) {
-      if (eventObj.TYPE === 'OfferedOrder') {
-        if (mxJson.OfferedOrder) {
-          if (!_.isArray(mxJson.OfferedOrder)) {
-            const _tempOfferedOrder = _.clone(mxJson.OfferedOrder);
-            mxJson.OfferedOrder = [];
-            mxJson.OfferedOrder.push(_tempOfferedOrder);
-          }
-        } else {
-          mxJson.OfferedOrder = [];
-        }
-        let obj: any = {
-          _id: eventObj.id,
-          _label: 'Offered Order',
-          mxCell: {
-            _parent: parentId ? parentId : '1',
-            _vertex: '1',
-            _style: 'ellipse',
-            mxGeometry: {
-              _as: 'geometry',
-              _width: '80',
-              _height: '60'
-            }
-          }
-        };
-        mxJson.OfferedOrder.push(obj);
-      }
-    } else if (eventObj.TYPE === 'FileOrder') {
-      if (mxJson.FileOrder) {
-        if (!_.isArray(mxJson.FileOrder)) {
-          const _tempFileOrder = _.clone(mxJson.FileOrder);
-          mxJson.FileOrder = [];
-          mxJson.FileOrder.push(_tempFileOrder);
-        }
-      } else {
-        mxJson.FileOrder = [];
-      }
-      let obj: any = {
-        _id: eventObj.id,
-        _label: 'File Order',
-        mxCell: {
-          _parent: parentId ? parentId : '1',
-          _vertex: '1',
-          _style: 'ellipse',
-          mxGeometry: {
-            _as: 'geometry',
-            _width: '80',
-            _height: '60'
-          }
-        }
-      };
-      mxJson.FileOrder.push(obj);
     }
   }
 
@@ -4195,6 +3214,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     const awaitInstructions = objects.Await;
     const exitInstructions = objects.Terminate;
     const abortInstructions = objects.Abort;
+
     let nextNode: any = {};
 
     if (jobs) {
@@ -4501,9 +3521,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     let _iterateId = 0;
 
     const doc = mxUtils.createXmlDocument();
-
     if (!_xml) {
-
       // Alt disables guides
       mxGraphHandler.prototype.guidesEnabled = true;
       /**
@@ -4527,9 +3545,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxGraph.prototype.allowDanglingEdges = false;
       mxGraph.prototype.cellsLocked = true;
       mxGraph.prototype.foldingEnabled = true;
-      mxHierarchicalLayout.prototype.interRankCellSpacing = 54;
-      mxHierarchicalLayout.prototype.fineTuning = true;
-      mxHierarchicalLayout.prototype.disableEdgeStyle = true;
       mxConstants.DROP_TARGET_COLOR = 'green';
       mxConstants.VERTEX_SELECTION_DASHED = false;
       mxConstants.VERTEX_SELECTION_COLOR = '#007da6';
@@ -4538,11 +3553,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
-        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 9, 9);
-        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 9, 9);
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded-white.png', 12, 12);
       } else {
-        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 9, 9);
-        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 9, 9);
+        mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
+        mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
       }
 
       // Enables snapping waypoints to terminals
@@ -4679,6 +3694,24 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         return !this.getModel().isEdge(cell);
       };
 
+      graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+        let cell = evt.getProperty('cell');
+        console.log('DOUBLE_CLICK ' + cell);
+        if (cell != null && cell.vertex == 1) {
+          if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
+            || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry') {
+            console.log(cell.collapsed + ' <<<<<');
+           // graph.getModel().beginUpdate();
+            try {
+              cell.collapsed = cell.collapsed != true;
+            } catch (e) {
+             // graph.getModel().endUpdate();
+              console.log(cell.collapsed + ' >>>>');
+            }
+          }
+        }
+      });
+
 
       /**
        * Overrides method to provide a cell label in the display
@@ -4700,7 +3733,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
             return name;
           } else if (cell.value.nodeName.toLowerCase() === 'retry') {
-            let str = 'Repeat ' + cell.getAttribute('repeat', '') + ' times';
+            let str = 'Retry ' + cell.getAttribute('repeat', '') + ' times';
             if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
               str = str + '\nwith delay ' + cell.getAttribute('delay', '');
             }
@@ -4762,9 +3795,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (!isOrderCell) {
                 this.currentHighlight.highlightColor = '#ff0000';
               } else {
-                 if (state.cell.edges && state.cell.edges.length > 2) {
-                    this.currentHighlight.highlightColor = '#ff0000';
-                 }
+                if (state.cell.edges && state.cell.edges.length > 2) {
+                  this.currentHighlight.highlightColor = '#ff0000';
+                }
               }
             } else if (state.cell.value.tagName === 'If') {
               if (state.cell.edges && state.cell.edges.length > 2) {
@@ -4903,15 +3936,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (this.dragElement && this.dragElement.getAttribute('src').match('order')) {
             if (drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Connection') {
               isOrderCell = true;
-            } else  {
+            } else {
               self.toasterService.pop('error', title + '!!', 'Only Await instruction can have orders events');
               return;
             }
           }
           if (drpTargt.value.tagName !== 'Connection') {
-             if (drpTargt.value.tagName === 'FileOrder') {
-               self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
-               return;
+            if (drpTargt.value.tagName === 'FileOrder') {
+              self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
+              return;
             } else if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Abort' || drpTargt.value.tagName === 'Terminate') {
               for (let i = 0; i < drpTargt.edges.length; i++) {
                 if (drpTargt.edges[i].target.id !== drpTargt.id) {
@@ -4924,10 +3957,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only order events');
                 return;
               } else {
-                 if (drpTargt.edges && drpTargt.edges.length > 2) {
-                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only order events');
-                    return;
-                 }
+                if (drpTargt.edges && drpTargt.edges.length > 2) {
+                  self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only order events');
+                  return;
+                }
               }
             } else if (drpTargt.value.tagName === 'If') {
               if (drpTargt.edges.length > 2) {
@@ -5018,7 +4051,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           _graph.container.focus();
         }
         if (flag) {
-          executeLayout();
+          isUndoable = true;
+          WorkflowService.executeLayout(graph);
         }
       };
 
@@ -5041,6 +4075,23 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           isVertexDrop = false;
         } else {
           graph.getModel().remove(evt.getProperty('vertex'));
+        }
+      });
+
+      /**
+       * Changes the zoom on mouseWheel events
+       */
+      mxEvent.addMouseWheelListener(function (evt, up) {
+        if(evt && evt.path && evt.path.length === 23) {
+          if (!mxEvent.isConsumed(evt)) {
+            if (up) {
+              editor.execute('zoomIn');
+            } else {
+              editor.execute('zoomOut');
+            }
+
+            mxEvent.consume(evt);
+          }
         }
       });
 
@@ -5072,8 +4123,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         } finally {
           this.model.endUpdate();
         }
-        const layout = new mxHierarchicalLayout(graph);
-        layout.execute(graph.getDefaultParent());
+        WorkflowService.executeLayout(graph);
         return cells;
       };
 
@@ -5175,51 +4225,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       };
 
       /**
-       * Function: getEdges
-       *
-       * Returns the connected edges for the given cell.
-       *
-       * Parameters:
-       *
-       * cell - <mxCell> whose edges should be returned.
-       */
-      mxHierarchicalLayout.prototype.getEdges = function (cell) {
-        let cachedEdges = this.edgesCache.get(cell);
-
-        if (cachedEdges != null) {
-          return cachedEdges;
-        }
-        let model = this.graph.model;
-        let edges = [];
-        let isCollapsed = this.graph.isCellCollapsed(cell);
-
-        let childCount = model.getChildCount(cell);
-        for (let i = 0; i < childCount; i++) {
-          let child = model.getChildAt(cell, i);
-          if (this.isPort(child)) {
-            edges = edges.concat(model.getEdges(child, true, true));
-          } else if (isCollapsed || !this.graph.isCellVisible(child)) {
-            edges = edges.concat(model.getEdges(child, true, true));
-          }
-        }
-        edges = edges.concat(model.getEdges(cell, true, true));
-        let result = [];
-
-        for (let i = 0; i < edges.length; i++) {
-          let source = this.getVisibleTerminal(edges[i], true);
-          let target = this.getVisibleTerminal(edges[i], false);
-          if ((source === target) ||
-            ((source !== target) &&
-              ((target === cell && (this.parent == null || this.isAncestor(this.parent, source, this.traverseAncestors))) ||
-                (source === cell && (this.parent == null || this.isAncestor(this.parent, target, this.traverseAncestors)))))) {
-            result.push(edges[i]);
-          }
-        }
-        this.edgesCache.put(cell, result);
-        return result;
-      };
-
-      /**
        * Event to check if connector is valid or not on drop of new instruction
        * @param cell
        * @param cells
@@ -5229,8 +4234,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         isVertexDrop = true;
         if (cell) {
           if (cells && cells.length > 0) {
-            if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' ||
-              cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Await') {
+            if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
+              || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Catch' || cells[0].value.tagName === 'Await') {
               cells[0].collapsed = true;
             }
           }
@@ -5256,15 +4261,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (cells[0].value.tagName === 'Fork') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 70, 70, self.merge);
+                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 90, 90, self.workflowService.merge);
                 } else if (cells[0].value.tagName === 'If') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 70, 'rhombus');
+                  v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 80, 'if');
                 } else if (cells[0].value.tagName === 'Retry') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', null), 0, 0, 150, 70, 'rhombus');
+                  v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', null), 0, 0, 150, 80, 'retry');
                 } else {
-                  v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 90, 70, 'rhombus');
-                  v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'Catch', null), 0, 0, 90, 40, 'dashRectangle');
-                  v3 = graph.insertVertex(cells[0], null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 90, 40, 'dashRectangle');
+                  v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 94, 94, 'try');
+                  v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'Catch', null), 0, 0, 100, 40, 'dashRectangle');
+                  v3 = graph.insertVertex(cells[0], null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
                   graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cells[0], v2);
                   graph.insertEdge(cells[0], null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
                   graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
@@ -5405,28 +4410,28 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
             let v1, v2, v3, _label;
             if (cell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 70, 70, self.merge);
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
               graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
               if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch'
                 || dropTarget.value.tagName === 'Fork') {
                 _label = dropTarget.value.tagName === 'Retry' ? 'retryEnd' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'Fork' ? 'join' : 'try';
               }
             } else if (cell.value.tagName === 'If') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', cell.id), 0, 0, 150, 70, 'rhombus');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', cell.id), 0, 0, 150, 80, 'if');
               graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
               if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'If') {
                 _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'Retry' ? 'retryEnd' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'endIf' ? 'join' : 'try';
               }
             } else if (cell.value.tagName === 'Retry') {
-              v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', cell.id), 0, 0, 150, 70, 'rhombus');
+              v1 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', cell.id), 0, 0, 150, 80, 'retry');
               graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
               if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'Retry') {
                 _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'Retry' ? 'retryEnd' : 'try';
               }
             } else if (cell.value.tagName === 'Try') {
-              v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 90, 40, 'dashRectangle');
-              v3 = graph.insertVertex(cell, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 90, 40, 'dashRectangle');
-              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', cell.id), 0, 0, 90, 70, 'rhombus');
+              v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
+              v3 = graph.insertVertex(cell, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', cell.id), 0, 0, 94, 94, 'try');
 
               graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cell, v2);
               graph.insertEdge(cell, null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
@@ -5438,6 +4443,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (v1) {
+
               setTimeout(() => {
                 if (v2 && v3) {
                   graph.getModel().beginUpdate();
@@ -5460,7 +4466,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }, 0);
             }
           }
-
           if (dropTarget.value.tagName === 'Process') {
             parent = graph.getDefaultParent();
             let flag = false;
@@ -5505,6 +4510,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             graph.getModel().remove(dropTarget);
             isProgrammaticallyDelete = false;
           } else {
+
             let checkLabel = '';
             if (dropTarget.value.tagName === 'Fork') {
               label = 'branch';
@@ -5520,7 +4526,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               checkLabel = 'EndTry';
             } else if (dropTarget.value.tagName === 'Catch') {
               checkLabel = 'EndCatch';
-              graph.getModel().setStyle(dropTarget, 'rectangle');
+              graph.getModel().setStyle(dropTarget, 'catch');
             } else if (dropTarget.value.tagName === 'Await') {
               label = 'await';
               type = 'await';
@@ -5572,9 +4578,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                         self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
                       }
                       if (dropTarget.edges[i].target.value.tagName === 'EndCatch') {
-                        graph.getModel().setStyle(dropTarget.edges[i].target, 'rectangle');
+                        graph.getModel().setStyle(dropTarget.edges[i].target, 'catch');
                       }
-
                       const attr = dropTarget.edges[i].value.attributes;
                       if (attr) {
                         for (let x = 0; x < attr.length; x++) {
@@ -5634,18 +4639,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           }
           dropTarget = null;
-          executeLayout();
+          isUndoable = true;
+          WorkflowService.executeLayout(graph);
         }
         selectionChanged(graph);
       });
 
       initGraph(this.dummyXml);
-      const mgr = new mxAutoSaveManager(graph);
 
       selectionChanged(graph);
-      makeCenter();
-      executeLayout();
+      WorkflowService.makeCenter(graph);
+      isUndoable = true;
+      WorkflowService.executeLayout(graph);
 
+      const mgr = new mxAutoSaveManager(graph);
       mgr.save = function () {
         if (!self.isWorkflowReload) {
           setTimeout(() => {
@@ -5679,8 +4686,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       } finally {
         // Updates the display
         graph.getModel().endUpdate();
-        const layout = new mxHierarchicalLayout(graph);
-        layout.execute(graph.getDefaultParent());
+        WorkflowService.executeLayout(graph);
       }
     }
 
@@ -5689,7 +4695,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       const codec = new mxCodec(_doc);
       codec.decode(_doc.documentElement, graph.getModel());
       const vertices = graph.getChildVertices(graph.getDefaultParent());
-
       if (vertices.length > 3) {
         graph.setEnabled(true);
       }
@@ -5722,25 +4727,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         _node.setAttribute('targetId', id);
       }
       return _node;
-    }
-
-    /**
-     * Reformat the layout
-     */
-    function executeLayout() {
-      isUndoable = true;
-      const layout = new mxHierarchicalLayout(graph);
-      layout.execute(graph.getDefaultParent());
-    }
-
-    /**
-     * Function to centered the flow diagram
-     */
-    function makeCenter() {
-      setTimeout(() => {
-        graph.zoomActual();
-        graph.center(true, true, 0.5, 0.2);
-      }, 0);
     }
 
     function recursiveDeleteFn(selectedCell, target) {
@@ -5892,7 +4878,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         isFullyDelete = false;
         if (id > 0) {
-          executeLayout();
+          isUndoable = true;
+          WorkflowService.executeLayout(graph);
         }
       }, 0);
     }
@@ -6147,41 +5134,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         // Needs to take shift into account for textareas
         if (evt.which == /*enter*/13 &&
           !mxEvent.isShiftDown(evt)) {
-          input.blur();
-        }
-      });
-
-      if (mxClient.IS_IE) {
-        mxEvent.addListener(input, 'focusout', applyHandler);
-      } else {
-        mxEvent.addListener(input, 'blur', applyHandler);
-      }
-    }
-
-    /**
-     * Creates the textAreafield for the given property.
-     */
-    function createTextAreaField(_graph, form, cell, name, value) {
-      let input = form.addTextarea(name + ':', value, 10);
-      const applyHandler = function () {
-        let newValue = input.value || '';
-        let oldValue = cell.getAttribute(name, '');
-        if (newValue !== oldValue) {
-          _graph.getModel().beginUpdate();
-          try {
-            const edit = new mxCellAttributeChange(
-              cell, name, newValue);
-            _graph.getModel().execute(edit);
-            isUndoable = true;
-          } finally {
-            _graph.getModel().endUpdate();
-          }
-        }
-      };
-
-      mxEvent.addListener(input, 'keypress', function (evt) {
-        // Needs to take shift into account for textareas
-        if (evt.which === /*enter*/13 && !mxEvent.isShiftDown(evt)) {
           input.blur();
         }
       });
