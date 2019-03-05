@@ -855,18 +855,22 @@
                 return;
             }
             vm.showHistoryImmeditaly = false;
-            $location.path('/job_chain').search({path: jobChain,scheduler_id: (id || vm.schedulerIds.selected)});
+            if (vm.permission.JobChain.view.status) {
+                $location.path('/job_chain').search({path: jobChain, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
         };
 
-        vm.showJob = function (job,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showJob = function (job, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-             $location.path('/job').search({path: job,scheduler_id:(id || vm.schedulerIds.selected)});
+            if (vm.permission.Job.view.status) {
+                $location.path('/job').search({path: job, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
         };
 
-        vm.showJobChain1 = function (jobChain,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showJobChain1 = function (jobChain, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
             let path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
@@ -877,11 +881,13 @@
                 name: name,
                 path: path
             };
-            $location.path('/job_chains').search({});
+            if (vm.permission.JobChain.view.status) {
+                $location.path('/job_chains').search({});
+            }
         };
 
-        vm.showJob1 = function (job,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showJob1 = function (job, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
             let path = job.substring(0, job.lastIndexOf('/')) || '/';
@@ -892,39 +898,47 @@
                 name: name,
                 path: path
             };
-            $location.path('/jobs').search({});
+            if (vm.permission.Job.view.status) {
+                $location.path('/jobs').search({});
+            }
         };
 
-        vm.showOrderLink = function (path,id) {
-             if(id && id !== vm.schedulerIds.selected){
-                return;
-            }
-            $location.path('/job_chain').search({path: path,scheduler_id:(id || vm.schedulerIds.selected)});
-        };
-
-        vm.showOrderLink1 = function (jobChain, orderId,id) {
-             if(id && id !== vm.schedulerIds.selected){
-                return;
-            }
-            let path = jobChain;
-            if(orderId){
-                path = jobChain+','+orderId;
-            }
-            $location.path('/order').search({path: path,scheduler_id:(id || vm.schedulerIds.selected)});
-        };
-
-        vm.showAgentCluster = function (agentCluster,id) {
+        vm.showOrderLink = function (path, id) {
             if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-            $location.path('/agent_cluster').search({
-                path: agentCluster,
-                scheduler_id: (id || vm.schedulerIds.selected)
-            });
+            if (vm.permission.JobChain.view.status) {
+                $location.path('/job_chain').search({path: path, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
         };
 
-        vm.showAgentCluster1 = function (agentCluster,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showOrderLink1 = function (jobChain, orderId, id) {
+            if (id && id !== vm.schedulerIds.selected) {
+                return;
+            }
+            let path = jobChain;
+            if (orderId) {
+                path = jobChain + ',' + orderId;
+            }
+            if (vm.permission.Order.view.status) {
+                $location.path('/order').search({path: path, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
+        };
+
+        vm.showAgentCluster = function (agentCluster, id) {
+            if (id && id !== vm.schedulerIds.selected) {
+                return;
+            }
+            if (vm.permission.JobschedulerUniversalAgent.view.status) {
+                $location.path('/agent_cluster').search({
+                    path: agentCluster,
+                    scheduler_id: (id || vm.schedulerIds.selected)
+                });
+            }
+        };
+
+        vm.showAgentCluster1 = function (agentCluster, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
             let path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
@@ -935,21 +949,28 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/agent_clusters/').search({});
+            if (vm.permission.JobschedulerUniversalAgent.view.status) {
+                $location.path('/resources/agent_clusters/').search({});
+            }
         };
 
-        vm.showProcessClass = function (processClass,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showProcessClass = function (processClass, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-             $location.path('/process_class').search({path: processClass,scheduler_id:(id || vm.schedulerIds.selected)});
+            if (vm.permission.ProcessClass.view.status) {
+                $location.path('/process_class').search({
+                    path: processClass,
+                    scheduler_id: (id || vm.schedulerIds.selected)
+                });
+            }
         };
 
-        vm.showProcessClass1 = function (processClass,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showProcessClass1 = function (processClass, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-           let path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
+            let path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
             let name = '';
             if (path != '/') {
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -958,18 +979,22 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/process_classes').search({});
+            if (vm.permission.ProcessClass.view.status) {
+                $location.path('/resources/process_classes').search({});
+            }
         };
 
-        vm.showScheduleLink = function (schedule,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showScheduleLink = function (schedule, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-            $location.path('/schedule').search({path: schedule,scheduler_id:(id || vm.schedulerIds.selected)});
+            if (vm.permission.Schedule.view.status) {
+                $location.path('/schedule').search({path: schedule, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
         };
 
-        vm.showScheduleLink1 = function (schedule,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showScheduleLink1 = function (schedule, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
             var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
@@ -980,18 +1005,22 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/schedules').search({});
+            if (vm.permission.Schedule.view.status) {
+                $location.path('/resources/schedules').search({});
+            }
         };
 
-        vm.showCalendarLink = function (calendar,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showCalendarLink = function (calendar, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
-            $location.path('/calendar').search({path: calendar,scheduler_id:(id || vm.schedulerIds.selected)});
+            if (vm.permission.Calendar.view.status) {
+                $location.path('/calendar').search({path: calendar, scheduler_id: (id || vm.schedulerIds.selected)});
+            }
         };
 
-        vm.showCalendarLink1 = function (calendar,id) {
-             if(id && id !== vm.schedulerIds.selected){
+        vm.showCalendarLink1 = function (calendar, id) {
+            if (id && id !== vm.schedulerIds.selected) {
                 return;
             }
             var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
@@ -1002,8 +1031,9 @@
                 name: name,
                 path: path
             };
-
-            $location.path('/resources/calendars').search({});
+            if (vm.permission.Calendar.view.status) {
+                $location.path('/resources/calendars').search({});
+            }
         };
 
         vm.about = function () {

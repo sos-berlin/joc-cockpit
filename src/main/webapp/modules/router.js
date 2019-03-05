@@ -188,7 +188,12 @@
             url: "/orders",
             templateUrl: "modules/order/views/job-chain-orders.html",
             controller: "JobChainOrdersCtrl",
-            ncyBreadcrumb: {skip: !0}
+            ncyBreadcrumb: {skip: !0},
+            resolve: {
+                permission: function (authorizationService) {
+                    return authorizationService.permissionCheck('Order');
+                }
+            }
         }).state("app.jobChainDetails.overview", {
             url: "/overview",
             templateUrl: "modules/order/views/job-chain-overview.html",

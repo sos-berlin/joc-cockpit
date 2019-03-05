@@ -787,29 +787,35 @@
             }
             obj.compactView = vm.jobChainFilters.isCompact;
             JobChainService.get(obj).then(function (res) {
-                for (let x = 0; x < vm.allJobChains.length; x++) {
-                    if (vm.userPreferences.showOrders)
-                        vm.allJobChains[x].show = true;
-                    for (let i = 0; i < res.jobChains.length; i++) {
-                        if (vm.allJobChains[x].path === res.jobChains[i].path) {
-                            vm.allJobChains[x] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[x], res.nestedJobChains);
-                            if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
-                                angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
-                                    if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
-                                        JobService.get({
-                                            jobschedulerId: vm.schedulerIds.selected,
-                                            jobs: [{job: val.job.path}],
-                                            compactView : vm.jobChainFilters.isCompact
-                                        }).then(function (res1) {
-                                            vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
-                                            updatePanelHeight();
-                                        });
-                                    }
-                                });
+                if (res.jobChains.length > 0) {
+                    for (let x = 0; x < vm.allJobChains.length; x++) {
+                        if (vm.userPreferences.showOrders)
+                            vm.allJobChains[x].show = true;
+                        for (let i = 0; i < res.jobChains.length; i++) {
+                            if (vm.allJobChains[x].path === res.jobChains[i].path) {
+                                vm.allJobChains[x] = mergePermanentAndVolatile(res.jobChains[i], vm.allJobChains[x], res.nestedJobChains);
+                                if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
+                                    angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
+                                        if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
+                                            JobService.get({
+                                                jobschedulerId: vm.schedulerIds.selected,
+                                                jobs: [{job: val.job.path}],
+                                                compactView: vm.jobChainFilters.isCompact
+                                            }).then(function (res1) {
+                                                vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
+                                                updatePanelHeight();
+                                            });
+                                        }
+                                    });
+                                }
+                                res.jobChains.splice(i, 1);
+                                break;
                             }
-                            res.jobChains.splice(i, 1);
-                            break;
                         }
+                    }
+                }else{
+                    if(vm.jobChainFilters.filter.state !== 'ALL'){
+                        vm.allJobChains = res.jobChains;
                     }
                 }
 
@@ -966,14 +972,16 @@
 
         /**--------------- Actions -----------------------------*/
         vm.viewOrders = function (jobChain, state) {
-            vm.orderFilters = CoreService.getOrderDetailTab();
-            if (state)
-                vm.orderFilters.filter.state = state;
-            else
-                vm.orderFilters.filter.state = 'ALL';
-            SOSAuth.setJobChain(JSON.stringify(jobChain));
-            SOSAuth.save();
-            $location.path('/job_chain_detail/orders').search({path: jobChain.path});
+            if (vm.permission.Order.view.status) {
+                vm.orderFilters = CoreService.getOrderDetailTab();
+                if (state)
+                    vm.orderFilters.filter.state = state;
+                else
+                    vm.orderFilters.filter.state = 'ALL';
+                SOSAuth.setJobChain(JSON.stringify(jobChain));
+                SOSAuth.save();
+                $location.path('/job_chain_detail/orders').search({path: jobChain.path});
+            }
         };
 
         vm.viewFlowDiagram = function (jobChain) {
@@ -2198,12 +2206,17 @@
             vm.jobChainFilter = {};
             vm.isUnique = true;
             vm.showSearchPanel = true;
+            vm.isSearchHit = false;
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
             vm.jobChainFilter = {};
             if (form)
                 form.$setPristine();
+            if(vm.isSearchHit){
+                vm.isSearchHit = false;
+                vm.changeStatus();
+            }
         };
 
         function searchV(obj, allJobChains) {
@@ -2283,6 +2296,7 @@
 
         vm.search = function () {
             vm.isLoaded = true;
+            vm.isSearchHit = true;
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true
@@ -4318,16 +4332,22 @@
                 vm.jobFilterList.push(configObj);
             });
         };
+
         vm.advancedSearch = function () {
             vm.jobFilter = {};
             vm.isUnique = true;
             vm.showSearchPanel = true;
+            vm.isSearchHit = false;
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
             vm.jobFilter = {};
             if (form)
                 form.$setPristine();
+            if(vm.isSearchHit){
+                vm.isSearchHit = false;
+                vm.changeStatus();
+            }
         };
 
         function searchV(obj, allJobs) {
@@ -4377,6 +4397,7 @@
 
         vm.search = function () {
             vm.isLoaded = true;
+            vm.isSearchHit = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;

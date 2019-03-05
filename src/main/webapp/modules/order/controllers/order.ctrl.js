@@ -2895,7 +2895,9 @@
                 name: path,
                 path: vm.path
             };
-            $location.path('/job_chains')
+            if (vm.permission.JobChain.view.status) {
+                $location.path('/job_chains').search({});
+            }
         };
         var t1 = '';
         $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
@@ -2919,7 +2921,9 @@
 
 
         vm.viewJobChainOrder = function () {
-            $location.path('/job_chain_detail/orders').search({path: vm.path});
+            if (vm.permission.Order.view.status) {
+                $location.path('/job_chain_detail/orders').search({path: vm.path});
+            }
         };
 
         vm.viewJobChainDetail = function () {
@@ -4369,6 +4373,7 @@
         vm.advancedSearch = function () {
             vm.isUnique = true;
             vm.showSearchPanel = true;
+            vm.isSearchHit = false;
             vm.orderFilter1 = {};
         };
         vm.cancel = function (form) {
@@ -4376,9 +4381,14 @@
             vm.orderFilter1 = undefined;
             if (form)
                 form.$setPristine();
+            if(vm.isSearchHit){
+                vm.isSearchHit = false;
+                vm.changeStatus();
+            }
         };
 
         vm.search = function () {
+            vm.isSearchHit = true;
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -7192,7 +7202,9 @@
         vm.limitNum = vm.userPreferences.maxOrderPerJobchain;
         vm.showOrderPanel = '';
         vm.showOrderPanelFuc = function (path) {
-            $location.path('/job_chain_detail/orders').search({path: path});
+            if (vm.permission.Order.view.status) {
+                $location.path('/job_chain_detail/orders').search({path: path});
+            }
         };
 
         $scope.$on('$destroy', function () {

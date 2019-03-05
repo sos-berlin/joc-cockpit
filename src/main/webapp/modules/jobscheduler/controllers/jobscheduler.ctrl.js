@@ -6131,17 +6131,17 @@
         var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary = true,
             isLoadedFileOverview = true, isLoadedTaskSummary = true, isLoadedTaskSnapshot = true;
 
-        vm.isAgentClusterVisible = true;
-        vm.isRunningAgentVisible = true;
-        vm.isJobscheduleStatusVisible = true;
-        vm.isMasterClusterVisible = true;
-        vm.isOrderOverviewVisible = true;
-        vm.isOrderSummaryVisible = true;
-        vm.istaskOverviewVisible = true;
-        vm.istaskSummaryVisible = true;
-        vm.isFileOverviewVisible = true;
-        vm.isFileSummaryVisible = true;
-        vm.isDailPlanVisible = true;
+        vm.isAgentClusterVisible = false;
+        vm.isRunningAgentVisible = false;
+        vm.isJobscheduleStatusVisible = false;
+        vm.isMasterClusterVisible = false;
+        vm.isOrderOverviewVisible = false;
+        vm.isOrderSummaryVisible = false;
+        vm.istaskOverviewVisible = false;
+        vm.istaskSummaryVisible = false;
+        vm.isFileOverviewVisible = false;
+        vm.isFileSummaryVisible = false;
+        vm.isDailPlanVisible = false;
         vm.editLayoutObj = false;
 
         vm.dashboard = {widgets: []};
