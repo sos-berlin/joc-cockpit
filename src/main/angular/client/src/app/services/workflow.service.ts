@@ -8,7 +8,7 @@ export class WorkflowService {
 
   count = 11;
   // Declare Map object to store fork and join Ids
-  public nodeMap = new Map();
+  public nodeMap;
   public merge;
   public abort;
   public terminate;
@@ -149,6 +149,7 @@ export class WorkflowService {
   }
 
   init(theme) {
+    this.nodeMap = new Map();
     if (theme === 'light') {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.png';
       this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.png';
@@ -640,8 +641,6 @@ export class WorkflowService {
     };
     mxJson.Join.push(joinObj);
     if (_.isArray(branches)) {
-
-
       for (let i = 0; i < branches.length; i++) {
         const x = branches[i].instructions[branches[i].instructions.length - 1];
         if (x && (x.TYPE === 'If')) {

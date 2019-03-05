@@ -1276,7 +1276,6 @@
   "label.deleteAllDocument": "Delete all Documentation",
   "tooltip.removeFile": "Remove file",
   "button.compactView": "Compact View",
-  "button.submitWorkFlow": "Submit WorkFlow",
   "label.showDocumentations": "Show Documentation",
   "breadcrumb.agentCluster": "Agent Cluster",
   "breadcrumb.agents": "Agents",
@@ -1378,8 +1377,19 @@
   "button.addAnotherVariable": "Add another Variable",
   "label.addPeriod": "Add Period",
   "label.editPeriod": "Update Period",
+  "label.orderTemplate": "Create Order Template",
   "next_non_holiday": "after non-working day",
   "previous_non_holiday": "before non-working day",
   "suppress": "suppress execution (default)",
-  "ignore_holiday": "ignore non-working day"
+  "ignore_holiday": "ignore non-working day",
+  "workflow.button.zoomIn": "Zoom In",
+  "workflow.button.zoomOut": "Zoom Out",
+  "workflow.button.actual": "Actual",
+  "workflow.button.fit": "Fit",
+  "workflow.button.undo": "Undo",
+  "workflow.button.redo": "Redo",
+  "workflow.button.delete": "Delete",
+  "workflow.button.submitWorkFlow": "Submit WorkFlow",
+  "workflow.button.reload": "Reload",
+  "workflow.label.properties": "Properties"
 }

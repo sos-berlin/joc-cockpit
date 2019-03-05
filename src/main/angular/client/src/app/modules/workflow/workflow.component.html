@@ -41,7 +41,18 @@
                         <div class="col-md-12 m-b-sm " [hidden]="pageView !== 'grid'">
                           <div class="m-b-sm b-b p-b-sm">
                             <div class="inline">
-                              <div class="inline" id="zoomActions"></div>
+                               <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}" (click)="zoomIn()">
+                                  <i class="fa fa-search-plus"></i>
+                                </button>
+                                <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.zoomOut' | translate}}" (click)="zoomOut()">
+                                  <i class="fa fa-search-minus"></i>
+                                </button>
+                                <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.actual' | translate}}" (click)="actual()">
+                                  <i class="fa fa-search"></i>
+                                </button>
+                                <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.fit' | translate}}" (click)="fit()">
+                                  <i class="fa fa-arrows-alt"></i>
+                                </button>
                             </div>
                           </div>
                         </div>

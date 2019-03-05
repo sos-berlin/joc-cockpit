@@ -1,70 +1,91 @@
 <mxEditor>
-	<mxDefaultPopupMenu as="popupHandler">
-		<add as="delete" action="delete" icon="./assets/mxgraph/images/delete.gif" if="cell"/>
-	</mxDefaultPopupMenu>
 	<include name="./assets/mxgraph/config/keyhandler-commons.xml"/>
-	<Array as="actions">
-		<add as="straightConnector"><![CDATA[
-			function (editor)
-			{
-				editor.graph.setCellStyle("straightEdge");
-			}
-		]]></add>
-		<add as="elbowConnector"><![CDATA[
-			function (editor)
-			{
-				editor.graph.setCellStyle("");
-			}
-		]]></add>
-		<add as="arrowConnector"><![CDATA[
-			function (editor)
-			{
-				editor.graph.setCellStyle("arrowEdge");
-			}
-		]]></add>
-		<add as="toggleOrientation"><![CDATA[
-			function (editor, cell)
-			{
-				editor.graph.toggleCellStyles(mxConstants.STYLE_HORIZONTAL, true);
-			}
-		]]></add>
-		<add as="toggleRounded"><![CDATA[
-			function (editor)
-			{
-				editor.graph.toggleCellStyles(mxConstants.STYLE_ROUNDED);
-			}
-		]]></add>
-		<add as="toggleShadow"><![CDATA[
-			function (editor)
-			{
-				editor.graph.toggleCellStyles(mxConstants.STYLE_SHADOW);
-			}
-		]]></add>
-		<add as="horizontalTree"><![CDATA[
-			function (editor, cell)
-			{
-				cell = cell || editor.graph.getSelectionCell();
-
-				if (cell == null)
-				{
-					cell = editor.graph.getDefaultParent();
-				}
-
-				editor.treeLayout(cell, true);
-			}
-		]]></add>
-		<add as="verticalTree"><![CDATA[
-			function (editor, cell)
-			{
-				cell = cell || editor.graph.getSelectionCell();
-
-				if (cell == null)
-				{
-					cell = editor.graph.getDefaultParent();
-				}
-
-				editor.treeLayout(cell, false);
-			}
-		]]></add>
-	</Array>
+  <ui>
+    <add as="graph" element="graph"/>
+    <add as="toolbar" element="toolbar"/>
+  </ui>
+  <Array as="templates">
+    <add as="group">
+      <Group label="Cluster">
+        <mxCell vertex="1" style="group" connectable="0"/>
+      </Group>
+    </add>
+    <add as="connector">
+      <Connector label="" type="">
+        <mxCell edge="1">
+          <mxGeometry as="geometry" relative="1"/>
+        </mxCell>
+      </Connector>
+    </add>
+    <add as="rectangle">
+      <FileOrder label="File Order" regex="" agent="" checkSteadyState="true" directory="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="120" height="50"/>
+        </mxCell>
+      </FileOrder>
+    </add>
+    <add as="Job">
+      <Job name="/Job" title="" agent="">
+        <mxCell vertex="1" style="rounded">
+          <mxGeometry as="geometry" width="200" height="50"/>
+        </mxCell>
+      </Job>
+    </add>
+    <add as="If">
+      <If label="If" predicate="returnCode > 0">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="150" height="80"/>
+        </mxCell>
+      </If>
+    </add>
+    <add as="Retry">
+      <Retry label="Retry" repeat="10" delay="0">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="150" height="80"/>
+        </mxCell>
+      </Retry>
+    </add>
+    <add as="Terminate">
+      <Terminate label="Terminate" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Terminate>
+    </add>
+    <add as="Abort">
+      <Abort label="Abort" message="">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Abort>
+    </add>
+    <add as="Fork">
+      <Fork label="Fork">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="90" height="90"/>
+        </mxCell>
+      </Fork>
+    </add>
+    <add as="Await">
+      <Await label="Await">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="90" height="90"/>
+        </mxCell>
+      </Await>
+    </add>
+    <add as="Try">
+      <Try label="Try">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="94" height="94"/>
+        </mxCell>
+      </Try>
+    </add>
+    <add as="symbol">
+      <Symbol label="Instruction" description="">
+        <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
+          <mxGeometry as="geometry" width="70" height="70"/>
+        </mxCell>
+      </Symbol>
+    </add>
+  </Array>
 </mxEditor>

@@ -38,6 +38,8 @@ declare const mxRectangle;
 declare const mxPoint;
 declare const mxUndoManager;
 declare const mxEventObject;
+declare const mxGraphSelectionModel;
+declare const mxDefaultPopupMenu;
 
 declare const Holidays;
 declare const X2JS;
@@ -2966,7 +2968,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            console.log(_node);
+
             if (_node) {
               for (let j = 0; j < instructions.length; j++) {
                 if (instructions[j].TYPE === 'Await' && instructions[j].id === id) {
@@ -3545,6 +3547,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxGraph.prototype.allowDanglingEdges = false;
       mxGraph.prototype.cellsLocked = true;
       mxGraph.prototype.foldingEnabled = true;
+      mxGraphSelectionModel.prototype.singleSelection = true;
       mxConstants.DROP_TARGET_COLOR = 'green';
       mxConstants.VERTEX_SELECTION_DASHED = false;
       mxConstants.VERTEX_SELECTION_COLOR = '#007da6';
@@ -3570,10 +3573,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       graph.constrainChildren = false;
       graph.extendParentsOnAdd = false;
       graph.extendParents = false;
-
-      // Create select actions in page
-      let node = document.getElementById('mainActions');
-      let buttons = ['undo', 'redo', 'delete'];
 
       // editor.urlImage = 'http://localhost:4200/export';
       // Only adds image and SVG export if backend is available
@@ -3614,100 +3613,23 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         };
 
-        editor.addAction('exportImage', exportImage);
-        buttons.push('exportImage');
       }
 
-      for (let i = 0; i < buttons.length; i++) {
-        let button = document.createElement('button');
-        let dom = document.createElement('i');
-        let icon: any;
-        if (buttons[i] === 'undo') {
-          icon = 'fa fa-undo';
-          button.setAttribute('class', 'btn btn-sm btn-grey');
-          button.setAttribute('title', 'Undo');
-          button.setAttribute('id', 'undoBtn');
-        } else if (buttons[i] === 'redo') {
-          icon = 'fa fa-repeat';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Redo');
-          button.setAttribute('id', 'redoBtn');
-        } else if (buttons[i] === 'delete') {
-          icon = 'fa fa-times';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Delete');
-        }
-
-        dom.setAttribute('class', icon);
-        button.appendChild(dom);
-        mxUtils.write(button, '');
-        const factory = function (name) {
-          return function () {
-            editor.execute(name);
-          };
-        };
-
-        mxEvent.addListener(button, 'click', factory(buttons[i]));
-        node.appendChild(button);
-      }
-
-      // Create zoom actions in page
-      let zoomNode = document.getElementById('zoomActions');
-      const zoomButtons = ['zoomIn', 'zoomOut', 'actualSize', 'fit'];
-
-      for (let i = 0; i < zoomButtons.length; i++) {
-        let button = document.createElement('button');
-        let dom = document.createElement('i');
-        let icon: any;
-        if (zoomButtons[i] === 'zoomIn') {
-          icon = 'fa fa-search-plus';
-          button.setAttribute('class', 'btn btn-sm btn-grey');
-          button.setAttribute('title', 'Zoom In');
-        } else if (zoomButtons[i] === 'zoomOut') {
-          icon = 'fa fa-search-minus';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Zoom Out');
-        } else if (zoomButtons[i] === 'actualSize') {
-          icon = 'fa fa-search';
-          button.setAttribute('class', 'btn btn-sm btn-grey');
-          button.setAttribute('id', 'actual');
-          button.setAttribute('title', 'Actual');
-        } else if (zoomButtons[i] === 'fit') {
-          icon = 'fa  fa-arrows-alt';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Fit');
-        }
-        dom.setAttribute('class', icon);
-        button.appendChild(dom);
-        mxUtils.write(button, '');
-        const factory = function (name) {
-          return function () {
-            editor.execute(name);
-          };
-        };
-
-        mxEvent.addListener(button, 'click', factory(zoomButtons[i]));
-        zoomNode.appendChild(button);
-      }
 
       graph.isCellEditable = function (cell) {
-        return !this.getModel().isEdge(cell);
+        return false;
       };
 
-      graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+      /**
+       * Overrides method to provide a cell collapse/expandable on double click
+       */
+      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
         let cell = evt.getProperty('cell');
-        console.log('DOUBLE_CLICK ' + cell);
         if (cell != null && cell.vertex == 1) {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
             || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry') {
-            console.log(cell.collapsed + ' <<<<<');
-           // graph.getModel().beginUpdate();
-            try {
-              cell.collapsed = cell.collapsed != true;
-            } catch (e) {
-             // graph.getModel().endUpdate();
-              console.log(cell.collapsed + ' >>>>');
-            }
+            const flag = cell.collapsed != true;
+            graph.foldCells(flag, false, null, null, evt);
           }
         }
       });
@@ -4166,7 +4088,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
        */
       mxUndoManager.prototype.undo = function () {
         if (this.indexOfNextAdd > 0) {
-          console.log(this.indexOfNextAdd, this.history);
           const xml = this.history[--this.indexOfNextAdd];
 
           graph.getModel().beginUpdate();
@@ -4235,7 +4156,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         if (cell) {
           if (cells && cells.length > 0) {
             if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
-              || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Catch' || cells[0].value.tagName === 'Await') {
+              || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Await') {
               cells[0].collapsed = true;
             }
           }
@@ -4269,6 +4190,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 } else {
                   v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 94, 94, 'try');
                   v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'Catch', null), 0, 0, 100, 40, 'dashRectangle');
+                  v2.collapsed = true;
                   v3 = graph.insertVertex(cells[0], null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
                   graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cells[0], v2);
                   graph.insertEdge(cells[0], null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
@@ -4406,6 +4328,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             type = 'await';
           }
 
+          if (dropTarget.value.tagName === 'Catch') {
+            cell.setParent(dropTarget);
+          }
           let parent = cell.getParent() || graph.getDefaultParent();
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
             let v1, v2, v3, _label;
@@ -4430,6 +4355,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             } else if (cell.value.tagName === 'Try') {
               v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
+              v2.collapsed = true;
               v3 = graph.insertVertex(cell, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', cell.id), 0, 0, 94, 94, 'try');
 
@@ -4615,7 +4541,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (cell.edges[i].target.value.tagName === checkLabel) {
                   const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'RetryEnd' ? 'retryEnd' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
                   if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry') {
-                    cell.edges[i].value.attributes[0].nodeValue = _label;
+                    cell.edges[i].value.attributes[0].nodeValue = '';
                     cell.edges[i].value.attributes[1].nodeValue = _label;
                   }
                 }
@@ -4645,6 +4571,172 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         selectionChanged(graph);
       });
 
+      // Installs context menu
+      graph.popupMenuHandler.factoryMethod = function (menu, cell, evt) {
+        if (cell && !(cell.value.tagName === 'Process' || cell.value.tagName === 'Catch' || cell.value.tagName === 'Connection' || cell.value.tagName === 'Connector'
+          || cell.value.tagName === 'EndIf' || cell.value.tagName === 'EndCatch' || cell.value.tagName === 'EndTry' || cell.value.tagName === 'Join'
+          || cell.value.tagName === 'RetryEnd')) {
+          menu.addItem('Move inside Fork', null, function (evt) {
+            let parent = cell.getParent();
+            console.log(parent);
+            let v1 = graph.insertVertex(parent, null, getCellNode('Fork', 'Fork', null), 0, 0, 90, 90, self.workflowService.fork);
+            v1.collapsed = true;
+            let v2 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 90, 90, self.workflowService.merge);
+            if (cell.edges) {
+              let _sour, _tar, _middle;
+              for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].target.id == cell.id) {
+                  _sour = cell.edges[i];
+                }
+                if (cell.edges[i].source.id == cell.id) {
+                  _tar = cell.edges[i];
+                }
+              }
+
+              if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                _tar = getEndNode(cell);
+                _middle = _tar.source;
+                // _tar.source.setParent(v1);
+              } else {
+                _middle = cell;
+              }
+
+              // cell.setParent(v1);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), _sour.source, v1);
+              graph.insertEdge(v1, null, getConnectionNode('branch', 'branch'), v1, cell);
+              graph.insertEdge(parent, null, getConnectionNode('join', 'join'), _middle, v2);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), v2, _tar.target);
+              graph.getModel().remove(_sour);
+              graph.getModel().remove(_tar);
+              setTargetId(v1, v2);
+            }
+
+          });
+          menu.addItem('Move inside If', null, function (evt) {
+            console.log(cell);
+            let parent = cell.getParent();
+            let _node: any = getCellNode('If', 'If', null);
+            _node.setAttribute('predicate', 'returnCode > 0');
+            let v1 = graph.insertVertex(parent, null, _node, 0, 0, 150, 80, 'if');
+            v1.collapsed = true;
+            let v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 80, 'if');
+            if (cell.edges) {
+              let _sour, _tar, _middle;
+              for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].target.id == cell.id) {
+                  _sour = cell.edges[i];
+                }
+                if (cell.edges[i].source.id == cell.id) {
+                  _tar = cell.edges[i];
+                }
+              }
+
+              if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                _tar = getEndNode(cell);
+                _middle = _tar.source;
+                // _tar.source.setParent(v1);
+              } else {
+                _middle = cell;
+              }
+
+              // cell.setParent(v1);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), _sour.source, v1);
+              graph.insertEdge(v1, null, getConnectionNode('true', 'then'), v1, cell);
+              graph.insertEdge(parent, null, getConnectionNode('endIf', 'endIf'), _middle, v2);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), v2, _tar.target);
+              graph.getModel().remove(_sour);
+              graph.getModel().remove(_tar);
+              setTargetId(v1, v2);
+            }
+          });
+          menu.addItem('Move inside Retry', null, function (evt) {
+            console.log(cell);
+            let parent = cell.getParent();
+            let _node: any = getCellNode('Retry', 'Retry', null);
+            _node.setAttribute('repeat', '10');
+            _node.setAttribute('delay', '10');
+            let v1 = graph.insertVertex(parent, null, _node, 0, 0, 150, 80, 'retry');
+            v1.collapsed = true;
+            let v2 = graph.insertVertex(parent, null, getCellNode('RetryEnd', 'Retry-End', cell.id), 0, 0, 150, 80, 'retry');
+            if (cell.edges) {
+              let _sour, _tar, _middle;
+              for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].target.id == cell.id) {
+                  _sour = cell.edges[i];
+                }
+                if (cell.edges[i].source.id == cell.id) {
+                  _tar = cell.edges[i];
+                }
+              }
+
+              if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                _tar = getEndNode(cell);
+                _middle = _tar.source;
+                // _tar.source.setParent(v1);
+              } else {
+                _middle = cell;
+              }
+
+              cell.setParent(v1);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), _sour.source, v1);
+              graph.insertEdge(v1, null, getConnectionNode('retry', 'retry'), v1, cell);
+              graph.insertEdge(parent, null, getConnectionNode('retryEnd', 'retryEnd'), _middle, v2);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), v2, _tar.target);
+              graph.getModel().remove(_sour);
+              graph.getModel().remove(_tar);
+              setTargetId(v1, v2);
+            }
+          });
+          menu.addItem('Move inside Try-Catch', null, function (evt) {
+            console.log(cell);
+            let parent = cell.getParent();
+            let v1 = graph.insertVertex(parent, null, getCellNode('Try', 'Try', null), 0, 0, 94, 94, 'try');
+            v1.collapsed = true;
+            let v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 94, 94, 'try');
+            let v3 = graph.insertVertex(v1, null, getCellNode('Catch', 'Catch', null), 0, 0, 100, 40, 'dashRectangle');
+            v3.collapsed = true;
+            let v4 = graph.insertVertex(v1, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
+
+            if (cell.edges) {
+              let _sour, _tar, _middle;
+              for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].target.id == cell.id) {
+                  _sour = cell.edges[i];
+                }
+                if (cell.edges[i].source.id == cell.id) {
+                  _tar = cell.edges[i];
+                }
+              }
+
+              if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try' || cell.value.tagName === 'Retry') {
+                _tar = getEndNode(cell);
+                _middle = _tar.source;
+                // _tar.source.setParent(v1);
+              } else {
+                _middle = cell;
+              }
+
+              // cell.setParent(v1);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), _sour.source, v1);
+              graph.insertEdge(v1, null, getConnectionNode('try', 'try'), v1, cell);
+              graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), _middle, v3);
+              graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v4, v2);
+              graph.insertEdge(parent, null, getConnectionNode('', ''), v2, _tar.target);
+              graph.insertEdge(v1, null, getConnectionNode('', ''), v3, v4, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+
+              graph.getModel().remove(_sour);
+              graph.getModel().remove(_tar);
+              setTargetId(v1, v2);
+            }
+          });
+          menu.addItem('Delete', null, function () {
+            if (graph.isEnabled()) {
+              graph.removeCells();
+            }
+          });
+        }
+      };
+
       initGraph(this.dummyXml);
 
       selectionChanged(graph);
@@ -4668,6 +4760,107 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     } else {
       self.isWorkflowReload = true;
       reloadDummyXml(_xml);
+    }
+
+
+    function setTargetId(v1, v2) {
+      setTimeout(() => {
+        graph.getModel().beginUpdate();
+        try {
+          self.nodeMap.set(v1.id, v2.id);
+          const targetId = new mxCellAttributeChange(
+            v2, 'targetId',
+            v1.id);
+          graph.getModel().execute(targetId);
+        } finally {
+          graph.getModel().endUpdate();
+        }
+      }, 0);
+
+      WorkflowService.executeLayout(graph);
+    }
+
+    /**
+     * Get end node of If/Fork/Try/Retry
+     * @param cell
+     */
+    function getEndNode(cell) {
+      let targetNode;
+
+      function recursive(target) {
+        const edges = target.edges;
+        if ((cell.value.tagName === 'Fork' && target.value.tagName === 'Join') ||
+          (cell.value.tagName === 'If' && target.value.tagName === 'EndIf') ||
+          (cell.value.tagName === 'Retry' && target.value.tagName === 'RetryEnd') ||
+          (cell.value.tagName === 'Try' && target.value.tagName === 'EndTry')) {
+
+          const attrs = target.value.attributes;
+          if (attrs) {
+            for (let i = 0; i < attrs.length; i++) {
+              if (attrs[i].nodeName === 'targetId' && attrs[i].nodeValue === cell.id) {
+                for (let x = 0; x < edges.length; x++) {
+                  if (edges[x].target.id !== target.id) {
+                    console.log(_.clone(edges[x]));
+                    console.log(_.clone(target));
+                    targetNode = edges[x];
+                    break;
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+        if (edges && edges.length > 0) {
+          for (let j = 0; j < edges.length; j++) {
+            if (edges[j].target) {
+              if (edges[j].target.id !== target.id) {
+                if ((cell.value.tagName === 'Fork' && edges[j].target.value.tagName === 'Join') ||
+                  (cell.value.tagName === 'If' && edges[j].target.value.tagName === 'EndIf') ||
+                  (cell.value.tagName === 'Retry' && edges[j].target.value.tagName === 'RetryEnd') ||
+                  (cell.value.tagName === 'Try' && edges[j].target.value.tagName === 'EndTry')) {
+                  const attrs = edges[j].target.value.attributes;
+                  if (attrs) {
+                    for (let i = 0; i < attrs.length; i++) {
+                      if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === cell.id || attrs[i].nodeValue === target.id)) {
+                        const _edges = edges[j].target.edges;
+                        for (let x = 0; x < _edges.length; x++) {
+                          if (_edges[x].target.id !== edges[j].target.id) {
+                            targetNode = _edges[x];
+                            break;
+                          }
+                        }
+                        break;
+                      }
+                    }
+                  }
+                } else {
+                  if (edges[j].target) {
+                    if (_iterateId !== edges[j].target.id) {
+                      _iterateId = edges[j].target.id;
+                      recursive(edges[j].target);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if (!targetNode) {
+            for (let i = 0; i < edges.length; i++) {
+              if (edges[i] && edges[i].target) {
+                if (_iterateId !== edges[i].target.id) {
+                  _iterateId = edges[i].target.id;
+                  recursive((edges[i].target));
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      recursive(cell);
+      return targetNode;
     }
 
     /**
@@ -4708,6 +4901,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     function getConnectionNode(label: string, type: string): Object {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
+      if (!(label == 'true' || label == 'false')) {
+        label = '';
+      }
       connNode.setAttribute('label', label);
       connNode.setAttribute('type', type);
       return connNode;
@@ -4892,7 +5088,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       try {
         const label = new mxCellAttributeChange(
           cell, 'label',
-          data);
+          '');
         const type = new mxCellAttributeChange(
           cell, 'type',
           data);
@@ -5056,7 +5252,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         div.setAttribute('class', 'text-center text-orange');
         mxUtils.writeln(div, 'Nothing selected.');
       } else {
-        if (cell.value.tagName === 'Fork' || cell.value.tagName === 'Await') {
+        if (cell.value.tagName === 'Fork' || cell.value.tagName === 'Await' || cell.value.tagName === 'Try' || cell.value.tagName === 'Catch') {
           div.setAttribute('class', 'text-center text-orange');
           mxUtils.writeln(div, 'Nothing selected.');
           return;
@@ -5154,7 +5350,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         let newValue = cell.getAttribute(attribute.nodeName, '') === 'true' ? false : true;
         _graph.getModel().beginUpdate();
         try {
-          console.log(attribute.nodeName + ' : ' + newValue);
           const update = new mxCellAttributeChange(
             cell, attribute.nodeName, newValue);
           _graph.getModel().execute(update);
@@ -5164,6 +5359,52 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       };
       mxEvent.addListener(input, 'change', applyHandler);
+    }
+
+
+  }
+
+  zoomIn() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomIn();
+    }
+  }
+
+  zoomOut() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomOut();
+    }
+  }
+
+  actual() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomActual();
+      this.editor.graph.center(true, true, 0.5, 0.2);
+    }
+  }
+
+  fit() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.fit();
+      this.editor.graph.center(true, true, 0.5, 0.2);
+    }
+  }
+
+  redo() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.redo();
+    }
+  }
+
+  undo() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.undo();
+    }
+  }
+
+  delete() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.graph.removeCells();
     }
   }
 }

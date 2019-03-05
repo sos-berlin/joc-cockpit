@@ -8,10 +8,10 @@
             <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
           </button>
         </div>
-        <button class="btn btn-sm btn-grey pull-right" placement="bottom" ngbTooltip="{{'button.reload' | translate}}" (click)="clearWorkFlow()">
+        <button class="btn btn-sm btn-grey pull-right" placement="bottom" ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
           <i class="fa fa-refresh"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-r-sm pull-right" placement="bottom" ngbTooltip="{{'button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
+        <button class="btn btn-sm btn-grey m-r-sm pull-right" placement="bottom" ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
           <i class="fa fa-save"></i>
         </button>
       </div>
@@ -22,8 +22,27 @@
   <div class="col-md-12 m-b-sm ">
     <div class="m-b-sm b-b p-b-sm">
       <div class="inline">
-        <div class="inline" id="zoomActions"></div>
-        <div class="inline" id="mainActions"></div>
+        <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}" (click)="zoomIn()">
+          <i class="fa fa-search-plus"></i>
+        </button>
+          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.zoomOut' | translate}}" (click)="zoomOut()">
+            <i class="fa fa-search-minus"></i>
+          </button>
+          <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.actual' | translate}}" (click)="actual()">
+            <i class="fa fa-search"></i>
+          </button>
+          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.fit' | translate}}" (click)="fit()">
+            <i class="fa fa-arrows-alt"></i>
+          </button>
+          <button class="btn btn-sm btn-grey" id="undoBtn" placement="bottom" ngbTooltip="{{'workflow.button.undo' | translate}}" (click)="undo()">
+            <i class="fa fa-undo"></i>
+          </button>
+          <button class="btn btn-sm btn-grey m-r-sm" id="redoBtn" placement="bottom" ngbTooltip="{{'workflow.button.redo' | translate}}" (click)="redo()">
+            <i class="fa fa-repeat"></i>
+          </button>
+          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.delete' | translate}}" (click)="delete()">
+            <i class="fa fa-times"></i>
+          </button>
       </div>
     </div>
   </div>
@@ -42,7 +61,7 @@
   <div [ngClass]="{'hide':isPropertyHide}" class="col-md-3">
     <div class="box">
       <div class="box-header b-b p-a">
-        <h3 translate>label.properties</h3>
+        <h3 translate>workflow.label.properties</h3>
       </div>
       <div class="box-body p-a">
         <div id="properties"></div>

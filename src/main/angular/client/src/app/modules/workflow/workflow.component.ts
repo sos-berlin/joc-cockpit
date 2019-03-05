@@ -242,45 +242,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       graph.extendParentsOnAdd = false;
       graph.extendParents = false;
 
-      // Create zoom actions in page
-      let zoomNode = document.getElementById('zoomActions');
-      const zoomButtons = ['zoomIn', 'zoomOut', 'actualSize', 'fit'];
-
-      for (let i = 0; i < zoomButtons.length; i++) {
-        let button = document.createElement('button');
-        let dom = document.createElement('i');
-        let icon: any;
-        if (zoomButtons[i] === 'zoomIn') {
-          icon = 'fa fa-search-plus';
-          button.setAttribute('class', 'btn btn-sm btn-grey');
-          button.setAttribute('title', 'Zoom In');
-        } else if (zoomButtons[i] === 'zoomOut') {
-          icon = 'fa fa-search-minus';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Zoom Out');
-        } else if (zoomButtons[i] === 'actualSize') {
-          icon = 'fa fa-search';
-          button.setAttribute('class', 'btn btn-sm btn-grey');
-          button.setAttribute('id', 'actual');
-          button.setAttribute('title', 'Actual');
-        } else if (zoomButtons[i] === 'fit') {
-          icon = 'fa  fa-arrows-alt';
-          button.setAttribute('class', 'btn btn-sm btn-grey m-r-sm');
-          button.setAttribute('title', 'Fit');
-        }
-        dom.setAttribute('class', icon);
-        button.appendChild(dom);
-        mxUtils.write(button, '');
-        const factory = function (name) {
-          return function () {
-            editor.execute(name);
-          };
-        };
-
-        mxEvent.addListener(button, 'click', factory(zoomButtons[i]));
-        zoomNode.appendChild(button);
-      }
-
       /**
        * Overrides method to provide a cell label in the display
        * @param cell
@@ -359,6 +320,21 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         WorkflowService.executeLayout(graph);
         return cells;
       };
+
+      /**
+       * Overrides method to provide a cell collapse/expandable on double click
+       */
+      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+        let cell = evt.getProperty('cell');
+        if (cell != null && cell.vertex == 1) {
+          if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
+            || cell.value.tagName === 'Catch' || cell.value.tagName === 'Retry') {
+            const flag = cell.collapsed != true;
+            graph.foldCells(flag, false, null, null, evt);
+          }
+        }
+      });
+
       WorkflowService.makeCenter(graph);
       WorkflowService.executeLayout(graph);
     } else {
@@ -383,6 +359,32 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         graph.getModel().endUpdate();
         WorkflowService.executeLayout(graph);
       }
+    }
+  }
+
+  zoomIn() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomIn();
+    }
+  }
+
+  zoomOut() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomOut();
+    }
+  }
+
+  actual() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomActual();
+      this.editor.graph.center(true, true, 0.5, 0.2);
+    }
+  }
+
+  fit() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.fit();
+      this.editor.graph.center(true, true, 0.5, 0.2);
     }
   }
 }

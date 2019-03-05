@@ -7,12 +7,7 @@
 		<add as="40" action="selectChild"/>
 		<add as="39" action="selectNext"/>
 		<add as="46" action="delete"/>
-		<add as="65" control="1" action="selectAll"/>
 		<add as="90" control="1" action="undo"/>
 		<add as="89" control="1" action="redo"/>
-		<add as="67" control="1" action="copy"/>
-		<add as="86" control="1" action="paste"/>
-		<add as="107" action="zoomIn"/>
-		<add as="109" action="zoomOut"/>
 	</mxDefaultKeyHandler>
 </mxEditor>

@@ -2728,7 +2728,7 @@ input[type=search] {
   width: 90%;
 }
 
-.dropdown-ac {
+.dropdown-ac, body div.mxPopupMenu {
   top: 57px;
   border-radius: 1px;
   border: 1px solid #eceef4;
@@ -5924,7 +5924,7 @@ input:-webkit-autofill {
 
 .ck-editor__main .ck-content {
   height: 250px;
-  color: black;
+  color: #3d464d;
 }
 
 .ck-file-dialog-button, .ck-dropdown {
@@ -5993,3 +5993,41 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 .ui-select-multiple input.ui-select-search {
   padding: 4px 8px !important;
 }
+
+body div.mxPopupMenu {
+  background: #fff;
+}
+
+body table.mxPopupMenu {
+  border-collapse: collapse;
+  margin: 0;
+  min-width: 150px;
+}
+
+body tr.mxPopupMenuItem {
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0;
+  border: 1px solid #eceef4;
+  -webkit-transform-origin: top left;
+  -moz-transform-origin: top left;
+  -ms-transform-origin: top left;
+  transform-origin: top left;
+  cursor: default;
+}
+
+body td.mxPopupMenuItem {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+body td.mxPopupMenuIcon {
+  display: none;
+}
+
+body tr.mxPopupMenuItemHover {
+  color: #fff;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+  background: #007da6;
+}
+
+
