@@ -5333,10 +5333,15 @@
                                 let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: true};
                                 angular.forEach(vm.tree, function (value) {
                                     if (value.expanded || value.selected1)
-                                        checkExpandTreeForUpdates(value, obj, obj);
+                                        checkExpandTreeForUpdates(value, obj, {folders: []});
                                 });
                                 if (vm.selectedFiltered) {
                                     obj = parseDate(obj);
+                                }
+
+                                if (vm.orderFilters.filter.state !== 'ALL') {
+                                    obj.processingStates = [];
+                                    obj.processingStates.push(vm.orderFilters.filter.state);
                                 }
 
                                 OrderService.get(obj).then(function (res) {
