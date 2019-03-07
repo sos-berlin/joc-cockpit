@@ -195,7 +195,7 @@
          icon="./assets/mxgraph/images/symbols/timer.png"/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork.png"
          icon="./assets/mxgraph/images/symbols/fork.png"/>
-    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/symbols/inclusive.png"/>
+    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/symbols/if.png"/>
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/symbols/retry.png"/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/symbols/try.png"/>
   </mxDefaultToolbar>

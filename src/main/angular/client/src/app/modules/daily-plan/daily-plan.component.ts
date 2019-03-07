@@ -14,6 +14,43 @@ import * as _ from 'underscore';
 declare const JSGantt: any;
 declare const $;
 
+
+@Component ({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './changeParameter-dialog.html'
+})
+export class ChangeparameterModalComponent implements OnInit {
+  @Input() variable: any;
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    console.log(this.variable);
+  }
+
+  removeVariable(index): void {
+    this.variable.splice(index, 1);
+  }
+
+  addCriteria(): void {
+    let param = {
+      name: '',
+      value: ''
+    };
+    if (this.variable) {
+      this.variable.push(param);
+      console.log(this.variable);
+      
+    }
+  }
+
+  onSubmit(): void {
+    console.log(this.variable);
+    // TO DO
+  }
+
+}
+
 @Component({
   selector: 'app-plan-modal-content',
   templateUrl: './remove-plan-dialog.html',
@@ -303,6 +340,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   object: any = {orders: [], checkbox: false};
   subscription1: Subscription;
   subscription2: Subscription;
+  flagOrderDetails: boolean = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService, private modalService: NgbModal) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -540,6 +578,34 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     });
   }
 
+  addDetailsOfOrder(plan) {
+    this.coreService.post('orders/variables', {orders:[{orderId: plan.orderId}], jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
+      console.log(res);
+    }, err => {
+        if(!this.flagOrderDetails) {
+          this.flagOrderDetails = true;
+        } else {
+          this.flagOrderDetails = false;
+        }
+        let res = {
+          deliveryDate: '2019-03-06T14:23:15.315Z',
+          variables : [
+            {
+              name: "myParam1",
+              value: "myParam1Value"
+            },
+            {
+              name: "myParam2",
+              value: "myParam2Value"
+            }
+          ]
+        }
+        plan.variables =res.variables; 
+    });
+
+  }
+
+
   exportToExcel() {
     $('#dailyPlanTableId').table2excel({
       exclude: '.tableexport-ignore',
@@ -721,6 +787,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       this.isSearchHit = false;
       this.load();
     }
+  }
+
+  changeParameter(plan) {
+    const modalRef = this.modalService.open(ChangeparameterModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.variable = plan.variables;
+    modalRef.result.then(() => {
+
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   /* ---- Customization ------ */

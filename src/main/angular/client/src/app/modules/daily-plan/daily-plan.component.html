@@ -172,16 +172,16 @@
                               </label>
                             </th>
                             <th class="tableexport-ignore menu"><span translate>label.action</span></th>
-                            <th (click)="sortBy('jobChain')"><a><span translate>label.workflow</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
                             <th (click)="sortBy('orderId')"><a><span translate>label.orderId</span>&nbsp;
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && !dailyPlanFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'orderId' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
+                            <th (click)="sortBy('jobChain')"><a><span translate>label.workflow</span>&nbsp;
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'jobChain' && dailyPlanFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                             <th (click)="sortBy('state._text')"><a><span translate>label.status</span>&nbsp;
@@ -194,18 +194,6 @@
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && !dailyPlanFilters.reverse"
                                    class="fa fa-caret-up "></i>
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'late' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('startMode')"><a><span translate>label.repeatType</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startMode' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'startMode' && dailyPlanFilters.reverse"
-                                   class="fa fa-caret-down "></i></a>
-                            </th>
-                            <th (click)="sortBy('period.repeat')"><a><span translate>label.repeatInterval</span>&nbsp;
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && !dailyPlanFilters.reverse"
-                                   class="fa fa-caret-up "></i>
-                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && dailyPlanFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
                             <th (click)="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>&nbsp;
@@ -244,6 +232,12 @@
                                 <i *ngIf="dailyPlanFilters.filter.sortBy === 'duration1' && dailyPlanFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
+                            <th (click)="sortBy('period.repeat')"><a><span translate>label.repeatInterval</span>&nbsp;
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && !dailyPlanFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i *ngIf="dailyPlanFilters.filter.sortBy === 'period.repeat' && dailyPlanFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -259,28 +253,35 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                                         <a class="dropdown-item bg-hover-color" (click)="removeOrder(plan)" translate>button.removeOrder</a>
+                                        <a class="dropdown-item" (click)="changeParameter(plan)" translate>button.changeParameter</a>
                                     </div>
                                 </div>
                             </td>
+                            <td><i class="fa fa-caret-down mr-1" (click)="addDetailsOfOrder(plan)" aria-hidden="true"></i><span [innerHtml]="plan.orderId"></span>
+                                <div *ngFor="let order of plan.variables" class="plan-varibales pt-1 pb-1">
+                                    <span appDropdown class="btn-group dropdown"  >
+                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a class="dropdown-item" (click)="changeParameter(plan)" translate>button.changeParameter</a>
+                                    </div>
+                                </span>
+                                    <span>{{order.name}} : {{order.value}}</span>
+                                </div>                            
+                            </td>
                             <td><span [innerHtml]="plan.jobChain"></span></td>
-                            <td><span [innerHtml]="plan.orderId"></span></td>
                             <td>
                                 <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"
                                       [innerHtml]="plan.state._text | translate"> </span>
                             </td>
                             <td><span *ngIf="plan.late==true" translate>label.late</span></td>
-                            <td>
-                                <span *ngIf="plan.startMode ==0" translate>label.singleStartMode</span>
-                                <span *ngIf="plan.startMode ==1" translate>label.startStartRepeatMode</span>
-                                <span *ngIf="plan.startMode ==2" translate>label.startEndRepeatMode</span>
-                            </td>
-                            <td><span *ngIf="plan.period.repeat">{{plan.period.repeat}}</span></td>
                             <td><span [innerHtml]="plan.plannedStartTime | stringToDate"></span></td>
                             <td><span [innerHtml]="plan.expectedEndTime | stringToDate"></span></td>
                             <td><span [innerHtml]="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
                             <td><span [innerHtml]="plan.startTime | stringToDate "></span></td>
                             <td><span [innerHtml]="plan.endTime | stringToDate"></span></td>
                             <td><span [innerHtml]="plan.startTime | duration:plan.endTime"></span></td>
+                            <td><span *ngIf="plan.period.repeat">Repeat every {{plan.period.repeat}}s</span></td>
                         </tr>
                         </tbody>
                     </table>

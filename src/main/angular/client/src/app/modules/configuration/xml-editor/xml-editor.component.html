@@ -69,8 +69,8 @@
                         </a>
                         <div *ngIf="childNode && childNode.length>0">
                           <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
-                            <div class="p-l-sm">
-                              <a [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true)"><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
+                            <div class="p-l-sm w-full" [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true)">
+                              <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
                             </div>
                           </a>
                         </div>
@@ -204,6 +204,13 @@
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" title="{{node.name}} should not contain spaces"
                          type="text" value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
+                   <input #localref2 (blur)="validateAttr(localref2.value, node)"
+                         (change)="submitData(localref2.value, node)"
+                         *ngIf="node.name && node.type === 'xs:anyURI' && !node.refer"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'" class="form-control"
+                         id="{{node.name}}" placeholder="Example input" title="{{node.name}} should not contain spaces"
+                         type="url" value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <select #localref6 (blur)="validateAttr(localref6.value, node)"
                           (change)="submitData(localref6.value, node)" (focus)="getDataAttr(node.refer)"
                           *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NMTOKEN' && node.refer"

@@ -727,6 +727,43 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
+  getValFromDefault(node) {
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
+    let ele = select(attrTypePath, this.doc);
+    let valueArr: any  = [];
+    let value: any = {};
+    for(let i=0; i<ele.length; i++) {
+        value.base = 'xs:string';
+        value.parent = node.ref;
+        value.grandFather = node.parent;
+        value.data = ele[i].nodeValue;
+      }
+      if (!(_.isEmpty(value))) {
+        valueArr.push(value);
+      }   
+    return valueArr;
+  }
+
+  getVal(nodeValue) {
+    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
+    let ele = select(attrTypePath, this.doc);
+    let valueArr: any  = [];
+    let value: any = {};
+    for(let i=0; i<ele.length; i++) {
+      if(ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger') {
+        value.base = ele[i].nodeValue;
+        value.parent = nodeValue.ref;
+        value.grandFather = nodeValue.parent;
+      }
+      if (!(_.isEmpty(value))) {
+        valueArr.push(value);
+      }
+    }    
+    return valueArr;
+  }
+
   getValueFromType(nodeValue, parentNode) {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue + '\']/@type';
@@ -931,7 +968,10 @@ export class XmlEditorComponent implements OnInit {
     let value = this.getValues(child.ref);
     let attrsType: any = this.getAttrFromType(child.ref, child.parent);
     let valueType = this.getValueFromType(child.ref, child.parent);
-
+    let val = this.getVal(child);
+    if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
+      val = this.getValFromDefault(child);
+    }
     child.children = [];
     child.uuid = this.counting;
     child.parentId = nodeArr.uuid;
@@ -946,7 +986,9 @@ export class XmlEditorComponent implements OnInit {
     if (!(_.isEmpty(text))) {
       this.addText(text, nodeArr.children);
     }
-
+    if (!(_.isEmpty(val))) {
+      this.attachValue(val, nodeArr.children);
+    }
     if (!(_.isEmpty(value))) {
       this.attachValue(value, nodeArr.children);
     }
@@ -1111,6 +1153,12 @@ export class XmlEditorComponent implements OnInit {
     let valueArr: any = [];
     let b;
     let element = select(extensionPath, this.doc);
+    console.log(element);
+    if(element[0] && element[0].nodeValue !== 'NotEmptyType') {
+      let a = element[0].nodeName;
+      let x = element[0].nodeValue;
+      value = Object.assign(value, {[a]: x});
+    }
     if (element[0] && element[0].nodeValue === 'NotEmptyType') {
       let a = element[0].nodeName;
       let x = element[0].nodeValue;
@@ -1144,6 +1192,16 @@ export class XmlEditorComponent implements OnInit {
           a = element[0].nodeName;
           b = element[0].nodeValue;
           value = Object.assign(value, {[a]: b});
+          let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+          let defAttr = select(defultPath, this.doc);
+          if(defAttr.length>0) {            
+            for(let s=0; s<defAttr.length; s++) {
+              if(defAttr[s].nodeName === 'default') {
+                value.default = defAttr[s].nodeValue;
+                value.data = defAttr[s].nodeValue;
+              }
+            }
+          }
         }
         if(ele.length > 0) {
           value.values = [];

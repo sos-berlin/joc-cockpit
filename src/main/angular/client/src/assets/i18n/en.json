@@ -1391,5 +1391,7 @@
   "workflow.button.delete": "Delete",
   "workflow.button.submitWorkFlow": "Submit WorkFlow",
   "workflow.button.reload": "Reload",
-  "workflow.label.properties": "Properties"
+  "workflow.label.properties": "Properties",
+  "button.changeParameter" : "Change Parameter",
+  "label.changeParameter": "Change Parameter"
 }

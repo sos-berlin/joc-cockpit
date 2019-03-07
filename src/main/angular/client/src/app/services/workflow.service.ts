@@ -96,7 +96,7 @@ export class WorkflowService {
         } else if (last.TYPE === 'Try') {
           z = mxJson.EndTry;
         } else if (last.TYPE === 'Retry') {
-          z = mxJson.RetryEnd;
+          z = mxJson.EndRetry;
         }
         if (z && _.isArray(z)) {
           for (let i = 0; i < z.length; i++) {
@@ -346,7 +346,7 @@ export class WorkflowService {
             self.jsonParser(json.instructions[x], mxJson, '', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'try', obj._id);
             const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-            if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'try') {
+            if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'Retry') {
               self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try', obj._id);
             } else {
               if (_lastNode && (_lastNode.TYPE === 'If')) {
@@ -359,10 +359,10 @@ export class WorkflowService {
                   }
                 }
               } else if (_lastNode && (_lastNode.TYPE === 'Retry')) {
-                if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-                  for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-                    if (_lastNode.id === mxJson.RetryEnd[j]._targetId) {
-                      this.connectInstruction({id: mxJson.RetryEnd[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                if (mxJson.EndRetry && mxJson.EndRetry.length) {
+                  for (let j = 0; j < mxJson.EndRetry.length; j++) {
+                    if (_lastNode.id === mxJson.EndRetry[j]._targetId) {
+                      this.connectInstruction({id: mxJson.EndRetry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
                       break;
                     }
                   }
@@ -527,15 +527,15 @@ export class WorkflowService {
   }
 
   private endRetry(branches, mxJson, list, index, targetId, parentId) {
-    if (mxJson.RetryEnd) {
-      if (!_.isArray(mxJson.RetryEnd)) {
-        const _tempRetryEnd = _.clone(mxJson.RetryEnd);
-        mxJson.RetryEnd = [];
-        mxJson.RetryEnd.push(_tempRetryEnd);
+    if (mxJson.EndRetry) {
+      if (!_.isArray(mxJson.EndRetry)) {
+        const _tempEndRetry = _.clone(mxJson.EndRetry);
+        mxJson.EndRetry = [];
+        mxJson.EndRetry.push(_tempEndRetry);
       }
 
     } else {
-      mxJson.RetryEnd = [];
+      mxJson.EndRetry = [];
     }
     let id: number;
     id = parseInt(list[list.length - 1].id, 10) + 3000;
@@ -557,7 +557,7 @@ export class WorkflowService {
         }
       }
     };
-    mxJson.RetryEnd.push(joinObj);
+    mxJson.EndRetry.push(joinObj);
 
     if (branches.instructions && branches.instructions.length > 0) {
       const x = branches.instructions[branches.instructions.length - 1];
@@ -565,16 +565,16 @@ export class WorkflowService {
         if (mxJson.EndIf && mxJson.EndIf.length) {
           for (let j = 0; j < mxJson.EndIf.length; j++) {
             if (x.id === mxJson.EndIf[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
+              this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endRetry', parentId);
               break;
             }
           }
         }
       } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
+        if (mxJson.EndRetry && mxJson.EndRetry.length) {
+          for (let j = 0; j < mxJson.EndRetry.length; j++) {
+            if (x.id === mxJson.EndRetry[j]._targetId) {
+              this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'endRetry', parentId);
               break;
             }
           }
@@ -583,7 +583,7 @@ export class WorkflowService {
         if (mxJson.EndTry && mxJson.EndTry.length) {
           for (let j = 0; j < mxJson.EndTry.length; j++) {
             if (x.id === mxJson.EndTry[j]._targetId) {
-              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
+              this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endRetry', parentId);
               break;
             }
           }
@@ -592,13 +592,13 @@ export class WorkflowService {
         if (mxJson.Join && mxJson.Join.length) {
           for (let j = 0; j < mxJson.Join.length; j++) {
             if (x.id === mxJson.Join[j]._targetId) {
-              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'retryEnd', parentId);
+              this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endRetry', parentId);
               break;
             }
           }
         }
       } else {
-        this.connectInstruction(x, {id: id}, mxJson, 'retryEnd', parentId);
+        this.connectInstruction(x, {id: id}, mxJson, 'endRetry', parentId);
       }
     } else {
       this.connectInstruction(branches, {id: id}, mxJson, '', parentId);
@@ -662,10 +662,10 @@ export class WorkflowService {
             }
           }
         } else if (x && (x.TYPE === 'Retry')) {
-          if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-            for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-              if (x.id === mxJson.RetryEnd[j]._targetId) {
-                this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'join', parentId);
+          if (mxJson.EndRetry && mxJson.EndRetry.length) {
+            for (let j = 0; j < mxJson.EndRetry.length; j++) {
+              if (x.id === mxJson.EndRetry[j]._targetId) {
+                this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'join', parentId);
                 break;
               }
             }
@@ -708,7 +708,7 @@ export class WorkflowService {
     this.nodeMap.set(targetId.toString(), id.toString());
     let endIfObj: any = {
       _id: id,
-      _label: 'EndIf',
+      _label: 'If-End',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -746,10 +746,10 @@ export class WorkflowService {
           }
         }
       } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
+        if (mxJson.EndRetry && mxJson.EndRetry.length) {
+          for (let j = 0; j < mxJson.EndRetry.length; j++) {
+            if (x.id === mxJson.EndRetry[j]._targetId) {
+              this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -789,10 +789,10 @@ export class WorkflowService {
           }
         }
       } else if (x && (x.TYPE === 'Retry')) {
-        if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-          for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-            if (x.id === mxJson.RetryEnd[j]._targetId) {
-              this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endIf', parentId);
+        if (mxJson.EndRetry && mxJson.EndRetry.length) {
+          for (let j = 0; j < mxJson.EndRetry.length; j++) {
+            if (x.id === mxJson.EndRetry[j]._targetId) {
+              this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'endIf', parentId);
               break;
             }
           }
@@ -906,10 +906,10 @@ export class WorkflowService {
         }
       }
     } else if (x && (x.TYPE === 'Retry')) {
-      if (mxJson.RetryEnd && mxJson.RetryEnd.length) {
-        for (let j = 0; j < mxJson.RetryEnd.length; j++) {
-          if (x.id === mxJson.RetryEnd[j]._targetId) {
-            this.connectInstruction({id: mxJson.RetryEnd[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
+      if (mxJson.EndRetry && mxJson.EndRetry.length) {
+        for (let j = 0; j < mxJson.EndRetry.length; j++) {
+          if (x.id === mxJson.EndRetry[j]._targetId) {
+            this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
             break;
           }
         }

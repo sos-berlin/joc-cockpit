@@ -84,12 +84,24 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.workflowService.init('light');
     }
     this.init();
+
+    /**
+     * Changes the zoom on mouseWheel events
+     */
+    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+      if (this.editor) {
+        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+          this.editor.execute('zoomIn');
+        } else {
+          this.editor.execute('zoomOut');
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
     try {
       if (this.editor) {
-        mxEvent.removeAllListeners(this.editor.graph);
         this.editor.destroy();
         this.editor = null;
       }
@@ -97,7 +109,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       console.log(e);
     }
   }
-
 
   /** ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event) {
@@ -282,22 +293,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         return '';
       };
 
-      /**
-       * Changes the zoom on mouseWheel events
-       */
-      mxEvent.addMouseWheelListener(function (evt, up) {
-        if (evt && evt.path && evt.path.length === 22) {
-          if (!mxEvent.isConsumed(evt)) {
-            if (up) {
-              editor.execute('zoomIn');
-            } else {
-              editor.execute('zoomOut');
-            }
-
-            mxEvent.consume(evt);
-          }
-        }
-      });
 
       /**
        * Function: foldCells to collapse/expand
