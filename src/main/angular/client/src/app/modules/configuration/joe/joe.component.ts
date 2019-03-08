@@ -3645,6 +3645,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
        * Returns <cellSelectable>.
        */
       graph.isCellSelectable = function (cell) {
+        if (!cell) {
+          return false;
+        }
         return !cell.edge;
       };
 
@@ -4266,6 +4269,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                   graph.getModel().beginUpdate();
                   try {
+                    if (cells[0].id && v1.id) {
+                      self.nodeMap.set(cells[0].id, v1.id);
+                    }
                     const targetId = new mxCellAttributeChange(
                       v1, 'targetId',
                       cells[0].id);
@@ -4327,12 +4333,25 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       graph.getSelectionModel().addListener(mxEvent.CHANGE, function () {
         let cell = graph.getSelectionCell();
         let cells = graph.getSelectionCells();
-        if(cells.length > 0) {
-          let id = cells[cells.length - 1].id;
-          let targetId = self.nodeMap.get(id);
+        if (cells.length > 0) {
+          let lastCell = cells[cells.length - 1];
+          let targetId = self.nodeMap.get(lastCell.id);
           if (targetId) {
-            cells.push(graph.getModel().getCell(targetId));
-            graph.setSelectionCells(cells);
+            graph.addSelectionCell(graph.getModel().getCell(targetId));
+          } else if (lastCell) {
+            const cName = lastCell.value.tagName;
+            let flag = false;
+            if (cells.length > 1) {
+              const secondLastCell = cells[cells.length - 2];
+              const lName = secondLastCell.value.tagName;
+              if (lName === 'If' || lName === 'Fork' || lName === 'Retry' || lName === 'Try' || lName === 'Catch') {
+                flag = true;
+              }
+            }
+            if (!flag && (cName === 'EndIf' || cName === 'Join' || cName === 'EndRetry' || cName === 'EndTry' || cName === 'EndCatch')) {
+              graph.removeSelectionCell(lastCell);
+              
+            }
           }
         }
 
@@ -4425,8 +4444,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (v1) {
+              if (cell.id && v1.id) {
+                self.nodeMap.set(cell.id, v1.id);
+              }
               setTimeout(() => {
                 if (v2 && v3) {
+                  self.nodeMap.set(v2.id, v3.id);
                   graph.getModel().beginUpdate();
                   try {
                     const targetId = new mxCellAttributeChange(
@@ -4664,6 +4687,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     function isCellSelectedValid(cells) {
       let obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
+      // let sortedArr = [];
+      if (cells.length === 2) {
+        let fName = cells[0].value.tagName;
+        let lName = cells[1].value.tagName;
+        if (!((fName === 'Fork' || fName === 'If' || fName === 'Try' || fName === 'Retry') && (lName === 'Join' || lName === 'EndTry' || lName === 'EndIf' || lName === 'EndRetry'))) {
+          let x = graph.getEdgesBetween(cells[0], cells[1]);
+          if (x.length === 0) {
+            obj.invalid = true;
+            return obj;
+          }
+        }
+      }
       for (let i = 0; i < cells.length; i++) {
         obj.ids.push(cells[i].id);
         if (!obj.firstCell) {
@@ -4945,7 +4980,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             WorkflowService.executeLayout(graph);
           }
         }
-      }, v4 ? 5 : 0);
+      }, 0);
     }
 
     /**

@@ -21,15 +21,18 @@ declare const $;
 })
 export class ChangeparameterModalComponent implements OnInit {
   @Input() variable: any;
+  variables: any = [];
   constructor(public activeModal: NgbActiveModal) {
   }
 
+
+
   ngOnInit() {
-    console.log(this.variable);
+    this.variables = Object.assign(this.variables, this.variable);
   }
 
   removeVariable(index): void {
-    this.variable.splice(index, 1);
+    this.variables.splice(index, 1);
   }
 
   addCriteria(): void {
@@ -37,16 +40,18 @@ export class ChangeparameterModalComponent implements OnInit {
       name: '',
       value: ''
     };
-    if (this.variable) {
-      this.variable.push(param);
-      console.log(this.variable);
-      
+    if (this.variables) {
+      this.variables.push(param);
     }
   }
 
   onSubmit(): void {
-    console.log(this.variable);
+    console.log(this.variables);
     // TO DO
+  }
+
+  cancel() {
+    this.activeModal.close('');
   }
 
 }
@@ -582,10 +587,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.coreService.post('orders/variables', {orders:[{orderId: plan.orderId}], jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
       console.log(res);
     }, err => {
-        if(!this.flagOrderDetails) {
-          this.flagOrderDetails = true;
+        if(plan.show === undefined || plan.show === false) {
+          plan.show = true;
         } else {
-          this.flagOrderDetails = false;
+          plan.show = false;
         }
         let res = {
           deliveryDate: '2019-03-06T14:23:15.315Z',
@@ -602,9 +607,25 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         }
         plan.variables =res.variables; 
     });
-
   }
 
+  expandCollapseTable(plan) {
+    if(plan.show === undefined || plan.show === false) {
+      plan.show = true;
+    } else {
+      plan.show = false;
+    }
+
+    plan.value = _.sortBy(plan.value, 'plannedStartTime')
+  }
+
+  expandCollapseOrder(plan) {
+    if(plan.order === undefined || plan.order === false) {
+      plan.order = true;
+    } else {
+      plan.order = false;
+    }
+  }
 
   exportToExcel() {
     $('#dailyPlanTableId').table2excel({
@@ -1311,7 +1332,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
 
   private filterData(planItems): void {
     this.plans = this.sortByKey(planItems, this.dailyPlanFilters.filter.sortBy, this.dailyPlanFilters.reverse);
-    this.prepareGanttData(this.plans);
+    this.prepareGanttData(this.plans);   
+    for(let i=0; i<this.plans.length; i++) {
+      this.plans[i].order = this.plans[i].orderId.substring('NAN', this.plans[i].orderId.lastIndexOf('_'));
+    }
+    
   }
 
   private resetCheckBox() {

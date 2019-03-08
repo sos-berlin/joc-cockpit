@@ -240,49 +240,153 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr *ngFor="let plan of plans | filter: dailyPlanFilters.searchText | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }">
-                            <td class="tableexport-ignore">
-                                <label class="md-check">
-                                    <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="plan" (change)="checkPlan()"><i class="primary"></i>
-                                </label>
-                            </td>
-                            <td class="tableexport-ignore">
-                                <div appDropdown class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                            class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                        <a class="dropdown-item bg-hover-color" (click)="removeOrder(plan)" translate>button.removeOrder</a>
-                                        <a class="dropdown-item" (click)="changeParameter(plan)" translate>button.changeParameter</a>
+                        <tbody
+                            *ngFor="let plan of plans | groupBy: 'jobChain' | filter: dailyPlanFilters.searchText | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }">
+                            <tr>
+                                <td class="tableexport-ignore">
+                                    <label class="md-check">
+                                        <input type="checkbox" [(checklist)]="object.orders" [checklistValue]="plan"
+                                            (change)="checkPlan()"><i class="primary"></i>
+                                    </label>
+                                </td>
+                                <td class="tableexport-ignore">
+                                    <div appDropdown class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                                class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a class="dropdown-item bg-hover-color" (click)="removeOrder(plan)"
+                                                translate>button.removeOrder</a>
+                                            <a class="dropdown-item" (click)="changeParameter(plan)"
+                                                translate>button.changeParameter</a>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><i class="fa fa-caret-down mr-1" (click)="addDetailsOfOrder(plan)" aria-hidden="true"></i><span [innerHtml]="plan.orderId"></span>
-                                <div *ngFor="let order of plan.variables" class="plan-varibales pt-1 pb-1">
-                                    <span appDropdown class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                            class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                        <a class="dropdown-item" (click)="changeParameter(plan)" translate>button.changeParameter</a>
-                                    </div>
-                                </span>
-                                    <span>{{order.name}} : {{order.value}}</span>
-                                </div>                            
-                            </td>
-                            <td><span [innerHtml]="plan.jobChain"></span></td>
-                            <td>
-                                <span class="label" [ngClass]="coreService.getColor(plan.state.severity,'bg')"
-                                      [innerHtml]="plan.state._text | translate"> </span>
-                            </td>
-                            <td><span *ngIf="plan.late==true" translate>label.late</span></td>
-                            <td><span [innerHtml]="plan.plannedStartTime | stringToDate"></span></td>
-                            <td><span [innerHtml]="plan.expectedEndTime | stringToDate"></span></td>
-                            <td><span [innerHtml]="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
-                            <td><span [innerHtml]="plan.startTime | stringToDate "></span></td>
-                            <td><span [innerHtml]="plan.endTime | stringToDate"></span></td>
-                            <td><span [innerHtml]="plan.startTime | duration:plan.endTime"></span></td>
-                            <td><span *ngIf="plan.period.repeat">Repeat every {{plan.period.repeat}}s</span></td>
-                        </tr>
+                                </td>
+                                <td></td>
+                                <td colspan="12"><i class="fa fa-angle-down fa-lg mr-1" *ngIf="plan.show"
+                                        (click)="expandCollapseTable(plan)" aria-hidden="true"></i> <i
+                                        class="fa fa-angle-right fa-lg mr-1" *ngIf="!plan.show"
+                                        (click)="expandCollapseTable(plan)" aria-hidden="true"></i><span
+                                        [innerHtml]="plan.key"></span></td>
+                                
+                            </tr>
+                            <ng-container *ngIf="plan.show">
+                                <ng-container
+                                    *ngFor="let order of plan.value | groupBy: 'order' | filter: dailyPlanFilters.searchText | paginate: { itemsPerPage: preferences.entryPerPage , currentPage: dailyPlanFilters.currentPage }">
+                                    <tr *ngFor="let value of order.value ; let i = last">
+                                        <td *ngIf="i" class="tableexport-ignore">
+                                            <label class="md-check">
+                                                <input type="checkbox" [(checklist)]="object.orders"
+                                                    [checklistValue]="plan" (change)="checkPlan()"><i
+                                                    class="primary"></i>
+                                            </label>
+                                        </td>
+                                        <td *ngIf="i" class="tableexport-ignore">
+                                            <div appDropdown class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h"
+                                                    data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
+                                                    role="menu">
+                                                    <a class="dropdown-item bg-hover-color" (click)="removeOrder(plan)"
+                                                        translate>button.removeOrder</a>
+                                                    <a class="dropdown-item" (click)="changeParameter(plan)"
+                                                        translate>button.changeParameter</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td *ngIf="i"></td>
+                                        <td *ngIf="i" style="padding-left: 22px !important"><i class="fa fa-angle-down fa-lg mr-1" *ngIf="order.value.order"
+                                                (click)="expandCollapseOrder(order.value)" aria-hidden="true"></i> <i
+                                                class="fa fa-angle-right fa-lg mr-1" *ngIf="!order.value.order"
+                                                (click)="expandCollapseOrder(order.value)"
+                                                aria-hidden="true"></i>{{value.order}}
+                                        </td>
+                                        <td *ngIf="i">
+                                            <span class="label"
+                                                [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                                [innerHtml]="value.state._text | translate"> </span>
+                                        </td>
+                                        <td *ngIf="i"><span *ngIf="value.late==true" translate>label.late</span></td>
+                                        <td *ngIf="i"><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
+                                        <td *ngIf="i"><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                                        <td *ngIf="i"><span
+                                                [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                                        </td>
+                                        <td *ngIf="i"><span [innerHtml]="value.startTime | stringToDate "></span></td>
+                                        <td *ngIf="i"><span [innerHtml]="value.endTime | stringToDate"></span></td>
+                                        <td *ngIf="i"><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                                        </td>
+                                        <td *ngIf="i"><span *ngIf="value.period.repeat">Repeat every
+                                                {{value.period.repeat}}s</span>
+                                        </td>
+                                    </tr>
+
+                                    <ng-container *ngIf="order.value.order">
+                                        <tr *ngFor="let value of order.value">
+                                            <td class="tableexport-ignore">
+                                                <label class="md-check">
+                                                    <input type="checkbox" [(checklist)]="object.orders"
+                                                        [checklistValue]="plan" (change)="checkPlan()"><i
+                                                        class="primary"></i>
+                                                </label>
+                                            </td>
+                                            <td class="tableexport-ignore">
+                                                <div appDropdown class="btn-group dropdown">
+                                                    <button type="button" class="btn-drop more-option-h"
+                                                        data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
+                                                        role="menu">
+                                                        <a class="dropdown-item bg-hover-color"
+                                                            (click)="removeOrder(plan)" translate>button.removeOrder</a>
+                                                        <a class="dropdown-item" (click)="changeParameter(plan)"
+                                                            translate>button.changeParameter</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td style="padding-left: 37px !important"><i class="fa fa-caret-down mr-1" *ngIf="!value.show"
+                                                    (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><i
+                                                    class="fa fa-caret-up mr-1" *ngIf="value.show"
+                                                    (click)="addDetailsOfOrder(value)" aria-hidden="true"></i><span
+                                                    [innerHtml]="value.orderId"></span>
+                                                <div *ngIf="value.show">
+                                                    <div *ngFor="let order of value.variables"
+                                                        class="plan-varibales pt-1 pb-1">
+                                                        <span appDropdown class="btn-group dropdown">
+                                                            <button type="button" class="btn-drop more-option-h"
+                                                                data-toggle="dropdown"><i
+                                                                    class="fa fa-ellipsis-h"></i></button>
+                                                            <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
+                                                                role="menu">
+                                                                <a class="dropdown-item"
+                                                                    (click)="changeParameter(value)"
+                                                                    translate>button.changeParameter</a>
+                                                            </div>
+                                                        </span>
+                                                        <span>{{order.name}} : {{order.value}}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="label"
+                                                    [ngClass]="coreService.getColor(value.state.severity,'bg')"
+                                                    [innerHtml]="value.state._text | translate"> </span>
+                                            </td>
+                                            <td><span *ngIf="value.late==true" translate>label.late</span></td>
+                                            <td><span [innerHtml]="value.plannedStartTime | stringToDate"></span></td>
+                                            <td><span [innerHtml]="value.expectedEndTime | stringToDate"></span></td>
+                                            <td><span
+                                                    [innerHtml]="value.plannedStartTime | duration:value.expectedEndTime"></span>
+                                            </td>
+                                            <td><span [innerHtml]="value.startTime | stringToDate "></span></td>
+                                            <td><span [innerHtml]="value.endTime | stringToDate"></span></td>
+                                            <td><span [innerHtml]="value.startTime | duration:value.endTime"></span>
+                                            </td>
+                                            <td><span *ngIf="value.period.repeat">Repeat every
+                                                    {{value.period.repeat}}s</span></td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
                         </tbody>
                     </table>
                     <pagination-controls class="pagination" (pageChange)="pageChange($event)" previousLabel="{{'button.prev' | translate}}" nextLabel="{{'button.next' | translate}}" maxSize="5" responsive="true" autoHide="true"></pagination-controls>
