@@ -1391,5 +1391,13 @@
   "workflow.button.delete": "Delete",
   "workflow.button.submitWorkFlow": "Submit WorkFlow",
   "workflow.button.reload": "Reload",
-  "workflow.label.properties": "Properties"
+  "workflow.label.properties": "Properties",
+  "button.changeParameter" : "Change Parameter",
+  "label.changeParameter": "Change Parameter",
+  "message.validationError": "instruction can have only one out going and one incoming Edges",
+  "message.orderInstructionValidationError": "instruction can have only order events",
+  "message.otherInstructionValidationError": "Cannot have more than one out going Edge",
+  "message.ifInstructionValidationError": "Cannot have more than one condition",
+  "message.awaitInstructionValidationError": "Only Await instruction can have orders events",
+  "message.invalidInstructionsSelected": "Selection of instructions is not valid"
 }

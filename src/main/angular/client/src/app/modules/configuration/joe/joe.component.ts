@@ -39,7 +39,6 @@ declare const mxPoint;
 declare const mxUndoManager;
 declare const mxEventObject;
 declare const mxGraphSelectionModel;
-declare const mxDefaultPopupMenu;
 
 declare const Holidays;
 declare const X2JS;
@@ -3765,8 +3764,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (state.cell.edges && state.cell.edges.length > 2) {
                   this.currentHighlight.highlightColor = '#ff0000';
                 }
-              } else if (state.cell.value.tagName === 'Join' || state.cell.value.tagName === 'EndIf' || state.cell.value.tagName === 'EndRetry'
-                || state.cell.value.tagName === 'EndTry' || state.cell.value.tagName === 'EndCatch') {
+              } else if (checkClosingCell(state.cell) || state.cell.value.tagName === 'EndCatch') {
                 if (state.cell.edges && state.cell.edges.length > 1) {
                   for (let i = 0; i < state.cell.edges.length; i++) {
                     if (state.cell.edges[i].target.id !== state.cell.id) {
@@ -3893,8 +3891,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         selectedCellsObj = null;
         let flag = false;
         if (drpTargt) {
-          let isOrderCell = false, selectedCell = graph.getSelectionCell(), check = false;
-          let title = '';
+          let isOrderCell = false, check = false;
+          let title = '', msg = '';
           self.translate.get('label.invalidTarget').subscribe(translatedValue => {
             title = translatedValue;
           });
@@ -3903,17 +3901,24 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Connection') {
                 isOrderCell = true;
               } else {
-                self.toasterService.pop('error', title + '!!', 'Only Await instruction can have orders events');
+                self.translate.get('message.awaitInstructionValidationError').subscribe(translatedValue => {
+                  msg = translatedValue;
+                });
+                self.toasterService.pop('error', title + '!!', msg);
                 return;
               }
             } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') ||
               this.dragElement.getAttribute('src').match('try') || this.dragElement.getAttribute('src').match('if')) {
+              let selectedCell = graph.getSelectionCell();
               if (selectedCell) {
                 const cells = graph.getSelectionCells();
                 if (cells.length > 1) {
                   selectedCellsObj = isCellSelectedValid(cells);
                   if (selectedCellsObj.invalid) {
-                    self.toasterService.pop('error', title + '!!', 'Selection of instructions is not valid');
+                    self.translate.get('message.invalidInstructionsSelected').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
                     return;
                   }
                 }
@@ -3926,36 +3931,53 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (!check) {
             if (drpTargt.value.tagName !== 'Connection') {
               if (drpTargt.value.tagName === 'FileOrder') {
-                self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
+                self.translate.get('message.validationError').subscribe(translatedValue => {
+                  msg = translatedValue;
+                });
+                self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                 return;
               } else if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Abort' || drpTargt.value.tagName === 'Terminate') {
                 for (let i = 0; i < drpTargt.edges.length; i++) {
                   if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only one out going and one incoming Edges');
+                    self.translate.get('message.validationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                     return;
                   }
                 }
               } else if (drpTargt.value.tagName === 'Await') {
                 if (!isOrderCell) {
-                  self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only order events');
+                  self.translate.get('message.orderInstructionValidationError').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                   return;
                 } else {
                   if (drpTargt.edges && drpTargt.edges.length > 2) {
-                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' instruction can have only order events');
+                    self.translate.get('message.orderInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                     return;
                   }
                 }
               } else if (drpTargt.value.tagName === 'If') {
                 if (drpTargt.edges.length > 2) {
-                  self.toasterService.pop('error', title + '!!', 'Cannot have more than one condition');
+                  self.translate.get('message.ifInstructionValidationError').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', title + '!!', msg);
                   return;
                 }
-              } else if (drpTargt.value.tagName === 'Join' || drpTargt.value.tagName === 'EndIf' || drpTargt.value.tagName === 'EndRetry' ||
-                drpTargt.value.tagName === 'EndCatch' || drpTargt.value.tagName === 'EndTry') {
+              } else if (checkClosingCell(drpTargt) || drpTargt.value.tagName === 'EndCatch') {
                 if (drpTargt.edges.length > 1) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                      self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
+                      self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                        msg = translatedValue;
+                      });
+                      self.toasterService.pop('error', title + '!!', msg);
                       return;
                     }
                   }
@@ -3970,7 +3992,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
+                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', title + '!!', msg);
                   return;
                 }
               } else if (drpTargt.value.tagName === 'Try') {
@@ -3983,7 +4008,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
+                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', title + '!!', msg);
                   return;
                 }
               } else if (drpTargt.value.tagName === 'Catch') {
@@ -3996,7 +4024,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.toasterService.pop('error', title + '!!', 'Cannot have more than one out going Edge');
+                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.pop('error', title + '!!', msg);
                   return;
                 }
               } else if (drpTargt.value.tagName === 'Process') {
@@ -4269,9 +4300,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                   graph.getModel().beginUpdate();
                   try {
-                    if (cells[0].id && v1.id) {
+                  /*  if (cells[0].id && v1.id) {
                       self.nodeMap.set(cells[0].id, v1.id);
-                    }
+                    }*/
                     const targetId = new mxCellAttributeChange(
                       v1, 'targetId',
                       cells[0].id);
@@ -4294,10 +4325,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 return false;
               }
             }
-            if ((cell.source.value.tagName === 'Fork' && cell.target.value.tagName === 'Join') ||
-              (cell.source.value.tagName === 'If' && cell.target.value.tagName === 'EndIf') ||
-              (cell.source.value.tagName === 'Retry' && cell.target.value.tagName === 'EndRetry') ||
-              (cell.source.value.tagName === 'Try' && cell.target.value.tagName === 'EndTry')) {
+            if (checkClosedCellWithSourceCell(cell.source, cell.target)) {
               isProgrammaticallyDelete = true;
               graph.removeCells(cells);
               isProgrammaticallyDelete = false;
@@ -4339,7 +4367,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (targetId) {
             graph.addSelectionCell(graph.getModel().getCell(targetId));
           } else if (lastCell) {
-            const cName = lastCell.value.tagName;
             let flag = false;
             if (cells.length > 1) {
               const secondLastCell = cells[cells.length - 2];
@@ -4348,15 +4375,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 flag = true;
               }
             }
-            if (!flag && (cName === 'EndIf' || cName === 'Join' || cName === 'EndRetry' || cName === 'EndTry' || cName === 'EndCatch')) {
+            if (!flag && (checkClosingCell(lastCell) || lastCell.value.tagName === 'EndCatch')) {
               graph.removeSelectionCell(lastCell);
-              
             }
           }
         }
 
-        if (cell && (cell.value.tagName === 'EndIf' || cell.value.tagName === 'Join' || cell.value.tagName === 'EndRetry'
-          || cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndCatch' || cell.value.tagName === 'Connection' || cell.value.tagName === 'Process')) {
+        if (cell && (checkClosingCell(cell) || cell.value.tagName === 'Catch' || cell.value.tagName === 'EndCatch' ||
+          cell.value.tagName === 'Connection' || cell.value.tagName === 'Process')) {
           graph.clearSelection();
           return;
         }
@@ -4444,12 +4470,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (v1) {
-              if (cell.id && v1.id) {
+            /*  if (cell.id && v1.id) {
                 self.nodeMap.set(cell.id, v1.id);
-              }
+              }*/
               setTimeout(() => {
                 if (v2 && v3) {
-                  self.nodeMap.set(v2.id, v3.id);
+                  // self.nodeMap.set(v2.id, v3.id);
                   graph.getModel().beginUpdate();
                   try {
                     const targetId = new mxCellAttributeChange(
@@ -4478,8 +4504,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
                   for (let j = 0; j < cell.edges.length; j++) {
                     if (cell.edges[j].target.id !== cell.id) {
-                      if (cell.edges[j].target.value.tagName === 'Join' || cell.edges[j].target.value.tagName === 'EndIf'
-                        || cell.edges[j].target.value.tagName === 'EndRetry' || cell.edges[j].target.value.tagName === 'EndTry') {
+                      if (checkClosingCell(cell.edges[j].target)) {
                         if (flag) {
                           graph.insertEdge(parent, null, getConnectionNode(label, type), cell.edges[j].target, dropTarget.edges[i].target);
                         } else {
@@ -4497,8 +4522,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
                   for (let j = 0; j < cell.edges.length; j++) {
                     if (cell.edges[j].target.id !== cell.id) {
-                      if (cell.edges[j].target.value.tagName === 'Join' || cell.edges[j].target.value.tagName === 'EndIf'
-                        || cell.edges[j].target.value.tagName === 'EndRetry' || cell.edges[j].target.value.tagName === 'EndTry') {
+                      if (checkClosingCell(cell.edges[j].target)) {
                         graph.insertEdge(parent, null, getConnectionNode(label, type), cell.edges[j].target, dropTarget.edges[i].target);
                         break;
                       }
@@ -4551,8 +4575,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (!self.nodeMap.has(cell.id)) {
                 for (let i = 0; i < cell.edges.length; i++) {
                   if (cell.edges[i].target.id !== cell.id) {
-                    if (cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf'
-                      || cell.edges[i].target.value.tagName === 'EndRetry' || cell.edges[i].target.value.tagName === 'EndTry') {
+                    if (checkClosingCell(cell.edges[i].target)) {
                       self.nodeMap.set(cell.id, cell.edges[i].target.id);
                       target2 = cell.edges[i].target;
                       break;
@@ -4687,13 +4710,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     function isCellSelectedValid(cells) {
       let obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
-      // let sortedArr = [];
+      let parentId;
       if (cells.length === 2) {
-        let fName = cells[0].value.tagName;
-        let lName = cells[1].value.tagName;
-        if (!((fName === 'Fork' || fName === 'If' || fName === 'Try' || fName === 'Retry') && (lName === 'Join' || lName === 'EndTry' || lName === 'EndIf' || lName === 'EndRetry'))) {
+        if (!checkClosedCellWithSourceCell(cells[0], cells[1])) {
           let x = graph.getEdgesBetween(cells[0], cells[1]);
           if (x.length === 0) {
+            obj.invalid = true;
+            return obj;
+          }
+        }
+      } else {
+        for (let i = 0; i < cells.length; i++) {
+          if (!isSelectedCellConnected(cells, cells[i])) {
             obj.invalid = true;
             return obj;
           }
@@ -4701,6 +4729,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
       for (let i = 0; i < cells.length; i++) {
         obj.ids.push(cells[i].id);
+        if (!parentId) {
+          parentId = cells[i].getParent().id;
+        } else {
+          if (parentId !== cells[i].getParent().id && !isParentAlsoSelected(cells, cells[i])) {
+            obj.invalid = true;
+            return obj;
+          }
+        }
         if (!obj.firstCell) {
           obj.firstCell = cells[i];
           obj.lastCell = cells[i];
@@ -4714,6 +4750,66 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       }
       return obj;
+    }
+
+    /**
+     * Function : To check is parent instruction also selected or not
+     * @param cells
+     * @param cell
+     */
+    function isParentAlsoSelected(cells, cell) {
+      let flag = false;
+      for (let i = 0; i < cells.length; i++) {
+        if (cells[i].id === cell.getParent().id) {
+          flag = true;
+          break;
+        }
+      }
+
+      return flag;
+    }
+
+    /**
+     * Function: To check is selected instructions are interconnected or not
+     * @param cells
+     * @param cell
+     */
+    function isSelectedCellConnected(cells, cell) {
+      let flag = false;
+      for (let i = 0; i < cells.length; i++) {
+        if (graph.getEdgesBetween(cells[i], cell).length > 0) {
+          flag = true;
+          break;
+        } else {
+          console.log(cells[i], cell);
+          if (checkClosingCell(cell)) {
+            flag = true;
+            break;
+          }
+        }
+      }
+      return flag;
+    }
+
+
+    /**
+     * Function: To check source is closed with its own closing cell or not
+     * @param sour
+     * @param targ
+     */
+    function checkClosedCellWithSourceCell(sour, targ) {
+      const sourName = sour.value.tagName;
+      const tarName = targ.value.tagName;
+      return (sourName === 'Fork' && tarName === 'Join') || (sourName === 'If' && tarName === 'EndIf') ||
+        (sourName === 'Try' && tarName === 'EndTry') || (sourName === 'Retry' && tarName === 'EndRetry');
+    }
+
+    /**
+     * Function: Check closing cell
+     * @param cell
+     */
+    function checkClosingCell(cell) {
+      return cell.value.tagName === 'Join' || cell.value.tagName === 'EndIf' || cell.value.tagName === 'EndTry' || cell.value.tagName === 'EndRetry';
     }
 
     /**
@@ -4731,7 +4827,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       } else {
         parent = cells.firstCell.getParent();
       }
-      parentCell.collapsed = true;
       let v2, v3, v4, _sour, _tar, _middle;
       if (cellName === 'Fork') {
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
@@ -5031,10 +5126,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
       function recursive(target) {
         const edges = target.edges;
-        if ((cell.value.tagName === 'Fork' && target.value.tagName === 'Join') ||
-          (cell.value.tagName === 'If' && target.value.tagName === 'EndIf') ||
-          (cell.value.tagName === 'Retry' && target.value.tagName === 'EndRetry') ||
-          (cell.value.tagName === 'Try' && target.value.tagName === 'EndTry')) {
+        if (checkClosedCellWithSourceCell(cell, target)) {
 
           const attrs = target.value.attributes;
           if (attrs) {
@@ -5057,10 +5149,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           for (let j = 0; j < edges.length; j++) {
             if (edges[j].target) {
               if (edges[j].target.id !== target.id) {
-                if ((cell.value.tagName === 'Fork' && edges[j].target.value.tagName === 'Join') ||
-                  (cell.value.tagName === 'If' && edges[j].target.value.tagName === 'EndIf') ||
-                  (cell.value.tagName === 'Retry' && edges[j].target.value.tagName === 'EndRetry') ||
-                  (cell.value.tagName === 'Try' && edges[j].target.value.tagName === 'EndTry')) {
+                if (checkClosedCellWithSourceCell(cell, edges[j].target)) {
                   const attrs = edges[j].target.value.attributes;
                   if (attrs) {
                     for (let i = 0; i < attrs.length; i++) {
@@ -5170,10 +5259,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     function recursiveDeleteFn(selectedCell, target) {
       let flag = false;
       const edges = target.edges;
-      if ((selectedCell.value.tagName === 'Fork' && target.value.tagName === 'Join') ||
-        (selectedCell.value.tagName === 'If' && target.value.tagName === 'EndIf') ||
-        (selectedCell.value.tagName === 'Retry' && target.value.tagName === 'EndRetry') ||
-        (selectedCell.value.tagName === 'Try' && target.value.tagName === 'EndTry')) {
+      if (checkClosedCellWithSourceCell(selectedCell, target)) {
 
         const attrs = target.value.attributes;
         if (attrs) {
@@ -5196,10 +5282,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         for (let j = 0; j < edges.length; j++) {
           if (edges[j].target) {
             if (edges[j].target.id !== target.id) {
-              if ((selectedCell.value.tagName === 'Fork' && edges[j].target.value.tagName === 'Join') ||
-                (selectedCell.value.tagName === 'If' && edges[j].target.value.tagName === 'EndIf') ||
-                (selectedCell.value.tagName === 'Retry' && edges[j].target.value.tagName === 'EndRetry') ||
-                (selectedCell.value.tagName === 'Try' && edges[j].target.value.tagName === 'EndTry')) {
+              if (checkClosedCellWithSourceCell(selectedCell, edges[j].target)) {
                 const attrs = edges[j].target.value.attributes;
                 if (attrs) {
                   for (let i = 0; i < attrs.length; i++) {
@@ -5294,10 +5377,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               _tar = _targetNode;
             }
             let flag = true;
-            if ((_sour.value.tagName === 'Fork' && _tar.value.tagName === 'Join') ||
-              (_sour.value.tagName === 'If' && _tar.value.tagName === 'EndIf') ||
-              (_sour.value.tagName === 'Retry' && _tar.value.tagName === 'EndRetry') ||
-              (_sour.value.tagName === 'Try' && _tar.value.tagName === 'EndTry')) {
+            if (checkClosedCellWithSourceCell(_sour, _tar)) {
               if (_sour.edges.length > 1) {
                 flag = false;
               } else {
@@ -5370,8 +5450,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target !== cell.id) {
-              if ((cell.edges[i].target.value.tagName === 'Join' || cell.edges[i].target.value.tagName === 'EndIf' || cell.edges[i].target.value.tagName === 'EndRetry'
-                || cell.edges[i].target.value.tagName === 'EndTry' || cell.edges[i].target.value.tagName === 'EndCatch')) {
+              if (checkClosingCell(cell.edges[i].target) || cell.edges[i].target.value.tagName === 'EndCatch') {
                 if (cell.edges[i].target.edges) {
                   for (let j = 0; j < cell.edges[i].target.edges.length; j++) {
                     if (cell.edges[i].target.edges[j] && cell.edges[i].target.edges[j].target.id !== cell.edges[i].target.id) {
@@ -5411,8 +5490,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
             if (cell.edges[i].source !== cell.id) {
-              if (cell.edges[i].source.value.tagName === 'Join' || cell.edges[i].source.value.tagName === 'EndIf' || cell.edges[i].source.value.tagName === 'EndRetry'
-                || cell.edges[i].source.value.tagName === 'EndTry' || cell.edges[i].source.value.tagName === 'EndCatch') {
+              if (checkClosingCell(cell.edges[i].source) || cell.edges[i].source.value.tagName === 'EndCatch') {
                 _tempCell = cell.edges[i];
               }
             }
