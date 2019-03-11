@@ -25,8 +25,6 @@ export class ChangeparameterModalComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal) {
   }
 
-
-
   ngOnInit() {
     this.variables = Object.assign(this.variables, this.variable);
   }
@@ -584,28 +582,27 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   addDetailsOfOrder(plan) {
-    this.coreService.post('orders/variables', {orders:[{orderId: plan.orderId}], jobschedulerId: this.schedulerIds.selected}).subscribe((res: any) => {
-      console.log(res);
+    this.coreService.post('orders/variables', {
+      orders: [{orderId: plan.orderId}],
+      jobschedulerId: this.schedulerIds.selected
+    }).subscribe((res: any) => {
+      plan = res.variables;
     }, err => {
-        if(plan.show === undefined || plan.show === false) {
-          plan.show = true;
-        } else {
-          plan.show = false;
-        }
-        let res = {
-          deliveryDate: '2019-03-06T14:23:15.315Z',
-          variables : [
-            {
-              name: "myParam1",
-              value: "myParam1Value"
-            },
-            {
-              name: "myParam2",
-              value: "myParam2Value"
-            }
-          ]
-        }
-        plan.variables =res.variables; 
+      plan.show = plan.show === undefined || plan.show === false;
+      let res = {
+        deliveryDate: '2019-03-06T14:23:15.315Z',
+        variables: [
+          {
+            name: "myParam1",
+            value: "myParam1Value"
+          },
+          {
+            name: "myParam2",
+            value: "myParam2Value"
+          }
+        ]
+      };
+      plan.variables = res.variables;
     });
   }
 

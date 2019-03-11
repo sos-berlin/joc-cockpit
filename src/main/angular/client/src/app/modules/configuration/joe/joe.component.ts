@@ -2371,12 +2371,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
-      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-      this.workflowService.init('dark');
-    } else {
-      this.workflowService.init('light');
-    }
+    this.loadConfig();
     this.coreService.get('workflow.json').subscribe((data) => {
       this.dummyXml = x2js.json2xml_str(data);
       this.createEditor(this.configXml);
@@ -2395,6 +2390,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  private loadConfig(){
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+      this.workflowService.init('dark');
+    } else {
+      this.workflowService.init('light');
+    }
   }
 
   /**
@@ -2445,6 +2449,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
   clearWorkFlow() {
     sessionStorage.$SOS$WORKFLOW = null;
+    this.loadConfig();
     this.workFlowJson = {};
     this.initEditorConf(this.editor, this.dummyXml);
   }
@@ -4300,14 +4305,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                   graph.getModel().beginUpdate();
                   try {
-                  /*  if (cells[0].id && v1.id) {
+                    if (cells[0].id && v1.id) {
                       self.nodeMap.set(cells[0].id, v1.id);
-                    }*/
+                    }
                     const targetId = new mxCellAttributeChange(
                       v1, 'targetId',
                       cells[0].id);
                     graph.getModel().execute(targetId);
                     if (v2 && v3) {
+                      self.nodeMap.set(v2.id, v3.id);
                       const targetId2 = new mxCellAttributeChange(
                         v2, 'targetId', cells[0].id);
                       graph.getModel().execute(targetId2);
@@ -4315,8 +4321,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                         v3, 'targetId', v2.id);
                       graph.getModel().execute(targetId3);
                     }
-
-
                   } finally {
                     graph.getModel().endUpdate();
                   }
@@ -4470,12 +4474,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (v1) {
-            /*  if (cell.id && v1.id) {
+              if (cell.id && v1.id) {
                 self.nodeMap.set(cell.id, v1.id);
-              }*/
+              }
               setTimeout(() => {
                 if (v2 && v3) {
-                  // self.nodeMap.set(v2.id, v3.id);
+                  self.nodeMap.set(v2.id, v3.id);
                   graph.getModel().beginUpdate();
                   try {
                     const targetId = new mxCellAttributeChange(
@@ -4560,7 +4564,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
               let target1, target2;
-              if (!self.nodeMap.has(dropTarget.id)) {
+              // if (!self.nodeMap.has(dropTarget.id)) {
                 for (let i = 0; i < dropTarget.edges.length; i++) {
                   if (dropTarget.edges[i].target.id !== dropTarget.id) {
                     if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
@@ -4570,9 +4574,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     break;
                   }
                 }
-              }
+            //  }
 
-              if (!self.nodeMap.has(cell.id)) {
+             // if (!self.nodeMap.has(cell.id)) {
                 for (let i = 0; i < cell.edges.length; i++) {
                   if (cell.edges[i].target.id !== cell.id) {
                     if (checkClosingCell(cell.edges[i].target)) {
@@ -4582,7 +4586,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     }
                   }
                 }
-              }
+              //}
 
               if (target1 && target2) {
                 graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target1.target);
