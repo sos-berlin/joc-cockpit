@@ -224,11 +224,11 @@ export class WorkflowService {
           obj.mxCell.mxGeometry._width = '150';
           obj.mxCell.mxGeometry._height = '80';
 
-          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+          if (json.instructions[x].then && json.instructions[x].then.instructions && json.instructions[x].then.instructions.length > 0) {
             self.jsonParser(json.instructions[x].then, mxJson, 'endIf', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].then.instructions[0], mxJson, 'then', obj._id);
           }
-          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+          if (json.instructions[x].else && json.instructions[x].else.instructions && json.instructions[x].else.instructions.length > 0) {
             self.jsonParser(json.instructions[x].else, mxJson, 'endIf', obj._id);
             self.connectInstruction(json.instructions[x], json.instructions[x].else.instructions[0], mxJson, 'else', obj._id);
           }
@@ -763,7 +763,7 @@ export class WorkflowService {
             }
           }
         }
-      } else {
+      } else if(x){
         this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
@@ -806,7 +806,7 @@ export class WorkflowService {
             }
           }
         }
-      } else {
+      } else if(x){
         this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
@@ -997,25 +997,30 @@ export class WorkflowService {
 
   // Function to generating dynamic unique Id
   appendIdInJson(json) {
-    for (let x = 0; x < json.instructions.length; x++) {
-      json.instructions[x].id = ++this.count;
-      if (json.instructions[x].instructions) {
-        this.appendIdInJson(json.instructions[x]);
-      }
-      if (json.instructions[x].catch) {
-        if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-          this.appendIdInJson(json.instructions[x].catch);
+    if(json.instructions) {
+      for (let x = 0; x < json.instructions.length; x++) {
+        json.instructions[x].id = ++this.count;
+        if (json.instructions[x].instructions) {
+          this.appendIdInJson(json.instructions[x]);
         }
-      }
-      if (json.instructions[x].then) {
-        this.appendIdInJson(json.instructions[x].then);
-      }
-      if (json.instructions[x].else) {
-        this.appendIdInJson(json.instructions[x].else);
-      }
-      if (json.instructions[x].branches) {
-        for (let i = 0; i < json.instructions[x].branches.length; i++) {
-          this.appendIdInJson(json.instructions[x].branches[i]);
+        if (json.instructions[x].catch) {
+          json.instructions[x].catch.id = ++this.count;
+          if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+            this.appendIdInJson(json.instructions[x].catch);
+          }
+        }
+        if (json.instructions[x].then && json.instructions[x].then.instructions) {
+          this.appendIdInJson(json.instructions[x].then);
+        }
+        if (json.instructions[x].else && json.instructions[x].else.instructions) {
+          this.appendIdInJson(json.instructions[x].else);
+        }
+        if (json.instructions[x].branches) {
+          for (let i = 0; i < json.instructions[x].branches.length; i++) {
+            if (json.instructions[x].branches[i].instructions) {
+              this.appendIdInJson(json.instructions[x].branches[i]);
+            }
+          }
         }
       }
     }

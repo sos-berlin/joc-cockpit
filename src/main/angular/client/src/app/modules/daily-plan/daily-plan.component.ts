@@ -19,7 +19,7 @@ declare const $;
   selector: 'app-ngbd-modal-content',
   templateUrl: './changeParameter-dialog.html'
 })
-export class ChangeparameterModalComponent implements OnInit {
+export class ChangeParameterModalComponent implements OnInit {
   @Input() variable: any;
   variables: any = [];
   constructor(public activeModal: NgbActiveModal) {
@@ -510,16 +510,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
             orders[index].tasks[i].content = 'fa fa-repeat1';
           } else if (data2[index1].startMode === 1) {
             orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
+            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="./assets/images/start-start.png" alt="">';
           } else if (data2[index1].startMode === 2) {
             orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
+            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="./assetsimages/end-start.png" alt="">';
           }
 
           if (data2[index1].period.repeat) {
-            let s = parseInt(((data2[index1].period.repeat) % 60).toString()),
-              m = parseInt(((data2[index1].period.repeat / 60) % 60).toString()),
-              h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString());
+            let s = parseInt(((data2[index1].period.repeat) % 60).toString(), 10),
+              m = parseInt(((data2[index1].period.repeat / 60) % 60).toString(), 10),
+              h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString(), 10);
             let h1 = h > 9 ? h : '0' + h;
             let m1 = m > 9 ? m : '0' + m;
             let s1 = s > 9 ? s : '0' + s;
@@ -589,16 +589,16 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       plan = res.variables;
     }, err => {
       plan.show = plan.show === undefined || plan.show === false;
-      let res = {
+      const res = {
         deliveryDate: '2019-03-06T14:23:15.315Z',
         variables: [
           {
-            name: "myParam1",
-            value: "myParam1Value"
+            name: 'myParam1',
+            value: 'myParam1Value'
           },
           {
-            name: "myParam2",
-            value: "myParam2Value"
+            name: 'myParam2',
+            value: 'myParam2Value'
           }
         ]
       };
@@ -607,21 +607,12 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   expandCollapseTable(plan) {
-    if(plan.show === undefined || plan.show === false) {
-      plan.show = true;
-    } else {
-      plan.show = false;
-    }
-
-    plan.value = _.sortBy(plan.value, 'plannedStartTime')
+    plan.show = plan.show === undefined || plan.show === false;
+    plan.value = _.sortBy(plan.value, 'plannedStartTime');
   }
 
   expandCollapseOrder(plan) {
-    if(plan.order === undefined || plan.order === false) {
-      plan.order = true;
-    } else {
-      plan.order = false;
-    }
+    plan.order = plan.order === undefined || plan.order === false;
   }
 
   exportToExcel() {
@@ -808,7 +799,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   changeParameter(plan) {
-    const modalRef = this.modalService.open(ChangeparameterModalComponent, {backdrop: 'static', size: 'lg'});
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.componentInstance.variable = plan.variables;
     modalRef.result.then(() => {
 

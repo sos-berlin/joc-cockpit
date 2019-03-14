@@ -2383,22 +2383,19 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
       if (this.editor) {
-        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-          this.editor.execute('zoomIn');
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+            this.editor.execute('zoomIn');
+          } else {
+            this.editor.execute('zoomOut');
+          }
         } else {
-          this.editor.execute('zoomOut');
+          console.log('scroll...');
+          
         }
       }
     });
-  }
-
-  private loadConfig(){
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
-      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-      this.workflowService.init('dark');
-    } else {
-      this.workflowService.init('light');
-    }
   }
 
   /**
@@ -2494,12 +2491,78 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
     try {
       if (this.editor) {
-        // mxEvent.removeAllListeners(this.editor.graph);
         this.editor.destroy();
         this.editor = null;
       }
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  zoomIn() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomIn();
+    }
+  }
+
+  zoomOut() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomOut();
+    }
+  }
+
+  actual() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomActual();
+      this.editor.graph.center(true, true, 0.5, 0.2);
+    }
+  }
+
+  fit() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.fit();
+      this.editor.graph.center(true, true, 0.5, 0.2);
+    }
+  }
+
+  redo() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.redo();
+    }
+  }
+
+  undo() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.undo();
+    }
+  }
+
+  expandAll() {
+    if (this.editor.graph.isEnabled()) {
+      let cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(false, true, cells, null, null);
+    }
+  }
+
+  collapseAll() {
+    if (this.editor.graph.isEnabled()) {
+      let cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(true, true, cells, null, null);
+    }
+  }
+
+  delete() {
+    if (this.editor.graph.isEnabled()) {
+      this.editor.graph.removeCells(null, true);
+    }
+  }
+
+  private loadConfig() {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+      this.workflowService.init('dark');
+    } else {
+      this.workflowService.init('light');
     }
   }
 
@@ -3534,11 +3597,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     let dropTarget;
     let movedTarget;
     let selectedCellsObj;
-    let isProgrammaticallyDelete = false;
     let isVertexDrop = false;
     let isUndoable = false;
-    let isFullyDelete = false;
-    let _targetNode: any;
     let _iterateId = 0;
 
     const doc = mxUtils.createXmlDocument();
@@ -4078,16 +4138,44 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       };
 
+
       /**
-       * Recursively remove all the target vertex if edges is removed
+       * Function: removeCells
+       *
+       * Removes the given cells from the graph including all connected edges if
+       * includeEdges is true. The change is carried out using <cellsRemoved>.
+       * This method fires <mxEvent.REMOVE_CELLS> while the transaction is in
+       * progress. The removed cells are returned as an array.
+       *
+       * Parameters:
+       *
+       * cells - Array of <mxCells> to remove. If null is specified then the
+       * selection cells which are deletable are used.
+       * flag - Optional boolean which specifies if all connected edges
+       * should be removed as well. Default is true.
        */
-      graph.addListener(mxEvent.REMOVE_CELLS, function (sender, evt) {
-        const cells = evt.getProperty('cells');
-        if (!isFullyDelete) {
-          isFullyDelete = true;
-          recursiveEdgeDelete(cells);
+      mxGraph.prototype.removeCells = function (cells, flag) {
+        if (cells == null) {
+          cells = this.getDeletableCells(this.getSelectionCells());
         }
-      });
+        if (typeof flag != 'boolean') {
+          if (cells && cells.length) {
+            deleteInstructionFromJSON(cells);
+          }
+        } else {
+          // in cells or descendant of cells
+          cells = this.getDeletableCells(this.addAllEdges(cells));
+          this.model.beginUpdate();
+          try {
+            this.cellsRemoved(cells);
+            this.fireEvent(new mxEventObject(mxEvent.REMOVE_CELLS,
+              'cells', cells, 'includeEdges', true));
+          } finally {
+            this.model.endUpdate();
+          }
+        }
+        return cells;
+      };
 
       /**
        * Removes the vertex which are added on click event
@@ -4102,7 +4190,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
       /**
        * Function: foldCells to collapse/expand
-       *
        *
        * collapsed - Boolean indicating the collapsed state to be assigned.
        * recurse - Optional boolean indicating if the collapsed state of all
@@ -4133,7 +4220,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       };
 
       /**
-       *
        * Function: undoableEditHappened
        *
        * Method to be called to add new undoable edits to the <history>.
@@ -4175,10 +4261,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
           graph.getModel().beginUpdate();
           try {
-            isProgrammaticallyDelete = true;
             // Removes all cells
-            graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
-            isProgrammaticallyDelete = false;
+            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
             const _doc = mxUtils.parseXml(xml);
             const dec = new mxCodec(_doc);
             const model = dec.decode(_doc.documentElement);
@@ -4211,10 +4295,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             const _doc = mxUtils.parseXml(xml);
             const dec = new mxCodec(_doc);
             const model = dec.decode(_doc.documentElement);
-            isProgrammaticallyDelete = true;
             // Removes all cells
-            graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
-            isProgrammaticallyDelete = false;
+            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
             graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
           } finally {
             graph.getModel().endUpdate();
@@ -4284,7 +4366,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   graph.insertEdge(parent, null, getConnectionNode('', ''), cells[0], v1);
                 }
                 graph.insertEdge(parent, null, getConnectionNode('', ''), v1, cell.target);
-                isProgrammaticallyDelete = true;
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
                     //TODO
@@ -4300,7 +4381,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     break;
                   }
                 }
-                isProgrammaticallyDelete = false;
 
                 setTimeout(() => {
                   graph.getModel().beginUpdate();
@@ -4330,9 +4410,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
             if (checkClosedCellWithSourceCell(cell.source, cell.target)) {
-              isProgrammaticallyDelete = true;
-              graph.removeCells(cells);
-              isProgrammaticallyDelete = false;
+              graph.removeCells(cells, true);
               evt.preventDefault();
               evt.stopPropagation();
               return false;
@@ -4343,9 +4421,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }, 0);
           } else {
             if (cell.value && cell.value.tagName === 'Connector') {
-              isProgrammaticallyDelete = true;
-              graph.removeCells(cells);
-              isProgrammaticallyDelete = false;
+              graph.removeCells(cells, true);
               evt.preventDefault();
               evt.stopPropagation();
               return false;
@@ -4538,9 +4614,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
 
-            isProgrammaticallyDelete = true;
             graph.getModel().remove(dropTarget);
-            isProgrammaticallyDelete = false;
+
           } else {
             let checkLabel = '';
             if (dropTarget.value.tagName === 'Fork') {
@@ -4564,35 +4639,30 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
               let target1, target2;
-              // if (!self.nodeMap.has(dropTarget.id)) {
-                for (let i = 0; i < dropTarget.edges.length; i++) {
-                  if (dropTarget.edges[i].target.id !== dropTarget.id) {
-                    if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
-                      self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
-                      target1 = dropTarget.edges[i];
-                    }
+
+              for (let i = 0; i < dropTarget.edges.length; i++) {
+                if (dropTarget.edges[i].target.id !== dropTarget.id) {
+                  if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
+                    self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
+                    target1 = dropTarget.edges[i];
+                  }
+                  break;
+                }
+              }
+
+              for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].target.id !== cell.id) {
+                  if (checkClosingCell(cell.edges[i].target)) {
+                    self.nodeMap.set(cell.id, cell.edges[i].target.id);
+                    target2 = cell.edges[i].target;
                     break;
                   }
                 }
-            //  }
-
-             // if (!self.nodeMap.has(cell.id)) {
-                for (let i = 0; i < cell.edges.length; i++) {
-                  if (cell.edges[i].target.id !== cell.id) {
-                    if (checkClosingCell(cell.edges[i].target)) {
-                      self.nodeMap.set(cell.id, cell.edges[i].target.id);
-                      target2 = cell.edges[i].target;
-                      break;
-                    }
-                  }
-                }
-              //}
+              }
 
               if (target1 && target2) {
                 graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target1.target);
-                isProgrammaticallyDelete = true;
                 graph.getModel().remove(target1);
-                isProgrammaticallyDelete = false;
               } else if (self.nodeMap.has(dropTarget.id)) {
                 const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
                 graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target);
@@ -4624,9 +4694,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                       if (cell && dropTarget.edges[i].target) {
                         graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
                       }
-                      isProgrammaticallyDelete = true;
                       graph.getModel().remove(dropTarget.edges[i]);
-                      isProgrammaticallyDelete = false;
+
                     }
                     break;
                   }
@@ -4660,9 +4729,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             for (let j = 0; j < cell.edges.length; j++) {
               if (cell.edges[j].target.id !== cell.id) {
                 if (cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') {
-                  isProgrammaticallyDelete = true;
                   graph.getModel().remove(cell.edges[j]);
-                  isProgrammaticallyDelete = false;
+
                   break;
                 }
               }
@@ -4706,6 +4774,59 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     } else {
       self.isWorkflowReload = true;
       reloadDummyXml(_xml);
+    }
+
+    /**
+     * Function: Remove slected cells from JSON
+     * @param cells
+     */
+    function deleteInstructionFromJSON(cells) {
+      iterateJson(self.workFlowJson, cells[0], '');
+      setTimeout(() => {
+        updateXMLFromJSON();
+      }, 1);
+    }
+
+    function iterateJson(json, cell, type) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          if (json.instructions[x].id == cell.id) {
+            json.instructions.splice(x, 1);
+            if (json.instructions.length === 0 && type !== 'catch') {
+              delete json['instructions'];
+              delete json['id'];
+            }
+            break;
+          }
+
+          if (json.instructions[x].instructions) {
+            iterateJson(json.instructions[x], cell, '');
+          }
+          if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              iterateJson(json.instructions[x].catch, cell, 'catch');
+            }
+          }
+          if (json.instructions[x].then) {
+            iterateJson(json.instructions[x].then, cell, 'then');
+          }
+          if (json.instructions[x].else) {
+            iterateJson(json.instructions[x].else, cell, 'else');
+          }
+          if (json.instructions[x].branches) {
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              iterateJson(json.instructions[x].branches[i], cell, 'branch');
+              if (!json.instructions[x].branches[i].instructions) {
+                json.instructions[x].branches.splice(i, 1);
+                if (json.instructions[x].branches.length === 0) {
+                  delete json.instructions[x]['branches'];
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     /**
@@ -4785,7 +4906,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           flag = true;
           break;
         } else {
-          console.log(cells[i], cell);
           if (checkClosingCell(cell)) {
             flag = true;
             break;
@@ -4794,7 +4914,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
       return flag;
     }
-
 
     /**
      * Function: To check source is closed with its own closing cell or not
@@ -5041,45 +5160,52 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             graph.getModel().endUpdate();
           }
         }
-        if (!_.isEmpty(self.workFlowJson)) {
-          self.workflowService.appendIdInJson(self.workFlowJson);
-          let mxJson = {
-            mxGraphModel: {
-              root: {
-                mxCell: [
-                  {_id: '0'},
-                  {
-                    _id: '1',
-                    _parent: '0'
-                  }
-                ],
-                Process: []
-              }
-            }
-          };
-          mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
-          self.workflowService.jsonParser(self.workFlowJson, mxJson.mxGraphModel.root, '', '');
-          let x = self.workflowService.nodeMap;
-          self.nodeMap = x;
-          WorkflowService.connectWithDummyNodes(self.workFlowJson, mxJson.mxGraphModel.root);
-          let xml = x2js.json2xml_str(mxJson);
-          graph.getModel().beginUpdate();
-          try {
-            // Removes all cells
-            graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
-            const _doc = mxUtils.parseXml(xml);
-            const dec = new mxCodec(_doc);
-            const model = dec.decode(_doc.documentElement);
-            // Merges the response model with the client model
-            graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-          } finally {
-            // Updates the display
-            graph.getModel().endUpdate();
-            isUndoable = true;
-            WorkflowService.executeLayout(graph);
-          }
-        }
+        updateXMLFromJSON();
       }, 0);
+    }
+
+    function updateXMLFromJSON() {
+      if (!_.isEmpty(self.workFlowJson)) {
+        self.workflowService.appendIdInJson(self.workFlowJson);
+        let mxJson = {
+          mxGraphModel: {
+            root: {
+              mxCell: [
+                {_id: '0'},
+                {
+                  _id: '1',
+                  _parent: '0'
+                }
+              ],
+              Process: []
+            }
+          }
+        };
+        mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+        self.workflowService.jsonParser(self.workFlowJson, mxJson.mxGraphModel.root, '', '');
+        let x = self.workflowService.nodeMap;
+        self.nodeMap = x;
+        WorkflowService.connectWithDummyNodes(self.workFlowJson, mxJson.mxGraphModel.root);
+        let xml = x2js.json2xml_str(mxJson);
+        graph.getModel().beginUpdate();
+        try {
+          // Removes all cells
+          graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+          console.log(xml);
+          const _doc = mxUtils.parseXml(xml);
+          const dec = new mxCodec(_doc);
+          const model = dec.decode(_doc.documentElement);
+          // Merges the response model with the client model
+          graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+        } finally {
+          // Updates the display
+          graph.getModel().endUpdate();
+          isUndoable = true;
+          WorkflowService.executeLayout(graph);
+        }
+      } else {
+        reloadDummyXml(self.dummyXml);
+      }
     }
 
     /**
@@ -5205,7 +5331,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       graph.getModel().beginUpdate();
       try {
         // Removes all cells
-        graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
+        graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
         const _doc = mxUtils.parseXml(xml);
         const dec = new mxCodec(_doc);
         const model = dec.decode(_doc.documentElement);
@@ -5258,152 +5384,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         _node.setAttribute('targetId', id);
       }
       return _node;
-    }
-
-    function recursiveDeleteFn(selectedCell, target) {
-      let flag = false;
-      const edges = target.edges;
-      if (checkClosedCellWithSourceCell(selectedCell, target)) {
-
-        const attrs = target.value.attributes;
-        if (attrs) {
-          for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i].nodeName === 'targetId' && attrs[i].nodeValue === selectedCell.id) {
-              for (let x = 0; x < edges.length; x++) {
-                if (edges[x].target.id !== target.id) {
-                  _targetNode = edges[x].target;
-                }
-              }
-              self.nodeMap.delete(attrs[i].nodeValue);
-              graph.removeCells([target]);
-              flag = true;
-              break;
-            }
-          }
-        }
-      }
-      if (edges && edges.length > 0) {
-        for (let j = 0; j < edges.length; j++) {
-          if (edges[j].target) {
-            if (edges[j].target.id !== target.id) {
-              if (checkClosedCellWithSourceCell(selectedCell, edges[j].target)) {
-                const attrs = edges[j].target.value.attributes;
-                if (attrs) {
-                  for (let i = 0; i < attrs.length; i++) {
-                    if (attrs[i].nodeName === 'targetId' && (attrs[i].nodeValue === selectedCell.id || attrs[i].nodeValue === target.id)) {
-                      const _edges = edges[j].target.edges;
-                      for (let x = 0; x < _edges.length; x++) {
-                        if (_edges[x].target.id !== edges[j].target.id) {
-                          _targetNode = _edges[x].target;
-                        }
-                      }
-
-                      self.nodeMap.delete(attrs[i].nodeValue);
-                      graph.removeCells([edges[j].target]);
-                      flag = true;
-                      break;
-                    }
-                  }
-                }
-              } else {
-                if (edges[j].target) {
-                  if (_iterateId !== edges[j].target.id) {
-                    _iterateId = edges[j].target.id;
-                    recursiveDeleteFn(selectedCell, edges[j].target);
-                  }
-                  if (edges[j]) {
-                    graph.removeCells([edges[j].target]);
-                  }
-                }
-              }
-            }
-          }
-        }
-        if (!flag) {
-          for (let i = 0; i < edges.length; i++) {
-            if (edges[i] && edges[i].target) {
-              if (_iterateId !== edges[i].target.id) {
-                _iterateId = edges[i].target.id;
-                recursiveDeleteFn(selectedCell, (edges[i].target));
-              }
-              if (edges[i]) {
-                graph.removeCells([edges[i].target]);
-              }
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    function recursiveEdgeDelete(cells) {
-      _targetNode = {};
-      _iterateId = 0;
-      const selectedCell = graph.getSelectionCell();
-      let id = 0;
-      if (selectedCell) {
-        if (!isProgrammaticallyDelete) {
-          id = selectedCell.id;
-          let _sour, _tar, _label = '', _type = '';
-          for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i];
-            if (cell.edge && cell.source) {
-              if (cell.target.id === id) {
-                _sour = cell.source;
-              }
-              if (selectedCell.value.tagName === 'Fork' || selectedCell.value.tagName === 'If' ||
-                selectedCell.value.tagName === 'Retry' || selectedCell.value.tagName === 'Try') {
-                if (cell.target) {
-                  if (cell.target.id !== id) {
-                    recursiveDeleteFn(selectedCell, cell.target);
-                    graph.removeCells([cell.target]);
-                  }
-                }
-              } else {
-                if (cell.source.id === id) {
-                  const attrs = cell.value.attributes;
-                  if (attrs) {
-                    for (let j = 0; j < attrs.length; j++) {
-                      if (attrs[j].nodeName === 'label') {
-                        _label = attrs[j].nodeValue;
-                      } else if (attrs[j].nodeName === 'type') {
-                        _type = attrs[j].nodeValue;
-                      }
-                    }
-                  }
-                  _tar = cell.target;
-                }
-              }
-            }
-          }
-          if (_sour && (_tar || !_.isEmpty(_targetNode))) {
-            if (!_tar) {
-              _tar = _targetNode;
-            }
-            let flag = true;
-            if (checkClosedCellWithSourceCell(_sour, _tar)) {
-              if (_sour.edges.length > 1) {
-                flag = false;
-              } else {
-                _label = '';
-                _type = '';
-              }
-            }
-            if (flag) {
-              graph.insertEdge(graph.getDefaultParent(), null, getConnectionNode(_label, _type), _sour, _tar);
-            }
-          }
-        } else {
-          isProgrammaticallyDelete = false;
-        }
-      }
-      setTimeout(() => {
-        isFullyDelete = false;
-        if (id > 0) {
-          isUndoable = true;
-          WorkflowService.executeLayout(graph);
-        }
-      }, 0);
     }
 
     /**
@@ -5683,52 +5663,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       };
       mxEvent.addListener(input, 'change', applyHandler);
-    }
-
-
-  }
-
-  zoomIn() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomIn();
-    }
-  }
-
-  zoomOut() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomOut();
-    }
-  }
-
-  actual() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true, 0.5, 0.2);
-    }
-  }
-
-  fit() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.fit();
-      this.editor.graph.center(true, true, 0.5, 0.2);
-    }
-  }
-
-  redo() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.redo();
-    }
-  }
-
-  undo() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.undo();
-    }
-  }
-
-  delete() {
-    if (this.editor.graph.isEnabled()) {
-      this.editor.graph.removeCells();
     }
   }
 }

@@ -25,24 +25,38 @@
         <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}" (click)="zoomIn()">
           <i class="fa fa-search-plus"></i>
         </button>
-          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.zoomOut' | translate}}" (click)="zoomOut()">
-            <i class="fa fa-search-minus"></i>
-          </button>
-          <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.actual' | translate}}" (click)="actual()">
-            <i class="fa fa-search"></i>
-          </button>
-          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.fit' | translate}}" (click)="fit()">
-            <i class="fa fa-arrows-alt"></i>
-          </button>
-          <button class="btn btn-sm btn-grey" id="undoBtn" placement="bottom" ngbTooltip="{{'workflow.button.undo' | translate}}" (click)="undo()">
-            <i class="fa fa-undo"></i>
-          </button>
-          <button class="btn btn-sm btn-grey m-r-sm" id="redoBtn" placement="bottom" ngbTooltip="{{'workflow.button.redo' | translate}}" (click)="redo()">
-            <i class="fa fa-repeat"></i>
-          </button>
-          <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.delete' | translate}}" (click)="delete()">
-            <i class="fa fa-times"></i>
-          </button>
+        <button class="btn btn-sm btn-grey m-r-sm" placement="bottom"
+                ngbTooltip="{{'workflow.button.zoomOut' | translate}}" (click)="zoomOut()">
+          <i class="fa fa-search-minus"></i>
+        </button>
+        <button class="btn btn-sm btn-grey" placement="bottom" ngbTooltip="{{'workflow.button.actual' | translate}}"
+                (click)="actual()">
+          <i class="fa fa-search"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-r-sm" placement="bottom" ngbTooltip="{{'workflow.button.fit' | translate}}"
+                (click)="fit()">
+          <i class="fa fa-arrows-alt"></i>
+        </button>
+        <button class="btn btn-sm btn-grey" id="undoBtn" placement="bottom"
+                ngbTooltip="{{'workflow.button.undo' | translate}}" (click)="undo()">
+          <i class="fa fa-undo"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-r-sm" id="redoBtn" placement="bottom"
+                ngbTooltip="{{'workflow.button.redo' | translate}}" (click)="redo()">
+          <i class="fa fa-repeat"></i>
+        </button>
+        <button class="btn btn-sm btn-grey" placement="bottom"
+                ngbTooltip="{{'workflow.button.expandAll' | translate}}" (click)="expandAll()">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-r-sm" placement="bottom"
+                ngbTooltip="{{'workflow.button.collapseAll' | translate}}" (click)="collapseAll()">
+          <i class="fa fa-minus"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-r-sm" placement="bottom"
+                ngbTooltip="{{'workflow.button.delete' | translate}}" (click)="delete()">
+          <i class="fa fa-times"></i>
+        </button>
       </div>
     </div>
   </div>
