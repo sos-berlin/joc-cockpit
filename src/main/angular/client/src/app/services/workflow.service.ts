@@ -16,41 +16,7 @@ export class WorkflowService {
   public fork;
 
   constructor() {
-    mxHierarchicalLayout.prototype.interRankCellSpacing = 54;
-    mxHierarchicalLayout.prototype.fineTuning = true;
-    mxHierarchicalLayout.prototype.disableEdgeStyle = true;
-  }
-
-  static getDummyNodes(): any {
-    return [
-      {
-        '_id': '3',
-        '_title': 'Start',
-        'mxCell': {
-          '_parent': '1',
-          '_vertex': '1',
-          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
-          'mxGeometry': {
-            '_as': 'geometry',
-            '_width': '70',
-            '_height': '70'
-          }
-        }
-      }, {
-        '_id': '5',
-        '_title': 'End',
-        'mxCell': {
-          '_parent': '1',
-          '_vertex': '1',
-          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
-          'mxGeometry': {
-            '_as': 'geometry',
-            '_width': '70',
-            '_height': '70'
-          }
-        }
-      }
-    ];
+    mxHierarchicalLayout.prototype.interRankCellSpacing = 50;
   }
 
   /**
@@ -146,6 +112,39 @@ export class WorkflowService {
       graph.zoomActual();
       graph.center(true, true, 0.5, 0.2);
     }, 0);
+  }
+
+  getDummyNodes(): any {
+    this.nodeMap = new Map();
+    return [
+      {
+        '_id': '3',
+        '_title': 'Start',
+        'mxCell': {
+          '_parent': '1',
+          '_vertex': '1',
+          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
+          'mxGeometry': {
+            '_as': 'geometry',
+            '_width': '70',
+            '_height': '70'
+          }
+        }
+      }, {
+        '_id': '5',
+        '_title': 'End',
+        'mxCell': {
+          '_parent': '1',
+          '_vertex': '1',
+          '_style': 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;',
+          'mxGeometry': {
+            '_as': 'geometry',
+            '_width': '70',
+            '_height': '70'
+          }
+        }
+      }
+    ];
   }
 
   init(theme) {
@@ -459,6 +458,44 @@ export class WorkflowService {
     } else {
       console.log('No instruction..');
     }
+  }
+
+  // Function to generating dynamic unique Id
+  appendIdInJson(_json) {
+    this.count = 11;
+    const self = this;
+
+    function recursive(json) {
+      if (json.instructions) {
+        for (let x = 0; x < json.instructions.length; x++) {
+          json.instructions[x].id = ++self.count;
+          if (json.instructions[x].instructions) {
+            recursive(json.instructions[x]);
+          }
+          if (json.instructions[x].catch) {
+            json.instructions[x].catch.id = ++self.count;
+            if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+              recursive(json.instructions[x].catch);
+            }
+          }
+          if (json.instructions[x].then && json.instructions[x].then.instructions) {
+            recursive(json.instructions[x].then);
+          }
+          if (json.instructions[x].else && json.instructions[x].else.instructions) {
+            recursive(json.instructions[x].else);
+          }
+          if (json.instructions[x].branches) {
+            for (let i = 0; i < json.instructions[x].branches.length; i++) {
+              if (json.instructions[x].branches[i].instructions) {
+                recursive(json.instructions[x].branches[i]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    recursive(_json);
   }
 
   private connectEdges(list, index, mxJson, type, parentId) {
@@ -992,37 +1029,6 @@ export class WorkflowService {
         }
       };
       mxJson.FileOrder.push(obj);
-    }
-  }
-
-  // Function to generating dynamic unique Id
-  appendIdInJson(json) {
-    if(json.instructions) {
-      for (let x = 0; x < json.instructions.length; x++) {
-        json.instructions[x].id = ++this.count;
-        if (json.instructions[x].instructions) {
-          this.appendIdInJson(json.instructions[x]);
-        }
-        if (json.instructions[x].catch) {
-          json.instructions[x].catch.id = ++this.count;
-          if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-            this.appendIdInJson(json.instructions[x].catch);
-          }
-        }
-        if (json.instructions[x].then && json.instructions[x].then.instructions) {
-          this.appendIdInJson(json.instructions[x].then);
-        }
-        if (json.instructions[x].else && json.instructions[x].else.instructions) {
-          this.appendIdInJson(json.instructions[x].else);
-        }
-        if (json.instructions[x].branches) {
-          for (let i = 0; i < json.instructions[x].branches.length; i++) {
-            if (json.instructions[x].branches[i].instructions) {
-              this.appendIdInJson(json.instructions[x].branches[i]);
-            }
-          }
-        }
-      }
     }
   }
 }

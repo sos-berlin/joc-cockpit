@@ -1,10 +1,10 @@
-<div class="sub-link">
+<div class="sub-link white box-shadow">
   <div class="row">
     <div class="col-md-12">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
         <li class="nav-item">
           <a class="nav-link z-index" [routerLink]="['/configuration/joe']" [routerLinkActive]="['active']">
-            <span class="nav-text text-dark p-b-sm"><span translate>Designer</span></span>
+            <span class="nav-text text-dark"><span translate>Designer</span></span>
           </a>
         </li>
         <li class="nav-item dropdown-separator">
@@ -12,11 +12,13 @@
         </li>
         <li class="nav-item">
           <a class="nav-link z-index" [routerLink]="['/configuration/xml']" [routerLinkActive]="['active']">
-            <span class="nav-text text-dark p-b-sm"><span translate>XML Editor</span></span>
+            <span class="nav-text text-dark"><span translate>XML Editor</span></span>
           </a>
         </li>
       </ul>
     </div>
   </div>
 </div>
+<div class="m-t-sm">
 <router-outlet></router-outlet>
+</div>

@@ -77,7 +77,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
       this.workflowService.init('dark');
     } else {
@@ -90,10 +90,13 @@ export class WorkflowComponent implements OnInit, OnDestroy {
      */
     $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
       if (this.editor) {
-        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-          this.editor.execute('zoomIn');
-        } else {
-          this.editor.execute('zoomOut');
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+            this.editor.execute('zoomIn');
+          } else {
+            this.editor.execute('zoomOut');
+          }
         }
       }
     });
@@ -183,7 +186,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         }
       };
-      mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+      mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
       this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
       WorkflowService.connectWithDummyNodes(_json, mxJson.mxGraphModel.root);
       this.initEditorConf(this.editor, x2js.json2xml_str(mxJson));
@@ -233,7 +236,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxGraph.prototype.foldingEnabled = true;
       mxConstants.VERTEX_SELECTION_COLOR = null;
 
-      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
+      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
         mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);

@@ -190,7 +190,7 @@ export class ResizableDirective implements OnInit {
     } else if (this.el.nativeElement.attributes.class.value.match('editor')) {
       dom = $('#leftSidePanel');
       if (dom) {
-        dom.css('top', '133px');
+        dom.css('top', '143px');
         dom.resizable({
           handles: 'e',
           maxWidth: 500,

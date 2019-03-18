@@ -21,6 +21,7 @@ declare const mxUtils;
 declare const mxEvent;
 declare const mxClient;
 declare const mxObjectCodec;
+declare const mxPanningManager;
 declare const mxEdgeHandler;
 declare const mxCodec;
 declare const mxAutoSaveManager;
@@ -38,7 +39,6 @@ declare const mxRectangle;
 declare const mxPoint;
 declare const mxUndoManager;
 declare const mxEventObject;
-declare const mxGraphSelectionModel;
 
 declare const Holidays;
 declare const X2JS;
@@ -2286,11 +2286,11 @@ export class CalendarTemplateComponent implements OnInit {
     }
 
     obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
-    if (type === 'INCLUDE')
+    if (type === 'INCLUDE') {
       this.calendar.includesFrequency.push(obj);
-    else
+    } else {
       this.calendar.excludesFrequency.push(obj);
-
+    }
   }
 
   private generateCalendarAllObj() {
@@ -2390,9 +2390,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           } else {
             this.editor.execute('zoomOut');
           }
-        } else {
-          console.log('scroll...');
-          
         }
       }
     });
@@ -2414,7 +2411,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
         this.initEditorConf(editor, null);
         mxObjectCodec.allowEval = false;
+				// Adds active border for panning inside the container
+				editor.graph.createPanningManager = function()
+				{
+					var pm = new mxPanningManager(this);
+					pm.border = 30;
 
+					return pm;
+				};
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
@@ -2477,7 +2481,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
       };
-      mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+      mxJson.mxGraphModel.root.Process = this.workflowService.getDummyNodes();
       this.workflowService.jsonParser(_json, mxJson.mxGraphModel.root, '', '');
       let x = this.workflowService.nodeMap;
       this.nodeMap = x;
@@ -2558,7 +2562,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   private loadConfig() {
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter')) {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
       this.workflowService.init('dark');
     } else {
@@ -3632,7 +3636,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
 
 
-      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter') {
+      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
         let style = graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
         mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed-white.png', 12, 12);
@@ -4216,6 +4220,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           this.model.endUpdate();
         }
         WorkflowService.executeLayout(graph);
+        graph.center(true, true);
         return cells;
       };
 
@@ -4321,7 +4326,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         if (cell) {
           if (cells && cells.length > 0) {
             if (cells[0].value && (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry'
-              || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Await')) {
+              || cells[0].value.tagName === 'Try' || cells[0].value.tagName === 'Catch' || cells[0].value.tagName === 'Await')) {
               cells[0].collapsed = true;
             }
           }
@@ -4330,7 +4335,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (cells && cells.length > 0) {
               if (cell.source) {
                 if (cell.source.getParent().id !== '1') {
-                  cell.setParent(cell.source.getParent());
+                  // TODO
+                  console.log('In testing phase');
+                  // cell.setParent(cell.source.getParent());
                 }
               }
               if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
@@ -4369,7 +4376,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
                     //TODO
-                    console.log('Problem not fixed');
+                    console.log('In testing phase');
                     const _sourCellName = cell.source.value.tagName;
                     const _tarCellName = cell.target.value.tagName;
                     if (cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate') &&
@@ -4736,6 +4743,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
           }
+          if (dropTarget.value.tagName === 'Catch') {
+            setTimeout(() => {
+              updateXMLFromJSON();
+            },1);
+
+          }
           dropTarget = null;
           isUndoable = true;
           WorkflowService.executeLayout(graph);
@@ -5046,7 +5059,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         graph.insertEdge(parent, null, getConnectionNode('endIf', 'endIf'), _middle, v2);
       } else if (cellName === 'Try') {
         v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', parentCell.id), 0, 0, 94, 94, 'try');
+        v2.collapsed = true;
         v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', parentCell.id), 0, 0, 100, 40, 'dashRectangle');
+        v3.collapsed = true;
         v4 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
         if (cell) {
           if (cell.edges) {
@@ -5181,7 +5196,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           }
         };
-        mxJson.mxGraphModel.root.Process = WorkflowService.getDummyNodes();
+        mxJson.mxGraphModel.root.Process = self.workflowService.getDummyNodes();
         self.workflowService.jsonParser(self.workFlowJson, mxJson.mxGraphModel.root, '', '');
         let x = self.workflowService.nodeMap;
         self.nodeMap = x;
@@ -5191,7 +5206,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         try {
           // Removes all cells
           graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-          console.log(xml);
           const _doc = mxUtils.parseXml(xml);
           const dec = new mxCodec(_doc);
           const model = dec.decode(_doc.documentElement);
@@ -5264,8 +5278,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (attrs[i].nodeName === 'targetId' && attrs[i].nodeValue === cell.id) {
                 for (let x = 0; x < edges.length; x++) {
                   if (edges[x].target.id !== target.id) {
-                    console.log(_.clone(edges[x]));
-                    console.log(_.clone(target));
                     targetNode = edges[x];
                     break;
                   }
@@ -5651,7 +5663,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     function createCheckbox(_graph, form, cell, attribute) {
       let input = form.addCheckbox(attribute.nodeName + ':', attribute.nodeValue);
       const applyHandler = function () {
-        let newValue = cell.getAttribute(attribute.nodeName, '') === 'true' ? false : true;
+        let newValue = cell.getAttribute(attribute.nodeName, '') !== 'true';
         _graph.getModel().beginUpdate();
         try {
           const update = new mxCellAttributeChange(

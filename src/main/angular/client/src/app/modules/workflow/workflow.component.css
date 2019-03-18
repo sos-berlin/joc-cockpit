@@ -4,6 +4,7 @@
 #graph {
   position: relative;
   overflow: hidden;
+  overflow-y: auto;
   cursor: default;
   background-position: 0 0;
   background-color: rgba(255, 255, 255, .9);

@@ -1401,5 +1401,9 @@
   "message.otherInstructionValidationError": "Cannot have more than one out going Edge",
   "message.ifInstructionValidationError": "Cannot have more than one condition",
   "message.awaitInstructionValidationError": "Only Await instruction can have orders events",
-  "message.invalidInstructionsSelected": "Selection of instructions is not valid"
+  "message.invalidInstructionsSelected": "Selection of instructions is not valid",
+  "button.groupByWorkflow" : "Group By Workflow",
+  "button.updateParameter" : "Update Parameter",
+  "button.removeParameter" : "Remove Parameter",
+  "label.repeatEvery" : "Repeat every"
 }

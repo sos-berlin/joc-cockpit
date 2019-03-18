@@ -4,11 +4,12 @@
 #graph {
   position: relative;
   overflow: hidden;
+  overflow-y: auto;
   cursor: default;
   background-position: 0 0;
   background-color: rgba(255, 255, 255, .9);
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.06) ;
-  height: calc(100vh - 196px) ;
+  height: calc(100vh - 156px) ;
 }
 
 #toolbar {

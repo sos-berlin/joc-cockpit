@@ -1,6 +1,6 @@
 <mxEditor defaultGroup="group" defaultEdge="connector">
   <include name="./assets/mxgraph/config/editor-commons.xml"/>
-  <mxGraph as="graph" alternateEdgeStyle="verticalConnector" allowLoops="1" dropEnabled="1">
+  <mxGraph as="graph" alternateEdgeStyle="verticalEdge" swimlaneNesting="0" dropEnabled="1">
     <add as="isAutoSizeCell"><![CDATA[
 			function(cell)
 			{
@@ -18,7 +18,6 @@
 			{
 				var label = cell.getAttribute('label');
 				var style = cell.getStyle();
-
 				return ((label != null) ? ('<b>' + label +
 						'</b> : '') +
 						'Connections: ' + cell.getEdgeCount()+
@@ -61,29 +60,14 @@
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
-        <add as="fontSize" value="12"/>
+        <add as="fontSize" value="10"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="center"/>
         <add as="rounded" value="1"/>
         <add as="labelBackgroundColor" value="#fff"/>
-        <add as="strokeColor" value="#36393D"/>
-        <add as="strokeWidth" value="1"/>
+        <add as="strokeColor" value="gray"/>
         <add as="edgeStyle" value="elbowEdgeStyle"/>
         <add as="endArrow" value="classic"/>
-      </add>
-      <add as="verticalConnector">
-        <add as="elbow" value="vertical"/>
-      </add>
-      <add as="straightConnector">
-        <add as="shape" value="connector"/>
-        <add as="endArrow" value="classic"/>
-        <add as="edgeStyle">null</add>
-      </add>
-      <add as="arrowConnector">
-        <add as="shape" value="arrow"/>
-        <add as="fillColor" value="#C3D9FF"/>
-        <add as="endSize" value="20"/>
-        <remove as="edgeStyle"/>
       </add>
       <add as="swimlane">
         <add as="shape" value="swimlane"/>
@@ -91,7 +75,13 @@
         <add as="startSize" value="23"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="top"/>
+        <add as="spacingTop" value="8"/>
+				<add as="fontColor" value="white"/>
+				<add as="separatorColor" value="#c0c0c0"/>
       </add>
+      <add as="verticalEdge">
+				<add as="elbow" value="vertical"/>
+			</add>
       <add as="job">
         <add as="rounded" value="1"/>
         <add as="shape" value="label"/>

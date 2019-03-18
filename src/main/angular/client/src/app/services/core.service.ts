@@ -36,6 +36,7 @@ export class CoreService {
     this.tabs._daliyPlan = {};
     this.tabs._daliyPlan.filter = {};
     this.tabs._daliyPlan.filter.status = 'ALL';
+    this.tabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tabs._daliyPlan.filter.state = '';
     this.tabs._daliyPlan.filter.sortBy = 'plannedStartTime';
     this.tabs._daliyPlan.filter.range = 'today';
@@ -196,6 +197,7 @@ export class CoreService {
     this.tempTabs._daliyPlan = {};
     this.tempTabs._daliyPlan.filter = {};
     this.tempTabs._daliyPlan.filter.status = 'ALL';
+    this.tempTabs._daliyPlan.filter.groupBy = 'ORDER';
     this.tempTabs._daliyPlan.filter.state = '';
     this.tempTabs._daliyPlan.filter.sortBy = 'processedPlanned';
     this.tempTabs._daliyPlan.filter.range = 'today';
