@@ -100,6 +100,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         }
       }
     });
+    $('#graph').slimscroll({height: 'calc(100vh - 172px)'});
   }
 
   ngOnDestroy() {
@@ -123,45 +124,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     }
     console.log($event);
-  }
-
-  private init() {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences);
-    }
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
-    this.permission = JSON.parse(this.authService.permission) || {};
-    this.initTree();
-    this.createEditor(this.configXml);
-    this.isWorkflowStored();
-  }
-
-  private initTree() {
-    this.coreService.post('tree', {
-      jobschedulerId: this.schedulerIds.selected,
-      compact: true,
-      types: ['WORKFLOW']
-    }).subscribe(res => {
-      this.filteredTreeData(this.coreService.prepareTree(res));
-      this.isLoading = true;
-    }, () => {
-      this.isLoading = true;
-    });
-  }
-
-  private filteredTreeData(output) {
-    this.tree = output;
-    this.checkExpand();
-  }
-
-  private checkExpand() {
-    setTimeout(() => {
-      if (this.child && this.child.getNodeById(1)) {
-        const node = this.child.getNodeById(1);
-        node.expand();
-        node.setActiveAndVisible(true);
-      }
-    }, 10);
   }
 
   isWorkflowStored(): void {
@@ -220,6 +182,85 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       mxUtils.alert('Cannot start application: ' + e.message);
       throw e; // for debugging
     }
+  }
+
+  zoomIn() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomIn();
+    }
+  }
+
+  zoomOut() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomOut();
+    }
+  }
+
+  actual() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.zoomActual();
+      this.editor.graph.center(true, true);
+    }
+  }
+
+  fit() {
+    if (this.editor && this.editor.graph) {
+      this.editor.graph.fit();
+      this.editor.graph.center(true, true);
+    }
+  }
+
+  expandAll() {
+    if (this.editor.graph.isEnabled()) {
+      let cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(false, true, cells, null, null);
+    }
+  }
+
+  collapseAll() {
+    if (this.editor.graph.isEnabled()) {
+      let cells = this.editor.graph.getChildVertices();
+      this.editor.graph.foldCells(true, true, cells, null, null);
+    }
+  }
+
+  private init() {
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences);
+    }
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.permission = JSON.parse(this.authService.permission) || {};
+    this.initTree();
+    this.createEditor(this.configXml);
+    this.isWorkflowStored();
+  }
+
+  private initTree() {
+    this.coreService.post('tree', {
+      jobschedulerId: this.schedulerIds.selected,
+      compact: true,
+      types: ['WORKFLOW']
+    }).subscribe(res => {
+      this.filteredTreeData(this.coreService.prepareTree(res));
+      this.isLoading = true;
+    }, () => {
+      this.isLoading = true;
+    });
+  }
+
+  private filteredTreeData(output) {
+    this.tree = output;
+    this.checkExpand();
+  }
+
+  private checkExpand() {
+    setTimeout(() => {
+      if (this.child && this.child.getNodeById(1)) {
+        const node = this.child.getNodeById(1);
+        node.expand();
+        node.setActiveAndVisible(true);
+      }
+    }, 10);
   }
 
   private initEditorConf(editor, _xml: any) {
@@ -358,31 +399,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         WorkflowService.executeLayout(graph);
       }
     }
-  }
 
-  zoomIn() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomIn();
-    }
-  }
-
-  zoomOut() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomOut();
-    }
-  }
-
-  actual() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true, 0.5, 0.2);
-    }
-  }
-
-  fit() {
-    if (this.editor && this.editor.graph) {
-      this.editor.graph.fit();
-      this.editor.graph.center(true, true, 0.5, 0.2);
-    }
   }
 }

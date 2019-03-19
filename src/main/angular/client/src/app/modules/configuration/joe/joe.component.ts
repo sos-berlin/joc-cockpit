@@ -2378,22 +2378,54 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       this.isWorkflowStored();
     });
 
-    /**
-     * Changes the zoom on mouseWheel events
-     */
-    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
-      if (this.editor) {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-            this.editor.execute('zoomIn');
-          } else {
-            this.editor.execute('zoomOut');
-          }
-        }
-      }
-    });
+    this.handleQueryEvents();
   }
+
+   private handleQueryEvents() {
+     /**
+      * Changes the zoom on mouseWheel events
+      */
+     $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+       if (this.editor) {
+         if (event.ctrlKey) {
+           event.preventDefault();
+           if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+             this.editor.execute('zoomIn');
+           } else {
+             this.editor.execute('zoomOut');
+           }
+         }
+       }
+     });
+
+     $('#graph').slimscroll();
+     const panel = $('.property-panel');
+     $('.sidebar-open', panel).click(() => {
+       $('.sidebar').css({'width': '296px', opacity: 1});
+       $('#outlineContainer').animate({'right': '296px'}, 'fast', 'linear');
+       $('.graph-container').animate({'margin-right': '286px'}, 'fast', 'linear');
+       $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
+       this.centered();
+     });
+
+     $('.sidebar-close', panel).click(() => {
+       $('.sidebar').css({'width': '0', opacity: 0});
+       $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+       $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+       $('.sidebar-close').css('right', '-26px');
+       this.centered();
+     });
+     setTimeout(() => {
+       $('.sidebar-open').click();
+     }, 100);
+
+   }
+
+   private centered() {
+     setTimeout(() => {
+       this.editor.graph.center(true, true);
+     }, 200);
+   }
 
   /**
    * Constructs a new application (returns an mxEditor instance)
@@ -2518,14 +2550,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   actual() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true, 0.5, 0.2);
+      this.editor.graph.center(true, true);
     }
   }
 
   fit() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.editor.graph.center(true, true, 0.5, 0.2);
+      this.editor.graph.center(true, true);
     }
   }
 

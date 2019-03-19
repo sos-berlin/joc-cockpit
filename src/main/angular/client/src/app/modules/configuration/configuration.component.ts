@@ -12,15 +12,15 @@ export class ConfigurationComponent {
   constructor(private router: Router) {
     router.events.subscribe((e: any) => {
       if (e.url) {
-        this.calcHeigth();
+        this.calcHeight();
       }
     });
   }
 
-  calcHeigth() {
+  calcHeight() {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
-      let top = dom.position().top + 18;
+      let top = dom.position().top + 12;
       top = top - $(window).scrollTop();
       if (top < 70) {
         top = 92;
@@ -29,13 +29,13 @@ export class ConfigurationComponent {
       const ht = window.innerHeight - top;
       if (ht > 400) {
         if ($('#graph')) {
-          $('#graph').height(ht - 60 + 'px');
+          $('#graph').height(ht + 'px');
         }
-        $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
+        $('.tree-block').height((ht - 24 + $(window).scrollTop()) + 'px');
       }
       if (top < 139 && top > 92) {
         setTimeout(() => {
-          this.calcHeigth();
+          this.calcHeight();
         }, 5);
       }
     }
@@ -43,11 +43,11 @@ export class ConfigurationComponent {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.calcHeigth();
+    this.calcHeight();
   }
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
-    this.calcHeigth();
+    this.calcHeight();
   }
 }

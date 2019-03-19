@@ -1,6 +1,6 @@
 <mxEditor defaultGroup="group" defaultEdge="connector">
   <include name="./assets/mxgraph/config/editor-commons.xml"/>
-  <mxGraph as="graph" alternateEdgeStyle="verticalConnector" allowLoops="1" dropEnabled="1">
+  <mxGraph as="graph" alternateEdgeStyle="verticalEdge" swimlaneNesting="0" dropEnabled="1">
     <add as="isAutoSizeCell"><![CDATA[
 			function(cell)
 			{
@@ -72,27 +72,19 @@
         <add as="edgeStyle" value="elbowEdgeStyle"/>
         <add as="endArrow" value="classic"/>
       </add>
-      <add as="verticalConnector">
-        <add as="elbow" value="vertical"/>
-      </add>
-      <add as="straightConnector">
-        <add as="shape" value="connector"/>
-        <add as="endArrow" value="classic"/>
-        <add as="edgeStyle">null</add>
-      </add>
-      <add as="arrowConnector">
-        <add as="shape" value="arrow"/>
-        <add as="fillColor" value="#fafafa"/>
-        <add as="endSize" value="20"/>
-        <remove as="edgeStyle"/>
-      </add>
-      <add as="swimlane">
+       <add as="swimlane">
         <add as="shape" value="swimlane"/>
         <add as="shadow" value="0"/>
         <add as="startSize" value="23"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="top"/>
+        <add as="spacingTop" value="8"/>
+				<add as="fontColor" value="white"/>
+				<add as="separatorColor" value="#c0c0c0"/>
       </add>
+      <add as="verticalEdge">
+				<add as="elbow" value="vertical"/>
+			</add>
       <add as="job">
         <add as="rounded" value="1"/>
         <add as="shape" value="label"/>
@@ -183,21 +175,28 @@
   </mxGraph>
   <mxDefaultToolbar as="toolbar">
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
-    <add as="show" action="show" icon="./assets/mxgraph/images/preview-white.png"/>
+    <add as="show" action="show" icon="./assets/mxgraph/images/white-preview.png"/>
     <hr/>
     <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.png"
-         icon="./assets/mxgraph/images/symbols/abort-white.png"/>
-    <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/symbols/job-white.png"/>
-    <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/symbols/order-white.png"/>
+         icon="./assets/mxgraph/images/white-abort.png"/>
+    <hr/>
+    <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
+    <hr/>
+    <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/white-fileorder.png"/>
+    <hr/>
     <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.png"
-         icon="./assets/mxgraph/images/symbols/terminate-white.png"/>
+         icon="./assets/mxgraph/images/white-terminate.png"/>
     <hr/>
     <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer-white.png"
-         icon="./assets/mxgraph/images/symbols/timer-white.png"/>
+         icon="./assets/mxgraph/images/white-await.png"/>
+    <hr/>
     <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.png"
-         icon="./assets/mxgraph/images/symbols/fork-white.png"/>
-    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/symbols/if-white.png"/>
-    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/symbols/retry-white.png"/>
-     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/symbols/try-white.png"/>
+         icon="./assets/mxgraph/images/white-fork.png"/>
+    <hr/>
+    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/white-if.png"/>
+    <hr/>
+    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/white-retry.png"/>
+    <hr/>
+    <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/white-try.png"/>
   </mxDefaultToolbar>
 </mxEditor>

@@ -121,7 +121,7 @@
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color button-group-ellipsis" (click)="removeAllOrder()"><i class="fa fa-trash"></i>&nbsp;
                             <span class="hidden-sm-down" translate>button.removeOrders</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" (click)="removeAllPlan()"><i class="fa fa-times"></i>&nbsp;
-                            <span class="hidden-sm-down" translate>button.removePlans</span></button>
+                            <span class="hidden-sm-down" translate>button.reCalculatePlans</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm" ngbTooltip="{{'tooltip.exportInXLS' | translate}}" [disabled]="(plans | filter: searchKey).length===0" (click)="exportToExcel()">
                           <i class="fa fa fa-share-square-o"></i>
                         </button>

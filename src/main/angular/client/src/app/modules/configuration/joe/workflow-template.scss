@@ -1,5 +1,5 @@
 .graph-container{
-   margin-left: 60px;
+   margin-left: 66px;
 }
 #graph {
   position: relative;
@@ -7,15 +7,15 @@
   overflow-y: auto;
   cursor: default;
   background-position: 0 0;
-  background-color: rgba(255, 255, 255, .9);
+  background-color: rgba(255, 255, 255, 1);
   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.06) ;
   height: calc(100vh - 156px) ;
 }
 
 #toolbar {
-  width: 44px;
-  box-shadow: 0 0 3px #bbb;
-  padding: 16px 10px 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 52px;
   position: absolute;
 }
 #outlineContainer{

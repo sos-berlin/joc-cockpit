@@ -2,7 +2,7 @@
   <div class="padding p-b-0">
     <div class="inline w-full" [hidden]="isLoading">
       <div appResizable id="leftSidePanel" class="sticky leftPanel editor">
-        <div class="editor-tree">
+        <div class="editor-tree white">
           <div class="row" *ngIf="tree.length > 0">
             <div class="col-12">
               <a class="text" (click)="expandAll();" placement="bottom" ngbTooltip="{{'tooltip.expandAll' | translate}}">
@@ -46,7 +46,7 @@
               </ng-template>
             </tree-root>
           </div>
-          <div class="rg-right"><span></span></div>
+          <div class="rg-right bg-white"><span></span></div>
         </div>
       </div>
       <div id="centerPanel" class="centerPanel">

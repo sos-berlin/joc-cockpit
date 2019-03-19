@@ -1361,9 +1361,10 @@
   "button.removeOrders": "Remove Orders",
   "button.removeOrder": "Remove Order",
   "button.removePlans": "Remove Plans",
+  "button.reCalculatePlans": "Re-Calculate Plans",
   "button.removeSelectedOrder": "Remove Selected Orders",
-  "label.removeOrder": "Remove Order",
-  "label.reCalculatePlan": "Re-calculate Plan",
+  "label.removeOrder": "Remove Orders",
+  "label.reCalculatePlan": "Re-calculate Plans",
   "label.saveXml": "Save XML",
   "label.workflow": "Workflow",
   "label.workflowPath": "Workflow Path",
@@ -1405,5 +1406,7 @@
   "button.groupByWorkflow" : "Group By Workflow",
   "button.updateParameter" : "Update Parameter",
   "button.removeParameter" : "Remove Parameter",
-  "label.repeatEvery" : "Repeat every"
+  "label.repeatEvery" : "Repeat every",
+  "tab.designer" : "DESIGNER",
+  "tab.xmlEditor" : "XML EDITOR"
 }

@@ -196,7 +196,7 @@ export class ResizableDirective implements OnInit {
           maxWidth: 500,
           minWidth: 10,
           resize: function () {
-            $('#centerPanel').css({'margin-left': dom.width() + 20 + 'px'});
+            $('#centerPanel').css({'margin-left': dom.width() + 45 + 'px'});
           }
         });
       }

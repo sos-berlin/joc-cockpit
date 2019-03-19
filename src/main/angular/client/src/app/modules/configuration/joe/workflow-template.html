@@ -2,9 +2,8 @@
   <div class="col-md-12 m-b-sm">
     <div class="m-b-sm p-b-sm">
       <div class="inline w-full">
-
-        <div class="inline" style="margin-left: 306px">
-          <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 b-primary">
+        <div class="inline" style="margin-left: 304px">
+          <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
             <li class="nav-item">
               <a class="nav-link" placement="bottom" ngbTooltip="{{'workflow.button.zoomIn' | translate}}"
                 (click)="zoomIn()">
@@ -56,7 +55,7 @@
                 <span class="nav-text"> <i class="fa fa-repeat"></i></span>
               </a>
             </li>
-            <li class="nav-item dropdown-separator">
+<!--            <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
             <li class="nav-item">
@@ -73,28 +72,24 @@
                 ngbTooltip="{{'workflow.button.collapseAll' | translate}}" (click)="collapseAll()">
                 <span class="nav-text"> <i class="fa fa-minus"></i></span>
               </a>
-            </li>
+            </li>-->
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
             <li class="nav-item">
               <a class="nav-link" placement="bottom"
                 ngbTooltip="{{'workflow.button.delete' | translate}}" (click)="delete()">
-                <span class="nav-text"> <i class="fa fa-times"></i></span>
+                <span class="nav-text"> <i class="fa fa-trash"></i></span>
               </a>
             </li>
           </ul>
-      </div>
-        <div class="inline pull-right">
-          <button (click)="toggleRightSideBar()" class="btn btn-grey btn-sm m-l-sm">
-            <i *ngIf="isPropertyHide" class="fa fa-window-close"></i>
-            <i *ngIf="!isPropertyHide" class="fa fa-window-maximize"></i>
-          </button>
         </div>
-        <button class="btn btn-sm btn-grey pull-right" placement="bottom" ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
+        <button class="btn btn-sm btn-grey pull-right" placement="bottom"
+                ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
           <i class="fa fa-refresh"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-r-sm pull-right" placement="bottom" ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
+        <button class="btn btn-sm btn-grey m-r-sm pull-right" placement="bottom"
+                ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
           <i class="fa fa-save"></i>
         </button>
       </div>
@@ -102,10 +97,10 @@
   </div>
 </div>
 <div class="row">
-  <div [ngClass]="{'col-md-12':isPropertyHide}" class="col-md-9">
+  <div class="col-md-12">
     <div>
       <div>
-        <div id="toolbar"></div>
+        <div id="toolbar" class="bg-white"></div>
         <div class="graph-container">
           <div id="graph"></div>
           <!-- Creates a container for the outline -->
@@ -114,16 +109,25 @@
       </div>
     </div>
   </div>
-  <div [ngClass]="{'hide':isPropertyHide}" class="col-md-3">
-    <div class="box">
-      <div class="box-header b-b p-a">
+</div>
+<!-- BEGIN SLIDER -->
+<div class="property-panel hidden-sm">
+  <div class="sidebar-open">
+    <i class="fa fa-caret-left p-l-xs"></i>
+  </div>
+  <div class="sidebar-close">
+    <i class="fa fa-caret-right p-l-xs"></i>
+  </div>
+  <div class="sidebar bg-white">
+    <div>
+      <div class="box-header b-b">
         <h3 translate>workflow.label.properties</h3>
       </div>
       <div class="box-body p-a">
         <div id="properties"></div>
       </div>
     </div>
-   <div class="m-t">
+<!--   <div class="m-t">
       <div class="box">
         <div class="box-header b-b p-t-sm p-b-sm">
           <h3 translate>Source</h3>
@@ -132,6 +136,7 @@
           <pre>{{workFlowJson | json}}</pre>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </div>
+<!-- END SLIDER -->

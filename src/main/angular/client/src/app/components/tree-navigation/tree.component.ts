@@ -30,7 +30,7 @@ export class TreeComponent implements OnInit {
       if (ht > 400) {
          $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
       }
-      if (top < 140 && top > 92) {
+      if (top < 139 && top > 92) {
         setTimeout(() => {
           TreeComponent.setGraphHt();
         }, 5);

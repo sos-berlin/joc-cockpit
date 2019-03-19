@@ -64,7 +64,9 @@ pre {
 .white {
 	background: #4e545c
 }
-
+.bg-white{
+  background-color: #4e545c !important;;
+}
 .ui-check input:checked+i:before {
 	left: 5px;
 	top: 5px;
@@ -984,4 +986,25 @@ span ul li a {
 }
 #rightSideBar {
   background: #4e545c;
+}
+.property-panel .sidebar-open, .property-panel .sidebar-close {
+  background: url(../assets/images/left-tips-black.png) center no-repeat;
+}
+.nav-active-border3 li.dropdown-separator .separator {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.nav-active-border3 .nav-text i {
+  color: rgba(255, 255, 255, 0.7);
+}
+.nav-active-border4 .nav-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+.nav-active-border4 .active .nav-text {
+    color: #fff;
+}
+#toolbar {
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+}
+.separator {
+  background-color: rgba(255, 255, 255, 0.1);
 }

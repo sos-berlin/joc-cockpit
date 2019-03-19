@@ -110,7 +110,7 @@ export class WorkflowService {
   static makeCenter(graph) {
     setTimeout(() => {
       graph.zoomActual();
-      graph.center(true, true, 0.5, 0.2);
+      graph.center(true, true);
     }, 0);
   }
 

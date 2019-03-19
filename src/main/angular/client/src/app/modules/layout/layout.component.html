@@ -1,33 +1,37 @@
-<div id="content" class="app-content">
+<div class="app-content" id="content">
   <div class="fixed-top">
-    <div class="w-full text-right top-header-bar white fa-fa-color"
-         [ngClass]="{'backup-top-header':permission.precedence>0}">
-          <span class="pull-left p-l-3 backup-text" *ngIf="preferences.themeTitle">
-              <span class="_600 m-l-sm text-shadow backup-text" [innerHtml]="preferences.themeTitle"></span> </span>
-      <span class="m-r-sm"><span translate>label.time</span>:
-              <span class="text-primary" [innerHtml]="currentTime | stringToDate"></span></span>
-      <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
-              <span class="text-primary" [innerHtml]="remainingSessionTime"></span></span>
-      <span class="m-r-sm" *ngIf="scheduleState"><span translate>label.state</span>:
-              <span class="text-warn"
+    <div [ngClass]="{'backup-top-header':permission.precedence>0}"
+         class="w-full text-right top-header-bar white fa-fa-color">
+          <span *ngIf="preferences.themeTitle" class="pull-left p-l-3 backup-text">
+              <span [innerHtml]="preferences.themeTitle" class="_600 m-l-sm text-shadow _500 backup-text"></span> </span>
+      <span class="m-r-sm"><span class="text-muted" translate>label.time</span>:
+              <i [innerHtml]="currentTime | stringToDate" class="text-dark _500"></i></span>
+      <i class="fa fa-circle-o circle"></i>
+      <span class="m-r-sm"><span class="text-muted" translate>label.remainingSessionTime</span>:
+              <span [innerHtml]="remainingSessionTime" class="text-danger"></span></span>
+      <i class="fa fa-circle-o circle"></i>
+      <span *ngIf="scheduleState" class="m-r-sm"><span class="text-muted" translate>label.state</span>:
+              <span [innerHtml]="scheduleState | translate"
                     [ngClass]="{'text-success': scheduleState == 'RUNNING', 'text-danger': (scheduleState == 'UNREACHABLE' || scheduleState == 'TERMINATING'  || scheduleState == 'DEAD')}"
-                    [innerHtml]="scheduleState | translate"></span>
+                    class="text-warn _500"></span>
           </span>
-      <span class="m-r-sm" [hidden]="!selectedJobScheduler.startedAt">
-              <span translate>label.jobSchedulerStartTime</span>:
-              <span class="text-primary"
-                    [innerHtml]="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span>
-          </span>
-      <span class="dropdown" *ngIf="schedulerIds.selected">
+      <i class="fa fa-circle-o circle"></i>
+      <span [hidden]="!selectedJobScheduler.startedAt" class="m-r-sm">
+        <span class="text-muted" translate>label.jobSchedulerStartTime</span>:
+        <i [innerHtml]="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"
+              class="text-primary _500"></i>
+      </span>
+      <i  *ngIf="selectedJobScheduler.startedAt" class="fa fa-circle-o circle"></i>
+      <span *ngIf="schedulerIds.selected" class="dropdown">
               <a data-toggle="dropdown">
-                  <span class="backup-text" translate>label.id</span>:
-                  <span class="_500 text-orange" [innerHtml]="schedulerIds.selected"></span><i
+                  <span class="backup-text text-muted" translate>label.id</span>:
+                  <span [innerHtml]="schedulerIds.selected" class="_500 text-orange"></span><i
                 class="fa fa-caret-down p-l-xs"></i>
               </a>
               <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
-                  <a class="dropdown-item" *ngFor="let jobScheduler of schedulerIds.jobschedulerIds"
-                     (click)="changeScheduler(jobScheduler);$event.stopPropagation()"
-                     [ngClass]="{'primary':schedulerIds.selected == jobScheduler}">
+                  <a (click)="changeScheduler(jobScheduler);$event.stopPropagation()" *ngFor="let jobScheduler of schedulerIds.jobschedulerIds"
+                     [ngClass]="{'primary':schedulerIds.selected == jobScheduler}"
+                     class="dropdown-item">
                       <span>{{jobScheduler}}</span>
                   </a>
               </div>
