@@ -854,13 +854,15 @@
             vm.saveProfileSettings(vm.userPreferences);
         };
 
-        vm.changeStatus = function () {
+        vm.changeStatus = function (flag) {
             vm.reloadState = 'no';
             vm.showHistoryPanel = '';
             vm.historyRequestObj = {};
             vm.taskHistoryRequestObj = {};
-            vm.allJobChains = [];
-            vm.loading = true;
+            if(!flag) {
+                vm.allJobChains = [];
+                vm.loading = true;
+            }
             let obj = {jobschedulerId: vm.schedulerIds.selected, folders: [], compact: false};
             let obj1 = {jobschedulerId: vm.schedulerIds.selected, folders: []};
 
@@ -3099,12 +3101,14 @@
                                     }
                                 }
                             }
+                        }, function () {
+                            vm.changeStatus(true);
                         });
                     }
                 } else {
                     for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
                         if (vm.events[0].eventSnapshots[j].eventType === 'JobChainStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
-                            if (jobChainPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
+                            if (jobChainPaths.indexOf(vm.events[0].eventSnapshots[j].path) === -1) {
                                 jobChainPaths.push(vm.events[0].eventSnapshots[j].path);
                             }
                         } else if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN") {
