@@ -72,8 +72,6 @@ td.mxWindowPane button {
   float: left;
 }
 img.mxToolbarItem {
-	margin-right: 6px;
-	margin-bottom: 6px;
 	border-width: 1px;
 }
 select.mxToolbarCombo {
@@ -84,14 +82,7 @@ select.mxToolbarCombo {
 div.mxToolbarComboContainer {
 	padding: 2px;
 }
-img.mxToolbarMode {
-	margin-top: 6px;
-	margin-bottom: 4px;
-}
-img.mxToolbarModeSelected {
-	border-width: 1px;
-	border-style: inset;
-}
+
 div.mxTooltip {
 	-webkit-box-shadow: 3px 3px 12px #C0C0C0;
 	-moz-box-shadow: 3px 3px 12px #C0C0C0;

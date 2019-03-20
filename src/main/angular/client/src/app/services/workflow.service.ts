@@ -443,8 +443,12 @@ export class WorkflowService {
 
           if (json.instructions[x].events && json.instructions[x].events.length > 0) {
             for (let i = 0; i < json.instructions[x].events.length; i++) {
-              self.jsonParseForAwait(json.instructions[x].events[i], mxJson, parentId);
-              self.connectInstruction(json.instructions[x], json.instructions[x].events[i], mxJson, 'await', parentId);
+              self.jsonParseForAwait(json.instructions[x].events[i], mxJson, obj._id);
+              if (i === 0) {
+                self.connectInstruction(json.instructions[x], json.instructions[x].events[i], mxJson, 'await', obj._id);
+              } else {
+                self.connectInstruction(json.instructions[x].events[i - 1], json.instructions[x].events[i], mxJson, 'await', obj._id);
+              }
             }
           }
           mxJson.Await.push(obj);
@@ -460,7 +464,11 @@ export class WorkflowService {
     }
   }
 
-  // Function to generating dynamic unique Id
+  /**
+   * Function : To generating dynamic unique Id
+   *
+   * @param _json
+   */
   appendIdInJson(_json) {
     this.count = 11;
     const self = this;
@@ -489,6 +497,11 @@ export class WorkflowService {
               if (json.instructions[x].branches[i].instructions) {
                 recursive(json.instructions[x].branches[i]);
               }
+            }
+          }
+          if (json.instructions[x].events) {
+            for (let i = 0; i < json.instructions[x].events.length; i++) {
+              json.instructions[x].events[i].id = ++self.count;
             }
           }
         }
@@ -800,7 +813,7 @@ export class WorkflowService {
             }
           }
         }
-      } else if(x){
+      } else if (x) {
         this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
@@ -843,7 +856,7 @@ export class WorkflowService {
             }
           }
         }
-      } else if(x){
+      } else if (x) {
         this.connectInstruction(x, {id: id}, mxJson, 'endIf', parentId);
       }
     }
@@ -976,34 +989,32 @@ export class WorkflowService {
   }
 
   private jsonParseForAwait(eventObj, mxJson, parentId) {
-    //TODO
-    if (eventObj.TYPE) {
-      if (eventObj.TYPE === 'OfferedOrder') {
-        if (mxJson.OfferedOrder) {
-          if (!_.isArray(mxJson.OfferedOrder)) {
-            const _tempOfferedOrder = _.clone(mxJson.OfferedOrder);
-            mxJson.OfferedOrder = [];
-            mxJson.OfferedOrder.push(_tempOfferedOrder);
-          }
-        } else {
+    if (eventObj.TYPE === 'OfferedOrder') {
+      if (mxJson.OfferedOrder) {
+        if (!_.isArray(mxJson.OfferedOrder)) {
+          const _tempOfferedOrder = _.clone(mxJson.OfferedOrder);
           mxJson.OfferedOrder = [];
+          mxJson.OfferedOrder.push(_tempOfferedOrder);
         }
-        let obj: any = {
-          _id: eventObj.id,
-          _label: 'Offered Order',
-          mxCell: {
-            _parent: parentId ? parentId : '1',
-            _vertex: '1',
-            _style: 'ellipse',
-            mxGeometry: {
-              _as: 'geometry',
-              _width: '80',
-              _height: '50'
-            }
-          }
-        };
-        mxJson.OfferedOrder.push(obj);
+      } else {
+        mxJson.OfferedOrder = [];
       }
+      let obj: any = {
+        _id: eventObj.id,
+        _label: 'Offered Order',
+        mxCell: {
+          _parent: parentId ? parentId : '1',
+          _vertex: '1',
+          _style: 'rectangle',
+          mxGeometry: {
+            _as: 'geometry',
+            _width: '120',
+            _height: '50'
+          }
+        }
+      };
+      mxJson.OfferedOrder.push(obj);
+
     } else if (eventObj.TYPE === 'FileOrder') {
       if (mxJson.FileOrder) {
         if (!_.isArray(mxJson.FileOrder)) {
@@ -1017,13 +1028,17 @@ export class WorkflowService {
       let obj: any = {
         _id: eventObj.id,
         _label: 'File Order',
+        _agent : eventObj.agentPath,
+        _regex : eventObj.regex,
+        _directory : eventObj.directory,
+        _checkSteadyState : eventObj.checkSteadyState,
         mxCell: {
           _parent: parentId ? parentId : '1',
           _vertex: '1',
-          _style: 'ellipse',
+          _style: 'rectangle',
           mxGeometry: {
             _as: 'geometry',
-            _width: '80',
+            _width: '120',
             _height: '50'
           }
         }
@@ -1031,4 +1046,5 @@ export class WorkflowService {
       mxJson.FileOrder.push(obj);
     }
   }
+
 }

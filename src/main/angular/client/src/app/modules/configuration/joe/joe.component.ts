@@ -2402,17 +2402,19 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      const panel = $('.property-panel');
      $('.sidebar-open', panel).click(() => {
        $('.sidebar').css({'width': '296px', opacity: 1});
-       $('#outlineContainer').animate({'right': '296px'}, 'fast', 'linear');
-       $('.graph-container').animate({'margin-right': '286px'}, 'fast', 'linear');
+       $('.sidebar-open').css('right', '-20px');
+       $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
+       $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
        $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
        this.centered();
      });
 
      $('.sidebar-close', panel).click(() => {
+       $('.sidebar-open').css('right', '0');
        $('.sidebar').css({'width': '0', opacity: 0});
        $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
        $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
-       $('.sidebar-close').css('right', '-26px');
+       $('.sidebar-close').css('right', '-20px');
        this.centered();
      });
      setTimeout(() => {
@@ -2485,10 +2487,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     this.loadConfig();
     this.workFlowJson = {};
     this.initEditorConf(this.editor, this.dummyXml);
-  }
-
-  toggleRightSideBar() {
-    this.isPropertyHide = !this.isPropertyHide;
   }
 
   isWorkflowStored(): void {
@@ -3089,7 +3087,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               for (let j = 0; j < instructions.length; j++) {
                 if (instructions[j].TYPE === 'Await' && instructions[j].id === id) {
                   if (!instructions[j].events) {
-                    instructions[j].events = [this.createObject('FileOrder', _node)];
+                    instructions[j].events = [];
+                    instructionArr = instructions[j].events;
                   }
                   break;
                 }
@@ -3332,6 +3331,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     const awaitInstructions = objects.Await;
     const exitInstructions = objects.Terminate;
     const abortInstructions = objects.Abort;
+    const fileOrderInstructions = objects.FileOrder;
 
     let nextNode: any = {};
 
@@ -3620,6 +3620,27 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
     if (nextNode && !_.isEmpty(nextNode)) {
       instructionsArr.push(this.createObject('Abort', nextNode));
+      this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
+      nextNode = null;
+    } else {
+      if (fileOrderInstructions) {
+        if (_.isArray(fileOrderInstructions)) {
+          for (let i = 0; i < fileOrderInstructions.length; i++) {
+            if (fileOrderInstructions[i]._id === id) {
+              nextNode = fileOrderInstructions[i];
+              break;
+            }
+          }
+        } else {
+          if (fileOrderInstructions._id === id) {
+            nextNode = fileOrderInstructions;
+          }
+        }
+      }
+    }
+
+    if (nextNode && !_.isEmpty(nextNode)) {
+      instructionsArr.push(this.createObject('FileOrder', nextNode));
       this.findNextNode(connection, nextNode, objects, instructionsArr, jsonObj);
       nextNode = null;
     } else {
