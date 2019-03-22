@@ -1,0 +1,149 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title"><span translate>label.updateProcessClass</span> : {{processClassObject.path}}</h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row hide" ng-class="{'show': display}">
+                <label class="col-sm-4 " translate>label.selectComments</label>
+
+                <div class=" col-sm-8">
+                    <div>
+                        <label class="md-check w">
+                            <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                            <i class="primary"></i> <span translate>label.predefined</span>
+                        </label>
+                        <label class="md-check  w">
+                            <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                            <i class="primary"></i> <span translate>label.individual</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row hide" ng-if="comments.radio=='predefined'"
+                 ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                        <option value="" selected translate>label.selectPredefinedReason</option>
+                        <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                    </select>
+
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row hide" ng-if="comments.radio=='new'"
+                 ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 " translate>label.comment</label>
+                <div class=" col-sm-6">
+                    <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment"
+                              ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                              ng-focus="error = false"></textarea>
+
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row  hide" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+
+                <div class="col-sm-6">
+                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"
+                           ng-model="comments.timeSpent">
+                </div>
+            </div>
+            <div class="form-group row  hide" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+
+                <div class="col-sm-6">
+                    <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"
+                           ng-model="comments.ticketLink">
+                </div>
+            </div>
+            <div class="form-group row"
+                 ng-class="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
+                <label class="col-sm-4 form-control-label" translate>label.processClass</label>
+                <div class="col-sm-6">
+                    <input type="text" required class="form-control" readonly
+                           autocomplete="false" name="name" ng-model="processClassObject.name">
+                    <div ng-if="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+                        <div ng-if="name.errors.required">
+                            <div translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row"
+                 ng-class="{ 'has-error' : form.hostUrl.$invalid && form.hostUrl.$dirty}">
+                <label class="col-sm-4 form-control-label" translate>label.hostUrl</label>
+                <div class="col-sm-6">
+                    <input type="url" class="form-control" placeholder="{{'placeholder.hostUrl' | translate}}"
+                           name="hostUrl" ng-model="processClassObject.remoteScheduler">
+                </div>
+            </div>
+            <div class="form-group row" ng-class="{ 'has-error' : form.maxProcess.$invalid && form.maxProcess.$dirty}">
+                <label class="col-sm-4 form-control-label" translate>label.maxProcesses</label>
+                <div class="col-sm-6">
+                    <input type="number" required class="form-control" placeholder="{{'placeholder.maximumProcesses' | translate}}"
+                           name="maxProcess" ng-model="processClassObject.maxProcesses">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.schedulingType</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="select" ng-model="processClassObject.select">
+                        <option value="first" translate>label.First</option>
+                        <option value="next" translate>label.Next</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-8" translate>label.hosts</label>
+            </div>
+            <div class="form-group row m-b-0" ng-repeat="host in processClassObject.remoteSchedulers;">
+                <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.url</div>
+                <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatTimeout</div>
+                <div class="col-sm-2 m-b-sm" ng-if="$index==0" translate>label.heartbeatPeriod</div>
+                <div class="col-sm-6 m-b-sm" ng-class="{ 'has-error' : form.url{{$index}}.$invalid && form.url{{$index}}.$dirty}">
+                    <input type="url" class="form-control" name="url{{$index}}" ng-model="host.remoteScheduler">
+                </div>
+                <div class="col-sm-2 m-b-sm" ng-class="{ 'has-error' : form.timeout{{$index}}.$invalid && form.timeout{{$index}}.$dirty}">
+                    <input type="number" class="form-control" min="0" name="timeout{{$index}}"
+                           ng-model="host.httpHeartbeatTimeout">
+                </div>
+                <div class="col-sm-2 m-b-sm" ng-class="{ 'has-error' : form.period{{$index}}.$invalid && form.period{{$index}}.$dirty}">
+                    <input type="number" title="{{'tooltip.heartbeatPeriodWarning' | translate}}" class="form-control" min="0" max="{{host.httpHeartbeatTimeout > 0 ? host.httpHeartbeatTimeout - 1: host.httpHeartbeatTimeout}}" name="period{{$index}}"
+                           ng-model="host.httpHeartbeatPeriod">
+                </div>
+                <div class="col-sm-1 p-l-0">
+                    <a><i ng-click="removeRemoteSchedulers($index)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.length>0"
+                       ng-click="addRemoteSchedulers()" translate>button.addAnotherHost</a>
+                    <a class="text-u-l" ng-if="processClassObject.remoteSchedulers.length==0"
+                       ng-click="addRemoteSchedulers()" translate>button.addHost</a>
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || (!processClassObject.remoteScheduler && (processClassObject.remoteSchedulers.length == 0 || !processClassObject.remoteSchedulers[0].remoteScheduler) )">
+                    button.submit
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

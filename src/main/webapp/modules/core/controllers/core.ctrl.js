@@ -176,8 +176,11 @@
                 var subHeaderHt = 59;
                 var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-ht2').css('height', ht - 55 + 'px');
-                $('.max-tree-ht').css('height', ht - 43 + 'px');
+                $('.max-ht2').css('height', ht - 56 + 'px');
+                if($('.sub-header-2').height()) {
+                    ht = ht - $('.sub-header-2').height() - 8;
+                }
+                $('.max-tree-ht').css('height', (ht - 43) + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
                 $('.max-ht2').css('height', 'auto');
@@ -2369,25 +2372,43 @@
                 name: '',
                 value: ''
             };
-            if (vm.paramObject && vm.paramObject.params)
+            if (vm.paramObject.params) {
                 vm.paramObject.params.push(param);
+            }
         };
 
-        vm.addCriteria();
+        if (vm.paramObject) {
+            vm.addCriteria();
+        }
 
         vm.removeParams = function (index) {
             vm.paramObject.params.splice(index, 1);
         };
+
+        vm.addRemoteSchedulers = function () {
+            let param = {
+                remoteScheduler: '',
+                httpHeartbeatTimeout: '',
+                httpHeartbeatPeriod: ''
+            };
+            vm.processClassObject.remoteSchedulers.push(param);
+        };
+
+        vm.removeRemoteSchedulers = function (index) {
+            vm.processClassObject.remoteSchedulers.splice(index, 1);
+        };
+        if (vm.processClassObject && vm.processClassObject.remoteSchedulers) {
+            vm.addRemoteSchedulers();
+        }
     }
 
     DialogCtrl1.$inject = ['$scope', '$uibModalInstance'];
     function DialogCtrl1($scope, $uibModalInstance) {
-        var vm = $scope;
 
-        vm.ok = function () {
+        $scope.ok = function () {
             $uibModalInstance.close('ok');
         };
-        vm.cancel = function () {
+        $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
     }

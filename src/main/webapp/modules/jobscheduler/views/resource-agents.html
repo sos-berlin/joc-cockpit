@@ -33,7 +33,7 @@
                     <div class="box card" ng-class="colorBorderFunction(cluster.state.severity)">
                         <div class="box-body">
                             <div>
-                                <span class="text-left ">
+                                <span class="text-left block-ellipsis">
                                     <span class="fa fa-stop pos-abt m-t-xs text-xs" ng-class="colorFunction(cluster.state.severity)"></span>
                                     <i class="fa fa-server m-l m-r-xs m-t-xs"></i>
                                     <span uib-tooltip="{{cluster.path.substring(cluster.path.lastIndexOf('/')+1)}}" class="text text-ellipsis1"
@@ -45,6 +45,9 @@
                                 <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
+                                    <a ng-click="editAgentCluster(cluster)" class="dropdown-item" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" translate>button.editAgentCluster</a>
+                                    <a ng-click="removeAgentCluster(cluster)" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" class="dropdown-item bg-hover-color" translate>button.removeAgentCluster</a>
+                                    <div class="dropdown-divider"></div>
                                     <a ng-click="copyLinkToObject('agentCluster',cluster.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
@@ -141,6 +144,9 @@
                                     <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
                                         <i class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                        <a ng-click="editAgentCluster(cluster)" class="dropdown-item" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" translate>button.editAgentCluster</a>
+                                        <a ng-click="removeAgentCluster(cluster)" class="dropdown-item bg-hover-color" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" translate>button.removeAgentCluster</a>
+                                        <div class="dropdown-divider"></div>
                                         <a ng-click="copyLinkToObject('agentCluster',cluster.path)"
                                            class="dropdown-item" translate>button.copyLinkToObject</a>
                                     </div>

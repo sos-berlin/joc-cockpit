@@ -15,11 +15,12 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
        <div class="hide m-t-sm" ng-class="{'show': isLoading}">    
-           <div class="box p-a">
+           <div class="box p-a" ng-if="agentClusters.length > 0">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered  ">
                             <thead>
                             <tr>
+                                <th class="menu"><span translate>label.action</span></th>
                                 <th><span translate>label.agentCluster</span></th>
                                 <th><span translate>label.path</span></th>
                                 <th><span translate>label.status</span></th>
@@ -33,6 +34,16 @@
                             </thead>
                             <tbody ng-repeat="cluster in agentClusters" ng-class="{'light-bg':cluster.show}">
                             <tr>
+                                <td>
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a ng-click="editAgentCluster(cluster)" class="dropdown-item" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" translate>button.editAgentCluster</a>
+                                            <a ng-click="removeAgentCluster(cluster)" class="dropdown-item bg-hover-color" ng-class="{'disable-link' : scheduleState !== 'RUNNING'}" translate>button.removeAgentCluster</a>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <i class="cursor fa fa-caret-down fa-lg" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                     <i class="cursor fa fa-caret-up fa-lg" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>

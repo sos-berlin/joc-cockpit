@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span ng-if="!entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
-                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}}?
+                <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}} {{processClassObject.path}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
                 <span class="text-capitalize" translate>label.update</span> {{calendar.name}} ?
@@ -42,6 +42,7 @@
                 <span ng-if="master.master" translate class="text">message.deleteMaster</span>
                 <span ng-if="folder.folder" translate class="text">message.deleteFolder</span>
                 <span ng-if="permission.path" translate class="text">message.deletePermission</span>
+                <span ng-if="processClassObject && processClassObject.path" translate class="text">message.deleteProcessClass</span>
                 <div ng-if="calendar && !calendarArr && (!importCalendars || importCalendars.length==0)">
                     <div class="row form-group">
                         <span ng-if="!calendar.delete" translate class="text">message.updateCalendar</span>

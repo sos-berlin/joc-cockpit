@@ -57,6 +57,36 @@
                 });
                 return deferred.promise;
             },
+            getProcessClassConfig: function (filter) {
+                var deferred = $q.defer();
+                var ProcessClass = $resource('process_class/read');
+                ProcessClass.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            updateProcessClassConfig: function (filter) {
+                var deferred = $q.defer();
+                var ProcessClass = $resource('process_class/save');
+                ProcessClass.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            deleteProcessClassConfig: function (filter) {
+                var deferred = $q.defer();
+                var ProcessClass = $resource('process_class/delete');
+                ProcessClass.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             getLockConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Configuration = $resource('lock/configuration');

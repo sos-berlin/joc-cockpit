@@ -458,6 +458,111 @@
             recursive(data);
         }
 
+
+        vm.editAgentCluster = function (cluster) {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            ResourceService.getProcessClassConfig({
+                jobschedulerId: $scope.schedulerIds.selected,
+                processClass: cluster.path
+            }).then(function (res) {
+                vm.processClassObject = res.configuration;
+                vm.processClassObject.path = cluster.path;
+                vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
+                if(!vm.processClassObject.remoteSchedulers){
+                    vm.processClassObject.remoteSchedulers = [];
+                }
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/edit-process-class-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    let obj = {};
+                    obj.auditLog = {};
+                    if (vm.comments.comment) {
+                        obj.auditLog.comment = vm.comments.comment;
+                    }
+                    if (vm.comments.timeSpent) {
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    }
+
+                    if (vm.comments.ticketLink) {
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    }
+                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                    obj.processClass = cluster.path;
+                    obj.configuration = vm.processClassObject;
+                    delete obj.configuration['path'];
+                    
+                    ResourceService.updateProcessClassConfig(obj);
+                }, function () {
+
+                });
+            });
+        };
+
+        vm.removeAgentCluster = function(processClass) {
+            let obj ={jobschedulerId: $scope.schedulerIds.selected, processClass : processClass.path};
+            vm.processClassObject = processClass;
+
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.type = 'Process Class';
+                vm.comments.operation = 'Delete';
+                vm.comments.name = processClass.path;
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    deleteProcessClass(obj);
+                }, function () {
+
+                });
+
+            } else {
+                var modalInstance1 = $uibModal.open({
+                    templateUrl: 'modules/core/template/confirm-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance1.result.then(function () {
+                    deleteProcessClass(obj);
+                }, function () {
+
+                });
+            }
+        };
+
+        function deleteProcessClass(obj) {
+            ResourceService.deleteProcessClassConfig(obj).then(function (res) {
+                for (let i = 0; i < vm.allAgentClusters.length; i++) {
+                    if (vm.allAgentClusters[i].path == processClass.path) {
+                        vm.allAgentClusters.splice(i, 1);
+                        break;
+                    }
+                }
+            });
+        }
+
+
+
         /** <<<<<<<<<<<<< End Agent clusters >>>>>>>>>>>>>>> */
 
 
@@ -2410,9 +2515,9 @@
         };
 
         /**
-         * Function to initialized Proccess tree
+         * Function to initialized Process tree
          */
-        function initProccessTree() {
+        function initProcessTree() {
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
@@ -4983,8 +5088,21 @@
             }
         };
 
+        function initialObj() {
+            vm.object = {};
+            vm.object.events = [];
+            vm.object.calendars = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
+            vm.allCheck.checkbox = false;
+            vm.checkAllEvent.checkbox = false;
+            vm.allCheckCalendar.checkbox = false;
+        }
+
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
+            initialObj();
             vm.document = undefined;
             vm.documentArr = undefined;
             vm.calendar = undefined;
@@ -5010,7 +5128,7 @@
                 vm.pageView = views.processClass;
                 vm.resourceFilters.state = 'processClass';
                 vm.treeProcess = [];
-                initProccessTree();
+                initProcessTree();
             } else if (toState.name == 'app.resources.schedules') {
                 vm.pageView = views.schedule;
                 vm.resourceFilters.state = 'schedules';
@@ -5352,6 +5470,102 @@
         vm.hideAgents = function (cluster) {
             cluster.show = false;
         };
+
+        vm.editAgentCluster = function (cluster) {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            ResourceService.getProcessClassConfig({
+                jobschedulerId: $scope.schedulerIds.selected,
+                processClass: cluster.path
+            }).then(function (res) {
+                vm.processClassObject = res.configuration;
+                vm.processClassObject.path = cluster.path;
+                vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
+                if(!vm.processClassObject.remoteSchedulers){
+                    vm.processClassObject.remoteSchedulers = [];
+                }
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/edit-process-class-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    let obj = {};
+                    obj.auditLog = {};
+                    if (vm.comments.comment) {
+                        obj.auditLog.comment = vm.comments.comment;
+                    }
+                    if (vm.comments.timeSpent) {
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    }
+
+                    if (vm.comments.ticketLink) {
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    }
+                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                    obj.processClass = cluster.path;
+                    obj.configuration = vm.processClassObject;
+                    delete obj.configuration['path'];
+                    ResourceService.updateProcessClassConfig(obj);
+                }, function () {
+
+                });
+            });
+        };
+
+        vm.removeAgentCluster = function(processClass) {
+            let obj ={jobschedulerId: $scope.schedulerIds.selected, processClass : processClass.path};
+            vm.processClassObject = processClass;
+
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.type = 'Process Class';
+                vm.comments.operation = 'Delete';
+                vm.comments.name = processClass.path;
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    deleteProcessClass(obj);
+                }, function () {
+
+                });
+
+            } else {
+                var modalInstance1 = $uibModal.open({
+                    templateUrl: 'modules/core/template/confirm-dialog.html',
+                    controller: 'DialogCtrl1',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance1.result.then(function () {
+                    deleteProcessClass(obj);
+                }, function () {
+
+                });
+            }
+        };
+
+        function deleteProcessClass(obj) {
+            ResourceService.deleteProcessClassConfig(obj).then(function (res) {
+                vm.agentClusters =[];
+            });
+        }
 
         function volatileInformationL(obj) {
             ResourceService.get(obj).then(function (res) {
@@ -6848,27 +7062,27 @@
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                     JobSchedulerService.continue(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'remove') {
-                  JobSchedulerService.cleanup(obj).then(function () {
-                    JobSchedulerService.getSchedulerIds().then(function (res) {
-                      if (res) {
-                        CoreService.setDefaultTab();
-                        SOSAuth.setIds(res);
-                        SOSAuth.save();
-                        if (res.selected != vm.schedulerIds.selected) {
-                          $state.reload(vm.currentState);
-                        } else {
-                          for (let i = 0; i < vm.mastersList.length; i++) {
-                            if (vm.mastersList[i].jobschedulerId === obj.jobschedulerId && vm.mastersList[i].host === obj.host && vm.mastersList[i].port === obj.port) {
-                              vm.mastersList.splice(i, 1);
-                              break;
-                            }
-                          }
-                        }
-                        $rootScope.$broadcast('reloadUser');
+                    JobSchedulerService.cleanup(obj).then(function () {
+                        JobSchedulerService.getSchedulerIds().then(function (res) {
+                            if (res) {
+                                CoreService.setDefaultTab();
+                                SOSAuth.setIds(res);
+                                SOSAuth.save();
+                                if (res.selected != vm.schedulerIds.selected) {
+                                    $state.reload(vm.currentState);
+                                } else {
+                                    for (let i = 0; i < vm.mastersList.length; i++) {
+                                        if (vm.mastersList[i].jobschedulerId === obj.jobschedulerId && vm.mastersList[i].host === obj.host && vm.mastersList[i].port === obj.port) {
+                                            vm.mastersList.splice(i, 1);
+                                            break;
+                                        }
+                                    }
+                                }
+                                $rootScope.$broadcast('reloadUser');
 
-                      }
-                    });
-                  })
+                            }
+                        });
+                    })
                 } else if (objectType === 'cluster' && action === 'terminate') {
                     JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType === 'cluster' && action === 'terminateFailsafe') {
@@ -6877,8 +7091,7 @@
                     JobSchedulerService.restartCluster(obj1);
                 } else if (objectType === 'cluster' && action === 'reactivatePrimaryJobscheduler') {
                     JobSchedulerService.reactivate(obj1);
-                }
-                else if (action === 'downloadLog') {
+                } else if (action === 'downloadLog') {
                     $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
@@ -6893,8 +7106,7 @@
                     }, function () {
                         $rootScope.downloading = false;
                     });
-                }
-                else if (action === 'downloadDebugLog') {
+                } else if (action === 'downloadDebugLog') {
                     $rootScope.downloading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
@@ -7428,8 +7640,7 @@
                         isLoadedSummary = false;
                         if (!vm.notPermissionForSummary)
                             vm.getOrderSummary();
-                    }
-                    else if ((args.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
+                    } else if ((args.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
                         isLoadedTaskSnapshot = false;
                         if (!vm.notPermissionForTaskSnapshot)
                             vm.loadTaskSnapshot();
@@ -7566,8 +7777,7 @@
 
         if (vm.dailyPlanFilters.selectedView) {
             vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.selected || vm.savedDailyPlanFilter.favorite;
-        }
-        else {
+        } else {
             vm.savedDailyPlanFilter.selected = undefined;
         }
         vm.temp_filter = {};
@@ -8127,8 +8337,7 @@
                             orders[index].tasks[i].color = "#7ab97a";
                         } else if (data2[index1].state._text == 'FAILED') {
                             orders[index].tasks[i].color = "#e86680";
-                        }
-                        else if (data2[index1].late) {
+                        } else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
                         } else {
                             if (theme != 'light' && theme != 'lighter')
@@ -8177,8 +8386,7 @@
                             orders[index].tasks[i].color = "#7ab97a";
                         } else if (data2[index1].state._text == 'FAILED') {
                             orders[index].tasks[i].color = "#e86680";
-                        }
-                        else if (data2[index1].late) {
+                        } else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
                         } else {
                             if (theme != 'light' && theme != 'lighter')
@@ -8410,8 +8618,7 @@
                     }
                     return m > n ? 1 : -1;
                 });
-            }
-            else {
+            } else {
                 return orderBy(array, key, order);
             }
         }
@@ -8759,8 +8966,7 @@
                     vm.selectedFiltered.account = filter.account;
                     vm.load();
                 });
-            }
-            else {
+            } else {
                 isCustomizationSelected(false);
                 vm.savedDailyPlanFilter.selected = filter;
                 vm.dailyPlanFilters.selectedView = false;

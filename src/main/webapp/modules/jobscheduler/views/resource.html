@@ -6,7 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline" ng-class="{'hide':object.schedules.length>0}">
+                    <div class="inline">
                         <div class="hide" ng-class="{'show-block':resourceFilters.state=='agent'}">
                             <div class="btn-group hidden-btn-group">
                                 <button class="btn btn-grey btn-sm" ng-model="agentsFilters.filter.state" uib-btn-radio="'all'"
@@ -67,6 +67,7 @@
                             </div>
                         </div>
                         <div class="hide" ng-class="{'show-block':resourceFilters.state=='schedules'}">
+                            <button ng-if="object.schedules.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> {{'button.substitute' | translate}}</button>
                             <div class="inline" ng-class="{'hide':object.schedules.length>0}">
                                 <div class="btn-group hidden-btn-group">
                                     <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state" uib-btn-radio="'all'"
@@ -93,7 +94,6 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div>
                             <div class="btn-group dropdown">
                                 <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                     <span class="text-primary">
@@ -113,6 +113,7 @@
                                     <a class="dropdown-item" href ng-click="sortByS('name')" translate>label.name</a>
                                     <a class="dropdown-item" href ng-click="sortByS('path')" translate>label.path</a>
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="btn-group dropdown" ng-if="resourceFilters.state=='lock'">
@@ -352,9 +353,7 @@
                         </div>
                         <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions' || resourceFilters.state=='events'}"></toggle-view>
                     </div>
-                    <div class="hide" ng-class="{'show-block':object.schedules.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> {{'button.substitute' | translate}}</button>
-                    </div>
+
                 </div>
             </div>
         </div>

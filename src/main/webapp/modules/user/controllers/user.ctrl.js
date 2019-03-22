@@ -2186,8 +2186,8 @@
         });
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', 'orderByFilter', '$stateParams', 'ResourceService', '$timeout'];
+    function PermissionCtrl($scope, UserService, $uibModal, orderBy, $stateParams, ResourceService, $timeout) {
         var vm = $scope;
         vm.loading = true;
         vm.isDuplicate = false;
@@ -2345,12 +2345,21 @@
                 vm.folderList = res.folders;
                 angular.forEach(vm.folderList, function (value) {
                     value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
                 });
             }, function () {
                 $('#treeModal').modal('hide');
             });
 
             $('#treeModal').modal('show');
+        };
+
+        vm.treeExpand1 = function(data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
         };
 
         vm.$on('addFolder', function () {

@@ -1376,5 +1376,20 @@
   "tooltip.removeFile": "Supprimer le fichier",
   "button.compactView": "Vue Compacte",
   "label.showDocumentations": "Visualiser la Documentation",
-  "label.folderPermissionForCalendars": "Folder Permission for Calendars"
+  "label.folderPermissionForCalendars": "Folder Permission for Calendars",
+  "button.addHost": "Add Host",
+  "button.addAnotherHost": "Add Another Host",
+  "button.editAgentCluster": "Edit Agent Cluster",
+  "button.removeAgentCluster": "Remove Agent Cluster",
+  "label.First": "fix_priority",
+  "label.Next": "round_robin",
+  "label.hostUrl": "Host URL",
+  "label.hosts": "Hosts",
+  "label.heartbeatTimeout": "Heartbeat Timeout",
+  "label.heartbeatPeriod": "Heartbeat Period",
+  "label.updateProcessClass": "Update Process Class",
+  "placeholder.hostUrl": "Enter host URL",
+  "placeholder.maximumProcesses": "Enter number of Maximum processes",
+  "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
+  "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period"
 }

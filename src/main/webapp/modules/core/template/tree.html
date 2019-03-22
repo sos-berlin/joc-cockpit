@@ -5,16 +5,16 @@
         <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
             <td ng-class="{'text-primary' : row.branch.selected1}">
-                <table class="fixed indented">
+                <table class="fixed indented" style="table-layout: fixed;">
                     <tr>
-                        <td width="11">
+                        <td style="width: 11px">
                             <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)">
                                 <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-right fa-lg"></i>
                                 <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-down fa-lg"></i>
                                 <i ng-if="row.branch.folders.length==0"></i>
                             </a>
                         </td>
-                        <td style="white-space: nowrap">
+                        <td style="white-space: nowrap; max-width: 100px; overflow: auto">
                             <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
                                 <span>
                                     <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
