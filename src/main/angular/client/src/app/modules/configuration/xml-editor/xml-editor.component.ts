@@ -539,6 +539,7 @@ export class XmlEditorComponent implements OnInit {
       let sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
       let choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
       let childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
+      let complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
       let childs = select(childFromBasePath, this.doc);
       let element = select(sequencePath, this.doc);
       if (element.length > 0) {
@@ -632,6 +633,37 @@ export class XmlEditorComponent implements OnInit {
               children.parent = node;
               childArr.push(children);
               this.childNode = childArr;
+            }
+          } else if((select(complexContentWithElementPath, this.doc)).length > 0) {
+            
+            let childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
+            let element = select(childrenPath, this.doc);
+            if (element.length > 0) {
+              for (let i = 0; i < element.length; i++) {
+                children = {};
+                for (let j = 0; j < element[i].attributes.length; j++) {
+                  let a = element[i].attributes[j].nodeName;
+                  let b = element[i].attributes[j].nodeValue;
+                  children = Object.assign(children, {[a]: b});
+                }
+                children.parent = node;
+                children.choice = node;
+                childArr.push(children);
+                this.childNode = childArr;
+              }
+              let ele = select(complexContentWithElementPath, this.doc);
+              for (let i = 0; i < ele.length; i++) {
+                children = {};
+                for (let j = 0; j < ele[i].attributes.length; j++) {
+                  let a = ele[i].attributes[j].nodeName;
+                  let b = ele[i].attributes[j].nodeValue;
+                  children = Object.assign(children, {[a]: b});
+                }
+                children.parent = node;
+                childArr.push(children);
+                this.childNode = childArr;
+              }
+              return childArr;
             }
           }
         }
@@ -1153,11 +1185,20 @@ export class XmlEditorComponent implements OnInit {
     let valueArr: any = [];
     let b;
     let element = select(extensionPath, this.doc);
-    console.log(element);
     if(element[0] && element[0].nodeValue !== 'NotEmptyType') {
       let a = element[0].nodeName;
       let x = element[0].nodeValue;
       value = Object.assign(value, {[a]: x});
+      let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+          let defAttr = select(defultPath, this.doc);
+          if(defAttr.length>0) {            
+            for(let s=0; s<defAttr.length; s++) {
+              if(defAttr[s].nodeName === 'default') {
+                value.default = defAttr[s].nodeValue;
+                value.data = defAttr[s].nodeValue;
+              }
+            }
+          }
     }
     if (element[0] && element[0].nodeValue === 'NotEmptyType') {
       let a = element[0].nodeName;
@@ -1174,7 +1215,18 @@ export class XmlEditorComponent implements OnInit {
         a = element[0].nodeName;
         b = element[0].nodeValue;
         value = Object.assign(value, {[a]: b});
+        
       }
+      let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+          let defAttr = select(defultPath, this.doc);
+          if(defAttr.length>0) {            
+            for(let s=0; s<defAttr.length; s++) {
+              if(defAttr[s].nodeName === 'default') {
+                value.default = defAttr[s].nodeValue;
+                value.data = defAttr[s].nodeValue;
+              }
+            }
+          }
       value.parent = node;
     } else {
       let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -1184,6 +1236,16 @@ export class XmlEditorComponent implements OnInit {
         let a = element[0].nodeName;
         let b = element[0].nodeValue;
         value = Object.assign(value, {[a]: b});
+        let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+          let defAttr = select(defultPath, this.doc);
+          if(defAttr.length>0) {            
+            for(let s=0; s<defAttr.length; s++) {
+              if(defAttr[s].nodeName === 'default') {
+                value.default = defAttr[s].nodeValue;
+                value.data = defAttr[s].nodeValue;
+              }
+            }
+          }
         let minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
         element = select(minLengthPath, this.doc);
         let enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
@@ -1233,6 +1295,18 @@ export class XmlEditorComponent implements OnInit {
       valueArr.push(value);
     }
     return valueArr;
+  }
+
+  addDefaultValue(node) {
+    console.log(node);
+    
+    if(node.values && (node.values[0].base === 'xs:string' && (node.values[0] && node.values[0].values && node.values[0].values.length>0) && node.values[0].default === undefined)) {
+      node.values[0].default = node.values[0].values[0].value;
+      node.values[0].data = node.values[0].values[0].value;
+    } else if( node.values && (node.values[0].base === 'xs:boolean') && node.values[0].default === undefined) {
+      node.values[0].default = true;
+      node.values[0].data = true;
+    }
   }
 
   getCustomCss(node, parentNode) {
@@ -1520,21 +1594,20 @@ export class XmlEditorComponent implements OnInit {
   }
 
   checkChoice(node) {
-    if (this.childNode !== undefined) {
+    if (this.childNode !== undefined) {      
       if (this.childNode && this.childNode.length > 0) {
         for (let i = 0; i < this.childNode.length; i++) {
-          if (this.childNode[i] && this.childNode[i].choice) {
+          if (this.childNode[i] && this.childNode[i].choice) {            
             if (node.children && node.children.length > 0) {
               for (let j = 0; j < node.children.length; j++) {
                 if (node.children[j].choice && node.children[j].ref === this.childNode[i].ref) {
                   this.choice = true;
+                  break;
                 }
               }
             } else {
               this.choice = false;
             }
-          } else {
-            this.choice = false;
           }
         }
       }

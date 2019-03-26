@@ -59,6 +59,9 @@
                       <span class="text-sm pl-2" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
                         {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
                       </span>
+                      <span class="text-sm pl-2" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0)">
+                        {{node.data.values[0].data}}
+                      </span>
                     </div>
                     <div appDropdown class="btn-group dropdown">
                       <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)"><i
@@ -69,7 +72,7 @@
                         </a>
                         <div *ngIf="childNode && childNode.length>0">
                           <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
-                            <div class="p-l-sm w-full" [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true)">
+                            <div class="p-l-sm w-full" [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true); addDefaultValue(child)">
                               <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
                             </div>
                           </a>
@@ -261,14 +264,14 @@
                 <div class="form-group">
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword'"
+                         *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base  && selectedNode.values[0].base !== 'xs:boolean'  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.ref !== 'Password' && selectedNode.ref !== 'CSPassword' && selectedNode.ref !== 'KeyStorePassword' && selectedNode.ref !== 'Passphrase'"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                          type="text" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" [autofocus]="!selectedNode.attributes">
 
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                          (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword')"
+                         *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && (selectedNode.ref === 'Password' || selectedNode.ref === 'CSPassword' || selectedNode.ref === 'KeyStorePassword' || selectedNode.ref === 'Passphrase')"
                          [ngClass]="error? 'invalid': ''"
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                          type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" [autofocus]="!selectedNode.attributes">

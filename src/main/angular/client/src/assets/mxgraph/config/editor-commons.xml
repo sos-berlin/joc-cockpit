@@ -18,7 +18,7 @@
       </Connector>
     </add>
     <add as="rectangle">
-      <FileOrder label="File Order" regex="" agent="" checkSteadyState="true" directory="">
+      <FileOrder label="File Order" agent="" regex="" directory="" checkSteadyState="true">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>

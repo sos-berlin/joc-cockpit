@@ -3850,6 +3850,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (this.dragElement && this.dragElement.getAttribute('src')) {
               if (this.dragElement.getAttribute('src').match('order')) {
                 if (state.cell.value.tagName === 'Await' || state.cell.value.tagName === 'Connection') {
+                  if (state.cell.value.tagName === 'Connection') {
+                    if (!(state.cell.target && state.cell.target.value.tagName.indexOf('Order') > -1)) {
+                      this.currentHighlight.highlightColor = '#ff0000';
+                    }
+                  }
                   isOrderCell = true;
                 } else {
                   this.currentHighlight.highlightColor = '#ff0000';
@@ -4021,6 +4026,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (this.dragElement && this.dragElement.getAttribute('src')) {
             if (this.dragElement.getAttribute('src').match('order')) {
               if (drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Connection') {
+                if (drpTargt.value.tagName === 'Connection') {
+                  if (!(drpTargt.target && drpTargt.target.value.tagName.indexOf('Order') > -1)) {
+                    self.translate.get('message.awaitInstructionValidationError').subscribe(translatedValue => {
+                      msg = translatedValue;
+                    });
+                    self.toasterService.pop('error', title + '!!', msg);
+                    return;
+                  }
+                }
                 isOrderCell = true;
               } else {
                 self.translate.get('message.awaitInstructionValidationError').subscribe(translatedValue => {
@@ -4729,7 +4743,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             } else {
               let flag = false;
-              if (dropTarget.edges && dropTarget.edges.length) {
+              if (dropTarget.edges && dropTarget.edges.length && cell.value.tagName.indexOf('Order') < 0) {
                 for (let i = 0; i < dropTarget.edges.length; i++) {
                   if (dropTarget.edges[i].target.id !== dropTarget.id) {
                     if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
@@ -4891,6 +4905,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
           }
+          if (json.instructions[x].events) {
+            for (let i = 0; i < json.instructions[x].events.length; i++) {
+              if (json.instructions[x].events[i].id == cell.id) {
+                json.instructions[x].events.splice(i, 1);
+                break;
+              }
+            }
+          }
         }
       }
     }
@@ -5025,7 +5047,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
                 _tar = cell.edges[i];
               }
             }
@@ -5072,7 +5094,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
                 _tar = cell.edges[i];
               }
             }
@@ -5122,7 +5144,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
                 _tar = cell.edges[i];
               }
             }
@@ -5171,7 +5193,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
                 _tar = cell.edges[i];
               }
             }
@@ -5629,32 +5651,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         div.removeAttribute('class');
         const form = new mxForm('property-table');
         let attrs = cell.value.attributes;
-        let flg1 = false, flg2 = false, flg3 = false;
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState') {
               createTextField(_graph, form, cell, attrs[i]);
             }
-            if (attrs[i].nodeName === 'success') {
-              flg1 = true;
-            } else if (attrs[i].nodeName === 'failure') {
-              flg2 = true;
-            } else if (attrs[i].nodeName === 'checkSteadyState') {
-              flg3 = true;
+            if (attrs[i].nodeName === 'checkSteadyState') {
+              createCheckbox(_graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: attrs[i].nodeValue});
             }
           }
           if (cell.value.nodeName === 'Job') {
-            if (!flg1) {
-              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
-            }
-            if (!flg2) {
-              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
-            }
-            // createTextAreaField(_graph, form, cell, 'Script', '');
-          } else if (cell.value.nodeName === 'FileOrder') {
-            if (flg3) {
-              createCheckbox(_graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: true});
-            }
+            createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
+            createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
           }
         }
         div.appendChild(form.getTable());
@@ -5714,7 +5722,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * Creates the textAreafield for the given property.
      */
     function createCheckbox(_graph, form, cell, attribute) {
-      let input = form.addCheckbox(attribute.nodeName + ':', attribute.nodeValue);
+      var isTrue = (attribute.nodeValue == 'true');
+    
+      let input = form.addCheckbox(attribute.nodeName + ':', isTrue);
       const applyHandler = function () {
         let newValue = cell.getAttribute(attribute.nodeName, '') !== 'true';
         _graph.getModel().beginUpdate();
