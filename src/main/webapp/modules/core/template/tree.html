@@ -7,15 +7,15 @@
             <td ng-class="{'text-primary' : row.branch.selected1}">
                 <table class="fixed indented" style="table-layout: fixed;">
                     <tr>
-                        <td style="width: 11px">
+                        <td style="min-width: 11px; width: 11px;">
                             <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)">
                                 <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-right fa-lg"></i>
                                 <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-down fa-lg"></i>
                                 <i ng-if="row.branch.folders.length==0"></i>
                             </a>
                         </td>
-                        <td style="white-space: nowrap; max-width: 100px; overflow: auto">
-                            <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
+                        <td nowrap>
+                            <span class="p-l-sm tree-label" ng-click="on_user_click(row.branch)">
                                 <span>
                                     <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
                                     <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open"></i>
@@ -24,9 +24,11 @@
                                 </span>
                             </span>
                         </td>
-                        <td style="padding-right: 20px" ng-if="row.branch.folders.length>0">
+                        <td style="padding-right: 20px">
+                            <div ng-if="row.branch.folders.length>0">
                             <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-down"></i> </span>
                             <span class="m-l" ng-click="collapseNode({branch:row.branch});$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-up"></i></span>
+                            </div>
                         </td>
                     </tr>
                 </table>

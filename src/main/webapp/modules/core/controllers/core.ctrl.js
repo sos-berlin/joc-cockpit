@@ -177,8 +177,11 @@
                 var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
                 $('.max-ht2').css('height', ht - 56 + 'px');
-                if($('.sub-header-2').height()) {
-                    ht = ht - $('.sub-header-2').height() - 8;
+                var subHeaderHt2 = $('.sub-header-2').height();
+                if(subHeaderHt2) {
+                    if(subHeaderHt2 < 30) {
+                        ht = ht - subHeaderHt2 - 8;
+                    }
                 }
                 $('.max-tree-ht').css('height', (ht - 43) + 'px');
             } else {
@@ -2391,11 +2394,11 @@
                 httpHeartbeatTimeout: '',
                 httpHeartbeatPeriod: ''
             };
-            vm.processClassObject.remoteSchedulers.push(param);
+            vm.processClassObject.remoteSchedulers.list.push(param);
         };
 
         vm.removeRemoteSchedulers = function (index) {
-            vm.processClassObject.remoteSchedulers.splice(index, 1);
+            vm.processClassObject.remoteSchedulers.list.splice(index, 1);
         };
         if (vm.processClassObject && vm.processClassObject.remoteSchedulers) {
             vm.addRemoteSchedulers();

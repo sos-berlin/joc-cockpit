@@ -1388,8 +1388,10 @@
   "label.heartbeatTimeout": "Heartbeat Timeout",
   "label.heartbeatPeriod": "Heartbeat Period",
   "label.updateProcessClass": "Update Process Class",
+  "label.agentTimeout": "Agent Timeout",
   "placeholder.hostUrl": "Enter host URL",
   "placeholder.maximumProcesses": "Enter number of Maximum processes",
+  "placeholder.agentTimeout": "Enter agent timeout",
   "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
   "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period"
 }

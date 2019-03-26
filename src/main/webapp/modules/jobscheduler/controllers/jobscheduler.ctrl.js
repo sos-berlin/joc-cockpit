@@ -494,6 +494,18 @@
                     }
                     obj.jobschedulerId = $scope.schedulerIds.selected;
                     obj.processClass = cluster.path;
+                    let list = [];
+                    if (vm.processClassObject.remoteSchedulers.list.length > 0) {
+                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.list.length; i++) {
+                            if (vm.processClassObject.remoteSchedulers.list[i].remoteScheduler) {
+                                list.push(vm.processClassObject.remoteSchedulers.list[i]);
+                            }
+                        }
+                    }
+                    if (vm.processClassObject.remoteSchedulers.select && list.length === 0) {
+                        vm.processClassObject.remoteSchedulers.select = '';
+                    }
+                    vm.processClassObject.remoteSchedulers.list = list;
                     obj.configuration = vm.processClassObject;
                     delete obj.configuration['path'];
                     
@@ -3750,7 +3762,7 @@
         /**
          * Function to initialized Calendar tree
          */
-        function initCalendarTree() {
+        function initCalendarTree(allDelete) {
             vm.getCategories();
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -3767,6 +3779,9 @@
                     } else {
                         vm.calendarFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.calendarFilters.expand_to, 'calendar');
                         vm.treeCalendar = vm.calendarFilters.expand_to;
+                        if(allDelete && vm.treeCalendar.length > 0) {
+                            vm.treeCalendar[0].selected1 = true;
+                        }
                         vm.loadCalendar();
                     }
                 }
@@ -4260,7 +4275,8 @@
         };
         vm.checkImportCalendarFn = function () {
             if (vm.checkImportCalendar.checkbox && vm.fileContentCalendars.length > 0) {
-                vm.importCalendarObj.calendars = vm.fileContentCalendars;
+                let _calendars = $filter('orderBy')(vm.fileContentCalendars, 'name');
+                vm.importCalendarObj.calendars = _calendars;
             } else {
                 vm.importCalendarObj.calendars = [];
             }
@@ -4378,6 +4394,7 @@
         function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
                 vm.object.calendars = [];
+                vm.calendarArr = undefined;
                 vm.getCategories();
             });
         }
@@ -5156,7 +5173,8 @@
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.events[0].eventSnapshots.length > 0)
-                angular.forEach(vm.events[0].eventSnapshots, function (event) {
+                for(let x= 0; x < vm.events[0].eventSnapshots.length; x++) {
+                    let event = vm.events[0].eventSnapshots[x];
                     if (event.eventType == "FileBasedActivated" || event.eventType == "FileBasedRemoved") {
                         var path = '';
                         if (vm.resourceFilters.state == 'locks' && event.objectType == 'LOCK') {
@@ -5294,6 +5312,8 @@
                                 path: path
                             };
                             initCalendarTree();
+                            break;
+
                         } else if (event.eventType == "CalendarUpdated") {
                             for (let x = 0; x < vm.allCalendars.length; x++) {
                                 if (vm.allCalendars[x].path == event.path) {
@@ -5316,11 +5336,13 @@
                                 }
                             }
                             if (vm.allCalendars.length == 0) {
-                                initCalendarTree();
+                                initCalendarTree(true);
+                                 break;
                             }
                         } else {
                             if (event.eventType.match('Calendar')) {
                                 initCalendarTree();
+                                 break;
                             }
                         }
                         if (event.eventType == "AuditLogChanged" && vm.showPanel && vm.showPanel.path == event.path) {
@@ -5332,7 +5354,7 @@
                             getEvents()
                         }
                     }
-                });
+                }
         });
 
         var interval1, interval2;
@@ -5506,6 +5528,18 @@
                     }
                     obj.jobschedulerId = $scope.schedulerIds.selected;
                     obj.processClass = cluster.path;
+                    let list = [];
+                    if (vm.processClassObject.remoteSchedulers.list.length > 0) {
+                        for (let i = 0; i < vm.processClassObject.remoteSchedulers.list.length; i++) {
+                            if (vm.processClassObject.remoteSchedulers.list[i].remoteScheduler) {
+                                list.push(vm.processClassObject.remoteSchedulers.list[i]);
+                            }
+                        }
+                    }
+                    if (vm.processClassObject.remoteSchedulers.select && list.length === 0) {
+                        vm.processClassObject.remoteSchedulers.select = '';
+                    }
+                    vm.processClassObject.remoteSchedulers.list = list;
                     obj.configuration = vm.processClassObject;
                     delete obj.configuration['path'];
                     ResourceService.updateProcessClassConfig(obj);
