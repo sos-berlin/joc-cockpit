@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>XSD Element</span>
+    <span translate>xml.label.xsdElement</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -48,7 +48,8 @@
               <button class="btn btn-sm" (click)="search(data)" translate>button.search</button>
             </div>
             <div class="col-4 p-t-xs">
-              <span class="text-success text-sm" *ngIf="counter>0 && data !== ''">Match Found {{counter}}</span>
+              <span class="text-success text-sm" *ngIf="counter>0 && data !== ''">
+                <span translate>xml.label.matchFound</span> {{counter}}</span>
             </div>
           </div>
         </div>

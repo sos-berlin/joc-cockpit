@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as _ from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 
 declare const mxHierarchicalLayout;
+declare const mxUtils;
 
 @Injectable()
 export class WorkflowService {
@@ -15,7 +17,7 @@ export class WorkflowService {
   public await;
   public fork;
 
-  constructor() {
+  constructor(public translate: TranslateService) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 50;
   }
 
@@ -119,7 +121,7 @@ export class WorkflowService {
     return [
       {
         '_id': '3',
-        '_title': 'Start',
+        '_title': 'start',
         'mxCell': {
           '_parent': '1',
           '_vertex': '1',
@@ -132,7 +134,7 @@ export class WorkflowService {
         }
       }, {
         '_id': '5',
-        '_title': 'End',
+        '_title': 'end',
         'mxCell': {
           '_parent': '1',
           '_vertex': '1',
@@ -217,7 +219,7 @@ export class WorkflowService {
             mxJson.If = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'If';
+          obj._label = 'if';
           obj._predicate = json.instructions[x].predicate;
           obj.mxCell._style = 'if';
           obj.mxCell.mxGeometry._width = '150';
@@ -244,7 +246,7 @@ export class WorkflowService {
             mxJson.Fork = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'Fork';
+          obj._label = 'fork';
           obj.mxCell._style = this.fork;
           obj.mxCell.mxGeometry._width = '90';
           obj.mxCell.mxGeometry._height = '90';
@@ -304,7 +306,7 @@ export class WorkflowService {
             mxJson.Catch = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'Try';
+          obj._label = 'try';
           obj.mxCell._style = 'try';
           obj.mxCell.mxGeometry._width = '94';
           obj.mxCell.mxGeometry._height = '94';
@@ -320,7 +322,7 @@ export class WorkflowService {
                 _height: '40'
               }
             },
-            _label: 'Catch'
+            _label: 'catch'
           };
           let _id = 0;
 
@@ -402,7 +404,7 @@ export class WorkflowService {
             mxJson.Abort = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = json.instructions[x].TYPE;
+          obj._label = 'abort';
           obj._message = json.instructions[x].message;
           obj.mxCell._style = this.abort;
           obj.mxCell.mxGeometry._width = '70';
@@ -419,7 +421,7 @@ export class WorkflowService {
             mxJson.Terminate = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = json.instructions[x].TYPE;
+          obj._label = 'terminate';
           obj._message = json.instructions[x].message;
           obj.mxCell._style = this.terminate;
           obj.mxCell.mxGeometry._width = '70';
@@ -436,7 +438,7 @@ export class WorkflowService {
             mxJson.Await = [];
           }
           obj._id = json.instructions[x].id;
-          obj._label = 'Await';
+          obj._label = 'await';
           obj.mxCell._style = this.await;
           obj.mxCell.mxGeometry._width = '90';
           obj.mxCell.mxGeometry._height = '90';
@@ -552,8 +554,9 @@ export class WorkflowService {
     } else {
       mxJson.Connection = [];
     }
+
     let obj: any = {
-      _label: label === 'then' ? 'true' : label === 'else' ? 'false' : '',
+      _label: label,
       _type: label,
       _id: ++this.count,
       mxCell: {
@@ -594,7 +597,7 @@ export class WorkflowService {
 
     let joinObj: any = {
       _id: id,
-      _label: 'Retry-End',
+      _label: 'retryEnd',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -676,7 +679,7 @@ export class WorkflowService {
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
-      _label: 'Join',
+      _label: 'join',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -758,7 +761,7 @@ export class WorkflowService {
     this.nodeMap.set(targetId.toString(), id.toString());
     let endIfObj: any = {
       _id: id,
-      _label: 'If-End',
+      _label: 'ifEnd',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -884,7 +887,7 @@ export class WorkflowService {
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
-      _label: 'Try-End',
+      _label: 'tryEnd',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -921,7 +924,7 @@ export class WorkflowService {
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
-      _label: 'Catch-End',
+      _label: 'catchEnd',
       _targetId: targetId,
       mxCell: {
         _parent: parentId ? parentId : '1',
@@ -1001,7 +1004,7 @@ export class WorkflowService {
       }
       let obj: any = {
         _id: eventObj.id,
-        _label: 'Offered Order',
+        _label: 'offeredOrder',
         mxCell: {
           _parent: parentId ? parentId : '1',
           _vertex: '1',
@@ -1027,11 +1030,11 @@ export class WorkflowService {
       }
       let obj: any = {
         _id: eventObj.id,
-        _label: 'File Order',
-        _agent : eventObj.agentPath,
-        _regex : eventObj.regex,
-        _directory : eventObj.directory,
-        _checkSteadyState : eventObj.checkSteadyState,
+        _label: 'fileOrder',
+        _agent: eventObj.agentPath,
+        _regex: eventObj.regex,
+        _directory: eventObj.directory,
+        _checkSteadyState: eventObj.checkSteadyState,
         mxCell: {
           _parent: parentId ? parentId : '1',
           _vertex: '1',
@@ -1047,4 +1050,61 @@ export class WorkflowService {
     }
   }
 
+  public convertValueToString(cell): string {
+    let str = '';
+    if (mxUtils.isNode(cell.value)) {
+      if (cell.value.tagName === 'Process') {
+        let title = cell.getAttribute('title');
+        if (title != null && title.length > 0) {
+          this.translate.get('workflow.label.' + title).subscribe(translatedValue => {
+            str = translatedValue;
+          });
+          return str;
+        }
+        return '';
+      } else if (cell.value.tagName === 'Job') {
+        let name = cell.getAttribute('name');
+        let title = cell.getAttribute('title');
+        if (title != null && title.length > 0) {
+          return name + ' - ' + title;
+        }
+        return name;
+      } else if (cell.value.tagName === 'Retry') {
+        str = 'Retry ' + cell.getAttribute('repeat') + ' times';
+        if (cell.getAttribute('delay') && cell.getAttribute('delay') !== 0) {
+          str = str + '\nwith delay ' + cell.getAttribute('delay');
+        }
+        return str;
+      } else if (cell.value.tagName === 'FileOrder') {
+        this.translate.get('workflow.label.fileOrder').subscribe(translatedValue => {
+          str = translatedValue;
+        });
+        if (cell.getAttribute('regex') && cell.getAttribute('directory')) {
+          str = cell.getAttribute('regex') + ' - ' + cell.getAttribute('directory');
+        }
+        return str;
+      } else if (cell.value.tagName === 'If') {
+        return cell.getAttribute('predicate');
+      } else {
+        let x = cell.getAttribute('label');
+        if (x) {
+          if (cell.value.tagName === 'Connection') {
+            if (x === 'then' || x === 'else' || x === 'await') {
+              this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+                str = translatedValue;
+              });
+            } else {
+              // str = x;
+            }
+          } else {
+            this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+              str = translatedValue;
+            });
+          }
+        }
+        return str;
+      }
+    }
+    return str;
+  }
 }

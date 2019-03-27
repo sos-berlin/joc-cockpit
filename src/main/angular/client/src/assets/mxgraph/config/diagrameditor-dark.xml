@@ -13,24 +13,6 @@
 				return mxUtils.isNode(this.model.getValue(cell), 'container');
 			}
 		]]></add>
-    <add as="getTooltipForCell"><![CDATA[
-			function(cell)
-			{
-				var label = cell.getAttribute('label');
-				var style = cell.getStyle();
-
-				return ((label != null) ? ('<b>' + label +
-						'</b> : '') +
-						'Connections: ' + cell.getEdgeCount()+
-						'<br>Children: ' + cell.getChildCount();
-			}
-		]]></add>
-    <add as="convertValueToString"><![CDATA[
-			function(cell)
-			{
-				return cell.getAttribute('label');
-			}
-		]]></add>
     <mxStylesheet as="stylesheet">
       <add as="text">
         <add as="shape" value="rectangle"/>

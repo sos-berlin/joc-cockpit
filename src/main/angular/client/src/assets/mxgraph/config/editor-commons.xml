@@ -5,11 +5,6 @@
     <add as="toolbar" element="toolbar"/>
   </ui>
   <Array as="templates">
-    <add as="group">
-      <Group label="Cluster">
-        <mxCell vertex="1" style="group" connectable="0"/>
-      </Group>
-    </add>
     <add as="connector">
       <Connector label="" type="">
         <mxCell edge="1">
@@ -18,7 +13,7 @@
       </Connector>
     </add>
     <add as="rectangle">
-      <FileOrder label="File Order" agent="" regex="" directory="" checkSteadyState="true">
+      <FileOrder label="fileOrder" agent="" regex="" directory="" checkSteadyState="true">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>
@@ -32,49 +27,49 @@
       </Job>
     </add>
     <add as="If">
-      <If label="If" predicate="returnCode > 0">
+      <If label="if" predicate="returnCode > 0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="150" height="80"/>
         </mxCell>
       </If>
     </add>
     <add as="Retry">
-      <Retry label="Retry" repeat="10" delay="0">
+      <Retry label="retry" repeat="10" delay="0">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="150" height="80"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Terminate">
-      <Terminate label="Terminate" message="">
+      <Terminate label="terminate" message="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </Terminate>
     </add>
     <add as="Abort">
-      <Abort label="Abort" message="">
+      <Abort label="abort" message="">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="70" height="70"/>
         </mxCell>
       </Abort>
     </add>
     <add as="Fork">
-      <Fork label="Fork">
+      <Fork label="fork">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="90" height="90"/>
         </mxCell>
       </Fork>
     </add>
     <add as="Await">
-      <Await label="Await">
+      <Await label="await">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="90" height="90"/>
         </mxCell>
       </Await>
     </add>
     <add as="Try">
-      <Try label="Try">
+      <Try label="try">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="94" height="94"/>
         </mxCell>

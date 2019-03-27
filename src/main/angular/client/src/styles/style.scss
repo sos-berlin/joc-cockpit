@@ -5641,66 +5641,6 @@ tree-node-checkbox {
   background-image: url('../assets/images/grid.svg');
 }
 
-.property-table {
-  border: none !important;
-  font-size: 13px;
-  font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
-  width: 100%;
-
-  tr {
-    border: none !important;
-
-    td {
-      &:first-child {
-        width: 35.5%;
-        text-transform: capitalize;
-        font-weight: 500;
-      }
-
-      input[type=text], textarea {
-        width: 100%;
-        line-height: 1.5;
-        color: #55595c;
-        display: block;
-        border: 1px solid rgba(120, 130, 140, 0.2);
-        border-radius: 0;
-        font-size: 13px;
-        padding: 4px 8px;
-        margin: 8px auto;
-      }
-
-      input[type=checkbox] {
-        -webkit-appearance: none;
-        border: 1px solid #9e9e9e;
-        padding: 7px;
-        margin-top: 5px;
-        border-radius: 0;
-        display: inline-block;
-        position: relative;
-      }
-
-      input[type=checkbox]:checked {
-        background-color: #007da6;
-        border-color: #00678f;
-        color: #fff;
-      }
-
-      input[type=checkbox]:checked:after {
-        content: '\2714';
-        font-size: 12px;
-        position: absolute;
-        top: -1px;
-        left: 3px;
-        color: #fff;
-      }
-
-      input:focus {
-        border-color: #007da6;
-        outline: 0;
-      }
-    }
-  }
-}
 
 .chart-margin {
   margin-top: -12px !important;
@@ -6197,4 +6137,12 @@ Sidebar Panel
   width: 1px;
   height: 46px;
   background-color: #e8e8e8;
+}
+#properties {
+  .md-form-group {
+    padding: 16px 0 24px;
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
 }

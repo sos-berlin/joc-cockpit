@@ -2,21 +2,21 @@
   <div class="padding p-b-0" [hidden]="isLoading">
     <div class="row open" [ngClass]="!submitXsd ? 'show': 'hide'">
       <div class="col-md-offset-2 col-md-8 m-t-lg">
-        <h1 class="text-center"><strong translate>label.assignSchema</strong></h1>
+        <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
         <hr>
       </div>
       <div class="col-md-offset-2 col-md-8 m-t-md">
         <span class="form-group">
           <select class="form-control" [(ngModel)]="selectedXsd" name="schema" (change)="changeXSD(selectedXsd)">
-            <option [value]="''"><---Choose one of the file---></option>
-            <option [value]="'systemMonitorNotification'">System Monitor Notification</option>
-            <option [value]="'yade'">YADE</option>
+            <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
+            <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
+            <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
           </select>
         </span>
       </div>
       <div class="col-md-offset-2 col-md-8 m-t-md">
         <span class="form-group">
-          <a class="btn btn-primary btn-sm" (click)="submit()" translate>button.assign</a>
+          <a class="btn btn-primary btn-sm" (click)="submit()" translate>xml.button.assign</a>
         </span>
       </div>
     </div>
@@ -68,7 +68,7 @@
                         class="fa fa-ellipsis-h"></i></button>
                       <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                         <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
-                          <div translate>button.addChild</div>
+                          <div translate>xml.button.addChild</div>
                         </a>
                         <div *ngIf="childNode && childNode.length>0">
                           <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
@@ -79,36 +79,36 @@
                         </div>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" (click)="showAllChildNode(node.data)" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
-                          <div translate>button.showAllChildNodes</div>
+                          <div translate>xml.button.showAllChildNodes</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a (click)="expandNode(node.data)"
                            [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
                            class="dropdown-item">
-                          <div translate>button.expand</div>
+                          <div translate>xml.button.expand</div>
                         </a>
                         <a (click)="collapseNode(node.data)"
                            [ngClass]="node.data.children && node.data.children.length>0? '':'disabled'"
                            class="dropdown-item">
-                          <div translate>button.collapse</div>
+                          <div translate>xml.button.collapse</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a (click)="cutNode(node.data)" *ngIf="node.data && node.data.parent !=='#'"
                            [ngClass]="cutData? 'disabled' : ''" class="dropdown-item">
-                          <div translate>button.cut</div>
+                          <div translate>xml.button.cut</div>
                         </a>
                         <a (click)="copyNode(node.data)" class="dropdown-item">
-                          <div translate>button.copy</div>
+                          <div translate>xml.button.copy</div>
                         </a>
                         <a (click)="pasteNode(node.data)" [ngClass]="checkRule == true? '':'disabled'"
                            class="dropdown-item">
-                          <div translate>button.paste</div>
+                          <div translate>xml.button.paste</div>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a (click)="removeNode(node.data, treeCtrl)"
                            [ngClass]="node.data && node.data.parent!=='#'? '':'disabled'"
                            class="dropdown-item">
-                          <div translate>button.remove</div>
+                          <div translate>xml.button.remove</div>
                         </a>
                       </div>
                     </div>
@@ -124,22 +124,22 @@
           <div class="col-md-12 m-b-sm">
             <div class="m-b-sm p-b-sm">
               <div class="inline w-full">
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'button.export' | translate}}" (click)="save()">
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'xml.button.export' | translate}}" (click)="save()">
                     <i class="fa fa-download"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'button.validate' | translate}}" (click)="validate()">
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" placement="bottom" ngbTooltip="{{'xml.button.validate' | translate}}" (click)="validate()">
                     <i class="fa fa-check"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'button.showXML' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="showXml()" placement="bottom" ngbTooltip="{{'xml.button.showXML' | translate}}">
                     <i class="fa fa-television"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm  pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'button.importXML' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-sm  pull-right" (click)="importXML()" placement="bottom" ngbTooltip="{{'xml.button.importXML' | translate}}">
                     <i class="fa fa-upload"></i>
                   </button>
-                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="newFile()" placement="bottom" ngbTooltip="{{'button.new' | translate}}">
+                  <button class="btn btn-sm btn-grey m-l-sm pull-right" (click)="newFile()" placement="bottom" ngbTooltip="{{'xml.button.new' | translate}}">
                       <i class="fa fa-file"></i>
                   </button>
-                  <span class="badge float-right"  [ngClass]="validConfig?'badge-success':'badge-danger'">{{validConfig?'Validate':'Non-Validate'}}</span>
+                  <span class="badge float-right" [ngClass]="validConfig?'badge-success':'badge-danger'" translate>{{validConfig ? 'xml.label.validate':'xml.label.nonValidate'}}</span>
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@
           </div>
           <div class="col-12">
             <div class="box p-a documentation-height" *ngIf="selectedNode && selectedNode.text">
-              <div class="text _600" translate>label.documentation</div>
+              <div class="text _600" translate>xml.label.documentation</div>
               <span id="doc">
                 <ul *ngIf="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
                   <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
@@ -169,13 +169,13 @@
           <div class="col-12" id="attr">
             <div *ngIf="selectedNode">
               <div class="box p-a" *ngIf="selectedNode.attributes && selectedNode.attributes.length>0">
-                <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm">Attributes</div>
+                <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id" class="_600 text m-b-sm" translate>xml.label.attributes</div>
                 <div *ngFor="let node of selectedNode.attributes; let i= index" class="form-group">
                   <label *ngIf="node.name && node.id">{{node.name}}<sup
                     *ngIf="node.use==='required' || !node.use" class="text-danger text-sm">*</sup></label>
-                  <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right"><a>Goto Key Element</a></span>
+                  <span (click)="gotoKey(node)" *ngIf="node.refer" class="pull-right">&nbsp;<a translate>xml.button.gotoKeyElement</a></span>
                   <span (click)="gotoKeyref(node)" *ngIf="node.refElement"
-                        class="pull-right"><a>Goto ref Element</a></span>
+                        class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
                   <span *ngIf="node.text" class="float-right" id="{{node.id}}" data-toggle="tooltip" data-placement="left" (mouseover)="getpos(node.id)" title="{{node.text.doc}}">
                       <i class="fa fa-info-circle"></i>
                   </span>
@@ -259,7 +259,7 @@
                 </div>
               </div>
               <div class="box p-a" *ngIf="selectedNode.values && selectedNode.values.length>0">
-                <div class="text m-b-sm">Value<sup
+                <div class="text m-b-sm" translate>xml.label.value<sup
                   *ngIf="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
                 <div class="form-group">
                   <input #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
@@ -278,7 +278,7 @@
 
                   <div *ngIf="selectedNode.ref === 'Body'" class="form-group has-feedback">
                        <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent"  [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor" class="ckEditor"></ckeditor>
-                       <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block">Required field.</div>
+                       <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>xml.message.requiredField</div>
                   </div>
                   <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
                           (change)="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"

@@ -1,7 +1,4 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {CoreService} from '../../../services/core.service';
-import {DataService} from '../../../services/data.service';
-import {AuthService} from '../../../components/guard';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -9,13 +6,17 @@ import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} fro
 import {saveAs} from 'file-saver';
 import {DatePipe} from '@angular/common';
 import {Observable, of} from 'rxjs';
-import * as moment from 'moment';
-import * as _ from 'underscore';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {CalendarService} from '../../../services/calendar.service';
 import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
 import {WorkflowService} from '../../../services/workflow.service';
+import {CoreService} from '../../../services/core.service';
+import {DataService} from '../../../services/data.service';
+import {AuthService} from '../../../components/guard';
+import * as moment from 'moment';
+import * as _ from 'underscore';
 
+// Mx-Graph Objects
 declare const mxEditor;
 declare const mxUtils;
 declare const mxEvent;
@@ -29,7 +30,6 @@ declare const mxGraphHandler;
 declare const mxCellAttributeChange;
 declare const mxGraph;
 declare const mxImage;
-declare const mxForm;
 declare const mxImageExport;
 declare const mxXmlCanvas2D;
 declare const mxOutline;
@@ -40,6 +40,7 @@ declare const mxPoint;
 declare const mxUndoManager;
 declare const mxEventObject;
 
+// Calendar Objects
 declare const Holidays;
 declare const X2JS;
 declare const $;
@@ -343,7 +344,7 @@ export class OrderTemplateComponent implements OnInit {
           }))
       ),
       tap(() => this.searching = false)
-    );
+    )
 
   searchNonCalendars = (text$: Observable<string>) =>
     text$.pipe(
@@ -359,7 +360,7 @@ export class OrderTemplateComponent implements OnInit {
           }))
       ),
       tap(() => this.searchingNon = false)
-    );
+    )
 
   formatter = (x: { path: string }) => {
     let flag = false;
@@ -390,7 +391,7 @@ export class OrderTemplateComponent implements OnInit {
         this.order.nonWorkingCalendars.push(x);
       }
     }
-  };
+  }
 
   previewCalendar(calendar): void {
     this.calendarObj = calendar;
@@ -544,7 +545,7 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
       format: this.dateFormatM
     };
 
-    let countryList = this.hd.getCountries('en');
+    const countryList = this.hd.getCountries('en');
 
     if (this.editor.frequencyType === 'INCLUDE' && this.calendar.includesFrequency.length > 0) {
       this.frequencyList = this.calendar.includesFrequency;
@@ -981,9 +982,9 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     if (flag) {
       return;
     }
-    let _dates = [];
+    let _dates = [], datesArr;
     if (this.frequency.tab == 'nationalHoliday') {
-      var datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
+       datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
       _dates = _.clone(datesArr);
     }
 
@@ -1108,17 +1109,17 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
             }
           } else if (this.frequency.tab == 'nationalHoliday') {
             flag1 = true;
-            for (let i = 0; i < datesArr.length; i++) {
-              if (this.frequencyList[i].nationalHoliday && this.frequencyList[i].nationalHoliday.length > 0) {
-                if (new Date(this.frequencyList[i].nationalHoliday[0]).getFullYear() == new Date(datesArr[i][0].toString()).getFullYear()) {
-                  for (let j = 0; j < datesArr[i].length; j++) {
-                    if (this.frequencyList[i].nationalHoliday.indexOf(datesArr[i][j]) == -1) {
-                      this.frequencyList[i].nationalHoliday.push(datesArr[i][j]);
+            for (let m = 0; m < datesArr.length; m++) {
+              if (this.frequencyList[m].nationalHoliday && this.frequencyList[m].nationalHoliday.length > 0) {
+                if (new Date(this.frequencyList[m].nationalHoliday[0]).getFullYear() == new Date(datesArr[m][0].toString()).getFullYear()) {
+                  for (let j = 0; j < datesArr[m].length; j++) {
+                    if (this.frequencyList[m].nationalHoliday.indexOf(datesArr[m][j]) == -1) {
+                      this.frequencyList[m].nationalHoliday.push(datesArr[m][j]);
                     }
                   }
-                  this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
+                  this.frequencyList[m].str = this.calendarService.freqToStr(this.frequencyList[m], this.dateFormat);
                   for (let x = 0; x < _dates.length; x++) {
-                    if (_.isEqual(_dates[x], datesArr[i])) {
+                    if (_.isEqual(_dates[x], datesArr[m])) {
                       _dates.splice(x, 1);
                       break;
                     }
@@ -2343,7 +2344,6 @@ export class CalendarTemplateComponent implements OnInit {
       this.storeCalendar();
     }
   }
-
 }
 
 @Component({
@@ -2355,7 +2355,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   editor: any;
   dummyXml: any;
   workFlowJson: any = {};
-  isPropertyHide = false;
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
   isWorkflowReload = true;
@@ -2424,9 +2423,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
    }
 
    private centered() {
-     setTimeout(() => {
-       this.editor.graph.center(true, true);
-     }, 200);
+     if (this.editor && this.editor.graph) {
+       setTimeout(() => {
+         this.editor.graph.center(true, true);
+       }, 200);
+     }
    }
 
   /**
@@ -2448,7 +2449,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 				// Adds active border for panning inside the container
 				editor.graph.createPanningManager = function()
 				{
-					var pm = new mxPanningManager(this);
+					let pm = new mxPanningManager(this);
 					pm.border = 30;
 
 					return pm;
@@ -3791,39 +3792,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
        * @param cell
        */
       graph.convertValueToString = function (cell) {
-        if (mxUtils.isNode(cell.value)) {
-          if (cell.value.nodeName.toLowerCase() === 'process') {
-            let title = cell.getAttribute('title', '');
-            if (title != null && title.length > 0) {
-              return title;
-            }
-            return '';
-          } else if (cell.value.nodeName.toLowerCase() === 'job') {
-            let name = cell.getAttribute('name', '');
-            let title = cell.getAttribute('title', '');
-            if (title != null && title.length > 0) {
-              return name + ' - ' + title;
-            }
-            return name;
-          } else if (cell.value.nodeName.toLowerCase() === 'retry') {
-            let str = 'Retry ' + cell.getAttribute('repeat', '') + ' times';
-            if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
-              str = str + '\nwith delay ' + cell.getAttribute('delay', '');
-            }
-            return str;
-          } else if (cell.value.nodeName.toLowerCase() === 'fileorder') {
-            let str = 'File Order';
-            if (cell.getAttribute('regex', '') && cell.getAttribute('directory', '')) {
-              str = cell.getAttribute('regex', '') + ' - ' + cell.getAttribute('directory', '');
-            }
-            return str;
-          } else if (cell.value.nodeName.toLowerCase() === 'if') {
-            return cell.getAttribute('predicate', '');
-          } else {
-            return cell.getAttribute('label', '');
-          }
-        }
-        return '';
+        return self.workflowService.convertValueToString(cell);
+      };
+
+      graph.getTooltipForCell  = function (cell) {
+        return self.workflowService.convertValueToString(cell);
       };
 
       /**
@@ -3869,7 +3842,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (!flag) {
-              if (state.cell.value.tagName === 'Connector' || state.cell.value.tagName === 'FileOrder') {
+              if (state.cell.value.tagName === 'Connector' || state.cell.value.tagName.indexOf('Order') > -1) {
                 return;
               } else if (state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Abort' || state.cell.value.tagName === 'Terminate') {
                 if (state.cell.edges) {
@@ -3906,7 +3879,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   (state.cell.source.value.tagName === 'Try' && state.cell.target.value.tagName === 'Catch') ||
                   (state.cell.source.value.tagName === 'Catch' && state.cell.target.value.tagName === 'EndCatch') ||
                   (state.cell.source.value.tagName === 'EndCatch' && state.cell.target.value.tagName === 'EndTry') ||
-                  (state.cell.source.value.tagName === 'Await' && state.cell.target.value.tagName === 'FileOrder' && !isOrderCell))) {
+                  (state.cell.source.value.tagName === 'Await' && state.cell.target.value.tagName.indexOf('Order') > -1 && !isOrderCell))) {
                   return;
                 }
               } else if (state.cell.value.tagName === 'Retry') {
@@ -4020,7 +3993,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         if (drpTargt) {
           let isOrderCell = false, check = false;
           let title = '', msg = '';
-          self.translate.get('label.invalidTarget').subscribe(translatedValue => {
+          self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
             title = translatedValue;
           });
           if (this.dragElement && this.dragElement.getAttribute('src')) {
@@ -4028,7 +4001,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (drpTargt.value.tagName === 'Await' || drpTargt.value.tagName === 'Connection') {
                 if (drpTargt.value.tagName === 'Connection') {
                   if (!(drpTargt.target && drpTargt.target.value.tagName.indexOf('Order') > -1)) {
-                    self.translate.get('message.awaitInstructionValidationError').subscribe(translatedValue => {
+                    self.translate.get('workflow.message.awaitInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.pop('error', title + '!!', msg);
@@ -4037,7 +4010,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
                 isOrderCell = true;
               } else {
-                self.translate.get('message.awaitInstructionValidationError').subscribe(translatedValue => {
+                self.translate.get('workflow.message.awaitInstructionValidationError').subscribe(translatedValue => {
                   msg = translatedValue;
                 });
                 self.toasterService.pop('error', title + '!!', msg);
@@ -4051,7 +4024,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (cells.length > 1) {
                   selectedCellsObj = isCellSelectedValid(cells);
                   if (selectedCellsObj.invalid) {
-                    self.translate.get('message.invalidInstructionsSelected').subscribe(translatedValue => {
+                    self.translate.get('workflow.message.invalidInstructionsSelected').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.pop('error', title + '!!', msg);
@@ -4066,8 +4039,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           if (!check) {
             if (drpTargt.value.tagName !== 'Connection') {
-              if (drpTargt.value.tagName === 'FileOrder') {
-                self.translate.get('message.validationError').subscribe(translatedValue => {
+              if (drpTargt.value.tagName.indexOf('Order') > -1) {
+                self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
                   msg = translatedValue;
                 });
                 self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
@@ -4075,7 +4048,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               } else if (drpTargt.value.tagName === 'Job' || drpTargt.value.tagName === 'Abort' || drpTargt.value.tagName === 'Terminate') {
                 for (let i = 0; i < drpTargt.edges.length; i++) {
                   if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                    self.translate.get('message.validationError').subscribe(translatedValue => {
+                    self.translate.get('workflow.message.validationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
@@ -4084,14 +4057,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
               } else if (drpTargt.value.tagName === 'Await') {
                 if (!isOrderCell) {
-                  self.translate.get('message.orderInstructionValidationError').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.orderInstructionValidationError').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
                   return;
                 } else {
                   if (drpTargt.edges && drpTargt.edges.length > 2) {
-                    self.translate.get('message.orderInstructionValidationError').subscribe(translatedValue => {
+                    self.translate.get('workflow.message.orderInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.pop('error', title + '!!', drpTargt.value.tagName + ' ' + msg);
@@ -4100,7 +4073,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 }
               } else if (drpTargt.value.tagName === 'If') {
                 if (drpTargt.edges.length > 2) {
-                  self.translate.get('message.ifInstructionValidationError').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', title + '!!', msg);
@@ -4110,7 +4083,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (drpTargt.edges.length > 1) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
-                      self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                      self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                         msg = translatedValue;
                       });
                       self.toasterService.pop('error', title + '!!', msg);
@@ -4128,7 +4101,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', title + '!!', msg);
@@ -4144,7 +4117,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', title + '!!', msg);
@@ -4160,7 +4133,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
                 if (!flag1) {
-                  self.translate.get('message.otherInstructionValidationError').subscribe(translatedValue => {
+                  self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                     msg = translatedValue;
                   });
                   self.toasterService.pop('error', title + '!!', msg);
@@ -4187,7 +4160,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   (drpTargt.source.value.tagName === 'Try' && drpTargt.target.value.tagName === 'Catch') ||
                   (drpTargt.source.value.tagName === 'Catch' && drpTargt.target.value.tagName === 'EndCatch') ||
                   (drpTargt.source.value.tagName === 'EndCatch' && drpTargt.target.value.tagName === 'EndTry') ||
-                  (drpTargt.source.value.tagName === 'Await' && drpTargt.target.value.tagName === 'FileOrder' && !isOrderCell)) {
+                  (drpTargt.source.value.tagName === 'Await' && drpTargt.target.value.tagName.indexOf('Order') > -1 && !isOrderCell)) {
                   return;
                 }
               }
@@ -4409,37 +4382,36 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
               if (cells[0].value.tagName === 'Fork' || cells[0].value.tagName === 'If' || cells[0].value.tagName === 'Retry' || cells[0].value.tagName === 'Try') {
                 const parent = cell.getParent() || graph.getDefaultParent();
-                let v1, label = '', type = '', v2, v3;
+                let v1, v2, v3, label = '';
                 const attr = cell.value.attributes;
                 if (attr) {
                   for (let i = 0; i < attr.length; i++) {
                     if (attr[i].value && attr[i].name) {
                       label = attr[i].value;
-                      type = attr[i].value === 'true' ? 'then' : attr[i].value === 'false' ? 'else' : attr[i].value;
                       break;
                     }
                   }
                 }
                 if (cells[0].value.tagName === 'Fork') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', null), 0, 0, 90, 90, self.workflowService.merge);
+                  v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 90, 90, self.workflowService.merge);
                 } else if (cells[0].value.tagName === 'If') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', null), 0, 0, 150, 80, 'if');
+                  v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 150, 80, 'if');
                 } else if (cells[0].value.tagName === 'Retry') {
-                  v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'Retry-End', null), 0, 0, 150, 80, 'retry');
+                  v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 150, 80, 'retry');
                 } else {
-                  v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', null), 0, 0, 94, 94, 'try');
-                  v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'Catch', null), 0, 0, 100, 40, 'dashRectangle');
+                  v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 94, 94, 'try');
+                  v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
                   v2.collapsed = true;
-                  v3 = graph.insertVertex(cells[0], null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
-                  graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cells[0], v2);
-                  graph.insertEdge(cells[0], null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
-                  graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
+                  v3 = graph.insertVertex(cells[0], null, getCellNode('EndCatch', 'catchEnd', null), 0, 0, 100, 40, 'dashRectangle');
+                  graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
+                  graph.insertEdge(cells[0], null, getConnectionNode(''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+                  graph.insertEdge(parent, null, getConnectionNode('endTry'), v3, v1);
                 }
-                graph.insertEdge(parent, null, getConnectionNode(label, type), cell.source, cells[0]);
+                graph.insertEdge(parent, null, getConnectionNode(label), cell.source, cells[0]);
                 if (cells[0].value.tagName !== 'Try') {
-                  graph.insertEdge(parent, null, getConnectionNode('', ''), cells[0], v1);
+                  graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v1);
                 }
-                graph.insertEdge(parent, null, getConnectionNode('', ''), v1, cell.target);
+                graph.insertEdge(parent, null, getConnectionNode(''), v1, cell.target);
                 for (let x = 0; x < cell.source.edges.length; x++) {
                   if (cell.source.edges[x].id === cell.id) {
                     //TODO
@@ -4541,16 +4513,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           return;
         }
 
-        let label = '', type = '';
+        let label = '';
         if (cell && dropTarget) {
+
           if (dropTarget.value.tagName === 'If') {
             let flag = false;
-            label = 'true';
-            type = 'then';
+            label = 'then';
             for (let i = 0; i < dropTarget.edges.length; i++) {
               if (dropTarget.edges[i].target.id !== dropTarget.id && dropTarget.edges[i].target.value.tagName !== 'EndIf') {
-                label = 'false';
-                type = 'else';
+                label = 'else';
               } else {
                 if (dropTarget.edges[i].target && dropTarget.edges[i].target.edges) {
                   for (let j = 0; j < dropTarget.edges[i].target.edges.length; j++) {
@@ -4564,24 +4535,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
             if (flag) {
-              label = 'true';
-              type = 'then';
+              label = 'then';
             }
           } else if (dropTarget.value.tagName === 'Retry') {
             label = 'retry';
-            type = 'retry';
           } else if (dropTarget.value.tagName === 'Try') {
             label = 'try';
-            type = 'try';
           } else if (dropTarget.value.tagName === 'Catch') {
             label = 'catch';
-            type = 'catch';
           } else if (dropTarget.value.tagName === 'Fork') {
             label = 'branch';
-            type = 'branch';
           } else if (dropTarget.value.tagName === 'Await') {
             label = 'await';
-            type = 'await';
           }
 
           if (dropTarget.value.tagName === 'Catch') {
@@ -4591,33 +4556,33 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
             let v1, v2, v3, _label;
             if (cell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
-              graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
+              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
               if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch'
                 || dropTarget.value.tagName === 'Fork') {
                 _label = dropTarget.value.tagName === 'Retry' ? 'endRetry' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'Fork' ? 'join' : 'try';
               }
             } else if (cell.value.tagName === 'If') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', cell.id), 0, 0, 150, 80, 'if');
-              graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
+              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 150, 80, 'if');
+              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
               if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'If') {
                 _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'Retry' ? 'endRetry' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'endIf' ? 'join' : 'try';
               }
             } else if (cell.value.tagName === 'Retry') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'Retry-End', cell.id), 0, 0, 150, 80, 'retry');
-              graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
+              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 150, 80, 'retry');
+              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
               if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'Retry') {
                 _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'Retry' ? 'endRetry' : 'try';
               }
             } else if (cell.value.tagName === 'Try') {
-              v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'Catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
+              v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
               v2.collapsed = true;
-              v3 = graph.insertVertex(cell, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
-              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', cell.id), 0, 0, 94, 94, 'try');
-              graph.insertEdge(parent, null, getConnectionNode('try', 'try'), cell, v2);
-              graph.insertEdge(cell, null, getConnectionNode('', ''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
-              graph.insertEdge(parent, null, getConnectionNode('', ''), cell, v1);
-              graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v3, v1);
+              v3 = graph.insertVertex(cell, null, getCellNode('EndCatch', 'catchEnd', null), 0, 0, 100, 40, 'dashRectangle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 94, 94, 'try');
+              graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
+              graph.insertEdge(cell, null, getConnectionNode(''), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+              graph.insertEdge(parent, null, getConnectionNode('endTry'), v3, v1);
               if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'Try') {
                 _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'endCatch' : dropTarget.value.tagName === 'Try' ? 'try' : 'endRetry';
               }
@@ -4660,9 +4625,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     if (cell.edges[j].target.id !== cell.id) {
                       if (checkClosingCell(cell.edges[j].target)) {
                         if (flag) {
-                          graph.insertEdge(parent, null, getConnectionNode(label, type), cell.edges[j].target, dropTarget.edges[i].target);
+                          graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, dropTarget.edges[i].target);
                         } else {
-                          graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget.edges[i].source, cell.edges[j].source);
+                          graph.insertEdge(parent, null, getConnectionNode(label), dropTarget.edges[i].source, cell.edges[j].source);
                         }
                         flag = true;
                         break;
@@ -4670,20 +4635,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     }
                   }
                 } else {
-                  graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget.edges[i].source, cell);
+                  graph.insertEdge(parent, null, getConnectionNode(label), dropTarget.edges[i].source, cell);
                 }
               } else {
                 if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
                   for (let j = 0; j < cell.edges.length; j++) {
                     if (cell.edges[j].target.id !== cell.id) {
                       if (checkClosingCell(cell.edges[j].target)) {
-                        graph.insertEdge(parent, null, getConnectionNode(label, type), cell.edges[j].target, dropTarget.edges[i].target);
+                        graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, dropTarget.edges[i].target);
                         break;
                       }
                     }
                   }
                 } else {
-                  graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
+                  graph.insertEdge(parent, null, getConnectionNode(label), cell, dropTarget.edges[i].target);
                 }
               }
             }
@@ -4694,7 +4659,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             let checkLabel = '';
             if (dropTarget.value.tagName === 'Fork') {
               label = 'branch';
-              type = 'branch';
               checkLabel = 'Join';
             } else if (dropTarget.value.tagName === 'If') {
               checkLabel = 'EndIf';
@@ -4702,14 +4666,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               checkLabel = 'EndRetry';
             } else if (dropTarget.value.tagName === 'Try') {
               label = 'try';
-              type = 'try';
               checkLabel = 'EndTry';
             } else if (dropTarget.value.tagName === 'Catch') {
               checkLabel = 'EndCatch';
               graph.getModel().setStyle(dropTarget, 'catch');
             } else if (dropTarget.value.tagName === 'Await') {
               label = 'await';
-              type = 'await';
             }
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
               let target1, target2;
@@ -4735,11 +4697,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
 
               if (target1 && target2) {
-                graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target1.target);
+                graph.insertEdge(parent, null, getConnectionNode(label), target2, target1.target);
                 graph.getModel().remove(target1);
               } else if (self.nodeMap.has(dropTarget.id)) {
                 const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
-                graph.insertEdge(parent, null, getConnectionNode(label, type), target2, target);
+                graph.insertEdge(parent, null, getConnectionNode(label), target2, target);
               }
             } else {
               let flag = false;
@@ -4759,17 +4721,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                         for (let x = 0; x < attr.length; x++) {
                           if (attr[x].value && attr[x].name) {
                             label = attr[x].value;
-                            type = attr[i].value === 'true' ? 'then' : attr[i].value === 'false' ? 'else' : attr[i].value;
                             break;
                           }
                         }
                       }
 
                       if (cell && dropTarget.edges[i].target) {
-                        graph.insertEdge(parent, null, getConnectionNode(label, type), cell, dropTarget.edges[i].target);
+                        graph.insertEdge(parent, null, getConnectionNode(label), cell, dropTarget.edges[i].target);
                       }
                       graph.getModel().remove(dropTarget.edges[i]);
-
                     }
                     break;
                   }
@@ -4778,7 +4738,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               if (!flag && self.nodeMap.has(dropTarget.id)) {
                 const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
                 if (cell && target) {
-                  graph.insertEdge(parent, null, getConnectionNode(label, type), cell, target);
+                  graph.insertEdge(parent, null, getConnectionNode(label), cell, target);
                 }
               }
             }
@@ -4786,9 +4746,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (cell.edges) {
               for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.value.tagName === checkLabel) {
-                  const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry' ? 'endRetry' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
+                  const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
+                    ? 'endRetry' : checkLabel === 'EndCatch' ? 'endCatch' : 'endTry';
                   if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry') {
-                    cell.edges[i].value.attributes[0].nodeValue = '';
+                    cell.edges[i].value.attributes[0].nodeValue = _label;
                     cell.edges[i].value.attributes[1].nodeValue = _label;
                   }
                 }
@@ -4796,7 +4757,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
 
             if (cell && dropTarget) {
-              graph.insertEdge(parent, null, getConnectionNode(label, type), dropTarget, cell);
+              graph.insertEdge(parent, null, getConnectionNode(label), dropTarget, cell);
             }
           }
           if (cell.value.tagName === 'Try') {
@@ -4944,12 +4905,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         obj.ids.push(cells[i].id);
         if (!parentId) {
           parentId = cells[i].getParent().id;
-        } else {
-          if (parentId !== cells[i].getParent().id && !isParentAlsoSelected(cells, cells[i])) {
-            obj.invalid = true;
-            return obj;
-          }
         }
+        if (parentId !== cells[i].getParent().id && !isParentAlsoSelected(cells, cells[i])) {
+          obj.invalid = true;
+          return obj;
+        }
+
         if (!obj.firstCell) {
           obj.firstCell = cells[i];
           obj.lastCell = cells[i];
@@ -5030,8 +4991,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * @param cells
      */
     function moveSelectedCellToDroppedCell(cell, parentCell, cells) {
-
       const cellName = parentCell.value.tagName;
+
       let parent;
       if (cell) {
         parent = cell.getParent();
@@ -5040,14 +5001,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
       let v2, v3, v4, _sour, _tar, _middle;
       if (cellName === 'Fork') {
-        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'Join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
+        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
         if (cell) {
+
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName.indexOf('Order') > -1)) {
                 _tar = cell.edges[i];
               }
             }
@@ -5066,7 +5028,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               break;
             }
           }
-          let lastCellName = cells.lastCell.value.tagName;
+          const lastCellName = cells.lastCell.value.tagName;
           if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
@@ -5082,19 +5044,19 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
 
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
-        graph.insertEdge(parent, null, getConnectionNode('branch', 'branch'), parentCell, cell);
-        graph.insertEdge(parent, null, getConnectionNode('join', 'join'), _middle, v2);
+        graph.insertEdge(parent, null, getConnectionNode('branch'), parentCell, cell);
+        graph.insertEdge(parent, null, getConnectionNode('join'), _middle, v2);
 
 
       } else if (cellName === 'If') {
-        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'If-End', parentCell.id), 0, 0, 150, 80, 'if');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 150, 80, 'if');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName.indexOf('Order') > -1)) {
                 _tar = cell.edges[i];
               }
             }
@@ -5114,7 +5076,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               break;
             }
           }
-          let lastCellName = cells.lastCell.value.tagName;
+          const lastCellName = cells.lastCell.value.tagName;
           if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
@@ -5130,21 +5092,21 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
-        graph.insertEdge(parent, null, getConnectionNode('true', 'then'), parentCell, cell);
-        graph.insertEdge(parent, null, getConnectionNode('endIf', 'endIf'), _middle, v2);
+        graph.insertEdge(parent, null, getConnectionNode('then'), parentCell, cell);
+        graph.insertEdge(parent, null, getConnectionNode('endIf'), _middle, v2);
       } else if (cellName === 'Try') {
-        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'Try-End', parentCell.id), 0, 0, 94, 94, 'try');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', parentCell.id), 0, 0, 94, 94, 'try');
         v2.collapsed = true;
-        v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'Catch', parentCell.id), 0, 0, 100, 40, 'dashRectangle');
+        v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'catch', parentCell.id), 0, 0, 100, 40, 'dashRectangle');
         v3.collapsed = true;
-        v4 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'Catch-End', null), 0, 0, 100, 40, 'dashRectangle');
+        v4 = graph.insertVertex(parent, null, getCellNode('EndCatch', 'catchEnd', null), 0, 0, 100, 40, 'dashRectangle');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName.indexOf('Order') > -1)) {
                 _tar = cell.edges[i];
               }
             }
@@ -5164,7 +5126,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               break;
             }
           }
-          let lastCellName = cells.lastCell.value.tagName;
+          const lastCellName = cells.lastCell.value.tagName;
           if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
@@ -5180,20 +5142,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
-        graph.insertEdge(parent, null, getConnectionNode('try', 'try'), parentCell, cell);
-        graph.insertEdge(parent, null, getConnectionNode('try', 'try'), _middle, v3);
-        graph.insertEdge(parent, null, getConnectionNode('endTry', 'endTry'), v4, v2);
-        graph.insertEdge(parent, null, getConnectionNode('', ''), v3, v4, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
+        graph.insertEdge(parent, null, getConnectionNode('try'), parentCell, cell);
+        graph.insertEdge(parent, null, getConnectionNode('try'), _middle, v3);
+        graph.insertEdge(parent, null, getConnectionNode('endTry'), v4, v2);
+        graph.insertEdge(parent, null, getConnectionNode(''), v3, v4, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
 
       } else if (cellName === 'Retry') {
-        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'Retry-End', parentCell.id), 0, 0, 150, 80, 'retry');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 150, 80, 'retry');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.id === cell.id) {
                 _sour = cell.edges[i];
               }
-              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName === 'FileOrder')) {
+              if (cell.edges[i].source.id === cell.id && !(cell.value.tagName === 'Await' && cell.edges[i].target && cell.edges[i].target.value.tagName.indexOf('Order') > -1)) {
                 _tar = cell.edges[i];
               }
             }
@@ -5213,7 +5175,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               break;
             }
           }
-          let lastCellName = cells.lastCell.value.tagName;
+          const lastCellName = cells.lastCell.value.tagName;
           if (lastCellName === 'Fork' || lastCellName === 'If' || lastCellName === 'Try' || lastCellName === 'Retry') {
             _tar = getEndNode(cells.lastCell);
             _middle = _tar.source;
@@ -5229,8 +5191,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
-        graph.insertEdge(parent, null, getConnectionNode('retry', 'retry'), parentCell, cell);
-        graph.insertEdge(parent, null, getConnectionNode('endRetry', 'endRetry'), _middle, v2);
+        graph.insertEdge(parent, null, getConnectionNode('retry'), parentCell, cell);
+        graph.insertEdge(parent, null, getConnectionNode('endRetry'), _middle, v2);
 
       }
       if (_sour && _tar) {
@@ -5306,15 +5268,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * @param _tar
      */
     function connectExtraNodes(v1, v2, parent, _sour, _tar) {
-      let l1 = '', l2 = '', t1 = '', t2 = '';
+      let l1 = '', l2 = '';
       if (_sour.value) {
         let attrs = _.clone(_sour.value.attributes);
         if (attrs) {
           for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i].nodeName === 'label') {
+            if (attrs[i].nodeName === 'type') {
               l1 = attrs[i].nodeValue;
-            } else if (attrs[i].nodeName === 'type') {
-              t1 = attrs[i].nodeValue;
             }
           }
         }
@@ -5324,16 +5284,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         let attrs2 = _.clone(_tar.value.attributes);
         if (attrs2) {
           for (let i = 0; i < attrs2.length; i++) {
-            if (attrs2[i].nodeName === 'label') {
+            if (attrs2[i].nodeName === 'type') {
               l2 = attrs2[i].nodeValue;
-            } else if (attrs2[i].nodeName === 'type') {
-              t2 = attrs2[i].nodeValue;
             }
           }
         }
       }
-      graph.insertEdge(parent, null, getConnectionNode(l1, t1), _sour.source, v1);
-      graph.insertEdge(parent, null, getConnectionNode(l2, t2), v2, _tar.target);
+
+      graph.insertEdge(parent, null, getConnectionNode(l1), _sour.source, v1);
+      graph.insertEdge(parent, null, getConnectionNode(l2), v2, _tar.target);
     }
 
     /**
@@ -5444,16 +5403,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     /**
      * Create new connection object
      * @param label
-     * @param type
      */
-    function getConnectionNode(label: string, type: string): Object {
+    function getConnectionNode(label: string): Object {
       // Create new Connection object
       const connNode = doc.createElement('Connection');
-      if (!(label === 'true' || label === 'false')) {
-        label = '';
-      }
       connNode.setAttribute('label', label);
-      connNode.setAttribute('type', type);
+      connNode.setAttribute('type', label);
       return connNode;
     }
 
@@ -5481,7 +5436,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       try {
         const label = new mxCellAttributeChange(
           cell, 'label',
-          '');
+          data);
         const type = new mxCellAttributeChange(
           cell, 'type',
           data);
@@ -5629,7 +5584,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * Updates the properties panel
      */
     function selectionChanged(_graph) {
-
       let div = document.getElementById('properties');
       // Forces focusout in IE
       _graph.container.focus();
@@ -5641,44 +5595,59 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       const cell = _graph.getSelectionCell();
       if (cell == null) {
         div.setAttribute('class', 'text-center text-orange');
-        mxUtils.writeln(div, 'Nothing selected.');
+        self.translate.get('workflow.message.nothingSelected').subscribe(translatedValue => {
+          mxUtils.writeln(div, translatedValue);
+        });
       } else {
         if (cell.value.tagName === 'Fork' || cell.value.tagName === 'Await' || cell.value.tagName === 'Try' || cell.value.tagName === 'Catch') {
           div.setAttribute('class', 'text-center text-orange');
-          mxUtils.writeln(div, 'Nothing selected.');
+          self.translate.get('workflow.message.nothingSelected').subscribe(translatedValue => {
+            mxUtils.writeln(div, translatedValue);
+          });
           return;
         }
         div.removeAttribute('class');
-        const form = new mxForm('property-table');
+        const form =  document.createElement('form');
         let attrs = cell.value.attributes;
         if (attrs) {
+          let flg1 = false, flg2 = false;
           for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState') {
+            if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState' && attrs[i].nodeName !== 'key' && attrs[i].nodeName !== 'value') {
               createTextField(_graph, form, cell, attrs[i]);
             }
             if (attrs[i].nodeName === 'checkSteadyState') {
               createCheckbox(_graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: attrs[i].nodeValue});
             }
+            if (attrs[i].nodeName === 'success') {
+              flg1 = true;
+            } else if (attrs[i].nodeName === 'failure') {
+              flg2 = true;
+            }
           }
           if (cell.value.nodeName === 'Job') {
-            createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
-            createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
+            if (!flg1) {
+              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
+            }
+            if (!flg2) {
+              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
+            }
+
+            let _div = document.createElement('div');
+            _div.setAttribute('class', '_600 m-b-sm text-u-c');
+            let label = document.createElement('label');
+            self.translate.get('workflow.label.variables').subscribe(translatedValue => {
+              mxUtils.writeln(label, translatedValue);
+            });
+
+            _div.appendChild(label);
+            form.appendChild(_div);
+            createTextField(_graph, form, cell, {nodeName: 'key', nodeValue: ''});
+            createTextField(_graph, form, cell, {nodeName: 'value', nodeValue: ''});
+
           }
         }
-        div.appendChild(form.getTable());
-        if (cell.value.nodeName === 'Job') {
-          let label = document.createElement('div');
-          let dom = document.createElement('label');
-          dom.setAttribute('class', '_600 m-t-sm');
-          mxUtils.writeln(dom, 'VARIABLES');
-          label.appendChild(dom);
-          div.appendChild(label);
-          const form1 = new mxForm('property-table');
-          createTextField(_graph, form1, cell, {nodeName: 'key', nodeValue: ''});
-          createTextField(_graph, form1, cell, {nodeName: 'value', nodeValue: ''});
-          div.appendChild(form1.getTable());
-        }
-        mxUtils.br(div);
+
+        div.appendChild(form);
       }
     }
 
@@ -5686,7 +5655,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * Creates the textfield for the given property.
      */
     function createTextField(_graph, form, cell, attribute) {
-      let input = form.addText(attribute.nodeName + ':', attribute.nodeValue);
+      const div = document.createElement('div');
+      div.setAttribute('class', 'md-form-group');
+      const input = document.createElement('input');
+      input.setAttribute('type', 'text');
+      input.setAttribute('value', attribute.nodeValue);
+      input.setAttribute('class', 'md-input');
+      const label = document.createElement('label');
+      label.setAttribute('class', 'font14');
+      self.translate.get('workflow.label.' + attribute.nodeName).subscribe(translatedValue => {
+        mxUtils.writeln(label, translatedValue);
+      });
+      div.appendChild(input);
+      div.appendChild(label);
+      form.appendChild(div);
       const applyHandler = function () {
         let newValue = input.value || '';
         let oldValue = cell.getAttribute(attribute.nodeName, '');
@@ -5719,12 +5701,22 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Creates the textAreafield for the given property.
+     * Create the checkbox for the given property.
      */
     function createCheckbox(_graph, form, cell, attribute) {
-      var isTrue = (attribute.nodeValue == 'true');
-    
-      let input = form.addCheckbox(attribute.nodeName + ':', isTrue);
+      const label =  document.createElement('label');
+      label.setAttribute('class', 'md-check');
+      const input = document.createElement('input');
+      input.setAttribute('type', 'checkbox');
+      input.setAttribute('checked', attribute.nodeValue);
+      const i = document.createElement('i');
+      i.setAttribute('class', 'primary');
+      label.appendChild(input);
+      label.appendChild(i);
+      self.translate.get('workflow.label.' + attribute.nodeName).subscribe(translatedValue => {
+        mxUtils.writeln(label, translatedValue);
+      });
+      form.appendChild(label);
       const applyHandler = function () {
         let newValue = cell.getAttribute(attribute.nodeName, '') !== 'true';
         _graph.getModel().beginUpdate();

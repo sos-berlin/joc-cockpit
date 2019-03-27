@@ -21,6 +21,7 @@ export class ConfigurationComponent {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 12;
+      let flag = top < 70;
       top = top - $(window).scrollTop();
       if (top < 70) {
         top = 92;
@@ -33,7 +34,7 @@ export class ConfigurationComponent {
         }
         $('.tree-block').height((ht - 24 + $(window).scrollTop()) + 'px');
       }
-      if (top < 139 && top > 92) {
+      if (top < 139 && flag) {
         setTimeout(() => {
           this.calcHeight();
         }, 5);

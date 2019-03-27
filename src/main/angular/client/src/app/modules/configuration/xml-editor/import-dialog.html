@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>label.importXML</span>
+    <span translate>xml.label.importXML</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -57,13 +57,13 @@
             </tbody>
           </table>
           <div>
-            <label for="exampleFormControlSelect1">Assign XSD Schema <sup class="text-danger text-sm">*</sup></label>
+            <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup class="text-danger text-sm">*</sup></label>
             <span class="form-group" >
               <select class="form-control" [(ngModel)]="selectedXsd" name="schema"
                       (change)="reassignxsd(selectedXsd)" id="exampleFormControlSelect1">
-                <option><---Choose one of the file---></option>
-                <option>systemMonitorNotification</option>
-                <option>yade</option>
+                <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
+                <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
+                <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
               </select>
             </span>
           </div>

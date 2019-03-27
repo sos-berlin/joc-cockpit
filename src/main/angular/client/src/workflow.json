@@ -13,7 +13,7 @@
       "Process": [
         {
           "_id": "3",
-          "_title": "Start",
+          "_title": "start",
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
@@ -27,7 +27,7 @@
         },
         {
           "_id": "4",
-          "_title": "Drag and Drop here",
+          "_title": "dragAndDrop",
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",
@@ -41,7 +41,7 @@
         },
         {
           "_id": "5",
-          "_title": "End",
+          "_title": "end",
           "mxCell": {
             "_parent": "1",
             "_vertex": "1",

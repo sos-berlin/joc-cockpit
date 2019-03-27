@@ -810,7 +810,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
     obj.compact = true;
     this.coreService.post('yade/transfers', obj).subscribe((res: any) => {
-      this.yadeHistorys = res.transfers;
+      this.yadeHistorys = res.transfers || [];
       this.isLoading = true;
       this.isLoaded = true;
     }, () => {

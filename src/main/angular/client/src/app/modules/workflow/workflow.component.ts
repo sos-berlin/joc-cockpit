@@ -3,6 +3,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {TreeComponent} from '../../components/tree-navigation/tree.component';
 import {WorkflowService} from '../../services/workflow.service';
+import * as _ from 'underscore';
 
 declare const mxEditor;
 declare const mxUtils;
@@ -67,7 +68,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   @ViewChild(TreeComponent) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private workflowService: WorkflowService) {
-
   }
 
   ngOnInit() {
@@ -132,7 +132,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       _json = JSON.parse(sessionStorage.$SOS$WORKFLOW);
       this.workFlowJson = _json;
     }
-    if (_json) {
+    if (_json && !_.isEmpty(_json)) {
       this.workflowService.appendIdInJson(_json);
       let mxJson = {
         mxGraphModel: {
@@ -264,8 +264,8 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   }
 
   private initEditorConf(editor, _xml: any) {
+    const self = this;
     const graph = editor.graph;
-    const doc = mxUtils.createXmlDocument();
     if (!_xml) {
 
       // Alt disables guides
@@ -302,41 +302,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
        * @param cell
        */
       graph.convertValueToString = function (cell) {
-        if (mxUtils.isNode(cell.value)) {
-          if (cell.value.nodeName.toLowerCase() === 'process') {
-            let title = cell.getAttribute('title', '');
-            if (title != null && title.length > 0) {
-              return title;
-            }
-            return '';
-          } else if (cell.value.nodeName.toLowerCase() === 'job') {
-            let name = cell.getAttribute('name', '');
-            let title = cell.getAttribute('title', '');
-            if (title != null && title.length > 0) {
-              return name + ' - ' + title;
-            }
-            return name;
-          } else if (cell.value.nodeName.toLowerCase() === 'retry') {
-            let str = 'Repeat ' + cell.getAttribute('repeat', '') + ' times';
-            if (cell.getAttribute('delay', '') && cell.getAttribute('delay', '') !== 0) {
-              str = str + '\nwith delay ' + cell.getAttribute('delay', '');
-            }
-            return str;
-          } else if (cell.value.nodeName.toLowerCase() === 'fileorder') {
-            let str = 'File Order';
-            if (cell.getAttribute('regex', '') && cell.getAttribute('directory', '')) {
-              str = cell.getAttribute('regex', '') + ' - ' + cell.getAttribute('directory', '');
-            }
-            return str;
-          } else if (cell.value.nodeName.toLowerCase() === 'if') {
-            return cell.getAttribute('predicate', '');
-          } else {
-            return cell.getAttribute('label', '');
-          }
-        }
-        return '';
+        return self.workflowService.convertValueToString(cell);
       };
 
+      graph.getTooltipForCell  = function (cell) {
+        return self.workflowService.convertValueToString(cell);
+      };
 
       /**
        * Function: foldCells to collapse/expand
