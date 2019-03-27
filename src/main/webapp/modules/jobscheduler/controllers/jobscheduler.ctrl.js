@@ -4318,6 +4318,7 @@
                 vm.importCalendars = [];
                 vm.fileContentCalendars = [];
                 vm.basedOnCalendars = [];
+                vm.importCalendarObj ={};
             });
         };
 
@@ -4394,9 +4395,9 @@
         function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
                 vm.object.calendars = [];
-                vm.calendarArr = undefined;
                 vm.getCategories();
             });
+            vm.calendarArr = undefined;
         }
 
         function deleteCalendarFn(obj, calendar) {
@@ -4434,7 +4435,7 @@
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     deleteCalendar(obj);
                 }, function () {
-
+                    vm.calendarArr = undefined;
                 });
 
             } else {

@@ -85,7 +85,7 @@
                                 <th><span translate>label.validityFrom</span></th>
                                 <th><span translate>label.validityTo</span></th>
                             </tr>
-                            </thead>
+                        </thead>
                         <tbody ng-repeat="calendar in fileContentCalendars">
                             <tr>
                                 <td >
@@ -108,8 +108,11 @@
                                 <td ng-bind="calendar.from | stringToDate1"></td>
                                 <td ng-bind="calendar.to | stringToDate1"></td>
                             </tr>
-                            </tbody>
+                        </tbody>
                     </table>
+                </div>
+                <div class="text-center" ng-hide="uploader.queue.length>0">
+                    <i class="help-block text-muted" translate>message.uploadJsonFiles</i>
                 </div>
                 <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
                     <div><img src="images/upload.png"></div>
@@ -121,7 +124,7 @@
                         <span translate="">button.chooseFileToUpload</span>
                     </button>
                 </div>
-                <input type="file" id="file1" nv-file-select="" uploader="uploader" style="display: none;">
+                <input type="file" id="file1" nv-file-select="" accept="application/json" uploader="uploader" style="display: none;">
                 <div class="row m-t-md" ng-if="uploader.queue.length>0">
                     <div class="b-t"></div>
                 </div>

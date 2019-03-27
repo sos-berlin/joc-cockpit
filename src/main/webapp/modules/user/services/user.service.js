@@ -48,12 +48,40 @@
     }
 
     function n() {
-        var e = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         return {
-            encode: function (n) {
-                var t, o, r, i, s, c = "", u = "", a = "", f = 0;
-                do t = n.charCodeAt(f++), o = n.charCodeAt(f++), u = n.charCodeAt(f++), r = t >> 2, i = (3 & t) << 4 | o >> 4, s = (15 & o) << 2 | u >> 6, a = 63 & u, isNaN(o) ? s = a = 64 : isNaN(u) && (a = 64), c = c + e.charAt(r) + e.charAt(i) + e.charAt(s) + e.charAt(a), t = o = u = "", r = i = s = a = ""; while (f < n.length);
-                return c
+            encode: function (input) {
+                var output = "";
+                var chr1, chr2, chr3 = "";
+                var enc1, enc2, enc3, enc4 = "";
+                var i = 0;
+
+                do {
+                    chr1 = input.charCodeAt(i++);
+                    chr2 = input.charCodeAt(i++);
+                    chr3 = input.charCodeAt(i++);
+
+                    enc1 = chr1 >> 2;
+                    enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                    enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                    enc4 = chr3 & 63;
+
+                    if (isNaN(chr2)) {
+                        enc3 = enc4 = 64;
+                    } else if (isNaN(chr3)) {
+                        enc4 = 64;
+                    }
+
+                    output = output +
+                        keyStr.charAt(enc1) +
+                        keyStr.charAt(enc2) +
+                        keyStr.charAt(enc3) +
+                        keyStr.charAt(enc4);
+                    chr1 = chr2 = chr3 = "";
+                    enc1 = enc2 = enc3 = enc4 = "";
+                } while (i < input.length);
+
+                return output;
             }
         }
     }
@@ -76,7 +104,7 @@
                 }), t.promise
             }, authenticate: function (e, r) {
                 var i = n.defer();
-                return t.defaults.headers.common.Authorization = "Basic " + o.encode(e + ":" + r), t.post("security/login").then(function (e) {
+                return t.defaults.headers.common.Authorization = "Basic " + o.encode(unescape(encodeURIComponent(e + ":" + r))), t.post("security/login").then(function (e) {
                     i.resolve(e.data)
                 }, function (e) {
                     i.reject(e)
