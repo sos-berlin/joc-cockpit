@@ -4319,6 +4319,7 @@
                 vm.fileContentCalendars = [];
                 vm.basedOnCalendars = [];
                 vm.importCalendarObj ={};
+                vm.importCalendarObj.jobschedulerId = vm.schedulerIds.selected;
             });
         };
 
@@ -4448,7 +4449,7 @@
                 modalInstance1.result.then(function () {
                     deleteCalendar(obj);
                 }, function () {
-
+                    vm.calendarArr = undefined;
                 });
             }
         }
