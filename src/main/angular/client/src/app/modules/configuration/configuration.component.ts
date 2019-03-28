@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 
 declare const $;
@@ -21,7 +21,7 @@ export class ConfigurationComponent {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 12;
-      let flag = top < 70;
+      const flag = top < 70;
       top = top - $(window).scrollTop();
       if (top < 70) {
         top = 92;
@@ -29,8 +29,10 @@ export class ConfigurationComponent {
       $('.sticky').css('top', top);
       const ht = window.innerHeight - top;
       if (ht > 400) {
-        if ($('#graph')) {
-          $('#graph').height(ht + 'px');
+      
+        const graph = $('#graph');
+        if (graph) {
+          graph.height(ht + 'px');
         }
         $('.tree-block').height((ht - 24 + $(window).scrollTop()) + 'px');
       }

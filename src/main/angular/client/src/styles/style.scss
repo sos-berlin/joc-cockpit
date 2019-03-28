@@ -761,7 +761,7 @@ button.close {
     color: #3a3a3a;
   }
   > li {
-    width: 124px;
+    width: 124.5px;
   }
   .nav-link {
     margin: 0 !important;
@@ -3577,7 +3577,7 @@ aside {
 #leftSidePanel.sticky {
   float: none;
   position: fixed;
-  top: 90px;
+  top: 143px;
   z-index: 6;
   left: auto;
   height: 100%;
@@ -5963,7 +5963,7 @@ pre#pre {
 .tree-icon {
   position: relative;
   top: 2px;
-  padding-right: 5px;
+  margin-right: 5px;
 }
 
 input:-webkit-autofill {
@@ -6145,4 +6145,13 @@ Sidebar Panel
       padding-bottom: 0;
     }
   }
+}
+div.mxTooltip {
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+	background: black;
+	font-size: 12px;
+	position: absolute;
+	cursor: default;
+	padding: 6px 8px;
+	color: #fff;
 }

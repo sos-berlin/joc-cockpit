@@ -3,6 +3,7 @@ import * as _ from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 
 declare const mxHierarchicalLayout;
+declare const mxTooltipHandler;
 declare const mxUtils;
 
 @Injectable()
@@ -19,6 +20,7 @@ export class WorkflowService {
 
   constructor(public translate: TranslateService) {
     mxHierarchicalLayout.prototype.interRankCellSpacing = 50;
+    mxTooltipHandler.prototype.delay = 0;
   }
 
   /**
@@ -204,6 +206,10 @@ export class WorkflowService {
           obj._name = json.instructions[x].jobName;
           obj._title = json.instructions[x].title ? json.instructions[x].title : '';
           obj._agent = json.instructions[x].agentPath ? json.instructions[x].agentPath : '';
+          obj._success = (json.instructions[x].returnCodeMeaning && json.instructions[x].returnCodeMeaning.success) ? json.instructions[x].returnCodeMeaning.success : '0';
+          obj._failure = (json.instructions[x].returnCodeMeaning && json.instructions[x].returnCodeMeaning.failure) ? json.instructions[x].returnCodeMeaning.failure : '';
+          obj._key = (json.instructions[x].variables && _.keys(json.instructions[x].variables).length > 0) ? _.keys(json.instructions[x].variables)[0] : '';
+          obj._value = (json.instructions[x].variables && _.values(json.instructions[x].variables).length > 0) ? _.values(json.instructions[x].variables)[0] : '';
           obj.mxCell._style = 'job';
           obj.mxCell.mxGeometry._width = '200';
           obj.mxCell.mxGeometry._height = '50';
@@ -407,8 +413,8 @@ export class WorkflowService {
           obj._label = 'abort';
           obj._message = json.instructions[x].message;
           obj.mxCell._style = this.abort;
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
           mxJson.Abort.push(obj);
         } else if (json.instructions[x].TYPE === 'Terminate') {
           if (mxJson.Terminate) {
@@ -424,8 +430,8 @@ export class WorkflowService {
           obj._label = 'terminate';
           obj._message = json.instructions[x].message;
           obj.mxCell._style = this.terminate;
-          obj.mxCell.mxGeometry._width = '70';
-          obj.mxCell.mxGeometry._height = '70';
+          obj.mxCell.mxGeometry._width = '75';
+          obj.mxCell.mxGeometry._height = '75';
           mxJson.Terminate.push(obj);
         } else if (json.instructions[x].TYPE === 'Await') {
           if (mxJson.Await) {
@@ -1079,12 +1085,12 @@ export class WorkflowService {
         this.translate.get('workflow.label.fileOrder').subscribe(translatedValue => {
           str = translatedValue;
         });
-        if (cell.getAttribute('regex') && cell.getAttribute('directory')) {
-          str = cell.getAttribute('regex') + ' - ' + cell.getAttribute('directory');
+        if (cell.getAttribute('directory')) {
+          str = str + ' - ' + cell.getAttribute('directory');
         }
         return str;
       } else if (cell.value.tagName === 'If') {
-        return cell.getAttribute('predicate');
+        return cell.getAttribute('predicate') || 'If';
       } else {
         let x = cell.getAttribute('label');
         if (x) {
@@ -1101,6 +1107,75 @@ export class WorkflowService {
               str = translatedValue;
             });
           }
+        }
+        return str;
+      }
+    }
+    return str;
+  }
+
+  public getTooltipForCell(cell): string {
+    let str = '';
+    if (mxUtils.isNode(cell.value)) {
+      if (cell.value.tagName === 'Process' || cell.value.tagName === 'Connection') {
+        return '';
+      } else if (cell.value.tagName === 'Job') {
+        let name = '', title = '', agent = '';
+        this.translate.get('workflow.label.name').subscribe(translatedValue => {
+          name = translatedValue;
+        });
+        this.translate.get('workflow.label.title').subscribe(translatedValue => {
+          title = translatedValue;
+        });
+        this.translate.get('workflow.label.agent').subscribe(translatedValue => {
+          agent = translatedValue;
+        });
+        return '<b>' + name + '</b> : ' + (cell.getAttribute('name') || '-') + '</br>' +
+          '<b>' + title + '</b> : ' + (cell.getAttribute('title') || '-') + '</br>' +
+          '<b>' + agent + '</b> : ' + (cell.getAttribute('agent') || '-');
+      } else if (cell.value.tagName === 'Retry') {
+        let repeat = '', delay = '';
+        this.translate.get('workflow.label.repeat').subscribe(translatedValue => {
+          repeat = translatedValue;
+        });
+        this.translate.get('workflow.label.delay').subscribe(translatedValue => {
+          delay = translatedValue;
+        });
+        return '<b>' + repeat + '</b> : ' + (cell.getAttribute('repeat') || '-') + '</br>' +
+          '<b>' + delay + '</b> : ' + (cell.getAttribute('delay') || '-');
+      } else if (cell.value.tagName === 'FileOrder') {
+        let regex = '', directory = '', agent = '';
+        this.translate.get('workflow.label.agent').subscribe(translatedValue => {
+          agent = translatedValue;
+        });
+        this.translate.get('workflow.label.regex').subscribe(translatedValue => {
+          regex = translatedValue;
+        });
+        this.translate.get('workflow.label.directory').subscribe(translatedValue => {
+          directory = translatedValue;
+        });
+
+        return '<b>' + agent + '</b> : ' + (cell.getAttribute('agent') || '-') + '</br>' +
+          '<b>' + regex + '</b> : ' + (cell.getAttribute('regex') || '-') + '</br>' +
+          '<b>' + directory + '</b> : ' + (cell.getAttribute('directory') || '-');
+      } else if (cell.value.tagName === 'If') {
+        let msg = '';
+        this.translate.get('workflow.label.predicate').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('predicate') || '-');
+      } else if (cell.value.tagName === 'Abort' || cell.value.tagName === 'Terminate') {
+        let msg = '';
+        this.translate.get('workflow.label.message').subscribe(translatedValue => {
+          msg = translatedValue;
+        });
+        return '<b>' + msg + '</b> : ' + (cell.getAttribute('message') || '-');
+      } else {
+        const x = cell.getAttribute('label');
+        if (x) {
+          this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+            str = translatedValue;
+          });
         }
         return str;
       }

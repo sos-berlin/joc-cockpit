@@ -13,7 +13,7 @@
       </Connector>
     </add>
     <add as="rectangle">
-      <FileOrder label="fileOrder" agent="" regex="" directory="" checkSteadyState="true">
+      <FileOrder label="fileOrder" agent="" regex=".*" directory="" checkSteadyState="true">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
         </mxCell>
@@ -41,16 +41,16 @@
       </Retry>
     </add>
     <add as="Terminate">
-      <Terminate label="terminate" message="">
+      <Terminate label="terminate" message="order prematurely completed">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Terminate>
     </add>
     <add as="Abort">
-      <Abort label="abort" message="">
+      <Abort label="abort" message="order failed">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Abort>
     </add>
@@ -78,7 +78,7 @@
     <add as="symbol">
       <Symbol label="Instruction" description="">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="75" height="75"/>
         </mxCell>
       </Symbol>
     </add>

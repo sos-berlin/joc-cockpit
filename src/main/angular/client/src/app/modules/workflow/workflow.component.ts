@@ -306,7 +306,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       };
 
       graph.getTooltipForCell  = function (cell) {
-        return self.workflowService.convertValueToString(cell);
+        return self.workflowService.getTooltipForCell(cell);
       };
 
       /**

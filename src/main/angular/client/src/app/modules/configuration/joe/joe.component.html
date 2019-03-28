@@ -25,11 +25,7 @@
                     <span *ngIf="node.isExpanded" class="fa fa-angle-down fa-lg p-r-10"></span>
                   </span>
                   <span *ngIf="!node.hasChildren && !node.data.type" class="fa fa-caret-right fa-lg w-15 m-t-xs"></span>
-                  <span *ngIf="node.data.type == 'workflow'" class="icon-workflows-icon tree-icon"></span>
-                  <span *ngIf="node.data.type == 'order'" class="icon-orders-icon tree-icon"></span>
-                  <span *ngIf="node.data.type == 'lock'" class="icon-lock-icon tree-icon"></span>
-                  <span *ngIf="node.data.type == 'processClass'" class="icon-process-class-icon tree-icon"></span>
-                  <span *ngIf="node.data.type == 'calendar'" class="icon-calendar-icon tree-icon"></span>
+                  <span *ngIf="!node.hasChildren && node.data.type" class="fa fa-circle-o text-sm w-15 m-t-xs"></span>
                   <div class="node-content-wrapper"
                        [class.node-content-wrapper-active]="node.data.isSelected"
                        (click)="node.mouseAction('click', $event)">

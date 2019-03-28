@@ -3795,8 +3795,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         return self.workflowService.convertValueToString(cell);
       };
 
+      // Returns the type as the tooltip for column cells
       graph.getTooltipForCell  = function (cell) {
-        return self.workflowService.convertValueToString(cell);
+        return self.workflowService.getTooltipForCell(cell);
       };
 
       /**
@@ -4418,8 +4419,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     console.log('In testing phase');
                     const _sourCellName = cell.source.value.tagName;
                     const _tarCellName = cell.target.value.tagName;
-                    if (cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate') &&
-                      (_tarCellName === 'Job' || _tarCellName === 'Abort' || _tarCellName === 'Terminate'))) {
+                    if (cell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate' || 'Await') &&
+                      (_tarCellName === 'Job' || _tarCellName === 'Abort' || _tarCellName === 'Terminate' || 'Await'))) {
                       graph.getModel().remove(cell.source.edges[x]);
                     } else {
                       cell.source.removeEdge(cell.source.edges[x], true);
@@ -4527,7 +4528,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   for (let j = 0; j < dropTarget.edges[i].target.edges.length; j++) {
                     if (dropTarget.edges[i].target.edges[j].edge && dropTarget.edges[i].target.edges[j].value.attributes
                       && dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (dropTarget.edges[i].target.edges[j].value.attributes[0]
-                        && dropTarget.edges[i].target.edges[j].value.attributes[0].value == 'false')) {
+                        && dropTarget.edges[i].target.edges[j].value.attributes[0].value === 'else')) {
                       flag = true;
                     }
                   }
@@ -5537,7 +5538,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (cell.id !== cell.edges[i].target.id) {
               const attrs = cell.edges[i].value.attributes;
               if (attrs) {
-                if (attrs[0].value && (attrs[0].value === 'true' || attrs[0].value === 'false')) {
+                if (attrs[0].value && (attrs[0].value === 'then' || attrs[0].value === 'else')) {
                   graph.getModel().beginUpdate();
                   try {
                     const label = new mxCellAttributeChange(
@@ -5607,10 +5608,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           return;
         }
         div.removeAttribute('class');
-        const form =  document.createElement('form');
+        const form = document.createElement('form');
         let attrs = cell.value.attributes;
         if (attrs) {
-          let flg1 = false, flg2 = false;
+          let flg1 = false, flg2 = false, keyAttr = {nodeName: 'key', nodeValue: ''}, valueAttr = {nodeName: 'value', nodeValue: ''};
           for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState' && attrs[i].nodeName !== 'key' && attrs[i].nodeName !== 'value') {
               createTextField(_graph, form, cell, attrs[i]);
@@ -5622,11 +5623,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               flg1 = true;
             } else if (attrs[i].nodeName === 'failure') {
               flg2 = true;
+            } else if (attrs[i].nodeName === 'key') {
+              keyAttr = attrs[i];
+            } else if (attrs[i].nodeName === 'value') {
+              valueAttr = attrs[i];
             }
           }
           if (cell.value.nodeName === 'Job') {
             if (!flg1) {
-              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: ''});
+              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: '0'});
             }
             if (!flg2) {
               createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
@@ -5641,8 +5646,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
             _div.appendChild(label);
             form.appendChild(_div);
-            createTextField(_graph, form, cell, {nodeName: 'key', nodeValue: ''});
-            createTextField(_graph, form, cell, {nodeName: 'value', nodeValue: ''});
+            createTextField(_graph, form, cell, keyAttr);
+            createTextField(_graph, form, cell, valueAttr);
 
           }
         }
@@ -5708,7 +5713,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       label.setAttribute('class', 'md-check');
       const input = document.createElement('input');
       input.setAttribute('type', 'checkbox');
-      input.setAttribute('checked', attribute.nodeValue);
+   
+      input.setAttribute('value', attribute.nodeName);
+      if(attribute.nodeValue == 'true') {
+        input.setAttribute('checked', attribute.nodeValue);
+      }
       const i = document.createElement('i');
       i.setAttribute('class', 'primary');
       label.appendChild(input);
