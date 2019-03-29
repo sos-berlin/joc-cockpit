@@ -3025,7 +3025,7 @@
                         if (vm.events[0].eventSnapshots[j].eventType === 'JobChainStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                             arr.push({jobChain: vm.events[0].eventSnapshots[j].path});
                         }
-                        if ((vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "JOB" || vm.events[0].eventSnapshots[j].objectType === "ORDER") && loadFileBasedObj && !callTree) {
+                        if (vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "JOB" || vm.events[0].eventSnapshots[j].objectType === "ORDER") && loadFileBasedObj && !callTree) {
                             callTree = true;
                             arr = [];
                             break;
@@ -3111,7 +3111,7 @@
                             if (jobChainPaths.indexOf(vm.events[0].eventSnapshots[j].path) === -1) {
                                 jobChainPaths.push(vm.events[0].eventSnapshots[j].path);
                             }
-                        } else if ((vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN") {
+                        } else if (vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "JOBCHAIN") {
                             isAnyFileEventOnHold = true;
                             break;
                         }
@@ -6116,7 +6116,7 @@
                             if (vm.permission.AuditLog.view.status)
                                 vm.loadAuditLogs(vm.showTaskPanel);
                         }
-                        else if ((vm.events[0].eventSnapshots[m].eventType === "InventoryInitialized" || vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "JOB" && !$location.search().path) {
+                        else if (vm.events[0].eventSnapshots[m].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "JOB" && !$location.search().path) {
                             let folders = [];
                             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -6146,7 +6146,7 @@
                             if (jobPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
                                 jobPaths.push(vm.events[0].eventSnapshots[j].path);
                             }
-                        } else if ((vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "JOB") {
+                        } else if (vm.events[0].eventSnapshots[j].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[j].objectType === "JOB") {
                             isAnyFileEventOnHold = true;
                             break;
                         }

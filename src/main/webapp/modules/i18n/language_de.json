@@ -1209,7 +1209,6 @@
   "label.jumpHost": "Jump Host",
   "label.exist": "Objekt bereits vorhanden",
   "message.readingContentOfFile": "Inhalt der Datei wird gelesen",
-  "message.invalidFileExtension": "Dateierweiterung nicht zugelassen",
   "message.notValidCalendarFile": "Keine gültige Kalenderdatei",
   "message.noFilesFound": "keine Dateien aus File Transfers vorhanden",
   "message.noEventsFound": "keine Ereignisse gefunden",
@@ -1393,6 +1392,7 @@
   "placeholder.maximumProcesses": "Enter number of Maximum processes",
   "placeholder.agentTimeout": "Enter agent timeout",
   "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
-  "message.uploadJsonFiles": "You can only upload JSON files.",
-  "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period"
+  "message.uploadJsonFiles": "You can only upload .json files.",
+  "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period",
+  "message.invalidFileExtension": "Only files with the extension .json are allowed"
 }

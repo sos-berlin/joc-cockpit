@@ -1209,7 +1209,6 @@
   "label.jumpHost": "ジャンプホスト",
   "label.exist": "オブジェクトは既にあります",
   "message.readingContentOfFile": "ファイル内容読み込み",
-  "message.invalidFileExtension": "拡張子が使えません",
   "message.notValidCalendarFile": "有効なカレンダファイルではありません",
   "message.noFilesFound": "ファイル転送のファイルはありません",
   "message.noEventsFound": "イベントはありません",
@@ -1393,6 +1392,7 @@
   "placeholder.maximumProcesses": "Enter number of Maximum processes",
   "placeholder.agentTimeout": "Enter agent timeout",
   "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
-  "message.uploadJsonFiles": "You can only upload JSON files.",
-  "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period"
+  "message.uploadJsonFiles": "You can only upload .json files.",
+  "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period",
+  "message.invalidFileExtension": "Only files with the extension .json are allowed"
 }

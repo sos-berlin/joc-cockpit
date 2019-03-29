@@ -4191,7 +4191,7 @@
                 let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
                 if (fileExt != 'JSON') {
                     toasty.error({
-                        title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
+                        title: gettextCatalog.getString("message.invalidFileExtension"),
                         timeout: 10000
                     });
                     item.remove();
