@@ -1459,5 +1459,9 @@
   "xml.label.validate": "Validate",
   "xml.label.nonValidate": "Non Validate",
   "xml.message.requiredField": "Required field",
+  "xml.message.spaceNotAllowed": "Space not allowed",
+  "xml.message.cannotAddBlankSpace": "Can not add blank space in beginning",
+  "xml.message.onlyPositiveNumbers": "Only Add positive numbers",
+  "xml.message.cannotNegative": "can not be negative",
   "xml.message.wouldYouLikeToSaveCurrentXml": "Would you like to save current XML?"
 }

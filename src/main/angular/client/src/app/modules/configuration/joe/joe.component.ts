@@ -2377,50 +2377,50 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       this.isWorkflowStored();
     });
 
-    this.handleQueryEvents();
+    this.handleWindowEvents();
   }
 
-   private handleQueryEvents() {
-     /**
-      * Changes the zoom on mouseWheel events
-      */
-     $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
-       if (this.editor) {
-         if (event.ctrlKey) {
-           event.preventDefault();
-           if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-             this.editor.execute('zoomIn');
-           } else {
-             this.editor.execute('zoomOut');
-           }
-         }
-       }
-     });
+  private handleWindowEvents() {
+    /**
+     * Changes the zoom on mouseWheel events
+     */
+    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+      if (this.editor) {
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+            this.editor.execute('zoomIn');
+          } else {
+            this.editor.execute('zoomOut');
+          }
+        }
+      }
+    });
 
-     $('#graph').slimscroll();
-     const panel = $('.property-panel');
-     $('.sidebar-open', panel).click(() => {
-       $('.sidebar').css({'width': '296px', opacity: 1});
-       $('.sidebar-open').css('right', '-20px');
-       $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
-       $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
-       $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
-       this.centered();
-     });
+    $('#graph').slimscroll();
+    const panel = $('.property-panel');
+    $('.sidebar-open', panel).click(() => {
+      $('.sidebar').css({'width': '296px', opacity: 1});
+      $('.sidebar-open').css('right', '-20px');
+      $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
+      $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+      $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
+      this.centered();
+    });
 
-     $('.sidebar-close', panel).click(() => {
-       $('.sidebar-open').css('right', '0');
-       $('.sidebar').css({'width': '0', opacity: 0});
-       $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
-       $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
-       $('.sidebar-close').css('right', '-20px');
-       this.centered();
-     });
-     setTimeout(() => {
-       $('.sidebar-open').click();
-     }, 100);
+    $('.sidebar-close', panel).click(() => {
+      $('.sidebar-open').css('right', '0');
+      $('.sidebar').css({'width': '0', opacity: 0});
+      $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+      $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+      $('.sidebar-close').css('right', '-20px');
+      this.centered();
+    });
+    setTimeout(() => {
+      $('.sidebar-open').click();
+    }, 100);
 
-   }
+  }
 
    private centered() {
      if (this.editor && this.editor.graph) {
@@ -2446,14 +2446,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
         this.initEditorConf(editor, null);
         mxObjectCodec.allowEval = false;
-				// Adds active border for panning inside the container
-				editor.graph.createPanningManager = function()
-				{
-					let pm = new mxPanningManager(this);
-					pm.border = 30;
+        // Adds active border for panning inside the container
+        editor.graph.createPanningManager = function () {
+          let pm = new mxPanningManager(this);
+          pm.border = 30;
 
-					return pm;
-				};
+          return pm;
+        };
         const outln = document.getElementById('outlineContainer');
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
@@ -2588,7 +2587,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
   delete() {
     if (this.editor.graph.isEnabled()) {
-      this.editor.graph.removeCells(null, true);
+      this.editor.graph.removeCells(null, null);
     }
   }
 
@@ -2631,25 +2630,32 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     } else if (type === 'Retry') {
       obj.repeat = node._repeat;
       obj.delay = node._delay;
-    } else if (type === 'Abort') {
-      obj.message = node._message;
-    } else if (type === 'Terminate') {
+    } else if (type === 'Abort' || type === 'Terminate') {
       obj.message = node._message;
     } else if (type === 'FileOrder') {
       obj.agentPath = node._agent;
       obj.directory = node._directory;
       obj.regex = node._regex;
       obj.checkSteadyState = node._checkSteadyState;
+    } else if (type === 'OfferedOrder') {
+      // TODO
     }
     return obj;
   }
 
-  private xmlToJsonParser() {
+  /**
+   * Function: To convert Mxgraph xml to JSON (Web service response)
+   * @param xml : option
+   */
+  private xmlToJsonParser(xml) {
     if (this.editor) {
       const _graph = _.clone(this.editor.graph);
-      const enc = new mxCodec();
-      const node = enc.encode(_graph.getModel());
-      const xml = mxUtils.getXml(node);
+      if (!xml) {
+        const enc = new mxCodec();
+        const node = enc.encode(_graph.getModel());
+        xml = mxUtils.getXml(node);
+      }
+      
       let _json: any;
       try {
         _json = x2js.xml_str2json(xml);
@@ -2996,7 +3002,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.workFlowJson = _.clone(jsonObj);
+      if (jsonObj.instructions.length > 0) {
+        this.workFlowJson = _.clone(jsonObj);
+      } else {
+        this.workFlowJson = {};
+      }
     }
   }
 
@@ -4288,10 +4298,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           this.indexOfNextAdd = this.history.length;
           isUndoable = false;
           if (this.indexOfNextAdd < this.history.length) {
-            $('#redoBtn').prop('disabled', false);
+            $('#redoBtn').removeClass('disable-link');
           }
           if (this.indexOfNextAdd > 0) {
-            $('#undoBtn').prop('disabled', false);
+            $('#undoBtn').removeClass('disable-link');
           }
         }
       };
@@ -4304,26 +4314,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxUndoManager.prototype.undo = function () {
         if (this.indexOfNextAdd > 0) {
           const xml = this.history[--this.indexOfNextAdd];
-
-          graph.getModel().beginUpdate();
-          try {
-            // Removes all cells
-            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-            const _doc = mxUtils.parseXml(xml);
-            const dec = new mxCodec(_doc);
-            const model = dec.decode(_doc.documentElement);
-            // Merges the response model with the client model
-            graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-          } finally {
-            // Updates the display
-            graph.getModel().endUpdate();
-          }
-
+          self.xmlToJsonParser(xml);
+          updateXMLFromJSON(true);
           if (this.indexOfNextAdd < this.history.length) {
-            $('#redoBtn').prop('disabled', false);
+            $('#redoBtn').removeClass('disable-link');
           }
         } else {
-          $('#undoBtn').prop('disabled', true);
+          $('#undoBtn').addClass('disable-link');
         }
       };
 
@@ -4336,23 +4333,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         const n = this.history.length;
         if (this.indexOfNextAdd < n) {
           const xml = this.history[this.indexOfNextAdd++];
-          graph.getModel().beginUpdate();
-          try {
-            const _doc = mxUtils.parseXml(xml);
-            const dec = new mxCodec(_doc);
-            const model = dec.decode(_doc.documentElement);
-            // Removes all cells
-            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-            graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-          } finally {
-            graph.getModel().endUpdate();
-          }
-
+          self.xmlToJsonParser(xml);
+          updateXMLFromJSON(true);
           if (this.indexOfNextAdd > 0) {
-            $('#undoBtn').prop('disabled', false);
+            $('#undoBtn').removeClass('disable-link');
           }
         } else {
-          $('#redoBtn').prop('disabled', true);
+          $('#redoBtn').addClass('disable-link');
         }
       };
 
@@ -4774,9 +4761,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           if (dropTarget.value.tagName === 'Catch') {
             setTimeout(() => {
-              updateXMLFromJSON();
-            },1);
-
+              updateXMLFromJSON(false);
+            }, 1);
           }
           dropTarget = null;
           isUndoable = true;
@@ -4789,6 +4775,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           movedTarget = null;
           selectedCellsObj = null;
           WorkflowService.executeLayout(graph);
+        }
+        if (cell && cells.length === 1) {
+          setTimeout(() => {
+   
+            if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+              let targetId = self.nodeMap.get(cell.id);
+              if (targetId) {
+                graph.addSelectionCell(graph.getModel().getCell(targetId));
+              }
+
+            }
+          }, 1);
         }
         selectionChanged(graph);
       });
@@ -4804,7 +4802,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mgr.save = function () {
         if (!self.isWorkflowReload) {
           setTimeout(() => {
-            self.xmlToJsonParser();
+            self.xmlToJsonParser(null);
             if (self.workFlowJson && self.workFlowJson.instructions && self.workFlowJson.instructions.length > 0) {
               graph.setEnabled(true);
             } else {
@@ -4825,7 +4823,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     function deleteInstructionFromJSON(cells) {
       iterateJson(self.workFlowJson, cells[0], '');
       setTimeout(() => {
-        updateXMLFromJSON();
+        updateXMLFromJSON(false);
       }, 1);
     }
 
@@ -5213,11 +5211,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             graph.getModel().endUpdate();
           }
         }
-        updateXMLFromJSON();
+        updateXMLFromJSON(false);
       }, 0);
     }
 
-    function updateXMLFromJSON() {
+    function updateXMLFromJSON(flag) {
       if (!_.isEmpty(self.workFlowJson)) {
         self.workflowService.appendIdInJson(self.workFlowJson);
         let mxJson = {
@@ -5252,7 +5250,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         } finally {
           // Updates the display
           graph.getModel().endUpdate();
-          isUndoable = true;
+          if (!flag) {
+            isUndoable = true;
+          }
           WorkflowService.executeLayout(graph);
         }
       } else {
@@ -5677,7 +5677,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       const applyHandler = function () {
         let newValue = input.value || '';
         let oldValue = cell.getAttribute(attribute.nodeName, '');
-        if (newValue !== oldValue) {
+        const flag = validateInputs(cell.value.tagName, attribute.nodeName, newValue);
+        if (!flag) {
+          input.value = oldValue;
+        }
+        if (newValue !== oldValue && flag) {
           _graph.getModel().beginUpdate();
           try {
             const edit = new mxCellAttributeChange(
@@ -5739,6 +5743,37 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       };
       mxEvent.addListener(input, 'change', applyHandler);
+    }
+
+    /**
+     * Function: To validate users inputs
+     */
+    function validateInputs(instructionType, inputType, value) {
+      if (instructionType === 'Job') {
+        if (inputType === 'name') {
+          if (!value) {
+            return false;
+          }
+        } else if (inputType === 'success' || inputType === 'failure') {
+          if (/^(\d{1,3})(,\d{1,3})*(\d{1,})?$/g.test(value)) {
+          } else {
+            return false;
+          }
+        }
+      } else if (instructionType === 'If') {
+        if (inputType === 'predicate') {
+          if (!value) {
+            return false;
+          }
+        }
+      } else if (instructionType === 'Abort' || instructionType === 'Terminate') {
+        if (inputType === 'message') {
+          if (!value) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
   }
 }
@@ -5863,9 +5898,11 @@ export class JoeComponent implements OnInit, OnDestroy {
       const interval = setInterval(() => {
         if (this.treeCtrl && this.treeCtrl.treeModel) {
           const node = this.treeCtrl.treeModel.getNodeById(1);
-          node.expand();
-          node.data.isSelected = true;
-          this.selectedPath = node.data.path;
+          if(node) {
+            node.expand();
+            node.data.isSelected = true;
+            this.selectedPath = node.data.path;
+          }
           clearInterval(interval);
         }
       }, 5);

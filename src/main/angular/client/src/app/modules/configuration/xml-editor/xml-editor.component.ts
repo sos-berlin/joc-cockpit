@@ -336,6 +336,13 @@ export class XmlEditorComponent implements OnInit {
   @ViewChild('treeCtrl') treeCtrl;
   @ViewChild('myckeditor') ckeditor: any;
 
+  //translate messages
+  requiredField: string;
+  spaceNotAllowed: string;
+  cannotAddBlankSpace: string;
+  onlyPositiveNumbers: string;
+  cannotNegative: string;
+
   constructor(private http: HttpClient, public coreService: CoreService, private modalService: NgbModal, private dataService: DataService, public translate: TranslateService, public toasterService: ToasterService) {
     this.myContent = '';
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
@@ -354,6 +361,21 @@ export class XmlEditorComponent implements OnInit {
     } else {
       this.isLoading = false;
     }
+    this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
+      this.requiredField = translatedValue;
+    });
+    this.translate.get('xml.message.spaceNotAllowed').subscribe(translatedValue => {
+      this.spaceNotAllowed = translatedValue;
+    });
+    this.translate.get('xml.message.cannotAddBlankSpace').subscribe(translatedValue => {
+      this.cannotAddBlankSpace = translatedValue;
+    });
+    this.translate.get('xml.message.onlyPositiveNumbers').subscribe(translatedValue => {
+      this.onlyPositiveNumbers = translatedValue;
+    });
+    this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
+      this.cannotNegative = translatedValue;
+    });
   }
 
   toggleExpanded(e): void {
@@ -2264,7 +2286,7 @@ export class XmlEditorComponent implements OnInit {
     if (tag.type === 'xs:NMTOKEN') {
       if (/\s/.test(value)) {
         this.error = true;
-        this.text = tag.name + ': Space not allowed';
+        this.text = tag.name + ': ' + this.spaceNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2276,7 +2298,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (value == '' && tag.use === 'required') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2295,7 +2317,7 @@ export class XmlEditorComponent implements OnInit {
       } else if (tag.use === 'required') {
 
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2307,7 +2329,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (value.length > 0) {
         this.error = true;
-        this.text = tag.name + ': Can not add blank space in begining.';
+        this.text = tag.name + ': ' + this.cannotAddBlankSpace;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2326,7 +2348,7 @@ export class XmlEditorComponent implements OnInit {
         this.submitData(value, tag);
       } else if (tag.use === 'required' && value === '') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2338,7 +2360,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (/[a-zA-Z_*]/.test(value)) {
         this.error = true;
-        this.text = tag.name + ': Only Add positive numbers';
+        this.text = tag.name + ': ' + this.onlyPositiveNumbers;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2350,7 +2372,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else {
         this.error = true;
-        this.text = tag.name + ': can not be negative';
+        this.text = tag.name + ': ' + this.cannotNegative;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2371,7 +2393,7 @@ export class XmlEditorComponent implements OnInit {
     if (tag.type === 'xs:NMTOKEN') {
       if (/\s/.test(value)) {
         this.error = true;
-        this.text = tag.name + ': Space not allowed';
+        this.text = tag.name + ': ' + this.spaceNotAllowed;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2383,7 +2405,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (value == '' && tag.use === 'required') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ':' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2405,7 +2427,7 @@ export class XmlEditorComponent implements OnInit {
         this.autoValidate();
       } else if (tag.use === 'required') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2417,7 +2439,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (value.length > 0) {
         this.error = true;
-        this.text = tag.name + ': Can not add blank space in beginning.';
+        this.text = tag.name + ': ' + this.cannotAddBlankSpace;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2437,7 +2459,7 @@ export class XmlEditorComponent implements OnInit {
         this.autoValidate();
       } else if (tag.use === 'required' && value === '') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2449,7 +2471,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (/[a-zA-Z_*]/.test(value)) {
         this.error = true;
-        this.text = tag.name + ': Only Add positive numbers';
+        this.text = tag.name + ': ' + this.onlyPositiveNumbers;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2461,7 +2483,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else {
         this.error = true;
-        this.text = tag.name + ': can not be negative';
+        this.text = tag.name + ': ' + this.cannotNegative;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2487,7 +2509,7 @@ export class XmlEditorComponent implements OnInit {
         }
       } else if (tag.use === 'required' && value === '') {
         this.error = true;
-        this.text = tag.name + ': Required Field';
+        this.text = tag.name + ': ' + this.requiredField;
         this.errorName = tag.name;
         if (tag.data !== undefined) {
           for (let key in tag) {
@@ -2541,7 +2563,7 @@ export class XmlEditorComponent implements OnInit {
       }
     } else {
       this.error = true;
-      this.text = 'Required Field';
+      this.text = this.requiredField;
       this.errorName = ref;
       if (tag.data !== undefined) {
         for (let key in tag) {

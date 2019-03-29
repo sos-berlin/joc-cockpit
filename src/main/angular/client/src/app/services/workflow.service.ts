@@ -596,11 +596,8 @@ export class WorkflowService {
     } else {
       mxJson.EndRetry = [];
     }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 3000;
-
+    let id = ++this.count;
     this.nodeMap.set(targetId.toString(), id.toString());
-
     let joinObj: any = {
       _id: id,
       _label: 'retryEnd',
@@ -680,8 +677,7 @@ export class WorkflowService {
       mxJson.Join = [];
     }
 
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 1000;
+    let id = ++this.count;
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
@@ -762,8 +758,7 @@ export class WorkflowService {
     } else {
       mxJson.EndIf = [];
     }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 2000;
+    let id = ++this.count;
     this.nodeMap.set(targetId.toString(), id.toString());
     let endIfObj: any = {
       _id: id,
@@ -888,8 +883,7 @@ export class WorkflowService {
     } else {
       mxJson.EndTry = [];
     }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 5000;
+    let id = ++this.count;
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
@@ -925,8 +919,7 @@ export class WorkflowService {
     } else {
       mxJson.EndCatch = [];
     }
-    let id: number;
-    id = parseInt(list[list.length - 1].id, 10) + 4000;
+    let id = ++this.count;
     this.nodeMap.set(targetId.toString(), id.toString());
     let joinObj: any = {
       _id: id,
