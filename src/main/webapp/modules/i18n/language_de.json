@@ -1202,7 +1202,6 @@
   "label.importCalendar": "Kalender importieren",
   "button.importCalendar": "Kalender importieren",
   "button.exportCalendar": "Kalender exportieren",
-  "button.dropFileToUpload": "KALENDERDATEIEN ZUM HOCHLADEN ABLEGEN",
   "button.chooseFileToUpload": "DATEIEN ZUM HOCHLADEN AUSWÄHLEN",
   "button.import": "Import",
   "label.operation": "Operation",
@@ -1392,7 +1391,7 @@
   "placeholder.maximumProcesses": "Enter number of Maximum processes",
   "placeholder.agentTimeout": "Enter agent timeout",
   "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
-  "message.uploadJsonFiles": "You can only upload .json files.",
   "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period",
-  "message.invalidFileExtension": "Only files with the extension .json are allowed"
+  "message.invalidFileExtension": "Only files with the extension .json are allowed",
+  "button.dropFileToUpload": "DROP CALENDAR FILES (.json) TO UPLOAD"
 }
