@@ -228,6 +228,7 @@
                                         </div>
                                         <div class="text-sm text-left text-muted p-t-sm">
                                             <span translate>label.status </span>:
+                                            <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                             <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                         </div>
                                         <div class="text-sm text-left text-muted p-t-xs">
@@ -426,6 +427,7 @@
                                         </div>
                                     </td>
                                     <td>
+                                        <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                         <a class="label" ng-class="bgColorFunction(order.processingState.severity)"
                                            ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog"
                                            ng-bind="order.processingState._text | translate"></a>

@@ -101,8 +101,12 @@
                             </td>
                             <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
                             <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind="order.job"></span></td>
-                            <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)"
+                            <td>
+                                <span class="show-in-single-line">
+                                    <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
+                                    <span class="label " ng-class="bgColorFunction(order.processingState.severity)"
                                       ng-bind="order.processingState._text | translate"></span>
+                                </span>      
                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span
                                         class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
                             </td>

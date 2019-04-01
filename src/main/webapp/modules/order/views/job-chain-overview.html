@@ -72,6 +72,7 @@
                                             <a class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="order.orderId"></a>
                                             <i class="text-muted text-sm" ng-if="order.title">-
                                                 <span ng-bind-html="order.title | linky:'_blank'"></span></i> -
+                                            <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                             <span class="label {{order.processingState.severity==0 ? 'bg-green' : order.processingState.severity==1 ? 'bg-gold' : order.processingState.severity==2 ? 'bg-crimson': order.processingState.severity==3 ?'bg-dimgrey':
                                                  order.processingState.severity==4 ? 'bg-transparent': order.processingState.severity==5 ? 'bg-dark-orange' : order.processingState.severity==6 ? 'bg-corn-flower-blue' :order.processingState.severity==7 ? 'bg-dark-magenta' : order.processingState.severity==8 ? 'bg-chocolate' : ''}}"
                                                   ng-if="order.processingState._text" ng-bind="order.processingState._text | translate"></span>
@@ -333,6 +334,7 @@
                                                 <a href="" class="text-hover-primary" ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
                                                 <i class="text-muted text-xs" ng-if="order.title">-
                                                     <span ng-bind-html="order.title | linky:'_blank'"></span></i> -
+                                                <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                                 <span class="label" ng-class="bgColorFunction(order.processingState.severity)"
                                                       ng-bind="order.processingState._text | translate"></span>
                                                 <span class="hide text-success text-xs"
@@ -658,6 +660,7 @@
                                                                         <i class="text-muted text-xs" ng-if="order.title">-
                                                                             <span ng-bind-html="order.title | linky:'_blank'"></span>
                                                                         </i> -
+                                                                        <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                                                         <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                                         <span class="hide text-success text-xs" ng-class="{'show-inline':order.nextStartTime}">{{'label.nextStart' | translate}}:  {{order.nextStartTime | stringToDate}}
                                                                             (<span time="{{order.nextStartTime}}"></span>)</span>

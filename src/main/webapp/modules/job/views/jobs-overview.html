@@ -177,6 +177,7 @@
                                         </div>
                                         <div class="text-sm text-left text-muted p-t-xs">
                                             <span translate>label.status </span>:
+                                            <i ng-if="job.state.manually" class="fa fa-hand-o-up"></i>
                                             <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)"
                                                   ng-bind="job.state._text | translate"></span>
                                         </div>
@@ -374,7 +375,8 @@
                                     <i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                                 </td>
                                 <td ng-bind="job.path"></td>
-                                <td>
+                                <td nowrap>
+                                    <i ng-if="job.state.manually" class="fa fa-hand-o-up"></i>
                                     <span class="label" ng-if="job.state._text" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                                 </td>
                                 <td ng-if="!jobFilters.isCompact">

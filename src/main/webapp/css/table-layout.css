@@ -49,10 +49,12 @@ General CSS
   width: 55px;
 }
 
-#jobChainDivId th.status, #orderTableId th.status {
+#jobChainDivId th.status {
   width: 80px;
 }
-
+#orderTableId th.status {
+  width: 100px;
+}
 #jobChainDivId th.cluster {
   min-width: 80px;
 }

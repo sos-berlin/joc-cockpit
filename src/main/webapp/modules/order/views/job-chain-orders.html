@@ -74,6 +74,7 @@
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm">
                                         <span translate>label.status </span>:
+                                        <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                         <span ng-class="colorFunction(order.processingState.severity)"
                                               ng-bind="order.processingState._text | translate"></span>
                                     </div>
@@ -260,8 +261,11 @@
                                     <span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span>
                                 </td>
                                 <td>
-                                    <a class="label" ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog"
-                                       ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
+                                    <span class="show-in-single-line">
+                                        <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
+                                        <a class="label" ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog"
+                                            ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
+                                    </span>   
                                     <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                     <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">
                                         (<span time="{{order.setback}}"></span>)</span>

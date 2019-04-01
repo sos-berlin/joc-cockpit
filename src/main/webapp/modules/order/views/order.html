@@ -398,6 +398,7 @@
                                             </div>
                                             <div class="text-sm text-left text-muted p-t-sm">
                                                 <span translate>label.status </span>:
+                                                <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
                                                 <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                             </div>
                                             <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
@@ -588,9 +589,12 @@
                                         <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind-html="order.jobChain | highlight:orderFilters.searchText"></span></td>
                                         <td><span class="text-hover-primary" ng-click="showJob(order.job)" ng-bind-html="order.job  | highlight:orderFilters.searchText"></span></td>
                                         <td>
-                                            <a class="label" ng-class="bgColorFunction(order.processingState.severity)"
-                                               ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text"
-                                               ng-bind="order.processingState._text | translate"></a>
+                                            <span class="show-in-single-line">
+                                                <i ng-if="order.processingState.manually" class="fa fa-hand-o-up"></i>
+                                                <a class="label" ng-class="bgColorFunction(order.processingState.severity)"
+                                                ng-click="showLogWindow(order)" ng-if="order.historyId && permission.Order.view.orderLog && order.processingState._text"
+                                                ng-bind="order.processingState._text | translate"></a>
+                                            </span>   
                                             <span class="label" ng-class="bgColorFunction(order.processingState.severity)"
                                                   ng-if="!order.historyId && order.processingState._text"
                                                   ng-bind="order.processingState._text | translate"></span>
