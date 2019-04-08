@@ -159,20 +159,20 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="show" action="show" icon="./assets/mxgraph/images/white-preview.png"/>
     <hr/>
-    <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.png"
+    <add as="Abort" template="Abort" style="symbol;image=./assets/mxgraph/images/symbols/abort-white.svg"
          icon="./assets/mxgraph/images/white-abort.png"/>
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
     <hr/>
     <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/white-fileorder.png"/>
     <hr/>
-    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.png"
+    <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg"
          icon="./assets/mxgraph/images/white-terminate.png"/>
     <hr/>
-    <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/timer-white.png"
+    <add as="Await" template="Await" style="symbol;image=./assets/mxgraph/images/symbols/await-white.svg"
          icon="./assets/mxgraph/images/white-await.png"/>
     <hr/>
-    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.png"
+    <add as="Fork" template="Fork" style="symbol;image=./assets/mxgraph/images/symbols/fork-white.svg"
          icon="./assets/mxgraph/images/white-fork.png"/>
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/white-if.png"/>
@@ -180,5 +180,7 @@
     <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/white-retry.png"/>
     <hr/>
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/white-try.png"/>
+    <hr/>
+    <add as="Catch" template="Catch" style="catch" icon="./assets/mxgraph/images/white-catch.png"/>
   </mxDefaultToolbar>
 </mxEditor>

@@ -82,7 +82,12 @@ select.mxToolbarCombo {
 div.mxToolbarComboContainer {
 	padding: 2px;
 }
-
+img.mxToolbarMode {
+	border-width: 0;
+}
+img.mxToolbarModeSelected {
+	border: 1px solid #C0C0C0;
+}
 div.mxPopupMenu {
 	-webkit-box-shadow: 3px 3px 12px #C0C0C0;
 	-moz-box-shadow: 3px 3px 12px #C0C0C0;

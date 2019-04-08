@@ -21,15 +21,14 @@ export class ConfigurationComponent {
     const dom = $('.scroll-y');
     if (dom && dom.position()) {
       let top = dom.position().top + 12;
-      const flag = top < 70;
+      const flag = top < 78;
       top = top - $(window).scrollTop();
-      if (top < 70) {
-        top = 92;
+      if (top < 78) {
+        top = 78;
       }
       $('.sticky').css('top', top);
       const ht = window.innerHeight - top;
       if (ht > 400) {
-      
         const graph = $('#graph');
         if (graph) {
           graph.height(ht + 'px');

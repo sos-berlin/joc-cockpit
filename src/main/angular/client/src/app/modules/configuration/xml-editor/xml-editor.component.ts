@@ -1050,8 +1050,33 @@ export class XmlEditorComponent implements OnInit {
     if (attrsType !== undefined) {
       this.attachTypeAttrs(attrsType, nodeArr.children);
     }
+    if (nodeArr.ref == 'NotificationMail' || nodeArr.ref == 'Header' ) {
+      this.arrangeArr(nodeArr);
+    }
+
     this.autoExpand(nodeArr);
     this.printArraya(false);
+  }
+  arrangeArr(node) {
+    for (let j = 0; j < node.children.length; j++) {
+      if (node.children[j].ref === 'From') {
+        let temp = node.children[0];
+        node.children[0] = node.children[j];
+        node.children[j] = temp;
+      } if (node.children[j].ref === 'To' && j<node.children[j].length) {
+        let temp = node.children[1];
+        node.children[1] = node.children[j];
+        node.children[j] = temp;
+      } if (node.children[j].ref === 'CC') {
+        let temp = node.children[2];
+        node.children[2] = node.children[j];
+        node.children[j] = temp;
+      } if (node.children[j].ref === 'BCC') {
+        let temp = node.children[3];
+        node.children[3] = node.children[j];
+        node.children[j] = temp;
+      }
+    }
   }
 
   autoAddChild(child) {
@@ -1471,7 +1496,7 @@ export class XmlEditorComponent implements OnInit {
     if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
         let x = this.autoValidateRecursion(this.nodes[0].children[i]);
-        if (!x) {
+        if (x == false) {
           return x;
         }
       }
@@ -1504,7 +1529,7 @@ export class XmlEditorComponent implements OnInit {
     if (child && child.children && child.children.length > 0) {
       for (let i = 0; i < child.children.length; i++) {
         let x = this.autoValidateRecursion(child.children[i]);
-        if (!x) {
+        if (x == false) {
           return x;
         }
       }
@@ -2278,6 +2303,8 @@ export class XmlEditorComponent implements OnInit {
       this.error = true;
     } else {
       nodes.values[0] = Object.assign(nodes.values[0], {data: event});
+      event = '';
+      this.myContent = '';
     }
   }
 
@@ -2526,13 +2553,13 @@ export class XmlEditorComponent implements OnInit {
     }
   }
 
-//validation for node value property
+// validation for node value property
   validValue(value, ref, tag) {
     this.error = false;
     if (/[a-zA-Z0-9_]+.*$/.test(value)) {
       this.error = false;
-    } else if (ref == 'FileSpec') {
-      if (/[(a-zA-Z0-9_*.)]+.*$/.test(value)) {
+    } else if (ref == "FileSpec" || ref == "Directory") {
+      if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
         this.error = false;
       }
     } else {
@@ -2555,10 +2582,11 @@ export class XmlEditorComponent implements OnInit {
       this.error = false;
       tag = Object.assign(tag, {data: value});
       this.autoValidate();
-    } else if (ref == 'FileSpec') {
-      if (/[(a-zA-Z0-9_*.)]+.*$/.test(value)) {
+    } else if (ref == "FileSpec" || ref == "Directory") {
+      if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
         this.error = false;
         tag = Object.assign(tag, {data: value});
+        this.myContent = "";
         this.autoValidate();
       }
     } else {

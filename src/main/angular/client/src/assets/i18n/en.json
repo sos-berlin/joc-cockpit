@@ -1407,7 +1407,6 @@
   "workflow.label.try": "Try",
   "workflow.label.tryEnd": "Try-End",
   "workflow.label.catch": "Catch",
-  "workflow.label.catchEnd": "Catch-End",
   "workflow.label.retry": "Retry",
   "workflow.label.repeat": "Repeat",
   "workflow.label.delay": "Delay",

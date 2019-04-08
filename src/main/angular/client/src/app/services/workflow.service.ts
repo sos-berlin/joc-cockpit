@@ -114,7 +114,7 @@ export class WorkflowService {
   static makeCenter(graph) {
     setTimeout(() => {
       graph.zoomActual();
-      graph.center(true, true);
+      graph.center(true, true, 0.5, 0);
     }, 0);
   }
 
@@ -154,17 +154,17 @@ export class WorkflowService {
   init(theme) {
     this.nodeMap = new Map();
     if (theme === 'light') {
-      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.png';
-      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.png';
-      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate.png';
-      this.await = 'symbol;image=./assets/mxgraph/images/symbols/timer.png';
-      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.png';
+      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
+      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.svg';
+      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate.svg';
+      this.await = 'symbol;image=./assets/mxgraph/images/symbols/await.svg';
+      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork.svg';
     } else {
-      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.png';
-      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort-white.png';
-      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate-white.png';
-      this.await = 'symbol;image=./assets/mxgraph/images/symbols/timer-white.png';
-      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.png';
+      this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge-white.svg';
+      this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort-white.svg';
+      this.terminate = 'symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg';
+      this.await = 'symbol;image=./assets/mxgraph/images/symbols/await-white.svg';
+      this.fork = 'symbol;image=./assets/mxgraph/images/symbols/fork-white.svg';
     }
   }
 
@@ -333,19 +333,19 @@ export class WorkflowService {
           let _id = 0;
 
           if (!json.instructions[x].catch) {
-            json.instructions[x].catch = {id: (json.instructions[x].id * 7777), instructions: []};
+            json.instructions[x].catch = {id: ++self.count, instructions: []};
           }
 
           if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
             catchObj._id = json.instructions[x].catch.id;
             catchObj._targetId = json.instructions[x].id;
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
-              self.jsonParser(json.instructions[x].catch, mxJson, 'endCatch', catchObj._id);
-              self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', catchObj._id);
+              self.jsonParser(json.instructions[x].catch, mxJson, 'endTry', obj._id);
+              self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
             } else {
               catchObj.mxCell._style = 'dashRectangle';
             }
-            _id = self.endCatch(json.instructions[x].catch, mxJson, json.instructions, json.instructions[x].catch.id, obj._id);
+             _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
             mxJson.Catch.push(catchObj);
           }
 
@@ -577,11 +577,6 @@ export class WorkflowService {
       }
     };
 
-    if (label === 'endCatch' && source.instructions && source.instructions.length === 0) {
-      obj._label = '';
-      obj._type = '';
-      obj.mxCell._style = 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;';
-    }
     mxJson.Connection.push(obj);
   }
 
@@ -908,51 +903,17 @@ export class WorkflowService {
     }
   }
 
-  private endCatch(branches, mxJson, list, targetId, parentId): number {
-    if (mxJson.EndCatch) {
-      if (!_.isArray(mxJson.EndCatch)) {
-        const _tempEndCatch = _.clone(mxJson.EndCatch);
-        mxJson.EndCatch = [];
-        mxJson.EndCatch.push(_tempEndCatch);
-      }
-
-    } else {
-      mxJson.EndCatch = [];
-    }
-    let id = ++this.count;
-    this.nodeMap.set(targetId.toString(), id.toString());
-    let joinObj: any = {
-      _id: id,
-      _label: 'catchEnd',
-      _targetId: targetId,
-      mxCell: {
-        _parent: parentId ? parentId : '1',
-        _vertex: '1',
-        _style: 'catch',
-        mxGeometry: {
-          _as: 'geometry',
-          _width: '100',
-          _height: '40'
-        }
-      }
-    };
-
-    if (branches.instructions.length === 0) {
-      joinObj.mxCell._style = 'dashRectangle';
-    }
-
-    mxJson.EndCatch.push(joinObj);
-
+  private getCatchEnd(branches, mxJson): number {
+    let id;
     let x = branches.instructions[branches.instructions.length - 1];
     if (!x) {
       x = branches;
     }
-
     if (x && (x.TYPE === 'If')) {
       if (mxJson.EndIf && mxJson.EndIf.length) {
         for (let j = 0; j < mxJson.EndIf.length; j++) {
           if (x.id === mxJson.EndIf[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndIf[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
+            id = mxJson.EndIf[j]._id;
             break;
           }
         }
@@ -961,7 +922,7 @@ export class WorkflowService {
       if (mxJson.EndRetry && mxJson.EndRetry.length) {
         for (let j = 0; j < mxJson.EndRetry.length; j++) {
           if (x.id === mxJson.EndRetry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndRetry[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
+            id = mxJson.EndRetry[j]._id;
             break;
           }
         }
@@ -970,7 +931,7 @@ export class WorkflowService {
       if (mxJson.EndTry && mxJson.EndTry.length) {
         for (let j = 0; j < mxJson.EndTry.length; j++) {
           if (x.id === mxJson.EndTry[j]._targetId) {
-            this.connectInstruction({id: mxJson.EndTry[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
+            id = mxJson.EndTry[j]._id;
             break;
           }
         }
@@ -979,13 +940,13 @@ export class WorkflowService {
       if (mxJson.Join && mxJson.Join.length) {
         for (let j = 0; j < mxJson.Join.length; j++) {
           if (x.id === mxJson.Join[j]._targetId) {
-            this.connectInstruction({id: mxJson.Join[j]._id}, {id: id}, mxJson, 'endCatch', parentId);
+            id = mxJson.Join[j]._id;
             break;
           }
         }
       }
     } else if (x) {
-      this.connectInstruction(x, {id: id}, mxJson, 'endCatch', parentId);
+      id = x.id;
     }
     return id;
   }
