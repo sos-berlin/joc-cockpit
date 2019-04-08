@@ -535,16 +535,7 @@
         function refreshParent() {
             try {
                 if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
-                    if(newWindow.innerWidth > 0 && newWindow.screenX > 0) {
-                        if($window.localStorage.log_window_ht  == (newWindow.innerHeight-3)){
-                            newWindow.innerHeight = newWindow.innerHeight -3;
-                        }
-                        $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
-                        $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
-                        $window.localStorage.log_window_x = newWindow.screenX;
-                        $window.localStorage.log_window_y = newWindow.screenY;
-                    }
-                    if(newWindow.sessionStorage.changedPreferences) {
+                    if (newWindow.sessionStorage.changedPreferences) {
                         vm.userPreferences.logFilter = JSON.parse(newWindow.sessionStorage.changedPreferences).logFilter;
                         $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
                     }
@@ -825,15 +816,6 @@
             if (newWindow) {
                 try {
                     newWindow.addEventListener("beforeunload", function () {
-                        if (newWindow.innerWidth > 0 && newWindow.screenX > 0) {
-                            if($window.localStorage.log_window_ht  == (newWindow.innerHeight-3)){
-                                newWindow.innerHeight = newWindow.innerHeight -3;
-                            }
-                            $window.localStorage.log_window_wt = newWindow.innerWidth + (vm.isFF() ? 2 : 0);
-                            $window.localStorage.log_window_ht = newWindow.innerHeight + (vm.isFF() ? 1 : 0);
-                            $window.localStorage.log_window_x = newWindow.screenX;
-                            $window.localStorage.log_window_y = newWindow.screenY;
-                        }
                         if (newWindow.sessionStorage.changedPreferences) {
                             vm.userPreferences.logFilter = JSON.parse(newWindow.sessionStorage.changedPreferences).logFilter;
                             $window.sessionStorage.preferences = JSON.stringify(vm.userPreferences);
