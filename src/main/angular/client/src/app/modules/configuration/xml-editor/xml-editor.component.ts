@@ -1057,24 +1057,46 @@ export class XmlEditorComponent implements OnInit {
     this.autoExpand(nodeArr);
     this.printArraya(false);
   }
-  arrangeArr(node) {
-    for (let j = 0; j < node.children.length; j++) {
+  arrangeArr(node) {   
+    let arr = _.clone(node.children); 
+    for (let j = 0; j<arr.length; j++) {
       if (node.children[j].ref === 'From') {
-        let temp = node.children[0];
-        node.children[0] = node.children[j];
-        node.children[j] = temp;
-      } if (node.children[j].ref === 'To' && j<node.children[j].length) {
-        let temp = node.children[1];
-        node.children[1] = node.children[j];
-        node.children[j] = temp;
-      } if (node.children[j].ref === 'CC') {
-        let temp = node.children[2];
-        node.children[2] = node.children[j];
-        node.children[j] = temp;
+        let temp;
+        if(node && node.children[0] !== undefined) {
+          temp = node.children[0];
+          node.children[0] = node.children[j];
+          node.children[j] = temp;
+        }
+      } 
+      if (node.children[j].ref === 'To') {
+        let temp;
+        if(node && node.children[1] !== undefined) {
+          temp = node.children[1];
+          node.children[1] = node.children[j];
+          node.children[j] = temp;
+        }
+      }
+      if (node.children[j].ref === 'CC') {
+        let temp;
+        if(node && node.children[2] !== undefined) {
+          temp = node.children[2];
+          node.children[2] = node.children[j];
+          node.children[j] = temp;
+        }
       } if (node.children[j].ref === 'BCC') {
-        let temp = node.children[3];
-        node.children[3] = node.children[j];
-        node.children[j] = temp;
+        let temp;
+        if(node && node.children[3] !== undefined) {
+          temp = node.children[3];
+          node.children[3] = node.children[j];
+          node.children[j] = temp;
+        }
+      }  if (node.children[j].ref === 'Subject' && j<node.children[j].length) {
+        let temp;
+        if(node && node.children[4] !== undefined) {
+          temp = node.children[4];
+          node.children[4] = node.children[j];
+          node.children[j] = temp;
+        }
       }
     }
   }

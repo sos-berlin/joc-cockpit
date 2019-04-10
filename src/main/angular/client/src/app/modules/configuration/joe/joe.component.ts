@@ -2491,6 +2491,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
   clearWorkFlow() {
     sessionStorage.$SOS$WORKFLOW = null;
+    this.workflowService.resetVariables();
+    this.nodeMap = new Map();
     this.loadConfig();
     this.workFlowJson = {};
     this.initEditorConf(this.editor, this.dummyXml);
@@ -3760,7 +3762,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         return !cell.edge;
       };
 
-            // Changes fill color to red on mouseover
+      // Changes fill color to red on mouseover
       graph.addMouseListener({
         currentState: null, previousStyle: null, mouseDown: function (sender, me) {
           if (this.currentState != null) {
@@ -3795,9 +3797,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (state != null) {
             this.previousStyle = state.style;
             state.style = mxUtils.clone(state.style);
-            if (state.style) {
+            if (state.style && !dragStart) {
               const result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').attr('title'));
-              if (result === 'valid') {
+              if (result === 'valid' || result === 'select') {
                 state.style[mxConstants.STYLE_STROKECOLOR] = 'green';
                 state.style[mxConstants.STYLE_STROKEWIDTH] = '2';
               } else if (result === 'inValid') {
@@ -3805,7 +3807,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 state.style[mxConstants.STYLE_STROKEWIDTH] = '2';
               }
             }
-            if(state.shape) {
+            if (state.shape) {
               state.shape.apply(state);
               state.shape.redraw();
             }
@@ -3822,7 +3824,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (state.style) {
               state.style[mxConstants.STYLE_STROKEWIDTH] = '1';
             }
-            if(state.shape) {
+            if (state.shape) {
               state.shape.apply(state);
               state.shape.redraw();
             }
@@ -3839,26 +3841,18 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
        * Function: handle a click event
        *
        */
-      graph.click = function(me) {
+      graph.click = function (me) {
         let evt = me.getEvent();
         let cell = me.getCell();
         let mxe = new mxEventObject(mxEvent.CLICK, 'event', evt, 'cell', cell);
-        if(cell && !dragStart) {
+        if (cell && !dragStart) {
           const dom = $('#toolbar');
           if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             const sourceCell = dom.find('img.mxToolbarModeSelected').not('img:first-child');
             createClickInstruction(sourceCell, cell);
             mxToolbar.prototype.resetMode(true);
-           /* if (!dom.find('img:first-child').hasClass('mxToolbarModeSelected')) {
-              dom.find('img:first-child').addClass('mxToolbarModeSelected').removeClass('mxToolbarMode');
-            } else {
-              if (dom.find('img:first-child').hasClass('mxToolbarMode')) {
-                dom.find('img:first-child').removeClass('mxToolbarMode');
-              }
-            }*/
-
           }
-        }else{
+        } else {
           dragStart = false;
         }
         if (me.isConsumed()) {
@@ -3909,15 +3903,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
        * Selects the default mode and resets the state of the previously selected
        * mode.
        */
-      mxToolbar.prototype.resetMode = function(forced) {
+      mxToolbar.prototype.resetMode = function (forced) {
         if (forced) {
           this.defaultMode = $('#toolbar').find('img:first-child')[0];
           this.selectedMode = $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0];
         }
         if ((forced || !this.noReset) && this.selectedMode != this.defaultMode) {
-          // The last selected switch mode will be activated
-          // so the function was already executed and is
-          // no longer required here
           this.selectMode(this.defaultMode, this.defaultFunction);
         }
       };
@@ -3928,7 +3919,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       graph.dblClick = function (evt, cell) {
         if (cell != null && cell.vertex == 1) {
           if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Try'
-             || cell.value.tagName === 'Retry') {
+            || cell.value.tagName === 'Retry') {
             const flag = cell.collapsed != true;
             graph.foldCells(flag, false, [cell], null, evt);
           }
@@ -3944,7 +3935,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       };
 
       // Returns the type as the tooltip for column cells
-      graph.getTooltipForCell  = function (cell) {
+      graph.getTooltipForCell = function (cell) {
         return self.workflowService.getTooltipForCell(cell);
       };
 
@@ -4040,7 +4031,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         selectedCellsObj = null;
         let flag = false;
         if (drpTargt) {
-          let isOrderCell = false, check = false;
+          let isOrderCell = false, check = false, isCatchCell = false;
           let title = '', msg = '';
           self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
             title = translatedValue;
@@ -4067,7 +4058,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') ||
               this.dragElement.getAttribute('src').match('try') || this.dragElement.getAttribute('src').match('if')) {
-              let selectedCell = graph.getSelectionCell();
+              const selectedCell = graph.getSelectionCell();
               if (selectedCell) {
                 const cells = graph.getSelectionCells();
                 if (cells.length > 1) {
@@ -4083,6 +4074,32 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 if (selectedCell.id === drpTargt.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(drpTargt.id) > -1)) {
                   check = true;
                 }
+              }
+            }
+
+            if (this.dragElement.getAttribute('src').match('catch')) {
+              let flg = true;
+              if (drpTargt.value.tagName === 'Try') {
+                const childVertices = graph.getChildVertices(drpTargt);
+                if (childVertices.length > 0) {
+                  for (let i = 0; i < childVertices.length; i++) {
+                    if (childVertices[i].value.tagName === 'Catch') {
+                      flg = false;
+                      break;
+                    }
+                  }
+                }
+              } else {
+                flg = false;
+              }
+              if (!flg) {
+                self.translate.get('workflow.message.catchInstructionValidationError').subscribe(translatedValue => {
+                  msg = translatedValue;
+                });
+                self.toasterService.pop('error', title + '!!', msg);
+                return;
+              } else {
+                isCatchCell = true;
               }
             }
           }
@@ -4156,11 +4173,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   self.toasterService.pop('error', title + '!!', msg);
                   return;
                 }
-              } else if (drpTargt.value.tagName === 'Try') {
+              } else if (drpTargt.value.tagName === 'Try' && !isCatchCell) {
                 let flag1 = false;
                 if (drpTargt.edges && drpTargt.edges.length) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
-                    if (drpTargt.edges[i].source.value.tagName === 'Try' && drpTargt.edges[i].target.value.tagName === 'Catch') {
+                    if (drpTargt.edges[i].source.value.tagName === 'Try' && drpTargt.edges[i].target && (drpTargt.edges[i].target.value.tagName === 'Catch' || drpTargt.edges[i].target.value.tagName === 'EndTry')) {
                       flag1 = true;
                     }
                   }
@@ -4199,6 +4216,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                     return;
                   }
                 }
+              } else if (drpTargt.value.tagName === 'Connector') {
+                 return;
               }
               dropTarget = drpTargt;
             } else {
@@ -4424,7 +4443,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 } else {
                   v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 94, 94, 'try');
                   v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
-                  //v2.collapsed = true;
+                  // v2.collapsed = true;
                   graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
                   graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
                 }
@@ -4458,7 +4477,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                       cells[0].id);
                     graph.getModel().execute(targetId);
                     if (v2) {
-                      self.nodeMap.set(v2.id, v1.id);
                       const targetId2 = new mxCellAttributeChange(
                         v2, 'targetId', cells[0].id);
                       graph.getModel().execute(targetId2);
@@ -4530,265 +4548,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           return;
         }
 
-        let label = '';
         if (cell && dropTarget) {
-          for (let i = 0; i < dropTarget.edges.length; i++) {
-            if (dropTarget.edges[i].source.id === dropTarget.id) {
-              if (checkClosedCellWithSourceCell(dropTarget, dropTarget.edges[i].target) || (dropTarget.value.tagName === 'Await')) {
-                graph.foldCells(false, false, [dropTarget], null, null);
-              }
-              break;
+          if(cell.getParent().id !== dropTarget.id) {
+            if (dropTarget.value.tagName !== 'Process') {
+              cell.setParent(dropTarget);
             }
           }
-          if (dropTarget.value.tagName === 'If') {
-            let flag = false;
-            label = 'then';
-            for (let i = 0; i < dropTarget.edges.length; i++) {
-              if (dropTarget.edges[i].target.id !== dropTarget.id && dropTarget.edges[i].target.value.tagName !== 'EndIf') {
-                label = 'else';
-              } else {
-                if (dropTarget.edges[i].target && dropTarget.edges[i].target.edges) {
-                  for (let j = 0; j < dropTarget.edges[i].target.edges.length; j++) {
-                    if (dropTarget.edges[i].target.edges[j].edge && dropTarget.edges[i].target.edges[j].value.attributes
-                      && dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (dropTarget.edges[i].target.edges[j].value.attributes[0]
-                        && dropTarget.edges[i].target.edges[j].value.attributes[0].value === 'else')) {
-                      flag = true;
-                    }
-                  }
-                }
-              }
-            }
-            if (flag) {
-              label = 'then';
-            }
-          } else if (dropTarget.value.tagName === 'Retry') {
-            label = 'retry';
-          } else if (dropTarget.value.tagName === 'Try') {
-            label = 'try';
-          } else if (dropTarget.value.tagName === 'Catch') {
-            label = 'catch';
-          } else if (dropTarget.value.tagName === 'Fork') {
-            label = 'branch';
-          } else if (dropTarget.value.tagName === 'Await') {
-            label = 'await';
-          }
-
-          if (dropTarget.value.tagName === 'Catch') {
-            // cell.setParent(dropTarget);
-          }
-          let parent = cell.getParent() || graph.getDefaultParent();
-          if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-            let v1, v2, _label;
-            if (cell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
-              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-              if (dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch'
-                || dropTarget.value.tagName === 'Fork') {
-                _label = dropTarget.value.tagName === 'Retry' ? 'endRetry' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'catch' : dropTarget.value.tagName === 'Fork' ? 'join' : 'try';
-              }
-            } else if (cell.value.tagName === 'If') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 150, 80, 'if');
-              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-              if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'If') {
-                _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'Retry' ? 'endRetry' : dropTarget.value.tagName === 'Catch' ? 'catch' : dropTarget.value.tagName === 'endIf' ? 'join' : 'try';
-              }
-            } else if (cell.value.tagName === 'Retry') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 150, 80, 'retry');
-              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-              if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'Retry') {
-                _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'catch' : dropTarget.value.tagName === 'Retry' ? 'endRetry' : 'try';
-              }
-            } else if (cell.value.tagName === 'Try') {
-              v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
-              // v2.collapsed = true;
-              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 94, 94, 'try');
-              graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
-              graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-              graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
-              if (dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Retry' || dropTarget.value.tagName === 'Catch' || dropTarget.value.tagName === 'Try') {
-                _label = dropTarget.value.tagName === 'Fork' ? 'join' : dropTarget.value.tagName === 'If' ? 'endIf' : dropTarget.value.tagName === 'Catch' ? 'catch' : dropTarget.value.tagName === 'Try' ? 'try' : 'endRetry';
-              }
-            }
-
-            if (v1) {
-              if (cell.id && v1.id) {
-                self.nodeMap.set(cell.id, v1.id);
-              }
-              setTimeout(() => {
-                if (v2) {
-                  self.nodeMap.set(v2.id, v1.id);
-                }
-                if (_label) {
-                  for (let i = 0; i < v1.edges.length; i++) {
-                    if (v1.edges[i].target.id !== v1.id) {
-                      changeLabelOfConnection(v1.edges[i], _label);
-                      break;
-                    }
-                  }
-                }
-              }, 0);
-            }
-          }
-          if (dropTarget.value.tagName === 'Process') {
-            parent = graph.getDefaultParent();
-            let flag = false;
-            for (let i = 0; i < dropTarget.edges.length; i++) {
-              if (dropTarget.edges[i].source.id !== dropTarget.id) {
-                if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-                  for (let j = 0; j < cell.edges.length; j++) {
-                    if (cell.edges[j].target.id !== cell.id) {
-                      if (checkClosingCell(cell.edges[j].target)) {
-                        if (flag) {
-                          graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, dropTarget.edges[i].target);
-                        } else {
-                          graph.insertEdge(parent, null, getConnectionNode(label), dropTarget.edges[i].source, cell.edges[j].source);
-                        }
-                        flag = true;
-                        break;
-                      }
-                    }
-                  }
-                } else {
-                  graph.insertEdge(parent, null, getConnectionNode(label), dropTarget.edges[i].source, cell);
-                }
-              } else {
-                if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-                  for (let j = 0; j < cell.edges.length; j++) {
-                    if (cell.edges[j].target.id !== cell.id) {
-                      if (checkClosingCell(cell.edges[j].target)) {
-                        graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, dropTarget.edges[i].target);
-                        break;
-                      }
-                    }
-                  }
-                } else {
-                  graph.insertEdge(parent, null, getConnectionNode(label), cell, dropTarget.edges[i].target);
-                }
-              }
-            }
-
-            graph.getModel().remove(dropTarget);
-
-          } else {
-            let checkLabel = '';
-            if (dropTarget.value.tagName === 'Fork') {
-              label = 'branch';
-              checkLabel = 'Join';
-            } else if (dropTarget.value.tagName === 'If') {
-              checkLabel = 'EndIf';
-            } else if (dropTarget.value.tagName === 'Retry') {
-              checkLabel = 'EndRetry';
-            } else if (dropTarget.value.tagName === 'Try') {
-              label = 'try';
-              checkLabel = 'EndTry';
-            } else if (dropTarget.value.tagName === 'Catch') {
-              label = 'catch';
-              checkLabel = 'EndTry';
-              graph.getModel().setStyle(dropTarget, 'catch');
-            } else if (dropTarget.value.tagName === 'Await') {
-              label = 'await';
-            }
-            if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
-              let target1, target2;
-
-              for (let i = 0; i < dropTarget.edges.length; i++) {
-                if (dropTarget.edges[i].target.id !== dropTarget.id) {
-                  if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
-                    self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
-                    target1 = dropTarget.edges[i];
-                  }
-                  break;
-                }
-              }
-
-              for (let i = 0; i < cell.edges.length; i++) {
-                if (cell.edges[i].target.id !== cell.id) {
-                  if (checkClosingCell(cell.edges[i].target)) {
-                    self.nodeMap.set(cell.id, cell.edges[i].target.id);
-                    target2 = cell.edges[i].target;
-                    break;
-                  }
-                }
-              }
-
-              if (target1 && target2) {
-                graph.insertEdge(parent, null, getConnectionNode(label), target2, target1.target);
-                graph.getModel().remove(target1);
-              } else if (self.nodeMap.has(dropTarget.id)) {
-                const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
-                graph.insertEdge(parent, null, getConnectionNode(label), target2, target);
-              }
-            } else {
-              let flag = false;
-              if (dropTarget.edges && dropTarget.edges.length && cell.value.tagName.indexOf('Order') < 0) {
-                for (let i = 0; i < dropTarget.edges.length; i++) {
-                  if (dropTarget.edges[i].target.id !== dropTarget.id) {
-                    if (dropTarget.edges[i].target.value.tagName === checkLabel || dropTarget.edges[i].target.value.tagName === 'Catch') {
-                      flag = true;
-                      if (!self.nodeMap.has(dropTarget.id)) {
-                        self.nodeMap.set(dropTarget.id, dropTarget.edges[i].target.id);
-                      }
-
-                      const attr = dropTarget.edges[i].value.attributes;
-                      if (attr && label !== 'catch') {
-                        for (let x = 0; x < attr.length; x++) {
-                          if (attr[x].value && attr[x].name) {
-                            label = attr[x].value;
-                            break;
-                          }
-                        }
-                      }
-
-                      if (cell && dropTarget.edges[i].target) {
-                        graph.insertEdge(parent, null, getConnectionNode(label), cell, dropTarget.edges[i].target);
-                      }
-                      graph.getModel().remove(dropTarget.edges[i]);
-                    }
-                    break;
-                  }
-                }
-              }
-              if (!flag && self.nodeMap.has(dropTarget.id)) {
-                const target = graph.getModel().getCell(self.nodeMap.get(dropTarget.id));
-                if (cell && target) {
-                  graph.insertEdge(parent, null, getConnectionNode(label), cell, target);
-                }
-              }
-            }
-
-            if (cell.edges) {
-              for (let i = 0; i < cell.edges.length; i++) {
-                if (cell.edges[i].target.value.tagName === checkLabel) {
-                  const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
-                    ? 'endRetry' : 'endTry';
-                  if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Catch') {
-                    cell.edges[i].value.attributes[0].nodeValue = _label;
-                    cell.edges[i].value.attributes[1].nodeValue = _label;
-                  }
-                }
-              }
-            }
-
-            if (cell && dropTarget) {
-              
-              graph.insertEdge(parent, null, getConnectionNode(label), dropTarget, cell);
-            }
-          }
-          if (cell.value.tagName === 'Try') {
-            for (let j = 0; j < cell.edges.length; j++) {
-              if (cell.edges[j].target.id !== cell.id) {
-                if (cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') {
-                  graph.getModel().remove(cell.edges[j]);
-                  break;
-                }
-              }
-            }
-          }
-          /*          if (dropTarget.value.tagName === 'Catch') {
-                      setTimeout(() => {
-                        updateXMLFromJSON(false);
-                      }, 1);
-                    }*/
+          addInstructionToCell(cell, dropTarget);
           dropTarget = null;
           isUndoable = true;
           WorkflowService.executeLayout(graph);
@@ -4803,7 +4569,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
         if (cell && cells.length === 1) {
           setTimeout(() => {
-   
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
               const targetId = self.nodeMap.get(cell.id);
               if (targetId) {
@@ -4846,7 +4611,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * @param cells
      */
     function deleteInstructionFromJSON(cells) {
-      iterateJson(self.workFlowJson, cells[0], '');
+      iterateJson(self.workFlowJson, cells[0],'' );
       setTimeout(() => {
         updateXMLFromJSON(false);
       }, 1);
@@ -4865,22 +4630,26 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
 
           if (json.instructions[x].instructions) {
-            iterateJson(json.instructions[x], cell, '');
+            iterateJson(json.instructions[x], cell,'');
           }
           if (json.instructions[x].catch) {
+            if (json.instructions[x].catch.id == cell.id) {
+              delete json.instructions[x]['catch'];
+              break;
+            }
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               iterateJson(json.instructions[x].catch, cell, 'catch');
             }
           }
           if (json.instructions[x].then) {
-            iterateJson(json.instructions[x].then, cell, 'then');
+            iterateJson(json.instructions[x].then, cell,'' );
           }
           if (json.instructions[x].else) {
-            iterateJson(json.instructions[x].else, cell, 'else');
+            iterateJson(json.instructions[x].else, cell,'');
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              iterateJson(json.instructions[x].branches[i], cell, 'branch');
+              iterateJson(json.instructions[x].branches[i], cell,'' );
               if (!json.instructions[x].branches[i].instructions) {
                 json.instructions[x].branches.splice(i, 1);
                 if (json.instructions[x].branches.length === 0) {
@@ -5017,14 +4786,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     function moveSelectedCellToDroppedCell(cell, parentCell, cells) {
       const cellName = parentCell.value.tagName;
-
       let parent;
       if (cell) {
         parent = cell.getParent();
       } else {
         parent = cells.firstCell.getParent();
       }
-      let v2, v3, v4, _sour, _tar, _middle;
+      let v2, v3,  _sour, _tar, _middle;
       if (cellName === 'Fork') {
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
         if (cell) {
@@ -5214,13 +4982,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         connectExtraNodes(parentCell, v2, parent, _sour, _tar);
         graph.insertEdge(parent, null, getConnectionNode('retry'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('endRetry'), _middle, v2);
-
       }
       if (_sour && _tar) {
         graph.getModel().remove(_sour);
         graph.getModel().remove(_tar);
       }
-
       setTimeout(() => {
         updateXMLFromJSON(false);
       }, 0);
@@ -5249,6 +5015,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         self.nodeMap = x;
         WorkflowService.connectWithDummyNodes(self.workFlowJson, mxJson.mxGraphModel.root);
         let xml = x2js.json2xml_str(mxJson);
+
         graph.getModel().beginUpdate();
         try {
           // Removes all cells
@@ -5266,7 +5033,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           WorkflowService.executeLayout(graph);
         }
+
       } else {
+
         reloadDummyXml(self.dummyXml);
       }
     }
@@ -5619,7 +5388,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           let flg1 = false, flg2 = false, keyAttr = {nodeName: 'key', nodeValue: ''}, valueAttr = {nodeName: 'value', nodeValue: ''};
           for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState' && attrs[i].nodeName !== 'key' && attrs[i].nodeName !== 'value') {
-              createTextField(_graph, form, cell, attrs[i]);
+              let field = (attrs[i].nodeName === 'message' || attrs[i].nodeName === 'predicate') ?  'textarea' : 'text';
+              createTextField(_graph, form, cell, attrs[i], field);
             }
             if (attrs[i].nodeName === 'checkSteadyState') {
               createCheckbox(_graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: attrs[i].nodeValue});
@@ -5633,28 +5403,24 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             } else if (attrs[i].nodeName === 'value') {
               valueAttr = attrs[i];
             }
-
           }
           if (cell.value.nodeName === 'Job') {
             if (!flg1) {
-              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: '0'});
+              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: '0'}, 'text');
             }
             if (!flg2) {
-              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''});
+              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''}, 'text');
             }
-
             let _div = document.createElement('div');
             _div.setAttribute('class', '_600 m-b-sm text-u-c');
             let label = document.createElement('label');
             self.translate.get('workflow.label.variables').subscribe(translatedValue => {
               mxUtils.writeln(label, translatedValue);
             });
-
             _div.appendChild(label);
             form.appendChild(_div);
-            createTextField(_graph, form, cell, keyAttr);
-            createTextField(_graph, form, cell, valueAttr);
-
+            createTextField(_graph, form, cell, keyAttr, 'text');
+            createTextField(_graph, form, cell, valueAttr, 'text');
           }
         }
 
@@ -5665,13 +5431,21 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     /**
      * Creates the textfield for the given property.
      */
-    function createTextField(_graph, form, cell, attribute) {
+    function createTextField(_graph, form, cell, attribute, field) {
       const div = document.createElement('div');
       div.setAttribute('class', 'md-form-group');
-      const input = document.createElement('input');
-      input.setAttribute('type', 'text');
+      let input: any;
+      if (field === 'textarea') {
+        input = document.createElement('textarea');
+        input.setAttribute('rows', '5');
+      } else {
+        input = document.createElement('input');
+        input.setAttribute('type', 'text');
+      }
+
       input.setAttribute('value', attribute.nodeValue);
       input.setAttribute('class', 'md-input');
+
 
       const label = document.createElement('label');
       label.setAttribute('class', 'font14');
@@ -5708,7 +5482,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           input.blur();
         }
       });
-
       if (mxClient.IS_IE) {
         mxEvent.addListener(input, 'focusout', applyHandler);
       } else {
@@ -5789,52 +5562,52 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     function createClickInstruction(sourceCell, targetCell) {
       const title = sourceCell.attr('title');
-      const flag = checkValidTarget(targetCell, title) === 'valid';
+      const result = checkValidTarget(targetCell, title);
+      const flag = result === 'valid' || result === 'select';
       if (flag) {
-        let clickedCell: any, _node: any;
-
+        let clickedCell: any, _node: any, v1, v2, label = '';
         if (title === 'Job') {
           _node = doc.createElement('Job');
           _node.setAttribute('name', 'Job');
           _node.setAttribute('title', '');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 200, 50, 'job');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 200, 50, 'job');
         } else if (title === 'Abort') {
           _node = doc.createElement('Abort');
           _node.setAttribute('label', 'abort');
           _node.setAttribute('message', '');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 75, 75, self.workflowService.abort);
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 75, 75, self.workflowService.abort);
         } else if (title === 'Terminate') {
           _node = doc.createElement('Terminate');
           _node.setAttribute('label', 'terminate');
           _node.setAttribute('message', 'order prematurely completed');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 75, 75, self.workflowService.terminate);
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 75, 75, self.workflowService.terminate);
         } else if (title === 'Fork') {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 90, 90, self.workflowService.fork);
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 90, 90, self.workflowService.fork);
           clickedCell.collapsed = true;
         } else if (title === 'If') {
           _node = doc.createElement('If');
           _node.setAttribute('label', 'if');
           _node.setAttribute('predicate', 'returnCode > 0');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 150, 80, 'if');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 150, 80, 'if');
           clickedCell.collapsed = true;
         } else if (title === 'Try') {
           _node = doc.createElement('Try');
           _node.setAttribute('label', 'try');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 94, 94, 'try');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 94, 94, 'try');
           clickedCell.collapsed = true;
         } else if (title === 'Retry') {
           _node = doc.createElement('Retry');
           _node.setAttribute('label', 'retry');
           _node.setAttribute('repeat', '10');
           _node.setAttribute('delay', '0');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 150, 80, 'retry');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 150, 80, 'retry');
           clickedCell.collapsed = true;
         } else if (title === 'Await') {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 90, 90, self.workflowService.await);
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 90, 90, self.workflowService.await);
           clickedCell.collapsed = true;
         } else if (title === 'FileOrder') {
           _node = doc.createElement('FileOrder');
@@ -5843,112 +5616,68 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           _node.setAttribute('directory', '');
           _node.setAttribute('regex', '.*');
           _node.setAttribute('checkSteadyState', 'true');
-          clickedCell = graph.insertVertex(targetCell.getParent(), null, _node, 0, 0, 120, 50, 'rectangle');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 120, 50, 'rectangle');
+        } else if (title === 'Catch') {
+          _node = doc.createElement('Catch');
+          _node.setAttribute('label', 'catch');
+          clickedCell = graph.insertVertex(targetCell, null, _node, 0, 0, 100, 40, 'dashRectangle');
         }
 
         if (targetCell.value.tagName !== 'Connection') {
-          let obj: any;
-          if (title === 'Job') {
-            obj = {
-              'TYPE': 'Job',
-              'jobName': '/Job',
-              'title': '',
-              'agentPath': '',
-              'returnCodeMeaning': {},
-              'variables': {}
-            };
-          } else if (title === 'Abort') {
-            obj = {
-              'TYPE': 'Abort',
-              'message': 'order failed'
-            };
-          } else if (title === 'Terminate') {
-            obj = {
-              'TYPE': 'Terminate',
-              'message': 'order prematurely completed'
-            };
-          } else if (title === 'Fork') {
-            obj = {
-              'TYPE': 'ForkJoin'
-            };
-          } else if (title === 'If') {
-            obj = {
-              'TYPE': 'If',
-              'predicate': 'returnCode > 0'
-            };
-          } else if (title === 'Try') {
-            obj = {
-              'TYPE': 'Try',
-              'instructions': []
-            };
-          } else if (title === 'Retry') {
-            obj = {
-              'TYPE': 'Retry',
-              'repeat': '10',
-              'delay': '0'
-            };
-          } else if (title === 'Await') {
-            obj = {
-              'TYPE': 'Await',
-              'events': []
-            };
-          } else if (title === 'FileOrder') {
-            obj = {
-              'TYPE': 'Await',
-              'label': 'fileOrder',
-              'agent': '',
-              'regex': '.*',
-              'directory': '',
-              'checkSteadyState': true,
-            };
+          if (result === 'select') {
+            moveSelectedCellToDroppedCell(targetCell, clickedCell, selectedCellsObj);
+            selectedCellsObj = null;
+          } else {
+            addInstructionToCell(clickedCell, targetCell);
           }
-          if (!self.workFlowJson || !self.workFlowJson.instructions) {
-            self.workFlowJson = {instructions: []};
-          }
-          addInstructionToJson(self.workFlowJson, targetCell, obj);
-          setTimeout(() => {
-            updateXMLFromJSON(false);
-          }, 0);
+          targetCell = null;
+          dropTarget = null;
         } else {
-          let v1, v2, label = '';
-          const parent = targetCell.getParent() || graph.getDefaultParent();
-          const attr = targetCell.value.attributes;
-          if (attr) {
-            for (let i = 0; i < attr.length; i++) {
-              if (attr[i].value && attr[i].name) {
-                label = attr[i].value;
-                break;
+          if (targetCell.source) {
+            if (targetCell.source.getParent().id !== '1') {
+              const _type = targetCell.getAttribute('label');
+              if (!(_type === 'retry' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                targetCell.setParent(targetCell.source.getParent());
               }
             }
           }
+          label = targetCell.getAttribute('label') || targetCell.getAttribute('type') || '';
+          if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Try') {
+            let parent = targetCell.getParent() || graph.getDefaultParent();
 
-          if (title === 'Fork') {
-            v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 90, 90, self.workflowService.merge);
-            graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
-          } else if (title === 'If') {
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 150, 80, 'if');
-            graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
-          } else if (title === 'Try') {
-            v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
-            //v2.collapsed = true;
-            v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 94, 94, 'try');
-            graph.insertEdge(parent, null, getConnectionNode('try'), clickedCell, v2);
-            graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
-          } else if (title === 'Retry') {
-            v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 150, 80, 'retry');
-            graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
-          }
+            if (clickedCell.value.tagName === 'Fork') {
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 90, 90, self.workflowService.merge);
+            } else if (clickedCell.value.tagName === 'If') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 150, 80, 'if');
+            } else if (clickedCell.value.tagName === 'Retry') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 150, 80, 'retry');
+            } else {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 94, 94, 'try');
+              v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
+              // v2.collapsed = true;
+              graph.insertEdge(parent, null, getConnectionNode('try'), clickedCell, v2);
+              graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
+            }
 
-          graph.insertEdge(parent, null, getConnectionNode(label), targetCell.source, clickedCell);
-          if (v1) {
+            graph.insertEdge(parent, null, getConnectionNode(label), targetCell.source, clickedCell);
+            if (clickedCell.value.tagName !== 'Try') {
+              graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
+            }
             graph.insertEdge(parent, null, getConnectionNode(''), v1, targetCell.target);
-          } else {
-            graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, targetCell.target);
-          }
-          graph.getModel().remove(targetCell);
-          isUndoable = true;
-          WorkflowService.executeLayout(graph);
-          if (v1) {
+            for (let x = 0; x < targetCell.source.edges.length; x++) {
+              if (targetCell.source.edges[x].id === targetCell.id) {
+                const _sourCellName = targetCell.source.value.tagName;
+                const _tarCellName = targetCell.target.value.tagName;
+                if ((targetCell.target && ((_sourCellName === 'Job' || _sourCellName === 'Abort' || _sourCellName === 'Terminate' || _sourCellName === 'Await') &&
+                  (_tarCellName === 'Job' || _tarCellName === 'Abort' || _tarCellName === 'Terminate' || _tarCellName === 'Await')))) {
+                  graph.getModel().remove(targetCell.source.edges[x]);
+                } else {
+                  targetCell.source.removeEdge(targetCell.source.edges[x], true);
+                }
+                break;
+              }
+            }
+
             setTimeout(() => {
               graph.getModel().beginUpdate();
               try {
@@ -5956,194 +5685,462 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   self.nodeMap.set(clickedCell.id, v1.id);
                 }
                 const targetId = new mxCellAttributeChange(
-                  clickedCell, 'targetId',
-                  v1.id);
+                  v1, 'targetId',
+                  clickedCell.id);
                 graph.getModel().execute(targetId);
+                if (v2) {
+                  const targetId2 = new mxCellAttributeChange(
+                    v2, 'targetId', clickedCell.id);
+                  graph.getModel().execute(targetId2);
+                }
               } finally {
                 graph.getModel().endUpdate();
               }
-
-              // checkConnectionLabel(clickedCell, cell, false);
+              // checkConnectionLabel(clickedCell, targetCell, false);
             }, 0);
+          } else {
+             graph.insertEdge(parent, null, getConnectionNode(label), targetCell.source, clickedCell);
+             graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, targetCell.target);
+             graph.getModel().remove(targetCell);
           }
         }
+        isUndoable = true;
+        WorkflowService.executeLayout(graph);
         graph.clearSelection();
-        graph.setSelectionCells([clickedCell]);
-      }
-    }
-
-    function addInstructionToJson(json, cell, obj) {
-      if (json.instructions && json.instructions.length > 0) {
-        for (let x = 0; x < json.instructions.length; x++) {
-          if (json.instructions[x].id === cell.id) {
-            if (cell.value.tagName === 'If') {
-              if (json.instructions[x].then) {
-                json.instructions[x].else = {instructions: [obj]};
-              } else {
-                json.instructions[x].then = {instructions: [obj]};
-              }
-            } else if (cell.value.tagName === 'Fork') {
-              if (!json.instructions[x].branches) {
-                json.instructions[x].branches = [];
-              }
-              json.instructions[x].branches.push({instructions: [obj]});
-            } else if (cell.value.tagName === 'Await') {
-              json.instructions[x].events = [obj];
-            } else {
-              json.instructions[x].instructions.push(obj);
-            }
-            break;
-          }
-
-          if (json.instructions[x].instructions) {
-            addInstructionToJson(json.instructions[x], cell, obj);
-          }
-          if (json.instructions[x].catch) {
-            addInstructionToJson(json.instructions[x].catch, cell, obj);
-          }
-          if (json.instructions[x].then) {
-            addInstructionToJson(json.instructions[x].then, cell, obj);
-          }
-          if (json.instructions[x].else) {
-            addInstructionToJson(json.instructions[x].else, cell, obj);
-          }
-          if (json.instructions[x].branches) {
-            for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              addInstructionToJson(json.instructions[x].branches[i], cell, obj);
-            }
-          }
-          if (json.instructions[x].events) {
-            let flg = false;
-            for (let i = 0; i < json.instructions[x].events.length; i++) {
-              if (json.instructions[x].events[i].id === cell.id) {
-                json.instructions[x].events.push(obj);
-                flg = true;
-                break;
-              }
-            }
-            if (flg) {
-              break;
-            }
-          }
+        if (v1) {
+          graph.setSelectionCells([clickedCell, v1]);
+        } else {
+          graph.setSelectionCells([clickedCell]);
         }
-      } else {
-        json.instructions.push(obj);
+        selectionChanged(graph);
       }
     }
 
-    function checkValidTarget(targetCell, title): string {
-      let flag = 'valid', flg = false;
-      const tagName = targetCell.value.tagName;
 
+    /**
+     * Function: To validate instruction is valid for drop or not
+     * @param targetCell
+     * @param title
+     */
+    function checkValidTarget(targetCell, title): string {
+      const tagName = targetCell.value.tagName;
       if (tagName === 'Process') {
         if (targetCell.getAttribute('title') === 'start' || targetCell.getAttribute('title') === 'end') {
           return 'return';
         }
       } else if (tagName === 'Connector') {
-          return 'return';
+        return 'return';
       }
-      let isOrderCell = false;
+      let flg = false, isOrderCell = false;
       if (title) {
+        title = title.toLowerCase();
         if (title.match('order')) {
-          if (targetCell.value.tagName === 'Await' || targetCell.value.tagName === 'Connection') {
-            if (targetCell.value.tagName === 'Connection') {
+          if (tagName === 'Await' || tagName === 'Connection') {
+            if (tagName === 'Connection') {
               if (!(targetCell.target && targetCell.target.value.tagName.indexOf('Order') > -1)) {
-                flag = 'inValid';
+                return 'inValid';
               }
             }
             isOrderCell = true;
           } else {
-            flag = 'inValid';
+            return 'inValid';
           }
         } else if (title.match('fork') || title.match('retry') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
-          if (selectedCell && (selectedCell.id === targetCell.id || graph.getSelectionCells().length > 1)) {
+          if (selectedCell && (selectedCell.id === targetCell.id || graph.getSelectionCells().length > 1) && selectedCell.value.tagName !== 'Catch') {
             flg = true;
+          }
+        }
+        if (title.match('catch')) {
+          if (tagName === 'Try') {
+            let flg1 = true;
+            const childVertices = graph.getChildVertices(targetCell);
+            if (childVertices.length > 0) {
+              for (let i = 0; i < childVertices.length; i++) {
+                if (childVertices[i].value.tagName === 'Catch') {
+                  flg1 = false;
+                  break;
+                }
+              }
+            }
+            return flg1 ? 'valid' : 'inValid';
+          } else {
+            return 'inValid';
           }
         }
       }
       if (!flg) {
-        if (tagName.indexOf('Order') > -1) {
-          flag = 'return';
-        } else if (tagName === 'Process') {
-          if (flag && targetCell.edges && targetCell.edges.length === 1) {
-            if (targetCell.edges[0].value.tagName === 'Connector') {
-              flag = 'return';
-            }
-          }
-        } else if (targetCell.value.tagName === 'Connection') {
-          if (targetCell.source && targetCell.source.value && ((targetCell.source.value.tagName === 'Fork' && targetCell.target.value.tagName === 'Join') ||
-            (targetCell.source.value.tagName === 'If' && targetCell.target.value.tagName === 'EndIf') ||
-            (targetCell.source.value.tagName === 'Retry' && targetCell.target.value.tagName === 'EndRetry') ||
-            (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'Catch') ||
-            (targetCell.source.value.tagName === 'Catch' && targetCell.target.value.tagName === 'EndTry') ||
-            (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'EndTry') ||
-            (targetCell.source.value.tagName === 'Await' && targetCell.target.value.tagName.indexOf('Order') > -1 && !isOrderCell))) {
-            flag = 'return';
-          }
-        } else if (targetCell.value.tagName === 'Job' || targetCell.value.tagName === 'Abort' || targetCell.value.tagName === 'Terminate') {
-          if (targetCell.edges) {
+        if (tagName !== 'Connection') {
+          if (tagName.indexOf('Order') > -1) {
+
+            return 'inValid';
+          } else if (tagName === 'Job' || tagName === 'Abort' || tagName === 'Terminate') {
             for (let i = 0; i < targetCell.edges.length; i++) {
               if (targetCell.edges[i].target.id !== targetCell.id) {
-                flag = 'inValid';
+                return 'inValid';
+              }
+            }
+          } else if (tagName === 'Await') {
+            if (!isOrderCell) {
+              return 'inValid';
+            } else {
+              if (targetCell.edges && targetCell.edges.length > 2) {
+                return 'inValid';
+              }
+            }
+          } else if (tagName === 'If') {
+            if (targetCell.edges.length > 2) {
+              return 'inValid';
+            }
+          } else if (checkClosingCell(targetCell)) {
+            if (targetCell.edges.length > 1) {
+              for (let i = 0; i < targetCell.edges.length; i++) {
+                if (targetCell.edges[i].target.id !== targetCell.id) {
+                  return 'inValid';
+                }
+              }
+            }
+          } else if (tagName === 'Retry') {
+            let flag1 = false;
+            if (targetCell.edges && targetCell.edges.length) {
+              for (let i = 0; i < targetCell.edges.length; i++) {
+                if (targetCell.edges[i].source.value.tagName === 'Retry' && targetCell.edges[i].target.value.tagName === 'EndRetry') {
+                  flag1 = true;
+                }
+              }
+            }
+            if (!flag1) {
+              return 'inValid';
+            }
+          } else if (tagName === 'Try') {
+            let flag1 = false;
+            if (targetCell.edges && targetCell.edges.length) {
+              for (let i = 0; i < targetCell.edges.length; i++) {
+                if (targetCell.edges[i].source && targetCell.edges[i].target && targetCell.edges[i].source.value.tagName === 'Try' && (
+                  targetCell.edges[i].target.value.tagName === 'Catch' || targetCell.edges[i].target.value.tagName === 'EndTry')) {
+                  flag1 = true;
+                }
+              }
+            }
+            if (!flag1) {
+
+              return 'inValid';
+            }
+          } else if (tagName === 'Catch') {
+            let flag1 = false;
+            if (targetCell.edges && targetCell.edges.length) {
+              for (let i = 0; i < targetCell.edges.length; i++) {
+                if (targetCell.edges[i].source.value.tagName === 'Catch' && targetCell.edges[i].target.value.tagName === 'EndTry') {
+                  flag1 = true;
+                }
+              }
+            }
+            if (!flag1) {
+              return 'inValid';
+            }
+          } else if (tagName === 'Process') {
+            if (targetCell.edges && targetCell.edges.length === 1) {
+              if (targetCell.edges[0].value.tagName === 'Connector') {
+                return 'inValid';
               }
             }
           }
-        } else if (targetCell.value.tagName === 'Await') {
-          if (!isOrderCell) {
-            flag = 'inValid';
+        } else {
+          if (tagName === 'Connection') {
+            if ((targetCell.source.value.tagName === 'Fork' && targetCell.target.value.tagName === 'Join') ||
+              (targetCell.source.value.tagName === 'If' && targetCell.target.value.tagName === 'EndIf') ||
+              (targetCell.source.value.tagName === 'Retry' && targetCell.target.value.tagName === 'EndRetry') ||
+              (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'Catch') ||
+              (targetCell.source.value.tagName === 'Catch' && targetCell.target.value.tagName === 'EndTry') ||
+              (targetCell.source.value.tagName === 'Try' && targetCell.target.value.tagName === 'EndTry') ||
+              (targetCell.source.value.tagName === 'Await' && targetCell.target.value.tagName.indexOf('Order') > -1 && !isOrderCell)) {
+              return 'return';
+            }
+          }
+        }
+      } else {
+        return 'select';
+      }
+      return 'valid';
+    }
+
+    function addInstructionToCell(cell, _dropTarget) {
+      let label = '';
+      const dropTargetName = _dropTarget.value.tagName;
+      for (let i = 0; i < _dropTarget.edges.length; i++) {
+        if (_dropTarget.edges[i].source.id === _dropTarget.id) {
+          if (checkClosedCellWithSourceCell(_dropTarget, _dropTarget.edges[i].target) || (dropTargetName === 'Await')) {
+            graph.foldCells(false, false, [_dropTarget], null, null);
+          }
+          break;
+        }
+      }
+      if (dropTargetName === 'If') {
+        let flag = false;
+        label = 'then';
+        for (let i = 0; i < _dropTarget.edges.length; i++) {
+          if (_dropTarget.edges[i].target.id !== _dropTarget.id && _dropTarget.edges[i].target.value.tagName !== 'EndIf') {
+            label = 'else';
           } else {
-            if (targetCell.edges && targetCell.edges.length > 2) {
-              flag = 'inValid';
-            }
-          }
-        } else if (tagName === 'If') {
-          if (targetCell.edges && targetCell.edges.length > 2) {
-            flag = 'inValid';
-          }
-        } else if (checkClosingCell(targetCell)) {
-          if (targetCell.edges && targetCell.edges.length > 1) {
-            for (let i = 0; i < targetCell.edges.length; i++) {
-              if (targetCell.edges[i].target.id !== targetCell.id) {
-                flag = 'inValid';
-              }
-            }
-          }
-        } else if (targetCell.value.tagName === 'Retry') {
-          if (targetCell.edges && targetCell.edges.length > 1) {
-            for (let i = 0; i < targetCell.edges.length; i++) {
-              if (targetCell.edges[i].target.id !== targetCell.id) {
-                if (targetCell.edges[i].target.value.tagName !== 'EndRetry') {
-                  flag = 'inValid';
+            if (_dropTarget.edges[i].target && _dropTarget.edges[i].target.edges) {
+              for (let j = 0; j < _dropTarget.edges[i].target.edges.length; j++) {
+                if (_dropTarget.edges[i].target.edges[j].edge && _dropTarget.edges[i].target.edges[j].value.attributes
+                  && _dropTarget.edges[i].target.edges[j].value.attributes.length > 0 && (_dropTarget.edges[i].target.edges[j].value.attributes[0]
+                    && _dropTarget.edges[i].target.edges[j].value.attributes[0].value === 'else')) {
+                  flag = true;
                 }
               }
             }
           }
-        } else if (targetCell.value.tagName === 'Try') {
-          if (targetCell.edges && targetCell.edges.length > 1) {
-            for (let i = 0; i < targetCell.edges.length; i++) {
-              if (targetCell.edges[i].target.id !== targetCell.id) {
-                if (targetCell.edges[i].target.value.tagName !== 'Catch') {
-                  flag = 'inValid';
+        }
+        if (flag) {
+          label = 'then';
+        }
+      } else if (dropTargetName === 'Retry') {
+        label = 'retry';
+      } else if (dropTargetName === 'Try') {
+        label = 'try';
+      } else if (dropTargetName === 'Catch') {
+        label = 'catch';
+        // cell.setParent(_dropTarget);
+      } else if (dropTargetName === 'Fork') {
+        label = 'branch';
+      } else if (dropTargetName === 'Await') {
+        label = 'await';
+      }
+
+      let parent = cell.getParent() || graph.getDefaultParent();
+      if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+        let v1, v2, _label;
+        if (cell.value.tagName === 'Fork') {
+          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          if (dropTargetName === 'If' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch'
+            || dropTargetName === 'Fork') {
+            _label = dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Fork' ? 'join' : 'try';
+          }
+        } else if (cell.value.tagName === 'If') {
+          v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 150, 80, 'if');
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
+            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'endIf' ? 'join' : 'try';
+          }
+        } else if (cell.value.tagName === 'Retry') {
+          v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 150, 80, 'retry');
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          if (dropTargetName === 'Fork' || dropTargetName === 'If' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'Retry') {
+            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Retry' ? 'endRetry' : 'try';
+          }
+        } else if (cell.value.tagName === 'Try') {
+          v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
+          // v2.collapsed = true;
+          v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 94, 94, 'try');
+          graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
+          if (dropTargetName === 'Fork' || dropTargetName === 'If' || dropTargetName === 'Retry' || dropTargetName === 'Catch' || dropTargetName === 'Try') {
+            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Try' ? 'try' : 'endRetry';
+          }
+        }
+
+        if (v1) {
+          if (cell.id && v1.id) {
+            self.nodeMap.set(cell.id, v1.id);
+          }
+          if (_label) {
+            setTimeout(() => {
+              for (let i = 0; i < v1.edges.length; i++) {
+                if (v1.edges[i].target.id !== v1.id) {
+                  changeLabelOfConnection(v1.edges[i], _label);
+                  break;
                 }
               }
-            }
-          }
-        } else if (targetCell.value.tagName === 'Catch') {
-          let flag1 = false;
-          if (targetCell.edges && targetCell.edges.length) {
-            for (let i = 0; i < targetCell.edges.length; i++) {
-              if (targetCell.edges[i].source.value.tagName === 'Catch' && targetCell.edges[i].target.value.tagName === 'EndTry') {
-                flag1 = true;
-              }
-            }
-          }
-          if (!flag1) {
-            flag = 'inValid';
+            }, 0);
           }
         }
       }
-      return flag;
+      if (dropTargetName === 'Process') {
+        parent = graph.getDefaultParent();
+        let flag = false;
+        for (let i = 0; i < _dropTarget.edges.length; i++) {
+          if (_dropTarget.edges[i].source.id !== _dropTarget.id) {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+              for (let j = 0; j < cell.edges.length; j++) {
+                if (cell.edges[j].target.id !== cell.id) {
+                  if (checkClosingCell(cell.edges[j].target)) {
+                    if (flag) {
+                      graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, _dropTarget.edges[i].target);
+                    } else {
+                      graph.insertEdge(parent, null, getConnectionNode(label), _dropTarget.edges[i].source, cell.edges[j].source);
+                    }
+                    flag = true;
+                    break;
+                  }
+                }
+              }
+            } else {
+              graph.insertEdge(parent, null, getConnectionNode(label), _dropTarget.edges[i].source, cell);
+            }
+          } else {
+            if (cell.value.tagName === 'Fork' || cell.value.tagName === 'If' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+              for (let j = 0; j < cell.edges.length; j++) {
+                if (cell.edges[j].target.id !== cell.id) {
+                  if (checkClosingCell(cell.edges[j].target)) {
+                    graph.insertEdge(parent, null, getConnectionNode(label), cell.edges[j].target, _dropTarget.edges[i].target);
+                    break;
+                  }
+                }
+              }
+            } else {
+              graph.insertEdge(parent, null, getConnectionNode(label), cell, _dropTarget.edges[i].target);
+            }
+          }
+        }
+        graph.getModel().remove(_dropTarget);
+      } else {
+        let checkLabel = '';
+        if (dropTargetName === 'Fork') {
+          label = 'branch';
+          checkLabel = 'Join';
+        } else if (dropTargetName === 'If') {
+          checkLabel = 'EndIf';
+        } else if (dropTargetName === 'Retry') {
+          checkLabel = 'EndRetry';
+        } else if (dropTargetName === 'Try') {
+          label = 'try';
+          checkLabel = 'EndTry';
+        } else if (dropTargetName === 'Catch') {
+          label = 'catch';
+          checkLabel = 'EndTry';
+          graph.getModel().setStyle(_dropTarget, 'catch');
+        } else if (dropTargetName === 'Await') {
+          label = 'await';
+        }
+        if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
+          let target1, target2;
+          for (let i = 0; i < _dropTarget.edges.length; i++) {
+            if (_dropTarget.edges[i].target.id !== _dropTarget.id) {
+              if (_dropTarget.edges[i].target.value.tagName === checkLabel) {
+                self.nodeMap.set(_dropTarget.id, _dropTarget.edges[i].target.id);
+                target1 = _dropTarget.edges[i];
+              }
+              break;
+            }
+          }
+
+          for (let i = 0; i < cell.edges.length; i++) {
+            if (cell.edges[i].target.id !== cell.id) {
+              if (checkClosingCell(cell.edges[i].target)) {
+                self.nodeMap.set(cell.id, cell.edges[i].target.id);
+                target2 = cell.edges[i].target;
+                break;
+              }
+            }
+          }
+
+          if (target1 && target2) {
+            graph.insertEdge(parent, null, getConnectionNode(label), target2, target1.target);
+            graph.getModel().remove(target1);
+          } else if (self.nodeMap.has(_dropTarget.id)) {
+            const target = graph.getModel().getCell(self.nodeMap.get(_dropTarget.id));
+            graph.insertEdge(parent, null, getConnectionNode(label), target2, target);
+          }
+        } else {
+          if (dropTargetName === 'Try' && cell.value.tagName === 'Catch') {
+            label = 'endTry';
+            graph.getModel().setStyle(cell, 'dashRectangle');
+          }
+          let flag = false;
+          if (_dropTarget.edges && _dropTarget.edges.length && cell.value.tagName.indexOf('Order') < 0) {
+            for (let i = 0; i < _dropTarget.edges.length; i++) {
+              if (_dropTarget.edges[i].target.id !== _dropTarget.id) {
+                if (_dropTarget.edges[i].target.value.tagName === checkLabel || _dropTarget.edges[i].target.value.tagName === 'Catch') {
+                  flag = true;
+                  if (!self.nodeMap.has(_dropTarget.id) && _dropTarget.value.tagName !== 'Catch') {
+                    self.nodeMap.set(_dropTarget.id, _dropTarget.edges[i].target.id);
+                  }
+
+                  const attr = _dropTarget.edges[i].value.attributes;
+                  if (attr && label !== 'catch' && !checkClosedCellWithSourceCell(_dropTarget, _dropTarget.edges[i].target)) {
+                    for (let x = 0; x < attr.length; x++) {
+                      if (attr[x].value && attr[x].name) {
+                        label = attr[x].value;
+                        break;
+                      }
+                    }
+                  }
+
+                  if (cell && _dropTarget.edges[i].target) {
+                    graph.insertEdge(parent, null, getConnectionNode(label), cell, _dropTarget.edges[i].target);
+                  }
+                  graph.getModel().remove(_dropTarget.edges[i]);
+                }
+                break;
+              }
+            }
+          }
+          if (!flag && self.nodeMap.has(_dropTarget.id)) {
+            const target = graph.getModel().getCell(self.nodeMap.get(_dropTarget.id));
+            if (cell && target) {
+              graph.insertEdge(parent, null, getConnectionNode(label), cell, target);
+            }
+          }
+        }
+
+        if (cell.edges) {
+          for (let i = 0; i < cell.edges.length; i++) {
+            if (cell.edges[i].target.value.tagName === checkLabel) {
+              const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
+                ? 'endRetry' : 'endTry';
+              if (cell.value.tagName !== 'Fork' && cell.value.tagName !== 'If' && cell.value.tagName !== 'Try' && cell.value.tagName !== 'Retry' && cell.value.tagName !== 'Catch') {
+                cell.edges[i].value.attributes[0].nodeValue = _label;
+                cell.edges[i].value.attributes[1].nodeValue = _label;
+              }
+            }
+          }
+        }
+        if (cell && _dropTarget) {
+          if (dropTargetName === 'Try' && cell.value.tagName === 'Catch') {
+            const childVertices = graph.getChildVertices(_dropTarget);
+            if (childVertices.length > 0) {
+              const lastChildVertex = childVertices.length === 1 ? childVertices[0] : childVertices[childVertices.length - 2];
+              for (let j = 0; j < lastChildVertex.edges.length; j++) {
+                if (lastChildVertex.edges[j].source.id === lastChildVertex.id) {
+                  graph.getModel().remove(lastChildVertex.edges[j]);
+                  break;
+                }
+              }
+              graph.insertEdge(_dropTarget, null, getConnectionNode('try'), lastChildVertex, cell);
+            } else {
+              graph.insertEdge(_dropTarget, null, getConnectionNode('try'), _dropTarget, cell);
+            }
+
+            const targetId = _dropTarget.id;
+            setTimeout(() => {
+              graph.getModel().beginUpdate();
+              try {
+                const targetId2 = new mxCellAttributeChange(
+                  cell, 'targetId', targetId);
+                graph.getModel().execute(targetId2);
+              } finally {
+                graph.getModel().endUpdate();
+              }
+            }, 0);
+          } else {
+            graph.insertEdge(parent, null, getConnectionNode(label), _dropTarget, cell);
+          }
+        }
+      }
+      if (cell.value.tagName === 'Try') {
+        for (let j = 0; j < cell.edges.length; j++) {
+          if (cell.edges[j].target.id !== cell.id) {
+            if (cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') {
+              graph.getModel().remove(cell.edges[j]);
+              break;
+            }
+          }
+        }
+      }
     }
   }
 }

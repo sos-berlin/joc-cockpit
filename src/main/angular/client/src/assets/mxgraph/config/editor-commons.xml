@@ -75,6 +75,13 @@
         </mxCell>
       </Try>
     </add>
+    <add as="Catch">
+      <Catch label="catch">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="100" height="40"/>
+        </mxCell>
+      </Catch>
+    </add>
     <add as="symbol">
       <Symbol label="Instruction" description="">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">

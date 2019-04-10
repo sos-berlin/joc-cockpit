@@ -1425,6 +1425,7 @@
   "workflow.message.ifInstructionValidationError": "Cannot have more than one condition",
   "workflow.message.awaitInstructionValidationError": "Only Await instruction can have orders events",
   "workflow.message.invalidInstructionsSelected": "Selection of instructions is not valid",
+  "workflow.message.catchInstructionValidationError": "Only Try instruction can have catch instruction",
   "xml.button.expand": "Expand",
   "xml.button.collapse": "Collapse",
   "xml.button.cut": "Cut",

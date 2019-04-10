@@ -118,6 +118,11 @@ export class WorkflowService {
     }, 0);
   }
 
+  resetVariables() {
+    this.nodeMap = new Map();
+    this.count = 11;
+  }
+
   getDummyNodes(): any {
     this.nodeMap = new Map();
     return [
@@ -152,7 +157,7 @@ export class WorkflowService {
   }
 
   init(theme) {
-    this.nodeMap = new Map();
+    this.resetVariables();
     if (theme === 'light') {
       this.merge = 'symbol;image=./assets/mxgraph/images/symbols/merge.svg';
       this.abort = 'symbol;image=./assets/mxgraph/images/symbols/abort.svg';
@@ -330,11 +335,19 @@ export class WorkflowService {
             },
             _label: 'catch'
           };
-          let _id = 0;
+          let _id = obj._id;
 
-          if (!json.instructions[x].catch) {
-            json.instructions[x].catch = {id: ++self.count, instructions: []};
-          }
+/*          if (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
+            catchObj._id = json.instructions[x].catch.id;
+            catchObj._targetId = json.instructions[x].id;
+            self.jsonParser(json.instructions[x].catch, mxJson, 'endTry', obj._id);
+            self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
+            _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
+            mxJson.Catch.push(catchObj);
+          }  else {
+            delete mxJson['Catch'];
+            delete json.instructions[x]['catch'];
+          }*/
 
           if (json.instructions[x].catch && json.instructions[x].catch.instructions) {
             catchObj._id = json.instructions[x].catch.id;
@@ -342,11 +355,14 @@ export class WorkflowService {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               self.jsonParser(json.instructions[x].catch, mxJson, 'endTry', obj._id);
               self.connectInstruction(json.instructions[x].catch, json.instructions[x].catch.instructions[0], mxJson, 'catch', obj._id);
+              _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
             } else {
-              catchObj.mxCell._style = 'dashRectangle';
+               catchObj.mxCell._style = 'dashRectangle';
+              _id = json.instructions[x].catch.id;
             }
-             _id = self.getCatchEnd(json.instructions[x].catch, mxJson);
             mxJson.Catch.push(catchObj);
+          } else {
+            delete mxJson['Catch'];
           }
 
           if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
@@ -354,13 +370,22 @@ export class WorkflowService {
             self.connectInstruction(json.instructions[x], json.instructions[x].instructions[0], mxJson, 'try', obj._id);
             const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
             if (_lastNode.TYPE !== 'ForkJoin' && _lastNode.TYPE !== 'If' && _lastNode.TYPE !== 'Try' && _lastNode.TYPE !== 'Retry') {
-              self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try', obj._id);
+
+              if (json.instructions[x].catch) {
+                self.connectInstruction(_lastNode, json.instructions[x].catch, mxJson, 'try', obj._id);
+              } else {
+                _id = _lastNode.id;
+              }
             } else {
               if (_lastNode && (_lastNode.TYPE === 'If')) {
                 if (mxJson.EndIf && mxJson.EndIf.length) {
                   for (let j = 0; j < mxJson.EndIf.length; j++) {
                     if (_lastNode.id === mxJson.EndIf[j]._targetId) {
-                      this.connectInstruction({id: mxJson.EndIf[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                      if (json.instructions[x].catch) {
+                        self.connectInstruction({id: mxJson.EndIf[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                      } else {
+                        _id = mxJson.EndIf[j]._id;
+                      }
                       break;
                     }
                   }
@@ -369,7 +394,12 @@ export class WorkflowService {
                 if (mxJson.EndRetry && mxJson.EndRetry.length) {
                   for (let j = 0; j < mxJson.EndRetry.length; j++) {
                     if (_lastNode.id === mxJson.EndRetry[j]._targetId) {
-                      this.connectInstruction({id: mxJson.EndRetry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+
+                      if (json.instructions[x].catch) {
+                        self.connectInstruction({id: mxJson.EndRetry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                      } else {
+                        _id = mxJson.EndRetry[j]._id;
+                      }
                       break;
                     }
                   }
@@ -378,7 +408,12 @@ export class WorkflowService {
                 if (mxJson.EndTry && mxJson.EndTry.length) {
                   for (let j = 0; j < mxJson.EndTry.length; j++) {
                     if (_lastNode.id === mxJson.EndTry[j]._targetId) {
-                      this.connectInstruction({id: mxJson.EndTry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+
+                      if (json.instructions[x].catch) {
+                        self.connectInstruction({id: mxJson.EndTry[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                      } else {
+                        _id = mxJson.EndTry[j]._id;
+                      }
                       break;
                     }
                   }
@@ -387,7 +422,12 @@ export class WorkflowService {
                 if (mxJson.Join && mxJson.Join.length) {
                   for (let j = 0; j < mxJson.Join.length; j++) {
                     if (_lastNode.id === mxJson.Join[j]._targetId) {
-                      this.connectInstruction({id: mxJson.Join[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+
+                      if (json.instructions[x].catch) {
+                        self.connectInstruction({id: mxJson.Join[j]._id}, json.instructions[x].catch, mxJson, 'try', obj._id);
+                      } else {
+                        _id = mxJson.Join[j]._id;
+                      }
                       break;
                     }
                   }
@@ -395,8 +435,11 @@ export class WorkflowService {
               }
             }
           } else {
-            self.connectInstruction(json.instructions[x], json.instructions[x].catch, mxJson, 'try', obj._id);
+            if (json.instructions[x].catch) {
+              self.connectInstruction(json.instructions[x], json.instructions[x].catch, mxJson, 'try', obj._id);
+            }
           }
+
           self.endTry(_id, mxJson, json.instructions, x, json.instructions[x].id, parentId);
           mxJson.Try.push(obj);
         } else if (json.instructions[x].TYPE === 'Abort') {
