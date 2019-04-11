@@ -1026,14 +1026,10 @@
 
         vm.about = function () {
             vm.versionData = $rootScope.versionData;
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/about-dialog.html',
-                controller: 'DialogCtrl',
+                controller: 'DialogCtrl1',
                 scope: vm
-            });
-            modalInstance.result.then(function () {
-            }, function () {
-
             });
         };
 
