@@ -6155,3 +6155,19 @@ div.mxTooltip {
 	padding: 6px 8px;
 	color: #fff;
 }
+
+.m-t-n-8{
+  margin-top: -8px;
+}
+.predicate-edit {
+  position: absolute;
+  top: 64px;
+  right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: .85;
+
+  &:hover {
+    opacity: 1;
+  }
+}

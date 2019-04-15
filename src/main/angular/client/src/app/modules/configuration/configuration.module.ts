@@ -20,7 +20,8 @@ import {
   PreviewCalendarComponent,
   ProcessClassTemplateComponent,
   WorkFlowTemplateComponent,
-  FrequencyModalComponent
+  FrequencyModalComponent,
+  ExpressionModalComponent
 } from './joe/joe.component';
 import {CalendarService} from '../../services/calendar.service';
 import {DatePipe} from '@angular/common';
@@ -40,6 +41,7 @@ import {WorkflowService} from '../../services/workflow.service';
     JoeComponent,
     ImportModalComponent,
     FrequencyModalComponent,
+    ExpressionModalComponent,
     ShowModalComponent,
     ShowChildModalComponent,
     ConfirmationModalComponent,
@@ -51,7 +53,7 @@ import {WorkflowService} from '../../services/workflow.service';
     PreviewCalendarComponent,
     CalendarTemplateComponent
   ],
-  entryComponents: [ImportModalComponent, FrequencyModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, CalendarTemplateComponent]
+  entryComponents: [ImportModalComponent, FrequencyModalComponent, ExpressionModalComponent, ShowModalComponent, ShowChildModalComponent, ConfirmationModalComponent, PeriodEditorComponent, PreviewCalendarComponent, CalendarTemplateComponent]
 })
 export class ConfigurationModule {
 }

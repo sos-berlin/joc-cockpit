@@ -1086,8 +1086,6 @@ export class WorkflowService {
           str = str + ' - ' + cell.getAttribute('directory');
         }
         return str;
-      } else if (cell.value.tagName === 'If') {
-        return cell.getAttribute('predicate') || 'If';
       } else {
         let x = cell.getAttribute('label');
         if (x) {

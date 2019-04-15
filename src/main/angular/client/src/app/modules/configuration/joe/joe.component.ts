@@ -2348,6 +2348,128 @@ export class CalendarTemplateComponent implements OnInit {
 }
 
 @Component({
+  selector: 'app-ngbd-modal-content',
+  templateUrl: './expression-editor-dialog.html'
+})
+export class ExpressionModalComponent implements OnInit {
+  @Input() predicate: any;
+  expression: any = {};
+  isValid = true;
+  isClicked = false;
+  tmp = '';
+  tmp1 = '';
+  operators = ['==', '!=', '<', '<=', '>', '>=', 'in', '&&', '||', '!'];
+  functions = ['toNumber ', 'toBoolean', 'toLowerCase', 'toUpperCase'];
+  variablesOperators = ['matches', 'startWith', 'endsWith', 'contains'];
+  isVariableSelected = false;
+  varExam = 'variable ("aString", "") matches ".*"';
+  lastSelectOpeartor = '';
+
+  constructor(public activeModal: NgbActiveModal) {
+  }
+
+  ngOnInit() {
+    this.expression.expression = this.predicate;
+    this.expression.type = 'returnCodes';
+  }
+
+  onSubmit(): void {
+    this.activeModal.close(this.expression.expression);
+  }
+
+  generateExpression(type, operator) {
+    this.lastSelectOpeartor = operator;
+    if (type === 'function') {
+      if (this.isVariableSelected) {
+        if (!this.tmp1) {
+          this.tmp1 = this.expression.expression;
+          this.expression.expression = this.expression.expression + '.' + operator + ' ';
+        } else {
+          this.expression.expression = this.tmp1 + '.' + operator + ' ';
+        }
+      }
+      if (operator === 'toNumber') {
+        this.varExam = 'variable ("aNumber", "0").' + operator;
+      } else if (operator === 'toBoolean') {
+        this.varExam = 'variable ("aBoolean", "false").' + operator;
+      } else {
+        this.varExam = 'variable ("aString", "").' + operator;
+      }
+    } else {
+      if (type && !operator) {
+        if (this.isClicked && this.expression.expression) {
+          if (this.expression.expression.lastIndexOf('&&') > -1 || this.expression.expression.lastIndexOf('||') > -1) {
+            if (type === 'returnCodes' && !this.isVariableSelected) {
+              this.expression.expression = this.expression.expression + ' ' + type + ' ';
+              this.isClicked = false;
+              this.tmp1 = '';
+            } else if (!this.isVariableSelected) {
+              this.isVariableSelected = true;
+              this.expression.expression = this.expression.expression + ' variables(\'key\', \'defaultValue\')';
+              this.isClicked = false;
+              this.tmp1 = '';
+            }
+          }
+        } else {
+          this.isVariableSelected = false;
+        }
+        this.expression.type = type;
+        if (!this.expression.expression || this.expression.expression === '') {
+          if (type === 'returnCodes') {
+            this.isVariableSelected = false;
+            this.expression.expression = type + ' ';
+          } else {
+            this.isVariableSelected = true;
+            this.expression.expression = 'variables(\'key\', \'defaultValue\')';
+          }
+          this.isClicked = false;
+          this.tmp1 = '';
+        }
+        this.varExam = 'variable ("aString", "") matches ".*"';
+      } else if (operator) {
+        // this.isVariableSelected = false;
+        this.tmp1 = '';
+        if (!this.isClicked) {
+          this.isClicked = true;
+          this.tmp = this.expression.expression;
+          this.expression.expression = this.expression.expression + ' ' + operator + ' ';
+        } else if (this.tmp) {
+          this.expression.expression = this.tmp + ' ' + operator + ' ';
+        }
+      }
+    }
+  }
+
+  validateExpression() {
+    this.isClicked = false;
+    this.tmp = '';
+    this.tmp1 = '';
+    this.lastSelectOpeartor = '';
+  }
+
+  onKepPress($event: any) {
+    const charCode = ($event.which) ? $event.which : $event.charCode;
+    if ((charCode < 91 && charCode > 64) || (charCode < 123 && charCode > 96) || (charCode < 58 && charCode > 47)
+      || charCode == 8 || charCode == 32 || charCode == 40 || charCode == 41 || charCode == 34 || charCode == 39) {
+      this.isValid = true;
+    } else {
+      if (this.lastSelectOpeartor != 'matches') {
+        this.isValid = false;
+        $event.preventDefault();
+      }
+    }
+
+    if ((this.lastSelectOpeartor == '<' || this.lastSelectOpeartor == '<=' || this.lastSelectOpeartor == '>'
+      || this.lastSelectOpeartor == '>=' || this.lastSelectOpeartor == 'in')) {
+      if (!(charCode < 58 && charCode > 47)) {
+        this.isValid = false;
+        $event.preventDefault();
+      }
+    }
+  }
+}
+
+@Component({
   selector: 'app-workflow-template',
   templateUrl: './workflow-template.html',
   styleUrls: ['./workflow-template.scss']
@@ -2366,8 +2488,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   @Input() preferences: any;
   @Input() schedulerId: any;
 
-  constructor(public coreService: CoreService, public translate: TranslateService, public toasterService: ToasterService, private workflowService: WorkflowService) {
-
+  constructor(public coreService: CoreService, public translate: TranslateService, public modalService: NgbModal,
+              public toasterService: ToasterService, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -2435,6 +2557,24 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         this.editor.graph.center(true, true, 0.5, 0);
       }, 200);
     }
+  }
+
+  private openExpressionModel(predicate, cell, _graph) {
+    const modalRef = this.modalService.open(ExpressionModalComponent, {size: 'lg'});
+    modalRef.componentInstance.predicate = predicate;
+    modalRef.result.then((exp) => {
+      console.log('expression', exp);
+      _graph.getModel().beginUpdate();
+      try {
+        const edit = new mxCellAttributeChange(
+          cell, 'predicate', exp);
+        _graph.getModel().execute(edit);
+      } finally {
+        _graph.getModel().endUpdate();
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   /**
@@ -5442,27 +5582,34 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     function createTextField(_graph, form, cell, attribute, field) {
       const div = document.createElement('div');
       div.setAttribute('class', 'md-form-group');
-      let input: any;
+      let input: any, dom: any;
       if (field === 'textarea') {
         input = document.createElement('textarea');
         input.setAttribute('rows', '5');
+        input.value = attribute.nodeValue;
       } else {
         input = document.createElement('input');
         input.setAttribute('type', 'text');
+        input.setAttribute('value', attribute.nodeValue);
       }
 
-      input.setAttribute('value', attribute.nodeValue);
       input.setAttribute('class', 'md-input');
-
 
       const label = document.createElement('label');
       label.setAttribute('class', 'font14');
       self.translate.get('workflow.label.' + attribute.nodeName).subscribe(translatedValue => {
         mxUtils.writeln(label, translatedValue);
       });
+
       div.appendChild(input);
       div.appendChild(label);
       form.appendChild(div);
+      if(attribute.nodeName === 'predicate') {
+        input.setAttribute('readonly', 'true');
+        dom = document.createElement('i');
+        dom.setAttribute('class', 'fa fa-pencil-square-o predicate-edit');
+        form.appendChild(dom);
+      }
       const applyHandler = function () {
         let newValue = input.value || '';
         let oldValue = cell.getAttribute(attribute.nodeName, '');
@@ -5494,6 +5641,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         mxEvent.addListener(input, 'focusout', applyHandler);
       } else {
         mxEvent.addListener(input, 'blur', applyHandler);
+      }
+      if(dom) {
+        mxEvent.addListener(dom, 'click', function (evt) {
+          self.openExpressionModel(cell.getAttribute(attribute.nodeName, ''), cell, _graph);
+        });
       }
     }
 
@@ -5573,7 +5725,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       const flag = result === 'valid' || result === 'select';
       if (flag) {
         let defaultParent = targetCell;
-        if (targetCell.value.tagName === 'Process') {
+        if (targetCell.value.tagName === 'Process' || targetCell.value.tagName === 'Connection') {
           defaultParent = targetCell.getParent();
         }
         let clickedCell: any, _node: any, v1, v2, label = '';
@@ -5665,8 +5817,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           label = targetCell.getAttribute('label') || targetCell.getAttribute('type') || '';
           if (clickedCell.value.tagName === 'Fork' || clickedCell.value.tagName === 'If' || clickedCell.value.tagName === 'Retry' || clickedCell.value.tagName === 'Try') {
-            let parent = targetCell.getParent() || graph.getDefaultParent();
-
+            const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 90, 90, self.workflowService.merge);
             } else if (clickedCell.value.tagName === 'If') {
@@ -5685,6 +5836,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (clickedCell.value.tagName !== 'Try') {
               graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
             }
+
             graph.insertEdge(parent, null, getConnectionNode(''), v1, targetCell.target);
             for (let x = 0; x < targetCell.source.edges.length; x++) {
               if (targetCell.source.edges[x].id === targetCell.id) {
@@ -5735,7 +5887,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
       result = '';
     }
-
 
     /**
      * Function: To validate instruction is valid for drop or not
