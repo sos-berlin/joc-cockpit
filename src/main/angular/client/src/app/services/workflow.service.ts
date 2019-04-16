@@ -233,6 +233,9 @@ export class WorkflowService {
           obj._label = 'if';
           obj._predicate = json.instructions[x].predicate;
           obj.mxCell._style = 'if';
+          if(json.instructions[x].isCollapsed == '1') {
+            obj.mxCell._collapsed = '1';
+          }
           obj.mxCell.mxGeometry._width = '150';
           obj.mxCell.mxGeometry._height = '80';
 
@@ -259,6 +262,9 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'fork';
           obj.mxCell._style = this.fork;
+          if(json.instructions[x].isCollapsed == '1') {
+            obj.mxCell._collapsed = '1';
+          }
           obj.mxCell.mxGeometry._width = '90';
           obj.mxCell.mxGeometry._height = '90';
 
@@ -287,6 +293,9 @@ export class WorkflowService {
           obj._repeat = json.instructions[x].repeat;
           obj._delay = json.instructions[x].delay;
           obj.mxCell._style = 'retry';
+          if(json.instructions[x].isCollapsed == '1') {
+            obj.mxCell._collapsed = '1';
+          }
           obj.mxCell.mxGeometry._width = '150';
           obj.mxCell.mxGeometry._height = '80';
 
@@ -319,6 +328,9 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'try';
           obj.mxCell._style = 'try';
+          if(json.instructions[x].isCollapsed == '1') {
+            obj.mxCell._collapsed = '1';
+          }
           obj.mxCell.mxGeometry._width = '94';
           obj.mxCell.mxGeometry._height = '94';
 
@@ -489,6 +501,9 @@ export class WorkflowService {
           obj._id = json.instructions[x].id;
           obj._label = 'await';
           obj.mxCell._style = this.await;
+          if(json.instructions[x].isCollapsed == '1') {
+            obj.mxCell._collapsed = '1';
+          }
           obj.mxCell.mxGeometry._width = '90';
           obj.mxCell.mxGeometry._height = '90';
 
@@ -1041,7 +1056,7 @@ export class WorkflowService {
         mxCell: {
           _parent: parentId ? parentId : '1',
           _vertex: '1',
-          _style: 'rectangle',
+          _style: 'fileOrder',
           mxGeometry: {
             _as: 'geometry',
             _width: '120',

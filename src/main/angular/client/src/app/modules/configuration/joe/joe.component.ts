@@ -2453,7 +2453,7 @@ export class ExpressionModalComponent implements OnInit {
       || charCode == 8 || charCode == 32 || charCode == 40 || charCode == 41 || charCode == 34 || charCode == 39) {
       this.isValid = true;
     } else {
-      if (this.lastSelectOpeartor != 'matches') {
+      if (this.lastSelectOpeartor != 'matches' && this.lastSelectOpeartor != 'startWith' && this.lastSelectOpeartor != 'endsWith' && this.lastSelectOpeartor != 'contains') {
         this.isValid = false;
         $event.preventDefault();
       }
@@ -2559,11 +2559,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openExpressionModel(predicate, cell, _graph) {
+  private openExpressionModel(predicate, cell, _graph, input) {
     const modalRef = this.modalService.open(ExpressionModalComponent, {size: 'lg'});
     modalRef.componentInstance.predicate = predicate;
     modalRef.result.then((exp) => {
-      console.log('expression', exp);
       _graph.getModel().beginUpdate();
       try {
         const edit = new mxCellAttributeChange(
@@ -2572,6 +2571,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       } finally {
         _graph.getModel().endUpdate();
       }
+      input.setAttribute('value', exp);
     }, (reason) => {
       console.log('close...', reason);
     });
@@ -2788,6 +2788,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       obj.checkSteadyState = node._checkSteadyState;
     } else if (type === 'OfferedOrder') {
       // TODO
+    }
+    if (type === 'Fork' || type === 'If' || type === 'Try' || type === 'Retry' || type === 'Await') {
+      obj.isCollapsed = node.mxCell._collapsed;
     }
     return obj;
   }
@@ -3938,8 +3941,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (state != null) {
             this.previousStyle = state.style;
             state.style = mxUtils.clone(state.style);
-            if (state.style && !dragStart) {
-              result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').attr('title'));
+            if (state.style && !dragStart && $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+              result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child').attr('title'));
               if (result === 'valid' || result === 'select') {
                 state.style[mxConstants.STYLE_STROKECOLOR] = 'green';
                 state.style[mxConstants.STYLE_STROKEWIDTH] = '2';
@@ -4710,6 +4713,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (selectedCellsObj) {
             movedTarget = null;
           }
+          if(cell.collapsed) {
+            cell.collapsed = false;
+          }
           moveSelectedCellToDroppedCell(movedTarget, cell, selectedCellsObj);
           movedTarget = null;
           selectedCellsObj = null;
@@ -5378,25 +5384,26 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
     function checkConnectionLabel(cell, _dropTarget, isChange) {
       if (!isChange) {
-        if ((_dropTarget.value.attributes && _dropTarget.value.attributes.length > 0) && (_dropTarget.value.attributes[0].nodeValue === 'join' || _dropTarget.value.attributes[0].nodeValue === 'branch' || _dropTarget.value.attributes[0].nodeValue === 'endIf'
-          || _dropTarget.value.attributes[0].nodeValue === 'endRetry' || _dropTarget.value.attributes[0].nodeValue === 'endTry')) {
+        const label = _dropTarget.getAttribute('label');
+        if (label && (label === 'join' || label === 'branch' || label === 'endIf'
+          || label === 'endRetry' || label === 'endTry')) {
           let _label1, _label2;
-          if (_dropTarget.value.attributes[0].nodeValue === 'join') {
+          if (label === 'join') {
             _label1 = 'join';
             _label2 = 'branch';
-          } else if (_dropTarget.value.attributes[0].nodeValue === 'branch') {
+          } else if (label === 'branch') {
             _label1 = 'branch';
             _label2 = 'branch';
-          } else if (_dropTarget.value.attributes[0].nodeValue === 'endIf') {
+          } else if (label === 'endIf') {
             _label1 = 'endIf';
             _label2 = 'endIf';
-          } else if (_dropTarget.value.attributes[0].nodeValue === 'endRetry') {
+          } else if (label === 'endRetry') {
             _label1 = 'endRetry';
             _label2 = 'endRetry';
-          } else if (_dropTarget.value.attributes[0].nodeValue === 'try') {
+          } else if (label === 'try') {
             _label1 = 'try';
             _label2 = 'try';
-          } else if (_dropTarget.value.attributes[0].nodeValue === 'endTry') {
+          } else if (label === 'endTry') {
             _label1 = 'endTry';
             _label2 = 'endTry';
           }
@@ -5434,7 +5441,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 } else if (cell.edges[i].target.value.tagName === 'EndRetry') {
                   changeLabelOfConnection(cell.edges[i], 'endRetry');
                 } else if (cell.edges[i].target.value.tagName === 'EndTry') {
-
                   changeLabelOfConnection(cell.edges[i], 'endTry');
                 }
               }
@@ -5445,8 +5451,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
 
-            if (_dropTarget.getAttribute('type')) {
-              const typeAttr = _dropTarget.getAttribute('type');
+            if (_dropTarget.getAttribute('label')) {
+              const typeAttr = _dropTarget.getAttribute('label');
               if (((typeAttr === 'join') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], 'branch');
               } else if (((typeAttr === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
@@ -5607,7 +5613,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       if(attribute.nodeName === 'predicate') {
         input.setAttribute('readonly', 'true');
         dom = document.createElement('i');
-        dom.setAttribute('class', 'fa fa-pencil-square-o predicate-edit');
+        dom.setAttribute('class', 'fa fa-pencil predicate-edit');
         form.appendChild(dom);
       }
       const applyHandler = function () {
@@ -5644,7 +5650,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       }
       if(dom) {
         mxEvent.addListener(dom, 'click', function (evt) {
-          self.openExpressionModel(cell.getAttribute(attribute.nodeName, ''), cell, _graph);
+          self.openExpressionModel(cell.getAttribute(attribute.nodeName, ''), cell, _graph, input);
         });
       }
     }
@@ -5725,7 +5731,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       const flag = result === 'valid' || result === 'select';
       if (flag) {
         let defaultParent = targetCell;
-        if (targetCell.value.tagName === 'Process' || targetCell.value.tagName === 'Connection') {
+        if (targetCell.value.tagName === 'Process' || targetCell.value.tagName === 'Connection' || targetCell.value.tagName === 'Catch') {
           defaultParent = targetCell.getParent();
         }
         let clickedCell: any, _node: any, v1, v2, label = '';
@@ -5737,7 +5743,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         } else if (title === 'Abort') {
           _node = doc.createElement('Abort');
           _node.setAttribute('label', 'abort');
-          _node.setAttribute('message', '');
+          _node.setAttribute('message', 'order failed');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.abort);
         } else if (title === 'Terminate') {
           _node = doc.createElement('Terminate');
@@ -5774,20 +5780,22 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           clickedCell.collapsed = true;
         } else if (title === 'FileOrder') {
           _node = doc.createElement('FileOrder');
-          _node.setAttribute('label', 'await');
+          _node.setAttribute('label', 'fileOrder');
           _node.setAttribute('agent', '');
           _node.setAttribute('directory', '');
           _node.setAttribute('regex', '.*');
           _node.setAttribute('checkSteadyState', 'true');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 120, 50, 'rectangle');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 120, 50, 'fileOrder');
         } else if (title === 'Catch') {
           _node = doc.createElement('Catch');
           _node.setAttribute('label', 'catch');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 100, 40, 'dashRectangle');
         }
-
         if (targetCell.value.tagName !== 'Connection') {
           if (result === 'select') {
+            if(clickedCell.collapsed) {
+              clickedCell.collapsed = false;
+            }
             moveSelectedCellToDroppedCell(targetCell, clickedCell, selectedCellsObj);
             selectedCellsObj = null;
           } else {
@@ -5870,12 +5878,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               } finally {
                 graph.getModel().endUpdate();
               }
-              // checkConnectionLabel(clickedCell, targetCell, false);
+              checkConnectionLabel(clickedCell, targetCell, false);
             }, 0);
           } else {
             graph.insertEdge(defaultParent, null, getConnectionNode(label), targetCell.source, clickedCell);
-            graph.insertEdge(defaultParent, null, getConnectionNode(''), clickedCell, targetCell.target);
-            graph.getModel().remove(targetCell);
+            let e1 = graph.insertEdge(defaultParent, null, getConnectionNode(label), clickedCell, targetCell.target);
+            for (let i = 0; i < targetCell.source.edges.length; i++) {
+              if (targetCell.id === targetCell.source.edges[i].id) {
+                targetCell.source.removeEdge(targetCell.source.edges[i], true);
+                break;
+              }
+            }
+            setTimeout(() => {
+              checkConnectionLabel(clickedCell, e1, true);
+            }, 0);
           }
           if (v1) {
             graph.setSelectionCells([clickedCell, v1]);
@@ -5899,7 +5915,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         if (targetCell.getAttribute('title') === 'start' || targetCell.getAttribute('title') === 'end') {
           return 'return';
         }
-      } else if (tagName === 'Connector') {
+      } else if (tagName === 'Connector' || title === 'Connect') {
         return 'return';
       }
       let flg = false, isOrderCell = false;
@@ -6352,7 +6368,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.coreService.tabs._configuration.state = 'joe';  
   }
 
   initTree() {

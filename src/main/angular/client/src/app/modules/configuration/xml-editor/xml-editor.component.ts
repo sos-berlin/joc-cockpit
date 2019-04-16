@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
@@ -293,7 +293,7 @@ export class ConfirmationModalComponent implements OnInit {
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss']
 })
-export class XmlEditorComponent implements OnInit {
+export class XmlEditorComponent implements OnInit, OnDestroy {
   schedulerIds: any = {};
   preferences: any = {};
   isLoading = true;
@@ -351,15 +351,27 @@ export class XmlEditorComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (sessionStorage.preferences) {
-      this.preferences = JSON.parse(sessionStorage.preferences) || {};
-    }
-    if (sessionStorage.$SOS$XSD) {
-      this.submitXsd = true;
-      this.selectedXsd = sessionStorage.$SOS$XSD;
-      this.getInitTree(false);
+    if (localStorage.getItem('xsd') === 'null') {
+      if (sessionStorage.preferences) {
+        this.preferences = JSON.parse(sessionStorage.preferences) || {};
+      }
+      if (sessionStorage.$SOS$XSD) {
+        this.submitXsd = true;
+        this.selectedXsd = sessionStorage.$SOS$XSD;
+        this.getInitTree(false);
+      } else {
+        this.isLoading = false;
+      }
     } else {
-      this.isLoading = false;
+      if (sessionStorage.$SOS$XSD) {
+        this.submitXsd = true;
+        this.selectedXsd = sessionStorage.$SOS$XSD;
+      }
+      this.selectedXsd = sessionStorage.$SOS$XSD;
+      this.reassignSchema();
+      setTimeout(() => {
+        this.createJsonfromXml(localStorage.getItem('xsd'));
+      }, 600);
     }
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;
@@ -3131,5 +3143,11 @@ export class XmlEditorComponent implements OnInit {
     let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
     a = a.concat(xmlAsString);
     return vkbeautify.xml(a);
+  }
+
+  ngOnDestroy(): void {
+    let a = this._showXml();
+    localStorage.setItem('xsd', a);
+    this.coreService.tabs._configuration.state = 'xml';  
   }
 }

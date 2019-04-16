@@ -73,8 +73,8 @@
         <add as="image" value="./assets/mxgraph/images/symbols/job-white.png"/>
         <add as="imageWidth" value="20"/>
         <add as="imageHeight" value="20"/>
-	      <add as="strokeColor" value="#C3D9FF"/>
-				<add as="fillColor" value="#C3D9FF"/>
+	      <add as="strokeColor" value="#90C7F5"/>
+				<add as="fillColor" value="#90C7F5"/>
         <add as="gradientColor" value="#333"/>
       </add>
       <add as="rectangle" extend="rhombus">
@@ -136,7 +136,15 @@
         <add as="strokeColor" value="#8fb0f2"/>
 				<add as="fillColor" value="#8fb0f2"/>
         <add as="rounded" value="1"/>
-        <add as="gradientColor" value="white"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+      <add as="fileOrder">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="strokeColor" value="#8B8BB4"/>
+				<add as="fillColor" value="#8B8BB4"/>
+        <add as="rounded" value="1"/>
+        <add as="gradientColor" value="#333"/>
       </add>
       <add as="symbol">
         <add as="shape" value="image"/>
@@ -164,7 +172,7 @@
     <hr/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/white-job.png"/>
     <hr/>
-    <add as="FileOrder" template="rectangle" icon="./assets/mxgraph/images/white-fileorder.png"/>
+    <add as="FileOrder" template="FileOrder" style="fileOrder" icon="./assets/mxgraph/images/white-fileorder.png"/>
     <hr/>
     <add as="Terminate" template="Terminate" style="symbol;image=./assets/mxgraph/images/symbols/terminate-white.svg"
          icon="./assets/mxgraph/images/white-terminate.png"/>

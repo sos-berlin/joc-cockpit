@@ -12,3 +12,12 @@ span ul li a {
 	color: #1395BE !important;
 }
 
+.bg-white{
+  background-color: #fff !important;
+}
+.navbar .nav-text {
+  line-height: 16px;
+}
+.property-panel .sidebar-close i {
+  color: darkcyan;
+}

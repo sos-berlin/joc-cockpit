@@ -46,15 +46,9 @@ strong{
   padding: 3px 8px;
   margin-top: 0.15rem;
 }
-
-.row.open {
-  width: 30%;
-  height: 30%;
-  position: absolute;
-  left: 35%;
-  top: 40%;
-  margin: -75px 0 0 0px;
-  box-shadow: 0 0 10px #d3d3d3;
+.center-block.open {
+  width: 650px;
+  margin-top: 8%;
 }
 
 .documentation-height {
@@ -66,7 +60,6 @@ strong{
     pointer-events: none !important;
     cursor: auto !important;
 }
-
 
 .invalid {
   border: 1px solid #dc3545;

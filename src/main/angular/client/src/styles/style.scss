@@ -1,5 +1,6 @@
 @import "./app.scss";
 
+
 @font-face {
   font-family: "joc";
   src: url("../assets/fonts/joc.eot");
@@ -5904,7 +5905,7 @@ General CSS
 
 pre#pre {
   overflow-x: auto;
-  background-color: #efefef6e;
+  background-color: #f2f2f2;
   padding: 10px;
 }
 
@@ -6095,7 +6096,7 @@ Sidebar Panel
   padding: 26px 6px;
   cursor: pointer;
   position: absolute;
-  background: url(../assets/images/left-tips.png) center no-repeat;
+  background: url(../assets/images/left-tips.svg) center no-repeat;
   z-index: 999;
 }
 
@@ -6105,7 +6106,6 @@ Sidebar Panel
 }
 
 .property-panel .sidebar-close i {
-  color: darkcyan;
   left: 4px;
 }
 
@@ -6159,14 +6159,18 @@ div.mxTooltip {
 .m-t-n-8{
   margin-top: -8px;
 }
+.syntax-box{
+  background: #f2f2f2;
+}
 .predicate-edit {
   position: absolute;
-  top: 64px;
-  right: 20px;
-  font-size: 20px;
+  top: 62px;
+  right: 16px;
   cursor: pointer;
   opacity: .85;
-
+  background: #e8e8e8;
+  border-radius: 50%;
+  padding: 5px 6px;
   &:hover {
     opacity: 1;
   }

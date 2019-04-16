@@ -52,7 +52,7 @@
                   <p class="text-sm">
                     The reserved word returnCode is used.
                   </p>
-                  <div class="text-sm p-a-sm" style="background: #f2f2f2">
+                  <div class="text-sm p-a-sm syntax-box">
                     <div translate>workflow.label.syntax</div>
                     <div class="text-muted">returnCode</div>
                     <div class="m-t-sm" translate>workflow.label.example</div>
@@ -64,7 +64,7 @@
                   <p class="text-sm">
                     The 2nd parameter in variable for a default value is optional, but if the variable undefined and doesn't have a default value then the order stopps at the If-Instruction.
                   </p>
-                  <div class="text-sm p-a-sm" style="background: #f2f2f2">
+                  <div class="text-sm p-a-sm syntax-box">
                     <div translate>workflow.label.syntax</div>
                     <div class="text-muted">variable ( "key", "defaultValue" )</div>
                     <div class="m-t-sm" translate>workflow.label.example</div>
@@ -82,7 +82,7 @@
   <button type="submit" [disabled]="!isValid" class="btn btn-primary btn-sm">
     {{'button.submit' | translate}}
   </button>
-  <button type="button" class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
+  <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
     button.cancel
   </button>
 </div>

@@ -8,7 +8,7 @@ body {
 }
 
 .dropdown-menu,
-pre {
+pre, .syntax-box {
 	background-color: #46525f
 }
 
@@ -980,7 +980,7 @@ pre#pre {
   background: #46525f;
 }
 .property-panel .sidebar-open, .property-panel .sidebar-close {
-  background: url(../assets/images/left-tips-black.png) center no-repeat;
+  background: url(../assets/images/left-tips-blue-lt.svg) center no-repeat;
 }
 .nav-active-border3 li.dropdown-separator .separator {
   background-color: rgba(255, 255, 255, 0.5);
@@ -999,4 +999,7 @@ pre#pre {
 }
 .separator {
   background-color: rgba(255, 255, 255, 0.1);
+}
+.predicate-edit {
+  background: #65707d;
 }

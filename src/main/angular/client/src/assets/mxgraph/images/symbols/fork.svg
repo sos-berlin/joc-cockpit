@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs></defs>
+  <defs>
+    <linearGradient id="grad2"  y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFEE73;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
     <g id="Page-1-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="icon-fork">
             <g id="noun_fork_60030" transform="translate(24.000000, 24.000000) rotate(90.000000) translate(-24.000000, -24.000000) translate(-2.000000, -2.000000)">
-                <rect id="Rectangle-33" stroke="#333333" transform="translate(25.955844, 26.044156) rotate(45.000000) translate(-25.955844, -26.044156) " x="8.45584412" y="8.54415588" width="35" height="35" rx="4"></rect>
-                <path d="M32.54,30.5 L32,30.5 C29.63,30.5 28.46,29.36 26.99,27.92 C26.33,27.29 25.64,26.6 24.83,26.03 C25.73,25.43 26.45,24.71 27.11,24.05 C28.55,22.64 29.69,21.5 32,21.5 L32.54,21.5 L32.54,23.15 L38,20 L32.54,16.85 L32.54,18.5 L32,18.5 C28.46,18.5 26.63,20.3 25.01,21.92 C23.54,23.36 22.37,24.5 20,24.5 L19.61,24.5 L14.15,24.5 L14.15,27.5 L19.61,27.5 L20,27.5 C22.31,27.5 23.45,28.64 24.89,30.05 C26.45,31.58 28.4,33.5 32,33.5 L32.54,33.5 L32.54,35.15 L38,32 L32.54,28.85 L32.54,30.5 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path>
+                <rect id="Rectangle-33" stroke="#FFEE73" fill="url(#grad2)" transform="translate(25.955844, 26.044156) rotate(45.000000) translate(-25.955844, -26.044156) " x="8.45584412" y="8.54415588" width="35" height="35" rx="4"></rect>
+                <path d="M32.54,30.5 L32,30.5 C29.63,30.5 28.46,29.36 26.99,27.92 C26.33,27.29 25.64,26.6 24.83,26.03 C25.73,25.43 26.45,24.71 27.11,24.05 C28.55,22.64 29.69,21.5 32,21.5 L32.54,21.5 L32.54,23.15 L38,20 L32.54,16.85 L32.54,18.5 L32,18.5 C28.46,18.5 26.63,20.3 25.01,21.92 C23.54,23.36 22.37,24.5 20,24.5 L19.61,24.5 L14.15,24.5 L14.15,27.5 L19.61,27.5 L20,27.5 C22.31,27.5 23.45,28.64 24.89,30.05 C26.45,31.58 28.4,33.5 32,33.5 L32.54,33.5 L32.54,35.15 L38,32 L32.54,28.85 L32.54,30.5 Z" id="Shape" fill="#50514f" fill-rule="nonzero"></path>
             </g>
         </g>
     </g>

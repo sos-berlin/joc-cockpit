@@ -8,7 +8,7 @@ body {
 }
 
 .dropdown-menu,
-pre {
+pre, .syntax-box {
 	background-color: #1d1d1c
 }
 
@@ -964,7 +964,7 @@ span ul li a {
   background: #1d1d1c;
 }
 .property-panel .sidebar-open, .property-panel .sidebar-close {
-  background: url(../assets/images/left-tips-black.png) center no-repeat;
+  background: url(../assets/images/left-tips-dark.svg) center no-repeat;
 }
 .nav-active-border3 li.dropdown-separator .separator {
   background-color: rgba(255, 255, 255, 0.5);
@@ -983,4 +983,7 @@ span ul li a {
 }
 .separator {
   background-color: rgba(255, 255, 255, 0.1);
+}
+.predicate-edit {
+  background: #393937;
 }

@@ -12,7 +12,7 @@
         </mxCell>
       </Connector>
     </add>
-    <add as="rectangle">
+    <add as="FileOrder">
       <FileOrder label="fileOrder" agent="" regex=".*" directory="" checkSteadyState="true">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="120" height="50"/>
@@ -21,7 +21,7 @@
     </add>
     <add as="Job">
       <Job name="/Job" title="" agent="">
-        <mxCell vertex="1" style="rounded">
+        <mxCell vertex="1">
           <mxGeometry as="geometry" width="200" height="50"/>
         </mxCell>
       </Job>

@@ -11,8 +11,10 @@ export class ConfigurationComponent {
 
   constructor(private router: Router) {
     router.events.subscribe((e: any) => {
-      if (e.url) {
-        this.calcHeight();
+      if (e.url && e.url.match('configuration')) {
+        setTimeout(() => {
+          this.calcHeight();
+        }, 5);
       }
     });
   }
@@ -23,18 +25,22 @@ export class ConfigurationComponent {
       let top = dom.position().top + 12;
       const flag = top < 78;
       top = top - $(window).scrollTop();
-      if (top < 78) {
-        top = 78;
+      if (top < 96) {
+        top = 96;
       }
       $('.sticky').css('top', top);
-      const ht = window.innerHeight - top;
-      if (ht > 400) {
-        const graph = $('#graph');
-        if (graph) {
-          graph.height(ht + 'px');
-        }
-        $('.tree-block').height((ht - 24 + $(window).scrollTop()) + 'px');
+      const sidebar = $('#sidebar');
+      if (sidebar) {
+        sidebar.css('top', (top - 19));
+        sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
+        $('.property-panel').css('top', (top + 16));
       }
+      const graph = $('#graph');
+      if (graph) {
+        graph.slimscroll({height: 'calc(100vh - ' + (top + 10) + 'px' + ')'});
+      }
+      $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
+
       if (top < 139 && flag) {
         setTimeout(() => {
           this.calcHeight();

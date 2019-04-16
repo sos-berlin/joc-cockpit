@@ -22,7 +22,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   permission: any = {};
   selectedScheduler: any = {};
   selectedJobScheduler: any = {};
-  remainingSessionTime: any = {};
+  remainingSessionTime: string;
   interval: any;
   tabsMap = new Map();
   scheduleState: string;

@@ -101,3 +101,6 @@ button.close {
 #outlineContainer{
   background: #fff !important;
 }
+.property-panel .sidebar-close i {
+  color: darkcyan;
+}
