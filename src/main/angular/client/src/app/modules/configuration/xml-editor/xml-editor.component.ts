@@ -351,11 +351,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (localStorage.getItem('xsd') === 'null') {
+    if (sessionStorage.getItem('xsd') === 'null' || sessionStorage.getItem('xsd') === null) {
       if (sessionStorage.preferences) {
         this.preferences = JSON.parse(sessionStorage.preferences) || {};
       }
-      if (sessionStorage.$SOS$XSD) {
+      if (sessionStorage.$SOS$XSD !== null || sessionStorage.$SOS$XSD !== 'null') {
         this.submitXsd = true;
         this.selectedXsd = sessionStorage.$SOS$XSD;
         this.getInitTree(false);
@@ -363,14 +363,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     } else {
-      if (sessionStorage.$SOS$XSD) {
+      if (sessionStorage.$SOS$XSD !== null || sessionStorage.$SOS$XSD !== 'null') {
         this.submitXsd = true;
-        this.selectedXsd = sessionStorage.$SOS$XSD;
+        //this.selectedXsd = sessionStorage.$SOS$XSD;
       }
       this.selectedXsd = sessionStorage.$SOS$XSD;
       this.reassignSchema();
       setTimeout(() => {
-        this.createJsonfromXml(localStorage.getItem('xsd'));
+        this.createJsonfromXml(sessionStorage.getItem('xsd'));
       }, 600);
     }
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
@@ -2805,8 +2805,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.assignXsd = this.newXsdAssign;
     modalRef.componentInstance.self = this;
     modalRef.result.then((res) => {
+      sessionStorage.$SOS$XSD = null;
     }, function () {
-
     });
   }
 
@@ -3146,8 +3146,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    let a = this._showXml();
-    localStorage.setItem('xsd', a);
-    this.coreService.tabs._configuration.state = 'xml';  
+    if(this.submitXsd) {
+      let a = this._showXml();
+      sessionStorage.setItem('xsd', a);
+    }
+    this.coreService.tabs._configuration.state = 'xml';
   }
 }

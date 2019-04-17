@@ -66,14 +66,15 @@
             </li>
           </ul>
         </div>
-        <button class="btn btn-sm btn-grey pull-right" placement="bottom"
+        <button class="btn btn-sm btn-grey pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
                 ngbTooltip="{{'workflow.button.reload' | translate}}" (click)="clearWorkFlow()">
           <i class="icon1-reset"></i>
         </button>
-        <button class="btn btn-sm btn-grey m-r-sm pull-right" placement="bottom"
+        <button class="btn btn-sm btn-grey m-r-sm m-l-sm pull-right" placement="bottom" [disabled]="!workFlowJson.instructions"
                 ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
           <i class="icon1-SaveIco"></i>
         </button>
+        <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isworkflowDraft ? 'badge-danger':'badge-success'" translate>{{isworkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
       </div>
     </div>
   </div>

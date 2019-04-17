@@ -374,7 +374,9 @@ export class WorkflowService {
             }
             mxJson.Catch.push(catchObj);
           } else {
-            delete mxJson['Catch'];
+            if (mxJson.Catch && mxJson.Catch.length === 0) {
+              delete mxJson['Catch'];
+            }
           }
 
           if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {

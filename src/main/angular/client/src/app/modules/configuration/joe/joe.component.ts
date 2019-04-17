@@ -40,6 +40,7 @@ declare const mxPoint;
 declare const mxUndoManager;
 declare const mxEventObject;
 declare const mxToolbar;
+declare const mxCellHighlight;
 
 // Calendar Objects
 declare const Holidays;
@@ -2481,6 +2482,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
   isWorkflowReload = true;
+  isworkflowDraft = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   @Input() selectedPath: any;
@@ -2501,80 +2503,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     });
 
     this.handleWindowEvents();
-  }
-
-  private handleWindowEvents() {
-    /**
-     * Changes the zoom on mouseWheel events
-     */
-    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
-      if (this.editor) {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-            this.editor.execute('zoomIn');
-          } else {
-            this.editor.execute('zoomOut');
-          }
-        } else {
-          const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < 0 && bounds.height > $('#graph').height()) {
-            // this.editor.graph.view.setTranslate(0.6, 1);
-            this.editor.graph.center(true, true, 0.5, 0);
-          }
-        }
-      }
-    });
-
-    $('#graph').slimscroll();
-    const panel = $('.property-panel');
-    $('.sidebar-open', panel).click(() => {
-      $('.sidebar').css({'width': '296px', opacity: 1});
-      $('.sidebar-open').css('right', '-20px');
-      $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
-      $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
-      $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
-      this.centered();
-    });
-
-    $('.sidebar-close', panel).click(() => {
-      $('.sidebar-open').css('right', '0');
-      $('.sidebar').css({'width': '0', opacity: 0});
-      $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
-      $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
-      $('.sidebar-close').css('right', '-20px');
-      this.centered();
-    });
-    setTimeout(() => {
-      $('.sidebar-open').click();
-    }, 100);
-
-  }
-
-  private centered() {
-    if (this.editor && this.editor.graph) {
-      setTimeout(() => {
-        this.editor.graph.center(true, true, 0.5, 0);
-      }, 200);
-    }
-  }
-
-  private openExpressionModel(predicate, cell, _graph, input) {
-    const modalRef = this.modalService.open(ExpressionModalComponent, {size: 'lg'});
-    modalRef.componentInstance.predicate = predicate;
-    modalRef.result.then((exp) => {
-      _graph.getModel().beginUpdate();
-      try {
-        const edit = new mxCellAttributeChange(
-          cell, 'predicate', exp);
-        _graph.getModel().execute(edit);
-      } finally {
-        _graph.getModel().endUpdate();
-      }
-      input.setAttribute('value', exp);
-    }, (reason) => {
-      console.log('close...', reason);
-    });
   }
 
   /**
@@ -2619,6 +2547,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   submitWorkFlow() {
+    this.isworkflowDraft = false;
     this.coreService.post('workflow/store', {
       jobschedulerId: this.schedulerId,
       workflow: this.workFlowJson
@@ -2630,6 +2559,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   clearWorkFlow() {
+    this.isworkflowDraft = true;
     sessionStorage.$SOS$WORKFLOW = null;
     this.workflowService.resetVariables();
     this.nodeMap = new Map();
@@ -2641,7 +2571,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   isWorkflowStored(): void {
     let _json: any;
     if (sessionStorage.$SOS$WORKFLOW) {
-      _json = JSON.parse(sessionStorage.$SOS$WORKFLOW);
+      _json = JSON.parse(sessionStorage.$SOS$WORKFLOW) || {};
       this.workFlowJson = _json;
     }
     if (_json && !_.isEmpty(_json)) {
@@ -2738,6 +2668,80 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     if (this.editor.graph.isEnabled()) {
       this.editor.graph.removeCells(null, null);
     }
+  }
+
+  private handleWindowEvents() {
+    /**
+     * Changes the zoom on mouseWheel events
+     */
+    $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+      if (this.editor) {
+        if (event.ctrlKey) {
+          event.preventDefault();
+          if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+            this.editor.execute('zoomIn');
+          } else {
+            this.editor.execute('zoomOut');
+          }
+        } else {
+          const bounds = this.editor.graph.getGraphBounds();
+          if (bounds.y < 0 && bounds.height > $('#graph').height()) {
+            // this.editor.graph.view.setTranslate(0.6, 1);
+            this.editor.graph.center(true, true, 0.5, 0);
+          }
+        }
+      }
+    });
+
+    $('#graph').slimscroll();
+    const panel = $('.property-panel');
+    $('.sidebar-open', panel).click(() => {
+      $('.sidebar').css({'width': '296px', opacity: 1});
+      $('.sidebar-open').css('right', '-20px');
+      $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
+      $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+      $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
+      this.centered();
+    });
+
+    $('.sidebar-close', panel).click(() => {
+      $('.sidebar-open').css('right', '0');
+      $('.sidebar').css({'width': '0', opacity: 0});
+      $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+      $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+      $('.sidebar-close').css('right', '-20px');
+      this.centered();
+    });
+    setTimeout(() => {
+      $('.sidebar-open').click();
+    }, 100);
+
+  }
+
+  private centered() {
+    if (this.editor && this.editor.graph) {
+      setTimeout(() => {
+        this.editor.graph.center(true, true, 0.5, 0);
+      }, 200);
+    }
+  }
+
+  private openExpressionModel(predicate, cell, _graph, input) {
+    const modalRef = this.modalService.open(ExpressionModalComponent, {size: 'lg'});
+    modalRef.componentInstance.predicate = predicate;
+    modalRef.result.then((exp) => {
+      _graph.getModel().beginUpdate();
+      try {
+        const edit = new mxCellAttributeChange(
+          cell, 'predicate', exp);
+        _graph.getModel().execute(edit);
+      } finally {
+        _graph.getModel().endUpdate();
+      }
+      input.value = exp;
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   private loadConfig() {
@@ -3819,7 +3823,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxGraph.prototype.foldingEnabled = true;
       mxConstants.DROP_TARGET_COLOR = 'green';
       mxConstants.VERTEX_SELECTION_DASHED = false;
-      mxConstants.VERTEX_SELECTION_COLOR = '#007da6';
+      mxConstants.VERTEX_SELECTION_COLOR = '#0099ff';
       mxConstants.VERTEX_SELECTION_STROKEWIDTH = 2;
 
 
@@ -3908,7 +3912,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
       // Changes fill color to red on mouseover
       graph.addMouseListener({
-        currentState: null, previousStyle: null, mouseDown: function (sender, me) {
+        currentState: null, previousStyle: null, currentHighlight: null, mouseDown: function (sender, me) {
           if (this.currentState != null) {
             this.dragLeave(me.getEvent(), this.currentState);
             this.currentState = null;
@@ -3944,11 +3948,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (state.style && !dragStart && $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
               result = checkValidTarget(cell, $('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child').attr('title'));
               if (result === 'valid' || result === 'select') {
-                state.style[mxConstants.STYLE_STROKECOLOR] = 'green';
-                state.style[mxConstants.STYLE_STROKEWIDTH] = '2';
+                this.currentHighlight = new mxCellHighlight(graph, 'green');
+                this.currentHighlight.highlight(state);
               } else if (result === 'inValid') {
-                state.style[mxConstants.STYLE_STROKECOLOR] = '#ff0000';
-                state.style[mxConstants.STYLE_STROKEWIDTH] = '2';
+                this.currentHighlight = new mxCellHighlight(graph, '#ff0000');
+                this.currentHighlight.highlight(state);
               }
             }
             if (state.shape) {
@@ -3961,12 +3965,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           }
         },
-
         dragLeave: function (evt, state) {
           if (state != null) {
             state.style = this.previousStyle;
-            if (state.style) {
-              state.style[mxConstants.STYLE_STROKEWIDTH] = '1';
+            if (state.style && this.currentHighlight != null) {
+              this.currentHighlight.destroy();
+              this.currentHighlight = null;
             }
             if (state.shape) {
               state.shape.apply(state);
@@ -4431,16 +4435,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         return cells;
       };
 
-      /**
-       * Removes the vertex which are added on click event
-       */
-      editor.addListener(mxEvent.ADD_VERTEX, function (sender, evt) {
-        if (isVertexDrop) {
-          isVertexDrop = false;
-        } else {
-          graph.getModel().remove(evt.getProperty('vertex'));
-        }
-      });
 
       /**
        * Function: foldCells to collapse/expand
@@ -4537,6 +4531,96 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         } else {
           $('#redoBtn').addClass('disable-link');
         }
+      };
+
+      /**
+       * Function: addVertex
+       *
+       * Adds the given vertex as a child of parent at the specified
+       * x and y coordinate and fires an <addVertex> event.
+       */
+      mxEditor.prototype.addVertex = function (parent, vertex, x, y) {
+        let model = this.graph.getModel();
+        while (parent != null && !this.graph.isValidDropTarget(parent)) {
+          parent = model.getParent(parent);
+        }
+        if (!parent && !isVertexDrop) {
+          return null;
+        }else{
+          isVertexDrop = false;
+        }
+        parent = (parent != null) ? parent : this.graph.getSwimlaneAt(x, y);
+        let scale = this.graph.getView().scale;
+
+        let geo = model.getGeometry(vertex);
+        let pgeo = model.getGeometry(parent);
+
+        if (this.graph.isSwimlane(vertex) &&
+          !this.graph.swimlaneNesting) {
+          parent = null;
+        } else if (parent == null && this.swimlaneRequired) {
+          return null;
+        } else if (parent != null && pgeo != null) {
+          // Keeps vertex inside parent
+          let state = this.graph.getView().getState(parent);
+
+          if (state != null) {
+            x -= state.origin.x * scale;
+            y -= state.origin.y * scale;
+
+            if (this.graph.isConstrainedMoving) {
+              let width = geo.width;
+              let height = geo.height;
+              let tmp = state.x + state.width;
+              if (x + width > tmp) {
+                x -= x + width - tmp;
+              }
+              tmp = state.y + state.height;
+              if (y + height > tmp) {
+                y -= y + height - tmp;
+              }
+            }
+          } else if (pgeo != null) {
+            x -= pgeo.x * scale;
+            y -= pgeo.y * scale;
+          }
+        }
+
+        geo = geo.clone();
+        geo.x = this.graph.snap(x / scale -
+          this.graph.getView().translate.x -
+          this.graph.gridSize / 2);
+        geo.y = this.graph.snap(y / scale -
+          this.graph.getView().translate.y -
+          this.graph.gridSize / 2);
+        vertex.setGeometry(geo);
+
+        if (parent == null) {
+          parent = this.graph.getDefaultParent();
+        }
+
+        this.cycleAttribute(vertex);
+        this.fireEvent(new mxEventObject(mxEvent.BEFORE_ADD_VERTEX,
+          'vertex', vertex, 'parent', parent));
+
+        model.beginUpdate();
+        try {
+          vertex = this.graph.addCell(vertex, parent);
+
+          if (vertex != null) {
+            this.graph.constrainChild(vertex);
+
+            this.fireEvent(new mxEventObject(mxEvent.ADD_VERTEX, 'vertex', vertex));
+          }
+        } finally {
+          model.endUpdate();
+        }
+        if (vertex != null) {
+          this.graph.setSelectionCell(vertex);
+          this.graph.scrollCellToVisible(vertex);
+          this.fireEvent(new mxEventObject(mxEvent.AFTER_ADD_VERTEX, 'vertex', vertex));
+        }
+        return vertex;
       };
 
       /**
@@ -4732,12 +4816,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           }, 0);
         }
-        selectionChanged(graph);
+        selectionChanged();
       });
 
       initGraph(this.dummyXml);
-
-      selectionChanged(graph);
+      selectionChanged();
       WorkflowService.makeCenter(graph);
       isUndoable = true;
       WorkflowService.executeLayout(graph);
@@ -4752,7 +4835,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             } else {
               reloadDummyXml(self.dummyXml);
             }
-          }, 5);
+          }, 50);
         }
       };
     } else {
@@ -4765,7 +4848,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * @param cells
      */
     function deleteInstructionFromJSON(cells) {
-      iterateJson(self.workFlowJson, cells[0],'' );
+      iterateJson(self.workFlowJson, cells[0], '');
       setTimeout(() => {
         updateXMLFromJSON(false);
       }, 1);
@@ -4784,7 +4867,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
 
           if (json.instructions[x].instructions) {
-            iterateJson(json.instructions[x], cell,'');
+            iterateJson(json.instructions[x], cell, '');
           }
           if (json.instructions[x].catch) {
             if (json.instructions[x].catch.id == cell.id) {
@@ -4796,14 +4879,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             }
           }
           if (json.instructions[x].then) {
-            iterateJson(json.instructions[x].then, cell,'' );
+            iterateJson(json.instructions[x].then, cell, '');
           }
           if (json.instructions[x].else) {
-            iterateJson(json.instructions[x].else, cell,'');
+            iterateJson(json.instructions[x].else, cell, '');
           }
           if (json.instructions[x].branches) {
             for (let i = 0; i < json.instructions[x].branches.length; i++) {
-              iterateJson(json.instructions[x].branches[i], cell,'' );
+              iterateJson(json.instructions[x].branches[i], cell, '');
               if (!json.instructions[x].branches[i].instructions) {
                 json.instructions[x].branches.splice(i, 1);
                 if (json.instructions[x].branches.length === 0) {
@@ -4946,7 +5029,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       } else {
         parent = cells.firstCell.getParent();
       }
-      let v2, v3,  _sour, _tar, _middle;
+      let v2, v3, _sour, _tar, _middle;
       if (cellName === 'Fork') {
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
         if (cell) {
@@ -5141,9 +5224,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         graph.getModel().remove(_sour);
         graph.getModel().remove(_tar);
       }
-      setTimeout(() => {
-        updateXMLFromJSON(false);
-      }, 0);
+      self.xmlToJsonParser(null);
+      updateXMLFromJSON(false);
     }
 
     function updateXMLFromJSON(flag) {
@@ -5512,16 +5594,16 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     /**
      * Updates the properties panel
      */
-    function selectionChanged(_graph) {
+    function selectionChanged() {
       let div = document.getElementById('properties');
       // Forces focusout in IE
-      _graph.container.focus();
+      graph.container.focus();
 
       // Clears the DIV the non-DOM way
       div.innerHTML = '';
 
       // Gets the selection cell
-      const cell = _graph.getSelectionCell();
+      const cell = graph.getSelectionCell();
       if (cell == null) {
         div.setAttribute('class', 'text-center text-orange');
         self.translate.get('workflow.message.nothingSelected').subscribe(translatedValue => {
@@ -5542,11 +5624,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           let flg1 = false, flg2 = false, keyAttr = {nodeName: 'key', nodeValue: ''}, valueAttr = {nodeName: 'value', nodeValue: ''};
           for (let i = 0; i < attrs.length; i++) {
             if (attrs[i].nodeName !== 'label' && attrs[i].nodeName !== 'checkSteadyState' && attrs[i].nodeName !== 'key' && attrs[i].nodeName !== 'value') {
-              let field = (attrs[i].nodeName === 'message' || attrs[i].nodeName === 'predicate') ?  'textarea' : 'text';
-              createTextField(_graph, form, cell, attrs[i], field);
+              let field = (attrs[i].nodeName === 'message' || attrs[i].nodeName === 'predicate') ? 'textarea' : 'text';
+              createTextField(graph, form, cell, attrs[i], field);
             }
             if (attrs[i].nodeName === 'checkSteadyState') {
-              createCheckbox(_graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: attrs[i].nodeValue});
+              createCheckbox(graph, form, cell, {nodeName: 'checkSteadyState', nodeValue: attrs[i].nodeValue});
             }
             if (attrs[i].nodeName === 'success') {
               flg1 = true;
@@ -5560,10 +5642,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           if (cell.value.nodeName === 'Job') {
             if (!flg1) {
-              createTextField(_graph, form, cell, {nodeName: 'success', nodeValue: '0'}, 'text');
+              createTextField(graph, form, cell, {nodeName: 'success', nodeValue: '0'}, 'text');
             }
             if (!flg2) {
-              createTextField(_graph, form, cell, {nodeName: 'failure', nodeValue: ''}, 'text');
+              createTextField(graph, form, cell, {nodeName: 'failure', nodeValue: ''}, 'text');
             }
             let _div = document.createElement('div');
             _div.setAttribute('class', '_600 m-b-sm text-u-c');
@@ -5573,8 +5655,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             });
             _div.appendChild(label);
             form.appendChild(_div);
-            createTextField(_graph, form, cell, keyAttr, 'text');
-            createTextField(_graph, form, cell, valueAttr, 'text');
+            createTextField(graph, form, cell, keyAttr, 'text');
+            createTextField(graph, form, cell, valueAttr, 'text');
           }
         }
 
@@ -5610,7 +5692,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       div.appendChild(input);
       div.appendChild(label);
       form.appendChild(div);
-      if(attribute.nodeName === 'predicate') {
+      if (attribute.nodeName === 'predicate') {
         input.setAttribute('readonly', 'true');
         dom = document.createElement('i');
         dom.setAttribute('class', 'fa fa-pencil predicate-edit');
@@ -5648,7 +5730,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       } else {
         mxEvent.addListener(input, 'blur', applyHandler);
       }
-      if(dom) {
+      if (dom) {
         mxEvent.addListener(dom, 'click', function (evt) {
           self.openExpressionModel(cell.getAttribute(attribute.nodeName, ''), cell, _graph, input);
         });
@@ -5727,6 +5809,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      * @param targetCell
      */
     function createClickInstruction(sourceCell, targetCell) {
+      if (!targetCell) {
+        result = '';
+        return;
+      }
       const title = sourceCell.attr('title');
       const flag = result === 'valid' || result === 'select';
       if (flag) {
@@ -5793,7 +5879,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
         if (targetCell.value.tagName !== 'Connection') {
           if (result === 'select') {
-            if(clickedCell.collapsed) {
+            if (clickedCell.collapsed) {
               clickedCell.collapsed = false;
             }
             moveSelectedCellToDroppedCell(targetCell, clickedCell, selectedCellsObj);
@@ -5811,7 +5897,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             } else {
               graph.setSelectionCells([clickedCell]);
             }
-            selectionChanged(graph);
+            selectionChanged();
           }, 0);
         } else {
           graph.clearSelection();
@@ -6208,7 +6294,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           for (let i = 0; i < _dropTarget.edges.length; i++) {
             if (_dropTarget.edges[i].target.id !== _dropTarget.id) {
               if (_dropTarget.edges[i].target.value.tagName === checkLabel || _dropTarget.edges[i].target.value.tagName === 'Catch') {
-                if(_dropTarget.edges[i].target.value.tagName !== 'Catch') {
+                if (_dropTarget.edges[i].target.value.tagName !== 'Catch') {
                   self.nodeMap.set(_dropTarget.id, _dropTarget.edges[i].target.id);
                 }
                 target1 = _dropTarget.edges[i];
@@ -6368,7 +6454,7 @@ export class JoeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.coreService.tabs._configuration.state = 'joe';  
+    this.coreService.tabs._configuration.state = 'joe';
   }
 
   initTree() {
