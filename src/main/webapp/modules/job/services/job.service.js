@@ -8,7 +8,8 @@
     angular.module('app')
         .service('JobChainService', JobChainService)
         .service('JobService', JobService)
-        .service('TaskService', TaskService);
+        .service('TaskService', TaskService)
+        .service('ConditionService', ConditionService);
 
     JobChainService.$inject = ["$resource", "$q","$window"];
     function JobChainService($resource, $q,$window) {
@@ -483,6 +484,52 @@
                 return deferred.promise;
             }
 
+        }
+    }
+
+    ConditionService.$inject = ["$resource", "$q"];
+    function ConditionService($resource, $q) {
+        return {
+            inCondition: function (filters) {
+                var deferred = $q.defer();
+                var Condition = $resource('conditions/in_conditions');
+                Condition.save(filters, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            outCondition: function (tasks) {
+                var deferred = $q.defer();
+                var Condition = $resource('conditions/out_conditions');
+                Condition.save(tasks, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            updateInCondition: function (tasks) {
+                var deferred = $q.defer();
+                var Condition = $resource('conditions/edit/in_condition');
+                Condition.save(tasks, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            updateOutCondition: function (filter) {
+                var deferred = $q.defer();
+                var Condition = $resource('conditions/edit/out_condition');
+                Condition.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }
         }
     }
 

@@ -424,8 +424,8 @@
                 data.agentClusters = result.agentClusters;
                 angular.forEach(data.agentClusters, function (value) {
                     value.path1 = data.path;
-                    vm.allAgentClusters.push(value);
                 });
+                vm.allAgentClusters = data.agentClusters;
                 vm.loading = false;
                 vm.folderPathA = data.name || '/';
             }, function () {
@@ -470,7 +470,7 @@
                 vm.processClassObject.path = cluster.path;
                 vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
                 if(!vm.processClassObject.remoteSchedulers){
-                    vm.processClassObject.remoteSchedulers = [];
+                    vm.processClassObject.remoteSchedulers = {list:[]};
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-process-class-dialog.html',
@@ -5506,7 +5506,7 @@
                 vm.processClassObject.path = cluster.path;
                 vm.processClassObject.name = cluster.path.substring(cluster.path.lastIndexOf('/') + 1);
                 if(!vm.processClassObject.remoteSchedulers){
-                    vm.processClassObject.remoteSchedulers = [];
+                    vm.processClassObject.remoteSchedulers = {list:[]};
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-process-class-dialog.html',
