@@ -74,7 +74,7 @@
                 ngbTooltip="{{'workflow.button.submitWorkFlow' | translate}}" (click)="submitWorkFlow()">
           <i class="icon1-SaveIco"></i>
         </button>
-        <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isworkflowDraft ? 'badge-danger':'badge-success'" translate>{{isworkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
+        <span *ngIf="workFlowJson.instructions" class="badge float-right" [ngClass]="isWorkflowDraft ? 'badge-danger':'badge-success'" translate>{{isWorkflowDraft ? 'workflow.label.draft':'workflow.label.readyToDeploy'}}</span>
       </div>
     </div>
   </div>

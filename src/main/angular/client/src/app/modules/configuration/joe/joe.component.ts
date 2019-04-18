@@ -2482,7 +2482,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   // Declare Map object to store fork and join Ids
   nodeMap = new Map();
   isWorkflowReload = true;
-  isworkflowDraft = true;
+  isWorkflowDraft = true;
   configXml = './assets/mxgraph/config/diagrameditor.xml';
 
   @Input() selectedPath: any;
@@ -2547,7 +2547,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   submitWorkFlow() {
-    this.isworkflowDraft = false;
+    this.isWorkflowDraft = false;
     this.coreService.post('workflow/store', {
       jobschedulerId: this.schedulerId,
       workflow: this.workFlowJson
@@ -2559,7 +2559,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   }
 
   clearWorkFlow() {
-    this.isworkflowDraft = true;
+    this.isWorkflowDraft = true;
     sessionStorage.$SOS$WORKFLOW = null;
     this.workflowService.resetVariables();
     this.nodeMap = new Map();
@@ -4101,6 +4101,10 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           _graph.scrollPointToVisible(x, y, _graph.autoExtend);
         }
 
+        if ($('#toolbar').find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
+          mxToolbar.prototype.resetMode(true);
+        }
+
         // Highlights the drop target under the mouse
         if (this.currentHighlight != null && _graph.isDropEnabled()) {
           this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
@@ -4481,18 +4485,20 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           if (this.history.length === 10) {
             this.history.shift();
           }
-          const _enc = new mxCodec();
-          const _nodeModel = _enc.encode(graph.getModel());
-          const xml = mxUtils.getXml(_nodeModel);
-          this.history.push(xml);
-          this.indexOfNextAdd = this.history.length;
           isUndoable = false;
-          if (this.indexOfNextAdd < this.history.length) {
-            $('#redoBtn').removeClass('disable-link');
-          }
-          if (this.indexOfNextAdd > 0) {
-            $('#undoBtn').removeClass('disable-link');
-          }
+          setTimeout(() => {
+            const _enc = new mxCodec();
+            const _nodeModel = _enc.encode(graph.getModel());
+            const xml = mxUtils.getXml(_nodeModel);
+            this.history.push(xml);
+            this.indexOfNextAdd = this.history.length;
+            if (this.indexOfNextAdd < this.history.length) {
+              $('#redoBtn').removeClass('disable-link');
+            }
+            if (this.indexOfNextAdd > 0) {
+              $('#undoBtn').removeClass('disable-link');
+            }
+          }, 100);
         }
       };
 
@@ -4546,7 +4552,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
         if (!parent && !isVertexDrop) {
           return null;
-        }else{
+        } else {
           isVertexDrop = false;
         }
         parent = (parent != null) ? parent : this.graph.getSwimlaneAt(x, y);
@@ -4725,6 +4731,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             graph.setSelectionCells(cells);
             setTimeout(() => {
               checkConnectionLabel(cells[0], cell, true);
+               isVertexDrop = false;
             }, 0);
           } else {
             if (cell.value && cell.value.tagName === 'Connector') {
@@ -5879,6 +5886,9 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
         if (targetCell.value.tagName !== 'Connection') {
           if (result === 'select') {
+            if (selectedCellsObj) {
+              targetCell = null;
+            }
             if (clickedCell.collapsed) {
               clickedCell.collapsed = false;
             }
@@ -6020,8 +6030,17 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         } else if (title.match('fork') || title.match('retry') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
-          if (selectedCell && (selectedCell.id === targetCell.id || graph.getSelectionCells().length > 1) && selectedCell.value.tagName !== 'Catch') {
-            flg = true;
+          if (selectedCell) {
+            const cells = graph.getSelectionCells();
+            if (cells.length > 1) {
+              selectedCellsObj = isCellSelectedValid(cells);
+              if (selectedCellsObj.invalid) {
+                return 'inValid';
+              }
+            }
+            if (selectedCell.id === targetCell.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(targetCell.id) > -1)) {
+              flg = true;
+            }
           }
         }
         if (title.match('catch')) {
