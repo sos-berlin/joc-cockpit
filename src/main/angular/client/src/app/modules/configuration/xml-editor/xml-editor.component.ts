@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
@@ -351,28 +351,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (sessionStorage.getItem('xsd') === 'null' || sessionStorage.getItem('xsd') === null) {
-      if (sessionStorage.preferences) {
-        this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    if (sessionStorage.preferences) {
+      this.preferences = JSON.parse(sessionStorage.preferences) || {};
+    }
+    if (sessionStorage.getItem('xsd') !== null) {
+      if (sessionStorage.$SOS$XSD) {
+        this.submitXsd = true;
+        this.selectedXsd = sessionStorage.$SOS$XSD;
       }
-      if (sessionStorage.$SOS$XSD !== null || sessionStorage.$SOS$XSD !== 'null') {
+      this.reassignSchema();
+      setTimeout(() => {
+        this.createJsonfromXml(sessionStorage.getItem('xsd'));
+      }, 600);
+    } else {
+      if (sessionStorage.$SOS$XSD) {
         this.submitXsd = true;
         this.selectedXsd = sessionStorage.$SOS$XSD;
         this.getInitTree(false);
       } else {
         this.isLoading = false;
       }
-    } else {
-      if (sessionStorage.$SOS$XSD !== null || sessionStorage.$SOS$XSD !== 'null') {
-        this.submitXsd = true;
-        //this.selectedXsd = sessionStorage.$SOS$XSD;
-      }
-      this.selectedXsd = sessionStorage.$SOS$XSD;
-      this.reassignSchema();
-      setTimeout(() => {
-        this.createJsonfromXml(sessionStorage.getItem('xsd'));
-      }, 600);
     }
+
     this.translate.get('xml.message.requiredField').subscribe(translatedValue => {
       this.requiredField = translatedValue;
     });
@@ -407,12 +407,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // change selected xsd value
   changeXSD(value) {
     this.selectedXsd = value;
-    sessionStorage.$SOS$XSD = value;
   }
 
   // submit xsd to open
   submit() {
     if (this.selectedXsd !== '') {
+      sessionStorage.$SOS$XSD = this.selectedXsd;
       this.submitXsd = true;
       this.getInitTree(false);
     }
@@ -483,7 +483,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (text) {
       temp.text = text;
     }
-    if(!check) {
+    if (!check) {
       child = this.checkChildNode(temp);
       if (child.length > 0) {
         for (let i = 0; i < child.length; i++) {
@@ -1062,27 +1062,28 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (attrsType !== undefined) {
       this.attachTypeAttrs(attrsType, nodeArr.children);
     }
-    if (nodeArr.ref == 'NotificationMail' || nodeArr.ref == 'Header' ) {
+    if (nodeArr.ref == 'NotificationMail' || nodeArr.ref == 'Header') {
       this.arrangeArr(nodeArr);
     }
 
     this.autoExpand(nodeArr);
     this.printArraya(false);
   }
-  arrangeArr(node) {   
-    let arr = _.clone(node.children); 
-    for (let j = 0; j<arr.length; j++) {
+
+  arrangeArr(node) {
+    let arr = _.clone(node.children);
+    for (let j = 0; j < arr.length; j++) {
       if (node.children[j].ref === 'From') {
         let temp;
-        if(node && node.children[0] !== undefined) {
+        if (node && node.children[0] !== undefined) {
           temp = node.children[0];
           node.children[0] = node.children[j];
           node.children[j] = temp;
         }
-      } 
+      }
       if (node.children[j].ref === 'To') {
         let temp;
-        if(node && node.children[1] !== undefined) {
+        if (node && node.children[1] !== undefined) {
           temp = node.children[1];
           node.children[1] = node.children[j];
           node.children[j] = temp;
@@ -1090,21 +1091,23 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
       if (node.children[j].ref === 'CC') {
         let temp;
-        if(node && node.children[2] !== undefined) {
+        if (node && node.children[2] !== undefined) {
           temp = node.children[2];
           node.children[2] = node.children[j];
           node.children[j] = temp;
         }
-      } if (node.children[j].ref === 'BCC') {
+      }
+      if (node.children[j].ref === 'BCC') {
         let temp;
-        if(node && node.children[3] !== undefined) {
+        if (node && node.children[3] !== undefined) {
           temp = node.children[3];
           node.children[3] = node.children[j];
           node.children[j] = temp;
         }
-      }  if (node.children[j].ref === 'Subject' && j<node.children[j].length) {
+      }
+      if (node.children[j].ref === 'Subject' && j < node.children[j].length) {
         let temp;
-        if(node && node.children[4] !== undefined) {
+        if (node && node.children[4] !== undefined) {
           temp = node.children[4];
           node.children[4] = node.children[j];
           node.children[j] = temp;
@@ -2789,6 +2792,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((res: any) => {
       this.selectedXsd = res.xsd;
+      sessionStorage.setItem('$SOS$XSD', this.selectedXsd);
       this.reassignSchema();
       setTimeout(() => {
         this.createJsonfromXml(res.data);
@@ -2805,7 +2809,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.assignXsd = this.newXsdAssign;
     modalRef.componentInstance.self = this;
     modalRef.result.then((res) => {
-      sessionStorage.$SOS$XSD = null;
+      sessionStorage.removeItem('$SOS$XSD');
+      sessionStorage.removeItem('xsd');
     }, function () {
     });
   }
@@ -3146,10 +3151,21 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.submitXsd) {
+    this.autoSave();
+    this.coreService.tabs._configuration.state = 'xml';
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload($event) {
+    this.autoSave();
+  }
+
+  private autoSave() {
+    if (this.nodes[0] && this.nodes[0].ref) {
       let a = this._showXml();
       sessionStorage.setItem('xsd', a);
+    } else {
+      sessionStorage.removeItem('xsd');
     }
-    this.coreService.tabs._configuration.state = 'xml';
   }
 }

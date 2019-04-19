@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -6437,6 +6437,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload($event) {
+    sessionStorage.$SOS$WORKFLOW = JSON.stringify(this.workFlowJson);
   }
 }
 
