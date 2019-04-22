@@ -56,10 +56,10 @@
                             [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
                             (mouseover)="tooltip(node.data)" placement="bottom" ngbTooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.data.ref}}
                       </span>
-                      <span class="text-sm pl-2" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
+                      <span class="text-sm pl-2" (click)="getData(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
                         {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
                       </span>
-                      <span class="text-sm pl-2" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0)">
+                      <span class="text-sm pl-2" (click)="getData(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0)">
                         {{node.data.values[0].data}}
                       </span>
                     </div>

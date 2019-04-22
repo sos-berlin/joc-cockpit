@@ -2984,6 +2984,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     } else {
       for (let a in editJson[rootNode]) {
+        if(a == '_text') {
+         
+          
+          a = '_cdata';
+        }
+       
+        
+
         if (a == '_attributes' || a == '_cdata') {
           if (temp[rootNode] == undefined) {
             temp = Object.assign(temp, {[rootNode]: {[a]: editJson[rootNode][a]}});
@@ -3024,6 +3032,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   createTempJsonRecursion(key, tempArr, editJson) {
+    if(key == '_text') {
+         
+          
+          key = '_cdata';
+    }
     if (key == '_attributes' || key == '_cdata') {
       tempArr = Object.assign(tempArr, {[key]: editJson[key]});
     } else {
@@ -3051,10 +3064,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     mainjson.children = [];
     if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
       for (let key in xmljson[rootNode]._attributes) {
-        for (let i = 0; i < mainjson.attributes.length; i++) {
-          if (key === mainjson.attributes[i].name) {
-            let a = xmljson[rootNode]._attributes[key];
-            mainjson.attributes[i] = Object.assign(mainjson.attributes[i], {data: a});
+        if(mainjson && mainjson.attributes) {
+          for (let i = 0; i < mainjson.attributes.length; i++) {
+            if (key === mainjson.attributes[i].name) {
+              let a = xmljson[rootNode]._attributes[key];
+              mainjson.attributes[i] = Object.assign(mainjson.attributes[i], {data: a});
+            }
           }
         }
       }
