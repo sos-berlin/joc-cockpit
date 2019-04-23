@@ -22,7 +22,7 @@
 		this.element = element;
 		this.element.addClass('calendar');
 		this._initializeEvents(options);
-		this._initializeOptions(options)
+		this._initializeOptions(options);
 		this._render();
 	};
 

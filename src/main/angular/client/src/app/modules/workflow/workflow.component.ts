@@ -97,6 +97,12 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           } else {
             this.editor.execute('zoomOut');
           }
+        } else {
+          const bounds = this.editor.graph.getGraphBounds();
+          if (bounds.y < 0 && bounds.height > $('#graph').height()) {
+            // this.editor.graph.view.setTranslate(0.6, 1);
+            this.editor.graph.center(true, true, 0.5, 0);
+          }
         }
       }
     });

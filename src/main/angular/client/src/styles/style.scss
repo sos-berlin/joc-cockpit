@@ -408,11 +408,11 @@ small {
 .dropdown-menu {
   color: rgba(0, 0, 0, 0.87);
   border-radius: 0;
-  border: 1px solid #eceef4;
   -webkit-transform-origin: top left;
   -moz-transform-origin: top left;
   -ms-transform-origin: top left;
   transform-origin: top left;
+  width: fit-content;
 }
 
 .form-group .dropdown-menu {
@@ -5964,7 +5964,85 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 .ui-select-multiple input.ui-select-search {
   padding: 4px 8px !important;
 }
+.reverse {
+    top:auto !important;
+}
+.arrow-down {
+  top: 57px;
+	border-radius: 1px;
+	font-size: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
+}
 
+.arrow-down:last-child:after {
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 8px;
+    border: 9px outset transparent;
+    content: '\f0d7';
+    font-family: FontAwesome;
+    font-size: 28px;
+    color: white;
+    bottom: 7px;
+}
+
+.arrow-down a:last-child:after {
+	border-bottom: 9px solid #fff;
+	bottom: -18px
+}
+.arrow-down {
+	font-size: 12px
+}
+
+.arrow-down a:first-child {
+	margin-bottom: -1px
+}
+
+.arrow-down-ac {
+  top: 57px;
+	border-radius: 1px;
+	font-size: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
+}
+
+.arrow-down-ac:last-child:after {
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: unset;
+    border: 9px outset transparent;
+    content: '\f0d7';
+    font-family: FontAwesome;
+    font-size: 28px;
+    bottom: 7px;
+    right: 28px;
+}
+
+.arrow-down-ac a:last-child:after {
+	border-bottom: 9px solid #fff;
+	bottom: -18px
+}
+.arrow-down-ac {
+	font-size: 12px
+}
+
+.arrow-down-ac a:first-child {
+	margin-bottom: -1px
+}
+.invalid {
+  border: 1px solid #dc3545 !important;
+}
+
+.list-dropdown a:first-child:before, .list-dropdown li:first-child:after {
+  pointer-events: none;
+}
 /***
  Begin Workflow and XMl editor css
 ***/

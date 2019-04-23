@@ -987,3 +987,60 @@ span ul li a {
 .predicate-edit {
   background: #393937;
 }
+
+.ck-rounded-corners .ck.ck-editor__main>.ck-editor__editable, .ck.ck-editor__main>.ck-editor__editable.ck-rounded-corners {
+	background-color: #333332;
+	border-color: #65707d;
+	color: white;
+}
+
+.ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners {
+	background-color: rgba(189, 189, 189, 0.1);
+	border-color: #65707d;
+	color: #fff;
+}
+.ck.ck-reset_all, .ck.ck-reset_all * {
+		color: #fff;
+}
+.ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active {
+	background-color: transparent;
+}
+.ck.ck-button:not(.ck-disabled):hover, a.ck.ck-button:not(.ck-disabled):hover {
+	background-color: transparent;
+}
+.ck.ck-button:active, .ck.ck-button:focus, a.ck.ck-button:active, a.ck.ck-button:focus {
+	background-color: transparent;
+}
+.ck-rounded-corners .ck.ck-dropdown .ck-dropdown__panel .ck-list, .ck.ck-dropdown .ck-dropdown__panel .ck-list.ck-rounded-corners {
+	background-color: #333332;
+	border-color: #333332;
+}
+.ck.ck-dropdown__panel {
+	border: 1px solid #333332;
+}
+.ck.ck-list__item .ck-button:hover:not(.ck-disabled) {
+	color: #333;
+}
+.ck.ck-button:not(.ck-disabled):active, a.ck.ck-button:not(.ck-disabled):active {
+	color: #333;
+}
+.ck.ck-list__item .ck-button.ck-on {
+	background-color: #1395BE;
+	color: white;
+}
+.ck.ck-button.ck-on, a.ck.ck-button.ck-on {
+	background-color: #1395BE;
+}
+a[href*="http:"] {
+  color: #1395BE !important;
+}
+a[href*="https:"] {
+  color: #1395BE !important;
+}	
+
+.arrow-down-ac:last-child:after {
+	color: #1d1d1c;
+}
+.arrow-down:last-child:after {
+	color: #1d1d1c;
+}

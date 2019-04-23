@@ -2462,7 +2462,7 @@ export class ExpressionModalComponent implements OnInit {
 
     if ((this.lastSelectOpeartor == '<' || this.lastSelectOpeartor == '<=' || this.lastSelectOpeartor == '>'
       || this.lastSelectOpeartor == '>=' || this.lastSelectOpeartor == 'in')) {
-      if (!(charCode < 58 && charCode > 47)) {
+      if (!((charCode < 58 && charCode > 47) || (charCode == 40 || charCode == 41))) {
         this.isValid = false;
         $event.preventDefault();
       }

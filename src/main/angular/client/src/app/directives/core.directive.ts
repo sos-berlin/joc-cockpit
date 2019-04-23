@@ -144,7 +144,14 @@ export class DropdownDirective implements OnDestroy {
     if ($(event.target).attr('class') !== 'dropdown-backdrop') {
       const top = event.clientY + 8;
       const left = event.clientX - 20;
-      $('.list-dropdown').css({top: top + 'px', left: left + 'px'});
+
+      if (window.innerHeight > top + 240) {
+        $('.list-dropdown').css({top: top + 'px', left: left + 'px', bottom: 'auto'})
+          .removeClass('arrow-down reverse').addClass('dropdown-ac');
+      } else {
+        $('.list-dropdown').css({left: left + 'px', bottom: (window.innerHeight - top + 14) + 'px'
+        }).addClass('reverse arrow-down').removeClass('dropdown-ac');
+      }
       window.addEventListener('scroll', this.scroll, true);
     } else {
       window.removeEventListener('scroll', this.scroll, true);
@@ -153,7 +160,11 @@ export class DropdownDirective implements OnDestroy {
 
   scroll = (): void => {
     if (this.el.nativeElement.attributes.class.value.match(' open')) {
-      $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
+      if ($('div.open .list-dropdown').hasClass('dropdown-ac')) {
+        $('div.open .list-dropdown').css({top: this.el.nativeElement.getBoundingClientRect().top + 16 + 'px'});
+      } else {
+         $('div.open .list-dropdown').css({bottom: (window.innerHeight - this.el.nativeElement.getBoundingClientRect().top) + 'px'});
+      }
     }
   }
 

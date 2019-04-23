@@ -137,13 +137,13 @@ export class ShowChildModalComponent implements OnInit {
         let innerHTML = inputText[i].innerHTML;
         let pattern = new RegExp('(' + sData + ')', 'gi');
         let searchPara = innerHTML.toString();
-        if (pattern.test(searchPara)) {          
+        if (pattern.test(searchPara)) {
           innerHTML = searchPara.replace(pattern, function (str) {
             return '<span class=\'highlight\'>' + str + '</span>';
           });
           inputText[i].innerHTML = innerHTML;
         }
-        if(searchPara.match(pattern)) {
+        if (searchPara.match(pattern)) {
           let c = searchPara.match(pattern).length;
           this.counter = this.counter + c;
         }
@@ -1381,8 +1381,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   addDefaultValue(node) {
-    console.log(node);
-
     if (node.values && (node.values[0].base === 'xs:string' && (node.values[0] && node.values[0].values && node.values[0].values.length > 0) && node.values[0].default === undefined)) {
       node.values[0].default = node.values[0].values[0].value;
       node.values[0].data = node.values[0].values[0].value;
@@ -1622,7 +1620,6 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   // to send data in details component
   getData(event) {
     this.selectedNode = event;
-    console.log('***************\n', this.selectedNode, '\n***************');
     this.breadCrumbArray = [];
     this.createBreadCrumb(event);
     this.breadCrumbArray.reverse();
@@ -2339,9 +2336,18 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     if (!(/[a-zA-Z0-9_]+.*$/.test(event))) {
       this.error = true;
     } else {
-      nodes.values[0] = Object.assign(nodes.values[0], {data: event});
-      event = '';
-      this.myContent = '';
+      if (event.match(/<[^>]+>/gm)) {
+        let x = event.replace(/<[^>]+>/gm);
+
+        if (x !== 'undefined&nbsp;undefined') {
+          nodes.values[0] = Object.assign(nodes.values[0], {data: event});
+          event = '';
+          this.myContent = nodes.values[0].data;
+          this.error = false;
+        } else {
+          delete nodes.values[0].data;
+        }
+      }
     }
   }
 
@@ -2595,7 +2601,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.error = false;
     if (/[a-zA-Z0-9_]+.*$/.test(value)) {
       this.error = false;
-    } else if (ref == "FileSpec" || ref == "Directory") {
+    } else if (ref == 'FileSpec' || ref == 'Directory') {
       if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
         this.error = false;
       }
@@ -2619,11 +2625,10 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       this.error = false;
       tag = Object.assign(tag, {data: value});
       this.autoValidate();
-    } else if (ref == "FileSpec" || ref == "Directory") {
+    } else if (ref == 'FileSpec' || ref == 'Directory') {
       if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
         this.error = false;
         tag = Object.assign(tag, {data: value});
-        this.myContent = "";
         this.autoValidate();
       }
     } else {
@@ -2984,14 +2989,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
       }
     } else {
       for (let a in editJson[rootNode]) {
-        if(a == '_text') {
-         
-          
+        if (a == '_text') {
           a = '_cdata';
         }
-       
-        
-
         if (a == '_attributes' || a == '_cdata') {
           if (temp[rootNode] == undefined) {
             temp = Object.assign(temp, {[rootNode]: {[a]: editJson[rootNode][a]}});
@@ -3032,10 +3032,8 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   createTempJsonRecursion(key, tempArr, editJson) {
-    if(key == '_text') {
-         
-          
-          key = '_cdata';
+    if (key == '_text') {
+      key = '_cdata';
     }
     if (key == '_attributes' || key == '_cdata') {
       tempArr = Object.assign(tempArr, {[key]: editJson[key]});
@@ -3064,7 +3062,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     mainjson.children = [];
     if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
       for (let key in xmljson[rootNode]._attributes) {
-        if(mainjson && mainjson.attributes) {
+        if (mainjson && mainjson.attributes) {
           for (let i = 0; i < mainjson.attributes.length; i++) {
             if (key === mainjson.attributes[i].name) {
               let a = xmljson[rootNode]._attributes[key];
@@ -3157,12 +3155,33 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _showXml() {
-    let xml = this.jsonToXml();
-    let xmlAsString = new XMLSerializer().serializeToString(xml);
-    let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
-    a = a.concat(xmlAsString);
-    return vkbeautify.xml(a);
+  removeTag(data) {
+    if (data && data.data && data.data.match(/<[^>]+>/gm)) {
+      let x = data.data.replace(/<[^>]+>/gm, '');
+      return x;
+    } else {
+      return data.data;
+    }
+  }
+
+  addCkCss(id) {
+    setTimeout(() => {
+      $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).addClass('invalid');
+    }, 1);
+  }
+
+  removeCkCss(id) {
+    setTimeout(() => {
+      $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).removeClass('invalid');
+    }, 1);
+  }
+
+  addContent(data) {
+    if (data && data[0] && data[0].data !== undefined) {
+      this.myContent = data[0].data;
+    } else {
+      this.myContent = '';
+    }
   }
 
   ngOnDestroy(): void {
@@ -3173,6 +3192,15 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   @HostListener('window:beforeunload', ['$event'])
   beforeunload($event) {
     this.autoSave();
+    return true;
+  }
+
+  private _showXml() {
+    let xml = this.jsonToXml();
+    let xmlAsString = new XMLSerializer().serializeToString(xml);
+    let a = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>`;
+    a = a.concat(xmlAsString);
+    return vkbeautify.xml(a);
   }
 
   private autoSave() {

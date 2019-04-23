@@ -52,21 +52,22 @@
                         (treeDropDragOver)="node.mouseAction('dragOver', $event)"
                         [treeDrag]="node"
                         [treeDragEnabled]="node.allowDrag()">
-                      <span (click)="getData(node.data)"
+                      <span (click)="getData(node.data);addContent(node.data.values)"
                             [ngClass]="cutData && node.data.uuid === copyItem.uuid? 'disabled' : ''"
                             (mouseover)="tooltip(node.data)" placement="bottom" ngbTooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.data.ref}}
                       </span>
                       <span class="text-sm pl-2" (click)="getData(node.data)" *ngIf="node.data.attributes && node.data.attributes.length>0 && node.data.attributes[0].data">
                         {{node.data.attributes[0].name}}={{node.data.attributes[0].data}}
                       </span>
-                      <span class="text-sm pl-2" (click)="getData(node.data)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0)">
-                        {{node.data.values[0].data}}
+                      <span class="text-sm pl-2" (click)="getData(node.data);addContent(node.data.values)" *ngIf="!node.data.attributes && (node.data.values && node.data.values.length>0)">
+                        {{removeTag(node.data.values[0])}}
                       </span>
                     </div>
-                    <div appDropdown class="btn-group dropdown">
-                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)"><i
-                        class="fa fa-ellipsis-h"></i></button>
-                      <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                    <div class="btn-group dropdown">
+                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)" appDropdown>
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <div id="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
                         <a class="dropdown-item" id="addChild" [ngClass]="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
                           <div translate>xml.button.addChild</div>
                         </a>
@@ -276,8 +277,8 @@
                          class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
                          type="password" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" [autofocus]="!selectedNode.attributes">
 
-                  <div *ngIf="selectedNode.ref === 'Body'" class="form-group has-feedback">
-                       <ckeditor #myckeditor="ngModel" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent"  [ngClass]="error? 'invalid': ''" debounce="500" name="myckeditor" class="ckEditor"></ckeditor>
+                  <div *ngIf="selectedNode.ref === 'Body' && selectedNode.values[0]" class="form-group has-feedback">
+                       <ckeditor #myckeditor="ngModel" id="{{selectedNode.uuid}}" [editor]="Editor" (change)="onChange(myContent, selectedNode)" [(ngModel)]="myContent" debounce="500" name="myckeditor" class="ckEditor" [ngClass]="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>
                        <div *ngIf="myckeditor.invalid && myckeditor.touched" class="help-block" translate>xml.message.requiredField</div>
                   </div>
                   <select #localref7 (blur)="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"

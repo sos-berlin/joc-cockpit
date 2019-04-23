@@ -18,7 +18,7 @@
           <div class="m-t col-sm-12">
             <div class="text-center">
               <div>
-                 <button *ngFor="let btn of operators" type="button" (click)="generateExpression('returnCodes', btn)" class="btn btn-sm btn-grey m-l-xs"> {{btn}} </button>
+                 <button *ngFor="let btn of operators" type="button" (click)="generateExpression('returnCode', btn)" class="btn btn-sm btn-grey m-l-xs"> {{btn}} </button>
               </div>
               <div class="m-t" *ngIf="isVariableSelected || expression.type === 'variables'">
                  <button *ngFor="let btn of variablesOperators" type="button" (click)="generateExpression('variables', btn)" class="btn btn-sm btn-grey m-l-xs"> {{btn}} </button>
@@ -30,7 +30,7 @@
               <div><span translate>workflow.label.functions</span>:</div>
               <div class="b-a p-a" style="height: 220px">
                 <div>
-                  <a [ngClass]="{'text-primary' :expression.type === 'returnCodes'}" (click)="generateExpression('returnCodes', null)">returnCodes</a></div>
+                  <a [ngClass]="{'text-primary' :expression.type === 'returnCode'}" (click)="generateExpression('returnCode', null)">returnCode</a></div>
                 <div class="m-t-xs">
                   <i *ngIf="expression.open" (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
                   <i *ngIf="!expression.open" (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
@@ -47,8 +47,8 @@
             <div class="col-sm-6 p-r-0">
               <div><span translate>workflow.label.description</span>:</div>
               <div class="b-a p-a"  style="height: 220px">
-                <div *ngIf="expression.type === 'returnCodes'">
-                  <label class="_600">returnCodes</label>
+                <div *ngIf="expression.type === 'returnCode'">
+                  <label class="_600">returnCode</label>
                   <p class="text-sm">
                     The reserved word returnCode is used.
                   </p>
