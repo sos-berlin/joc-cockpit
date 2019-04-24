@@ -104,3 +104,9 @@ button.close {
 .property-panel .sidebar-close i {
   color: darkcyan;
 }
+a[href*="http:"] {
+  color: #1395BE !important;
+}
+a[href*="https:"] {
+  color: #1395BE !important;
+}	

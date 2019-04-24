@@ -2371,7 +2371,7 @@ export class ExpressionModalComponent implements OnInit {
 
   ngOnInit() {
     this.expression.expression = this.predicate;
-    this.expression.type = 'returnCodes';
+    this.expression.type = 'returnCode';
   }
 
   onSubmit(): void {
@@ -2400,7 +2400,7 @@ export class ExpressionModalComponent implements OnInit {
       if (type && !operator) {
         if (this.isClicked && this.expression.expression) {
           if (this.expression.expression.lastIndexOf('&&') > -1 || this.expression.expression.lastIndexOf('||') > -1) {
-            if (type === 'returnCodes' && !this.isVariableSelected) {
+            if (type === 'returnCode' && !this.isVariableSelected) {
               this.expression.expression = this.expression.expression + ' ' + type + ' ';
               this.isClicked = false;
               this.tmp1 = '';
@@ -2416,7 +2416,7 @@ export class ExpressionModalComponent implements OnInit {
         }
         this.expression.type = type;
         if (!this.expression.expression || this.expression.expression === '') {
-          if (type === 'returnCodes') {
+          if (type === 'returnCode') {
             this.isVariableSelected = false;
             this.expression.expression = type + ' ';
           } else {
@@ -2449,7 +2449,7 @@ export class ExpressionModalComponent implements OnInit {
   }
 
   onKepPress($event: any) {
-    const charCode = ($event.which) ? $event.which : $event.charCode;
+    const charCode = ($event.which) ? $event.which : $event.keyCode;
     if ((charCode < 91 && charCode > 64) || (charCode < 123 && charCode > 96) || (charCode < 58 && charCode > 47)
       || charCode == 8 || charCode == 32 || charCode == 40 || charCode == 41 || charCode == 34 || charCode == 39) {
       this.isValid = true;
@@ -2462,7 +2462,7 @@ export class ExpressionModalComponent implements OnInit {
 
     if ((this.lastSelectOpeartor == '<' || this.lastSelectOpeartor == '<=' || this.lastSelectOpeartor == '>'
       || this.lastSelectOpeartor == '>=' || this.lastSelectOpeartor == 'in')) {
-      if (!((charCode < 58 && charCode > 47) || (charCode == 40 || charCode == 41))) {
+      if (!((charCode < 58 && charCode > 47) || (charCode == 40 || charCode == 41 || charCode == 188))) {
         this.isValid = false;
         $event.preventDefault();
       }
