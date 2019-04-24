@@ -4395,8 +4395,15 @@
 
         function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
-                vm.object.calendars = [];
+
                 vm.getCategories();
+                for (let i = 0; i < vm.object.calendars.length; i++) {
+                    if (vm.showPanel && vm.object.calendars[i].path == vm.showPanel.path) {
+                        vm.showPanel = undefined;
+                        break;
+                    }
+                }
+                vm.object.calendars = [];
             });
             vm.calendarArr = undefined;
         }

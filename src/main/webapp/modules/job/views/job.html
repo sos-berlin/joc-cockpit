@@ -321,6 +321,9 @@
                                                 <span translate>button.showDocumentation</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" ng-click="editInConditions(job)" translate>button.editInConditions</a>
+                                            <a class="dropdown-item" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
+                                            <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
                                         </div>
                                     </div>
@@ -365,8 +368,8 @@
                                 </div>
                                 <div class="box-footer b-t">
                                     <div>
-                                        <a href class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
-                                        <a href class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.execute.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
+                                        <a class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
+                                        <a class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.execute.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -509,7 +512,7 @@
                                                 <a class="dropdown-item"
                                                    ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
                                                    ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
-                                                <a href class="dropdown-item {{(job.configurationStatus.severity==2) ? 'disable-link' : ''}} {{permission.Calendar.view.status ? '' : 'hide'}}"
+                                                <a class="dropdown-item {{(job.configurationStatus.severity==2) ? 'disable-link' : ''}} {{permission.Calendar.view.status ? '' : 'hide'}}"
                                                    ng-click="showAssignedCalendar(job)">
                                                     <span translate>button.showAssignedCalendar</span>
                                                 </a>
@@ -520,15 +523,18 @@
                                                    class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' : ''}} {{permission.Job.view.configuration ? '' : 'hide'}}"
                                                    translate>button.showConfiguration</a>
                                                 <div class="dropdown-divider"></div>
-                                                <a href class="dropdown-item" ng-click="assignedDocument(job)" ng-if="permission.Job.assignDocumentation">
+                                                <a class="dropdown-item" ng-click="assignedDocument(job)" ng-if="permission.Job.assignDocumentation">
                                                     <span translate>button.assignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item" ng-click="unassignedDocument(job)" ng-if="permission.Job.assignDocumentation && job.documentation">
+                                                <a class="dropdown-item" ng-click="unassignedDocument(job)" ng-if="permission.Job.assignDocumentation && job.documentation">
                                                     <span translate>button.unassignedDocumentation</span>
                                                 </a>
-                                                <a href class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
+                                                <a class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" ng-click="editInConditions(job)" translate>button.editInConditions</a>
+                                                <a class="dropdown-item" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                    translate>button.copyLinkToObject</a>

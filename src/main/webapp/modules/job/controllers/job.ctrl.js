@@ -378,7 +378,7 @@
             }
             vm.allJobChains = [];
             vm.loading = true;
-            vm.folderPath = data.name || '/';
+            vm.folderPath = data.name || data.path;
 
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -533,7 +533,7 @@
         }
 
         function expandFolderData(data) {
-            vm.folderPath = data.name || '/';
+            vm.folderPath = data.name || data.path;
             let obj = {
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
@@ -610,7 +610,7 @@
             if (data.selected1) {
                 data.jobChains = [];
                 expandFolderData(data);
-                vm.folderPath = data.name || '/';
+                vm.folderPath = data.name || data.path;
             }
             if (data.folders && data.folders.length > 0) {
                 data.folders = orderBy(data.folders, 'name');
@@ -660,7 +660,7 @@
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 obj1.folders.push({folder: data.path, recursive: false});
-                vm.folderPath = data.name || '/';
+                vm.folderPath = data.name || data.path;
             }
 
             data.folders = orderBy(data.folders, 'name');
@@ -1014,11 +1014,7 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    if(viewDate.getFullYear() > new Date().getFullYear()){
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
-                    }else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -3603,7 +3599,7 @@
             }
             vm.allJobs = [];
             vm.loading = true;
-            vm.folderPath = data.name || '/';
+            vm.folderPath = data.name || data.path;
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -3692,7 +3688,7 @@
 
         function expandFolderData(data) {
             data.selected1 = true;
-            vm.folderPath = data.name;
+            vm.folderPath = data.name || data.path;
             let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true};
             obj.folders = [{folder: data.path, recursive: false}];
             if (vm.selectedFiltered) {
@@ -3753,7 +3749,7 @@
             if (data.selected1) {
                 data.jobs = [];
                 expandFolderData(data);
-                vm.folderPath = data.name || '/';
+                vm.folderPath = data.name || data.path;
             }
             if (data.folders && data.folders.length > 0) {
                 data.folders = orderBy(data.folders, 'name');
@@ -3802,7 +3798,7 @@
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 obj1.folders.push({folder: data.path, recursive: false});
-                vm.folderPath = data.name || '/';
+                vm.folderPath = data.name || data.path;
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
@@ -5897,11 +5893,7 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    if(viewDate.getFullYear() > new Date().getFullYear()){
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
-                    }else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -5994,6 +5986,13 @@
                     }
                 }
             return scrTree;
+        };
+
+        vm.editInConditions = function (job){
+                   };
+
+        vm.editOutConditions = function(job){
+          
         };
 
         function checkCurrentSelectedFolders(job) {
@@ -7649,11 +7648,7 @@
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }
                 else {
-                    if(viewDate.getFullYear() > new Date().getFullYear()){
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth()-12) + "M";
-                    }else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 

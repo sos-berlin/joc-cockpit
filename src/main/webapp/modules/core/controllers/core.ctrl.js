@@ -19,12 +19,13 @@
         .controller('CalendarEditorDialogCtrl', CalendarEditorDialogCtrl)
         .controller('ClientLogCtrl', ClientLogCtrl)
         .controller('CalendarAssignDialogCtrl', CalendarAssignDialogCtrl)
-        .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl);
+        .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl)
+        .controller('EditConditionDialogCtrl', EditConditionDialogCtrl);
 
 
     AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService'];
     function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService, $timeout, $resource, gettextCatalog, TaskService, OrderService) {
-        var vm = $scope;
+        const vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
 
@@ -1352,7 +1353,7 @@
 
     HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window', '$state', '$uibModalStack', 'CoreService', '$timeout','PermissionService'];
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout, PermissionService) {
-        var vm = $scope;
+        const vm = $scope;
         toasty.clear();
 
         function getDateFormat() {
@@ -2024,7 +2025,7 @@
 
     ConfigurationCtrl.$inject = ['$scope', 'JobService', 'JobChainService', 'OrderService', 'ScheduleService', 'ResourceService', '$uibModalInstance', '$sce'];
     function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $uibModalInstance, $sce) {
-        var vm = $scope;
+        const vm = $scope;
 
         vm.ok = function () {
             $uibModalInstance.close('ok');
@@ -2091,7 +2092,7 @@
 
     DialogCtrl.$inject = ['$scope', '$uibModalInstance', '$window', '$uibModal', 'toasty', 'gettextCatalog'];
     function DialogCtrl($scope, $uibModalInstance, $window, $uibModal, toasty, gettextCatalog) {
-        var vm = $scope;
+        const vm = $scope;
         vm.error = false;
         if (vm.userPreferences.auditLog) {
             vm.display = true;
@@ -2459,9 +2460,9 @@
 
     }
 
-    FrequencyCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', '$filter', 'CalendarService'];
-    function FrequencyCtrl($scope, $rootScope, gettextCatalog, $filter, CalendarService) {
-        var vm = $scope;
+    FrequencyCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', 'CalendarService'];
+    function FrequencyCtrl($scope, $rootScope, gettextCatalog, CalendarService) {
+        const vm = $scope;
         vm.calendarView = 'year';
         vm.events = [];
         vm.planItems = [];
@@ -3016,17 +3017,10 @@
         });
         var watcher4 = vm.$watchCollection('frequency.nationalHoliday', function (newNames) {
 
-            if (newNames && newNames.length > 0) {
-                vm.editor.isEnable = true;
-            } else {
-                vm.editor.isEnable = false;
-            }
+            vm.editor.isEnable = !!(newNames && newNames.length > 0);
 
             if (vm.holidayList && newNames) {
-                if (vm.holidayList.length == newNames.length)
-                    vm.holidayDays.checked = true;
-                else
-                    vm.holidayDays.checked = false;
+                vm.holidayDays.checked = vm.holidayList.length == newNames.length;
             }
 
         });
@@ -3990,7 +3984,7 @@
 
     PeriodEditorCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog'];
     function PeriodEditorCtrl($scope, $rootScope, gettextCatalog) {
-        var vm = $scope;
+        const vm = $scope;
         vm.period = {};
         vm.editor = {};
         vm.editor.when_holiday_options = {
@@ -4186,7 +4180,7 @@
 
     ScheduleEditorCtrl.$inject = ['$scope', '$rootScope'];
     function ScheduleEditorCtrl($scope, $rootScope) {
-        var vm = $scope;
+        const vm = $scope;
         vm.sch = {};
         vm.error = {};
         vm.from = {};
@@ -4316,7 +4310,7 @@
 
     RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService', '$filter', 'DailyPlanService','$uibModal'];
     function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService,$uibModal) {
-        var vm = $scope;
+        const vm = $scope;
          vm.calendarView = 'year';
         var dom_parser = new DOMParser();
         vm.minDate = new Date();
@@ -4620,24 +4614,12 @@
                     }
                 } else if (newNames.tab == 'monthDays') {
                     if (newNames.isUltimos == 'months') {
-                        if (selectedMonths.length == 0) {
-                            vm.editor.isEnable = false;
-                        } else {
-                            vm.editor.isEnable = true;
-                        }
+                        vm.editor.isEnable = selectedMonths.length != 0;
                     } else {
-                        if (selectedMonthsU.length == 0) {
-                            vm.editor.isEnable = false;
-                        } else {
-                            vm.editor.isEnable = true;
-                        }
+                        vm.editor.isEnable = selectedMonthsU.length != 0;
                     }
                 } else if (newNames.tab == 'weekDays') {
-                    if (newNames.days && newNames.days.length > 0) {
-                        vm.editor.isEnable = true;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
+                    vm.editor.isEnable = !!(newNames.days && newNames.days.length > 0);
                 }
 
             }
@@ -4663,10 +4645,10 @@
                 if (vm._tempHoliday)
                     vm.holidayDates = angular.copy(vm._tempHoliday);
                 if (newNames.length > 0) {
-                    for (var i = 0; i < newNames.length; i++) {
+                    for (let i = 0; i < newNames.length; i++) {
                         var x = new Date(newNames[i]);
                         var flag = false;
-                        for (var j = 0; j < vm.holidayDates.length; j++) {
+                        for (let j = 0; j < vm.holidayDates.length; j++) {
                             if (angular.equals(vm.holidayDates[j], x)) {
                                 flag = true;
                                 break;
@@ -7033,7 +7015,7 @@
                         if (obj.tab == 'weekDays') {
                             obj.days = value._day.toString().split(' ').sort();
                         } else if (obj.tab == 'monthDays') {
-                            if (obj.isUltimos = 'ultimos') {
+                            if (obj.isUltimos == 'ultimos') {
                                 obj.selectedMonthsU = value._day.toString().split(' ').sort(compareNumbers);
                             } else {
                                 obj.selectedMonths = value._day.toString().split(' ').sort(compareNumbers);
@@ -7291,7 +7273,7 @@
                     if (obj.tab == 'weekDays') {
                         obj.days = vm.updateTime.obj[0]._day.toString().split(' ').sort();
                     } else if (obj.tab == 'monthDays') {
-                        if (obj.isUltimos = 'ultimos') {
+                        if (obj.isUltimos == 'ultimos') {
                             obj.selectedMonthsU = vm.updateTime.obj[0]._day.toString().split(' ').sort(compareNumbers);
                         } else {
                             obj.selectedMonths = vm.updateTime.obj[0]._day.toString().split(' ').sort(compareNumbers);
@@ -10224,7 +10206,7 @@
                                                 angular.forEach(vm.tempRunTime.month[i].monthdays.day, function (value) {
                                                     if (angular.equals(value._day, period.selectedMonths)) {
                                                         if (angular.isArray(value.period)) {
-                                                            for (var j = 0; j < value.period.length; j++) {
+                                                            for (let j = 0; j < value.period.length; j++) {
                                                                 if (angular.equals(value.period[j], period.period)) {
                                                                     value.period.splice(j, 1);
                                                                     break;
@@ -11266,16 +11248,8 @@
                 if (vm.runTime.period) {
                     var flg = false;
                     if (vm.runTime.frequency == 'repeat' || vm.runTime.frequency == 'absolute_repeat') {
-                        if (vm.runTime.period._begin) {
-                            flg = true;
-                        } else {
-                            flg = false;
-                        }
-                        if (vm.runTime.period._end) {
-                            flg = true;
-                        } else {
-                            flg = false;
-                        }
+                        flg = !!vm.runTime.period._begin;
+                        flg = !!vm.runTime.period._end;
                     }
                     if (vm.runTime.frequency == 'single_start' && vm.runTime.period._single_start) {
                         flg = true;
@@ -11283,11 +11257,7 @@
                     else if (vm.runTime.frequency == 'repeat' && vm.runTime.period._repeat) {
                         flg = true;
                     }
-                    else if (vm.runTime.frequency == 'absolute_repeat' && vm.runTime.period._absolute_repeat) {
-                        flg = true;
-                    } else {
-                        flg = false;
-                    }
+                    else flg = !!(vm.runTime.frequency == 'absolute_repeat' && vm.runTime.period._absolute_repeat);
 
                     if (!flg) {
                         flg = true;
@@ -13563,7 +13533,7 @@
 
     CalendarAssignDialogCtrl.$inject = ['$scope', '$rootScope', 'ResourceService', 'CalendarService', 'orderByFilter'];
     function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarService, orderBy) {
-        var vm = $scope;
+        const vm = $scope;
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.filter = {};
@@ -13660,9 +13630,9 @@
         });
     }
 
-    AddRestrictionDialogCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', '$filter'];
-    function AddRestrictionDialogCtrl($scope, $rootScope, gettextCatalog, $filter) {
-        var vm = $scope;
+    AddRestrictionDialogCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog'];
+    function AddRestrictionDialogCtrl($scope, $rootScope, gettextCatalog) {
+        const vm = $scope;
         vm.calendarView = 'year';
 
         vm.events = [];
@@ -13847,45 +13817,20 @@
                 }
 
                 if (newNames.tab == 'specificWeekDays') {
-                    if (newNames.specificWeekDay && newNames.which) {
-                        vm.editor.isEnable = true;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
+                    vm.editor.isEnable = !!(newNames.specificWeekDay && newNames.which);
                 } else if (newNames.tab == 'specificDays') {
-                    if (newNames.date) {
-                        vm.editor.isEnable = true;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
+                    vm.editor.isEnable = !!newNames.date;
                 } else if (newNames.tab == 'monthDays') {
                     if (newNames.isUltimos == 'months') {
-                        if (selectedMonths.length == 0) {
-                            vm.editor.isEnable = false;
-                        } else {
-                            vm.editor.isEnable = true;
-                        }
+                        vm.editor.isEnable = selectedMonths.length != 0;
                     } else {
-                        if (selectedMonthsU.length == 0) {
-                            vm.editor.isEnable = false;
-                        } else {
-                            vm.editor.isEnable = true;
-                        }
+                        vm.editor.isEnable = selectedMonthsU.length != 0;
                     }
 
                 } else if (newNames.tab == 'every') {
-                    if (newNames.interval && newNames.dateEntity) {
-                        vm.editor.isEnable = true;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
-                }
-                else if (newNames.tab == 'weekDays') {
-                    if (newNames.days && newNames.days.length > 0) {
-                        vm.editor.isEnable = true;
-                    } else {
-                        vm.editor.isEnable = false;
-                    }
+                    vm.editor.isEnable = !!(newNames.interval && newNames.dateEntity);
+                } else if (newNames.tab == 'weekDays') {
+                    vm.editor.isEnable = !!(newNames.days && newNames.days.length > 0);
                 }
 
             }
@@ -14275,4 +14220,17 @@
         });
     }
 
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance) {
+        const vm = $scope;
+        $scope.ok = function () {
+            $uibModalInstance.close('ok');
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+        $scope.$on('$destroy', function () {
+
+        });
+    }
 })();

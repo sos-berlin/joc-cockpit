@@ -2697,11 +2697,7 @@
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }else {
-                    if (viewDate.getFullYear() > new Date().getFullYear()) {
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
-                    } else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -2953,11 +2949,7 @@
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 }  else {
-                   if (viewDate.getFullYear() > new Date().getFullYear()) {
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
-                    } else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 
@@ -7111,11 +7103,7 @@
                 } else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
                 } else {
-                    if (viewDate.getFullYear() > new Date().getFullYear()) {
-                        date = "+" + viewDate.getMonth() - (new Date().getMonth() - 12) + "M";
-                    } else {
-                        date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                    }
+                    date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
 

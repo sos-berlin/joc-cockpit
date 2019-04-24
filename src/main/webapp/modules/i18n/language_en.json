@@ -1393,5 +1393,9 @@
   "message.deleteProcessClass": "Deleting a process class will permanently remove it from the process class list.",
   "tooltip.heartbeatPeriodWarning": "Heartbeat Timeout must be greater than Heartbeat Period",
   "message.invalidFileExtension": "Only files with the extension .json are allowed",
-  "button.dropFileToUpload": "DROP CALENDAR FILES (.json) TO UPLOAD"
+  "button.dropFileToUpload": "DROP CALENDAR FILES (.json) TO UPLOAD",
+  "button.editInConditions": "Edit In-Conditions",
+  "button.editOutConditions": "Edit Out-Conditions",
+  "label.updateInCondition": "Update In Conditions",
+  "label.updateOutCondition": "Update Out Conditions"
 }
