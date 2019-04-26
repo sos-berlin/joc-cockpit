@@ -44,13 +44,12 @@
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
-        <add as="fontSize" value="12"/>
+        <add as="fontSize" value="10"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="center"/>
         <add as="rounded" value="1"/>
         <add as="labelBackgroundColor" value="#333"/>
         <add as="strokeColor" value="#fafafa"/>
-        <add as="strokeWidth" value="1"/>
         <add as="edgeStyle" value="elbowEdgeStyle"/>
         <add as="endArrow" value="classic"/>
       </add>

@@ -1031,10 +1031,10 @@ span ul li a {
 .ck.ck-button.ck-on, a.ck.ck-button.ck-on {
 	background-color: #1395BE;
 }
-a[href*="http:"] {
+.documents a[href*="http:"] {
   color: #1395BE !important;
 }
-a[href*="https:"] {
+.documents a[href*="https:"] {
   color: #1395BE !important;
 }	
 
@@ -1043,4 +1043,17 @@ a[href*="https:"] {
 }
 .arrow-down:last-child:after {
 	color: #1d1d1c;
+}
+.ck-content a {
+  color: #1395BE;
+  text-decoration: underline;
+}
+.ck.ck-link-form {
+	background: #333332;
+}
+.ck.ck-link-actions {
+	background: #333332;
+}
+.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
+	color: #fff !important;
 }

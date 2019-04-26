@@ -1053,10 +1053,10 @@ span ul li a {
 	color: white;
 }
 
-a[href*="http:"] {
+.documents a[href*="http:"] {
   color: #e98514 !important;
 }
-a[href*="https:"] {
+.documents a[href*="https:"] {
   color: #e98514 !important;
 }
 
@@ -1066,4 +1066,17 @@ a[href*="https:"] {
 
 .arrow-down:last-child:after {
 	color: #003040;
+}
+.ck-content a {
+  color: #e98514;
+  text-decoration: underline;
+}
+.ck.ck-link-form {
+	background: #00445a;
+}
+.ck.ck-link-actions {
+	background: #00445a;
+}
+.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
+	color: #fff !important;
 }

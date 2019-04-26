@@ -1056,10 +1056,10 @@ pre#pre {
 	background-color: #ff9505;
 }
 
-a[href*="http:"] {
+.documents a[href*="http:"] {
   color: #ff9505 !important;
 }
-a[href*="https:"] {
+.documents a[href*="https:"] {
   color: #ff9505 !important;
 }
 .arrow-down-ac:last-child:after {
@@ -1067,4 +1067,17 @@ a[href*="https:"] {
 }
 .arrow-down:last-child:after {
 	color: #32465a;
+}
+.ck-content a {
+  color: #ff9505;
+  text-decoration: underline;
+}
+.ck.ck-link-form {
+	background: #233446;
+}
+.ck.ck-link-actions {
+	background: #233446;
+}
+.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
+	color: #fff !important;
 }

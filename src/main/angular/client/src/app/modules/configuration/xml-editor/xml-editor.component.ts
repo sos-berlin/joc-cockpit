@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, OnDestroy, HostListener, AfterViewInit} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
@@ -293,7 +293,7 @@ export class ConfirmationModalComponent implements OnInit {
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss']
 })
-export class XmlEditorComponent implements OnInit, OnDestroy {
+export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   schedulerIds: any = {};
   preferences: any = {};
   isLoading = true;
@@ -388,6 +388,12 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
     this.translate.get('xml.message.cannotNegative').subscribe(translatedValue => {
       this.cannotNegative = translatedValue;
     });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(()=> {
+      this.calcHeight();
+    },1);
   }
 
   toggleExpanded(e): void {
@@ -1374,7 +1380,33 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         value.parent = node;
       }
     }
-
+    let xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
+    let attr = select(xmlEditorPath, this.doc);
+    if(attr.length>0) {
+      value.base = attr[0].nodeValue;
+    }
+    if(_.isEmpty(value)) {
+      let x;
+      let valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+      let attr1 = select(valueFromXmlEditorPath, this.doc);
+      if (attr1.length > 0) {
+        if (attr1[0].attributes && attr1[0].attributes.length > 0) {
+          for (let i = 0; i < attr1[0].attributes.length; i++) {
+            if(attr1[0].attributes[i].nodeName == 'type') {
+              x = attr1[0].attributes[i].nodeValue;
+              break;
+            }
+          }
+          if(x !== undefined) {
+            value.base = x;
+            value.parent = node;
+          } else {
+            value.base = 'xs:string';
+            value.parent = node;
+          }
+        }
+      }
+    }    
     if (!(_.isEmpty(value))) {
       valueArr.push(value);
     }
@@ -1630,6 +1662,9 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
         someNode.expand();
       }
     }
+    setTimeout(()=> {
+      this.calcHeight();
+    },1);
   }
 
   // BreadCrumb
@@ -2797,12 +2832,14 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   importXML() {
     const modalRef = this.modalService.open(ImportModalComponent, {backdrop: 'static', size: 'lg'});
     modalRef.result.then((res: any) => {
-      this.selectedXsd = res.xsd;
-      sessionStorage.setItem('$SOS$XSD', this.selectedXsd);
-      this.reassignSchema();
-      setTimeout(() => {
-        this.createJsonfromXml(res.data);
-      }, 600);
+      if (res) {
+        this.selectedXsd = res.xsd;
+        sessionStorage.setItem('$SOS$XSD', this.selectedXsd);
+        this.reassignSchema();
+        setTimeout(() => {
+          this.createJsonfromXml(res.data);
+        }, 600);
+      }
     }, function () {
 
     });
@@ -3161,6 +3198,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   removeTag(data) {
     if (data && data.data && data.data.match(/<[^>]+>/gm)) {
       let x = data.data.replace(/<[^>]+>/gm, '');
+      x = x.replace('&nbsp;',' ');
       return x;
     } else {
       return data.data;
@@ -3188,12 +3226,47 @@ export class XmlEditorComponent implements OnInit, OnDestroy {
   }
 
   passwordLabel(password) {
-    let x = password.length;
-    let a = '';
-    for(let i=0; i<x; i++) {
-      a = a + '*'
+    if(password !== undefined) {
+      let x = password.length;
+      let a = '';
+      for(let i=0; i<x; i++) {
+        a = a + '*'
+      }
+      return a;
     }
-    return a;
+  }
+
+  calcHeight() {
+    let a = $('.top-header-bar').outerHeight(true);
+    let b = $('.navbar').outerHeight(true);
+    let c = $('.white').outerHeight(true);
+    let d = $('.attr').outerHeight(true);
+    let e = $('.val').outerHeight(true);
+    let f = $(window).outerHeight(true);
+    if ((d == null || d == 'null') && (e == null || e == 'null')) {
+      let x = f - a - b - c - 160;
+      $('.documents').css({
+        'max-height': x + 'px'
+      });
+    } else if ((d == null || d == 'null') && (e !== null || e !== 'null')) {
+      let x = f - a - b - c - e - 160;
+      $('.documents').css({
+        'max-height': x + 'px'
+      });
+    } else if ((d !== null || d !== 'null') && (e == null || e == 'null')) {
+      if (d > 300) {
+        let x = f - a - b - c - d - 160;
+        if (x > 300) {
+          $('.documents').css({
+            'max-height': x + 'px'
+          });
+        } else {
+          $('.documents').css({
+            'max-height': 300 + 'px'
+          });
+        }
+      }
+    }
   }
 
   ngOnDestroy(): void {

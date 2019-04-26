@@ -114,7 +114,7 @@ export class WorkflowService {
   static makeCenter(graph) {
     setTimeout(() => {
       graph.zoomActual();
-      graph.center(true, true, 0.5, 0);
+      graph.center(true, true, 0.5, 0.1);
     }, 0);
   }
 
@@ -1109,7 +1109,7 @@ export class WorkflowService {
           if (cell.value.tagName === 'Connection') {
             if (x === 'then' || x === 'else' || x === 'await') {
               this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
-                str = translatedValue;
+                str = translatedValue.toLowerCase();
               });
             } else {
               // str = x;

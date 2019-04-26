@@ -21,9 +21,19 @@ span ul li a {
 .property-panel .sidebar-close i {
   color: darkcyan;
 }
-a[href*="http:"] {
+.documents a[href*="http:"] {
   color: #1395BE !important;
 }
-a[href*="https:"] {
+.documents a[href*="https:"] {
   color: #1395BE !important;
-}	
+}
+
+.ck .ck-link_selected {
+  color: #1395BE;
+  text-decoration: underline;
+}
+
+.ck-content a {
+  color: #1395BE;
+  text-decoration: underline;
+}

@@ -2627,14 +2627,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   actual() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true, 0.5, 0);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
   fit() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.editor.graph.center(true, true, 0.5, 0);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
@@ -2685,7 +2685,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         } else {
           const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < 0 && bounds.height > $('#graph').height()) {
+          if (bounds.y < -30 && bounds.height > $('#graph').height()) {
             // this.editor.graph.view.setTranslate(0.6, 1);
             this.editor.graph.center(true, true, 0.5, 0);
           }
@@ -2721,7 +2721,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
   private centered() {
     if (this.editor && this.editor.graph) {
       setTimeout(() => {
-        this.editor.graph.center(true, true, 0.5, 0);
+        this.editor.graph.center(true, true, 0.5, 0.1);
       }, 200);
     }
   }
@@ -3997,7 +3997,13 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           const dom = $('#toolbar');
           if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             const sourceCell = dom.find('img.mxToolbarModeSelected').not('img:first-child');
-            createClickInstruction(sourceCell, cell);
+            if (result === 'valid') {
+              let _result = checkValidTarget(cell, sourceCell.attr('src'));
+              if(_result !== 'select'){
+                result = _result;
+              }
+            }
+            createClickInstruction(sourceCell.attr('src'), cell);
             mxToolbar.prototype.resetMode(true);
           }
         } else {
@@ -4110,12 +4116,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
           let state = _graph.getView().getState(this.currentDropTarget);
           if (state && state.cell) {
-            const _result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
+            result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
             this.currentHighlight.highlightColor = 'green';
-            if (_result === 'inValid') {
+            if (result === 'inValid') {
               this.currentHighlight.highlightColor = '#ff0000';
             }
-            if (_result === 'return') {
+            if (result === 'return') {
               return;
             }
           }
@@ -4207,8 +4213,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 self.toasterService.pop('error', title + '!!', msg);
                 return;
               }
-            } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') ||
-              this.dragElement.getAttribute('src').match('try') || this.dragElement.getAttribute('src').match('if')) {
+            } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') || this.dragElement.getAttribute('src').match('if')) {
               const selectedCell = graph.getSelectionCell();
               if (selectedCell) {
                 const cells = graph.getSelectionCells();
@@ -4368,7 +4373,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                   }
                 }
               } else if (drpTargt.value.tagName === 'Connector') {
-                 return;
+                return;
               }
               dropTarget = drpTargt;
             } else {
@@ -4388,6 +4393,12 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           } else {
             movedTarget = drpTargt;
           }
+
+          if (drpTargt.value.tagName !== 'Connection') {
+            createClickInstruction(this.dragElement.getAttribute('src'), drpTargt);
+            return;
+          }
+
         } else {
           return;
         }
@@ -4782,36 +4793,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (cell && dropTarget) {
-          let reloadXML = false;
-          if (cell.getParent().id !== dropTarget.id) {
-            if ((dropTarget.value.tagName === 'Fork' || dropTarget.value.tagName === 'If' || dropTarget.value.tagName === 'Try' || dropTarget.value.tagName === 'Retry')) {
-              if (dropTarget.edges.length === 2 && cell.value.tagName !== 'Catch') {
-                reloadXML = true;
-              }
-            }
-          }
-
-          addInstructionToCell(cell, dropTarget);
-          dropTarget = null;
-          isUndoable = true;
-          WorkflowService.executeLayout(graph);
-          if (reloadXML) {
-            self.xmlToJsonParser(null);
-            updateXMLFromJSON(true);
-          }
-        } else if (cell && movedTarget) {
-          if (selectedCellsObj) {
-            movedTarget = null;
-          }
-          if(cell.collapsed) {
-            cell.collapsed = false;
-          }
-          moveSelectedCellToDroppedCell(movedTarget, cell, selectedCellsObj);
-          movedTarget = null;
-          selectedCellsObj = null;
-          WorkflowService.executeLayout(graph);
-        }
         if (cell && cells.length === 1) {
           setTimeout(() => {
             if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
@@ -5040,7 +5021,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       if (cellName === 'Fork') {
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 90, 90, self.workflowService.merge);
         if (cell) {
-
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
               if (cell.edges[i].target.id === cell.id) {
@@ -5179,7 +5159,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         graph.insertEdge(parent, null, getConnectionNode('try'), parentCell, cell);
         graph.insertEdge(parent, null, getConnectionNode('try'), _middle, v3);
         graph.insertEdge(parent, null, getConnectionNode('endTry'), v3, v2);
-
       } else if (cellName === 'Retry') {
         v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 150, 80, 'retry');
         if (cell) {
@@ -5276,9 +5255,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
           WorkflowService.executeLayout(graph);
         }
-
       } else {
-
         reloadDummyXml(self.dummyXml);
       }
     }
@@ -5812,15 +5789,15 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
 
     /**
      * Function: Check and create clicked instructions
-     * @param sourceCell
+     * @param title
      * @param targetCell
      */
-    function createClickInstruction(sourceCell, targetCell) {
+    function createClickInstruction(title, targetCell) {
       if (!targetCell) {
         result = '';
         return;
       }
-      const title = sourceCell.attr('title');
+
       const flag = result === 'valid' || result === 'select';
       if (flag) {
         let defaultParent = targetCell;
@@ -5828,50 +5805,50 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           defaultParent = targetCell.getParent();
         }
         let clickedCell: any, _node: any, v1, v2, label = '';
-        if (title === 'Job') {
+        if (title.match('job')) {
           _node = doc.createElement('Job');
           _node.setAttribute('name', 'Job');
           _node.setAttribute('title', '');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 200, 50, 'job');
-        } else if (title === 'Abort') {
+        } else if (title.match('abort')) {
           _node = doc.createElement('Abort');
           _node.setAttribute('label', 'abort');
           _node.setAttribute('message', 'order failed');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.abort);
-        } else if (title === 'Terminate') {
+        } else if (title.match('terminate')) {
           _node = doc.createElement('Terminate');
           _node.setAttribute('label', 'terminate');
           _node.setAttribute('message', 'order prematurely completed');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 75, 75, self.workflowService.terminate);
-        } else if (title === 'Fork') {
+        } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('label', 'fork');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 90, 90, self.workflowService.fork);
           clickedCell.collapsed = true;
-        } else if (title === 'If') {
+        } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('label', 'if');
           _node.setAttribute('predicate', 'returnCode > 0');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 150, 80, 'if');
           clickedCell.collapsed = true;
-        } else if (title === 'Try') {
-          _node = doc.createElement('Try');
-          _node.setAttribute('label', 'try');
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 94, 94, 'try');
-          clickedCell.collapsed = true;
-        } else if (title === 'Retry') {
+        } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('label', 'retry');
           _node.setAttribute('repeat', '10');
           _node.setAttribute('delay', '0');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 150, 80, 'retry');
           clickedCell.collapsed = true;
-        } else if (title === 'Await') {
+        } else if (title.match('try')) {
+          _node = doc.createElement('Try');
+          _node.setAttribute('label', 'try');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 94, 94, 'try');
+          clickedCell.collapsed = true;
+        } else if (title.match('await')) {
           _node = doc.createElement('Await');
           _node.setAttribute('label', 'await');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 90, 90, self.workflowService.await);
           clickedCell.collapsed = true;
-        } else if (title === 'FileOrder') {
+        } else if (title.match('fileOrder')) {
           _node = doc.createElement('FileOrder');
           _node.setAttribute('label', 'fileOrder');
           _node.setAttribute('agent', '');
@@ -5879,7 +5856,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           _node.setAttribute('regex', '.*');
           _node.setAttribute('checkSteadyState', 'true');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 120, 50, 'fileOrder');
-        } else if (title === 'Catch') {
+        } else if (title.match('catch')) {
           _node = doc.createElement('Catch');
           _node.setAttribute('label', 'catch');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 100, 40, 'dashRectangle');
@@ -6028,7 +6005,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           } else {
             return 'inValid';
           }
-        } else if (title.match('fork') || title.match('retry') || title.match('try') || title.match('if')) {
+        } else if (title.match('fork') || title.match('retry') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -6207,31 +6184,30 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         if (cell.value.tagName === 'Fork') {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 90, 90, self.workflowService.merge);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-          if (dropTargetName === 'If' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch'
-            || dropTargetName === 'Fork') {
-            _label = dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Fork' ? 'join' : 'try';
-          }
         } else if (cell.value.tagName === 'If') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 150, 80, 'if');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-          if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
-            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'endIf' ? 'join' : 'try';
-          }
         } else if (cell.value.tagName === 'Retry') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 150, 80, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-          if (dropTargetName === 'Fork' || dropTargetName === 'If' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'Retry') {
-            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Retry' ? 'endRetry' : 'try';
-          }
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
-          // v2.collapsed = true;
           v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 94, 94, 'try');
           graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
-          if (dropTargetName === 'Fork' || dropTargetName === 'If' || dropTargetName === 'Retry' || dropTargetName === 'Catch' || dropTargetName === 'Try') {
-            _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'If' ? 'endIf' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'Try' ? 'try' : 'endRetry';
+        }
+        if (dropTargetName === 'Fork' || dropTargetName === 'Retry' || dropTargetName === 'Try' || dropTargetName === 'Catch' || dropTargetName === 'If') {
+          _label = dropTargetName === 'Fork' ? 'join' : dropTargetName === 'Retry' ? 'endRetry' : dropTargetName === 'Catch' ? 'catch' : dropTargetName === 'If' ? 'endIf' : 'try';
+          if (dropTargetName === 'Try') {
+            for (let i = 0; i < _dropTarget.edges.length; i++) {
+              if (_dropTarget.edges[i].source.id === _dropTarget.id) {
+                if (_dropTarget.edges[i].target.value.tagName === 'EndTry') {
+                  _label = 'endTry';
+                }
+                break;
+              }
+            }
           }
         }
 
@@ -6308,6 +6284,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         } else if (dropTargetName === 'Await') {
           label = 'await';
         }
+
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork' || cell.value.tagName === 'Retry' || cell.value.tagName === 'Try') {
           let target1, target2;
           for (let i = 0; i < _dropTarget.edges.length; i++) {
@@ -6331,6 +6308,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
               }
             }
           }
+
 
           if (target1 && target2) {
             graph.insertEdge(parent, null, getConnectionNode(label), target2, target1.target);

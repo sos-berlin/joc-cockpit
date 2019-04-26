@@ -99,7 +99,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
           }
         } else {
           const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < 0 && bounds.height > $('#graph').height()) {
+          if (bounds.y < -30 && bounds.height > $('#graph').height()) {
             // this.editor.graph.view.setTranslate(0.6, 1);
             this.editor.graph.center(true, true, 0.5, 0);
           }
@@ -205,14 +205,14 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   actual() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.zoomActual();
-      this.editor.graph.center(true, true);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 
   fit() {
     if (this.editor && this.editor.graph) {
       this.editor.graph.fit();
-      this.editor.graph.center(true, true);
+      this.editor.graph.center(true, true, 0.5, 0.1);
     }
   }
 

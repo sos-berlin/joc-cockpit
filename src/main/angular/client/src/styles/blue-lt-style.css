@@ -1052,10 +1052,10 @@ pre#pre {
 	color: white;
 }
 
-a[href*="http:"] {
+.documents a[href*="http:"] {
   color: orange !important;
 }
-a[href*="https:"] {
+.documents a[href*="https:"] {
   color: orange !important;
 }
 
@@ -1065,4 +1065,17 @@ a[href*="https:"] {
 
 .arrow-down:last-child:after {
 	color: #46525f;
+}
+.ck-content a {
+  color: orange;
+  text-decoration: underline;
+}
+.ck.ck-link-form {
+	background: #46525f;
+}
+.ck.ck-link-actions {
+	background: #46525f;
+}
+.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label {
+	color: #fff !important;
 }
