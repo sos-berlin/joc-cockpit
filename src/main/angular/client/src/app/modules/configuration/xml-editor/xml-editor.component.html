@@ -11,6 +11,7 @@
             <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
             <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
             <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
+            <option [value]="'jsSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
           </select>
         </span>
       </div>
@@ -185,21 +186,28 @@
                   </span>
                   <input #localref1 (blur)="validateAttr(localref1.value, node)"
                          (change)="submitData(localref1.value, node)"
-                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string'"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
+                         [ngClass]="error && errorName === node.name? 'invalid': ''"
+                         [required]="node.use ==='required'"
+                         class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
+                         value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
+                  <input #localref1 (blur)="validateAttr(localref1.value, node)"
+                         (change)="submitData(localref1.value, node)"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'"
                          class="form-control" id="{{node.name}}" placeholder="Example input" type="text"
                          value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref9 (blur)="validateAttr(localref9.value, node)"
                          (change)="submitData(localref9.value, node)"
-                         *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type"
+                         *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" type="text"
                          value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <input #localref10 (blur)="validateAttr(localref10.value, node)"
                          (change)="submitData(localref10.value, node)"
-                         *ngIf="node.values && node.values.length==0 && node.name && node.name === 'password' && !node.type"
+                         *ngIf="node.values && node.values.length==0 && node.type=='password'"
                          [ngClass]="error && errorName === node.name? 'invalid': ''"
                          [required]="node.use ==='required'" class="form-control"
                          id="{{node.name}}" placeholder="Example input" type="password"
@@ -220,10 +228,9 @@
                          type="url" value="{{node.data? node.data:node.default}}" [autofocus]="i==0">
                   <select #localref6 (blur)="validateAttr(localref6.value, node)"
                           (change)="submitData(localref6.value, node)" (focus)="getDataAttr(node.refer)"
-                          *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NMTOKEN' && node.refer"
-                          [ngClass]="error && errorName === node.name? 'invalid': ''"
-                          [ngModel]="node.data? node.data: node.default"
-                          [required]="node.use ==='required'" class="form-control" id="{{node.name}}">
+                          *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
+                          [ngClass]="error && errorName === node.name? 'invalid': ''" [ngModel]="node.data" [required]="node.use ==='required'" class="form-control" 
+                          id="{{node.name}}">
                     <option value=""></option>
                     <option *ngFor="let key of tempArr" value="{{key}}">{{key}}</option>
                   </select>
@@ -245,7 +252,7 @@
                           (change)="submitData(localref5.value, node)"
                           *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
                           [ngClass]="error && errorName === node.name? 'invalid': ''"
-                          [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
+                          [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
                           class="form-control" id="{{node.name}}">
                     <option>true</option>
                     <option>false</option>
@@ -253,7 +260,7 @@
                   <select #localref6 (blur)="validateAttr(localref6.value, node)"
                           (change)="submitData(localref6.value, node)" *ngIf="node.values && node.values.length > 0"
                           [ngClass]="error && errorName === node.name? 'invalid': ''"
-                          [ngModel]="node.data? node.data: node.default" [required]="node.use ==='required'"
+                          [(ngModel)]="node.data? node.data: node.default" [required]="node.use ==='required'"
                           class="form-control" id="{{node.name}}">
                     <option *ngFor="let value of node.values" [ngClass]="value.base ? 'hide':''">{{value.value}}</option>
                   </select>

@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Andreas Pueschel (APL Software GmbH) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -6,49 +5,52 @@
            attributeFormDefault="unqualified">
 	<!-- root element -->
 	  <xs:element name="SystemMonitorNotification">
-		   <xs:annotation>
-            <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">
-               <div xmlns="http://www.w3.org/1999/xhtml">
-                  <strong>References</strong>
-                  <ul>
-                     <li>
-                           <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
-                     </li>
-                     <li>Schema: <a target="_blank"                  href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_SystemMonitorNotification.html">SystemMonitorNotification</a>
-                           </li>
-                           <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">SystemMonitorNotification</a>
-                     </li>
-                  </ul>
-                  <strong>Notes</strong>
-                  <p>
-                     Configuration for Notifications to a System Monitor.
-                  </p>
-                  <p>
-                     A configuration file is used by the <em>SystemNotifier</em> job chain
-                     that reports the notifications as configured to a System Monitor.
-                     A number of configurations can be stored with different configuration files
-                     that are specified as a parameter to the <em>SystemNotifier</em> order.
-                  </p>
-                  <p>As an identification of the configuration from an individual file the attribute <em>system_id</em>
-                     should be used to specify a unique identifier.</p>
-               </div>
-            </xs:documentation>
-         </xs:annotation>
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_SystemMonitorNotification.html">SystemMonitorNotification</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">SystemMonitorNotification</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Configuration for Notifications to a System Monitor.
+		</p>
+               <p>
+			A configuration file is used by the <em>SystemNotifier</em> job chain
+			that reports the notifications as configured to a System Monitor.
+			A number of configurations can be stored with different configuration files
+			that are specified as a parameter to the <em>SystemNotifier</em> order.
+		</p>
+               <p>
+			As an identification of the configuration from an individual file the attribute <em>system_id</em>
+			should be used to specify a unique identifier.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
 		    <xs:complexType>
 			      <xs:sequence>
 				        <xs:element ref="Notification" maxOccurs="unbounded"/>
 				        <xs:element ref="Timer" minOccurs="0" maxOccurs="unbounded"/>
 			      </xs:sequence>
 			      <xs:attribute name="system_id" type="xs:NMTOKEN" use="required">
-                    <xs:annotation>
-                    <xs:documentation>
-                        <div xmlns="http://www.w3.org/1999/xhtml">
-                            <p>Identifier for the system monitor that is used with this configuration.</p>
-                            <p/>
-                            <p>The identifier is a unique name that is required if you use multiple configuration files for a number of system monitors.</p>
-                        </div>
-                    </xs:documentation>
-                </xs:annotation>
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>Identifier for the system monitor that is used with this configuration.</p>
+                     <p/>
+                     <p>The identifier is a unique name that is required if you use multiple configuration files for a number of system monitors.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
 				
 			      </xs:attribute>
 		    </xs:complexType>
@@ -71,7 +73,11 @@
 			      <xs:element ref="Job" minOccurs="0" maxOccurs="unbounded"/>
 	        <xs:element ref="JobChain" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="TimerRef" minOccurs="0" maxOccurs="unbounded"/>
-		    </xs:sequence>
+            <xs:element ref="MasterMessage" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskWarning" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskIfLongerThan" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskIfShorterThan" minOccurs="0" maxOccurs="1"/>
+    	</xs:sequence>
 	  </xs:complexType>
 	  <xs:element name="Timer">
 		    <xs:annotation>
@@ -406,13 +412,22 @@ Java regular expression can be used.</xs:documentation>
                </ul>
                <strong>Notes</strong>
                <p>
-			Specifies the objects that are being used for messages: Job Chains, Timers.
+			Specifies the objects that are being used for messages: Job, JobChains, Timers, MasterMessage, TaskWarning, TaskIfLongerThan, TaskIfShorterThan.
 			<ul>
-                     <li>Notifications can be restricted to certain job chains for which messages
-					are forwarded to a specific System Monitor or System Monitor servic.</li>
-                     <li>Timers include checks that verify if a certain threshold has been exceeded
+                     <li>Notifications can be restricted to certain <em>jobs</em> or <em>job chains</em> for which messages
+					are forwarded to a specific System Monitor or System Monitor service.</li>
+                     <li>
+                        <em>TimerRef</em> includes checks that verify if a certain threshold has been exceeded
 					by a minimum or maximum value. Such checks can include to verify the
 					duration of a job chain or specific values that are reported by jobs.</li>
+                     <li>
+                        <em>MasterMessage</em> includes problems detected by a JobScheduler Master, e.g. database connection lost.</li>
+                     <li>
+                        <em>TaskWarning</em> includes job execution warning messages.</li>
+                     <li>
+                        <em>TaskIfLongerThan</em> includes the feature to send notification in case that the execution of job requires a longer duration than expected.</li>
+                     <li>
+                        <em>TaskIfShorterThan</em> includes the feature to send notification in case that the execution of job requires a shorter duration than expected.</li>
                   </ul>
 		             </p>
             </div>
@@ -621,21 +636,332 @@ Attributes:
 					          <xs:documentation xml:lang="en">Corresponds with Timer name setting defined in the SystemMonitorNotification / Timer element.</xs:documentation>
 				        </xs:annotation>
 			      </xs:attribute>
-			      <xs:attribute name="notifications" type="xs:positiveInteger" use="optional" default="1">
+			      <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
 				        <xs:annotation>
-					         <xs:documentation xml:lang="en">
-                           Specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.
-                        </xs:documentation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
 				        </xs:annotation>
 			      </xs:attribute>
-			      <xs:attribute name="notify_on_error" type="xs:boolean" use="optional" default="false">
+			      <xs:attribute name="notify_on_error"
+                       type="xs:boolean"
+                       use="optional"
+                       default="false">
 				        <xs:annotation>
 					          <xs:documentation xml:lang="en">Send timer check notification when the configured job chain contains the error notifications.</xs:documentation>
 				        </xs:annotation>
 			      </xs:attribute>
 		    </xs:complexType>
+	  </xs:element>    
+    <xs:element name="MasterMessage">
+	    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JS-1837"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+MasterMessage">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_MasterMessage.html">MasterMessage</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+MasterMessage">MasterMessage</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JS-1837">JS-1837</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+            MasterMessage includes problems detected by a JobScheduler Master, e.g. database connection lost.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                           <li>
+                              <em>mail_on_error=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>    
+    <xs:element name="TaskWarning">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JS-1837"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskWarning">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskWarning.html">TaskWarning</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskWarning">TaskWarning</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JS-1837">JS-1837</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>TaskWarning includes job execution warning messages.            
+        <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>    
+    <xs:element name="TaskIfLongerThan">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JITL-522"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfLongerThan">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskIfLongerThan.html">TaskIfLongerThan</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfLongerThan">TaskIfLongerThan</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JITL-522">JITL-522</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+            TaskIfLongerThan includes the feature to send notification in case that the execution of job requires a longer duration than expected.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>The Job configuration contains the <em>warn_if_longer_than</em> setting.</li>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+		       <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+            <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
 	  </xs:element>
-	  <xs:element name="Script" type="ScriptTypeMinimum">
+    <xs:element name="TaskIfShorterThan">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JITL-522"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfShorterThan">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskIfShorterThan.html">TaskIfShorterThan</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfShorterThan">TaskIfShorterThan</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JITL-522">JITL-522</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>            
+        TaskIfShorterThan includes the feature to send notification in case that the execution of job requires a shorter duration than expected.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>The Job configuration contains the <em>warn_if_shorter_than</em> setting.</li>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>
+   <xs:element name="Script" type="ScriptTypeMinimum">
       <xs:annotation>
          <xs:documentation>
             <div xmlns="http://www.w3.org/1999/xhtml">
@@ -696,7 +1022,7 @@ Attributes:
                 <pre xml:space="preserve">scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), step =${MON_N_ORDER_STEP_STATE}, error=${MON_N_ERROR_TEXT}</pre>
 	                    </li>
                      <li>Message on success       
-                <pre xml:space="preserve">scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), steps(${MON_SN_STEP_FROM} to ${MON_SN_STEP_TO}), order time elapsed = ${MON_N_ORDER_TIME_ELAPSED}</pre>
+                <pre xml:space="preserve">scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), steps(${MON_SN_STEP_FROM} to ${MON_SN_STEP_TO}), order time elapsed = ${MON_N_ORDER_TIME_ELAPSED}s</pre>
 	                    </li>
                      <li>Message on timer       
                 <pre xml:space="preserve">name = ${MON_C_NAME}, scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), steps(${MON_C_STEP_FROM} to ${MON_C_STEP_TO}), check = ${MON_C_CHECK_TEXT}</pre>
@@ -711,7 +1037,8 @@ Attributes:
 				        <xs:extension base="NotEmptyType">
 					          <xs:attribute name="service_host" type="xs:string" use="required">
 						            <xs:annotation>
-							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the name of the host that executes the passive check. The name must match the corresponding setting in the System Monitor.</xs:documentation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the name of the host that executes the passive check. 
+The name must match the corresponding setting in the System Monitor.</xs:documentation>
 						            </xs:annotation>
 					          </xs:attribute>
 					          <xs:attribute name="monitor_host" type="xs:string" use="required">
@@ -791,47 +1118,15 @@ By default SystemNotifierSendNscaPlugin will be used.</xs:documentation>
                <p>
 			Command line to be executed for System Monitor notification.
 		</p>
-               <strong>Notes</strong>
+               <p/>
                <p>
-        Examples NotificationCommand with environment variables
+        Command examples:
         <ul>
-                     <li>Windows
-                <ul>
-                           <li>Message on error       
-                    <pre xml:space="preserve">
-                    echo scheduler id=%SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID%, history id=%SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID%, job_chain=%SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME%(%SCHEDULER_MON_TABLE_MON_N_ORDER_ID%), step =%SCHEDULER_MON_TABLE_MON_N_ORDER_STEP_STATE%, error=%SCHEDULER_MON_TABLE_MON_N_ERROR_TEXT% &gt; %TEMP%/scheduler_notification.txt
-                    </pre>
-                           </li>
-                           <li>Message on success       
-                    <pre xml:space="preserve">
-                    echo scheduler id=%SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID%, history id=%SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID%, job_chain=%SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME%(%SCHEDULER_MON_TABLE_MON_N_ORDER_ID%), steps(%SCHEDULER_MON_TABLE_MON_SN_STEP_FROM% to %SCHEDULER_MON_TABLE_MON_SN_STEP_TO%), order time elapsed = %SCHEDULER_MON_TABLE_MON_N_ORDER_TIME_ELAPSED%s &gt; %TEMP%/scheduler_notification.txt          
-                    </pre>
-                           </li>
-                           <li>Message on timer       
-                    <pre xml:space="preserve">
-                    echo name = %SCHEDULER_MON_TABLE_MON_C_NAME%, scheduler id=%SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID%, history id=%SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID%, job_chain=%SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME%(%SCHEDULER_MON_TABLE_MON_N_ORDER_ID%), steps(%SCHEDULER_MON_TABLE_MON_C_STEP_FROM% to %SCHEDULER_MON_TABLE_MON_C_STEP_TO%), check = %SCHEDULER_MON_TABLE_MON_C_CHECK_TEXT% &gt; %TEMP%/scheduler_notification.txt          
-                    </pre>
-                           </li>
-                        </ul>
+                     <li>
+                        <a href="https://kb.sos-berlin.com/x/foEm" shape="rect">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
                      </li>
-                     <li>Unix
-                <ul>
-                           <li>Message on error       
-                    <pre xml:space="preserve">
-                    echo "scheduler id=$SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID, history id=$SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID, job_chain=$SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME($SCHEDULER_MON_TABLE_MON_N_ORDER_ID), step =$SCHEDULER_MON_TABLE_MON_N_ORDER_STEP_STATE, error=$SCHEDULER_MON_TABLE_MON_N_ERROR_TEXT" &gt; /tmp/scheduler_notification.txt
-                    </pre>
-                           </li>
-                           <li>Message on success       
-                    <pre xml:space="preserve">
-                    echo "scheduler id=$SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID, history id=$SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID, job_chain=$SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME($SCHEDULER_MON_TABLE_MON_N_ORDER_ID), steps($SCHEDULER_MON_TABLE_MON_SN_STEP_FROM to $SCHEDULER_MON_TABLE_MON_SN_STEP_TO), order time elapsed = $SCHEDULER_MON_TABLE_MON_N_ORDER_TIME_ELAPSED s" &gt; /tmp/scheduler_notification.txt          
-                    </pre>
-                           </li>
-                           <li>Message on timer       
-                    <pre xml:space="preserve">
-                    echo "name = $SCHEDULER_MON_TABLE_MON_C_NAME, scheduler id=$SCHEDULER_MON_TABLE_MON_N_SCHEDULER_ID, history id=$SCHEDULER_MON_TABLE_MON_N_ORDER_HISTORY_ID, job_chain=$SCHEDULER_MON_TABLE_MON_N_JOB_CHAIN_NAME($SCHEDULER_MON_TABLE_MON_N_ORDER_ID), steps($SCHEDULER_MON_TABLE_MON_C_STEP_FROM to $SCHEDULER_MON_TABLE_MON_C_STEP_TO), check = $SCHEDULER_MON_TABLE_MON_C_CHECK_TEXT" &gt; /tmp/scheduler_notification.txt          
-                    </pre>
-                           </li>
-                        </ul>
+                     <li>
+                        <em>./config/notification/SystemMonitorNotification_MonitorSystem.xml-example</em>
                      </li>
                   </ul>
                </p>

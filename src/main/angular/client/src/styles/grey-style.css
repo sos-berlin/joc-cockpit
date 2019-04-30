@@ -517,7 +517,15 @@ textarea {
 select {
 	background-color: #656d78!important
 }
-
+.box select {
+	background-color: #4e545c!important
+}
+.input-dropdown {
+	background: #656d78
+}
+.box .input-dropdown {
+	background: #4e545c;
+}
 .popover {
 	background-color: #656d78;
 	-webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, .2);
@@ -798,10 +806,6 @@ button#exportToExcelBtn {
 	background: #eb8814
 }
 
-.input-dropdown {
-	background: #656d78
-}
-
 .backup {
 	background: #717a86;
 	background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #717a86);
@@ -875,13 +879,13 @@ gridster-item {
   color: white;
 }
 
-
 .calendar {
 	color: white !important;
 	direction: ltr;
-	background-color: #4e545c !important;
 }
-
+.calendar .calendar-header table th:hover {
+     background-color: #31363e !important;
+}
 .text-muted {
 	color: white !important;
 }
@@ -986,7 +990,12 @@ span ul li a {
 }
 #rightSideBar {
   background: #4e545c;
+  box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
+.close-btn:before, .close-btn:after {
+  background-color: #fff;
+}
+
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   background: url(../assets/images/left-tips-grey.svg) center no-repeat;
 }

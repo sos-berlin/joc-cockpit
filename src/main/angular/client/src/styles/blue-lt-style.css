@@ -533,7 +533,17 @@ textarea {
 select {
 	background-color: #65707d!important
 }
+.box select {
+	background-color: #46525f!important
+}
 
+.input-dropdown {
+	background: #65707d
+}
+
+.box .input-dropdown {
+	background: #46525f;
+}
 .popover {
 	background-color: #65707d;
 	-webkit-box-shadow: 1px 1px 8px 4px rgba(0, 0, 0, .2);
@@ -810,10 +820,6 @@ pre.cdata {
 	background: #eb8814
 }
 
-.input-dropdown {
-	background: #65707d
-}
-
 .backup {
 	background: #4e5c6a;
 	background: -webkit-linear-gradient(left, rgba(255, 255, 255, .51), #4e5c6a);
@@ -860,10 +866,12 @@ input[readonly] {
 }
 
 .calendar {
-	color: white !important;
-    direction: ltr;
+  color: white !important;
+  direction: ltr;
 }
-
+.calendar .calendar-header table th:hover {
+     background-color: #151a24 !important;
+}
 .text-muted {
 	color: white !important;
 }
@@ -978,7 +986,12 @@ pre#pre {
 }
 #rightSideBar {
   background: #46525f;
+  box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.1);
 }
+.close-btn:before, .close-btn:after {
+  background-color: #fff;
+}
+
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   background: url(../assets/images/left-tips-blue-lt.svg) center no-repeat;
 }

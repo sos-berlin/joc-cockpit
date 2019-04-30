@@ -1369,6 +1369,9 @@
   "label.variables": "Variables",
   "label.workflow": "Workflow",
   "label.workflowPath": "Workflow Path",
+  "label.searching": "Searching",
+  "placeholder.searchWorkingCalendars": "Search Working Calendars",
+  "placeholder.searchNonWorkingCalendars": "Search Non Working Calendars",
   "tab.designer": "DESIGNER",
   "tab.xmlEditor": "XML EDITOR",
   "workflow.button.zoomIn": "Zoom In",
@@ -1455,6 +1458,7 @@
   "xml.label.chooseFile": "Choose File",
   "xml.label.systemMonitorNotification": "System Monitor Notification",
   "xml.label.yade": "YADE",
+  "xml.label.jsSuiteInventory": "Js Suite Inventory",
   "xml.label.saveXml": "Save XML",
   "xml.label.importXML": "Import XML",
   "xml.label.assignSchema": "Assign Schema",
@@ -1471,5 +1475,6 @@
   "xml.message.cannotAddBlankSpace": "Can not add blank space in beginning",
   "xml.message.onlyPositiveNumbers": "Only Add positive numbers",
   "xml.message.cannotNegative": "can not be negative",
+  "xml.message.colonNotAllowed": "Colon not allowed",
   "xml.message.wouldYouLikeToSaveCurrentXml": "Would you like to save current XML?"
 }

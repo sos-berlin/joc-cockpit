@@ -1,11 +1,11 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToasterService} from 'angular2-toaster';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {catchError, debounceTime, distinctUntilChanged, map, tap, switchMap} from 'rxjs/operators';
 import {saveAs} from 'file-saver';
 import {DatePipe} from '@angular/common';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subscription} from 'rxjs';
 import {TreeModalComponent} from '../../../components/tree-modal/tree.component';
 import {CalendarService} from '../../../services/calendar.service';
 import {DeleteModalComponent} from '../../../components/delete-modal/delete.component';
@@ -51,17 +51,18 @@ const x2js = new X2JS();
 
 @Component({
   selector: 'app-preview-calendar-template',
-  template: ' <div id="full-calendar"></div>',
+  template: '<div id="full-calendar"></div>',
 })
-export class PreviewCalendarComponent implements OnInit {
+export class PreviewCalendarComponent implements OnInit, OnDestroy {
   @Input() schedulerId: any;
-  @Input() calendar: any;
+  calendar: any;
   planItems = [];
   tempList = [];
   calendarTitle: number;
   toDate: any;
+  subscription: Subscription;
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private dataService: DataService) {
     this.calendarTitle = new Date().getFullYear();
   }
 
@@ -70,10 +71,15 @@ export class PreviewCalendarComponent implements OnInit {
       renderEnd: (e) => {
         this.calendarTitle = e.currentYear;
         this.changeDate();
-
       }
     });
-    console.log(this.calendar);
+    this.subscription = this.dataService.isCalendarReload.subscribe(res => {
+      this.calendar = res;
+      this.init();
+    });
+  }
+
+  init() {
     let obj = {
       jobschedulerId: this.schedulerId,
       dateFrom: this.calendar.from || moment().format('YYYY-MM-DD'),
@@ -98,7 +104,6 @@ export class PreviewCalendarComponent implements OnInit {
     }
 
     if (newDate.getFullYear() < this.calendarTitle && (new Date(this.calendarTitle + '-01-01').getTime() < new Date(toDate).getTime())) {
-      this.planItems = [];
       let obj = {
         jobschedulerId: this.schedulerId,
         dateFrom: this.calendarTitle + '-01-01',
@@ -115,15 +120,14 @@ export class PreviewCalendarComponent implements OnInit {
   }
 
   private getDates(obj, flag: boolean): void {
-
+    this.planItems = [];
     this.coreService.post('calendar/dates', obj).subscribe((result: any) => {
-      let color = '#007da6';
       for (let i = 0; i < result.dates.length; i++) {
         let x = result.dates[i];
         let obj = {
           startDate: moment(x),
           endDate: moment(x),
-          color: color
+          color: '#007da6'
         };
 
         this.planItems.push(obj);
@@ -141,6 +145,10 @@ export class PreviewCalendarComponent implements OnInit {
       }
       $('#full-calendar').data('calendar').setDataSource(this.planItems);
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
 
@@ -238,10 +246,10 @@ export class OrderTemplateComponent implements OnInit {
   searching = false;
   searchFailed = false;
   searchingNon = false;
-  previewCalendarView = false;
+  previewCalendarView: any;
   calendarObj: any;
 
-  constructor(private modalService: NgbModal, private coreService: CoreService) {
+  constructor(private modalService: NgbModal, private coreService: CoreService, private dataService: DataService) {
 
   }
 
@@ -366,42 +374,43 @@ export class OrderTemplateComponent implements OnInit {
 
   formatter = (x: { path: string }) => {
     let flag = false;
-    if (this.calendarSearch) {
-      if (this.order.calendars.length > 0) {
-        for (let i = 0; i < this.order.calendars.length; i++) {
-          if (this.order.calendars[i].path === x.path) {
-            flag = true;
-            break;
-          }
+    if (this.order.calendars.length > 0) {
+      for (let i = 0; i < this.order.calendars.length; i++) {
+        if (this.order.calendars[i].path === x.path) {
+          flag = true;
+          break;
         }
       }
-      if (!flag) {
-        this.order.calendars.push(x);
-      }
-      this.calendarSearch = '';
-    } else {
-      if (this.order.nonWorkingCalendars.length > 0) {
-        for (let i = 0; i < this.order.nonWorkingCalendars.length; i++) {
-          if (this.order.nonWorkingCalendars[i].path === x.path) {
-            flag = true;
-            break;
-          }
-        }
-      }
-      if (!flag) {
-        console.log(x);
-        this.order.nonWorkingCalendars.push(x);
-      }
+    }
+    if (!flag) {
+      this.order.calendars.push(x);
     }
   };
 
+  formatterNon = (x: { path: string }) => {
+    let flag = false;
+    if (this.order.nonWorkingCalendars.length > 0) {
+      for (let i = 0; i < this.order.nonWorkingCalendars.length; i++) {
+        if (this.order.nonWorkingCalendars[i].path === x.path) {
+          flag = true;
+          break;
+        }
+      }
+    }
+    if (!flag) {
+      console.log(x);
+      this.order.nonWorkingCalendars.push(x);
+    }
+  };
+
+
   previewCalendar(calendar): void {
-    this.calendarObj = calendar;
-    this.previewCalendarView = true;
+    this.dataService.isCalendarReload.next(calendar);
+    this.previewCalendarView = calendar;
   }
 
   closeCalendarView() {
-    this.previewCalendarView = false;
+    this.previewCalendarView = null;
   }
 
   removeWorkingCal(index): void {
@@ -2399,16 +2408,19 @@ export class ExpressionModalComponent implements OnInit {
     } else {
       if (type && !operator) {
         if (this.isClicked && this.expression.expression) {
-          if (this.expression.expression.lastIndexOf('&&') > -1 || this.expression.expression.lastIndexOf('||') > -1) {
-            if (type === 'returnCode' && !this.isVariableSelected) {
-              this.expression.expression = this.expression.expression + ' ' + type + ' ';
-              this.isClicked = false;
-              this.tmp1 = '';
-            } else if (!this.isVariableSelected) {
-              this.isVariableSelected = true;
-              this.expression.expression = this.expression.expression + ' variables(\'key\', \'defaultValue\')';
-              this.isClicked = false;
-              this.tmp1 = '';
+          if (this.expression.expression.length > 5) {
+            const str = this.expression.expression.substring(this.expression.expression.length - 5);
+            if (str.lastIndexOf('&&') > -1 || str.lastIndexOf('||') > -1) {
+              if (type === 'returnCode') {
+                this.expression.expression = this.expression.expression + ' ' + type + ' ';
+                this.isClicked = false;
+                this.tmp1 = '';
+              } else if (!this.isVariableSelected) {
+                this.isVariableSelected = true;
+                this.expression.expression = this.expression.expression + ' variables(\'key\', \'defaultValue\')';
+                this.isClicked = false;
+                this.tmp1 = '';
+              }
             }
           }
         } else {
@@ -2685,7 +2697,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           }
         } else {
           const bounds = this.editor.graph.getGraphBounds();
-          if (bounds.y < -30 && bounds.height > $('#graph').height()) {
+          if (bounds.x > -1 && bounds.y < -30 && bounds.height > $('#graph').height()) {
             // this.editor.graph.view.setTranslate(0.6, 1);
             this.editor.graph.center(true, true, 0.5, 0);
           }
@@ -3465,6 +3477,8 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             if (_instructionsArr[i].catch) {
               recursive(_node, _instructionsArr[i].catch.instructions);
             }
+          } else if (_instructionsArr[i].instructions) {
+            recursive(_node, _instructionsArr[i].instructions);
           }
         }
       }
@@ -4902,7 +4916,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
      */
     function isCellSelectedValid(cells) {
       let obj = {firstCell: null, lastCell: null, ids: [], invalid: false};
-      let parentId;
       if (cells.length === 2) {
         if (!checkClosedCellWithSourceCell(cells[0], cells[1])) {
           let x = graph.getEdgesBetween(cells[0], cells[1]);
@@ -4911,34 +4924,23 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
             return obj;
           }
         }
-      } else {
-        for (let i = 0; i < cells.length; i++) {
-          if (!isSelectedCellConnected(cells, cells[i])) {
-            obj.invalid = true;
-            return obj;
-          }
-        }
       }
       for (let i = 0; i < cells.length; i++) {
+        obj.invalid = !isSelectedCellConnected(cells, cells[i]);
         obj.ids.push(cells[i].id);
-        if (!parentId) {
-          parentId = cells[i].getParent().id;
-        }
-        if (parentId !== cells[i].getParent().id && !isParentAlsoSelected(cells, cells[i])) {
-          obj.invalid = true;
-          return obj;
-        }
-
-        if (!obj.firstCell) {
-          obj.firstCell = cells[i];
-          obj.lastCell = cells[i];
-        } else {
-          if (obj.firstCell.geometry.y > cells[i].geometry.y) {
+        if (!isParentAlsoSelected(cells, cells[i])) {
+          if (!obj.firstCell) {
             obj.firstCell = cells[i];
           }
-          if (obj.lastCell.geometry.y < cells[i].geometry.y) {
+          if (!obj.lastCell) {
             obj.lastCell = cells[i];
           }
+          if (obj.firstCell && obj.firstCell.geometry.y > cells[i].geometry.y) {
+            obj.firstCell = cells[i];
+          }
+        }
+        if (!obj.lastCell || (obj.lastCell.geometry.y < cells[i].geometry.y)) {
+          obj.lastCell = cells[i];
         }
       }
       return obj;
@@ -5848,7 +5850,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           _node.setAttribute('label', 'await');
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 90, 90, self.workflowService.await);
           clickedCell.collapsed = true;
-        } else if (title.match('fileOrder')) {
+        } else if (title.match('order')) {
           _node = doc.createElement('FileOrder');
           _node.setAttribute('label', 'fileOrder');
           _node.setAttribute('agent', '');

@@ -8,6 +8,7 @@ export class DataService {
   private refreshUISource = new Subject<any>();
   private switchSchedulerSource = new Subject<any>();
   public isWorkFlowReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isCalendarReload: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   // Observable string streams
   eventAnnounced$ = this.eventAnnouncedSource.asObservable();

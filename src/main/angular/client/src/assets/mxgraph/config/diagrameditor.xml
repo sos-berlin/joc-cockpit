@@ -147,7 +147,7 @@
       <add as="symbol">
         <add as="shape" value="image"/>
         <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="labelBackgroundColor" value="#e8e8e8"/>
+        <add as="labelBackgroundColor" value="transparent"/>
         <add as="fontSize" value="12"/>
         <add as="align" value="center"/>
         <add as="verticalAlign" value="top"/>

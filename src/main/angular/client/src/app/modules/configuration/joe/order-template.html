@@ -52,8 +52,8 @@
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
               <i *ngIf="r.title"> - </i> {{r.title}}
             </ng-template>
-            <input type="text" class="form-control" name="calendar" placeholder="Search Working Calendars" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
-            <span *ngIf="searching"><i class="fa fa-spin fa-spinner"></i> searching...</span>
+            <input type="text" class="form-control" name="calendar" placeholder="{{'placeholder.searchWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="calendarSearch" [ngbTypeahead]="searchCalendars" [resultTemplate]="rt1" [inputFormatter]="formatter">
+            <span *ngIf="searching"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</span>
             <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
             <div class="inside-input-field">
               <a (click)="showCalendarModel('WORKING_DAYS')"><i class="fa fa-folder-o fa-lg"></i></a>
@@ -107,8 +107,8 @@
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
               <i *ngIf="r.title"> - </i> {{r.title}}
             </ng-template>
-            <input type="text" class="form-control" name="nonCalendar" placeholder="Search Non Working Calendars" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatter">
-            <span *ngIf="searchingNon"><i class="fa fa-spin fa-spinner"></i> searching...</span>
+            <input type="text" class="form-control" name="nonCalendar" placeholder="{{'placeholder.searchNonWorkingCalendars' | translate}}" [class.is-invalid]="searchFailed" [(ngModel)]="nonCalendarSearch" [ngbTypeahead]="searchNonCalendars" [resultTemplate]="rt2" [inputFormatter]="formatterNon">
+            <span *ngIf="searchingNon"><i class="fa fa-spin fa-spinner"></i> {{'label.searching' | translate}}...</span>
             <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
             <div class="inside-input-field">
               <a (click)="showCalendarModel('NON_WORKING_DAYS')"><i class="fa fa-folder-o fa-lg"></i></a>
@@ -180,5 +180,6 @@
 </div>
 <div id="rightSideBar" *ngIf="previewCalendarView" class="slideInRight">
     <div class="close-btn" (click)="closeCalendarView()"></div>
-    <app-preview-calendar-template [schedulerId]="schedulerId" [calendar]="calendarObj"></app-preview-calendar-template>
+    <div class="text-center m-b text" ><i class="fa fa-calendar text-danger" [ngClass]="{'text-primary' : previewCalendarView.type == 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.name}} <i *ngIf="previewCalendarView.title" class="m-l-sm"> - {{previewCalendarView.title}}</i></span></div>
+    <app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>
 </div>

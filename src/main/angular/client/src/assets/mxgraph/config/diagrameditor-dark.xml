@@ -153,6 +153,7 @@
         <add as="verticalAlign" value="top"/>
         <add as="verticalLabelPosition" value="bottom"/>
         <add as="fontColor" value="#fafafa"/>
+        <add as="labelBackgroundColor" value="transparent"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

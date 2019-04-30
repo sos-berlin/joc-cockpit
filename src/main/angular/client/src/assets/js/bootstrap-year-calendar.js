@@ -87,7 +87,7 @@
 			}
 
 			var prevIcon = $(document.createElement('span'));
-			prevIcon.addClass('glyphicon glyphicon-chevron-left');
+			prevIcon.addClass('fa fa-angle-left');
 
 			prevDiv.append(prevIcon);
 
@@ -147,7 +147,7 @@
 			}
 
 			var nextIcon = $(document.createElement('span'));
-			nextIcon.addClass('glyphicon glyphicon-chevron-right');
+			nextIcon.addClass('fa fa-angle-right');
 
 			nextDiv.append(nextIcon);
 
