@@ -732,7 +732,7 @@ export class CoreService {
       date = '0d';
     } else if (/^\s*(now)\s*$/i.test(regex)) {
       date = new Date();
-    } else if (/^\s*[-,+](\d+)([shdwMy])\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
+    } else if (/^\s*[-,+](\d+)([shdwMy])\s*$/.test(regex)) {
       date = regex;
     }
     return date;

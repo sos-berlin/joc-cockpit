@@ -432,7 +432,7 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   // getInit tree
   getInitTree(check) {
     if (this.selectedXsd === 'systemMonitorNotification') {
-      this.http.get('xsd/SystemMonitorNotification_v1.0.main.xsd', {responseType: 'text'})
+      this.http.get('xsd/SystemMonitorNotification_v1.0.xsd', {responseType: 'text'})
         .subscribe(data => {
           this.loadTree(data, check);
         });
@@ -1790,20 +1790,23 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   checkChoice(node) {
-    if (this.childNode !== undefined) {
-      if (this.childNode && this.childNode.length > 0) {
-        for (let i = 0; i < this.childNode.length; i++) {
-          if (this.childNode[i] && this.childNode[i].choice) {
-            if (node.children && node.children.length > 0) {
-              for (let j = 0; j < node.children.length; j++) {
-                if (node.children[j].choice && node.children[j].ref === this.childNode[i].ref) {
-                  this.choice = true;
-                  break;
-                }
+    if (this.childNode && this.childNode.length > 0) {
+      let flg = true;
+      for (let i = 0; i < this.childNode.length; i++) {
+        if (this.childNode[i] && this.childNode[i].choice) {
+          if (node.children && node.children.length > 0) {
+            for (let j = 0; j < node.children.length; j++) {
+              if (node.children[j].choice && node.children[j].ref === this.childNode[i].ref) {
+                this.choice = true;
+                flg = false;
+                break;
               }
-            } else {
+            }
+            if(flg){
               this.choice = false;
             }
+          } else {
+            this.choice = false;
           }
         }
       }
@@ -1894,9 +1897,11 @@ export class XmlEditorComponent implements OnInit, OnDestroy, AfterViewInit {
                   for (let key in child.attributes[i]) {
                     if (key == 'data') {
                       delete child.attributes[i][key];
+                      break;
                     }
                   }
                 }
+                break;
               }
             }
           }

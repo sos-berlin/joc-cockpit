@@ -24,8 +24,7 @@
               "src/styles",
               "src/workflow.json",
               "src/version.json",
-              "src/SystemMonitorNotification_v1.0.main.xsd",
-              "src/yade_v1.12.xsd"
+              "src/xsd"
             ],
             "styles": [
               "node_modules/font-awesome/css/font-awesome.css",

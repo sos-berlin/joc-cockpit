@@ -4227,7 +4227,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
                 self.toasterService.pop('error', title + '!!', msg);
                 return;
               }
-            } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') || this.dragElement.getAttribute('src').match('if')) {
+            } else if (this.dragElement.getAttribute('src').match('fork') || this.dragElement.getAttribute('src').match('retry') || this.dragElement.getAttribute('src').match('try') || this.dragElement.getAttribute('src').match('if')) {
               const selectedCell = graph.getSelectionCell();
               if (selectedCell) {
                 const cells = graph.getSelectionCells();
@@ -6007,7 +6007,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           } else {
             return 'inValid';
           }
-        } else if (title.match('fork') || title.match('retry') || title.match('if')) {
+        } else if (title.match('fork') || title.match('retry') || title.match('try') || title.match('if')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();

@@ -11,7 +11,7 @@
             <option [value]="''">{{'xml.label.chooseFile' | translate}}</option>
             <option [value]="'systemMonitorNotification'">{{'xml.label.systemMonitorNotification' | translate}}</option>
             <option [value]="'yade'">{{'xml.label.yade' | translate}}</option>
-            <option [value]="'jsSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
+            <option [value]="'JSSuiteInventory'">{{'xml.label.jsSuiteInventory' | translate}}</option>
           </select>
         </span>
       </div>
@@ -68,7 +68,7 @@
                       </span>
                     </div>
                     <div class="btn-group dropdown">
-                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (mouseover)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)" appDropdown>
+                      <button class="btn-drop more-option-h" data-toggle="dropdown" type="button" (click)="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)" appDropdown>
                         <i class="fa fa-ellipsis-h"></i>
                       </button>
                       <div id="menu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
@@ -76,8 +76,8 @@
                           <div translate>xml.button.addChild</div>
                         </a>
                         <div *ngIf="childNode && childNode.length>0">
-                          <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode">
-                            <div class="p-l-sm w-full" [ngClass]="checkmincss(child, node.data)" (click)="addChild(child, node.data, true); addDefaultValue(child)">
+                          <a class="dropdown-item" [ngClass]="getCustomCss(child,node.data)" *ngFor="let child of childNode" (click)="addChild(child, node.data, true); addDefaultValue(child)">
+                            <div class="p-l-sm w-full">
                               <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
                             </div>
                           </a>

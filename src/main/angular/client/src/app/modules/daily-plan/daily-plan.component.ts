@@ -1061,6 +1061,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
       jobschedulerId: this.schedulerIds.selected,
       states: []
     };
+    this.setDateRange(obj);
     if (this.selectedFiltered && this.selectedFiltered.name) {
       this.isCustomizationSelected(true);
       obj = this.applySavedFilter(obj);
@@ -1078,7 +1079,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
         obj.late = true;
       }
     }
-    this.setDateRange(obj);
 
     this.coreService.post('orders/plan', obj).subscribe((res: any) => {
       this.filterData(res.planItems);
@@ -1140,12 +1140,11 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
     let fromDate;
     let toDate;
-
-    if (this.selectedFiltered.from) {
-      fromDate = this.coreService.parseProcessExecuted(this.selectedFiltered.from);
+    if (this.selectedFiltered.from1) {
+      fromDate = this.coreService.parseProcessExecuted(this.selectedFiltered.from1);
     }
-    if (this.selectedFiltered.to) {
-      toDate = this.coreService.parseProcessExecuted(this.selectedFiltered.to);
+    if (this.selectedFiltered.to1) {
+      toDate = this.coreService.parseProcessExecuted(this.selectedFiltered.to1);
     }
 
     if (!fromDate) {
