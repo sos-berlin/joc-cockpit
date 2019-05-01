@@ -331,7 +331,7 @@
                     scope.margin = margin;
                     var rectangleTemplate = '';
                     var iTop = 170;
-                    var top = iTop;
+                    var top = 170;
                     var avatarTop = rectH / 2 - avatarW / 2 + top;
                     scope.errorNodeIndex = -1;
                     scope.endNodes = [];
@@ -397,7 +397,6 @@
                                         scope.coords[index].top = obj.top + rectH / 2 + splitMargin / 2;
                                     } else if (obj.parallels % 2 == 0) {
                                         scope.coords[index].top = obj.top + rectH / 2 + splitMargin / 2 + (rectH + splitMargin) * (obj.parallels - 3);
-
                                     } else if (obj.parallels % 2 != 0) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2 - (rectH + splitMargin) * (obj.parallels - 2);
                                     }
@@ -413,9 +412,7 @@
                                 });
                                 scope.coords[index].top = lastTop;
                             } else {
-
                                 var matched = false, count = 0;
-
                                 for (let m = 0; m < scope.coords.length; m++) {
                                     if (scope.coords[m].next === item.name && scope.coords[index].left <= scope.coords[m].left) {
 
@@ -459,8 +456,11 @@
                         }
 
                     });
-                    angular.forEach(scope.jobChainData.nodes, function (item, index) {
 
+
+                    recursivelyAdjustTop();
+
+                    angular.forEach(scope.jobChainData.nodes, function (item, index) {
                         if (!item) {
                             return;
                         }
@@ -468,7 +468,6 @@
                         var errorNodeCls = '';
                         if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
                             errorNodeCls = 'error-node';
-
                         }
 
                         if (item.name == 'start') {
@@ -573,6 +572,23 @@
                         }
                     });
 
+                    function recursivelyAdjustTop() {
+                        for (let m = 0; m < scope.coords.length; m++) {
+                            for (let n = 0; n < scope.coords.length; n++) {
+                                if ((scope.coords[m].actual !== scope.coords[n].actual) && (scope.coords[m].left == scope.coords[n].left) && (scope.coords[m].top > scope.coords[n].top)) {
+                                    if ((scope.coords[m].top - scope.coords[n].top) < 160) {
+                                        scope.coords[m].top = scope.coords[m].top + (scope.coords[m].top - scope.coords[n].top);
+                                        scope.coords[m].isChange = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            if (scope.coords[m].isChange) {
+                                scope.coords[m].isChange = false;
+                                recursivelyAdjustTop();
+                            }
+                        }
+                    }
 
                     function drawEndNodes() {
                         if (!scope.jobChainData.endNodes || scope.jobChainData.endNodes.length == 0) {
@@ -1000,13 +1016,18 @@
                                     top = top + height;
                                     width = left - div1.offsetLeft;
                                     createLine(top, left, width, 2, index, item);
+                                } else {
+                                    if (item.level > 0) {
+                                        let top = pDiv.offsetTop + pDiv.clientHeight / 2;
+                                        let left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
+                                        createLine(top, left, vm.margin, 2, index, item);
+                                    }
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {
                                     let top = div2.offsetTop + div2.clientHeight / 2;
                                     let left = div2.offsetLeft - vm.margin / 2;
                                     let width = vm.margin / 2;
-                                    let height = 2;
                                     createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top + vm.border;
                                     createLine(top, left, 2, height, index, item);
@@ -1018,7 +1039,6 @@
                                     let top = div1.offsetTop + div1.clientHeight / 2;
                                     let left = div1.offsetLeft + div1.clientWidth;
                                     let width = div2.offsetLeft - left - vm.margin / 2;
-                                    let height = 1;
                                     createLine(top, left, width, 2, index, item);
                                     left = left + width;
                                     height = div2.offsetTop + div2.clientHeight / 2 - top;
