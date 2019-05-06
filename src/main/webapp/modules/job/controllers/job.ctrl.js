@@ -7,7 +7,8 @@
         .module('app')
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl)
-        .controller('JobOverviewCtrl', JobOverviewCtrl);
+        .controller('JobOverviewCtrl', JobOverviewCtrl)
+        .controller('JobWorkflowCtrl', JobWorkflowCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
@@ -5988,11 +5989,73 @@
             return scrTree;
         };
 
-        vm.editInConditions = function (job){
-                   };
+        vm.assignWorkflow = function () {
+            console.log(vm.object.jobs);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/assign-workflow-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.object.jobs = [];
+            }, function () {
+                vm.object.jobs = [];
+            });
+        };
 
-        vm.editOutConditions = function(job){
-          
+        vm.editInConditions = function (job) {
+            vm._job = job;
+            ConditionService.inCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: job.path
+            }).then(function (res) {
+                vm.inconditions = res.inconditions;
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/in-conditions-dialog.html',
+                    controller: 'EditConditionDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    vm._job = null;
+                    ConditionService.updateInCondition({
+                        masterId: res.masterId,
+                        job: res.job,
+                        inconditions: vm.inconditions
+                    });
+                }, function () {
+                    vm._job = null;
+                });
+            })
+        };
+
+        vm.editOutConditions = function (job) {
+            vm._job = job;
+            ConditionService.outCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: job.path
+            }).then(function (res) {
+                vm.outconditions = res.outconditions;
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/out-conditions-dialog.html',
+                    controller: 'EditOutConditionDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    vm._job = null;
+                    ConditionService.updateOutCondition({
+                        masterId: res.masterId,
+                        job: res.job,
+                        outconditions: vm.outconditions
+                    });
+                }, function () {
+                    vm._job = null;
+                });
+            });
         };
 
         function checkCurrentSelectedFolders(job) {
@@ -6300,6 +6363,22 @@
                 vm.isInfoResize = true;
             }
         });
+
+        vm.zoomIn = function () {
+            vm.$broadcast('zoomIn');
+        };
+
+        vm.zoomOut = function () {
+            vm.$broadcast('zoomOut');
+        };
+
+        vm.actual = function () {
+            vm.$broadcast('actual');
+        };
+
+        vm.fit = function () {
+            vm.$broadcast('fit');
+        };
 
         $scope.$on('$destroy', function () {
             vm.jobFilters.expand_to = vm.tree;
@@ -7917,7 +7996,7 @@
         }
 
         function _updatePanelHeight() {
-            setTimeout(function () {
+            let timeout = setTimeout(function () {
                 let ht = (parseInt($('#jobTableId').height()) + 50);
                 let el = document.getElementById('jobDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
@@ -7928,6 +8007,7 @@
                 }
                 vm.resizerHeight = ht + 'px';
                 $('#jobDivId').css('height', vm.resizerHeight);
+                clearTimeout(timeout);
             }, 5);
         }
 
@@ -7940,7 +8020,7 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'jobDivId') {
+            if (args.id === 'jobDivId') {
                 let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
                 rsHt.jobOverview = args.height;
                 vm.isSizeChange = true;
@@ -7954,6 +8034,456 @@
             watcher2();
             watcher3();
             watcher4();
+        });
+    }
+
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "ConditionService"];
+
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, ConditionService) {
+        const vm = $scope;
+
+        vm.configXml = './mxgraph/config/diagrameditor.xml';
+        vm.isWorkflowLoaded = false;
+        vm.editor = {};
+        vm.flag = false;
+
+        function init() {
+            if (sessionStorage.preferences) {
+                vm.preferences = JSON.parse(sessionStorage.preferences) || {};
+            }
+            if (!(vm.preferences.theme === 'light' || vm.preferences.theme === 'lighter' || !vm.preferences.theme)) {
+                vm.configXml = './mxgraph/config/diagrameditor-dark.xml';
+            }
+            createEditor();
+            recursivelyConnectJobs();
+
+            /**
+             * Changes the zoom on mouseWheel events
+             */
+            $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+                if (vm.editor) {
+                    if (event.ctrlKey) {
+                        event.preventDefault();
+                        if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+                            vm.editor.execute('zoomIn');
+                        } else {
+                            vm.editor.execute('zoomOut');
+                        }
+                    } else {
+                        const bounds = vm.editor.graph.getGraphBounds();
+                        if (bounds.y < 0 && bounds.height > $('#graph').height()) {
+                            vm.editor.graph.center(true, true, 0.5, 0);
+                        }
+                    }
+                }
+            });
+        }
+
+        function recursivelyConnectJobs() {
+            let count = 0;
+            let _conditions = [];
+
+            function recursive() {
+                ConditionService.inCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    job: vm.allJobs[count].path
+                }).then(function (res) {
+                    ConditionService.outCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        job: vm.allJobs[count].path
+                    }).then(function (result) {
+                        let _job = vm.allJobs[count];
+                        _job.inconditions = res.inconditions;
+                        _job.outconditions = result.outconditions;
+                        if ((res.inconditions || res.inconditions.length === 0) && (result.outconditions && result.outconditions.length > 0)) {
+                            _conditions.unshift(_job);
+                        } else if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
+                            _conditions.push(_job);
+                        }
+
+                        if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
+                            vm.flag = true;
+                        }
+
+                        if (count === vm.allJobs.length - 1) {
+                            vm.isWorkflowLoaded = true;
+                            createWorkflowDiagram(_conditions);
+                        }else{
+                            count++;
+                            recursive();
+                        }
+
+                    }, function (err) {
+                        vm.isWorkflowLoaded = true;
+                    });
+                }, function (err) {
+                    count++;
+                    recursive();
+                    vm.isWorkflowLoaded = true;
+                });
+            }
+
+            if (vm.allJobs.length > 0) {
+                recursive();
+            }
+        }
+
+
+        if (vm.allJobs && vm.allJobs.length > 0) {
+            init();
+        } else {
+            vm.isWorkflowLoaded = true;
+        }
+
+        function createWorkflowDiagram(jobs) {
+            const graph = vm.editor.graph;
+            var parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+            let vertexes = [];
+            let events = [];
+            let eventsBox;
+            try {
+                for (let i = 0; i < jobs.length; i++) {
+                    if(i > 0) {
+                        if (eventsBox && eventsBox.id) {
+                            for (let m = 1; m < jobs.length; m++) {
+                                if(jobs[i].name != jobs[m].name) {
+                                    for (let j = 0; j < events.length; j++) {
+                                        for (let x = 0; x < jobs[m].inconditions.length; x++) {
+                                            if (!jobs[m].inconditions[x].connectBox && jobs[m].inconditions[x].conditionExpression.expression.match(events[j].getAttribute('label'))) {
+                                                jobs[m].inconditions[x].connectBox = eventsBox.id;
+                                                jobs[i].inconditions[x].connectBox = eventsBox.id;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            events = [];
+                            eventsBox = null;
+                        }
+                    }
+
+                    let v1 = graph.insertVertex(parent, null, getCellNode('Job', jobs[i].name), 0, 0, 120, 50, 'job');
+                    vertexes.push(v1);
+
+                    for (let x = 0; x < jobs[i].inconditions.length; x++) {
+                        let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
+                        let conditionVertex = graph.insertVertex(parent, null, getCellNode('InCondition', _label), 0, 0, 150, 60, 'condition');
+                        vertexes.push(conditionVertex);
+                        graph.insertEdge(parent, null, getCellNode('Connection', 'In'), conditionVertex, v1);
+                        if (jobs[i].inconditions[x].conditionExpression.value) {
+                            let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
+                            graph.addCellOverlay(conditionVertex, overlay);
+                        }
+                        if(jobs[i].inconditions[x].connectBox){
+                            graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[x].connectBox), conditionVertex);
+                        }
+                    }
+
+                    for (let x = 0; x < jobs[i].outconditions.length; x++) {
+                        let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
+                        let conditionVertex = graph.insertVertex(parent, null, getCellNode('OutCondition', _label), 0, 0, 150, 60, 'condition');
+                        vertexes.push(conditionVertex);
+                        graph.insertEdge(parent, null, getCellNode('Connection', 'Out'), v1, conditionVertex);
+                        /* if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
+                               conditionVertex.collapsed = false;
+                        }*/
+                        if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
+                            for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
+                                let e1 = graph.insertVertex(parent, null, getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event), 0, 0, 150, 40, 'event');
+                                vertexes.push(e1);
+                                events.push(e1);
+                                graph.insertEdge(parent, null, getCellNode('Connection', ''), conditionVertex, e1);
+                            }
+                        }
+                        if (jobs[i].outconditions[x].conditionExpression.value) {
+                            let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
+                            graph.addCellOverlay(parent, overlay);
+                        }
+                    }
+
+                    if (jobs[i].outconditions.length > 0) {
+                        let out = graph.insertVertex(parent, null, getCellNode('Event', 'Out Conditions ' + jobs[i].name), 0, 0, 150, 40, 'rect');
+                        eventsBox = out;
+                        vertexes.push(out);
+                        for (let m = 0; m < events.length; m++) {
+                            graph.insertEdge(parent, null, getCellNode('Connection', ''), events[m], out);
+                        }
+                    }
+                }
+
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+            }
+
+            makeCenter(graph);
+            executeLayout(graph);
+            for (let i = 0; i < vertexes.length; i++) {
+                graph.updateCellSize(vertexes[i]);
+            }
+            let timeout = setTimeout(function () {
+                executeLayout(graph);
+                clearTimeout(timeout);
+            }, 0);
+        }
+
+        /**
+         * Function : Parse expression to create label
+
+         * @param conditions
+         */
+        function parseExpression(conditions) {
+            let ex = conditions.expression.split(/\s*(\(|\)|and|or|not)\s*/);
+            let val = conditions.validatedExpression.split(/\s*(\(|\)|&&|!|\|\|)\s*/);
+            let _label = '';
+            for (let x = 0; x < ex.length; x++) {
+                if (ex[x]) {
+                    if (val[x] && val[x].trim() == 'true') {
+                        _label = _label + '<span class="text-check">' + ex[x].trim() + '</span> ';
+                    } else {
+                        _label = _label + ex[x].trim() + ' ';
+                    }
+                }
+            }
+            return _label;
+        }
+
+
+        /**
+         * Constructs a new application (returns an mxEditor instance)
+         */
+        function createEditor() {
+            let editor = null;
+            try {
+                if (!mxClient.isBrowserSupported()) {
+                    mxUtils.error('Browser is not supported!', 200, false);
+                } else {
+                    const node = mxUtils.load(vm.configXml).getDocumentElement();
+                    editor = new mxEditor(node);
+                    vm.editor = editor;
+                    initEditorConf(editor, null);
+                    const outln = document.getElementById('outlineContainer');
+                    outln.style['border'] = '1px solid lightgray';
+                    outln.style['background'] = '#FFFFFF';
+                    new mxOutline(editor.graph, outln);
+                    editor.graph.allowAutoPanning = true;
+                }
+            } catch (e) {
+                // Shows an error message if the editor cannot start
+                mxUtils.alert('Cannot start application: ' + e.message);
+                throw e; // for debugging
+            }
+        }
+
+        /**
+         * Reformat the layout
+         */
+        function executeLayout(graph) {
+            const layout = new mxHierarchicalLayout(graph);
+            layout.execute(graph.getDefaultParent());
+        }
+
+        /**
+         * Function to centered the flow diagram
+         */
+        function makeCenter(graph) {
+            let timeout = setTimeout(() => {
+                graph.zoomActual();
+                graph.center(true, true, 0.5, 0.2);
+                clearTimeout(timeout);
+            }, 0);
+        }
+
+        function initEditorConf(editor,) {
+            const graph = editor.graph;
+
+            // Alt disables guides
+            mxGraphHandler.prototype.guidesEnabled = true;
+            mxGraph.prototype.cellsResizable = false;
+            mxGraph.prototype.multigraph = false;
+            mxGraph.prototype.allowDanglingEdges = false;
+            mxGraph.prototype.cellsLocked = true;
+            mxGraph.prototype.foldingEnabled = true;
+            mxHierarchicalLayout.prototype.interRankCellSpacing = 50;
+            mxTooltipHandler.prototype.delay = 0;
+            mxConstants.VERTEX_SELECTION_COLOR = null;
+            mxConstants.EDGE_SELECTION_COLOR = null;
+
+            if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                let style = graph.getStylesheet().getDefaultEdgeStyle();
+                style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+                //mxGraph.prototype.collapsedImage = new mxImage('./mxgraph/images/collapsed-white.png', 12, 12);
+                //mxGraph.prototype.expandedImage = new mxImage('./mxgraph/images/expanded-white.png', 12, 12);
+            }
+
+            // Enables snapping waypoints to terminals
+            mxEdgeHandler.prototype.snapToTerminals = true;
+            graph.setAutoSizeCells(true);
+            graph.setCellsResizable(true);
+            graph.setConnectable(false);
+            graph.setHtmlLabels(true);
+            graph.setDisconnectOnMove(false);
+            graph.collapseToPreferredSize = false;
+            graph.constrainChildren = false;
+            graph.extendParentsOnAdd = false;
+            graph.extendParents = false;
+
+            /**
+             * Overrides method to provide a cell label in the display
+             * @param cell
+             */
+            graph.convertValueToString = function (cell) {
+                return cell.getAttribute('label');
+            };
+
+            graph.getTooltipForCell = function (cell) {
+                let str = '';
+                if (mxUtils.isNode(cell.value)) {
+                    if (cell.value.tagName === 'Connection') {
+                        return '';
+                    } else {
+                        str = cell.getAttribute('label');
+                    }
+                }
+                return str;
+            };
+
+            // Shows a "modal" window when double clicking a vertex.
+            graph.dblClick = function (evt, cell) {
+                // Do not fire a DOUBLE_CLICK event here as mxEditor will
+                // consume the event and start the in-place editor.
+                if (this.isEnabled() &&
+                    !mxEvent.isConsumed(evt) &&
+                    cell != null) {
+                    if (cell.value.tagName !== 'Job' && cell.value.tagName !== 'Connection') {
+                        vm.openModel(cell);
+                    }
+                }
+                // Disables any default behaviour for the double click
+                mxEvent.consume(evt);
+            };
+
+            /**
+             * Function: cellSizeUpdated
+             *
+             * Updates the size of the given cell in the model using
+             * <getPreferredSizeForCell> to get the new size.
+             *
+             * Parameters:
+             *
+             * cell - <mxCell> for which the size should be changed.
+             */
+            mxGraph.prototype.cellSizeUpdated = function (cell, ignoreChildren) {
+                if (cell != null) {
+                    this.model.beginUpdate();
+                    try {
+                        let size = this.getPreferredSizeForCell(cell);
+                        let geo = this.model.getGeometry(cell);
+                        if (size != null && geo != null) {
+                            geo = geo.clone();
+                            geo.width = size.width + 54;
+                            geo.height = size.height + 16;
+                            this.cellsResized([cell], [geo], false);
+                        }
+                    } finally {
+                        this.model.endUpdate();
+                    }
+                }
+            };
+
+            mxCellOverlay.prototype.getBounds = function (state) {
+                let isEdge = state.view.graph.getModel().isEdge(state.cell);
+                let s = state.view.scale;
+                let pt = null;
+                let w = this.image.width;
+                let h = this.image.height;
+                if (!isEdge) {
+                    pt = new mxPoint();
+                    if (this.align == mxConstants.ALIGN_LEFT) {
+                        pt.x = state.x;
+                    } else if (this.align == mxConstants.ALIGN_CENTER) {
+                        pt.x = state.x + state.width / 2;
+                    } else {
+                        pt.x = state.x + state.width;
+                    }
+                    if (this.verticalAlign == mxConstants.ALIGN_TOP) {
+                        pt.y = state.y;
+                    } else if (this.verticalAlign == mxConstants.ALIGN_MIDDLE) {
+                        pt.y = state.y + state.height / 2;
+                    } else {
+                        pt.y = state.y + state.height;
+                    }
+                }
+                return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s) - 6,
+                    Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) + 12, w * s, h * s);
+            };
+
+        }
+
+        /** -------------------- Actions ------------------- */
+        $scope.$on('zoomIn', function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomIn();
+            }
+        });
+
+        $scope.$on('zoomOut', function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomOut();
+            }
+        });
+
+        $scope.$on('actual', function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomActual();
+                vm.editor.graph.center(true, true, 0.5, 0.2);
+            }
+        });
+
+        $scope.$on('fit', function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.fit();
+                vm.editor.graph.center(true, true, 0.5, 0.2);
+            }
+        });
+
+        vm.openModel = function (cell) {
+            vm.condition = {};
+            vm.condition.label = cell.value.tagName;
+            vm.condition.value = cell.getAttribute('label').replace(/<[^>]+>/gm, '');
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/workflow-event-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._jobChain = null;
+            }, function () {
+                vm._jobChain = null;
+            });
+        };
+
+        function getCellNode(name, label) {
+            const doc = mxUtils.createXmlDocument();
+            // Create new node object
+            const _node = doc.createElement(name);
+            _node.setAttribute('label', label);
+            return _node;
+        }
+
+        $scope.$on('$destroy', function () {
+            try {
+                if (vm.editor) {
+                    vm.editor.destroy();
+                    vm.editor = null;
+                }
+            } catch (e) {
+                console.log(e);
+            }
         });
     }
 })();

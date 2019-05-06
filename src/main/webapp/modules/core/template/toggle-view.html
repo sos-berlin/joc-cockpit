@@ -1,9 +1,11 @@
 <div class="btn-group m-l-sm">
-    <button class="btn btn-grey btn-sm" ng-model="pageView" uib-btn-radio="'grid'"
-            ng-class="{'btn-primary': pageView=='grid'}" ng-click="setView('grid')"><i class="fa fa-th"></i>
-    </button>
-    <button class="btn btn-grey btn-sm" ng-model="pageView"
-            uib-btn-radio="'list'"
-            ng-class="{'btn-primary': pageView=='list'}" ng-click="setView('list')"><i class="fa fa-bars"></i>
-    </button>
+        <button ng-if="username == 'ur'" class="btn btn-grey btn-sm hide" ng-model="pageView" uib-btn-radio="'in-out-conditions'"
+                ng-class="{'btn-primary': pageView=='in-out-conditions','show':path=='/jobs'}" ng-click="setView('in-out-conditions')"><i class="fa fa-sitemap"></i>
+        </button>
+        <button class="btn btn-grey btn-sm" ng-model="pageView" uib-btn-radio="'grid'"
+                ng-class="{'btn-primary': pageView=='grid'}" ng-click="setView('grid')"><i class="fa fa-th"></i>
+        </button>
+        <button class="btn btn-grey btn-sm" ng-model="pageView" uib-btn-radio="'list'"
+                ng-class="{'btn-primary': pageView=='list'}" ng-click="setView('list')"><i class="fa fa-bars"></i>
+        </button>
 </div>

@@ -6,89 +6,124 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline  {{object.jobs.length>0 || !schedulerIds.selected ? 'hide' : ''}}">
-                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
-                                     ng-click="changeStatus()" translate>button.allJobTypes
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='order' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type"
-                                     uib-btn-radio="'order'" ng-click="changeStatus()" translate>button.orderJobs
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='standalone' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type"
-                                    uib-btn-radio="'standalone'" ng-click="changeStatus()" translate>button.standaloneJobs
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.jobTypes</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobTypes</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='order' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'order'" ng-click="changeStatus()" translate>button.orderJobs</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='standalone' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'standalone'" ng-click="changeStatus()" translate>button.standaloneJobs</a>
+                    <div class="inline" ng-class="{'hide':object.jobs.length>0 || !schedulerIds.selected}">
+                        <div class="inline" ng-if="pageView != 'in-out-conditions'">
+                            <div class="btn-group m-l-sm hidden-btn-group">
+                                <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
+                                         ng-click="changeStatus()" translate>button.allJobTypes
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='order' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type"
+                                         uib-btn-radio="'order'" ng-click="changeStatus()" translate>button.orderJobs
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.type=='standalone' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type"
+                                        uib-btn-radio="'standalone'" ng-click="changeStatus()" translate>button.standaloneJobs
+                                </button>
                             </div>
-                        </div>
-                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobs
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='PENDING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
-                                     uib-btn-radio="'PENDING'" ng-click="changeStatus()" translate>button.pending
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='RUNNING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'RUNNING'" ng-click="changeStatus()" translate>button.running
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='STOPPED' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'STOPPED'" ng-click="changeStatus()" translate>button.stopped
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='WAITINGFORRESOURCE' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'WAITINGFORRESOURCE'" ng-click="changeStatus()" translate>button.waitingForResource
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobs</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='PENDING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'PENDING'" ng-click="changeStatus()" translate>button.pending</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='RUNNING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'RUNNING'" ng-click="changeStatus()" translate>button.running</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='STOPPED' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'STOPPED'" ng-click="changeStatus()" translate>button.stopped</a>
-                                <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='WAITINGFORRESOURCE' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'WAITINGFORRESOURCE'" ng-click="changeStatus()" translate>button.waitingForResource</a>
+                            <div class="btn-group dropdown hidden-dropdown">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.jobTypes</button>
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobTypes</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='order' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'order'" ng-click="changeStatus()" translate>button.orderJobs</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.type=='standalone' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.type" uib-btn-radio="'standalone'" ng-click="changeStatus()" translate>button.standaloneJobs</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="btn-group dropdown">
-                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">{{'label.sortBy' | translate}}
-                                <span class="text-primary">
-                                    <span ng-show="jobFilters.filter.sortBy =='name'">
-                                        {{'label.name' | translate}}
-                                        <i class="fa fa-caret-up {{jobFilters.reverse ? 'hide' :''}}"></i>
-                                        <i class="fa fa-caret-down {{jobFilters.reverse ? '' :'hide'}}"></i>
+                            <div class="btn-group m-l-sm hidden-btn-group">
+                                <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
+                                        uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobs
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='PENDING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
+                                         uib-btn-radio="'PENDING'" ng-click="changeStatus()" translate>button.pending
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='RUNNING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
+                                        uib-btn-radio="'RUNNING'" ng-click="changeStatus()" translate>button.running
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='STOPPED' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
+                                        uib-btn-radio="'STOPPED'" ng-click="changeStatus()" translate>button.stopped
+                                </button>
+                                <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='WAITINGFORRESOURCE' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
+                                        uib-btn-radio="'WAITINGFORRESOURCE'" ng-click="changeStatus()" translate>button.waitingForResource
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown hidden-dropdown">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobs</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='PENDING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'PENDING'" ng-click="changeStatus()" translate>button.pending</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='RUNNING' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'RUNNING'" ng-click="changeStatus()" translate>button.running</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='STOPPED' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'STOPPED'" ng-click="changeStatus()" translate>button.stopped</a>
+                                    <a class="dropdown-item {{savedJobFilter.selected ? 'disable-link' :''}} {{jobFilters.filter.state=='WAITINGFORRESOURCE' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state" uib-btn-radio="'WAITINGFORRESOURCE'" ng-click="changeStatus()" translate>button.waitingForResource</a>
+                                </div>
+                            </div>
+                            <div class="btn-group dropdown">
+                                 <a class="btn btn-grey btn-sm m-l-sm" ng-class="{'disabled':pageView=='in-out-conditions'}" data-toggle="dropdown">{{'label.sortBy' | translate}}
+                                    <span class="text-primary">
+                                        <span ng-show="jobFilters.filter.sortBy =='name'">
+                                            {{'label.name' | translate}}
+                                            <i class="fa fa-caret-up {{jobFilters.reverse ? 'hide' :''}}"></i>
+                                            <i class="fa fa-caret-down {{jobFilters.reverse ? '' :'hide'}}"></i>
+                                        </span>
+                                        <span ng-show="jobFilters.filter.sortBy =='state._text'">
+                                            {{'label.state' | translate}}
+                                            <i class="fa fa-caret-up {{jobFilters.reverse ? 'hide' :''}}"></i>
+                                            <i class="fa fa-caret-down {{jobFilters.reverse ? '' :'hide'}}"></i>
+                                        </span>
                                     </span>
-                                    <span ng-show="jobFilters.filter.sortBy =='state._text'">
-                                        {{'label.state' | translate}}
-                                        <i class="fa fa-caret-up {{jobFilters.reverse ? 'hide' :''}}"></i>
-                                        <i class="fa fa-caret-down {{jobFilters.reverse ? '' :'hide'}}"></i>
-                                    </span>
-                                </span>
-                             </a>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="sortBy('name')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="sortBy('state._text')" translate>label.state</a>
+                                 </a>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" ng-click="sortBy('name')" translate>label.name</a>
+                                    <a class="dropdown-item" ng-click="sortBy('state._text')" translate>label.state</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered.name"></span></button>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
-                                <a class="dropdown-item {{savedJobFilter.selected == filter.id ? 'orange' :''}}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList | orderBy:'name'">
-                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
-                                </a>
+                            <div class="btn-group dropdown">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" ng-class="{'btn-primary': selectedFiltered.name}" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span ng-bind="selectedFiltered.name"></span></button>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
+                                    <a class="dropdown-item" ng-click="editFilters()" ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
+                                    <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
+                                    <a class="dropdown-item {{savedJobFilter.selected == filter.id ? 'orange' :''}}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList | orderBy:'name'">
+                                         <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    </a>
+                                </div>
                             </div>
+                            <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
+                        <div class="inline" ng-if="pageView == 'in-out-conditions'">
+                            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                <li class="nav-item">
+                                  <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
+                                    <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                                  </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                  <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}" ng-click="zoomOut()">
+                                    <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                                  </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                  <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" uib-tooltip="{{'tooltip.actual' | translate}}" ng-click="actual()">
+                                    <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                                  </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                  <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}" ng-click="fit()">
+                                    <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                  </a>
+                                </li>
+                          </ul>
+                        </div>
                         <toggle-view></toggle-view>
-
                     </div>
-                    <div class="{{object.jobs.length>0 ? '' : 'hide'}}">
+                    <div ng-if="object.jobs.length>0">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="assignWorkflow()" translate>button.assignWorkflow</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.execute.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.execute.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.execute.unstop" ng-click="unStopAll()" translate>button.unstop</button>
@@ -122,7 +157,7 @@
             </div>
         </div>
         <div id="rightPanel1">
-            <div class="row m-b m-t-sm">
+            <div class="row m-b m-t-sm" ng-class="{'hide':pageView=='in-out-conditions'}">
                 <div class="col-md-12">
                     <button class="btn btn-sm btn-grey {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="expandDetails()" >
                         <i class="fa fa fa-caret-down"></i>
@@ -280,7 +315,6 @@
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-h"></i></a>
-
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                             <a class="dropdown-item {{(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false ? 'disable-link' :''}}"
                                                ng-click="start(job)" ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
@@ -305,24 +339,24 @@
                                                ng-if="permission.Job.change.runTime"><span translate>button.setRunTime</span></a>
                                             <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
                                                ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
-                                            <a href class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="showAssignedCalendar(job)" ng-if="permission.Calendar.view.status">
+                                            <a class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="showAssignedCalendar(job)" ng-if="permission.Calendar.view.status">
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
                                             <a ng-click="showConfiguration('job',job.path,job.name)" class="dropdown-item {{job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-if="permission.Job.view.configuration"
                                                translate>button.showConfiguration</a>
                                             <div class="dropdown-divider"></div>
-                                            <a href class="dropdown-item" ng-click="assignedDocument(job)" ng-if="permission.Job.assignDocumentation">
+                                            <a class="dropdown-item" ng-click="assignedDocument(job)" ng-if="permission.Job.assignDocumentation">
                                                 <span translate>button.assignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item" ng-click="unassignedDocument(job)" ng-if="permission.Job.assignDocumentation && job.documentation">
+                                            <a class="dropdown-item" ng-click="unassignedDocument(job)" ng-if="permission.Job.assignDocumentation && job.documentation">
                                                 <span translate>button.unassignedDocumentation</span>
                                             </a>
-                                            <a href class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
+                                            <a class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
                                                 <span translate>button.showDocumentation</span>
                                             </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" ng-click="editInConditions(job)" translate>button.editInConditions</a>
-                                            <a class="dropdown-item" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
+                                            <div class="dropdown-divider" ng-if="username == 'ur'"></div>
+                                            <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editInConditions(job)" translate>button.editInConditions</a>
+                                            <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
                                         </div>
@@ -532,9 +566,9 @@
                                                 <a class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" ng-click="editInConditions(job)" translate>button.editInConditions</a>
-                                                <a class="dropdown-item" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
+                                                <div class="dropdown-divider" ng-if="username == 'ur'"></div>
+                                                <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editInConditions(job)" translate>button.editInConditions</a>
+                                                <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editOutConditions(job)" translate>button.editOutConditions</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                    translate>button.copyLinkToObject</a>
@@ -709,6 +743,21 @@
                             </div>
                         </div>
                         <div class="text-center m-t text-uppercase text-orange {{(totalCount===0 && allJobs.length !==0) ? '' :'hide'}}" translate>message.noDataMatched</div>
+                    </div>
+                </div>
+                <div ng-if="pageView=='in-out-conditions' && allJobs.length > 0">
+                    <div ng-controller="JobWorkflowCtrl">
+                        <div class="box p-a" ng-show="flag">
+                            <div class="graph-container">
+                                <div id="graph"></div>
+                                <!-- Creates a container for the outline -->
+                                <div id="outlineContainer"></div>
+                            </div>
+                        </div>
+                        <div class="text-center m-t-md text-md" ng-if="!flag && isWorkflowLoaded">
+                            <span translate>message.noConditionFound</span>
+                        </div>
+                        <div ng-if="!isWorkflowLoaded" class="loading-img1"></div>
                     </div>
                 </div>
             </div>

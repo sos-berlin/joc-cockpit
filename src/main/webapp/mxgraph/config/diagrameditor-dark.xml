@@ -1,0 +1,105 @@
+<mxEditor defaultGroup="group" defaultEdge="connector">
+  <include name="./mxgraph/config/editor-commons.xml"/>
+	<mxGraph as="graph" alternateEdgeStyle="verticalConnector" allowLoops="1" dropEnabled="1">
+		<add as="isAutoSizeCell"><![CDATA[
+			function(cell)
+			{
+				return mxUtils.isNode(this.model.getValue(cell), 'text');
+			}
+		]]></add>
+		<add as="isSwimlane"><![CDATA[
+			function (cell)
+			{
+				return mxUtils.isNode(this.model.getValue(cell), 'container');
+			}
+		]]></add>
+    <mxStylesheet as="stylesheet">
+      <add as="text">
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="top"/>
+        <add as="shadow" value="0"/>
+        <add as="strokeColor" value="none"/>
+        <add as="fillColor" value="transparent"/>
+        <add as="gradientColor" value="none"/>
+      </add>
+      <add as="defaultVertex" extend="text">
+        <add as="shape" value="rectangle"/>
+        <add as="fontSize" value="12"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="middle"/>
+        <add as="strokeColor" value="#fafafa"/>
+        <add as="fontColor" value="#fafafa"/>
+      </add>
+      <add as="defaultEdge">
+        <add as="shape" value="connector"/>
+        <add as="fontSize" value="11"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="center"/>
+        <add as="rounded" value="1"/>
+        <add as="labelBackgroundColor" value="#333"/>
+        <add as="strokeColor" value="#fafafa"/>
+        <add as="edgeStyle" value="straightConnector"/>
+        <add as="endArrow" value="classic"/>
+      </add>
+       <add as="swimlane">
+        <add as="shape" value="swimlane"/>
+        <add as="shadow" value="0"/>
+        <add as="startSize" value="23"/>
+        <add as="align" value="center"/>
+        <add as="verticalAlign" value="top"/>
+        <add as="spacingTop" value="8"/>
+         <add as="fontColor" value="white"/>
+         <add as="separatorColor" value="#c0c0c0"/>
+      </add>
+      <add as="verticalEdge">
+        <add as="elbow" value="vertical"/>
+      </add>
+      <add as="event" extend="rhombus">
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="align" value="center"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#FFEE73"/>
+        <add as="fillColor" value="#FFEE73"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+      <add as="rect" extend="rhombus">
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
+        <add as="align" value="center"/>
+        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#fafafa"/>
+      </add>
+      <add as="job">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="strokeColor" value="#90C7F5"/>
+        <add as="fillColor" value="#90C7F5"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+      <add as="condition">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="strokeColor" value="#ff882e"/>
+        <add as="fillColor" value="#ff882e"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+      <add as="condition1">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="strokeColor" value="#62cb5d"/>
+        <add as="fillColor" value="#62cb5d"/>
+        <add as="gradientColor" value="#333"/>
+      </add>
+    </mxStylesheet>
+    <mxGraphModel as="model">
+      <root>
+        <mxCell id="0"/>
+        <mxCell parent="0"/>
+      </root>
+    </mxGraphModel>
+  </mxGraph>
+</mxEditor>

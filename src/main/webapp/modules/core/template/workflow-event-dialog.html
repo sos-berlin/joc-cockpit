@@ -1,0 +1,27 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
+                                                                                         class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title"><span translate> Update Expression</span></h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>{{condition.label}}</label>
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
+                    <input type="text" class="form-control" name="workflow" required ng-model="condition.value">
+                    <div class="help-block text-danger" ng-if="form.workflow.$dirty" ng-messages="form.workflow.$error">
+                        <div ng-message="required" translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit
+            </button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+            </button>
+        </div>
+    </form>
+</div>

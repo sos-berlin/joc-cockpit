@@ -285,6 +285,7 @@
                     t.pageView = views.jobChain;
                 } else if (l.path() == '/jobs') {
                     t.pageView = views.job;
+                    t.path='/jobs';
                 } else if (l.path() == '/orders') {
                     t.pageView = views.order;
                 } else if (l.path().match('/resources/agent_clusters')) {

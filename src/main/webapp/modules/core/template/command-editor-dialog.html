@@ -1,0 +1,58 @@
+<div class="modal fade" id="command-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
+    <div class="modal-dialog box-shadow b-a " style="margin-top: 8%">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
+            <div class="modal-body p-a-md">
+                <form name="form2" ng-submit="save(form2)" novalidate>
+                    <div>
+                        <div class="row m-b-sm">
+                            <label class="col-sm-12" ng-show="strCommand == 'create'">
+                                <span class="text-primary  text-capitalize" translate>label.create</span>
+                                <i class="fa fa-angle-right m-l-xs fa-lg"></i>
+                            </label>
+                            <label class="col-sm-12" ng-show="strCommand == 'edit'">
+                                <span class="text-primary text-capitalize" translate>label.edit</span>
+                                <i class="fa fa-angle-right m-l-xs fa-lg"></i>
+                            </label>
+                            <a ng-click="close(form2)" style="float: right; position: absolute; right: -8px; top: -17px; font-size: 27px; opacity: .5"><i class="fa fa-times-circle"></i></a>
+                        </div>
+                        <div ng-if="command" class="form-group row" ng-class="{ 'has-error' : form2.command.$invalid && form2.command.$dirty }">
+                            <label class="col-sm-4 form-control-label" translate>label.command</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="command" ng-required="command"
+                                       ng-model="command.command">
+                                    <option value="start_job">start_job</option>
+                                    <option value="show_log">show_log</option>
+                                    <option value="create_event">create_event</option>
+                                    <option value="delete_event">delete_event</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div ng-if="command" class="form-group row" ng-class="{ 'has-error' : form2.commandParam.$invalid && form2.commandParam.$dirty }">
+                            <label class="col-sm-4 form-control-label" translate>label.commandParam</label>
+                            <div class="col-sm-6" >
+                                <input class="form-control" name="commandParam" ng-required="command" ng-model="command.commandParam"
+                                       placeholder="" type="text">
+                            </div>
+                        </div>
+                        <div ng-if="event" class="form-group row" ng-class="{ 'has-error' : form2.event.$invalid && form2.event.$dirty }">
+                            <label class="col-sm-4 form-control-label" translate>label.event</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" name="event" ng-required="event" ng-model="event.event"
+                                       placeholder="" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-t">
+                        <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form2.$invalid">
+                            <span translate>button.save</span>
+                        </button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="close(form2)" translate>
+                            button.cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
