@@ -3305,8 +3305,9 @@
         });
     }
 
-    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter"];
-    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter) {
+    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter", "ConditionService"];
+
+    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter, ConditionService) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.jobFilters.isCompact = vm.userPreferences.isJobCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobCompact;
