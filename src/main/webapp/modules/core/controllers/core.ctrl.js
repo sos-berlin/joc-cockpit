@@ -20,8 +20,7 @@
         .controller('ClientLogCtrl', ClientLogCtrl)
         .controller('CalendarAssignDialogCtrl', CalendarAssignDialogCtrl)
         .controller('AddRestrictionDialogCtrl', AddRestrictionDialogCtrl)
-        .controller('EditConditionDialogCtrl', EditConditionDialogCtrl)
-        .controller('EditOutConditionDialogCtrl', EditOutConditionDialogCtrl);
+        .controller('EditConditionDialogCtrl', EditConditionDialogCtrl);
 
 
     AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService', '$timeout', '$resource', 'gettextCatalog', 'TaskService', 'OrderService'];
@@ -14023,9 +14022,18 @@
 
     function EditConditionDialogCtrl($scope, $uibModalInstance) {
         const vm = $scope;
+        vm.editor = {
+            type : 'Incondition'
+        };
         vm.strCommand = '';
 
         $scope.ok = function () {
+            for(let i = 0; i < vm._job.inconditions.length; i++){
+                vm._job.inconditions[i].workflow = vm.editor.workflow;
+            }
+            for(let i = 0; i < vm._job.outconditions.length; i++){
+                vm._job.outconditions[i].workflow = vm.editor.workflow;
+            }
             $uibModalInstance.close('ok');
         };
         $scope.cancel = function () {
@@ -14055,13 +14063,18 @@
             vm.condition = angular.copy(condition);
             if (!vm.condition) {
                 vm.strCondition = 'create';
-                vm.condition = {inconditionCommands: []};
-                vm.addInconditionCommands();
+                if (vm.editor.type === 'Incondition') {
+                    vm.condition = {inconditionCommands: []};
+                    vm.addInconditionCommands();
+                } else {
+                    vm.condition = {outconditionEvents: []};
+                    vm.addOutconditionEvents();
+                }
             }
         };
 
         vm.removeInCondition = function (index) {
-            vm.inconditions.splice(index, 1);
+            vm._job.inconditions.splice(index, 1);
         };
 
         vm.addInconditionCommands = function () {
@@ -14096,141 +14109,6 @@
             commands.splice(index, 1);
         };
 
-        vm.save = function (form) {
-            if (vm.command && vm.command.command) {
-                if (vm._index || vm._index == 0) {
-                    for (let i = 0; i < vm._incondition.inconditionCommands.length; i++) {
-                        if (vm._index == i) {
-                            vm._incondition.inconditionCommands[i] = vm.command;
-                            break;
-                        }
-                    }
-                } else if (vm.strCommand == 'create') {
-                    vm._incondition.inconditionCommands.push(vm.command);
-                }
-            }
-            $('#command-editor').modal('hide');
-            vm._index = null;
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-
-        vm.save2 = function (form) {
-            if (vm.condition && vm.condition.conditionExpression) {
-                if (vm._index || vm._index == 0) {
-                    for (let i = 0; i < vm.inconditions.length; i++) {
-                        if (vm._index == i) {
-                            vm.inconditions[i] = vm.condition;
-                            break;
-                        }
-                    }
-                } else if (vm.strCondition == 'create') {
-                    vm.condition.id = 0;
-                    vm.inconditions.push(vm.condition);
-                }
-            }
-            vm.condition = null;
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-
-        vm.expressionEditor = function () {
-            vm.expression = {};
-            if (vm.condition.conditionExpression) {
-                vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
-            } else {
-                vm.expression.expression = '';
-            }
-            $('#expression-editor').modal('show');
-        };
-
-        vm.save3 = function (form) {
-           vm.condition.conditionExpression.expression = vm.expression.expression;
-           $('#expression-editor').modal('hide');
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-
-        vm.close3 = function (form) {
-            vm.expression ={};
-           $('#expression-editor').modal('hide');
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-
-        vm.generateExpression = function(operator) {
-            if (vm.expression.expression && vm.expression.expression != ' ') {
-                if (!vm.operator) {
-                    vm.operator = operator;
-                    vm.tmp = vm.expression.expression;
-                    vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
-                } else if (this.tmp) {
-                    vm.expression.expression = vm.tmp + ' ' + operator + ' ';
-                }
-            }
-        };
-
-        vm.validateExpression = function(){
-            vm.operator = undefined;
-            vm.tmp = '';
-        };
-
-        $scope.$on('$destroy', function () {
-
-        });
-    }
-
-    EditOutConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance'];
-    function EditOutConditionDialogCtrl($scope, $uibModalInstance) {
-        const vm = $scope;
-        vm.strCommand = '';
-
-        $scope.ok = function () {
-            $uibModalInstance.close('ok');
-        };
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-        $scope.close = function (form) {
-            vm.event = {};
-            $('#command-editor').modal('hide');
-            vm._outcondition = null;
-            vm._index = null;
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-        $scope.close2 = function (form) {
-            vm.condition = undefined;
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
-            }
-        };
-
-        vm.removeOutCondition = function (index) {
-            vm.outconditions.splice(index, 1);
-        };
-        vm.updateCondition = function (condition, index) {
-            vm.strCondition = 'edit';
-            vm._index = index;
-            vm.condition = angular.copy(condition);
-            if (!vm.condition) {
-                vm.strCondition = 'create';
-                vm.condition = {outconditionEvents: []};
-                vm.addOutconditionEvents();
-            }
-        };
-
         vm.addOutconditionEvents = function () {
             let param = {
                 event: '',
@@ -14263,15 +14141,17 @@
         };
 
         vm.save = function (form) {
-            if (vm._index || vm._index == 0) {
-                for (let i = 0; i < vm._outcondition.outconditionEvents.length; i++) {
-                    if (vm._index == i) {
-                        vm._outcondition.outconditionEvents[i] = vm.event;
-                        break;
+            if (vm.command && vm.command.command) {
+                if (vm._index || vm._index == 0) {
+                    for (let i = 0; i < vm._incondition.inconditionCommands.length; i++) {
+                        if (vm._index == i) {
+                            vm._incondition.inconditionCommands[i] = vm.command;
+                            break;
+                        }
                     }
+                } else if (vm.strCommand == 'create') {
+                    vm._incondition.inconditionCommands.push(vm.command);
                 }
-            } else if (vm.strCommand == 'create') {
-                vm._outcondition.outconditionEvents.push(vm.event);
             }
             $('#command-editor').modal('hide');
             vm._index = null;
@@ -14283,16 +14163,30 @@
 
         vm.save2 = function (form) {
             if (vm.condition && vm.condition.conditionExpression) {
-                if (vm._index || vm._index == 0) {
-                    for (let i = 0; i < vm.outconditions.length; i++) {
-                        if (vm._index == i) {
-                            vm.outconditions[i] = vm.condition;
-                            break;
+                if (vm.editor.type === 'Incondition') {
+                    if (vm._index || vm._index == 0) {
+                        for (let i = 0; i < vm._job.inconditions.length; i++) {
+                            if (vm._index == i) {
+                                vm._job.inconditions[i] = vm.condition;
+                                break;
+                            }
                         }
+                    } else if (vm.strCondition == 'create') {
+                        vm.condition.id = 0;
+                        vm._job.inconditions.push(vm.condition);
                     }
-                } else if (vm.strCondition == 'create') {
-                    vm.condition.id = 0;
-                    vm.outconditions.push(vm.condition);
+                } else {
+                    if (vm._index || vm._index == 0) {
+                        for (let i = 0; i < vm._job.outconditions.length; i++) {
+                            if (vm._index == i) {
+                                vm._job.outconditions[i] = vm.condition;
+                                break;
+                            }
+                        }
+                    } else if (vm.strCondition == 'create') {
+                        vm.condition.id = 0;
+                        vm._job.outconditions.push(vm.condition);
+                    }
                 }
             }
             vm.condition = null;
@@ -14302,11 +14196,11 @@
             }
         };
 
-         vm.expressionEditor = function () {
-            vm.expression ={};
-            if(vm.condition.conditionExpression) {
+        vm.expressionEditor = function () {
+            vm.expression = {};
+            if (vm.condition.conditionExpression) {
                 vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
-            }else{
+            } else {
                 vm.expression.expression = '';
             }
             $('#expression-editor').modal('show');

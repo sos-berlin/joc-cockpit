@@ -12,8 +12,9 @@
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
+
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
-                          DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService,$filter) {
+                          DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService, $filter) {
         const vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -42,7 +43,7 @@
         }
 
         function resizeSidePanel() {
-            setTimeout(function () {
+            let timeout = setTimeout(function () {
                 let ht = ($('.app-header').height() || 61)
                     + ($('.top-header-bar').height() || 16)
                     + $('.sub-header').height() + 24;
@@ -50,8 +51,10 @@
                 $('#leftPanel').stickySidebar({
                     sidebarTopMargin: ht
                 });
+                clearTimeout(timeout);
             }, 0);
         }
+
         resizeSidePanel();
 
         function mergePermanentAndVolatile(sour, dest, nestedJobChain) {
@@ -79,7 +82,7 @@
                             sour.nodes.splice(j, 1);
                             break;
                         } else {
-                            if(dest.nodes[i].jobChain.path == sour.nodes[j].jobChain.path)
+                            if (dest.nodes[i].jobChain.path == sour.nodes[j].jobChain.path)
                                 dest.nodes[i].jobChain.documentation = sour.nodes[j].jobChain.documentation;
                         }
                     }
@@ -99,8 +102,7 @@
 
         if (vm.jobChainFilters.selectedView) {
             vm.savedJobChainFilter.selected = vm.savedJobChainFilter.selected || vm.savedJobChainFilter.favorite;
-        }
-        else {
+        } else {
             vm.savedJobChainFilter.selected = undefined;
         }
 
@@ -153,7 +155,7 @@
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: val.job.path}],
-                                compactView : vm.jobChainFilters.isCompact
+                                compactView: vm.jobChainFilters.isCompact
                             }).then(function (res1) {
                                 vm.jobChains[0].nodes[index].job = _.merge(vm.jobChains[0].nodes[index].job, res1.jobs[0]);
                                 updatePanelHeight();
@@ -456,14 +458,14 @@
         }
 
         function updateDimensions() {
-          let max = 0;
-          $('#jobChainTableId .inner-table').find('thead th.dynamic-thead').each(function () {
-            let val = $(this).width();
-            max = (val > max) ? val : max;
-          });
-          if (max > 0) {
-            $('#jobChainTableId .inner-table th.dynamic-thead').css('width', max + 'px');
-          }
+            let max = 0;
+            $('#jobChainTableId .inner-table').find('thead th.dynamic-thead').each(function () {
+                let val = $(this).width();
+                max = (val > max) ? val : max;
+            });
+            if (max > 0) {
+                $('#jobChainTableId .inner-table th.dynamic-thead').css('width', max + 'px');
+            }
         }
 
         function mergePermanentRes(arr, obj, expandNode) {
@@ -485,7 +487,7 @@
                                         JobService.get({
                                             jobschedulerId: vm.schedulerIds.selected,
                                             jobs: [{job: val.job.path}],
-                                            compactView : vm.jobChainFilters.isCompact
+                                            compactView: vm.jobChainFilters.isCompact
                                         }).then(function (res1) {
                                             vm.allJobChains[m].nodes[index].job = _.merge(vm.allJobChains[m].nodes[index].job, res1.jobs[0]);
                                         });
@@ -523,7 +525,7 @@
                 }
                 if (res.jobChains && res.jobChains.length > 0) {
                     mergePermanentRes(jobChainPath, obj, data);
-                }else{
+                } else {
                     getFilteredData();
                 }
                 vm.loading = false;
@@ -726,15 +728,15 @@
                 }
             }
 
-            setTimeout(function(){
-                 $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
-                 updateDimensions();
-            },0);
+            setTimeout(function () {
+                $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
+                updateDimensions();
+            }, 0);
         }
 
         $(window).resize(function () {
             $('#jobChainTableId .inner-table th.dynamic-thead').css('width', 'auto');
-           updateDimensions();
+            updateDimensions();
         });
 
         function _updatePanelHeight(info) {
@@ -814,22 +816,22 @@
                             }
                         }
                     }
-                }else{
-                    if(vm.jobChainFilters.filter.state !== 'ALL'){
+                } else {
+                    if (vm.jobChainFilters.filter.state !== 'ALL') {
                         vm.allJobChains = res.jobChains;
                     }
                 }
 
                 updateTreeData(expandNode, treeUpdate);
                 if (treeUpdate) {
-                    for(let x =0; x < vm.allJobChains.length; x++) {
+                    for (let x = 0; x < vm.allJobChains.length; x++) {
                         if (vm.allJobChains[x].show && vm.userPreferences.showTasks) {
                             angular.forEach(vm.allJobChains[x].nodes, function (val, index) {
                                 if (val.job && val.job.state && val.job.state._text === 'RUNNING') {
                                     JobService.get({
                                         jobschedulerId: vm.schedulerIds.selected,
                                         jobs: [{job: val.job.path}],
-                                        compactView : vm.jobChainFilters.isCompact
+                                        compactView: vm.jobChainFilters.isCompact
                                     }).then(function (res1) {
                                         vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
                                         updatePanelHeight();
@@ -846,9 +848,9 @@
             });
         }
 
-        vm.toggleCompactView = function(){
+        vm.toggleCompactView = function () {
             vm.jobChainFilters.isCompact = !vm.jobChainFilters.isCompact;
-            if(!vm.jobChainFilters.isCompact){
+            if (!vm.jobChainFilters.isCompact) {
                 vm.changeStatus();
             }
             vm.userPreferences.isJobChainCompact = vm.jobChainFilters.isCompact;
@@ -999,22 +1001,18 @@
             if (calendarView === 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView === 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
@@ -1819,8 +1817,7 @@
             } else if (task && path) {
                 vm.task = task;
                 vm.path = path;
-            }
-            else {
+            } else {
                 vm.taskJobs = vm.object.jobs;
             }
             vm.comments = {};
@@ -1846,12 +1843,12 @@
             angular.forEach(vm.allJobChains, function (value, index) {
                 if (value.path === path && !isReversed) {
                     vm.allJobChains[index].documentation = doc;
-                }else{
-                    if(value.show){
+                } else {
+                    if (value.show) {
                         angular.forEach(vm.allJobChains[index].nodes, function (val, i) {
-                            if(val.jobChain){
-                                if(val.jobChain.path === path)
-                                vm.allJobChains[index].nodes[i].jobChain.documentation =doc;
+                            if (val.jobChain) {
+                                if (val.jobChain.path === path)
+                                    vm.allJobChains[index].nodes[i].jobChain.documentation = doc;
                             }
                         });
                     }
@@ -1880,12 +1877,12 @@
             })
         }
 
-        vm.assignedDocumentJobChain = function(jobChain, isNested) {
+        vm.assignedDocumentJobChain = function (jobChain, isNested) {
             vm.assignObj = {
                 type: 'Job Chain',
                 path: jobChain.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain : jobChain.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -1905,11 +1902,11 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobChainService.assign(obj).then(function(res){
+                JobChainService.assign(obj).then(function (res) {
                     jobChain.documentation = vm.assignObj.documentation;
-                    if(isNested){
+                    if (isNested) {
                         updateListForDocmentation(jobChain.path, vm.assignObj.documentation);
-                    }else{
+                    } else {
                         updateListForDocmentation(jobChain.path, vm.assignObj.documentation, 'reverse');
                     }
                 });
@@ -1918,12 +1915,12 @@
             });
         };
 
-        vm.assignedDocumentJob = function(job, nestedJobChain, isNested) {
+        vm.assignedDocumentJob = function (job, nestedJobChain, isNested) {
             vm.assignObj = {
                 type: 'Job',
                 path: job.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -1943,11 +1940,11 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobService.assign(obj).then(function(res){
+                JobService.assign(obj).then(function (res) {
                     job.documentation = vm.assignObj.documentation;
-                    if(isNested){
+                    if (isNested) {
                         updateNodeListForDocmentation(job, nestedJobChain.path, vm.assignObj.documentation);
-                    }else{
+                    } else {
                         updateNodeListForDocmentation(job, nestedJobChain.path, vm.assignObj.documentation, 'reverse');
                     }
                 });
@@ -1961,11 +1958,11 @@
         };
 
         vm.$on('closeDocumentTree', function (evn, path) {
-            if(vm.assignObj)
+            if (vm.assignObj)
                 vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocumentJobChain = function(jobChain, isNested) {
+        vm.unassignedDocumentJobChain = function (jobChain, isNested) {
             vm.assignObj = {};
             let obj = {jobschedulerId: vm.schedulerIds.selected, jobChain: jobChain.path};
             if (vm.userPreferences.auditLog) {
@@ -2013,7 +2010,7 @@
             }
         };
 
-        vm.unassignedDocumentJob = function(job, nestedJobChain, isNested) {
+        vm.unassignedDocumentJob = function (job, nestedJobChain, isNested) {
             vm.assignObj = {};
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             if (vm.userPreferences.auditLog) {
@@ -2151,7 +2148,7 @@
                                             JobService.get({
                                                 jobschedulerId: vm.schedulerIds.selected,
                                                 jobs: [{job: val.job.path}],
-                                                compactView : vm.jobChainFilters.isCompact
+                                                compactView: vm.jobChainFilters.isCompact
                                             }).then(function (res1) {
                                                 vm.allJobChains[x].nodes[index].job = _.merge(vm.allJobChains[x].nodes[index].job, res1.jobs[0]);
                                                 updatePanelHeight();
@@ -2212,7 +2209,7 @@
             vm.jobChainFilter = {};
             if (form)
                 form.$setPristine();
-            if(vm.isSearchHit){
+            if (vm.isSearchHit) {
                 vm.isSearchHit = false;
                 vm.changeStatus();
             }
@@ -2250,7 +2247,7 @@
                                         JobService.get({
                                             jobschedulerId: vm.schedulerIds.selected,
                                             jobs: [{job: val.job.path}],
-                                            compactView : vm.jobChainFilters.isCompact
+                                            compactView: vm.jobChainFilters.isCompact
                                         }).then(function (res1) {
                                             allJobChains[x].nodes[index].job = _.merge(allJobChains[x].nodes[index].job, res1.jobs[0]);
                                         });
@@ -2259,7 +2256,7 @@
                             }
                         }
                     }
-                } else if(res.jobChains && res.jobChains.length){
+                } else if (res.jobChains && res.jobChains.length) {
                     for (let x = 0; x < res.jobChains.length; x++) {
                         if (vm.userPreferences.showOrders)
                             res.jobChains[x].show = true;
@@ -2268,7 +2265,7 @@
                     }
                 }
                 vm.allJobChains = data;
-                if(vm.allJobChains.length == 0){
+                if (vm.allJobChains.length == 0) {
                     vm.hideHistory();
                 }
                 vm.isLoaded = false;
@@ -2595,8 +2592,7 @@
                     }
                     vm.load();
                 });
-            }
-            else {
+            } else {
                 isCustomizationSelected(false);
                 vm.savedJobChainFilter.selected = filter;
                 vm.jobChainFilters.selectedView = false;
@@ -2748,7 +2744,7 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: jobChain.path,
                     maxOrders: vm.userPreferences.maxOrderPerJobchain,
-                    compactView : vm.jobChainFilters.isCompact
+                    compactView: vm.jobChainFilters.isCompact
                 }).then(function (res) {
                     jobChain = mergePermanentAndVolatile(res.jobChain, jobChain, res.nestedJobChains);
                     if (vm.userPreferences.showTasks) {
@@ -2757,7 +2753,7 @@
                                 JobService.get({
                                     jobschedulerId: vm.schedulerIds.selected,
                                     jobs: [{job: val.job.path}],
-                                    compactView : vm.jobChainFilters.isCompact
+                                    compactView: vm.jobChainFilters.isCompact
                                 }).then(function (res1) {
                                     jobChain.nodes[index].job = _.merge(jobChain.nodes[index].job, res1.jobs[0]);
                                     updatePanelHeight();
@@ -2827,7 +2823,7 @@
                                             JobService.get({
                                                 jobschedulerId: vm.schedulerIds.selected,
                                                 jobs: [{job: val.job.path}],
-                                                compactView : vm.jobChainFilters.isCompact
+                                                compactView: vm.jobChainFilters.isCompact
                                             }).then(function (res1) {
                                                 vm.allJobChains[i].nodes[index].job = _.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
                                                 updatePanelHeight();
@@ -2916,7 +2912,7 @@
             if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
 
                 obj = vm.taskHistoryRequestObj;
-            }else {
+            } else {
                 if (node) {
                     obj.orders[0].state = node.name;
                     vm.jobChainFilters.historyPanelState.name = node.name;
@@ -2925,11 +2921,11 @@
                     obj.orders[0].orderId = order.orderId;
                     vm.jobChainFilters.historyPanelState.name = order.orderId;
                     vm.jobChainFilters.historyPanelState.key = 'label.order';
-                }else{
-                    if(vm.jobChainFilters.historyPanelState.name){
-                        if(vm.jobChainFilters.historyPanelState.key === 'label.state' ){
+                } else {
+                    if (vm.jobChainFilters.historyPanelState.name) {
+                        if (vm.jobChainFilters.historyPanelState.key === 'label.state') {
                             obj.orders[0].state = vm.jobChainFilters.historyPanelState.name;
-                        }else{
+                        } else {
                             obj.orders[0].orderId = vm.jobChainFilters.historyPanelState.name;
                         }
                     }
@@ -2947,7 +2943,7 @@
         };
 
         vm.loadAuditLogs = function (obj) {
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -3033,7 +3029,7 @@
                                 vm.showHistoryPanel = '';
                                 vm.historyRequestObj = {};
                                 vm.taskHistoryRequestObj = {};
-                                vm.jobChainFilters.historyPanelState ={};
+                                vm.jobChainFilters.historyPanelState = {};
                             }
                         }
                     }
@@ -3086,7 +3082,7 @@
                                                         JobService.get({
                                                             jobschedulerId: vm.schedulerIds.selected,
                                                             jobs: [{job: val.job.path}],
-                                                            compactView : vm.jobChainFilters.isCompact
+                                                            compactView: vm.jobChainFilters.isCompact
                                                         }).then(function (res1) {
                                                             vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                             updatePanelHeight();
@@ -3190,7 +3186,7 @@
                                                 JobService.get({
                                                     jobschedulerId: vm.schedulerIds.selected,
                                                     jobs: [{job: val.job.path}],
-                                                    compactView : vm.jobChainFilters.isCompact
+                                                    compactView: vm.jobChainFilters.isCompact
                                                 }).then(function (res1) {
                                                     vm.allJobChains[index].nodes[index2].job = _.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                 });
@@ -3243,9 +3239,9 @@
 
         var watcher6 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
             if (newValue && oldValue) {
-                if(newValue === 'grid' && oldValue==='list' ){
+                if (newValue === 'grid' && oldValue === 'list') {
                     vm.changeStatus();
-                }else {
+                } else {
                     getFilteredData();
                 }
             }
@@ -3332,7 +3328,7 @@
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || {};
         vm.jobFilterList = [];
 
-       function resizeSidePanel() {
+        function resizeSidePanel() {
             setTimeout(function () {
                 let ht = ($('.app-header').height() || 61)
                     + ($('.top-header-bar').height() || 16)
@@ -3343,12 +3339,12 @@
                 });
             }, 0);
         }
+
         resizeSidePanel();
 
         if (vm.jobFilters.selectedView) {
             vm.savedJobFilter.selected = vm.savedJobFilter.selected || vm.savedJobFilter.favorite;
-        }
-        else {
+        } else {
             vm.savedJobFilter.selected = undefined;
         }
 
@@ -3672,7 +3668,7 @@
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: vm.allJobs[i].path}],
-                                compactView : vm.jobFilters.isCompact
+                                compactView: vm.jobFilters.isCompact
                             }).then(function (res1) {
                                 vm.allJobs[i] = mergePermanentAndVolatile(res1.jobs[0], vm.allJobs[i]);
                             });
@@ -3847,47 +3843,47 @@
                 }
             }
             if (vm.selectedFiltered.planned) {
-              var date, arr;
-              if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.selectedFiltered.planned)) {
-                var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
-                fromDate = '+' + seconds + 's';
-              } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                obj.dateFrom = vm.selectedFiltered.planned;
-              } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
-                fromDate = '0d';
-                toDate = '0d';
-              } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
-                fromDate = moment.utc(new Date());
-                toDate = fromDate;
-              } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-              } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-              } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-              } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-              } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(vm.selectedFiltered.planned)) {
-                let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
-                let arr = reg[0].split('to');
-                let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
-                let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
+                var date, arr;
+                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.selectedFiltered.planned)) {
+                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
+                    fromDate = '+' + seconds + 's';
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    obj.dateFrom = vm.selectedFiltered.planned;
+                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
+                    fromDate = '0d';
+                    toDate = '0d';
+                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
+                    fromDate = moment.utc(new Date());
+                    toDate = fromDate;
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    date = /^\s*(\d+)(s|h|d|w|M|y)\s*[+,-](\d+)(s|h|d|w|M|y)\s*to\s*(\d+)(s|h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/.test(vm.selectedFiltered.planned)) {
+                    let reg = /^\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*to\s*(?:(?:(1[0-2]|0?[0-9]):)?([0-5][0-9]):)?([0-5][0-9])\s?(?:am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
+                    let arr = reg[0].split('to');
+                    let fromTime = moment(arr[0].trim(), "HH:mm:ss:a");
+                    let toTime = moment(arr[1].trim(), "HH:mm:ss:a");
 
-                fromDate = moment.utc(fromTime);
-                toDate = moment.utc(toTime);
-              }
+                    fromDate = moment.utc(fromTime);
+                    toDate = moment.utc(toTime);
+                }
             }
 
             if (fromDate && toDate) {
@@ -3946,8 +3942,8 @@
                 let num = info ? 20 : 50;
                 let ht = (parseInt($('#jobTableId').height()) + num);
                 let el = info ? document.getElementById('jobInfoDivId') : document.getElementById('jobDivId');
-                if(el && el.scrollWidth > el.clientWidth){
-                    ht =  ht + 11;
+                if (el && el.scrollWidth > el.clientWidth) {
+                    ht = ht + 11;
                 }
                 if (ht > 450) {
                     ht = 450;
@@ -4001,7 +3997,7 @@
                 } else {
                     vm.allJobs = res.jobs;
                 }
-                if(!expandNode && treeUpdate) {
+                if (!expandNode && treeUpdate) {
                     getFilteredData();
                 }
                 updateTreeData(expandNode, treeUpdate);
@@ -4057,9 +4053,9 @@
             });
         }
 
-        vm.toggleCompactView = function(){
+        vm.toggleCompactView = function () {
             vm.jobFilters.isCompact = !vm.jobFilters.isCompact;
-            if(!vm.jobFilters.isCompact){
+            if (!vm.jobFilters.isCompact) {
                 vm.changeStatus();
             }
             vm.userPreferences.isJobCompact = vm.jobFilters.isCompact;
@@ -4346,7 +4342,7 @@
             vm.jobFilter = {};
             if (form)
                 form.$setPristine();
-            if(vm.isSearchHit){
+            if (vm.isSearchHit) {
                 vm.isSearchHit = false;
                 vm.changeStatus();
             }
@@ -4372,13 +4368,13 @@
                         }
                     }
                     vm.allJobs = data;
-                } else if(res.jobs && res.jobs.length){
+                } else if (res.jobs && res.jobs.length) {
                     for (let i = 0; i < res.jobs.length; i++) {
                         res.jobs[i].path1 = res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/')) || res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/') + 1);
                     }
                     vm.allJobs = res.jobs;
                 }
-                if(vm.allJobs.length == 0){
+                if (vm.allJobs.length == 0) {
                     vm.hideTaskPanel(0);
                 }
                 vm.isLoaded = false;
@@ -4780,7 +4776,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -4888,7 +4884,7 @@
                                 JobService.get({
                                     jobschedulerId: vm.schedulerIds.selected,
                                     jobs: [{job: vm.allJobs[m].path}],
-                                    compactView : vm.jobFilters.isCompact
+                                    compactView: vm.jobFilters.isCompact
                                 }).then(function (result) {
                                     if (vm.allJobs[m].path === result.jobs[0].path) {
                                         vm.allJobs[m] = mergePermanentAndVolatile(result.jobs[0], vm.allJobs[m]);
@@ -5311,14 +5307,14 @@
             jobs.timeout = vm.timeObj.timeout;
             TaskService.terminateWith(jobs);
         }
+
         vm.terminateTaskWithTimeout = function (job, task, path) {
             if (job) {
                 vm.job = job;
             } else if (task && path) {
                 vm.task = task;
                 vm.path = path;
-            }
-            else {
+            } else {
                 vm.taskJobs = vm.object.jobs;
             }
             vm.timeObj = {};
@@ -5796,12 +5792,12 @@
             }
         };
 
-        vm.assignedDocument = function(job) {
+        vm.assignedDocument = function (job) {
             vm.assignObj = {
                 type: 'Job',
                 path: job.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -5821,7 +5817,7 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobService.assign(obj).then(function(res){
+                JobService.assign(obj).then(function (res) {
                     job.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -5837,7 +5833,7 @@
             vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocument = function(job) {
+        vm.unassignedDocument = function (job) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -5879,22 +5875,18 @@
             if (calendarView === 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView === 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
@@ -6005,58 +5997,41 @@
             });
         };
 
-        vm.editInConditions = function (job) {
-            vm._job = job;
+        vm.editConditions = function (job) {
+            vm._job = angular.copy(job);
             ConditionService.inCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
                 job: job.path
             }).then(function (res) {
-                vm.inconditions = res.inconditions;
+                vm._job.inconditions = res.inconditions;
+                ConditionService.outCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    job: job.path
+                }).then(function (result) {
+                    vm._job.outconditions = result.outconditions;
+                });
                 var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/in-conditions-dialog.html',
+                    templateUrl: 'modules/core/template/conditions-dialog.html',
                     controller: 'EditConditionDialogCtrl',
                     scope: vm,
                     size: 'lg',
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    vm._job = null;
                     ConditionService.updateInCondition({
-                        masterId: res.masterId,
-                        job: res.job,
-                        inconditions: vm.inconditions
+                         masterId: res.masterId,
+                         job: res.job,
+                         inconditions: vm._job.inconditions
+                    });
+                    ConditionService.updateOutCondition({
+                         masterId: res.masterId,
+                         job: res.job,
+                         outconditions: vm._job.outconditions
                     });
                 }, function () {
                     vm._job = null;
                 });
             })
-        };
-
-        vm.editOutConditions = function (job) {
-            vm._job = job;
-            ConditionService.outCondition({
-                jobschedulerId: $scope.schedulerIds.selected,
-                job: job.path
-            }).then(function (res) {
-                vm.outconditions = res.outconditions;
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/out-conditions-dialog.html',
-                    controller: 'EditOutConditionDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    vm._job = null;
-                    ConditionService.updateOutCondition({
-                        masterId: res.masterId,
-                        job: res.job,
-                        outconditions: vm.outconditions
-                    });
-                }, function () {
-                    vm._job = null;
-                });
-            });
         };
 
         function checkCurrentSelectedFolders(job) {
@@ -6174,12 +6149,10 @@
                             JobService.history(jobs).then(function (res) {
                                 vm.taskHistory = res.history;
                             });
-                        }
-                        else if (vm.showTaskPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && vm.events[0].eventSnapshots[m].path === vm.showTaskPanel.path && vm.isAuditLog) {
+                        } else if (vm.showTaskPanel && vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && vm.events[0].eventSnapshots[m].path === vm.showTaskPanel.path && vm.isAuditLog) {
                             if (vm.permission.AuditLog.view.status)
                                 vm.loadAuditLogs(vm.showTaskPanel);
-                        }
-                        else if (vm.events[0].eventSnapshots[m].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "JOB" && !$location.search().path) {
+                        } else if (vm.events[0].eventSnapshots[m].eventType === "InventoryInitialized" || (vm.events[0].eventSnapshots[m].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[m].eventType === "FileBasedRemoved") && vm.events[0].eventSnapshots[m].objectType === "JOB" && !$location.search().path) {
                             let folders = [];
                             if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                                 angular.forEach(vm.selectedFiltered.paths, function (v) {
@@ -6196,14 +6169,13 @@
                                 vm.changeStatus();
                             });
                             break;
-                        }
-                        else if (vm.events[0].eventSnapshots[m].eventType === "JobTaskQueueChanged" && vm.showTaskPanel) {
+                        } else if (vm.events[0].eventSnapshots[m].eventType === "JobTaskQueueChanged" && vm.showTaskPanel) {
                             getHistoryPanelData(vm.showTaskPanel);
                         }
                     }
                 }
             } else {
-                if(vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                     for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
                         if (vm.events[0].eventSnapshots[j].eventType === 'JobStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                             if (jobPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
@@ -6287,7 +6259,7 @@
                     }
                 });
             } else {
-                if ($location.search().path){
+                if ($location.search().path) {
                     return;
                 }
                 let folders = [];
@@ -6317,9 +6289,9 @@
 
         var watcher7 = $scope.$watchCollection('pageView', function (newValue, oldValue) {
             if (newValue && oldValue) {
-                if(newValue === 'grid' && oldValue==='list' ){
+                if (newValue === 'grid' && oldValue === 'list') {
                     vm.changeStatus();
-                }else {
+                } else {
                     getFilteredData();
                 }
             }
@@ -6348,7 +6320,7 @@
         };
 
         $scope.$on('angular-resizable.resizeEnd', function (event, args) {
-            if(args.id === 'jobDivId') {
+            if (args.id === 'jobDivId') {
                 let rsHt = JSON.parse(SavedFilter.resizerHeight) || {};
                 if (rsHt.job && typeof rsHt.job === 'object') {
                     rsHt.job[vm.folderPath] = args.height;
@@ -6359,7 +6331,7 @@
                 SavedFilter.setResizerHeight(rsHt);
                 SavedFilter.save();
                 vm.resizerHeight = args.height;
-            }else if(args.id === 'jobInfoDivId') {
+            } else if (args.id === 'jobInfoDivId') {
                 vm.resizerHeightInfo = args.height;
                 vm.isInfoResize = true;
             }
@@ -6398,6 +6370,7 @@
     }
 
     JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter"];
+
     function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
@@ -6454,7 +6427,7 @@
             if (vm.jobFilters.filter.state !== 'ALL') {
                 obj.states.push(vm.jobFilters.filter.state);
                 obj.compactView = vm.jobFilters.isCompact;
-                if(vm.jobFilters.filter.state == 'RUNNING'){
+                if (vm.jobFilters.filter.state == 'RUNNING') {
                     obj.compact = false;
                 }
 
@@ -6518,9 +6491,9 @@
         };
         vm.init();
 
-        vm.toggleCompactView = function(){
+        vm.toggleCompactView = function () {
             vm.jobFilters.isCompact = !vm.jobFilters.isCompact;
-            if(!vm.jobFilters.isCompact){
+            if (!vm.jobFilters.isCompact) {
                 vm.init();
             }
             vm.userPreferences.isJobOverviewCompact = vm.jobFilters.isCompact;
@@ -6677,7 +6650,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
-            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject) ;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -7142,8 +7115,7 @@
             } else if (task && path) {
                 vm.task = task;
                 vm.path = path;
-            }
-            else {
+            } else {
                 vm.taskJobs = vm.object.jobs;
             }
             vm.timeObj = {};
@@ -7629,12 +7601,12 @@
             }
         };
 
-        vm.assignedDocument = function(job) {
+        vm.assignedDocument = function (job) {
             vm.assignObj = {
                 type: 'Job',
                 path: job.path,
             };
-            let obj = {jobschedulerId: vm.schedulerIds.selected, job : job.path};
+            let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -7654,7 +7626,7 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 obj.documentation = vm.assignObj.documentation;
-                JobService.assign(obj).then(function(res){
+                JobService.assign(obj).then(function (res) {
                     job.documentation = vm.assignObj.documentation;
                 });
             }, function () {
@@ -7670,7 +7642,7 @@
             vm.assignObj.documentation = path;
         });
 
-        vm.unassignedDocument = function(job) {
+        vm.unassignedDocument = function (job) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, job: job.path};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -7712,22 +7684,18 @@
             if (calendarView === 'year') {
                 if (viewDate.getFullYear() < new Date().getFullYear()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear()) {
                     date = "+0y";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getFullYear() - new Date().getFullYear() + "y";
                 }
             }
             if (calendarView === 'month') {
                 if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
                     return;
-                }
-                else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
+                } else if (viewDate.getFullYear() === new Date().getFullYear() && viewDate.getMonth() === new Date().getMonth()) {
                     date = "+" + viewDate.getMonth() - new Date().getMonth() + "M";
-                }
-                else {
+                } else {
                     date = "+" + viewDate.getMonth() - (new Date().getMonth() - (12 * (viewDate.getFullYear() - new Date().getFullYear()))) + "M";
                 }
             }
@@ -7855,7 +7823,7 @@
                                             flag = true;
                                             if (vm.jobFilters.filter.state === 'ALL' || res.jobs[0].state._text === vm.jobFilters.filter.state) {
                                                 vm.allJobs[i] = mergePermanentAndVolatile(res.jobs[0], vm.allJobs[i]);
-                                                
+
                                                 if (vm.showTaskPanel && (vm.showTaskPanel.path === vm.allJobs[i].path)) {
                                                     vm.showTaskPanel = vm.allJobs[i];
                                                 }
@@ -7880,28 +7848,23 @@
                             });
 
                             $rootScope.$broadcast('reloadJobSnapshot');
-                        }
-
-                        else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[i].eventId) {
+                        } else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[i].eventId) {
                             var jobs = {};
                             jobs.jobschedulerId = vm.schedulerIds.selected;
                             jobs.job = vm.showTaskPanel.path;
                             JobService.history(jobs).then(function (res) {
                                 vm.taskHistory = res.history;
                             });
-                        }
-                        else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.events[0].eventSnapshots[i].path === vm.showTaskPanel.path) {
+                        } else if (vm.showTaskPanel && vm.events[0].eventSnapshots[i].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType === "JOB" && vm.events[0].eventSnapshots[i].path === vm.showTaskPanel.path) {
                             if (vm.permission.AuditLog.view.status)
                                 vm.loadAuditLogs(vm.showTaskPanel);
-                        }
-
-                        else if (vm.events[0].eventSnapshots[i].eventType === "JobTaskQueueChanged" && vm.showTaskPanel) {
+                        } else if (vm.events[0].eventSnapshots[i].eventType === "JobTaskQueueChanged" && vm.showTaskPanel) {
                             getHistoryPanelData(vm.showTaskPanel);
                         }
                     }
                 }
             } else {
-                if(vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                     for (let j = 0; j < vm.events[0].eventSnapshots.length; j++) {
                         if (vm.events[0].eventSnapshots[j].eventType === 'JobStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
                             if (jobPaths.indexOf(vm.events[0].eventSnapshots[j].path) == -1) {
@@ -8096,10 +8059,28 @@
                         let _job = vm.allJobs[count];
                         _job.inconditions = res.inconditions;
                         _job.outconditions = result.outconditions;
-                        if ((res.inconditions || res.inconditions.length === 0) && (result.outconditions && result.outconditions.length > 0)) {
-                            _conditions.unshift(_job);
+                        if ((!res.inconditions || res.inconditions.length === 0) && (result.outconditions && result.outconditions.length > 0)) {
+                            if (_conditions.length === 0) {
+                                _conditions.push(_job);
+                            } else {
+                                _conditions = [_job].concat(_conditions);
+                            }
+                        } else if ((!result.outconditions || result.outconditions.length === 0) && (res.inconditions && res.inconditions.length > 0)) {
+                            _conditions.push(_job);
                         } else if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
                             _conditions.push(_job);
+                            let _temp = angular.copy(_conditions);
+                            let arr = [];
+                            for (let i = 0; i < _temp.length; i++) {
+                                for (let j = 0; j < _conditions.length; j++) {
+                                    if (_conditions[j].outconditions.length > 0) {
+                                        arr.push(_conditions[j]);
+                                        _conditions.splice(j, 1);
+                                        break;
+                                    }
+                                }
+                            }
+                            _conditions = arr.concat(_conditions);
                         }
 
                         if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
@@ -8109,7 +8090,7 @@
                         if (count === vm.allJobs.length - 1) {
                             vm.isWorkflowLoaded = true;
                             createWorkflowDiagram(_conditions);
-                        }else{
+                        } else {
                             count++;
                             recursive();
                         }
@@ -8138,24 +8119,21 @@
 
         function createWorkflowDiagram(jobs) {
             const graph = vm.editor.graph;
-            var parent = graph.getDefaultParent();
+            let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
             let vertexes = [];
             let events = [];
             let eventsBox;
             try {
                 for (let i = 0; i < jobs.length; i++) {
-                    if(i > 0) {
+                    if (i > 0) {
                         if (eventsBox && eventsBox.id) {
+                            console.log('eventsBox ' + eventsBox.id + ' >>> ' + eventsBox.getAttribute('label'))
                             for (let m = 1; m < jobs.length; m++) {
-                                if(jobs[i].name != jobs[m].name) {
-                                    for (let j = 0; j < events.length; j++) {
-                                        for (let x = 0; x < jobs[m].inconditions.length; x++) {
-                                            if (!jobs[m].inconditions[x].connectBox && jobs[m].inconditions[x].conditionExpression.expression.match(events[j].getAttribute('label'))) {
-                                                jobs[m].inconditions[x].connectBox = eventsBox.id;
-                                                jobs[i].inconditions[x].connectBox = eventsBox.id;
-                                                break;
-                                            }
+                                for (let j = 0; j < events.length; j++) {
+                                    for (let x = 0; x < jobs[m].inconditions.length; x++) {
+                                        if (!jobs[m].inconditions[x].connectBox && jobs[m].inconditions[x].conditionExpression.expression.match(events[j].getAttribute('label'))) {
+                                            jobs[m].inconditions[x].connectBox = eventsBox.id;
                                         }
                                     }
                                 }
@@ -8171,14 +8149,17 @@
                     for (let x = 0; x < jobs[i].inconditions.length; x++) {
                         let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
                         let conditionVertex = graph.insertVertex(parent, null, getCellNode('InCondition', _label), 0, 0, 150, 60, 'condition');
+                        jobs[i].inconditions[x].vertexId = conditionVertex.id;
                         vertexes.push(conditionVertex);
                         graph.insertEdge(parent, null, getCellNode('Connection', 'In'), conditionVertex, v1);
                         if (jobs[i].inconditions[x].conditionExpression.value) {
                             let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
                             graph.addCellOverlay(conditionVertex, overlay);
                         }
-                        if(jobs[i].inconditions[x].connectBox){
+                        if (jobs[i].inconditions[x].connectBox) {
+                            //console.log(jobs[i].name +' connect ' + jobs[i].inconditions[x].conditionExpression.expression )
                             graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[x].connectBox), conditionVertex);
+                            delete jobs[i].inconditions[x]['connectBox'];
                         }
                     }
 
@@ -8187,9 +8168,6 @@
                         let conditionVertex = graph.insertVertex(parent, null, getCellNode('OutCondition', _label), 0, 0, 150, 60, 'condition');
                         vertexes.push(conditionVertex);
                         graph.insertEdge(parent, null, getCellNode('Connection', 'Out'), v1, conditionVertex);
-                        /* if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
-                               conditionVertex.collapsed = false;
-                        }*/
                         if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                             for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
                                 let e1 = graph.insertVertex(parent, null, getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event), 0, 0, 150, 40, 'event');
@@ -8205,7 +8183,7 @@
                     }
 
                     if (jobs[i].outconditions.length > 0) {
-                        let out = graph.insertVertex(parent, null, getCellNode('Event', 'Out Conditions ' + jobs[i].name), 0, 0, 150, 40, 'rect');
+                        let out = graph.insertVertex(parent, null, getCellNode('Box', 'Out Conditions ' + jobs[i].name), 0, 0, 140, 40, 'rect');
                         eventsBox = out;
                         vertexes.push(out);
                         for (let m = 0; m < events.length; m++) {
@@ -8214,20 +8192,37 @@
                     }
                 }
 
+            } catch (e) {
+                console.log(e)
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
             }
-
+            for (let i = 0; i < jobs.length; i++) {
+                if (jobs[i].inconditions) {
+                    for (let j = 0; j < jobs[i].inconditions.length; j++) {
+                        if (jobs[i].inconditions[j].connectBox) {
+                            console.log(jobs[i].name + ' ' + jobs[i].inconditions[j].connectBox + ' >>>>>> ', jobs[i].inconditions[j].vertexId);
+                            graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[j].connectBox), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
+                            delete jobs[i].inconditions[j]['connectBox'];
+                        }
+                    }
+                }
+            }
             makeCenter(graph);
             executeLayout(graph);
             for (let i = 0; i < vertexes.length; i++) {
                 graph.updateCellSize(vertexes[i]);
+                if (vertexes[i].getAttribute('label') && vertexes[i].getAttribute('label').match('Out Conditions ')) {
+                    if (graph.getOutgoingEdges(vertexes[i]) && graph.getOutgoingEdges(vertexes[i]).length === 0) {
+                        graph.removeCells([vertexes[i]], true);
+                    }
+                }
             }
-            let timeout = setTimeout(function () {
+            setTimeout(function () {
                 executeLayout(graph);
-                clearTimeout(timeout);
-            }, 0);
+            }, 1);
+
         }
 
         /**

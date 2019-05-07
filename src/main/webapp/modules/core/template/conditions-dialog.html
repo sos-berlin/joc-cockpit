@@ -1,0 +1,229 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title"><span translate>label.conditionEditor</span> : {{_job.path}}</h4>
+    </div>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a" style="min-height: 350px;max-height: 650px; overflow: auto">
+            <div ng-if="!condition">
+                <div class="row m-b" >
+                    <div class="col-sm-3 form-control-label" translate>label.workflow</div>
+                    <div class="col-sm-9" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
+                        <input type="text" required class="form-control"
+                               placeholder="{{'placeholder.enterWorkflow' | translate}}" name="workflow"
+                               ng-model="editor.workflow">
+                        <div class="help-block text-danger" ng-if="form.workflow.$dirty"
+                             ng-messages="form.workflow.$error">
+                            <div ng-message="required" translate>message.requiredError</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="b-b">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item" >
+                                    <a class="nav-link" ng-class="{active: editor.type=='Incondition'}" ng-click="editor.type = 'Incondition'" href data-toggle="tab" data-target="#tab1" translate>tab.incondtions</a>
+                                </li>
+                                <li class="nav-item" >
+                                    <a class="nav-link" ng-class="{active: editor.type=='Outcondition'}" ng-click="editor.type = 'Outcondition'" href data-toggle="tab" data-target="#tab2" translate>tab.outcondtions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="max-height: 450px; overflow: auto">
+                        <div class="table-responsive m-t">
+                            <table class="table table-hover table-bordered ">
+                                <thead>
+                                <tr>
+                                    <th width="50" translate>label.expression</th>
+                                    <th width="50">
+                                        <span ng-if="editor.type=='Incondition'" translate>label.listOfCommands</span>
+                                        <span ng-if="editor.type=='Outcondition'" translate>label.listOfEvents</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="incondition in _job.inconditions track by $index" class="cursor"
+                                    ng-click="updateCondition(incondition, $index)"
+                                    ng-if="editor.type=='Incondition'">
+                                    <td>
+                                        {{incondition.conditionExpression.expression}}
+                                        <a class="text-xs text-hover-color m-l-sm"
+                                           ng-click="removeInCondition($index);$event.stopPropagation()">
+                                            <i class="fa fa-times"></i></a>
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="commands in incondition.inconditionCommands track by $index">
+                                            <a ng-click="editCommand(commands, $index);$event.stopPropagation()">{{commands.command}}
+                                                : {{commands.commandParam}}</a>
+                                            <a class="text-xs text-hover-primary m-l-sm"
+                                               ng-click="editCommand(commands, incondition, $index);$event.stopPropagation()">
+                                                <i class="fa fa-pencil"></i></a>
+                                            <a class="text-xs text-hover-color m-l-sm"
+                                               ng-click="removeCommand(incondition.inconditionCommands, $index);$event.stopPropagation()">
+                                                <i class="fa fa-times"></i></a>
+                                        </div>
+                                        <div class="text-xs cursor text-hover-primary">
+                                            <i class="fa fa-plus"
+                                               ng-click="addCommand(incondition);$event.stopPropagation()"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="outcondition in _job.outconditions track by $index" class="cursor"
+                                    ng-click="updateCondition(outcondition, $index)"
+                                    ng-if="editor.type=='Outcondition'">
+                                    <td>
+                                        {{outcondition.conditionExpression.expression}}
+                                        <a class="text-xs text-hover-color m-l-sm"
+                                           ng-click="removeOutCondition($index);$event.stopPropagation()">
+                                            <i class="fa fa-times"></i></a>
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index">
+                                            <a ng-click="editEvent(events, $index);$event.stopPropagation()">{{events.event}}</a>
+                                            <a class="text-xs text-hover-primary m-l-sm"
+                                               ng-click="editEvent(events, outcondition, $index);$event.stopPropagation()">
+                                                <i class="fa fa-pencil"></i></a>
+                                            <a class="text-xs text-hover-color m-l-sm"
+                                               ng-click="removeEvent(outcondition.outconditionEvents, $index);$event.stopPropagation()">
+                                                <i class="fa fa-times"></i></a>
+                                        </div>
+                                        <div class="text-xs cursor text-hover-primary">
+                                            <i class="fa fa-plus"
+                                               ng-click="addEvent(outcondition);$event.stopPropagation()"></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center" ng-if="_job.inconditions.length==0 && editor.type=='Incondition'">
+                            <span translate>message.noInconditionFound</span>.
+                            <a class="text-hover-primary text-u-l" ng-click="updateCondition()" translate>message.clickHereToADD</a>
+                        </div>
+                        <div class="text-center" ng-if="_job.outconditions.length==0 && editor.type=='Outcondition'">
+                            <span translate>message.noOutconditionFound</span>.
+                            <a class="text-hover-primary text-u-l" ng-click="updateCondition()" translate>message.clickHereToADD</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-if="_job.inconditions.length > 0 && editor.type=='Incondition'">
+                    <button type="button" class="btn btn-primary btn-sm" tooltip-placement="right"
+                            uib-tooltip="{{'button.addInconditionCommands' | translate}}" ng-click="updateCondition()">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div class="form-group" ng-if="_job.outconditions.length > 0 && editor.type=='Outcondition'">
+                    <button type="button" class="btn btn-primary btn-sm" tooltip-placement="right"
+                            uib-tooltip="{{'button.addOutconditionEvents' | translate}}" ng-click="updateCondition()">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div ng-if="condition">
+                <div class="row m-b-sm">
+                    <label class="col-sm-12" ng-show="strCondition == 'create'">
+                        <span class="text-primary  text-capitalize" translate>label.create</span>
+                        <i class="fa fa-angle-right m-l-xs fa-lg"></i>
+                        <span class="text-sm text-muted" translate>label.addExpression</span>
+                    </label>
+                    <label class="col-sm-12" ng-show="strCondition == 'edit'">
+                        <span class="text-primary text-capitalize" translate>label.edit</span>
+                        <i class="fa fa-angle-right m-l-xs fa-lg"></i>
+                        <span class="text-sm text-muted">{{::condition.conditionExpression.expression}}</span>
+                    </label>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10 m-b-sm">
+                        <span translate>label.expression</span>
+                        <i class="fa fa-pencil m-l-sm text-hover-primary" ng-click="expressionEditor()"></i>
+                    </div>
+                    <div class="col-md-10 m-b-sm">
+                        <textarea rows="3" class="form-control" name="expression" placeholder="returncode:x event:event_name fileexist:file_name"
+                                  ng-model="condition.conditionExpression.expression"></textarea>
+                    </div>
+                </div>
+                <div ng-if="editor.type=='Incondition'">
+                    <div class="form-group row">
+                        <div class="col-md-10 _600" translate>label.commandList</div>
+                    </div>
+                    <div class="form-group row m-b-0" ng-repeat="inconditionCommand in condition.inconditionCommands;">
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.command</div>
+                        <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.commandParam</div>
+                        <div class="col-sm-5 m-b-sm">
+                            <select class="form-control" name="command{{$index}}" ng-model="inconditionCommand.command">
+                                <option value="">Choose Command</option>
+                                <option value="start_job">start_job</option>
+                                <option value="show_log">show_log</option>
+                                <option value="create_event">create_event</option>
+                                <option value="delete_event">delete_event</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5 m-b-sm">
+                            <input type="text" class="form-control" name="commandParam{{$index}}"
+                                   ng-model="inconditionCommand.commandParam">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeInconditionCommands($index)"
+                                  class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <a class="text-u-l" ng-if="condition.inconditionCommands.length>0"
+                               ng-click="addInconditionCommands()" translate>button.addAnotherInconditionCommands</a>
+                            <a class="text-u-l" ng-if="condition.inconditionCommands.length==0"
+                               ng-click="addInconditionCommands()" translate>button.addInconditionCommands</a>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="editor.type=='Outcondition'">
+                    <div class="form-group row">
+                        <div class="col-md-10 _600" translate>label.eventList</div>
+                    </div>
+                    <div class="form-group row m-b-0" ng-repeat="outconditionEvent in condition.outconditionEvents;">
+                        <div class="col-sm-10 m-b-sm" ng-if="$index==0" translate>label.event</div>
+                        <div class="col-sm-10 m-b-sm">
+                            <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                        </div>
+                        <div class="col-sm-1 p-l-0">
+                            <a><i ng-click="removeOutconditionEvents($index)"
+                                  class="fa fa-times m-t-sm text-hover-color"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <a class="text-u-l" ng-if="condition.outconditionEvents.length>0"
+                               ng-click="addOutconditionEvents()" translate>button.addAnotherOutconditionEvents</a>
+                            <a class="text-u-l" ng-if="condition.outconditionEvents.length==0"
+                               ng-click="addOutconditionEvents()" translate>button.addOutconditionEvents</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer text-left">
+            <div ng-if="!condition">
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                    button.submit
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                </button>
+            </div>
+            <div ng-if="condition">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="save2(form)" ng-disabled="form.$invalid"
+                        translate>
+                    button.save
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="close2(form)" translate>
+                    button.close
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div ui-include="'modules/core/template/expression-editor-dialog.html'"></div>
+<div ui-include="'modules/core/template/command-editor-dialog.html'"></div>
