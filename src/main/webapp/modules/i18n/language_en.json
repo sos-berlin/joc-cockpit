@@ -1414,6 +1414,14 @@
   "label.assignAWorkflow": "Assign Workflow",
   "label.expressionEditor": "Expression Editor",
   "label.addExpression": "Add Expression",
+  "label.viewGraph": "view graph",
+  "label.eventlist": "event list",
+  "label.condition": "Condition",
+  "label.conditions": "conditions",
+  "label.eventAdd": "event add",
+  "label.eventRemove": "event remove",
+  "label.chooseCommand": "Choose Command",
+  "label.updateCondition": "Update Condition",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
   "message.noOutconditionFound": "No Outconditions found",
@@ -1422,7 +1430,10 @@
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",
   "tooltip.actual": "Actual",
-  "tab.incondtions": "In-Conditions",
-  "tab.outcondtions": "Out-Conditions",
-  "placeholder.enterWorkflow": "Enter Workflow"
+  "tab.inconditions": "In-Conditions",
+  "tab.outconditions": "Out-Conditions",
+  "placeholder.enterWorkflow": "Enter Workflow",
+  "InCondition": "In-Condition",
+  "OutCondition": "Out-Condition",
+  "Event": "Event"
 }

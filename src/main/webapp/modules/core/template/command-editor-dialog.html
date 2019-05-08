@@ -20,6 +20,7 @@
                             <div class="col-sm-6">
                                 <select class="form-control" name="command" ng-required="command"
                                        ng-model="command.command">
+                                    <option value="" translate>label.chooseCommand</option>
                                     <option value="start_job">start_job</option>
                                     <option value="show_log">show_log</option>
                                     <option value="create_event">create_event</option>
@@ -29,9 +30,15 @@
                         </div>
                         <div ng-if="command" class="form-group row" ng-class="{ 'has-error' : form2.commandParam.$invalid && form2.commandParam.$dirty }">
                             <label class="col-sm-4 form-control-label" translate>label.commandParam</label>
-                            <div class="col-sm-6" >
-                                <input class="form-control" name="commandParam" ng-required="command" ng-model="command.commandParam"
+                            <div class="col-sm-6" ng-class="{ 'has-error' : form2.atTime.$invalid && form2.atTime.$dirty }">
+                                <input ng-if="command.command !== 'start_job'" class="form-control" name="commandParam" ng-required="command" ng-model="command.commandParam"
                                        placeholder="" type="text">
+                                <input ng-if="command.command == 'start_job'" valid-date-regex ng-required="command.command == 'start_job'" type="text" class="form-control" name="atTime"
+                                   ng-model="command.commandParam" placeholder="{{'placeholder.enterStartTime' | translate}}">
+                                <div class="help-block text-danger" ng-messages="form2.atTime.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
+                                    <div ng-message="required" translate>message.requiredError</div>
+                                </div>
                             </div>
                         </div>
                         <div ng-if="event" class="form-group row" ng-class="{ 'has-error' : form2.event.$invalid && form2.event.$dirty }">

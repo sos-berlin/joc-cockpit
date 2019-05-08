@@ -87,7 +87,7 @@
                             </div>
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
-                        <div class="inline" ng-if="pageView == 'in-out-conditions'">
+                        <div class="inline" ng-if="pageView == 'in-out-conditions' && permission.Condition.view.graph">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                 <li class="nav-item">
                                   <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
@@ -354,8 +354,8 @@
                                             <a class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
                                                 <span translate>button.showDocumentation</span>
                                             </a>
-                                            <div class="dropdown-divider" ng-if="username == 'ur'"></div>
-                                            <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editConditions(job)" translate>button.editConditions</a>
+                                            <div class="dropdown-divider" ng-if="username == 'ur' && permission.Condition.change.conditions"></div>
+                                            <a class="dropdown-item" ng-if="username == 'ur' && permission.Condition.change.conditions" ng-click="editConditions(job)" translate>button.editConditions</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
                                         </div>
@@ -565,8 +565,8 @@
                                                 <a class="dropdown-item {{job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation" ng-click="showDocumentation('job', job.path)">
                                                     <span translate>button.showDocumentation</span>
                                                 </a>
-                                                <div class="dropdown-divider" ng-if="username == 'ur'"></div>
-                                                <a class="dropdown-item" ng-if="username == 'ur'" ng-click="editConditions(job)" translate>button.editConditions</a>
+                                                <div class="dropdown-divider" ng-if="username == 'ur' && permission.Condition.change.conditions"></div>
+                                                <a class="dropdown-item" ng-if="username == 'ur' && permission.Condition.change.conditions" ng-click="editConditions(job)" translate>button.editConditions</a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                    translate>button.copyLinkToObject</a>
@@ -743,8 +743,14 @@
                         <div class="text-center m-t text-uppercase text-orange {{(totalCount===0 && allJobs.length !==0) ? '' :'hide'}}" translate>message.noDataMatched</div>
                     </div>
                 </div>
-                <div ng-if="pageView=='in-out-conditions' && allJobs.length > 0">
+                <div ng-if="pageView=='in-out-conditions' && allJobs.length > 0 && permission.Condition.view.graph">
                     <div ng-controller="JobWorkflowCtrl">
+                        <div class="p-l-sm p-b">
+                            <div ng-repeat="workflow in workflows" ng-if="$index == 0">
+                                <a class="text-hover-primary"><i class="fa fa-sitemap"></i>
+                                <span class="text">{{workflow}}</span></a>
+                            </div>
+                        </div>
                         <div class="box p-a" ng-show="flag">
                             <div class="graph-container">
                                 <div id="graph"></div>
@@ -755,7 +761,7 @@
                         <div class="text-center m-t-md text-md" ng-if="!flag && isWorkflowLoaded">
                             <span translate>message.noConditionFound</span>
                         </div>
-                        <div ng-if="!isWorkflowLoaded" class="loading-img1"></div>
+                        <div ng-if="!isWorkflowLoaded || !isUpdated" class="loading-img1"></div>
                     </div>
                 </div>
             </div>

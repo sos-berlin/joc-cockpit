@@ -14027,6 +14027,22 @@
         };
         vm.strCommand = '';
 
+        function init() {
+            if(vm._job.inconditions && vm._job.inconditions.length > 0) {
+                for (let i = 0; i < vm._job.inconditions.length; i++) {
+                    vm.editor.workflow = vm._job.inconditions[i].workflow;
+                    break;
+                }
+            }
+            if (!vm.editor.workflow && vm._job.outconditions && vm._job.outconditions.length > 0) {
+                for (let i = 0; i < vm._job.outconditions.length; i++) {
+                    vm.editor.workflow = vm._job.outconditions[i].workflow;
+                    break;
+                }
+            }
+        }
+        init();
+
         $scope.ok = function () {
             for(let i = 0; i < vm._job.inconditions.length; i++){
                 vm._job.inconditions[i].workflow = vm.editor.workflow;
@@ -14075,6 +14091,10 @@
 
         vm.removeInCondition = function (index) {
             vm._job.inconditions.splice(index, 1);
+        };
+
+        vm.removeOutCondition = function (index) {
+            vm._job.outconditions.splice(index, 1);
         };
 
         vm.addInconditionCommands = function () {
@@ -14239,6 +14259,14 @@
         vm.validateExpression = function(){
             vm.operator = undefined;
             vm.tmp = '';
+        };
+
+        vm.selectCommand = function (command, index) {
+            if (command === 'start_job') {
+                vm.condition.inconditionCommands[index].commandParam = 'now';
+            } else {
+                vm.condition.inconditionCommands[index].commandParam = '';
+            }
         };
 
         $scope.$on('$destroy', function () {

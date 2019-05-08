@@ -4791,7 +4791,7 @@ i.fa-hand-o-up:hover {
     overflow-y: auto;
     cursor: default;
     background-position: 0 0;
-    height: calc(100vh - 212px);
+    height: calc(100vh - 248px);
 }
 
 #outlineContainer {

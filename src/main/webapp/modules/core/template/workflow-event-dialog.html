@@ -3,12 +3,12 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
                                                                                          class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title"><span translate> Update Expression</span></h4>
+        <h4 class="modal-title"><span translate>label.updateCondition</span></h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>{{condition.label}}</label>
+                <label class="col-sm-4 form-control-label">{{condition.label | translate}}</label>
                 <div class="col-sm-6" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
                     <input type="text" class="form-control" name="workflow" required ng-model="condition.value">
                     <div class="help-block text-danger" ng-if="form.workflow.$dirty" ng-messages="form.workflow.$error">
