@@ -14218,11 +14218,10 @@
 
         vm.expressionEditor = function () {
             vm.expression = {};
-            if (vm.condition.conditionExpression) {
-                vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
-            } else {
-                vm.expression.expression = '';
+            if (!vm.condition.conditionExpression) {
+                vm.condition.conditionExpression = {expression: ''};
             }
+            vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
             $('#expression-editor').modal('show');
         };
 
@@ -14243,22 +14242,34 @@
                 form.$setUntouched();
             }
         };
-
-        vm.generateExpression = function(operator) {
-            if (vm.expression.expression && vm.expression.expression != ' ') {
+        let isFunction= false;
+        vm.generateExpression = function (operator, func) {
+            if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
+                isFunction = false;
+                vm.tmpExp = null;
                 if (!vm.operator) {
                     vm.operator = operator;
                     vm.tmp = vm.expression.expression;
                     vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
-                } else if (this.tmp) {
+                } else if (vm.tmp) {
                     vm.expression.expression = vm.tmp + ' ' + operator + ' ';
+                }
+            } else if (func) {
+                vm.tmp = null;
+                if(!isFunction) {
+                    isFunction = true;
+                    vm.tmpExp = vm.expression.expression;
+                    vm.expression.expression = vm.expression.expression + ' ' + func + ':';
+                } else if(vm.tmpExp || vm.tmpExp == ''){
+                     vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                 }
             }
         };
 
-        vm.validateExpression = function(){
+        vm.validateExpression = function () {
             vm.operator = undefined;
-            vm.tmp = '';
+            vm.tmp = null;
+            vm.tmpExp = null;
         };
 
         vm.selectCommand = function (command, index) {
@@ -14269,8 +14280,5 @@
             }
         };
 
-        $scope.$on('$destroy', function () {
-
-        });
     }
 })();

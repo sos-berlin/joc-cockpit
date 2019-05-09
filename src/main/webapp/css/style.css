@@ -4791,15 +4791,15 @@ i.fa-hand-o-up:hover {
     overflow-y: auto;
     cursor: default;
     background-position: 0 0;
-    height: calc(100vh - 248px);
+    height: 100%;
 }
 
 #outlineContainer {
-    z-index: 9;
+    z-index: 99;
     position: absolute;
     overflow: hidden;
-    top: 0;
-    right: 10px;
+    top: 2px;
+    right: 2px;
     width: 170px;
     height: 150px;
 }

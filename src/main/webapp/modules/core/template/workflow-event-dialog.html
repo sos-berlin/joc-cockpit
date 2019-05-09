@@ -3,16 +3,65 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
                                                                                          class="fa fa-times-circle"></span>
         </button>
-        <h4 class="modal-title"><span translate>label.updateCondition</span></h4>
+        <h4 class="modal-title"><span translate>label.expressionEditor</span> </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
-        <div class="modal-body p-a" style="overflow: auto; max-height: 70vh">
+        <div class="modal-body p-a">
+            <div class="row">
+                <label class="col-sm-12">
+                    <span >{{expression.label | translate}}</span>
+                </label>
+            </div>
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label">{{condition.label | translate}}</label>
-                <div class="col-sm-6" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
-                    <input type="text" class="form-control" name="workflow" required ng-model="condition.value">
-                    <div class="help-block text-danger" ng-if="form.workflow.$dirty" ng-messages="form.workflow.$error">
-                        <div ng-message="required" translate>message.requiredError</div>
+                <div class="col-sm-3 p-r-0" >
+                    <div class="box-shadow p-l-sm" style="height: 123px">
+                        <div class="b-b p-b-sm p-t"><a class="text-hover-primary text" ng-click="generateExpression(null,'returncode')">returncode</a></div>
+                        <div class="b-b p-b-sm p-t-sm"><a class="text-hover-primary text" ng-click="generateExpression(null,'event')">event</a></div>
+                        <div class="p-t-sm"><a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist')">fileexist</a></div>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <textarea rows="5" class="form-control" required ng-model="expression.expression" placeholder="returncode:x, event:event, fileexist:filename" autofocus
+                              ng-change="validateExpression()" ng-keypress="onKepPress($event)"  name="expression"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <div class="text-center">
+                        <div>
+                            <button type="button" ng-click="generateExpression('and', null)"
+                                    class="btn btn-sm btn-grey m-l-xs"> AND
+                            </button>
+                            <button type="button" ng-click="generateExpression('or', null)"
+                                    class="btn btn-sm btn-grey m-l-xs"> OR
+                            </button>
+                            <button type="button" ng-click="generateExpression('not', null)"
+                                    class="btn btn-sm btn-grey m-l-xs"> NOT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="expression.label == 'OutCondition'">
+                <div class="form-group row">
+                    <div class="col-md-10 _600" translate>label.eventList</div>
+                </div>
+                <div class="form-group row m-b-0" ng-repeat="event in expression.events;">
+                    <div class="col-sm-11 m-b-sm" ng-if="$index==0" translate>label.event</div>
+                    <div class="col-sm-11 m-b-sm">
+                        <input type="text" class="form-control" name="event{{$index}}" ng-model="event.event">
+                    </div>
+                    <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeEvent(expression.events, $index)"
+                              class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <a class="text-u-l" ng-if="expression.events.length>0"
+                           ng-click="addEvent(expression)" translate>button.addAnotherOutconditionEvents</a>
+                        <a class="text-u-l" ng-if="expression.events.length==0"
+                           ng-click="addEvent(expression)" translate>button.addOutconditionEvents</a>
                     </div>
                 </div>
             </div>
@@ -25,3 +74,14 @@
         </div>
     </form>
 </div>
+<style>
+    textarea {
+        resize: none;
+    }
+</style>
+
+
+
+
+
+
