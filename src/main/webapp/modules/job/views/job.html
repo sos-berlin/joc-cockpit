@@ -744,38 +744,52 @@
                     </div>
                 </div>
                 <div ng-if="pageView=='in-out-conditions' && allJobs.length > 0 && permission.Condition.view.graph">
-                     <div ng-controller="JobWorkflowCtrl">
-			<div class="row" ng-show="flag">
-                        <div class="col-md-9">
-                            <div class="box p-a">
-                                <div class="graph-container">
-                                    <div id="graph"></div>
-                                    <!-- Creates a container for the outline -->
-                                    <div id="outlineContainer"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="box">
-                                <div class="box-header b-b p-t p-b">
-                                  <h3 translate>label.listOfWorkflows</h3>
-                                </div>
-                               <div class="box-body p-a">
- 					<div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%" ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
-                                            <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i><a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="box">
-                                    <div class="box-header b-b p-t p-b">
-                                      <h3 translate>label.properties</h3>
-                                    </div>
-                                    <div class="box-body p-a">
-                                        <div id="properties"></div>
+                    <div ng-controller="JobWorkflowCtrl" >
+                        <div class="row" ng-show="flag">
+                            <div class="col-md-12">
+                                <div>
+                                    <div class="graph-container">
+                                        <div id="graph"></div>
+                                        <!-- Creates a container for the outline -->
+                                        <div id="outlineContainer"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="property-panel hidden-sm" ng-show="flag">
+                            <div class="sidebar-open">
+                                <i class="fa fa-caret-left"></i>
+                            </div>
+                            <div class="sidebar-close">
+                                <i class="fa fa-caret-right"></i>
+                            </div>
+                            <div class="sidebar bg-white">
+                                <div class="box-header b-b text-center">
+                                    <h3 translate>label.listOfWorkflows</h3>
+                                </div>
+                                <div class="box-body p-a">
+                                    <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%"
+                                         ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
+                                        <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
+                                        <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
+                                    </div>
+                                </div>
+                                <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-sm btn-grey btn-block" ng-class="{'primary':jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>
+                                            button.compactView
+                                        </button>
+                                    </div>
+                                    <div class="col-md-12 m-t">
+                                        <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="resetWorkflow(selectedWorkflow, '')" translate>
+                                            button.resetWorkflow
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="text-center m-t-md text-md" ng-if="!flag && isWorkflowLoaded">
                             <span translate>message.noConditionFound</span>
                         </div>

@@ -529,6 +529,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            resetWorkflow: function (filter) {
+                var deferred = $q.defer();
+                var Condition = $resource('resetworkflow/conditions');
+                Condition.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

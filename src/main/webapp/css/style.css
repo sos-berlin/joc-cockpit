@@ -4790,8 +4790,9 @@ i.fa-hand-o-up:hover {
     overflow: hidden;
     overflow-y: auto;
     cursor: default;
-    background-position: 0 0;
+    background: #fff;
     height: 100%;
+    padding-top: 10px;
 }
 
 #outlineContainer {
@@ -4799,7 +4800,7 @@ i.fa-hand-o-up:hover {
     position: absolute;
     overflow: hidden;
     top: 2px;
-    right: 2px;
+    right: 10px;
     width: 170px;
     height: 150px;
 }
@@ -4888,4 +4889,48 @@ div.mxTooltip .text-check {
 }
 .text-check {
     color: #63c381 !important
+}
+.bg-white {
+  background-color: #fff !important;
+}
+
+.property-panel {
+  position: fixed;
+  top: 169px;
+  right: 0;
+}
+
+.property-panel .sidebar-open, .property-panel .sidebar-close {
+  top: 0;
+  right: 0;
+  padding: 26px 6px;
+  cursor: pointer;
+  position: absolute;
+  background: url(../images/left-tips.svg) center no-repeat;
+  z-index: 999;
+}
+
+.property-panel .sidebar-open i, .property-panel .sidebar-close i {
+  position: relative;
+  left: 1px;
+}
+
+.property-panel .sidebar-close i {
+  left: 4px;
+}
+
+.property-panel .sidebar-close {
+  right: -20px;
+}
+
+.sidebar {
+  height: calc(100vh - 126px);
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 134px;
+  right: 0;
+  overflow-x: hidden;
+  transition: 0.3s;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
 }

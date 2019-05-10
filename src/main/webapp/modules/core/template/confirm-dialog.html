@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
+            <span ng-if="!workflow && !entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}} {{processClassObject.path}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
@@ -30,11 +30,16 @@
                  <span class="text-capitalize" translate>label.delete</span>
                  {{entry.entryName}}?
             </span>
+            <span ng-if="workflow">
+                 <span class="text-capitalize" translate>label.reset</span>
+                 {{workflow}}?
+            </span>
         </h4>
     </div>
     <div class="modal-body p-a" style="max-height: 640px; overflow: auto">
-        <div class="row">
-            <div class=" col-sm-12 text-center m-t">
+        <div class="form-group row">
+            <div class="col-sm-12 text-center m-t">
+                <span ng-if="workflow" translate class="text">message.resetWorkflow</span>
                 <span ng-if="profile" translate class="text">message.deleteProfiles</span>
                 <span ng-if="entry" translate class="text">message.deleteMainSection</span>
                 <span ng-if="user.user" translate class="text">message.deleteUser</span>
@@ -234,8 +239,8 @@
     </div>
     <div class="modal-footer text-left">
         <button type="submit" class="btn btn-primary btn-sm" ng-click="ok()">
-            <span ng-if="(!calendar || calendar.delete) && !importCalendars" translate>button.delete</span>
-            <span ng-if="(calendar && !calendar.delete) || importCalendars" translate>button.confirm</span>
+            <span ng-if="(!calendar || calendar.delete) && !importCalendars && !workflow" translate>button.delete</span>
+            <span ng-if="workflow || (calendar && !calendar.delete) || importCalendars" translate>button.confirm</span>
         </button>
         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
     </div>
