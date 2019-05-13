@@ -86,6 +86,15 @@
         <add as="fillColor" value="#ff882e"/>
         <add as="gradientColor" value="white"/>
       </add>
+      <add as="condition1">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="strokeColor" value="#ff882e"/>
+        <add as="fillColor" value="#ff882e"/>
+        <add as="gradientColor" value="white"/>
+        <add as="fontColor" value="#666"/>
+        <add as="opacity" value="70"/>
+      </add>
     </mxStylesheet>
     <mxGraphModel as="model">
       <root>

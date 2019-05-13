@@ -6554,10 +6554,22 @@
             initConfig(true);
         };
         vm.resetLayout = function () {
-            vm.userPreferences.dashboard = undefined;
-            initWidgets();
-            setWidgetPreference(true);
-            $state.reload('app.dashboard');
+            vm._dashboard = 'reset layout?';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.userPreferences.dashboard = undefined;
+                initWidgets();
+                setWidgetPreference(true);
+                $state.reload('app.dashboard');
+                vm._dashboard = undefined;
+            }, function () {
+                vm._dashboard = undefined;
+            })
         };
 
         vm.saveWidget = function () {

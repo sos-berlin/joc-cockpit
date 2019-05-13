@@ -768,11 +768,21 @@
                                 <div class="box-header b-b text-center">
                                     <h3 translate>label.listOfWorkflows</h3>
                                 </div>
-                                <div class="box-body p-a">
+                                <div class="box-body p-a" style="min-height:100px;max-height: 250px; overflow: auto">
                                     <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%"
                                          ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
                                         <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
                                         <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
+                                    </div>
+                                </div>
+                                <div ng-if="eventList && eventList.length > 0">
+                                    <div class="box-header b-b text-center m-t">
+                                        <h3 translate>label.listOfEvents</h3>
+                                    </div>
+                                    <div class="box-body p-a" style="max-height: 250px; overflow: auto">
+                                        <div ng-repeat="event in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
+                                            <a class="text-hover-primar"><span>{{event.event}}</span></a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">

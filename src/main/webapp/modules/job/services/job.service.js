@@ -532,8 +532,37 @@
             },
             resetWorkflow: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('resetworkflow/conditions');
+                var Condition = $resource('conditions/resetworkflow');
                 Condition.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+             getEvents: function (filter) {
+                var deferred = $q.defer();
+                var Event = $resource('conditions/events');
+                Event.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            addEvent: function (filter) {
+                var deferred = $q.defer();
+                var Event = $resource('conditions/event/add');
+                Event.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, deleteEvent: function (filter) {
+                var deferred = $q.defer();
+                var Event = $resource('conditions/event/delete');
+                Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
