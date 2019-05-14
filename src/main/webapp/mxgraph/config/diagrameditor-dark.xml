@@ -90,9 +90,11 @@
       <add as="condition1">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="#62cb5d"/>
-        <add as="fillColor" value="#62cb5d"/>
+        <add as="strokeColor" value="#ff882e"/>
+        <add as="fillColor" value="#ff882e"/>
         <add as="gradientColor" value="#333"/>
+        <add as="fontColor" value="#f2f2f2"/>
+        <add as="opacity" value="70"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

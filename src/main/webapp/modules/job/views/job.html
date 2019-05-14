@@ -765,23 +765,46 @@
                                 <i class="fa fa-caret-right"></i>
                             </div>
                             <div class="sidebar bg-white">
-                                <div class="box-header b-b text-center">
-                                    <h3 translate>label.listOfWorkflows</h3>
-                                </div>
-                                <div class="box-body p-a" style="min-height:100px;max-height: 250px; overflow: auto">
-                                    <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%"
-                                         ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
-                                        <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
-                                        <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
-                                    </div>
-                                </div>
-                                <div ng-if="eventList && eventList.length > 0">
-                                    <div class="box-header b-b text-center m-t">
-                                        <h3 translate>label.listOfEvents</h3>
-                                    </div>
-                                    <div class="box-body p-a" style="max-height: 250px; overflow: auto">
-                                        <div ng-repeat="event in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
-                                            <a class="text-hover-primar"><span>{{event.event}}</span></a>
+                                <div>
+                                    <div class="box-body p-a" style="height: 73vh; overflow: auto">
+                                        <div class="b-b">
+                                          <ul class="nav nav-tabs">
+                                              <li class="nav-item" >
+                                                  <a class="nav-link active" href data-toggle="tab" data-target="#tab12" translate>label.workflows</a>
+                                              </li>
+                                              <li class="nav-item" >
+                                                  <a class="nav-link" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
+                                              </li>
+                                          </ul>
+                                        </div>
+                                         <div class="tab-content p-a" >
+                                             <div class="tab-pane animated fadeIn active" id="tab12" >
+                                                 <div>
+                                                     <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%"
+                                                         ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
+                                                        <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
+                                                        <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
+                                                    </div>
+                                                 </div>
+                                             </div>
+                                             <div class="tab-pane animated fadeIn " id="tab13">
+                                                 <div>
+                                                     <div class="dropdown b-b p-b-xs m-b">
+                                                        <a class="dropdown-toggle" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary" ng-bind="filteredByWorkflow"></span></a>
+                                                        <div class="dropdown-menu dropdown-more dropdown-ac">
+                                                            <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}" ng-click="changeEvents(workflow.name)" ng-repeat="workflow in workflows | orderBy:'name'">
+                                                                <span>{{workflow.name}}</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                     <div ng-repeat="event in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
+                                                        <a class="text-hover-primary"><span>{{event.event}}</span></a>
+                                                    </div>
+                                                     <div ng-if="eventList.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                         message.noEventsFound
+                                                     </div>
+                                                 </div>
+                                             </div>
                                         </div>
                                     </div>
                                 </div>

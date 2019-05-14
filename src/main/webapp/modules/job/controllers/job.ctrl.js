@@ -8222,28 +8222,13 @@
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
             let vertexes = [];
-            let events = [];
-            let eventsBox;
+
             for (let i = 0; i < jobs.length; i++) {
                 jobs[i].jId = undefined;
             }
             try {
                 for (let i = 0; i < jobs.length; i++) {
-                    if (i > 0) {
-                        if (eventsBox && eventsBox.id) {
-                            for (let m = 1; m < jobs.length; m++) {
-                                for (let j = 0; j < events.length; j++) {
-                                    for (let x = 0; x < jobs[m].inconditions.length; x++) {
-                                        if (!jobs[m].inconditions[x].connectBox && jobs[m].inconditions[x].conditionExpression.expression.match(events[j].getAttribute('label'))) {
-                                            jobs[m].inconditions[x].connectBox = eventsBox.id;
-                                        }
-                                    }
-                                }
-                            }
-                            events = [];
-                            eventsBox = null;
-                        }
-                    }
+                    let events = [];
                     if (!jobs[i].state) {
                         jobs[i].state = {};
                     }
@@ -8276,9 +8261,11 @@
                                 let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
                                 graph.addCellOverlay(conditionVertex, overlay);
                             }
-                            if (jobs[i].inconditions[x].connectBox) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[x].connectBox), conditionVertex);
-                                delete jobs[i].inconditions[x]['connectBox'];
+                            if (jobs[i].inconditions[x].boxId && jobs[i].inconditions[x].boxId.length > 0) {
+                                for (let b = 0; b < jobs[i].inconditions[x].boxId.length; b++) {
+                                    graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[x].boxId[b]), conditionVertex);
+                                }
+                                delete jobs[i].inconditions[x]['boxId'];
                             }
                         }
 
@@ -8312,7 +8299,6 @@
 
                         if (jobs[i].outconditions.length > 0) {
                             let out = graph.insertVertex(parent, null, getCellNode('Box', 'Out Conditions ' + jobs[i].name), 0, 0, 140, 40, 'rect');
-                            eventsBox = out;
                             vertexes.push(out);
                             for (let m = 0; m < events.length; m++) {
                                 graph.insertEdge(parent, null, getCellNode('Connection', ''), events[m], out);
@@ -8359,6 +8345,28 @@
                             }
                         }
                     }
+                    if (events.length > 0) {
+                        for (let b = 0; b < events.length; b++) {
+                            for (let m = 0; m < jobs.length; m++) {
+                                if (jobs[i].path !== jobs[m].path) {
+                                    for (let x = 0; x < jobs[m].inconditions.length; x++) {
+                                        if (jobs[m].inconditions[x].conditionExpression.expression.match(events[b].getAttribute('label'))) {
+                                            for (let y = 0; y < events[b].edges.length; y++) {
+                                                if (events[b].edges[y].source.id == events[b].id) {
+                                                    if (!jobs[m].inconditions[x].boxId) {
+                                                        jobs[m].inconditions[x].boxId = [events[b].edges[y].target.id];
+                                                    } else {
+                                                        jobs[m].inconditions[x].boxId.push(events[b].edges[y].target.id);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
             } catch (e) {
@@ -8367,16 +8375,7 @@
                 // Updates the display
                 graph.getModel().endUpdate();
             }
-            for (let i = 0; i < jobs.length; i++) {
-                if (jobs[i].inconditions) {
-                    for (let j = 0; j < jobs[i].inconditions.length; j++) {
-                        if (jobs[i].inconditions[j].connectBox) {
-                            graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[j].connectBox), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
-                            delete jobs[i].inconditions[j]['connectBox'];
-                        }
-                    }
-                }
-            }
+
             makeCenter(graph);
             executeLayout(graph);
             for (let i = 0; i < vertexes.length; i++) {
@@ -8391,6 +8390,34 @@
                 executeLayout(graph);
             }, 1);
             vm.jobs = jobs;
+        }
+
+        function updateWorkflowDiagram(jobs) {
+            const graph = vm.editor.graph;
+            let parent = graph.getDefaultParent();
+            graph.getModel().beginUpdate();
+
+            try {
+                let vertices = graph.getChildVertices(graph.getDefaultParent());
+                for (let i = 0; i < vertices.length; i++) {
+                    if (vertices[i].value.tagName === 'Job') {
+                        for (let j = 0; j < jobs.length; j++) {
+                            if (vertices[i].getAttribute('label').replace(/<[^>]+>/gm, '').trim() == jobs[j].name) {
+                                let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[j].state.severity) + '"></i> ' + jobs[j].name + ' </span>';
+                                const edit = new mxCellAttributeChange(
+                                    vertices[i], 'label', lb);
+                                graph.getModel().execute(edit);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+            }
         }
 
 
@@ -8431,7 +8458,6 @@
                     "job": job,
                     "workflow": workflow
                 }).then(function (res) {
-                    console.log(res);
                     recursivelyConnectJobs(true);
                 }, function () {
 
@@ -8440,7 +8466,6 @@
 
             });
         };
-
 
         /**
          * Function : Parse expression to create label
@@ -8568,46 +8593,92 @@
         };
 
         vm.getEvents = function (cell) {
+            if (!vm.filteredByWorkflow) {
+                vm.filteredByWorkflow = vm.selectedWorkflow;
+            }
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
-            //obj.outConditionId = cell.getAttribute('_id');
+            if (cell) {
+                obj.outConditionId = cell.getAttribute('_id');
+            }
             ConditionService.getEvents(obj).then(function (res) {
                 vm.eventList = res.conditionEvents
             });
         };
 
+        vm.changeEvents = function(workflow){
+            vm.filteredByWorkflow= workflow;
+            let obj = {masterId: $scope.schedulerIds.selected, workflow: workflow};
+            ConditionService.getEvents(obj).then(function (res) {
+                vm.eventList = res.conditionEvents;
+            });
+        };
+
         vm.addEventFromWorkflow = function (cell) {
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
+            let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
-                    break;
+                } else {
+                    job = cell.edges[i].target.getAttribute('label').replace('Out Conditions', '').trim();
                 }
             }
             obj.event = cell.getAttribute('label');
-            vm.isUpdated = false;
             ConditionService.addEvent(obj).then(function () {
-                recursivelyConnectJobs(true);
-            }, function () {
-                vm.isUpdated = true;
+                updateEvent(cell, true,job);
             });
         };
 
         vm.removeEventFromWorkflow = function (cell) {
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
             obj.event = cell.getAttribute('label');
+            let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
+
+                } else {
+                    job = cell.edges[i].target.getAttribute('label').replace('Out Conditions', '').trim();
+                }
+            }
+            ConditionService.deleteEvent(obj).then(function () {
+                updateEvent(cell, false,job);
+            });
+        };
+
+        function updateEvent(cell, flag, job) {
+            for (let i = 0; i < vm.jobs.length; i++) {
+                if (vm.jobs[i].name === job) {
+                    for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                        for (let x = 0; x < vm.jobs[i].outconditions[j].outconditionEvents.length; x++) {
+
+                            if (vm.jobs[i].outconditions[j].outconditionEvents[x].event === cell.getAttribute('label')) {
+                                vm.jobs[i].outconditions[j].outconditionEvents[x].isExist = flag;
+                                vm.editor.graph.getModel().beginUpdate();
+                                try {
+                                    const edit = new mxCellAttributeChange(
+                                        cell, 'isExist', flag);
+                                    vm.editor.graph.getModel().execute(edit);
+                                    if (flag) {
+                                        let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
+                                        vm.editor.graph.addCellOverlay(cell, overlay);
+                                    }else{
+                                        vm.editor.graph.removeCellOverlay(cell);
+                                    }
+                                } finally {
+                                    // Updates the display
+                                    vm.editor.graph.getModel().endUpdate();
+                                }
+                                break;
+                            }
+                        }
+
+                    }
                     break;
                 }
             }
-            vm.isUpdated = false;
-            ConditionService.deleteEvent(obj).then(function () {
-                recursivelyConnectJobs(true);
-            }, function () {
-                vm.isUpdated = true;
-            });
-        };
+            vm.changeEvents(vm.filteredByWorkflow);
+        }
 
         vm.resetJob = function (cell) {
             vm.isUpdated = false;
@@ -8622,7 +8693,6 @@
                 vm.isUpdated = true;
             })
         };
-
 
         function updateExpression(cell) {
             let _label = '';
@@ -8697,7 +8767,9 @@
         }
 
         $scope.$on('reloadWorkflow', function () {
-            recursivelyConnectJobs(true);
+            //console.log(vm.allJobs)
+            //console.log(vm.jobs)
+            updateWorkflowDiagram(vm.jobs);
         });
 
         /**

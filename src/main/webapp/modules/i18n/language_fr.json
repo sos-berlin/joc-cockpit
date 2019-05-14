@@ -1424,7 +1424,7 @@
   "label.eventAdd": "event add",
   "label.eventRemove": "event remove",
   "label.chooseCommand": "Choose Command",
-  "label.listOfWorkflows": "List of Workflows",
+  "label.workflows": "Workflows",
   "label.updateCondition": "Update Condition",
   "label.properties": "Properties",
   "label.createEvent": "Create Event",
