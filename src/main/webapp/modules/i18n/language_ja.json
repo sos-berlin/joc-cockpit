@@ -1428,6 +1428,7 @@
   "label.updateCondition": "Update Condition",
   "label.properties": "Properties",
   "label.createEvent": "Create Event",
+  "label.filterBy": "Filter By",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
   "message.noOutconditionFound": "No Outconditions found",

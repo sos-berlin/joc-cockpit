@@ -798,7 +798,7 @@
                                                         </div>
                                                     </div>
                                                      <div ng-repeat="event in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
-                                                        <a class="text-hover-primary"><span>{{event.event}}</span></a>
+                                                        <a class="text-hover-primary" ng-click="navigateToEvent(event.event)"><span>{{event.event}}</span></a>
                                                     </div>
                                                      <div ng-if="eventList.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                                          message.noEventsFound

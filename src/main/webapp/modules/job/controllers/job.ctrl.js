@@ -8130,7 +8130,7 @@
                             let _tempWorkflow;
                             let _conditions = [];
                             for (let i = 0; i < vm.workflows.length; i++) {
-                                if (vm.workflows[i].name == x.name) {
+                                if (vm.workflows[i].name === x.name) {
                                     _conditions = vm.workflows[i].jobs;
                                     _tempWorkflow = vm.workflows[i];
                                     break;
@@ -8183,7 +8183,7 @@
                                 createWorkflowDiagram(vm.workflows[0].jobs);
                             } else {
                                 for (let x = 0; x < vm.workflows.length; x++) {
-                                    if (vm.selectedWorkflow == vm.workflows[x].name) {
+                                    if (vm.selectedWorkflow === vm.workflows[x].name) {
                                         createWorkflowDiagram(vm.workflows[x].jobs);
                                         break;
                                     }
@@ -8235,7 +8235,7 @@
                     let v1;
                     if (!jobs[i].jId) {
                         let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[i].state.severity) + '"></i> ' + jobs[i].name + ' </span>';
-                        let _node = getCellNode('Job', lb);
+                        let _node = getCellNode('Job', lb, jobs[i].path);
                         _node.setAttribute('status', jobs[i].state._text);
                         v1 = graph.insertVertex(parent, null, _node, 0, 0, 120, 50, 'job');
                         vertexes.push(v1);
@@ -8247,7 +8247,7 @@
                     if (!vm.jobFilters.isWorkflowCompact) {
                         for (let x = 0; x < jobs[i].inconditions.length; x++) {
                             let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
-                            let _node = getCellNode('InCondition', _label);
+                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression);
                             _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
@@ -8256,14 +8256,14 @@
                             let conditionVertex = graph.insertVertex(parent, null, _node, 0, 0, 150, 60, style);
                             jobs[i].inconditions[x].vertexId = conditionVertex.id;
                             vertexes.push(conditionVertex);
-                            graph.insertEdge(parent, null, getCellNode('Connection', 'In'), conditionVertex, v1);
+                            graph.insertEdge(parent, null, getCellNode('Connection', 'In',''), conditionVertex, v1);
                             if (jobs[i].inconditions[x].conditionExpression.value) {
                                 let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
                                 graph.addCellOverlay(conditionVertex, overlay);
                             }
                             if (jobs[i].inconditions[x].boxId && jobs[i].inconditions[x].boxId.length > 0) {
                                 for (let b = 0; b < jobs[i].inconditions[x].boxId.length; b++) {
-                                    graph.insertEdge(parent, null, getCellNode('Connection', ''), graph.getModel().getCell(jobs[i].inconditions[x].boxId[b]), conditionVertex);
+                                    graph.insertEdge(parent, null, getCellNode('Connection', '',''), graph.getModel().getCell(jobs[i].inconditions[x].boxId[b]), conditionVertex);
                                 }
                                 delete jobs[i].inconditions[x]['boxId'];
                             }
@@ -8271,20 +8271,20 @@
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
                             let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
-                            let _node = getCellNode('OutCondition', _label);
+                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression);
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
                             let conditionVertex = graph.insertVertex(parent, null, _node, 0, 0, 150, 60, 'condition');
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
                             vertexes.push(conditionVertex);
-                            graph.insertEdge(parent, null, getCellNode('Connection', 'Out'), v1, conditionVertex);
+                            graph.insertEdge(parent, null, getCellNode('Connection', 'Out',''), v1, conditionVertex);
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                    let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event);
+                                    let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event);
                                     _node.setAttribute('isExist', jobs[i].outconditions[x].outconditionEvents[z].exists);
                                     let e1 = graph.insertVertex(parent, null, _node, 0, 0, 150, 40, 'event');
                                     vertexes.push(e1);
                                     events.push(e1);
-                                    graph.insertEdge(parent, null, getCellNode('Connection', ''), conditionVertex, e1);
+                                    graph.insertEdge(parent, null, getCellNode('Connection', '',''), conditionVertex, e1);
                                     if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
                                         let overlay = new mxCellOverlay(new mxImage('./mxgraph/images/check.png', 16, 16), 'true', 'right', 'top');
                                         graph.addCellOverlay(e1, overlay);
@@ -8298,10 +8298,10 @@
                         }
 
                         if (jobs[i].outconditions.length > 0) {
-                            let out = graph.insertVertex(parent, null, getCellNode('Box', 'Out Conditions ' + jobs[i].name), 0, 0, 140, 40, 'rect');
+                            let out = graph.insertVertex(parent, null, getCellNode('Box', 'Out Conditions ' + jobs[i].name, jobs[i].path), 0, 0, 140, 40, 'rect');
                             vertexes.push(out);
                             for (let m = 0; m < events.length; m++) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', ''), events[m], out);
+                                graph.insertEdge(parent, null, getCellNode('Connection', '',''), events[m], out);
                             }
                         }
                     } else {
@@ -8317,12 +8317,12 @@
                                                             jobs[m].state = {};
                                                         }
                                                         let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[m].state.severity) + '"></i> ' + jobs[m].name + ' </span>';
-                                                        let _node = getCellNode('Job', lb);
+                                                        let _node = getCellNode('Job', lb, jobs[m].path);
                                                         _node.setAttribute('status', jobs[m].state._text);
                                                         let v2 = graph.insertVertex(parent, null, _node, 0, 0, 120, 50, 'job');
                                                         vertexes.push(v2);
                                                         jobs[m].jId = v2.id;
-                                                        graph.insertEdge(parent, null, getCellNode('Connection', ''), v1, v2);
+                                                        graph.insertEdge(parent, null, getCellNode('Connection', '',''), v1, v2);
                                                     } else {
                                                         let isConnected = false;
                                                         if (v1.edges) {
@@ -8334,7 +8334,7 @@
                                                             }
                                                         }
                                                         if (!isConnected) {
-                                                            graph.insertEdge(parent, null, getCellNode('Connection', ''), v1, graph.getModel().getCell(jobs[m].jId));
+                                                            graph.insertEdge(parent, null, getCellNode('Connection', '',''), v1, graph.getModel().getCell(jobs[m].jId));
                                                         }
                                                     }
                                                 }
@@ -8396,17 +8396,26 @@
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
-
+            let edges = [];
+            let edges2 = [];
             try {
                 let vertices = graph.getChildVertices(graph.getDefaultParent());
                 for (let i = 0; i < vertices.length; i++) {
                     if (vertices[i].value.tagName === 'Job') {
                         for (let j = 0; j < jobs.length; j++) {
-                            if (vertices[i].getAttribute('label').replace(/<[^>]+>/gm, '').trim() == jobs[j].name) {
+                            if (vertices[i].getAttribute('actual') === jobs[j].path) {
                                 let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[j].state.severity) + '"></i> ' + jobs[j].name + ' </span>';
                                 const edit = new mxCellAttributeChange(
                                     vertices[i], 'label', lb);
                                 graph.getModel().execute(edit);
+                                const edit2 = new mxCellAttributeChange(
+                                    vertices[i], 'status', jobs[j].state._text);
+                                graph.getModel().execute(edit2);
+                                if (jobs[j].state._text == 'RUNNING') {
+                                    edges = edges.concat(graph.getOutgoingEdges(vertices[i], graph.getDefaultParent()));
+                                } else {
+                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], graph.getDefaultParent()));
+                                }
                                 break;
                             }
                         }
@@ -8418,11 +8427,18 @@
                 // Updates the display
                 graph.getModel().endUpdate();
             }
+            for (let i = 0; i < edges.length; i++) {
+                let state = graph.view.getState(edges[i]);
+                state.shape.node.getElementsByTagName('path')[1].setAttribute('class', 'flow');
+            }
+            for (let i = 0; i < edges2.length; i++) {
+                let state = graph.view.getState(edges2[i]);
+                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class',);
+            }
         }
 
-
         vm.changeGraph = function (workflow) {
-            if (vm.selectedWorkflow != workflow.name) {
+            if (vm.selectedWorkflow !== workflow.name) {
                 vm.selectedWorkflow = workflow.name;
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                 createWorkflowDiagram(workflow.jobs);
@@ -8433,12 +8449,15 @@
         vm.compactView = function (workflow) {
             vm.jobFilters.isWorkflowCompact = !vm.jobFilters.isWorkflowCompact;
             for (let x = 0; x < vm.workflows.length; x++) {
-                if (workflow == vm.workflows[x].name) {
+                if (workflow === vm.workflows[x].name) {
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
                     }
                     createWorkflowDiagram(vm.workflows[x].jobs);
+                    setTimeout(function () {
+                        updateWorkflowDiagram(vm.jobs);
+                    }, 10);
                     break;
                 }
             }
@@ -8489,7 +8508,7 @@
         }
 
         vm.openModel = function (cell) {
-            let label = cell.getAttribute('label').replace(/<[^>]+>/gm, '');
+            let label = cell.getAttribute('actual');
             vm.expression = {};
             vm.expression.label = cell.value.tagName;
             vm.expression.expression = angular.copy(label);
@@ -8499,7 +8518,7 @@
             for (let i = 0; i < cell.edges.length; i++) {
                 if (vm.expression.label === 'InCondition') {
                     if (cell.edges[i].source.id === cell.id) {
-                        vm.expression.job = cell.edges[i].target.getAttribute('label').replace(/<[^>]+>/gm, '');
+                        vm.expression.job = cell.edges[i].target.getAttribute('actual');
                         let commands = cell.edges[i].source.getAttribute('commands');
                         if (commands) {
                             vm.expression.commands = JSON.parse(commands) || [];
@@ -8508,7 +8527,7 @@
                     }
                 } else if (vm.expression.label === 'OutCondition') {
                     if (cell.edges[i].target.id === cell.id) {
-                        vm.expression.job = cell.edges[i].source.getAttribute('label').replace(/<[^>]+>/gm, '');
+                        vm.expression.job = cell.edges[i].source.getAttribute('actual');
                     } else {
                         vm.expression.events.push({event: cell.edges[i].target.getAttribute('label')});
                     }
@@ -8620,7 +8639,7 @@
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
                 } else {
-                    job = cell.edges[i].target.getAttribute('label').replace('Out Conditions', '').trim();
+                    job = cell.edges[i].target.getAttribute('actual');
                 }
             }
             obj.event = cell.getAttribute('label');
@@ -8631,14 +8650,14 @@
 
         vm.removeEventFromWorkflow = function (cell) {
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
-            obj.event = cell.getAttribute('label');
+            obj.event = cell.getAttribute('actual');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
 
                 } else {
-                    job = cell.edges[i].target.getAttribute('label').replace('Out Conditions', '').trim();
+                    job = cell.edges[i].target.getAttribute('actual');
                 }
             }
             ConditionService.deleteEvent(obj).then(function () {
@@ -8648,11 +8667,10 @@
 
         function updateEvent(cell, flag, job) {
             for (let i = 0; i < vm.jobs.length; i++) {
-                if (vm.jobs[i].name === job) {
+                if (vm.jobs[i].path === job) {
                     for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
                         for (let x = 0; x < vm.jobs[i].outconditions[j].outconditionEvents.length; x++) {
-
-                            if (vm.jobs[i].outconditions[j].outconditionEvents[x].event === cell.getAttribute('label')) {
+                            if (vm.jobs[i].outconditions[j].outconditionEvents[x].event === cell.getAttribute('actual')) {
                                 vm.jobs[i].outconditions[j].outconditionEvents[x].isExist = flag;
                                 vm.editor.graph.getModel().beginUpdate();
                                 try {
@@ -8681,10 +8699,10 @@
         }
 
         vm.resetJob = function (cell) {
-            vm.isUpdated = false;
+            // vm.isUpdated = false;
             ConditionService.resetWorkflow({
                 "masterId": $scope.schedulerIds.selected,
-                "job": '/' + vm.folderPath + '/' + cell.getAttribute('label').replace(/<[^>]+>/gm, '').trim(),
+                "job": cell.getAttribute('actual'),
                 "workflow": ''
             }).then(function (res) {
 
@@ -8694,10 +8712,50 @@
             })
         };
 
+        vm.unconsumed = function (cell) {
+            //TODO
+            console.log('Waiting for API....... to mark un-consumed');
+            let job = '';
+            for (let i = 0; i < cell.edges.length; i++) {
+                if (cell.edges[i].source.id === cell.id) {
+                    job = cell.edges[i].target.getAttribute('actual');
+                    break;
+                }
+            }
+            ConditionService.resetWorkflow({
+                "masterId": $scope.schedulerIds.selected,
+                "job": job,
+                "workflow": '',
+                "incondition": cell.getAttribute('vertexId')
+            }).then(function (res) {
+                for (let i = 0; i < vm.jobs.length; i++) {
+                    if (vm.jobs[i].path === job) {
+                        for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
+                            if (vm.jobs[i].inconditions[j].conditionExpression.expression == cell.getAttribute('actual')) {
+                                vm.jobs[i].inconditions[j].isConsumed = false;
+                                vm.editor.graph.getModel().beginUpdate();
+                                try {
+                                    vm.editor.graph.getModel().setStyle(cell, 'condition');
+                                    const edit = new mxCellAttributeChange(
+                                        cell, 'isConsumed', false);
+                                    vm.editor.graph.getModel().execute(edit);
+                                } finally {
+                                    // Updates the display
+                                    vm.editor.graph.getModel().endUpdate();
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            });
+        };
+
         function updateExpression(cell) {
             let _label = '';
             for (let i = 0; i < vm.jobs.length; i++) {
-                if (vm.expression.job.trim() === vm.jobs[i].name) {
+                if (vm.expression.job === vm.jobs[i].path) {
                     if (vm.expression.label === 'InCondition') {
                         for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
                             if (vm.jobs[i].inconditions[j].vertexId === cell.id) {
@@ -8758,17 +8816,32 @@
             }
         }
 
-        function getCellNode(name, label) {
+        function getCellNode(name, label, actual) {
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
             _node.setAttribute('label', label);
+            _node.setAttribute('actual', actual);
             return _node;
         }
 
+        vm.navigateToEvent = function(event) {
+            let vertices = vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent());
+            for (let i = 0; i < vertices.length; i++) {
+                if (vertices[i].value.tagName === 'Event') {
+                    if (vertices[i].getAttribute('actual') == event) {
+                        const graph = $('#graph');
+                        let bounds = vm.editor.graph.getGraphBounds();
+                        let state = vm.editor.graph.view.getState(vertices[i]);
+                        vm.editor.graph.view.setTranslate(((graph.width() / 2) - (state.width / 2) - (state.x - bounds.x)),
+                            (bounds.y - (state.y - ((graph.height() / 2) - (state.height / 2)))));
+                        break;
+                    }
+                }
+            }
+        };
+
         $scope.$on('reloadWorkflow', function () {
-            //console.log(vm.allJobs)
-            //console.log(vm.jobs)
             updateWorkflowDiagram(vm.jobs);
         });
 
@@ -8970,8 +9043,7 @@
 
                     mxEvent.addListener(img, 'click',
                         mxUtils.bind(this, function (evt) {
-                            //TODO
-                            console.log('Waiting for API....... to mark un-consumed')
+                            vm.unconsumed(state.cell);
                             mxEvent.consume(evt);
                             this.destroy();
                         })
