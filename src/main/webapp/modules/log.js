@@ -80,7 +80,7 @@
                 document.getElementById("logs").innerHTML = "";
                 if (err.data && err.data.error) {
                     $scope.error = err.data.error.message;
-                } else {
+                } else if(err.data && err.data.message){
                     $scope.error = err.data.message;
                 }
                 $scope.errStatus = err.status;
@@ -224,7 +224,7 @@
                 document.getElementById("logs").innerHTML = "";
                 if (err.data && err.data.error) {
                     $scope.error = err.data.error.message;
-                } else {
+                } else if(err.data && err.data.message){
                     $scope.error = err.data.message;
                 }
                 $scope.errStatus = err.status;
@@ -262,10 +262,12 @@
                     document.getElementById("tmpFrame").src = './api/order/log/download?orderId=' + getParam("orderId") + '&jobChain=' + getParam("jobChain") + '&historyId=' + getParam("historyId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
                         '&accessToken=' + token;
                 }, function (err) {
-                    if(err.data.message) {
-                        alert(err.data.message);
-                    }else if(err.data.error.message){
-                       alert(err.data.error.message);
+                    if (err && err.data) {
+                        if (err.data.message) {
+                            alert(err.data.message);
+                        } else if (err.data.error && err.data.error.message) {
+                            alert(err.data.error.message);
+                        }
                     }
                 });
             } else if (getParam("taskId")) {
@@ -278,10 +280,12 @@
                     document.getElementById("tmpFrame").src = './api/task/log/download?taskId=' + getParam("taskId") + '&jobschedulerId=' + id + '&filename=' + res.data.log.filename +
                         '&accessToken=' + token;
                 }, function (err) {
-                    if(err.data.message) {
-                        alert(err.data.message);
-                    }else if(err.data.error.message){
-                       alert(err.data.error.message);
+                    if (err && err.data) {
+                        if (err.data.message) {
+                            alert(err.data.message);
+                        } else if (err.data.error && err.data.error.message) {
+                            alert(err.data.error.message);
+                        }
                     }
                 });
             }

@@ -3,3 +3,12 @@ body{color:rgba(255,255,255,.87);background:#233446}.bg-blue-color{background-co
 }#outlineContainer {
   background: rgba(50, 70, 90, 0.91) !important;
 }
+#graph {
+  background-color: rgba(50, 70, 90, 0.61) !important;
+}
+.property-panel .sidebar-open, .property-panel .sidebar-close {
+  background: url(../images/left-tips-blue.svg) center no-repeat;
+}
+.bg-white{
+  background-color: #32465a !important;;
+}

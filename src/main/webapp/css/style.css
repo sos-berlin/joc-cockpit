@@ -4804,7 +4804,18 @@ i.fa-hand-o-up:hover {
     width: 170px;
     height: 150px;
 }
-
+.flow {
+    stroke-dasharray: 8;
+    stroke-width: 2;
+    stroke: green;
+    animation: dash 0.5s linear;
+    animation-iteration-count: infinite;
+}
+@keyframes dash {
+    to {
+        stroke-dashoffset: -16;
+    }
+}
 .list-dropdown a:first-child:before, .list-dropdown li:first-child:after {
     pointer-events: none;
 }

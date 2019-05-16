@@ -89,10 +89,9 @@
       <add as="condition1">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="#ff882e"/>
-        <add as="fillColor" value="#ff882e"/>
+        <add as="strokeColor" value="gray"/>
+        <add as="fillColor" value="gray"/>
         <add as="gradientColor" value="white"/>
-        <add as="fontColor" value="#666"/>
         <add as="opacity" value="70"/>
       </add>
     </mxStylesheet>

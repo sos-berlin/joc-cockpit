@@ -10138,7 +10138,7 @@
                 window.document.getElementById('logs').innerHTML = '';
                 if (err.data && err.data.error) {
                     vm.error = err.data.error.message;
-                } else {
+                } else if(err.data && err.data.message){
                     vm.error = err.data.message;
                 }
                 vm.errStatus = err.status;
@@ -10158,7 +10158,7 @@
                 window.document.getElementById('logs').innerHTML = '';
                 if (err.data && err.data.error) {
                     vm.error = err.data.error.message;
-                } else {
+                } else if(err.data && err.data.message){
                     vm.error = err.data.message;
                 }
                 vm.errStatus = err.status;
