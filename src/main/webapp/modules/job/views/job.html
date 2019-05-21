@@ -789,8 +789,14 @@
                                              </div>
                                              <div class="tab-pane animated fadeIn " id="tab13">
                                                  <div>
-                                                     <div class="dropdown b-b p-b-xs m-b">
-                                                        <a class="dropdown-toggle" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary" ng-bind="filteredByWorkflow"></span></a>
+                                                     <div class="row m-b">
+                                                         <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="changeEvents(null)">
+                                                             <span ng-if="eventFilter == 'EXIST'" translate>button.showAllEvents</span>
+                                                             <span ng-if="eventFilter == 'ALL'" translate>button.showExistingEvents</span>
+                                                         </button>
+                                                     </div>
+                                                     <div class="dropdown m-b">
+                                                        <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary" ng-bind="filteredByWorkflow"></span></a>
                                                         <div class="dropdown-menu dropdown-more dropdown-ac">
                                                             <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}" ng-click="changeEvents(workflow.name)" ng-repeat="workflow in workflows | orderBy:'name'">
                                                                 <span>{{workflow.name}}</span>

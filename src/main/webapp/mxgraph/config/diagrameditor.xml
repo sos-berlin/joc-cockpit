@@ -31,6 +31,7 @@
         <add as="align" value="center"/>
         <add as="verticalAlign" value="middle"/>
         <add as="strokeColor" value="#333333"/>
+        <add as="gradientColor" value="white"/>
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
@@ -53,46 +54,40 @@
         <add as="fontColor" value="white"/>
         <add as="separatorColor" value="#c0c0c0"/>
       </add>
-      <add as="verticalEdge">
-        <add as="elbow" value="vertical"/>
-      </add>
-      <add as="event" extend="rhombus">
-        <add as="shape" value="rectangle"/>
-        <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="align" value="center"/>
+      <add as="event">
+        <add as="shape" value="rhombus"/>
         <add as="perimeter" value="rhombusPerimeter"/>
-        <add as="strokeColor" value="#FFEE73"/>
-        <add as="fillColor" value="#FFEE73"/>
-        <add as="gradientColor" value="white"/>
-      </add>
-      <add as="rect" extend="rhombus">
-        <add as="shape" value="rectangle"/>
-        <add as="perimeter" value="rectanglePerimeter"/>
         <add as="align" value="center"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="strokeColor" value="#666"/>
+      </add>
+      <add as="event1" extend="event">
+        <add as="fillColor" value="#CDEB8B"/>
+      </add>
+      <add as="circle">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="align" value="center"/>
         <add as="strokeColor" value="#666"/>
       </add>
       <add as="job">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="#90C7F5"/>
+        <add as="strokeColor" value="#666"/>
         <add as="fillColor" value="#90C7F5"/>
-        <add as="gradientColor" value="white"/>
       </add>
       <add as="condition">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="#ff882e"/>
-        <add as="fillColor" value="#ff882e"/>
-        <add as="gradientColor" value="white"/>
+        <add as="shape" value="offPageConnector"/>
+        <add as="strokeColor" value="#666"/>
+        <add as="direction" value="west"/>
+        <add as="fillColor" value="#DCDCDC"/>
       </add>
-      <add as="condition1">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
-        <add as="strokeColor" value="gray"/>
-        <add as="fillColor" value="gray"/>
-        <add as="gradientColor" value="white"/>
-        <add as="opacity" value="70"/>
+      <add as="condition1" extend="condition">
+        <add as="fillColor" value="#A9A9A9"/>
+        <add as="gradientColor" value="#C0C0C0"/>
+      </add>
+      <add as="condition2">
+        <add as="shape" value="offPageConnector"/>
+        <add as="fillColor" value="#FFFFCC"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

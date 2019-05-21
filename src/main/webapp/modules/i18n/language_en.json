@@ -1404,6 +1404,8 @@
   "button.resetJob": "Reset Job",
   "button.resetWorkflow": "Reset Workflow",
   "button.updateExpression": "Update Expression",
+  "button.showAllEvents": "Show All Events",
+  "button.showExistingEvents": "Show Existing Events",
   "label.conditionEditor": "Conditions Editor",
   "label.inconditionCommands": "Incondition Commands",
   "label.validatedExpression": "Validated Expression",
