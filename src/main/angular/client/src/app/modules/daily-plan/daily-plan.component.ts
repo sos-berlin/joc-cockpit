@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -7,12 +7,11 @@ import {Subscription} from 'rxjs';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TreeModalComponent} from '../../components/tree-modal/tree.component';
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
-
+import {GroupByPipe} from '../../filters/filter.pipe';
 import * as moment from 'moment';
 import * as _ from 'underscore';
-import {GroupByPipe} from '../../filters/filter.pipe';
 
-declare const JSGantt: any;
+declare const jsgantt: any;
 declare const $;
 
 @Component({
@@ -324,6 +323,102 @@ export class SearchComponent implements OnInit {
   }
 }
 
+
+@Component({
+  encapsulation: ViewEncapsulation.None,
+  selector: 'app-gantt',
+  template: `<div #jsgantt class='jsgantt-chart'></div>`,
+})
+export class GanttComponent implements OnInit {
+  @ViewChild('jsgantt') ganttContainer: ElementRef;
+
+  @Input() data: any;
+  @Input() preferences: any;
+  tasks = [];
+
+  constructor(public coreService: CoreService) {
+  }
+
+  ngOnInit() {
+    const self = this;
+
+    let ht = 0;
+    // return false to discard the resize
+    jsgantt.attachEvent('onPanelResize', function (old_width, new_width) {
+      const dom = $('.timeline-cell');
+      if (ht == 0) {
+        ht = dom.width();
+      }
+      $('.grid-cell.jsgantt-layout-outer-scroll.jsgantt-layout-cell-border-right').css({'width': new_width + 'px'});
+      $('.scrollHor-cell').css({'left': new_width + 'px'});
+      dom.css({'width': ht + (-new_width + old_width) + 'px'});
+      return true;
+    });
+
+    jsgantt.attachEvent('onPanelResizeEnd', function (old_width) {
+      ht = 0;
+      return true;
+    });
+
+    jsgantt.templates.task_class = function (start, end, task) {
+      return task.class;
+    };
+
+    $(document).on('mouseover', '.my-tooltip', function () {
+      console.log('>>>>>..mouseover')
+      $('.tooltip').hide();
+      $(this).tooltip('show');
+    });
+
+    $(document).on('mouseout', '.my-tooltip', function () {
+      console.log('>>>>>...mouseout')
+      $('.tooltip').hide();
+    });
+
+    jsgantt.init(this.ganttContainer.nativeElement);
+
+    if (this.data && this.data.length > 0) {
+      for (let i = 0; i < this.data.length; i++) {
+        let obj: any = {
+          id: i + 1,
+          jobChain: this.data[i].jobChain,
+          orderId: this.data[i].orderId,
+          plannedDate: moment(this.data[i].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          begin: moment(this.data[i].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          end: moment(this.data[i].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          repeat: this.data[i].period.repeat,
+          class: this.coreService.getColor(this.data[i].state.severity, 'bg'),
+          duration: moment(this.data[i].expectedEndTime).diff(this.data[i].plannedStartTime) || 1,
+          progress: 0.1,
+        };
+        if (obj.id > 1) {
+          obj.parent = 1;
+        } else {
+          obj.open = true;
+        }
+        this.tasks.push(obj);
+      }
+      $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
+
+
+      setTimeout(() => {
+        $('.scrollHor-cell').css({'left': $('.jsgantt-resizer-x').position().left + 'px'});
+      }, 10);
+    }
+    Promise.all([this.getTask(), [{'source': '1', 'target': '5', 'type': '0'},
+      {'source': '5', 'target': '8', 'type': '0'},
+      {'source': '2', 'target': '10', 'type': '0'}]])
+      .then(([data, links]) => {
+        jsgantt.parse({data, links});
+      });
+  }
+
+  getTask(): Promise<any[]> {
+    return Promise.resolve(this.tasks);
+  }
+
+}
+
 @Component({
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
@@ -405,152 +500,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.workflows = [];
     }
-  }
-
-  prepareGanttData(data2) {
-
-    let minNextStartTime;
-    let maxEndTime;
-    let orders = [];
-
-    let groupJobChain = [];
-    for (let i = 0; i < data2.length; i++) {
-
-      if (groupJobChain.length > 0) {
-        let flag = false;
-        for (let j = 0; j < groupJobChain.length; j++) {
-          if (data2[i].jobChain && (groupJobChain[j].jobChain === data2[i].jobChain && groupJobChain[j].orderId === data2[i].orderId)) {
-            flag = true;
-          } else if (data2[i].job && (groupJobChain[j].job === data2[i].job)) {
-            flag = true;
-          }
-        }
-        if (!flag) {
-          if (data2[i].orderId) {
-            groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
-          } else if (data2[i].job) {
-            groupJobChain.push({job: data2[i].job});
-          }
-        }
-      } else {
-
-        if (data2[i].orderId)
-          groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
-        else if (data2[i].job)
-          groupJobChain.push({job: data2[i].job});
-      }
-    }
-    let theme = window.localStorage.$SOS$THEME;
-    for (let index = 0; index < groupJobChain.length; index++) {
-      let i = 0;
-      orders[index] = {};
-      orders[index].tasks = [];
-      for (let index1 = 0; index1 < data2.length; index1++) {
-        if (data2[index1].orderId && (groupJobChain[index].jobChain === data2[index1].jobChain && groupJobChain[index].orderId === data2[index1].orderId)) {
-          orders[index].tasks[i] = {};
-          orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
-          orders[index].orderId = data2[index1].orderId;
-
-          this.plans[index].processedPlanned = orders[index].name;
-          orders[index].tasks[i].name = orders[index].name;
-
-          this.plans[index].status = data2[index1].state._text;
-          if (data2[index1].state._text === 'SUCCESSFUL') {
-            orders[index].tasks[i].color = 'text-green';
-          } else if (data2[index1].state._text === 'FAILED') {
-            orders[index].tasks[i].color = 'text-red';
-          } else if (data2[index1].late) {
-            orders[index].tasks[i].color = '#ffc300';
-          } else {
-            if (theme !== 'light' && theme !== 'lighter') {
-              orders[index].tasks[i].color = '#fafafa';
-            }
-          }
-          orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
-
-          if (!minNextStartTime || minNextStartTime > new Date(data2[index1].plannedStartTime)) {
-            minNextStartTime = new Date(data2[index1].plannedStartTime);
-          }
-          if (!maxEndTime || maxEndTime < new Date(data2[index1].expectedEndTime)) {
-            maxEndTime = new Date(data2[index1].expectedEndTime);
-          }
-          orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
-
-          if (data2[index1].startMode === 0) {
-            orders[index].tasks[i].startMode = 'label.singleStartMode';
-            orders[index].tasks[i].content = '<i class="fa fa-repeat1">';
-          } else if (data2[index1].startMode === 1) {
-            orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
-          } else if (data2[index1].startMode === 2) {
-            orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
-          }
-
-          if (data2[index1].period.repeat) {
-            let s = parseInt(((data2[index1].period.repeat) % 60).toString()),
-              m = parseInt(((data2[index1].period.repeat / 60) % 60).toString()),
-              h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString());
-            let h1 = h > 9 ? h : '0' + h;
-            let m1 = m > 9 ? m : '0' + m;
-            let s1 = s > 9 ? s : '0' + s;
-            orders[index].tasks[i].repeat = h1 + ':' + m1 + ':' + s1;
-          }
-          i++;
-        } else if (data2[index1].job && (groupJobChain[index].job === data2[index1].job)) {
-          orders[index].tasks[i] = {};
-          orders[index].name = data2[index1].job;
-
-          this.plans[index].processedPlanned = orders[index].name;
-          orders[index].tasks[i].name = orders[index].name;
-
-          this.plans[index].status = data2[index1].state._text;
-          if (data2[index1].state._text === 'SUCCESSFUL') {
-            orders[index].tasks[i].color = 'text-green';
-          } else if (data2[index1].state._text === 'FAILED') {
-            orders[index].tasks[i].color = 'text-red';
-          } else if (data2[index1].late) {
-            orders[index].tasks[i].color = '#ffc300';
-          } else {
-            if (theme !== 'light' && theme !== 'lighter')
-              orders[index].tasks[i].color = '#fafafa';
-          }
-          orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
-
-          if (!minNextStartTime || minNextStartTime > new Date(data2[index1].plannedStartTime)) {
-            minNextStartTime = new Date(data2[index1].plannedStartTime);
-          }
-          if (!maxEndTime || maxEndTime < new Date(data2[index1].expectedEndTime)) {
-            maxEndTime = new Date(data2[index1].expectedEndTime);
-          }
-          orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
-
-          if (data2[index1].startMode === 0) {
-            orders[index].tasks[i].startMode = 'label.singleStartMode';
-            orders[index].tasks[i].content = 'fa fa-repeat1';
-          } else if (data2[index1].startMode === 1) {
-            orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="./assets/images/start-start.png" alt="">';
-          } else if (data2[index1].startMode === 2) {
-            orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
-            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="./assetsimages/end-start.png" alt="">';
-          }
-
-          if (data2[index1].period.repeat) {
-            let s = parseInt(((data2[index1].period.repeat) % 60).toString(), 10),
-              m = parseInt(((data2[index1].period.repeat / 60) % 60).toString(), 10),
-              h = parseInt(((data2[index1].period.repeat / (60 * 60)) % 24).toString(), 10);
-            let h1 = h > 9 ? h : '0' + h;
-            let m1 = m > 9 ? m : '0' + m;
-            let s1 = s > 9 ? s : '0' + s;
-            orders[index].tasks[i].repeat = h1 + ':' + m1 + ':' + s1;
-          }
-          i++;
-        }
-      }
-    }
-
-    this.init(orders);
   }
 
   /* ------------- Action ------------------- */
@@ -855,30 +804,10 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     console.log(order);
     for (let i = 0; i < plan.variables.length; i++) {
       if (_.isEqual(plan.variables[i], order)) {
-        plan.variables.splice(i, 1)
+        plan.variables.splice(i, 1);
         break;
       }
     }
-  }
-
-  private openModel(plan, updateOnly) {
-    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
-    modalRef.componentInstance.variable = plan.variables;
-    modalRef.componentInstance.updateOnly = updateOnly;
-    modalRef.result.then((res) => {
-      if (!updateOnly) {
-        plan.variables = res;
-      } else {
-        for (let i = 0; i < plan.variables.length; i++) {
-          if (_.isEqual(plan.variables[i], updateOnly)) {
-            plan.variables[i] = res[0];
-            break;
-          }
-        }
-      }
-    }, (reason) => {
-      console.log('close...', reason);
-    });
   }
 
   /* ---- Customization ------ */
@@ -1016,6 +945,26 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     } else {
       this.object.orders = [];
     }
+  }
+
+  private openModel(plan, updateOnly) {
+    const modalRef = this.modalService.open(ChangeParameterModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.variable = plan.variables;
+    modalRef.componentInstance.updateOnly = updateOnly;
+    modalRef.result.then((res) => {
+      if (!updateOnly) {
+        plan.variables = res;
+      } else {
+        for (let i = 0; i < plan.variables.length; i++) {
+          if (_.isEqual(plan.variables[i], updateOnly)) {
+            plan.variables[i] = res[0];
+            break;
+          }
+        }
+      }
+    }, (reason) => {
+      console.log('close...', reason);
+    });
   }
 
   private refresh(args) {
@@ -1395,7 +1344,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     if (this.dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
       this.workflows = this.groupBy.transform(this.plans, 'jobChain');
     }
-    this.prepareGanttData(this.plans);
     for (let i = 0; i < this.plans.length; i++) {
       this.plans[i].order = this.plans[i].orderId.substring(0, this.plans[i].orderId.lastIndexOf('_'));
     }
@@ -1422,28 +1370,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   }
 
   private init(data) {
-    let g = new JSGantt.GanttChart(document.getElementById('embedded-Gantt'), 'hour');
-    if (g.getDivId() != null) {
-      g.setCaptionType('Duration');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
-      g.setShowDur(0);
-      g.setShowComp(0);
-      g.setShowStartDate(0);
-      g.setShowEndDate(0);
-      g.setScrollTo('today');
-      g.setShowTaskInfoLink(0); // Show link in tool tip (0/1)
-      g.setFormatArr('Hour', 'Day', 'Week'); // Even with setUseSingleCell using Hour format on such a large chart can cause issues in some browsers
-      // Parameters
-      // (pID, pName, pStart, pEnd, pStyle, pLink (unused)  pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend, pCaption, pNotes, pGantt)
-
-      for (let i = 0; i < data.length; i++) {
-        //  console.log(data[i])
-        g.AddTaskItem(new JSGantt.TaskItem(i + 1, data[i].name, data[i].tasks[0].from, data[i].tasks[0].to, data[i].tasks[0].color, '', 0, data[i].orderId, 0, 0, 0, 0, 'SF', '', '', g));
-      }
-
-      g.Draw();
-    } else {
-      console.log('Error, unable to create Gantt Chart');
-    }
+    console.log(data);
   }
 
   private editFilter(filter) {

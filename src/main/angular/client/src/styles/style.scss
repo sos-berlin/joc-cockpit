@@ -3862,10 +3862,6 @@ input[type=search] {
   position: absolute;
 }
 
-.gantt-table-header-row {
-  position: unset;
-}
-
 input[type=search] {
   background: url(../assets/images/Search.png) 6px center no-repeat;
   border: 1px solid transparent;
@@ -3939,10 +3935,6 @@ input[type=search] {
   cursor: auto;
   background: 0 0;
   text-decoration: none;
-}
-
-.gantt-task-content {
-  width: 22px;
 }
 
 .btn-grey {
@@ -5323,7 +5315,10 @@ div.bar-chart div {
 .tooltip {
   font-size: 12px !important;
 }
-
+.tooltip-inner{
+  text-align: left;
+  max-width: 350px;
+}
 .tree-block {
   margin-top: 6px;
 }
@@ -5964,78 +5959,83 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 .ui-select-multiple input.ui-select-search {
   padding: 4px 8px !important;
 }
+
 .reverse {
-    top:auto !important;
+  top: auto !important;
 }
+
 .arrow-down {
   top: 57px;
-	border-radius: 1px;
-	font-size: 12px;
-	border-bottom: 1px solid rgba(0, 0, 0, .1);
-	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
+  border-radius: 1px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
 }
 
 .arrow-down:last-child:after {
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: 8px;
-    border: 9px outset transparent;
-    content: '\f0d7';
-    font-family: FontAwesome;
-    font-size: 28px;
-    color: white;
-    bottom: 7px;
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: 8px;
+  border: 9px outset transparent;
+  content: '\f0d7';
+  font-family: FontAwesome;
+  font-size: 28px;
+  color: white;
+  bottom: 7px;
 }
 
 .arrow-down a:last-child:after {
-	border-bottom: 9px solid #fff;
-	bottom: -18px
+  border-bottom: 9px solid #fff;
+  bottom: -18px
 }
+
 .arrow-down {
-	font-size: 12px
+  font-size: 12px
 }
 
 .arrow-down a:first-child {
-	margin-bottom: -1px
+  margin-bottom: -1px
 }
 
 .arrow-down-ac {
   top: 57px;
-	border-radius: 1px;
-	font-size: 12px;
-	border-bottom: 1px solid rgba(0, 0, 0, .1);
-	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
+  border-radius: 1px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1)
 }
 
 .arrow-down-ac:last-child:after {
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: unset;
-    border: 9px outset transparent;
-    content: '\f0d7';
-    font-family: FontAwesome;
-    font-size: 28px;
-    bottom: 7px;
-    right: 28px;
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  left: unset;
+  border: 9px outset transparent;
+  content: '\f0d7';
+  font-family: FontAwesome;
+  font-size: 28px;
+  bottom: 7px;
+  right: 28px;
 }
 
 .arrow-down-ac a:last-child:after {
-	border-bottom: 9px solid #fff;
-	bottom: -18px
+  border-bottom: 9px solid #fff;
+  bottom: -18px
 }
+
 .arrow-down-ac {
-	font-size: 12px
+  font-size: 12px
 }
 
 .arrow-down-ac a:first-child {
-	margin-bottom: -1px
+  margin-bottom: -1px
 }
+
 .invalid {
   border: 1px solid #dc3545 !important;
 }
@@ -6043,6 +6043,7 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 .list-dropdown a:first-child:before, .list-dropdown li:first-child:after {
   pointer-events: none;
 }
+
 /***
  Begin Workflow and XMl editor css
 ***/
@@ -6319,4 +6320,57 @@ tree-viewport::-webkit-scrollbar {
 
 .ck-content ul {
   list-style-type: disc !important;
+}
+
+
+.jsgantt-layout-outer-scroll-horizontal {
+  border-right: none;
+}
+
+.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell,
+.jsgantt-chart .jsgantt-task .jsgantt-task-scale .jsgantt-scale-cell {
+  color: #3d464d;
+}
+.jsgantt-chart .jsgantt-grid-scale .jsgantt-grid-head-cell{
+  font-weight: 700;
+  font-size: 13px !important;
+  border-bottom: 1px solid rgba(120, 130, 140, 0.3)
+}
+.jsgantt-chart .jsgantt-task-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.jsgantt-chart .jsgantt-row-task:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.jsgantt-container {
+  border: none;
+  background: transparent;
+}
+
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd:hover,
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row:hover,
+.jsgantt-chart .jsgantt-task-row.jsgantt-selected .jsgantt-task-cell,
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row.jsgantt-selected,
+.jsgantt-chart .jsgantt-grid-data .jsgantt-row.odd.jsgantt-selected,
+.jsgantt-chart .jsgantt-task-row.jsgantt-selected {
+  background-color: #eff;
+}
+
+.jsgantt-chart .jsgantt-resizer-x .jsgantt-resizer-x{
+    width: 10px;
+    margin-left: -10px;
+    background: #ccc;
+}
+.jsgantt-chart .jsgantt-resizer-x .jsgantt-resizer-x span {
+  position: absolute;
+  box-sizing: border-box;
+  display: block;
+  border-left: 1px solid #f5f5f5;
+  border-right: 1px solid #f5f5f5;
+  top: 49%;
+  left: 3px;
+  height: 20px;
+  width:4px;
 }
