@@ -11,7 +11,8 @@ import {GroupByPipe} from '../../filters/filter.pipe';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 
-declare const jsgantt: any;
+declare const JSGantt;
+declare let jsgantt;
 declare const $;
 
 @Component({
@@ -329,7 +330,7 @@ export class SearchComponent implements OnInit {
   selector: 'app-gantt',
   template: `<div #jsgantt class='jsgantt-chart'></div>`,
 })
-export class GanttComponent implements OnInit {
+export class GanttComponent implements OnInit, OnDestroy {
   @ViewChild('jsgantt') ganttContainer: ElementRef;
 
   @Input() data: any;
@@ -337,6 +338,7 @@ export class GanttComponent implements OnInit {
   tasks = [];
 
   constructor(public coreService: CoreService) {
+    JSGantt();
   }
 
   ngOnInit() {
@@ -360,42 +362,47 @@ export class GanttComponent implements OnInit {
       return true;
     });
 
+    jsgantt.attachEvent('onRowClick', function (task) {
+      console.log(task);
+      return true;
+    });
+
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
     };
 
     $(document).on('mouseover', '.my-tooltip', function () {
-      console.log('>>>>>..mouseover')
-      $('.tooltip').hide();
       $(this).tooltip('show');
     });
 
     $(document).on('mouseout', '.my-tooltip', function () {
-      console.log('>>>>>...mouseout')
-      $('.tooltip').hide();
+       $('.tooltip').tooltip('hide');
     });
 
-    jsgantt.init(this.ganttContainer.nativeElement);
 
-    if (this.data && this.data.length > 0) {
-      for (let i = 0; i < this.data.length; i++) {
+    jsgantt.init(this.ganttContainer.nativeElement);
+    const len = this.data.length;
+    if (this.data && len > 0) {
+      for (let i = 0; i < len; i++) {
+        let dur = moment(this.data[i].expectedEndTime).diff(this.data[i].plannedStartTime) / 1000; // In second
         let obj: any = {
           id: i + 1,
           jobChain: this.data[i].jobChain,
           orderId: this.data[i].orderId,
           plannedDate: moment(this.data[i].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-          begin: moment(this.data[i].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-          end: moment(this.data[i].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+          begin: this.data[i].period.begin ? moment(this.data[i].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+          end: this.data[i].period.end ? moment(this.data[i].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
           repeat: this.data[i].period.repeat,
           class: this.coreService.getColor(this.data[i].state.severity, 'bg'),
-          duration: moment(this.data[i].expectedEndTime).diff(this.data[i].plannedStartTime) || 1,
-          progress: 0.1,
+          duration: dur > 60 ? dur / 60 : 1,
+          progress: dur > 60 ? dur / 60 * 60 : 0.1,
         };
         if (obj.id > 1) {
           obj.parent = 1;
         } else {
           obj.open = true;
         }
+
         this.tasks.push(obj);
       }
       $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
@@ -405,16 +412,18 @@ export class GanttComponent implements OnInit {
         $('.scrollHor-cell').css({'left': $('.jsgantt-resizer-x').position().left + 'px'});
       }, 10);
     }
-    Promise.all([this.getTask(), [{'source': '1', 'target': '5', 'type': '0'},
-      {'source': '5', 'target': '8', 'type': '0'},
-      {'source': '2', 'target': '10', 'type': '0'}]])
+    Promise.all([this.getTask(), []])
       .then(([data, links]) => {
-        jsgantt.parse({data, links});
+          jsgantt.parse({data, links});
       });
   }
 
   getTask(): Promise<any[]> {
     return Promise.resolve(this.tasks);
+  }
+
+  ngOnDestroy(): void {
+     $('.tooltip').hide();
   }
 
 }
@@ -1369,9 +1378,6 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     }
   }
 
-  private init(data) {
-    console.log(data);
-  }
 
   private editFilter(filter) {
     let filterObj: any = {};

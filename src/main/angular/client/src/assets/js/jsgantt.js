@@ -1,9 +1,7 @@
-!function (t, e) {
-  if ("object" == typeof exports && "object" == typeof module) module.exports = e(); else if ("function" == typeof define && define.amd) define([], e); else {
-    let i = e();
-    for (let e in i) ("object" == typeof exports ? exports : t)[e] = i[e]
-  }
-}(window, function () {
+/**
+Core script to handle the entire gantt chart functions
+**/
+var JSGantt = function () {
   return function (t) {
     var e = {};
 
@@ -12,32 +10,7 @@
       let r = e[n] = {i: n, l: !1, exports: {}};
       return t[n].call(r.exports, r, r.exports, i), r.l = !0, r.exports
     }
-
-    return i.m = t, i.c = e, i.d = function (t, e, n) {
-      i.o(t, e) || Object.defineProperty(t, e, {enumerable: !0, get: n})
-    }, i.r = function (t) {
-      "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, {value: "Module"}), Object.defineProperty(t, "__esModule", {value: !0})
-    }, i.t = function (t, e) {
-      if (1 & e && (t = i(t)), 8 & e) return t;
-      if (4 & e && "object" == typeof t && t && t.__esModule) return t;
-      let n = Object.create(null);
-      if (i.r(n), Object.defineProperty(n, "default", {
-        enumerable: !0,
-        value: t
-      }), 2 & e && "string" != typeof t) for (let e in t) i.d(n, e, function (e) {
-        return t[e]
-      }.bind(null, e));
-      return n
-    }, i.n = function (t) {
-      var e = t && t.__esModule ? function () {
-        return t.default
-      } : function () {
-        return t
-      };
-      return i.d(e, "a", e), e
-    }, i.o = function (t, e) {
-      return Object.prototype.hasOwnProperty.call(t, e)
-    }, i.p = "", i(i.s = 159)
+    return i(i.s = 159);
   }([function (t, e, i) {
     var n, r = i(3);
     t.exports = {
@@ -283,13 +256,6 @@
         var e = [];
         for (var i in t) t.hasOwnProperty(i) && e.push(t[i]);
         return e
-      }, sortArrayOfHash: function (t, e, i) {
-        var n = function (t, e) {
-          return t < e
-        };
-        t.sort(function (t, r) {
-          return t[e] === r[e] ? 0 : i ? n(t[e], r[e]) : n(r[e], t[e])
-        })
       }, throttle: function (t, e) {
         var i = !1;
         return function () {
@@ -372,23 +338,17 @@
       }
     }
   }, function (t, e) {
-    function i() {
-    }
-
     function n() {
     }
-
-    n.prototype.render = i, n.prototype.set_value = i, n.prototype.get_value = i, n.prototype.focus = i, t.exports = function (t) {
+    t.exports = function (t) {
       return n
     }
   }, function (t, e, i) {
     var n = i(0), r = i(4), o = i(1), a = function () {
       "use strict";
-
       function t(t, e, i, a) {
         t && (this.$container = o.toNode(t), this.$parent = t), this.$config = n.mixin(e, {headerHeight: 33}), this.$jsgantt = a, this.$domEvents = a._createDomEventScope(), this.$id = e.id || "c" + n.uid(), this.$name = "cell", this.$factory = i, r(this)
       }
-
       return t.prototype.destructor = function () {
         this.$parent = this.$container = this.$view = null, this.$jsgantt.$services.getService("mouseEvents").detach("click", "jsgantt-header-arrow", this._headerClickHandler), this.$domEvents.detachAll(), this.callEvent("onDestroy", []), this.detachAllEvents()
       }, t.prototype.cell = function (t) {
@@ -516,8 +476,6 @@
   }, function (t, e) {
     var i = {
       isIE: navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0,
-      isIE6: !window.XMLHttpRequest && navigator.userAgent.indexOf("MSIE") >= 0,
-      isIE7: navigator.userAgent.indexOf("MSIE 7.0") >= 0 && navigator.userAgent.indexOf("Trident") < 0,
       isIE8: navigator.userAgent.indexOf("MSIE 8.0") >= 0 && navigator.userAgent.indexOf("Trident") >= 0,
       isOpera: navigator.userAgent.indexOf("Opera") >= 0,
       isChrome: navigator.userAgent.indexOf("Chrome") >= 0,
@@ -853,7 +811,10 @@
           u && f > a + h && (d.width = h = f - a), a += h;
           var g = t._sort && d.name == t._sort.name ? "<div class='jsgantt-sort jsgantt-" + t._sort.direction + "'></div>" : "",
             p = ["jsgantt-grid-head-cell", "jsgantt-grid-head-" + d.name, u ? "jsgantt-last-cell" : "", n.grid_header_class(d.name, d)].join(" "),
-            _ = "width:" + (h - (u ? 1 : 0)) + "px;", v = d.label || s["column_" + d.name] || s[d.name];
+            _ = "width:" + (h - (u ? 1 : 0)) + "px;padding-right:16px", v = d.label || s["column_" + d.name] || s[d.name];
+          if(u) {
+            _ = "width:auto;padding-right:16px";
+          }
           v = v || "";
           var m = "<div class='" + p + "' style='" + _ + "' " + t._waiAria.gridScaleCellAttrString(d, v) + " data-column-id='" + d.name + "' column_id='" + d.name + "'>" + v + g + "</div>";
           o.push(m)
@@ -1341,7 +1302,8 @@
         if (!t._isAllowedUnscheduledTask(e)) {
           var a = o.getItemPosition(e), s = o.$getConfig(), l = o.$getTemplates(), c = o.getItemHeight(),
             u = t.getTaskType(e.type), d = Math.floor((t.config.row_height - c) / 2);
-          u == s.types.milestone && s.link_line_width > 1 && (d += 1), u == s.types.milestone && (a.left -= Math.round(c / 2), a.width = c);
+
+          // u == s.types.milestone && s.link_line_width > 1 && (d += 1), u == s.types.milestone && (a.left -= Math.round(c / 2), a.width = c);
           var h = document.createElement("div"), f = Math.round(a.width);
           o.$config.item_attribute && h.setAttribute(o.$config.item_attribute, e.id), s.show_progress && u != s.types.milestone && function (e, i, n, r, o) {
             var a = 1 * e.progress || 0;
@@ -1364,13 +1326,9 @@
           }(e);
           e.textColor && (g.style.color = e.textColor), h.appendChild(g);
           var p = function (e, i, n, r) {
-            var o = r.$getConfig(), a = ["jsgantt-task-line"];
+            let a = ["jsgantt-task-line"];
             i && a.push(i);
-            var s = t.getState(), l = t.getTask(n);
-            if (t.getTaskType(l.type) == o.types.milestone ? a.push("jsgantt-milestone") : t.getTaskType(l.type) == o.types.project && a.push("jsgantt-project"), a.push("jsgantt-bar-" + t.getTaskType(l.type)), t.isSummaryTask(l) && a.push("jsgantt-dependent-task"), t.isSplitTask(l) && a.push("jsgantt-split-parent"), o.select_task && n == s.selected_task && a.push("jsgantt-selected"), n == s.drag_id && (a.push("jsgantt-drag-" + s.drag_mode), s.touch_drag && a.push("jsgantt-touch-" + s.drag_mode)), s.link_source_id == n && a.push("jsgantt-link-source"), s.link_target_id == n && a.push("jsgantt-link-target"), o.highlight_critical_path && t.isCriticalTask && t.isCriticalTask(l) && a.push("jsgantt-critical-task"), s.link_landing_area && s.link_target_id && s.link_source_id && s.link_target_id != s.link_source_id) {
-              var c, u = s.link_source_id, d = s.link_from_start, h = s.link_to_start;
-              c = t.isLinkAllowed(u, n, d, h) ? h ? "link_start_allow" : "link_finish_allow" : h ? "link_start_deny" : "link_finish_deny", a.push(c)
-            }
+            a.push('jsgantt-bar-task');
             return a.join(" ")
           }(0, l.task_class(e.plannedDate, e.end_date, e), e.id, o);
           (e.color || e.progressColor || e.textColor) && (p += " jsgantt-task-inline-color"), h.className = p;
@@ -1423,7 +1381,7 @@
 
       function r(e, i, n, r, o) {
         var a, s = t.getState();
-        +n.plannedDate >= +s.min_date && ((a = r([i, o.rtl ? "task_right" : "task_left", "task_start_date"].join(" "))).setAttribute("data-bind-property", "plannedDate"), e.appendChild(a)), +n.end_date <= +s.max_date && ((a = r([i, o.rtl ? "task_left" : "task_right", "task_end_date"].join(" "))).setAttribute("data-bind-property", "end_date"), e.appendChild(a))
+        +n.plannedDate >= +s.min_date && ((a = r([i, o.rtl ? "task-right" : "task-left", "task-start-date"].join(" "))).setAttribute("data-bind-property", "plannedDate"), e.appendChild(a)), +n.end_date <= +s.max_date && ((a = r([i, o.rtl ? "task-left" : "task-right", "task-end_date"].join(" "))).setAttribute("data-bind-property", "end_date"), e.appendChild(a))
       }
 
       return function (i, n) {
@@ -1940,11 +1898,11 @@
     var i, n, r = t.exports = {};
 
     function o() {
-      throw new Error("setTimeout has not been defined")
+
     }
 
     function a() {
-      throw new Error("clearTimeout has not been defined")
+
     }
 
     function s(t) {
@@ -2019,11 +1977,11 @@
     }, r.title = "browser", r.browser = !0, r.env = {}, r.argv = [], r.version = "", r.versions = {}, r.on = p, r.addListener = p, r.once = p, r.off = p, r.removeListener = p, r.removeAllListeners = p, r.emit = p, r.prependListener = p, r.prependOnceListener = p, r.listeners = function (t) {
       return []
     }, r.binding = function (t) {
-      throw new Error("process.binding is not supported")
+
     }, r.cwd = function () {
       return "/"
     }, r.chdir = function (t) {
-      throw new Error("process.chdir is not supported")
+
     }, r.umask = function () {
       return 0
     }
@@ -2084,12 +2042,7 @@
           e.className = "jsgantt-container-resize-watcher", e.tabIndex = -1, t.$root.appendChild(e), e.contentWindow ? o(t, e.contentWindow) : (t.$root.removeChild(e), o(t, window))
         }(t), this.callEvent("onTemplatesReady", []), this.$mouseEvents.reset(this.$root), this.callEvent("onGanttReady", []), this.render()
       }, t.$click = {
-        buttons: {
-          edit: function (e) {
-            t.showLightbox(e)
-          }, delete: function (t) {
-          }
-        }
+
       }, t.render = function () {
         this.callEvent("onBeforeGanttRender", []), !this.config.sort && this._sort && (this._sort = void 0);
         var i = this.getScrollState(), n = i ? i.x : 0;
@@ -2130,7 +2083,7 @@
         }
         return e
       }, t.isSplitTask = function (e) {
-        return t.assert(e && e instanceof Object, "Invalid argument <b>task</b>=" + e + " of jsgantt.isSplitTask. Task object was expected"), this.$data.tasksStore._isSplitItem(e)
+        return t.assert(e && e instanceof Object, "Invalid argument"), this.$data.tasksStore._isSplitItem(e)
       }, t._is_icon_open_click = function (t) {
         if (!t) return !1;
         var e = t.target;
@@ -2272,8 +2225,7 @@
           row_height: 23,
           scale_height: 30,
           link_line_width: 2,
-          link_arrow_size: 6,
-          lightbox_additional_height: 72
+          link_arrow_size: 6
         }, _second_column_width: 95, _third_column_width: 80
       };
       !function (t, e, i) {
@@ -2284,7 +2236,6 @@
         var o = n[r];
         "add" == o.name && (o.width || (o.width = 44), e.defined(o.min_width) && e.defined(o.max_width) || (o.min_width = o.min_width || o.width, o.max_width = o.max_width || o.width), o.min_width && (o.min_width = +o.min_width), o.max_width && (o.max_width = +o.max_width), o.width && (o.width = +o.width, o.width = o.min_width && o.min_width > o.width ? o.min_width : o.width, o.width = o.max_width && o.max_width < o.width ? o.max_width : o.width))
       }
-      i.config.task_height && (e.config.task_height = i.config.task_height || "full"), i._lightbox_template && (e._lightbox_template = i._lightbox_template), i._redefine_lightbox_buttons && (e.config.buttons_right = i._redefine_lightbox_buttons.buttons_right, e.config.buttons_left = i._redefine_lightbox_buttons.buttons_left)
     }
 
     t.exports = function (t) {
@@ -2342,11 +2293,7 @@
           this.clear(), this.active = !1
         }, clear: function () {
           this.cache = {}
-        }, setup: function (t) {
-          var e = [], i = ["_isProjectEnd", "_getProjectEnd", "_getSlack"];
-          "auto" == this.mode ? t.config.highlight_critical_path && (e = i) : !0 === this.mode && (e = i), this.wrap_methods(e, t)
         }, update_if_changed: function (t) {
-          (this.critical_path_mode != t.config.highlight_critical_path || this.mode !== t.config.optimize_render) && (this.critical_path_mode = t.config.highlight_critical_path, this.mode = t.config.optimize_render, this.setup(t))
         }
       }, t.attachEvent("onBeforeGanttRender", e), t.attachEvent("onBeforeDataRender", e), t.attachEvent("onBeforeSmartRender", function () {
         e()
@@ -2393,39 +2340,7 @@
     }
   }, function (t, e) {
     t.exports = function (t) {
-      t._extend_to_optional = function (e) {
-        var i = e, n = {
-          render: i.render, focus: i.focus, set_value: function (e, r, o, a) {
-            var s = t._resolve_default_mapping(a);
-            if (!o[s.plannedDate] || "plannedDate" == s.plannedDate && this._isAllowedUnscheduledTask(o)) {
-              n.disable(e, a);
-              var l = {};
-              for (var c in s) l[s[c]] = o[c];
-              return i.set_value.call(t, e, r, l, a)
-            }
-            return n.enable(e, a), i.set_value.call(t, e, r, o, a)
-          }, get_value: function (e, n, r) {
-            return r.disabled ? {plannedDate: null} : i.get_value.call(t, e, n, r)
-          }, update_block: function (e, i) {
-            if (t.callEvent("onSectionToggle", [t._lightbox_id, i]), e.style.display = i.disabled ? "none" : "block", i.button) {
-              var n = e.previousSibling.querySelector(".jsgantt-custom-button-label"), r = t.locale.labels,
-                o = i.disabled ? r[i.name + "-enable-button"] : r[i.name + "-disable-button"];
-              n.innerHTML = o
-            }
-            t.resizeLightbox()
-          }, disable: function (t, e) {
-            e.disabled = !0, n.update_block(t, e)
-          }, enable: function (t, e) {
-            e.disabled = !1, n.update_block(t, e)
-          }, button_click: function (e, i, r, o) {
-            if (!1 !== t.callEvent("onSectionButton", [t._lightbox_id, r])) {
-              var a = t._get_typed_lightbox_config()[e];
-              a.disabled ? n.enable(o, a) : n.disable(o, a)
-            }
-          }
-        };
-        return n
-      }, t.form_blocks.duration_optional = t._extend_to_optional(t.form_blocks.duration), t.form_blocks.time_optional = t._extend_to_optional(t.form_blocks.time)
+
     }
   }, function (t, e, i) {
     var n = i(2), r = i(11);
@@ -2444,168 +2359,15 @@
         for (var i = a(e), n = 0; n < t.length; n++) t[n].disabled = i
       }
 
-      return n(o, e), o.prototype.render = function (e) {
-        var i = (e.height || 30) + "px",
-          n = "<div class='jsgantt-cal-ltext jsgantt-section-" + e.name + "' style='height:" + i + ";'>", o = [];
-        for (var a in t.config.constraint_types) o.push({
-          key: t.config.constraint_types[a],
-          label: t.locale.labels[t.config.constraint_types[a]]
-        });
-        return e.options = e.options || o, n += "<span data-constraint-type-select>" + r.getHtmlSelect(e.options, [{
-          key: "data-type",
-          value: "constraint-type"
-        }]) + "</span>", (n += "<label data-constraint-time-select>" + (t.locale.labels.constraint_date || "Constraint date") + ": " + t.form_blocks.getTimePicker.call(this, e) + "</label>") + "</div>"
-      }, o.prototype.set_value = function (e, i, n, r) {
-        var o = e.querySelector("[data-constraint-type-select] select"),
-          a = e.querySelectorAll("[data-constraint-time-select] select"), l = r._time_format_order,
-          c = t._resolve_default_mapping(r);
-        o._eventsInitialized || (o.addEventListener("input", function (t) {
-          s(a, t.target.value)
-        }), o._eventsInitialized = !0);
-        var u = n[c.constraint_date] || new Date;
-        t.form_blocks._fill_lightbox_select(a, 0, u, l, r);
-        var d = n[c.constraint_type] || t.getConstraintType(n);
-        o.value = d, s(a, d)
-      }, o.prototype.get_value = function (e, i, n) {
-        var r = e.querySelector("[data-constraint-type-select] select"),
-          o = e.querySelectorAll("[data-constraint-time-select] select"), s = r.value, l = null;
-        return a(s) || (l = t.form_blocks.getTimePickerValue(o, n)), {constraint_type: s, constraint_date: l}
-      }, o.prototype.focus = function (e) {
-        t._focus(e.querySelector("select"))
-      }, o
+      return n(o, e), o
     }
   }, function (t, e, i) {
     var n = i(3), r = i(1), o = i(11), a = i(2);
     t.exports = function (t) {
       var e = i(5)(t), s = {resources: {}, resourcesValues: {}, filter: {}, eventsInitialized: {}};
-
-      function l() {
-        return e.apply(this, arguments) || this
-      }
-
-      function c(t) {
-        return void 0 === t ? ".jsgantt-resource-amount-input" : "[data-checked='" + (t ? "true" : "false") + "'] .jsgantt-resource-amount-input"
-      }
-
-      function u(t) {
-        return s.resources[t.id]
-      }
-
-      function d(t) {
-        return s.filter[t.id]
-      }
-
-      return t.attachEvent("onAfterLightbox", function () {
-        for (var t in s.filter) s.filter[t].checkbox.checked = !1, s.filter[t].input.value = "", s.filter[t].filterApplied = !1;
-        s.resourcesValues = {}
-      }), a(l, e), l.prototype.render = function (e) {
-        var i, n = t.locale.labels.resources_filter_placeholder || e.filter_placeholder || "type to filter",
-          r = t.locale.labels.resources_filter_label || "hide empty";
-        return i = "<div" + (isNaN(e.height) ? "" : " style='height: " + e.height + "px;'") + ">", i += "<div class='jsgantt-cal-ltext jsgantt-resources-filter'><input type='text' class='jsgantt-resources-filter-input' placeholder='" + n + "'> <label><input class='switch_unsetted' type='checkbox'><span class='matherial_checkbox_icon'></span>" + r + "</label></div>", (i += "<div class='jsgantt-cal_ltext jsgantt-resources' data-name='" + e.name + "'></div>") + "</div>"
-      }, l.prototype.set_value = function (e, i, a, l) {
-        var h, f = function (t, e) {
-          return s.resources[e.id] || (s.resources[e.id] = t.querySelector(".jsgantt-resources")), s.resources[e.id]
-        }(e, l), g = "";
-        !function (t, e) {
-          if (!s.filter[e.id]) {
-            var i = t.querySelector(".jsgantt-resources-filter"),
-              n = i.querySelector(".jsgantt-resources-filter-input"), r = i.querySelector(".switch_unsetted");
-            s.filter[e.id] = {container: i, input: n, checkbox: r, filterApplied: !1}
-          }
-          s.filter[e.id]
-        }(e, l), function (e, i, o, a) {
-          if (!s.eventsInitialized[o.id]) {
-            var l = function (r) {
-              var l, c, u, h, f, g = i[o.map_to], p = d(o);
-              f = p.checkbox, h = p.input, u = f.checked, c = h.value.trim(), l = function (e, i, r, o) {
-                var a, l;
-                if (o) {
-                  var c = i[e.map_to] || [];
-                  if (n.isArray(c) || (c = [c]), 0 === (c = c.slice()).length) {
-                    for (var u in c = [], (l = t.copy(e)).options = [], s.resourcesValues[e.id]) c.push({
-                      resource_id: u,
-                      value: s.resourcesValues[e.id][u]
-                    });
-                    if (0 === c.length) return l
-                  } else for (var u in s.resourcesValues[e.id]) n.arrayFind(c, function (t) {
-                    return t.id == u
-                  }) || c.push({resource_id: u, value: s.resourcesValues[e.id][u]});
-                  for (var d = {}, h = 0; h < c.length; h++) d[c[h].resource_id] = !0;
-                  a = function (t) {
-                    if (d[String(t.key)] && ("" === r || t.label.indexOf(r) >= 0)) return t
-                  }
-                } else {
-                  if ("" === r) return e;
-                  a = function (t) {
-                    if (t.label.indexOf(r) >= 0) return t
-                  }
-                }
-                return (l = t.copy(e)).options = n.arrayFilter(l.options, a), l
-              }(o, i, c, u), p.filterApplied = !0, a.form_blocks.resources.set_value(e, g, i, l)
-            };
-            l = n.throttle(l, 100), d(o).container.addEventListener("keyup", l), d(o).container.addEventListener("input", l, !0), d(o).container.addEventListener("change", l, !0), u(o).addEventListener("input", h), u(o).addEventListener("change", h), t.attachEvent("onResourcesSelectActivated", t.bind(h, u(o))), s.eventsInitialized[o.id] = !0
-          }
-
-          function h(e) {
-            var i, n = e.target;
-            if ("checkbox" === e.target.type) {
-              (i = n.parentNode.querySelector(c())).disabled = !n.checked;
-              var a = i.getAttribute("data-item-id"), l = r.locateClassName(e, "jsgantt-resource-row"),
-                u = l.querySelector(".jsgantt-resource-amount-input");
-              if (l.setAttribute("data-checked", n.checked), n.checked) {
-                "select" === i.nodeName.toLowerCase() && t.callEvent("onResourcesSelectActivated", [{target: i}]);
-                var d = a, h = o.default_value;
-                o.options.forEach(function (t) {
-                  t.key == d && t.default_value && (h = t.default_value)
-                }), u && !u.value && void 0 !== h && (u.value = h, f(o, this)), u.select ? u.select() : u.focus && u.focus()
-              } else s.resourcesValues[o.id] && delete s.resourcesValues[o.id][a]
-            } else "text" !== e.target.type && "select" !== e.target.nodeName.toLowerCase() || (n.parentNode.parentNode, i = e.target, f(o, this))
-          }
-
-          function f(t, e) {
-            var i = c(), n = e.querySelectorAll(i);
-            s.resourcesValues[t.id] = s.resourcesValues[t.id] || {};
-            for (var r = 0; r < n.length; r++) {
-              var o = n[r].getAttribute("data-item-id");
-              n[r].disabled ? delete s.resourcesValues[t.id][o] : s.resourcesValues[t.id][o] = n[r].value
-            }
-          }
-        }(e, a, l, this), n.forEach(l.options, function (t, e) {
-          l.unassigned_value != t.key && (h = function (t, e, i) {
-            var r, o = {};
-            return e && (n.isArray(e) ? r = n.arrayFind(e, function (t) {
-              return t.resource_id == i.key
-            }) : e.resource_id == i.key && (r = e), r && (o.value = r.value)), s.resourcesValues[t.id] && s.resourcesValues[t.id][i.key] && (o.value = s.resourcesValues[t.id][i.key]), o
-          }(l, i, t), g += ["<label class='jsgantt-resource-row' data-item-id='" + t.key + "' data-checked=" + (h.value ? "true" : "false") + ">", "<input class='jsgantt-resource-toggle' type='checkbox'", h.value ? " checked='checked'" : "", "><div class='jsgantt-resource-cell jsgantt-resource-cell-checkbox'><span class='matherial-checkbox-icon'></span></div>", "<div class='jsgantt-resource-cell jsgantt-resource-cell-label'>", t.label, "</div>", "<div class='jsgantt-resource-cell jsgantt-resource-cell-value'>", function (t, e, i) {
-            var n, r = "";
-            if (t) return n = [{key: "data-item-id", value: t.key}, {
-              key: "class",
-              value: "jsgantt-resource-amount-input"
-            }], i && n.push({
-              key: "disabled",
-              value: "disabled"
-            }), t.options ? r += o.getHtmlSelect(t.options, n, e) : (n[n.length] = {
-              key: "value",
-              value: e || ""
-            }, r += o.getHtmlInput(n)), r
-          }(t, h.value, !h.value), "</div>", "<div class='jsgantt-resource-cell jsgantt-resource-cell-unit'>", t.unit, "</div>", "</label>"].join(""))
-        }), f.innerHTML = g, f.style.zoom = "1", f._offsetSizes = f.offsetHeight, f.style.zoom = "", t.resizeLightbox(), t._center_lightbox(t.getLightbox())
-      }, l.prototype.get_value = function (t, e, i) {
-        var r = u(i), o = [], a = c(!0), l = c(!1), h = d(i), f = e[i.map_to] || [], g = {};
-        h.filterApplied && f && f.length > 0 && n.forEach(f, function (t) {
-          g[String(t.resource_id)] = t
-        });
-        for (var p = r.querySelectorAll(a), _ = r.querySelectorAll(l), v = 0; v < _.length; v++) delete g[_[v].getAttribute("data-item-id")];
-        for (v = 0; v < p.length; v++) {
-          var m = p[v].getAttribute("data-item-id"), y = p[v].value.trim();
-          "" !== y && "0" !== y && (delete g[m], o[o.length] = {resource_id: m, value: y})
-        }
-        for (var k in g) s.resourcesValues[i.id] ? o[o.length] = s.resourcesValues[i.id][k] || g[k] : o[o.length] = g[k];
-        return o
-      }, l.prototype.focus = function (e) {
-        t._focus(e.querySelector(".jsgantt-resources"))
-      }, l
     }
+
+
   }, function (t, e, i) {
     var n = i(2);
     t.exports = function (t) {
@@ -2670,13 +2432,7 @@
         return (e = parseInt(e.value, 10)) && !window.isNaN(e) || (e = 1), e < 0 && (e *= -1), e
       }
 
-      return n(r, e), r.prototype.render = function (e) {
-        var i = "<div class='jsgantt-time-selects'>" + t.form_blocks.getTimePicker.call(this, e) + "</div>",
-          n = t.locale.labels[t.config.durationUnit + "s"], r = e.single_date ? " style='display:none'" : "",
-          o = e.readonly ? " disabled='disabled'" : "",
-          a = "<div class='jsgantt-duration' " + r + "><input type='button' class='jsgantt-duration-dec' value='−'" + o + "><input type='text' value='5' class='jsgantt-duration-value'" + o + " " + t._waiAria.lightboxDurationInputAttrString(e) + "><input type='button' class='jsgantt-duration-inc' value='+'" + o + "> " + n + " <span></span></div>";
-        return "<div style='height:" + (e.height || 30) + "px;padding-top:;font-size:inherit;' class='jsgantt-section-time'>" + i + " " + a + "</div>"
-      }, r.prototype.set_value = function (e, i, n, r) {
+      return n(r, e), r.prototype.set_value = function (e, i, n, r) {
         var s, l, c, u, d = r, h = e.getElementsByTagName("select"), f = e.getElementsByTagName("input"), g = f[1],
           p = [f[0], f[2]], _ = e.getElementsByTagName("span")[0], v = r._time_format_order;
 
@@ -2705,7 +2461,7 @@
           plannedDate: l,
           end_date: c,
           task: n
-        }), t.form_blocks._fill_lightbox_select(h, 0, l, v, d), g.value = u, m()
+        }), g.value = u, m()
       }, r.prototype.get_value = function (e, i, n) {
         var r = o(e, n), s = a(e), l = t.calculateEndDate({plannedDate: r, duration: s, task: i});
         return "string" == typeof t._resolve_default_mapping(n) ? r : {plannedDate: r, end_date: l, duration: s}
@@ -2722,19 +2478,7 @@
         return e.apply(this, arguments) || this
       }
 
-      return n(r, e), r.prototype.render = function (t) {
-        var e = "<div class='jsgantt-cal-ltext' style='height:" + (t.height || "23") + "px;'>";
-        if (t.options && t.options.length) for (var i = 0; i < t.options.length; i++) e += "<label><input type='radio' value='" + t.options[i].key + "' name='" + t.name + "'>" + t.options[i].label + "</label>";
-        return e + "</div>"
-      }, r.prototype.set_value = function (t, e, i, n) {
-        var r;
-        n.options && n.options.length && (r = t.querySelector("input[type=radio][value='" + e + "']") || t.querySelector("input[type=radio][value='" + n.default_value + "']")) && (!t._joc_onchange && n.onchange && (t.onchange = n.onchange, t._joc_onchange = !0), r.checked = !0)
-      }, r.prototype.get_value = function (t, e) {
-        var i = t.querySelector("input[type=radio]:checked");
-        return i ? i.value : ""
-      }, r.prototype.focus = function (e) {
-        t._focus(e.querySelector("input[type=radio]"))
-      }, r
+      return n(r, e),  r
     }
   }, function (t, e, i) {
     var n = i(3), r = i(2);
@@ -2771,36 +2515,7 @@
         return e.apply(this, arguments) || this
       }
 
-      return n(r, e), r.prototype.render = function (e) {
-        var i = t.form_blocks.getTimePicker.call(this, e),
-          n = "<div style='height:" + (e.height || 30) + "px;padding-top:0px;font-size:inherit;text-align:center;' class='jsgantt-section-time'>";
-        return n += i, e.single_date ? (i = t.form_blocks.getTimePicker.call(this, e, !0), n += "<span></span>") : n += "<span style='font-weight:normal; font-size:10pt;'> &nbsp;&ndash;&nbsp; </span>", (n += i) + "</div>"
-      }, r.prototype.set_value = function (e, i, n, r) {
-        var o = r, a = e.getElementsByTagName("select"), s = r._time_format_order;
-        if (o.auto_end_date) for (var l = function () {
-          d = new Date(a[s[2]].value, a[s[1]].value, a[s[0]].value, 0, 0), h = t.calculateEndDate({
-            plannedDate: d,
-            duration: 1,
-            task: n
-          }), t.form_blocks._fill_lightbox_select(a, s.size, h, s, o)
-        }, c = 0; c < 4; c++) a[c].onchange = l;
-        var u = t._resolve_default_mapping(r);
-        "string" == typeof u && (u = {plannedDate: u});
-        var d = n[u.plannedDate] || new Date,
-          h = n[u.end_date] || t.calculateEndDate({plannedDate: d, duration: 1, task: n});
-        t.form_blocks._fill_lightbox_select(a, 0, d, s, o), t.form_blocks._fill_lightbox_select(a, s.size, h, s, o)
-      }, r.prototype.get_value = function (e, i, n) {
-        var r, o = e.getElementsByTagName("select"), a = n._time_format_order;
-        return r = t.form_blocks.getTimePickerValue(o, n), "string" == typeof t._resolve_default_mapping(n) ? r : {
-          plannedDate: r,
-          end_date: function (e, i, r) {
-            var o = t.form_blocks.getTimePickerValue(e, n, i.size);
-            return o <= r ? t.date.add(r, t._get_timepicker_step(), "minute") : o
-          }(o, a, r)
-        }
-      }, r.prototype.focus = function (e) {
-        t._focus(e.getElementsByTagName("select")[0])
-      }, r
+      return n(r, e), r
     }
   }, function (t, e, i) {
     var n = i(2);
@@ -2811,18 +2526,7 @@
         return e.apply(this, arguments) || this
       }
 
-      return n(r, e), r.prototype.render = function (t) {
-        return "<div class='jsgantt-cal-ltext' style='height:" + (t.height || "130") + "px;'><textarea></textarea></div>"
-      }, r.prototype.set_value = function (e, i) {
-        t.form_blocks.textarea._get_input(e).value = i || ""
-      }, r.prototype.get_value = function (e) {
-        return t.form_blocks.textarea._get_input(e).value
-      }, r.prototype.focus = function (e) {
-        var i = t.form_blocks.textarea._get_input(e);
-        t._focus(i, !0)
-      }, r.prototype._get_input = function (t) {
-        return t.querySelector("textarea")
-      }, r
+      return n(r, e), r
     }
   }, function (t, e, i) {
     var n = i(2);
@@ -2846,15 +2550,17 @@
     t.exports = function (t) {
       i(1);
       var e = i(64)(t), n = i(62)(t), r = i(59)(t), o = i(58)(t);
-      t.showLightbox = function (t) {
-        alert("Yet to implement")
+      t.showModal = function (x) {
+        let task = t.getTask(x);
+        t.deleteTask(x);
+        t.callEvent("onRowClick", [task]);
       }, t.form_blocks = {template: new e, time: new n, duration: new r, parent: new o}
     }
   }, function (t, e, i) {
     var n = i(3);
     t.exports = function (t) {
       t.isUnscheduledTask = function (e) {
-        return t.assert(e && e instanceof Object, "Invalid argument <b>task</b>=" + e + " of jsgantt.isUnscheduledTask. Task object was expected"), !!e.unscheduled || !e.plannedDate
+        return t.assert(e && e instanceof Object, "Invalid argument"), !!e.unscheduled || !e.plannedDate
       }, t._isAllowedUnscheduledTask = function (e) {
         return !(!e.unscheduled || !t.config.show_unscheduled)
       }, t.isTaskVisible = function (e) {
@@ -2862,31 +2568,9 @@
         var i = this.getTask(e), n = i.plannedDate ? i.plannedDate.valueOf() : null,
           r = i.end_date ? i.end_date.valueOf() : null;
         return !!(t._isAllowedUnscheduledTask(i) || n && r && n <= this._max_date.valueOf() && r >= this._min_date.valueOf()) && !!(t.getGlobalTaskIndex(e) >= 0)
-      }, t._getProjectEnd = function () {
-        if (t.config.project_end) return t.config.project_end;
-        var e = t.getTaskByTime();
-        return (e = e.sort(function (t, e) {
-          return +t.end_date > +e.end_date ? 1 : -1
-        })).length ? e[e.length - 1].end_date : null
-      }, t._getProjectStart = function () {
-        if (t.config.project_start) return t.config.project_start;
-        if (t.config.plannedDate) return t.config.plannedDate;
-        if (t.getState().min_date) return t.getState().min_date;
-        var e = t.getTaskByTime();
-        return (e = e.sort(function (t, e) {
-          return +t.plannedDate > +e.plannedDate ? 1 : -1
-        })).length ? e[0].plannedDate : null
       }, t._defaultTaskDate = function (e, i) {
         var n = !(!i || i == t.config.root_id) && t.getTask(i), r = null;
-        if (n) r = t.config.schedule_from_end ? t.calculateEndDate({
-          plannedDate: n.end_date,
-          duration: -t.config.durationStep,
-          task: e
-        }) : n.plannedDate; else if (t.config.schedule_from_end) r = t.calculateEndDate({
-          plannedDate: t._getProjectEnd(),
-          duration: -t.config.durationStep,
-          task: e
-        }); else {
+        if (n) r = n.plannedDate; else {
           var o = t.getTaskByIndex(0);
           r = o ? o.plannedDate ? o.plannedDate : o.end_date ? t.calculateEndDate({
             plannedDate: o.end_date,
@@ -2900,14 +2584,9 @@
       }, t.createTask = function (e, i, n) {
         return e = e || {}, t.defined(e.id) || (e.id = t.uid()), e.plannedDate || (e.plannedDate = t._defaultTaskDate(e, i)), void 0 === e.orderId && (e.orderId = t.locale.labels.new_task), void 0 === e.duration && (e.duration = 1), this.isTaskExists(i) && (this.setParent(e, i, !0), this.getTask(i).$open = !0), this.callEvent("onTaskCreated", [e]) ? (this.config.details_on_create ? (e.$new = !0, this.silent(function () {
           t.$data.tasksStore.addItem(e, n)
-        }), this.selectTask(e.id), this.refreshData(), this.showLightbox(e.id)) : this.addTask(e, i, n) && (this.showTask(e.id), this.selectTask(e.id)), e.id) : null
+        }), this.selectTask(e.id), this.refreshData(), this.showModal(e.id)) : this.addTask(e, i, n) && (this.showTask(e.id), this.selectTask(e.id)), e.id) : null
       }, t._update_flags = function (e, i) {
-        var n = t.$data.tasksStore;
-        void 0 === e ? (this._lightbox_id = null, n.silent(function () {
-          n.unselect()
-        }), this._tasks_dnd && this._tasks_dnd.drag && (this._tasks_dnd.drag.id = null)) : (this._lightbox_id == e && (this._lightbox_id = i), n.getSelectedId() == e && n.silent(function () {
-          n.unselect(e), n.select(i)
-        }), this._tasks_dnd && this._tasks_dnd.drag && this._tasks_dnd.drag.id == e && (this._tasks_dnd.drag.id = i))
+
       }, t._get_task_timing_mode = function (t, e) {
         var i = this.getTaskType(t.type), n = {type: i, $no_start: !1, $no_end: !1};
         return e || i != t.$rendered_type ? (i == this.config.types.project ? n.$no_end = n.$no_start = !0 : i != this.config.types.milestone && (n.$no_end = !(t.end_date || t.duration), n.$no_start = !t.plannedDate, this._isAllowedUnscheduledTask(t) && (n.$no_end = n.$no_start = !1)), n) : (n.$no_start = t.$no_start, n.$no_end = t.$no_end, n)
@@ -2915,15 +2594,9 @@
         var i = t._get_task_timing_mode(e, !0), n = e.$rendered_type != i.type, r = i.type;
         n && (e.$no_start = i.$no_start, e.$no_end = i.$no_end, e.$rendered_type = i.type), n && r != this.config.types.milestone && r == this.config.types.project && this._set_default_task_timing(e), r == this.config.types.milestone && (e.end_date = e.plannedDate), e.plannedDate && e.end_date && (e.duration = this.calculateDuration(e)), e.end_date || (e.end_date = e.plannedDate), e.duration = e.duration || 0
       }, t.isSummaryTask = function (e) {
-        t.assert(e && e instanceof Object, "Invalid argument <b>task</b>=" + e + " of jsgantt.isSummaryTask. Task object was expected");
+        t.assert(e && e instanceof Object, "Invalid argument");
         var i = t._get_task_timing_mode(e);
         return !(!i.$no_end && !i.$no_start)
-      }, t.resetProjectDates = function (t) {
-        var e = this._get_task_timing_mode(t);
-        if (e.$no_end || e.$no_start) {
-          var i = this.getSubtaskDates(t.id);
-          this._assign_project_dates(t, i.plannedDate, i.end_date)
-        }
       }, t.getSubtaskDuration = function (e) {
         var i = 0, n = void 0 !== e ? e : t.config.root_id;
         return this.eachTask(function (e) {
@@ -2934,19 +2607,12 @@
         return this.eachTask(function (e) {
           this.getTaskType(e.type) == t.config.types.project || this.isUnscheduledTask(e) || (e.plannedDate && !e.$no_start && (!i || i > e.plannedDate.valueOf()) && (i = e.plannedDate.valueOf()), e.end_date && !e.$no_end && (!n || n < e.end_date.valueOf()) && (n = e.end_date.valueOf()))
         }, r), {plannedDate: i ? new Date(i) : null, end_date: n ? new Date(n) : null}
-      }, t._assign_project_dates = function (t, e, i) {
-        var n = this._get_task_timing_mode(t);
-        n.$no_start && (t.plannedDate = e && e != 1 / 0 ? new Date(e) : this._defaultTaskDate(t, this.getParent(t))), n.$no_end && (t.end_date = i && i != -1 / 0 ? new Date(i) : this.calculateEndDate({
-          plannedDate: t.plannedDate,
-          duration: this.config.durationStep,
-          task: t
-        })), (n.$no_start || n.$no_end) && this._init_task_timing(t)
       }, t._update_parents = function (e, i) {
         if (e) {
           var n = this.getTask(e), r = this.getParent(n), o = this._get_task_timing_mode(n), a = !0;
           if (o.$no_start || o.$no_end) {
             var s = n.plannedDate.valueOf(), l = n.end_date.valueOf();
-            t.resetProjectDates(n), s == n.plannedDate.valueOf() && l == n.end_date.valueOf() && (a = !1), a && !i && this.refreshTask(n.id, !0)
+            s == n.plannedDate.valueOf() && l == n.end_date.valueOf() && (a = !1), a && !i && this.refreshTask(n.id, !0)
           }
           a && r && this.isTaskExists(r) && this._update_parents(r, i)
         }
@@ -2988,9 +2654,7 @@
             return e.getWorkHours(t)
           }, setWorkTime: function (t) {
             return e.setWorkTime(t)
-          }, unsetWorkTime: function (t) {
-            e.unsetWorkTime(t)
-          }, isWorkTime: function (t, i, n) {
+          },isWorkTime: function (t, i, n) {
             return e.isWorkTime(t, i, n)
           }, getClosestWorkTime: function (t) {
             return e.getClosestWorkTime(t)
@@ -3013,8 +2677,6 @@
       getWorkHours: function () {
         return [0, 24]
       }, setWorkTime: function () {
-        return !0
-      }, unsetWorkTime: function () {
         return !0
       }, isWorkTime: function () {
         return !0
@@ -3060,8 +2722,6 @@
         return t = this.argumentsHelper.getWorkHoursArguments.apply(this.argumentsHelper, arguments), this._getCalendar(t).getWorkHours(t.date)
       }, setWorkTime: function (t, e) {
         return t = this.argumentsHelper.setWorkTimeArguments.apply(this.argumentsHelper, arguments), e || (e = this.calendarManager.getCalendar()), e.setWorkTime(t)
-      }, unsetWorkTime: function (t, e) {
-        return t = this.argumentsHelper.unsetWorkTimeArguments.apply(this.argumentsHelper, arguments), e || (e = this.calendarManager.getCalendar()), e.unsetWorkTime(t)
       }, isWorkTime: function (t, e, i, n) {
         var r = this.argumentsHelper.isWorkTimeArguments.apply(this.argumentsHelper, arguments);
         return this._getCalendar(r).isWorkTime(r)
@@ -3142,7 +2802,6 @@
 
     o.prototype = {
       units: ["year", "month", "week", "day", "hour", "minute"], _getUnitOrder: function (t) {
-        console.log(t, " >>>>>>>>>>>>>>");
         for (var e = 0, i = this.units.length; e < i; e++) if (this.units[e] == t) return e
       }, _timestamp: function (t) {
         var e = null;
@@ -3190,16 +2849,6 @@
         return this.worktime
       }, _setCalendar: function (t) {
         this.worktime = t
-      }, _tryChangeCalendarSettings: function (t) {
-        var e = JSON.stringify(this._getCalendar());
-        return t(), !this._isEmptyCalendar(this._getCalendar()) || (this.$jsgantt.assert(!1, "Invalid calendar settings, no worktime available"), this._setCalendar(JSON.parse(e)), this._workingUnitsCache.clear(), !1)
-      }, _isEmptyCalendar: function (t) {
-        var e = !1, i = [], n = !0;
-        for (var r in t.dates) e |= !!t.dates[r], i.push(r);
-        var o = [];
-        for (r = 0; r < i.length; r++) i[r] < 10 && o.push(i[r]);
-        for (o.sort(), r = 0; r < 7; r++) o[r] != r && (n = !1);
-        return n ? !e : !(e || t.hours)
       }, getWorkHours: function () {
         var t = this.argumentsHelper.getWorkHoursArguments.apply(this.argumentsHelper, arguments);
         return this._getWorkHours(t.date)
@@ -3207,19 +2856,8 @@
         var e = this._timestamp({date: t}), i = !0, n = this._getCalendar();
         return void 0 !== n.dates[e] ? i = n.dates[e] : void 0 !== n.dates[t.getDay()] && (i = n.dates[t.getDay()]), !0 === i ? n.hours : i || []
       }, setWorkTime: function (t) {
-        return this._tryChangeCalendarSettings(r.bind(function () {
-          var e = void 0 === t.hours || t.hours, i = this._timestamp(t);
-          null !== i ? this._getCalendar().dates[i] = e : this._getCalendar().hours = e, this._workingUnitsCache.clear()
-        }, this))
-      }, unsetWorkTime: function (t) {
-        return this._tryChangeCalendarSettings(r.bind(function () {
-          if (t) {
-            var e = this._timestamp(t);
-            null !== e && delete this._getCalendar().dates[e]
-          } else this.reset_calendar();
-          this._workingUnitsCache.clear()
-        }, this))
-      }, _isWorkTime: function (t, e, i) {
+
+      },  _isWorkTime: function (t, e, i) {
         var n = String(t.valueOf()), r = this._workingUnitsCache.getItem(e, n);
         return -1 == r && (r = this._checkIfWorkingUnit(t, e, i), this._workingUnitsCache.setItem(e, n, r)), r
       }, isWorkTime: function () {
@@ -3322,24 +2960,10 @@
     i(0), i(24), i(73);
 
     function n(t) {
-      this.$jsgantt = t, this._calendars = {}
+      this.$jsgantt = t
     }
 
-    n.prototype = {
-      _calendars: {}, _getDayHoursForMultiple: function (t, e) {
-      }, mergeCalendars: function () {
-      }, _convertWorktimeSettings: function (t) {
-      }, createCalendar: function (t) {
-      }, getCalendar: function (t) {
-      }, getCalendars: function () {
-      }, _getOwnCalendar: function (t) {
-      }, getTaskCalendar: function (t) {
-      }, addCalendar: function (t) {
-      }, deleteCalendar: function (t) {
-      }, restoreConfigCalendars: function (t) {
-      }, defaults: {}, createDefaultCalendars: function () {
-      }
-    }, t.exports = n
+    t.exports = n
   }, function (t, e, i) {
     var n = i(74), r = i(69), o = i(67), a = i(0);
     t.exports = function (t) {
@@ -3352,9 +2976,7 @@
       t.load = function (e, i, n) {
         this._load_url = e, this.assert(arguments.length, "Invalid load arguments");
         var r = "json", o = null;
-        return arguments.length >= 3 ? (r = i, o = n) : "string" == typeof arguments[1] ? r = arguments[1] : "function" == typeof arguments[1] && (o = arguments[1]), this._load_type = r, this.callEvent("onLoadStart", [e, r]), this.ajax.get(e, t.bind(function (t) {
-          this.on_load(t, r), this.callEvent("onLoadEnd", [e, r]), "function" == typeof o && o.call(this)
-        }, this))
+        return arguments.length >= 3 ? (r = i, o = n) : "string" == typeof arguments[1] ? r = arguments[1] : "function" == typeof arguments[1] && (o = arguments[1]), this._load_type = r, this.callEvent("onLoadStart", [e, r])
       }, t.parse = function (t, e) {
         this.on_load({xmlDoc: {responseText: t}}, e)
       }, t.serialize = function (t) {
@@ -3407,73 +3029,10 @@
         }, serialize: function () {
           var e = [], i = [];
           t.eachTask(function (i) {
-            t.resetProjectDates(i), e.push(this.serializeTask(i))
+             e.push(this.serializeTask(i))
           }, t.config.root_id, this);
           for (var n = t.getLinks(), r = 0; r < n.length; r++) i.push(this.serializeLink(n[r]));
           return {data: e, links: i}
-        }
-      }, t.xml = {
-        _xmlNodeToJSON: function (t, e) {
-          for (var i = {}, n = 0; n < t.attributes.length; n++) i[t.attributes[n].name] = t.attributes[n].value;
-          if (!e) {
-            for (n = 0; n < t.childNodes.length; n++) {
-              var r = t.childNodes[n];
-              1 == r.nodeType && (i[r.tagName] = r.firstChild ? r.firstChild.nodeValue : "")
-            }
-            i.orderId || (i.orderId = t.firstChild ? t.firstChild.nodeValue : "")
-          }
-          return i
-        }, _getCollections: function (e) {
-          for (var i = {}, n = t.ajax.xpath("//coll_options", e), r = 0; r < n.length; r++) for (var o = i[n[r].getAttribute("for")] = [], a = t.ajax.xpath(".//item", n[r]), s = 0; s < a.length; s++) {
-            for (var l = a[s].attributes, c = {
-              key: a[s].getAttribute("value"),
-              label: a[s].getAttribute("label")
-            }, u = 0; u < l.length; u++) {
-              var d = l[u];
-              "value" != d.nodeName && "label" != d.nodeName && (c[d.nodeName] = d.nodeValue)
-            }
-            o.push(c)
-          }
-          return i
-        }, _getXML: function (e, i, n) {
-          n = n || "data", i.getXMLTopNode || (i = t.ajax.parse(i));
-          var r = t.ajax.xmltop(n, i.xmlDoc);
-          if (!r || r.tagName != n) throw"Invalid XML data";
-          var o = r.getAttribute("joc_security");
-          return o && (t.security_key = o), r
-        }, parse: function (e, i) {
-          i = this._getXML(e, i);
-          for (var n = {}, r = n.data = [], o = t.ajax.xpath("//task", i), a = 0; a < o.length; a++) r[a] = this._xmlNodeToJSON(o[a]);
-          return n.collections = this._getCollections(i), n
-        }, _copyLink: function (t) {
-          return "<item id='" + t.id + "' source='" + t.source + "' target='" + t.target + "' type='" + t.type + "' />"
-        }, _copyObject: function (t) {
-          return "<task id='" + t.id + "' parent='" + (t.parent || "") + "' plannedDate='" + t.plannedDate + "' duration='" + t.duration + "' open='" + !!t.open + "' progress='" + t.progress + "' end_date='" + t.end_date + "'><![CDATA[" + t.orderId + "]]></task>"
-        }, serialize: function () {
-          for (var e = [], i = [], n = t.json.serialize(), r = 0, o = n.data.length; r < o; r++) e.push(this._copyObject(n.data[r]));
-          for (r = 0, o = n.links.length; r < o; r++) i.push(this._copyLink(n.links[r]));
-          return "<data>" + e.join("") + "<coll_options for='links'>" + i.join("") + "</coll_options></data>"
-        }
-      }, t.oldxml = {
-        parse: function (e, i) {
-          i = t.xml._getXML(e, i, "projects");
-          for (var n = {collections: {links: []}}, r = n.data = [], o = t.ajax.xpath("//task", i), a = 0; a < o.length; a++) {
-            r[a] = t.xml._xmlNodeToJSON(o[a]);
-            var s = o[a].parentNode;
-            "project" == s.tagName ? r[a].parent = "project-" + s.getAttribute("id") : r[a].parent = s.parentNode.getAttribute("id")
-          }
-          for (o = t.ajax.xpath("//project", i), a = 0; a < o.length; a++) (l = t.xml._xmlNodeToJSON(o[a], !0)).id = "project-" + l.id, r.push(l);
-          for (a = 0; a < r.length; a++) {
-            var l;
-            (l = r[a]).plannedDate = l.startdate || l.est, l.end_date = l.enddate, l.orderId = l.name, l.duration = l.duration / 8, l.open = 1, l.duration || l.end_date || (l.duration = 1), l.predecessortasks && n.collections.links.push({
-              target: l.id,
-              source: l.predecessortasks,
-              type: t.config.links.finish_to_start
-            })
-          }
-          return n
-        }, serialize: function () {
-          t.message("Serialization to 'old XML' is not implemented")
         }
       }, t.serverList = function (t, e) {
         return e ? this.serverList[t] = e.slice(0) : this.serverList[t] || (this.serverList[t] = []), this.serverList[t]
@@ -3510,7 +3069,7 @@
         }, getTimelineCellAttr: function (e) {
           return t._waiAria.getAttributeString({"aria-label": e})
         }, _taskCommonAttr: function (e, i) {
-          e.plannedDate && e.end_date && (i.setAttribute("aria-label", n(t.templates.tooltip_text(e.plannedDate, e.end_date, e))), t.isReadonly(e) && i.setAttribute("aria-readonly", !0), e.$dataprocessor_class && i.setAttribute("aria-busy", !0), i.setAttribute("aria-selected", t.getState().selected_task == e.id || t.isSelectedTask && t.isSelectedTask(e.id) ? "true" : "false"))
+          e.plannedDate && e.end_date && (t.isReadonly(e) && i.setAttribute("aria-readonly", !0), e.$dataprocessor_class && i.setAttribute("aria-busy", !0), i.setAttribute("aria-selected", t.getState().selected_task == e.id || t.isSelectedTask && t.isSelectedTask(e.id) ? "true" : "false"))
         }, setTaskBarAttr: function (e, i) {
           this._taskCommonAttr(e, i), !t.isReadonly(e) && t.config.drag_move && (e.id != t.getState().drag_id ? i.setAttribute("aria-grabbed", !1) : i.setAttribute("aria-grabbed", !0))
         }, taskRowAttr: function (e, i) {
@@ -3522,34 +3081,6 @@
           i.setAttribute("aria-label", n(s)), t.isReadonly(e) && i.setAttribute("aria-readonly", !0)
         }, gridSeparatorAttr: function (t) {
           t.setAttribute("role", "separator")
-        }, lightboxHiddenAttr: function (t) {
-          t.setAttribute("aria-hidden", "true")
-        }, lightboxVisibleAttr: function (t) {
-          t.setAttribute("aria-hidden", "false")
-        }, lightboxAttr: function (t) {
-          t.setAttribute("role", "dialog"), t.setAttribute("aria-hidden", "true"), t.firstChild.setAttribute("role", "heading")
-        }, lightboxButtonAttrString: function (e) {
-          return this.getAttributeString({role: "button", "aria-label": t.locale.labels[e], tabindex: "0"})
-        }, lightboxHeader: function (t, e) {
-          t.setAttribute("aria-label", e)
-        }, lightboxSelectAttrString: function (e) {
-          var i = "";
-          switch (e) {
-            case"%Y":
-              i = t.locale.labels.years;
-              break;
-            case"%m":
-              i = t.locale.labels.months;
-              break;
-            case"%d":
-              i = t.locale.labels.days;
-              break;
-            case"%H:%i":
-              i = t.locale.labels.hours + t.locale.labels.minutes
-          }
-          return t._waiAria.getAttributeString({"aria-label": i})
-        }, lightboxDurationInputAttrString: function (e) {
-          return this.getAttributeString({"aria-label": t.locale.labels.column_duration, "aria-valuemin": "0"})
         }, gridAttrString: function () {
           return [" role='treegrid'", t.config.multiselect ? "aria-multiselectable='true'" : "aria-multiselectable='false'", " "].join(" ")
         }, gridScaleRowAttrString: function () {
@@ -3568,28 +3099,6 @@
           return "role='rowgroup'"
         }, gridCellAttrString: function (t, e) {
           return this.getAttributeString({role: "gridcell", "aria-label": e})
-        }, gridAddButtonAttrString: function (e) {
-          return this.getAttributeString({role: "button", "aria-label": t.locale.labels.new_task})
-        }, messageButtonAttrString: function (t) {
-          return "tabindex='0' role='button' aria-label='" + t + "'"
-        }, messageInfoAttr: function (t) {
-          t.setAttribute("role", "alert")
-        }, messageModalAttr: function (t, e) {
-          t.setAttribute("role", "dialog"), e && t.setAttribute("aria-labelledby", e)
-        }, quickInfoAttr: function (t) {
-          t.setAttribute("role", "dialog")
-        }, quickInfoHeaderAttrString: function () {
-          return " role='heading' "
-        }, quickInfoHeader: function (t, e) {
-          t.setAttribute("aria-label", e)
-        }, quickInfoButtonAttrString: function (e) {
-          return t._waiAria.getAttributeString({role: "button", "aria-label": e, tabindex: "0"})
-        }, tooltipAttr: function (t) {
-          t.setAttribute("role", "tooltip")
-        }, tooltipVisibleAttr: function (t) {
-          t.setAttribute("aria-hidden", "false")
-        }, tooltipHiddenAttr: function (t) {
-          t.setAttribute("aria-hidden", "true")
         }
       }, t._waiAria) t._waiAria[a] = function (e) {
         return function () {
@@ -3623,7 +3132,7 @@
         if (t.config.branch_loading && t._load_url && function (e) {
           return !(!t.config.branch_loading || !t._load_url || t.getUserData(e, "was_rendered") || t.getChildren(e).length || !t.hasChild(e))
         }(e)) {
-          var i = t._load_url, n = (i = i.replace(/(\?|&)?parent_id=.+&?/, "")).indexOf("?") >= 0 ? "&" : "?",
+          var i = t._load_url, n = (i = i.replace(/([?&])?parent_id=.+&?/, "")).indexOf("?") >= 0 ? "&" : "?",
             r = t.getScrollState().y || 0;
           t.load(i + n + "parent_id=" + encodeURIComponent(e), this._load_type, function () {
             r && t.scrollTo(null, r)
@@ -3654,22 +3163,18 @@
       }
 
       var n;
-
       function r(e, i) {
         e.type = i, t.updateTask(e.id)
       }
-
       function o(e) {
         var i = t.config.types, n = t.hasChild(e.id), r = t.getTaskType(e.type);
         return n && r === i.task ? i.project : !n && r === i.project && i.task
       }
-
       var a, s, l = !0;
 
       function c(e) {
         e != t.config.root_id && t.isTaskExists(e) && i(e)
       }
-
       t.attachEvent("onParse", e(function () {
         l = !1, t.batchUpdate(function () {
           t.eachTask(function (t) {
@@ -3900,7 +3405,7 @@
           var n = [];
           return this.each(function () {
             if (this && this.getAttribute) if (this.jsgantt || window.jsgantt.$root == this) n.push("object" == typeof this.jsgantt ? this.jsgantt : window.jsgantt); else {
-              var t = window.jsgantt.$container && window.JSGantt ? window.JSGantt.getGanttInstance() : window.jsgantt;
+              var t = window.jsgantt;
               for (var e in i) "data" != e && (t.config[e] = i[e]);
               t.init(this), i.data && t.parse(i.data), n.push(t)
             }
@@ -3995,13 +3500,9 @@
             var r, s = this._dp && "off" != this._dp.updateMode;
             s && (r = this._dp.updateMode, this._dp.setUpdateMode("off"));
             var l = {}, c = {
-              render: !0, refreshData: !0, refreshTask: !0, refreshLink: !0, resetProjectDates: function (t) {
-                l[t.id] = t
-              }
+              render: !0, refreshData: !0, refreshTask: !0, refreshLink: !0
             };
-            for (var u in function (t) {
-              for (var e in t) n.call(this, e, t[e])
-            }.call(this, c), i = !0, this.callEvent("onBeforeBatchUpdate", []), a(t), this.callEvent("onAfterBatchUpdate", []), o.call(this), l) this.resetProjectDates(l[u]);
+
             i = !1, e || this.render(), s && (this._dp.setUpdateMode(r), this._dp.setGanttMode("task"), this._dp.sendData(), this._dp.setGanttMode("link"), this._dp.sendData())
           }
         }
@@ -4153,22 +3654,11 @@
             for (var t in s) e.updateLink(s[t].id);
             a = null, s = null
           }), a ? e._dp.setGanttMode("tasks") : e._dp.setGanttMode("links"))
-        }), t.attachEvent("onBeforeDataSending", function () {
-          if ("CUSTOM" === this._tMode) return !0;
-          var t = this._serverProcessor;
-          if ("REST-JSON" === this._tMode || "REST" === this._tMode) {
-            var i = this._jsganttMode;
-            t = t.substring(0, t.indexOf("?") > -1 ? t.indexOf("?") : t.length), this.serverProcessor = t + ("/" === t.slice(-1) ? "" : "/") + i
-          } else {
-            var n = this._jsganttMode + "s";
-            this.serverProcessor = t + e.ajax.urlSeparator(t) + "jsgantt-mode=" + n
-          }
-          return !0
         }), t.attachEvent("insertCallback", function (t, i, n, r) {
-          var o = t.data || e.xml._xmlNodeToJSON(t.firstChild), a = {add: e.addTask, isExist: e.isTaskExists};
+          var o = t.data, a = {add: e.addTask, isExist: e.isTaskExists};
           "links" === r && (a.add = e.addLink, a.isExist = e.isLinkExists), a.isExist.call(e, i) || (o.id = i, a.add.call(e, o))
         }), t.attachEvent("updateCallback", function (t, i) {
-          var n = t.data || e.xml._xmlNodeToJSON(t.firstChild);
+          var n = t.data;
           if (e.isTaskExists(i)) {
             var r = e.getTask(i);
             for (var o in n) {
@@ -4201,362 +3691,12 @@
     e.default = r
   }, function (t, e, i) {
     "use strict";
-    Object.defineProperty(e, "__esModule", {value: !0});
-    var n = i(4), r = i(3), o = i(0), a = i(92), s = i(91);
-    e.createDataProcessor = function (t) {
-      var e, i;
-      t instanceof Function ? e = t : t.hasOwnProperty("router") ? e = t.router : t.hasOwnProperty("link") && t.hasOwnProperty("task") && (e = t), i = e ? "CUSTOM" : t.mode || "REST-JSON";
-      var n = new l(t.url);
-      return n.init(this), n.setTransactionMode({mode: i, router: e}, t.batchUpdate), n
-    };
-    var l = function () {
-      function t(t) {
-        this.serverProcessor = t, this.action_param = "!nativeeditor_status", this.object = null, this.updatedRows = [], this.autoUpdate = !0, this.updateMode = "cell", this._headers = null, this._payload = null, this._postDelim = "_", this._waitMode = 0, this._in_progress = {}, this._invalid = {}, this.mandatoryFields = [], this.messages = [], this.styles = {
-          updated: "font-weight:bold;",
-          inserted: "font-weight:bold;",
-          deleted: "text-decoration : line-through;",
-          invalid: "background-color:FFE0E0;",
-          invalid_cell: "border-bottom:2px solid red;",
-          error: "color:red;",
-          clear: "font-weight:normal;text-decoration:none;"
-        }, this.enableUTFencoding(!0), n(this)
-      }
 
-      return t.prototype.setTransactionMode = function (t, e) {
-        "object" == typeof t ? (this._tMode = t.mode || this._tMode, o.defined(t.headers) && (this._headers = t.headers), o.defined(t.payload) && (this._payload = t.payload)) : (this._tMode = t, this._tSend = e), "REST" === this._tMode && (this._tSend = !1, this._endnm = !0), "JSON" !== this._tMode && "REST-JSON" !== this._tMode || (this._tSend = !1, this._endnm = !0, this._serializeAsJson = !0, this._headers = this._headers || {}, this._headers["Content-type"] = "application/json"), "CUSTOM" === this._tMode && (this._tSend = !1, this._endnm = !0, this._router = t.router)
-      }, t.prototype.escape = function (t) {
-        return this._utf ? encodeURIComponent(t) : escape(t)
-      }, t.prototype.enableUTFencoding = function (t) {
-        this._utf = !!t
-      }, t.prototype.setDataColumns = function (t) {
-        this._columns = "string" == typeof t ? t.split(",") : t
-      }, t.prototype.getSyncState = function () {
-        return !this.updatedRows.length
-      }, t.prototype.enableDataNames = function (t) {
-        this._endnm = !!t
-      }, t.prototype.enablePartialDataSend = function (t) {
-        this._changed = !!t
-      }, t.prototype.setUpdateMode = function (t, e) {
-        this.autoUpdate = "cell" === t, this.updateMode = t, this.dnd = e
-      }, t.prototype.ignore = function (t, e) {
-        this._silent_mode = !0, t.call(e || window), this._silent_mode = !1
-      }, t.prototype.setUpdated = function (t, e, i) {
-        if (!this._silent_mode) {
-          var n = this.findRow(t);
-          i = i || "updated";
-          var r = this.$jsgantt.getUserData(t, this.action_param);
-          r && "updated" === i && (i = r), e ? (this.set_invalid(t, !1), this.updatedRows[n] = t, this.$jsgantt.setUserData(t, this.action_param, i), this._in_progress[t] && (this._in_progress[t] = "wait")) : this.is_invalid(t) || (this.updatedRows.splice(n, 1), this.$jsgantt.setUserData(t, this.action_param, "")), this.markRow(t, e, i), e && this.autoUpdate && this.sendData(t)
-        }
-      }, t.prototype.markRow = function (t, e, i) {
-        var n = "", r = this.is_invalid(t);
-        if (r && (n = this.styles[r], e = !0), this.callEvent("onRowMark", [t, e, i, r]) && (n = this.styles[e ? i : "clear"] + n, this.$jsgantt[this._methods[0]](t, n), r && r.details)) {
-          n += this.styles[r + "-cell"];
-          for (var o = 0; o < r.details.length; o++) r.details[o] && this.$jsgantt[this._methods[1]](t, o, n)
-        }
-      }, t.prototype.getActionByState = function (t) {
-        return "inserted" === t ? "create" : "updated" === t ? "update" : "deleted" === t ? "delete" : void 0
-      }, t.prototype.getState = function (t) {
-        return this.$jsgantt.getUserData(t, this.action_param)
-      }, t.prototype.is_invalid = function (t) {
-        return this._invalid[t]
-      }, t.prototype.set_invalid = function (t, e, i) {
-        i && (e = {
-          value: e, details: i, toString: function () {
-            return this.value.toString()
-          }
-        }), this._invalid[t] = e
-      }, t.prototype.checkBeforeUpdate = function (t) {
-        return !0
-      }, t.prototype.sendData = function (t) {
-        if (!this._waitMode || "tree" !== this.$jsgantt.mytype && !this.$jsgantt._h2) {
-          if (this.$jsgantt.editStop && this.$jsgantt.editStop(), void 0 === t || this._tSend) return this.sendAllData();
-          if (this._in_progress[t]) return !1;
-          if (this.messages = [], !this.checkBeforeUpdate(t) && this.callEvent("onValidationError", [t, this.messages])) return !1;
-          this._beforeSendData(this._getRowData(t), t)
-        }
-      }, t.prototype._beforeSendData = function (t, e) {
-        if (!this.callEvent("onBeforeUpdate", [e, this.getState(e), t])) return !1;
-        this._sendData(t, e)
-      }, t.prototype.serialize = function (t, e) {
-        if (this._serializeAsJson) return this._serializeAsJSON(t);
-        if ("string" == typeof t) return t;
-        if (void 0 !== e) return this.serialize_one(t, "");
-        var i = [], n = [];
-        for (var r in t) t.hasOwnProperty(r) && (i.push(this.serialize_one(t[r], r + this._postDelim)), n.push(r));
-        return i.push("ids=" + this.escape(n.join(","))), this.$jsgantt.security_key && i.push("joc_security=" + this.$jsgantt.security_key), i.join("&")
-      }, t.prototype._serializeAsJSON = function (t) {
-        if ("string" == typeof t) return t;
-        var e = o.copy(t);
-        return "REST-JSON" === this._tMode && (delete e.id, delete e[this.action_param]), JSON.stringify(e)
-      }, t.prototype.serialize_one = function (t, e) {
-        if ("string" == typeof t) return t;
-        var i = [], n = "";
-        for (var r in t) if (t.hasOwnProperty(r)) {
-          if (("id" === r || r == this.action_param) && "REST" === this._tMode) continue;
-          n = "string" == typeof t[r] || "number" == typeof t[r] ? t[r] : JSON.stringify(t[r]), i.push(this.escape((e || "") + r) + "=" + this.escape(n))
-        }
-        return i.join("&")
-      }, t.prototype._applyPayload = function (t) {
-        var e = this.$jsgantt.ajax;
-        if (this._payload) for (var i in this._payload) t = t + e.urlSeparator(t) + this.escape(i) + "=" + this.escape(this._payload[i]);
-        return t
-      }, t.prototype._sendData = function (t, e) {
-        var i = this;
-        if (t) {
-          if (!this.callEvent("onBeforeDataSending", e ? [e, this.getState(e), t] : [null, null, t])) return !1;
-          e && (this._in_progress[e] = (new Date).valueOf());
-          var n = this.$jsgantt.ajax;
-          if ("CUSTOM" !== this._tMode) {
-            var r;
-            r = {
-              callback: function (n) {
-                var r = [];
-                if (e) r.push(e); else if (t) for (var o in t) r.push(o);
-                return i.afterUpdate(i, n, r)
-              }, headers: this._headers
-            };
-            var o,
-              a = this.serverProcessor + (this._user ? n.urlSeparator(this.serverProcessor) + ["joc_user=" + this._user, "joc_version=" + this.$jsgantt.getUserData(0, "version")].join("&") : ""),
-              s = this._applyPayload(a);
-            switch (this._tMode) {
-              case"GET":
-                r.url = s + n.urlSeparator(s) + this.serialize(t, e), r.method = "GET";
-                break;
-              case"POST":
-                r.url = s, r.method = "POST", r.data = this.serialize(t, e);
-                break;
-              case"JSON":
-                for (var l in o = {}, t) l !== this.action_param && "id" !== l && "gr_id" !== l && (o[l] = t[l]);
-                r.url = s, r.method = "POST", r.data = JSON.stringify({id: e, action: t[this.action_param], data: o});
-                break;
-              case"REST":
-              case"REST-JSON":
-                switch (s = a.replace(/(&|\?)editing=true/, ""), o = "", this.getState(e)) {
-                  case"inserted":
-                    r.method = "POST", r.data = this.serialize(t, e);
-                    break;
-                  case"deleted":
-                    r.method = "DELETE", s = s + ("/" === s.slice(-1) ? "" : "/") + e;
-                    break;
-                  default:
-                    r.method = "PUT", r.data = this.serialize(t, e), s = s + ("/" === s.slice(-1) ? "" : "/") + e
-                }
-                r.url = this._applyPayload(s)
-            }
-            return this._waitMode++, n.query(r)
-          }
-          var c = this.getState(e), u = this.getActionByState(c), d = this.getGanttMode(), h = function (t) {
-            var n = c || "updated", r = e, o = e;
-            t && (n = t.action || c, r = t.sid || r, o = t.id || t.tid || o), i.afterUpdateCallback(r, o, n, t)
-          }, f = void 0;
-          if (this._router instanceof Function) f = this._router(d, u, t, e); else if (this._router[d] instanceof Function) f = this._router[d](u, t, e); else switch (c) {
-            case"inserted":
-              f = this._router[d].create(t);
-              break;
-            case"deleted":
-              f = this._router[d].delete(e);
-              break;
-            default:
-              f = this._router[d].update(t, e)
-          }
-          if (f) {
-            if (!f.then && void 0 === f.id && void 0 === f.tid) throw new Error("Incorrect router return value. A Promise or a response object is expected");
-            f.then ? f.then(h) : h(f)
-          } else h(null)
-        }
-      }, t.prototype._forEachUpdatedRow = function (t) {
-        for (var e = this.updatedRows.slice(), i = 0; i < e.length; i++) {
-          var n = e[i];
-          this.$jsgantt.getUserData(n, this.action_param) && t.call(this, n)
-        }
-      }, t.prototype.sendAllData = function () {
-        if (this.updatedRows.length) {
-          this.messages = [];
-          var t = !0;
-          if (this._forEachUpdatedRow(function (e) {
-            t = t && this.checkBeforeUpdate(e)
-          }), !t && !this.callEvent("onValidationError", ["", this.messages])) return !1;
-          if (this._tSend) this._sendData(this._getAllData()); else {
-            var e = !1;
-            this._forEachUpdatedRow(function (t) {
-              if (!e && !this._in_progress[t]) {
-                if (this.is_invalid(t)) return;
-                this._beforeSendData(this._getRowData(t), t), this._waitMode && ("tree" === this.$jsgantt.mytype || this.$jsgantt._h2) && (e = !0)
-              }
-            })
-          }
-        }
-      }, t.prototype._getAllData = function () {
-        var t = {}, e = !1;
-        return this._forEachUpdatedRow(function (i) {
-          if (!this._in_progress[i] && !this.is_invalid(i)) {
-            var n = this._getRowData(i);
-            this.callEvent("onBeforeUpdate", [i, this.getState(i), n]) && (t[i] = n, e = !0, this._in_progress[i] = (new Date).valueOf())
-          }
-        }), e ? t : null
-      }, t.prototype.setVerificator = function (t, e) {
-        this.mandatoryFields[t] = e || function (t) {
-          return "" !== t
-        }
-      }, t.prototype.clearVerificator = function (t) {
-        this.mandatoryFields[t] = !1
-      }, t.prototype.findRow = function (t) {
-        var e = 0;
-        for (e = 0; e < this.updatedRows.length && t != this.updatedRows[e]; e++) ;
-        return e
-      }, t.prototype.defineAction = function (t, e) {
-        this._uActions || (this._uActions = {}), this._uActions[t] = e
-      }, t.prototype.afterUpdateCallback = function (t, e, i, n) {
-        var r = t, o = "error" !== i && "invalid" !== i;
-        if (o || this.set_invalid(t, i), this._uActions && this._uActions[i] && !this._uActions[i](n)) return delete this._in_progress[r];
-        "wait" !== this._in_progress[r] && this.setUpdated(t, !1);
-        var a = t;
-        switch (i) {
-          case"inserted":
-          case"insert":
-            e != t && (this.setUpdated(t, !1), this.$jsgantt[this._methods[2]](t, e), t = e);
-            break;
-          case"delete":
-          case"deleted":
-            return this.$jsgantt.setUserData(t, this.action_param, "true_deleted"), this.$jsgantt[this._methods[3]](t), delete this._in_progress[r], this.callEvent("onAfterUpdate", [t, i, e, n])
-        }
-        "wait" !== this._in_progress[r] ? (o && this.$jsgantt.setUserData(t, this.action_param, ""), delete this._in_progress[r]) : (delete this._in_progress[r], this.setUpdated(e, !0, this.$jsgantt.getUserData(t, this.action_param))), this.callEvent("onAfterUpdate", [a, i, e, n])
-      }, t.prototype.afterUpdate = function (t, e, i) {
-        var n;
-        n = 3 === arguments.length ? arguments[1] : arguments[4];
-        var r = this.getGanttMode(), o = n.filePath || n.url;
-        r = "REST" !== this._tMode && "REST-JSON" !== this._tMode ? -1 !== o.indexOf("jsgantt-mode=links") ? "link" : "task" : o.indexOf("/link") > o.indexOf("/task") ? "link" : "task", this.setGanttMode(r);
-        var a = this.$jsgantt.ajax;
-        if (window.JSON) {
-          var s = void 0;
-          try {
-            s = JSON.parse(e.xmlDoc.responseText)
-          } catch (t) {
-            e.xmlDoc.responseText.length || (s = {})
-          }
-          if (s) {
-            var l = s.action || this.getState(i) || "updated", c = s.sid || i[0], u = s.tid || i[0];
-            return t.afterUpdateCallback(c, u, l, s), t.finalizeUpdate(), void this.setGanttMode(r)
-          }
-        }
-        var d = a.xmltop("data", e.xmlDoc);
-        if (!d) return this.cleanUpdate(i);
-        var h = a.xpath("//data/action", d);
-        if (!h.length) return this.cleanUpdate(i);
-        for (var f = 0; f < h.length; f++) {
-          var g = h[f];
-          l = g.getAttribute("type"), c = g.getAttribute("sid"), u = g.getAttribute("tid"), t.afterUpdateCallback(c, u, l, g)
-        }
-        t.finalizeUpdate()
-      }, t.prototype.cleanUpdate = function (t) {
-        if (t) for (var e = 0; e < t.length; e++) delete this._in_progress[t[e]]
-      }, t.prototype.finalizeUpdate = function () {
-        this._waitMode && this._waitMode--, ("tree" === this.$jsgantt.mytype || this.$jsgantt._h2) && this.updatedRows.length && this.sendData(), this.callEvent("onAfterUpdateFinish", []), this.updatedRows.length || this.callEvent("onFullSync", [])
-      }, t.prototype.init = function (t) {
-        if (!this._initialized) {
-          this.$jsgantt = t, this.$jsgantt._dp_init && this.$jsgantt._dp_init(this), this._setDefaultTransactionMode(), this.styles = {
-            updated: "jsgantt-updated",
-            order: "jsgantt-updated",
-            inserted: "jsgantt-inserted",
-            deleted: "jsgantt-deleted",
-            invalid: "jsgantt-invalid",
-            error: "jsgantt-error",
-            clear: ""
-          }, this._methods = ["_row_style", "setCellTextStyle", "_change_id", "_delete_task"], s.default(this.$jsgantt, this);
-          var e = new a.default(this.$jsgantt, this);
-          e.attach(), this.attachEvent("onDestroy", function () {
-            delete this.setGanttMode, delete this._getRowData, delete this.$jsgantt._dp, delete this.$jsgantt._change_id, delete this.$jsgantt._row_style, delete this.$jsgantt._delete_task, delete this.$jsgantt._sendTaskOrder, delete this.$jsgantt, e.detach()
-          }), this.$jsgantt.callEvent("onDataProcessorReady", [this]), this._initialized = !0
-        }
-      }, t.prototype._setDefaultTransactionMode = function () {
-        this.serverProcessor && (this.setTransactionMode("POST", !0), this.serverProcessor += (-1 !== this.serverProcessor.indexOf("?") ? "&" : "?") + "editing=true", this._serverProcessor = this.serverProcessor)
-      }, t.prototype.setOnAfterUpdate = function (t) {
-        this.attachEvent("onAfterUpdate", t)
-      }, t.prototype.enableDebug = function (t) {
-      }, t.prototype.setOnBeforeUpdateHandler = function (t) {
-        this.attachEvent("onBeforeDataSending", t)
-      }, t.prototype.setAutoUpdate = function (t, e) {
-        var i = this;
-        t = t || 2e3, this._user = e || (new Date).valueOf(), this._needUpdate = !1, this._updateBusy = !1, this.attachEvent("onAfterUpdate", this.afterAutoUpdate), this.attachEvent("onFullSync", this.fullSync), window.setInterval(function () {
-          i.loadUpdate()
-        }, t)
-      }, t.prototype.afterAutoUpdate = function (t, e, i, n) {
-        return "collision" !== e || (this._needUpdate = !0, !1)
-      }, t.prototype.fullSync = function () {
-        return this._needUpdate && (this._needUpdate = !1, this.loadUpdate()), !0
-      }, t.prototype.getUpdates = function (t, e) {
-        var i = this.$jsgantt.ajax;
-        if (this._updateBusy) return !1;
-        this._updateBusy = !0, i.get(t, e)
-      }, t.prototype._v = function (t) {
-        return t.firstChild ? t.firstChild.nodeValue : ""
-      }, t.prototype._a = function (t) {
-        for (var e = [], i = 0; i < t.length; i++) e[i] = this._v(t[i]);
-        return e
-      }, t.prototype.loadUpdate = function () {
-        var t = this, e = this.$jsgantt.ajax, i = this.$jsgantt.getUserData(0, "version"),
-          n = this.serverProcessor + e.urlSeparator(this.serverProcessor) + ["joc_user=" + this._user, "joc_version=" + i].join("&");
-        n = n.replace("editing=true&", ""), this.getUpdates(n, function (i) {
-          var n = e.xpath("//userdata", i);
-          t.obj.setUserData(0, "version", t._v(n[0]));
-          var r = e.xpath("//update", i);
-          if (r.length) {
-            t._silent_mode = !0;
-            for (var o = 0; o < r.length; o++) {
-              var a = r[o].getAttribute("status"), s = r[o].getAttribute("id"), l = r[o].getAttribute("parent");
-              switch (a) {
-                case"inserted":
-                  t.callEvent("insertCallback", [r[o], s, l]);
-                  break;
-                case"updated":
-                  t.callEvent("updateCallback", [r[o], s, l]);
-                  break;
-                case"deleted":
-                  t.callEvent("deleteCallback", [r[o], s, l])
-              }
-            }
-            t._silent_mode = !1
-          }
-          t._updateBusy = !1
-        })
-      }, t.prototype.destructor = function () {
-        this.callEvent("onDestroy", []), this.detachAllEvents(), this.updatedRows = [], this._in_progress = {}, this._invalid = {}, this._headers = null, this._payload = null, delete this._initialized
-      }, t.prototype.setGanttMode = function (t) {
-        "tasks" === t ? t = "task" : "links" === t && (t = "link");
-        var e = this.modes || {}, i = this.getGanttMode();
-        i && (e[i] = {_in_progress: this._in_progress, _invalid: this._invalid, updatedRows: this.updatedRows});
-        var n = e[t];
-        n || (n = e[t] = {
-          _in_progress: {},
-          _invalid: {},
-          updatedRows: []
-        }), this._in_progress = n._in_progress, this._invalid = n._invalid, this.updatedRows = n.updatedRows, this.modes = e, this._jsganttMode = t
-      }, t.prototype.getGanttMode = function () {
-        return this._jsganttMode
-      }, t.prototype._getRowData = function (t) {
-        var e;
-        e = "task" === this.getGanttMode() ? this.$jsgantt.isTaskExists(t) ? this.$jsgantt.getTask(t) : {id: t} : this.$jsgantt.isLinkExists(t) ? this.$jsgantt.getLink(t) : {id: t}, e = this.$jsgantt.copy(e);
-        var i = {};
-        for (var n in e) if ("$" !== n.substr(0, 1)) {
-          var o = e[n];
-          r.isDate(o) ? i[n] = this.$jsgantt.templates.xml_format(o) : i[n] = null === o ? "" : o
-        }
-        var a = this.$jsgantt._get_task_timing_mode(e);
-        return a.$no_start && (e.plannedDate = "", e.duration = ""), a.$no_end && (e.end_date = "", e.duration = ""), i[this.action_param] = this.$jsgantt.getUserData(t, this.action_param), i
-      }, t.prototype._isFetchResult = function (t) {
-        return t.body instanceof ReadableStream
-      }, t.prototype.setSerializeAsJSON = function (t) {
-        this._serializeAsJson = t
-      }, t
-    }();
-    e.DataProcessor = l
+    var n = i(4), r = i(3), o = i(0), a = i(92), s = i(91);
+
   }, function (t, e, i) {
-    var n = i(93);
-    t.exports = {
-      DEPRECATED_api: function (t) {
-        return new n.DataProcessor(t)
-      }, createDataProcessor: n.createDataProcessor, getDataProcessorModes: n.getAvailableModes
-    }
+      i(93);
+
   }, function (t, e) {
     t.exports = {
       bindDataStore: function (t, e) {
@@ -4568,7 +3708,6 @@
         function r(t) {
           return !!t.$services.getService("state").getState("batchUpdate").batch_update
         }
-
         i.attachEvent("onStoreUpdated", function (o, a, s) {
           if (!r(e)) {
             var l = e.$services.getService("layers").getDataRender(t);
@@ -4651,7 +3790,7 @@
     t.exports = function () {
       return {
         getTask: function (t) {
-          this.assert(t, "Invalid argument for jsgantt.getTask");
+          this.assert(t, "Invalid argument");
           var e = this.$data.tasksStore.getItem(t);
           return this.assert(e, "Task not found id=" + t), e
         }, getTaskByTime: function (t, e) {
@@ -4672,12 +3811,6 @@
           return n.defined(t.id) || (t.id = n.uid()), n.defined(e) || (e = this.getParent(t) || 0), this.isTaskExists(e) || (e = this.config.root_id), this.setParent(t, e), this.$data.tasksStore.addItem(t, i, e)
         }, deleteTask: function (t) {
           return this.$data.tasksStore.removeItem(t)
-        }, getTaskCount: function () {
-          return this.$data.tasksStore.count()
-        }, getVisibleTaskCount: function () {
-          return this.$data.tasksStore.countVisible()
-        }, getTaskIndex: function (t) {
-          return this.$data.tasksStore.getBranchIndex(t)
         }, getGlobalTaskIndex: function (t) {
           return this.assert(t, "Invalid argument"), this.$data.tasksStore.getIndexById(t)
         }, eachTask: function (t, e, i) {
@@ -4719,8 +3852,6 @@
           this.$data.tasksStore.open(t)
         }, close: function (t) {
           this.$data.tasksStore.close(t)
-        }, moveTask: function (t, e, i) {
-          this.$data.tasksStore.move.apply(this.$data.tasksStore, arguments)
         }, sort: function (t, e, i, n) {
           var r = !n;
           this.$data.tasksStore.sort(t, e, i), r && this.render(), this.callEvent("onAfterSort", [t, e, i])
@@ -4790,8 +3921,6 @@
           }, selectTask: function (t) {
             var e = this.$data.tasksStore;
             return !!this.config.select_task && (t && e.select(t), e.getSelectedId())
-          }, unselectTask: function (t) {
-            this.$data.tasksStore.unselect(t)
           }, getSelectedId: function () {
             return this.$data.tasksStore.getSelectedId()
           }
@@ -4874,7 +4003,7 @@
       a.attachEvent("onBeforeRefreshAll", function () {
         for (var e = a.getVisibleItems(), i = 0; i < e.length; i++) {
           var n = e[i];
-          n.$index = i, t.resetProjectDates(n)
+          n.$index = i
         }
       }), a.attachEvent("onFilterItem", function (e, i) {
         var n = null, r = null;
@@ -5219,7 +4348,7 @@
         var o = r.target;
         if (p(), e.getState().drag_id) return !1;
         if (n.locateClassName(o, "jsgantt-link-point")) {
-          n.locateClassName(o, "task_start_date") && (s = !0);
+          n.locateClassName(o, "task-start-date") && (s = !0);
           var l = e.locate(r);
           a = l;
           var c = e.getTask(l);
@@ -5234,7 +4363,7 @@
           t.style.left = e.x + 5 + "px", t.style.top = e.y + 5 + "px"
         }(c.marker, u);
         var d = !!n.locateClassName(s, "jsgantt-link-control"), p = r, v = i, m = o, y = e.locate(s), k = !0;
-        if (n.isChildOf(s.target, e.$root) || (d = !1, y = null), d && (k = !n.locateClassName(s, "task_end_date"), d = !!y), r = y, i = d, o = k, d) {
+        if (n.isChildOf(s.target, e.$root) || (d = !1, y = null), d && (k = !n.locateClassName(s, "task-end-date"), d = !!y), r = y, i = d, o = k, d) {
           var b = e.getTask(y), w = t.$getConfig(), $ = n.locateClassName(s, "jsgantt-link-control"), x = 0;
           $ && (x = Math.floor($.offsetWidth / 2)), this._dir_end = f(b, !!o, x, w)
         } else this._dir_end = n.getRelativeEventPosition(s, t.$task_data);
@@ -5417,7 +4546,7 @@
                     if (!l || isNaN(l.getTime())) return;
                     var c = s.x - o.start_x, u = e.getTask(o.id);
                     if (this._handlers[o.mode]) {
-                      if (e.isSummaryTask(u) && e.config.drag_project && o.mode == a.drag_mode.move) {
+                      if (e.isSummaryTask(u) && o.mode == a.drag_mode.move) {
                         var d = {};
                         d[o.id] = r.copy(o);
                         var h = this._find_max_shift(r.mixin(d, this.dragMultiple), c);
@@ -5439,7 +4568,7 @@
                       if (!l || !c) return r.parentNode ? this.on_mouse_down(i, r.parentNode) : void 0;
                       if (c) if (c.mode && c.mode != o.drag_mode.ignore && o["drag_" + c.mode]) {
                         if (a = e.locate(r), s = e.copy(e.getTask(a) || {}), e.isReadonly(s)) return this.clear_drag_state(), !1;
-                        if (e.isSummaryTask(s) && !o.drag_project && c.mode != o.drag_mode.progress) return void this.clear_drag_state();
+                        if (e.isSummaryTask(s) && c.mode != o.drag_mode.progress) return void this.clear_drag_state();
                         c.id = a;
                         var u = n.getRelativeEventPosition(i, e.$task_data);
                         c.start_x = u.x, c.start_y = u.y, c.obj = s, this.drag.start_drag = c, this.drag.timestamp = Date.now()
@@ -5505,7 +4634,7 @@
                   var n = this.drag;
                   if (n.mode && n.id) {
                     var r = t.$getConfig(), o = e.getTask(n.id), a = this.dragMultiple;
-                    if (e.isSummaryTask(o) && r.drag_project && n.mode == r.drag_mode.move) for (var s in a) this._finalize_mouse_up(a[s].id, r, a[s], i);
+                    if (e.isSummaryTask(o) && n.mode == r.drag_mode.move) for (var s in a) this._finalize_mouse_up(a[s].id, r, a[s], i);
                     this._finalize_mouse_up(n.id, r, n, i)
                   }
                   this.clear_drag_state()
@@ -5541,7 +4670,7 @@
                   if (r["drag_" + n.mode] && e.callEvent("onBeforeDrag", [o, n.mode, i]) && this._fireEvent("before_start", n.mode, [o, n.mode, i])) {
                     delete n.start_drag;
                     var a = e.getTask(o);
-                    e.isSummaryTask(a) && e.config.drag_project && n.mode == r.drag_mode.move && e.eachTask(function (t) {
+                    e.isSummaryTask(a) && n.mode == r.drag_mode.move && e.eachTask(function (t) {
                       this.dragMultiple[t.id] = e.mixin({id: t.id, obj: t}, this.drag)
                     }, a.id, this), e.callEvent("onTaskDragStart", [])
                   } else this.clear_drag_state()
@@ -5901,7 +5030,11 @@
             for (var v = 0; v < e.$level; v++) _.push(a.grid_indent(e));
             s.hasChild(e.id) && !t.isSplitTask(e) ? (_.push(a.grid_open(e)), _.push(a.grid_folder(e))) : (_.push(a.grid_blank(e)), _.push(a.grid_file(e)))
           }
-          var m = "width:" + (g.width - (f ? 1 : 0)) + "px;";
+
+          var m = "width:" + (g.width - (f ? 1 : 0)) + "px;padding-right:16px";
+          if(f){
+            m = "width:auto;padding-right:16px";
+          }
           this.defined(g.align) && (m += "text-align:" + g.align + ";");
           var y = t._waiAria.gridCellAttrString(g, h);
           _.push(d), o.rtl && (_ = _.reverse()), u = "<div class='" + p + "' data-column-index='" + c + "' data-column-name='" + g.name + "' style='" + m + "' " + y + ">" + _.join("") + "</div>", l.push(u)
@@ -6958,7 +6091,7 @@
       }, e.prototype._initHorizontal = function () {
         this.$scroll_hor = this.$view, this.$domEvents.attach(this.$view, "scroll", this._scrollHorizontalHandler)
       }, e.prototype._initLinkedViews = function () {
-        for (var t = this._getLinkedViews(), e = this._isVertical() ? "jsgantt-layout-outer-scroll jsgantt-layout-outer-scroll-vertical" : "jsgantt-layout-outer-scroll jsgantt-layout-outer-scroll-horizontal", i = 0; i < t.length; i++) r.addClassName(t[i].$view || t[i].getNode(), e)
+        for (var t = this._getLinkedViews(), e = this._isVertical() ? "jsgantt-right-panel jsgantt-layout-outer-scroll jsgantt-layout-outer-scroll-vertical" : "jsgantt-layout-outer-scroll jsgantt-layout-outer-scroll-horizontal", i = 0; i < t.length; i++) r.addClassName(t[i].$view || t[i].getNode(), e)
       }, e.prototype._initVertical = function () {
         this.$scroll_ver = this.$view, this.$domEvents.attach(this.$view, "scroll", this._scrollVerticalHandler)
       }, e.prototype._updateLinkedViews = function () {
@@ -7497,7 +6630,7 @@
             o = !e.checkEvent("onTaskDblClick") || null === n || e.callEvent("onTaskDblClick", [n, t]);
           if (o) {
             if (!s(r, t, n)) return;
-            null !== n && e.getTask(n) && o && e.config.details_on_dblclick && e.showLightbox(n)
+            null !== n && e.getTask(n) && o && e.config.details_on_dblclick && e.showModal(n)
           }
         }
 
@@ -7626,154 +6759,7 @@
   }, function (t, e, i) {
     var n = i(0), r = i(1);
     t.exports = function (t) {
-      var e = "data-jocbox", i = null;
 
-      function o(t, e) {
-        var n = t.callback;
-        p.hide(t.box), i = t.box = null, n && n(e)
-      }
-
-      function a(t) {
-        if (i) {
-          var e = (t = t || event).which || event.keyCode, n = !1;
-          if (_.keyboard) {
-            if (13 == e || 32 == e) {
-              var a = t.target;
-              r.getClassName(a).indexOf("jsgantt-popup-button") > -1 && a.click ? a.click() : (o(i, !0), n = !0)
-            }
-            27 == e && (o(i, !1), n = !0)
-          }
-          return n ? (t.preventDefault && t.preventDefault(), !(t.cancelBubble = !0)) : void 0
-        }
-      }
-
-      function s(t) {
-        s.cover || (s.cover = document.createElement("div"), s.cover.onkeydown = a, s.cover.className = "joc-modal-cover", document.body.appendChild(s.cover)), s.cover.style.display = t ? "inline-block" : "none"
-      }
-
-      function l(e, i, n) {
-        var r = t._waiAria.messageButtonAttrString(e), o = i.toLowerCase().replace(/ /g, "_");
-        return "<div " + r + " class='jsgantt-popup_button jsgantt-" + o + "-button sos-" + o + "_button' data-result='" + n + "' result='" + n + "' ><div>" + e + "</div></div>"
-      }
-
-      function c() {
-        for (var t = [].slice.apply(arguments, [0]), e = 0; e < t.length; e++) if (t[e]) return t[e]
-      }
-
-      function u(r, u, d) {
-        var h = r.tagName ? r : function (r, a, s) {
-          var u = document.createElement("div"), d = n.uid();
-          t._waiAria.messageModalAttr(u, d), u.className = " jsgantt-modal-box jsgantt-" + r.type + " sos-" + r.type, u.setAttribute(e, 1);
-          var h = "";
-          if (r.width && (u.style.width = r.width), r.height && (u.style.height = r.height), r.title && (h += '<div class="jsgantt-popup-title">' + r.title + "</div>"), h += '<div class="jsgantt-popup_text" id="' + d + '"><span>' + (r.content ? "" : r.orderId) + '</span></div><div  class="jsgantt-popup-controls">', a && (h += l(c(r.ok, t.locale.labels.message_ok, "OK"), "ok", !0)), s && (h += l(c(r.cancel, t.locale.labels.message_cancel, "Cancel"), "cancel", !1)), r.buttons) for (var f = 0; f < r.buttons.length; f++) {
-            var g = r.buttons[f];
-            h += "object" == typeof g ? l(g.label, g.css || "jsgantt-" + g.label.toLowerCase() + "_button sos_" + g.label.toLowerCase() + "-button", g.value || f) : l(g, g, f)
-          }
-          if (h += "</div>", u.innerHTML = h, r.content) {
-            var p = r.content;
-            "string" == typeof p && (p = document.getElementById(p)), "none" == p.style.display && (p.style.display = ""), u.childNodes[r.title ? 1 : 0].appendChild(p)
-          }
-          return u.onclick = function (t) {
-            var e = (t = t || event).target;
-            if (e.className || (e = e.parentNode), "jsgantt-popup-button" == e.className.split(" ")[0]) {
-              var i = e.getAttribute("data-result");
-              o(r, i = "true" == i || "false" != i && i)
-            }
-          }, r.box = u, (a || s) && (i = r), u
-        }(r, u, d);
-        r.hidden || s(!0), document.body.appendChild(h);
-        var f = Math.abs(Math.floor(((window.innerWidth || document.documentElement.offsetWidth) - h.offsetWidth) / 2)),
-          g = Math.abs(Math.floor(((window.innerHeight || document.documentElement.offsetHeight) - h.offsetHeight) / 2));
-        return "top" == r.position ? h.style.top = "-3px" : h.style.top = g + "px", h.style.left = f + "px", h.onkeydown = a, p.focus(h), r.hidden && p.hide(h), t.callEvent("onMessagePopup", [h]), h
-      }
-
-      function d(t) {
-        return u(t, !0, !1)
-      }
-
-      function h(t) {
-        return u(t, !0, !0)
-      }
-
-      function f(t) {
-        return u(t)
-      }
-
-      function g(t, e, i) {
-        return "object" != typeof t && ("function" == typeof e && (i = e, e = ""), t = {
-          text: t,
-          type: e,
-          callback: i
-        }), t
-      }
-
-      t.event(document, "keydown", a, !0);
-      var p = function () {
-        var t = g.apply(this, arguments);
-        return t.type = t.type || "alert", f(t)
-      };
-      p.hide = function (i) {
-        for (; i && i.getAttribute && !i.getAttribute(e);) i = i.parentNode;
-        i && (i.parentNode.removeChild(i), s(!1), t.callEvent("onAfterMessagePopup", [i]))
-      }, p.focus = function (t) {
-        setTimeout(function () {
-          var e = r.getFocusableNodes(t);
-          e.length && e[0].focus && e[0].focus()
-        }, 1)
-      };
-      var _ = function (e, i, r, o) {
-        switch ((e = function (t, e, i, r) {
-          return "object" != typeof t && (t = {
-            text: t,
-            type: e,
-            expire: i,
-            id: r
-          }), t.id = t.id || n.uid(), t.expire = t.expire || _.expire, t
-        }.apply(this, arguments)).type = e.type || "info", e.type.split("-")[0]) {
-          case"alert":
-            return d(e);
-          case"confirm":
-            return h(e);
-          case"modalbox":
-            return f(e);
-          default:
-            return function (e) {
-              _.area || (_.area = document.createElement("div"), _.area.className = "jsgantt-message-area", _.area.style[_.position] = "5px", document.body.appendChild(_.area)), _.hide(e.id);
-              var i = document.createElement("div");
-              return i.innerHTML = "<div>" + e.orderId + "</div>", i.className = "jsgantt-info sos-info jsgantt-" + e.type + " sos-" + e.type, i.onclick = function () {
-                _.hide(e.id), e = null
-              }, t._waiAria.messageInfoAttr(i), "bottom" == _.position && _.area.firstChild ? _.area.insertBefore(i, _.area.firstChild) : _.area.appendChild(i), e.expire > 0 && (_.timers[e.id] = window.setTimeout(function () {
-                _.hide(e.id)
-              }, e.expire)), _.pull[e.id] = i, i = null, e.id
-            }(e)
-        }
-      };
-      _.seed = (new Date).valueOf(), _.uid = n.uid, _.expire = 4e3, _.keyboard = !0, _.position = "top", _.pull = {}, _.timers = {}, _.hideAll = function () {
-        for (var t in _.pull) _.hide(t)
-      }, _.hide = function (t) {
-        var e = _.pull[t];
-        e && e.parentNode && (window.setTimeout(function () {
-          e.parentNode.removeChild(e), e = null
-        }, 2e3), e.className += " hidden", _.timers[t] && window.clearTimeout(_.timers[t]), delete _.pull[t])
-      };
-      var v = [];
-      return t.attachEvent("onMessagePopup", function (t) {
-        v.push(t)
-      }), t.attachEvent("onAfterMessagePopup", function (t) {
-        for (var e = 0; e < v.length; e++) v[e] === t && (v.splice(e, 1), e--)
-      }), t.attachEvent("onDestroy", function () {
-        s.cover && s.cover.parentNode && s.cover.parentNode.removeChild(s.cover);
-        for (var t = 0; t < v.length; t++) v[t].parentNode && v[t].parentNode.removeChild(v[t]);
-        v = null, _.area && _.area.parentNode && _.area.parentNode.removeChild(_.area), _ = null
-      }), {
-        alert: function () {
-          var t = g.apply(this, arguments);
-          return t.type = t.type || "confirm", d(t)
-        }, confirm: function () {
-          var t = g.apply(this, arguments);
-          return t.type = t.type || "alert", h(t)
-        }, message: _, modalbox: p
-      }
     }
   }, function (t, e, i) {
     (function (t, e) {
@@ -8226,7 +7212,7 @@
           i.exports = function (i, n) {
             var r, o, a, s = i._getDomain, l = i._async, c = t("./errors").Warning, u = t("./util"), d = t("./es5"),
               h = u.canAttachTrace, f = /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/,
-              g = /\((?:timers\.js):\d+:\d+\)/, p = /[\/<\(](.+?):(\d+):(\d+)\)?\s*$/, _ = null, v = null, m = !1,
+              g = /\((?:timers\.js):\d+:\d+\)/, p = /[\/<(](.+?):(\d+):(\d+)\)?\s*$/, _ = null, v = null, m = !1,
               y = !(0 == u.env("BLUEBIRD_DEBUG")),
               k = !(0 == u.env("BLUEBIRD_WARNINGS") || !y && !u.env("BLUEBIRD_WARNINGS")),
               b = !(0 == u.env("BLUEBIRD_LONG_STACK_TRACES") || !y && !u.env("BLUEBIRD_LONG_STACK_TRACES")),
@@ -8506,7 +7492,7 @@
             function G(t) {
               var e;
               if ("function" == typeof t) e = "[function " + (t.name || "anonymous") + "]"; else {
-                if (e = t && "function" == typeof t.toString ? t.toString() : u.toString(t), /\[object [a-zA-Z0-9$_]+\]/.test(e)) try {
+                if (e = t && "function" == typeof t.toString ? t.toString() : u.toString(t), /\[object [a-zA-Z0-9$_]+]/.test(e)) try {
                   e = JSON.stringify(t)
                 } catch (t) {
                 }
@@ -8523,7 +7509,7 @@
 
             var q = function () {
               return !1
-            }, X = /[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
+            }, X = /[\/<(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
 
             function J(t) {
               var e = t.match(X);
@@ -10489,15 +9475,11 @@
 
       return {
         initTemplates: function () {
-          var e = t.locale.labels;
-          e.jsgantt_save_btn = e.icon_save, e.jsgantt_cancel_btn = e.icon_cancel, e.jsgantt_delete_btn = e.icon_delete;
           var n = t.date, r = n.date_to_str, o = t.config;
-          i("dateScale", !0, void 0, t.config, t.templates), i("date_grid", !0, "grid_date_format", t.config, t.templates), i("task_date", !0, void 0, t.config, t.templates), t.mixin(t.templates, {
+          i("dateScale", !0, void 0, t.config, t.templates), i("date_grid", !0, "grid_date_format", t.config, t.templates), i("task-date", !0, void 0, t.config, t.templates), t.mixin(t.templates, {
             dateFormat: n.str_to_date(o.dateFormat, o.utcFormat),
             xml_format: r(o.dateFormat, o.utcFormat),
-            progress_text: function (t, e, i) {
-              return ""
-            },
+
             grid_header_class: function (t, e) {
               return ""
             },
@@ -10546,7 +9528,7 @@
             task_unscheduled_time: function (t) {
               return ""
             },
-            time_picker: r(o.time_picker),
+
             link_class: function (t) {
               return ""
             },
@@ -10886,8 +9868,7 @@
       return e
     }
   }, function (t, e, i) {
-    "use strict";
-    Object.defineProperty(e, "__esModule", {value: !0}), e.default = function (t) {
+    e.default = function (t) {
       if ("string" == typeof t || "number" == typeof t) return t;
       var e = "";
       for (var i in t) {
@@ -10896,12 +9877,7 @@
       }
       return e
     }
-  }, function (t, e, i) {
-    i(8), i(151).default;
-    t.exports = function (t) {
-      return {}
-    }
-  }, function (t, e) {
+  }, , function (t, e) {
     t.exports = function () {
       return {
         layout: {
@@ -10947,7 +9923,6 @@
         drag_links: !0,
         drag_progress: !1,
         drag_resize: !1,
-        drag_project: !1,
         drag_move: !1,
         drag_mode: {resize: "resize", progress: "progress", move: "move", ignore: "ignore"},
         round_dnd_dates: !0,
@@ -10973,11 +9948,6 @@
         task_attribute: "task_id",
         link_attribute: "link_id",
         layer_attribute: "data-layer",
-        buttons_left: ["jsgantt-save-btn", "jsgantt-cancel-btn"],
-        _migrate_buttons: {},
-        buttons_right: ["jsgantt-delete-btn"],
-        lightbox: {sections: [], project_sections: [], milestone_sections: []},
-        drag_lightbox: !0,
         sort: !0,
         details_on_create: !0,
         details_on_dblclick: !0,
@@ -10995,9 +9965,6 @@
         show_unscheduled: !0,
         readonly_property: "readonly",
         editable_property: "editable",
-        calendar_property: "calendar_id",
-        resource_calendars: {},
-        inherit_calendar: !1,
         type_renderers: {},
         open_tree_initially: !1,
         optimize_render: !0,
@@ -11040,14 +10007,12 @@
         return t(this.$services)
       }
     }
-  }, function (t, e) {
-    t.exports = {KEY_CODES: {}}
-  }, function (t, e, i) {
+  }, , function (t, e, i) {
     i(19), t.exports = function () {
       var t = new function () {
-        this.constants = i(156), this.templates = {}, this.ext = {}, this.keys = {}
+        this.templates = {}, this.ext = {}, this.keys = {}
       };
-      i(155)(t), t.$services = t.$inject(i(154)), t.config = t.$inject(i(153)), t.ajax = i(152)(t), t.date = i(150)(t);
+      i(155)(t), t.$services = t.$inject(i(154)), t.config = t.$inject(i(153)), t.date = i(150)(t);
       var e = i(149)(t);
       t.$services.setService("dnd", function () {
         return e
@@ -11093,26 +10058,18 @@
       var c = i(101);
       t.mixin(t, c()), i(100)(t);
       var u = i(94);
-      return t.dataProcessor = u.DEPRECATED_api, t.createDataProcessor = u.createDataProcessor, i(90)(t), i(81)(t), i(80)(t), i(78)(t), i(77)(t), i(76)(t), i(75)(t), i(66)(t), i(65)(t), i(55)(t), i(54)(t), i(52)(t), i(51)(t), i(50)(t), i(49)(t), i(48)(t), i(47)(t), i(46)(t), i(45)(t), i(44)(t), i(43)(t), i(42)(t), i(41)(t), i(39)(t), t
+      return  t.createDataProcessor = u.createDataProcessor, i(90)(t), i(81)(t), i(80)(t), i(78)(t), i(77)(t), i(76)(t), i(75)(t), i(66)(t), i(65)(t), i(55)(t), i(54)(t), i(52)(t), i(51)(t), i(50)(t), i(49)(t), i(48)(t), i(47)(t), i(46)(t), i(45)(t), i(44)(t), i(43)(t), i(42)(t), i(41)(t), i(39)(t), t
     }
   }, function (t, e, i) {
     var n = {
-      _seed: 0, plugin: function (t) {
-        this._jsganttPlugin.push(t), t(window.jsgantt)
-      }, _jsganttPlugin: [], getGanttInstance: function () {
-        for (var t = i(157)(), e = 0; e < n._jsganttPlugin.length; e++) n._jsganttPlugin[e](t);
+      _seed: 0, getGanttInstance: function () {
+        let t = i(157)();
         return t._internal_id = n._seed++, n.$syncFactory && n.$syncFactory(t), i(38)(t), t
       }
     };
     t.exports = n
   }, function (t, e, i) {
-    "use strict";
-    Object.defineProperty(e, "__esModule", {value: !0});
-    var n = i(158);
-    e.JSGantt = n;
-    var r = window;
-    r.JSGantt = n;
-    var o = r.jsgantt = n.getGanttInstance();
-    e.default = o
+    let n = i(158);
+    window.jsgantt = n.getGanttInstance();
   }])
-});
+};
