@@ -67,8 +67,7 @@
 
 .jsgantt-grid-scale {
   height: 46px !important;
-  line-height: 25px !important;
-  padding-bottom: 20px;
+  line-height: 46px !important;
 }
 
 .jsgantt-row {
@@ -83,97 +82,6 @@
   }
 }
 
-.jsgantt-task-line.jsgantt-project {
-  background-color: #65c16f;
-  border: 1px solid #3c9445;
-
-  .jsgantt-task-background {
-    background-color: #46ad51;
-  }
-}
-
-.buttonBg {
-  background: #fff;
-}
-
-.jsgantt-modal .jsgantt-btn-set {
-  margin: 5px 10px;
-}
-
-.jsgantt-btn-set {
-  &.jsgantt-cancel-btn-set {
-    background: #fff;
-    color: #454545;
-    border: 1px solid #cecece;
-  }
-
-  &.jsgantt-save-btn-set {
-    background: #3db9d3;
-    text-shadow: 0 -1px 0 #248a9f;
-    color: #fff;
-  }
-
-  &.jsgantt-delete-btn-set {
-    background: #ec8e00;
-    text-shadow: 0 -1px 0 #a60;
-    color: #fff;
-  }
-}
-
-.jsgantt-modal-wide {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-
-  .jsgantt-cal-larea {
-    border-left: none !important;
-    border-right: none !important;
-  }
-}
-
-.jsgantt-popup-button {
-  &.jsgantt-ok-button {
-    background: #3db9d3;
-    text-shadow: 0 -1px 0 #248a9f;
-    color: #fff;
-    font-weight: 700;
-    border-width: 0;
-  }
-
-  &.jsgantt-cancel-button {
-    font-weight: 700;
-    color: #454544;
-  }
-}
-
-.jsgantt-popup-title {
-  background-color: #fff;
-}
-
-.jsgantt-popup-shadow {
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-}
-
-.jsgantt-qi-big-icon {
-  &.icon-edit {
-    color: #454545;
-    background: #fff;
-  }
-
-  &.icon-delete {
-    text-shadow: 0 -1px 0 #a60;
-    background: #ec8e00;
-    color: #fff;
-    border-width: 0;
-  }
-}
-
-.jsgantt-tooltip {
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-  border-left: 1px solid rgba(0, 0, 0, 0.07);
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
-  font-size: 8pt;
-  color: #454545;
-}
 
 .jsgantt-container, .jsgantt-tooltip {
   background-color: #fff;
@@ -250,29 +158,6 @@
   position: relative;
   -webkit-user-select: none;
   -moz-user-select: none;
-}
-
-.jsgantt-add, .jsgantt-grid-head-add {
-  width: 100%;
-  height: 100%;
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTQ3MjMyMENDNkI0MTFFMjk4MTI5QTg3MDhFNDVDQTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTQ3MjMyMERDNkI0MTFFMjk4MTI5QTg3MDhFNDVDQTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1NDcyMzIwQUM2QjQxMUUyOTgxMjlBODcwOEU0NUNBOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1NDcyMzIwQkM2QjQxMUUyOTgxMjlBODcwOEU0NUNBOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PshZT8UAAABbSURBVHjaYrTdeZmBEsCER+4wEP+H4sPkGGCDg020ARR7gb4GIAcYDKMDdPnDyAbYkGG5DVW9cIQMvUdBBAuUY4vDz8iAcZinA2zgCHqAYQMseAywJcYFAAEGAM+UFGuohFczAAAAAElFTkSuQmCC);
-  background-position: 50%;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  position: relative;
-  -moz-opacity: .3;
-  opacity: 0.3;
-}
-
-.jsgantt-grid-head-cell.jsgantt-grid-head-add {
-  -moz-opacity: .6;
-  opacity: .6;
-  top: 0;
-
-  &:hover {
-    -moz-opacity: 1;
-    opacity: 1;
-  }
 }
 
 .jsgantt-grid-data .jsgantt-row {
@@ -424,8 +309,8 @@
 
 .jsgantt-grid-head-cell .jsgantt-sort {
   position: absolute;
-  right: 5px;
-  top: 8px;
+  right: 0;
+  top: 16px;
   width: 7px;
   height: 13px;
   background-repeat: no-repeat;
@@ -448,13 +333,6 @@
   text-decoration: line-through;
 }
 
-.jsgantt-invalid {
-  background-color: #ffe0e0;
-}
-
-.jsgantt-error {
-  color: red;
-}
 
 .jsgantt-status {
   right: 1px;
@@ -470,185 +348,6 @@
   }
 }
 
-#jsgantt-ajax-dots span {
-  transition: opacity .2s;
-  background-repeat: no-repeat;
-  opacity: 0;
-
-  &.jsgantt-dot-visible {
-    opacity: 1;
-  }
-}
-
-.jsgantt-message-area {
-  position: fixed;
-  right: 5px;
-  width: 250px;
-  z-index: 1000;
-}
-
-.jsgantt-info {
-  min-width: 120px;
-  padding: 4px 4px 4px 20px;
-  z-index: 10000;
-  margin: 5px 5px 10px;
-  transition: all 0.5s ease;
-
-  &.hidden {
-    height: 0;
-    padding: 0;
-    border-width: 0;
-    margin: 0;
-    overflow: hidden;
-  }
-}
-
-.jsgantt-modal-box {
-  overflow: hidden;
-  display: inline-block;
-  min-width: 250px;
-  width: 250px;
-  text-align: center;
-  position: fixed;
-  z-index: 20000;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-  border-radius: 6px;
-  border: 1px solid rgba(120, 130, 140, 0.3);
-  background: transparent;
-}
-
-.jsgantt-popup-title {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  border-width: 0;
-}
-
-.jsgantt-button, .jsgantt-popup-button {
-  border: 1px solid rgba(120, 130, 140, 0.3);
-  height: 30px;
-  line-height: 30px;
-  display: inline-block;
-  margin: 0 5px;
-  border-radius: 4px;
-  background: #fff;
-}
-
-.jsgantt-info, .jsgantt-button, .jsgantt-popup-button {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  cursor: pointer;
-}
-
-.jsgantt-popup-text {
-  overflow: hidden;
-}
-
-.jsgantt-popup-controls {
-  border-radius: 6px;
-  padding: 10px;
-}
-
-.jsgantt-popup-button {
-  min-width: 100px;
-}
-
-div.joc-modal-cover {
-  background-color: #000;
-  cursor: default;
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20);
-  opacity: .2;
-  position: fixed;
-  z-index: 19999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  zoom: 1;
-}
-
-.jsgantt-info img, .jsgantt-modal-box img {
-  float: left;
-  margin-right: 20px;
-}
-
-.jsgantt-alert-error, .jsgantt-confirm-error {
-  border: 1px solid red;
-}
-
-.jsgantt-button input, .jsgantt-popup-button div {
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: content-box;
-  padding: 0;
-  margin: 0;
-  vertical-align: top;
-}
-
-.jsgantt-popup-title {
-  border-bottom: 1px solid rgba(120, 130, 140, 0.3);
-  height: 40px;
-  line-height: 40px;
-  font-size: 20px;
-}
-
-.jsgantt-popup-text {
-  margin: 15px 15px 5px;
-  font-size: 14px;
-  color: #000;
-  min-height: 30px;
-  border-radius: 6px;
-}
-
-.jsgantt-error {
-  font-size: 14px;
-  color: #000;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-  padding: 0;
-  background-color: #fff;
-  border-radius: 3px;
-  border: 1px solid #fff;
-}
-
-.jsgantt-info {
-  font-size: 14px;
-  color: #000;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.07);
-  padding: 0;
-  background-color: #fff;
-  border-radius: 3px;
-  border: 1px solid #fff;
-
-  div {
-    padding: 5px 10px;
-    background-color: #fff;
-    border-radius: 3px;
-    border: 1px solid rgba(120, 130, 140, 0.3);
-  }
-}
-
-.jsgantt-error {
-  background-color: #d81b1b;
-  border: 1px solid #ff3c3c;
-
-  div {
-    background-color: #d81b1b;
-    border: 1px solid #940000;
-    color: #fff;
-  }
-}
-
-.jsgantt-warning {
-  background-color: #ff9000;
-  border: 1px solid #ffa633;
-
-  div {
-    background-color: #ff9000;
-    border: 1px solid #b36500;
-    color: #fff;
-  }
-}
 
 .jsgantt-data-area div, .jsgantt-grid div {
   -ms-touch-action: none;
@@ -682,10 +381,6 @@ div.joc-modal-cover {
   position: absolute;
 }
 
-.my-tooltip {
-  background: rgba(0, 0, 0, 0.05);
-}
-
 .jsgantt-task-background {
   text-align: center;
   z-index: 0;
@@ -713,6 +408,11 @@ div.joc-modal-cover {
   }
 }
 
+.my-tooltip {
+  &:hover div.tooltip {
+    opacity: 1;
+  }
+}
 .jsgantt-touch-move {
   transform: scale(1.02, 1.1);
   transform-origin: 50%;
@@ -1052,41 +752,7 @@ div.joc-modal-cover {
   }
 }
 
-.jsgantt-modal {
-  -webkit-tap-highlight-color: transparent;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  font-size: 12px;
-  position: absolute;
-  z-index: 10001;
-  width: 550px;
-  height: 250px;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
-}
 
-.jsgantt-modal-wide {
-  width: 650px;
-}
-
-.jsgantt-modal select {
-  border: 1px solid #ddd;
-  font-size: 13px;
-  padding: 2px;
-  margin: 0;
-}
-
-.jsgantt-cal-ltitle {
-  padding: 7px 10px;
-  overflow: hidden;
-  -webkit-border-radius: 6px 6px 0 0;
-  -moz-border-radius: 6px 6px 0 0;
-  border-radius: 6px 6px 0 0;
-  white-space: nowrap;
-
-  span {
-    white-space: nowrap;
-  }
-}
 
 .jsgantt-cal-lsection {
   color: #727272;
@@ -1106,22 +772,7 @@ div.joc-modal-cover {
   font-size: 13px;
 }
 
-.jsgantt-cal-ltext {
-  padding: 2px 10px;
-  overflow: hidden;
 
-  textarea {
-    overflow-y: auto;
-    overflow-x: hidden;
-    font-size: 13px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    height: 100%;
-    width: 100%;
-    outline: none !important;
-    resize: none;
-  }
-}
 
 .jsgantt-section-constraint [data-constraint-time-select] {
   margin-left: 20px;
@@ -1135,27 +786,6 @@ div.joc-modal-cover {
   padding-left: 10px;
 }
 
-.jsgantt-cal-larea {
-  border: 1px solid #ddd;
-  border-left: none;
-  border-right: none;
-  background-color: #fff;
-  overflow: hidden;
-  height: 1px;
-}
-
-.jsgantt-btn-set {
-  margin: 10px 7px 5px 10px;
-  padding: 5px 15px 5px 10px;
-  float: left;
-  border-radius: 4px;
-  border: 0 solid #ddd;
-  height: 32px;
-  font-weight: 700;
-  background: #fff;
-  box-sizing: border-box;
-  cursor: pointer;
-}
 
 .jsgantt-hidden {
   display: none;
@@ -1170,20 +800,6 @@ div.joc-modal-cover {
   vertical-align: middle;
 }
 
-.jsgantt-save-btn {
-  margin-top: 2px;
-  width: 21px;
-}
-
-.jsgantt-cancel-btn {
-  margin-top: 2px;
-  width: 20px;
-}
-
-.jsgantt-delete-btn {
-  margin-top: 2px;
-  width: 20px;
-}
 
 .jsgantt-cal-cover {
   width: 100%;
@@ -1197,32 +813,6 @@ div.joc-modal-cover {
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=10);
 }
 
-.jsgantt-custom-button {
-  padding: 0 3px;
-  font-size: 13px;
-  font-weight: 400;
-  margin-right: 10px;
-  margin-top: -5px;
-  cursor: pointer;
-  float: right;
-  height: 21px;
-  width: 90px;
-  border: 1px solid #ddd;
-  text-align: center;
-  border-radius: 4px;
-
-  div {
-    cursor: pointer;
-    float: none;
-    height: 21px;
-    line-height: 21px;
-    vertical-align: middle;
-
-    &:first-child {
-      display: none;
-    }
-  }
-}
 
 .jsgantt-modal-wide {
   width: 580px;
@@ -1916,12 +1506,6 @@ div.joc-modal-cover {
   position: fixed;
 }
 
-.jsgantt-modal, .jsgantt-cal-quick-info, .jsgantt-container, .jsgantt-message-area, .jsgantt-modal-box, .jsgantt-tooltip {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .jsgantt-noselect {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -1973,13 +1557,6 @@ div.joc-modal-cover {
   background-color: #f8fdfd;
 }
 
-.jsgantt-popup-button.jsgantt-delete-button {
-  background: #3db9d3;
-  text-shadow: 0 -1px 0 #248a9f;
-  color: #fff;
-  font-weight: 700;
-  border-width: 0;
-}
 
 .jsgantt-container-resize-watcher {
   background: transparent;

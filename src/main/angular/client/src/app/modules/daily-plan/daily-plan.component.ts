@@ -10,6 +10,7 @@ import {EditFilterModalComponent} from '../../components/filter-modal/filter.com
 import {GroupByPipe} from '../../filters/filter.pipe';
 import * as moment from 'moment';
 import * as _ from 'underscore';
+import {TranslateService} from '@ngx-translate/core';
 
 declare const JSGantt;
 declare let jsgantt;
@@ -167,6 +168,7 @@ export class FilterModalComponent implements OnInit {
   name: string;
 
   constructor(private authService: AuthService, public activeModal: NgbActiveModal) {
+
   }
 
   ngOnInit() {
@@ -324,7 +326,6 @@ export class SearchComponent implements OnInit {
   }
 }
 
-
 @Component({
   encapsulation: ViewEncapsulation.None,
   selector: 'app-gantt',
@@ -334,38 +335,36 @@ export class GanttComponent implements OnInit, OnDestroy {
   @ViewChild('jsgantt') ganttContainer: ElementRef;
 
   @Input() data: any;
+  @Input() groupBy: any;
   @Input() preferences: any;
+  @Output() dataEvent = new EventEmitter<any>();
   tasks = [];
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private groupByPipe: GroupByPipe, public translate: TranslateService) {
     JSGantt();
   }
 
   ngOnInit() {
     const self = this;
-
-    let ht = 0;
-    // return false to discard the resize
-    jsgantt.attachEvent('onPanelResize', function (old_width, new_width) {
-      const dom = $('.timeline-cell');
-      if (ht == 0) {
-        ht = dom.width();
-      }
-      $('.grid-cell.jsgantt-layout-outer-scroll.jsgantt-layout-cell-border-right').css({'width': new_width + 'px'});
-      $('.scrollHor-cell').css({'left': new_width + 'px'});
-      dom.css({'width': ht + (-new_width + old_width) + 'px'});
-      return true;
+    let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'jobChain' : 'order');
+    let workflow = '', orderId = '', btnRemoveOrder = '', btnChangeParameter = '';
+    this.translate.get('label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
     });
-
-    jsgantt.attachEvent('onPanelResizeEnd', function (old_width) {
-      ht = 0;
-      return true;
+    this.translate.get('label.orderId').subscribe(translatedValue => {
+      orderId = translatedValue;
     });
-
-    jsgantt.attachEvent('onRowClick', function (task) {
-      console.log(task);
-      return true;
+    this.translate.get('button.removeOrder').subscribe(translatedValue => {
+      btnRemoveOrder = translatedValue;
     });
+    this.translate.get('button.changeParameter').subscribe(translatedValue => {
+      btnChangeParameter = translatedValue;
+    });
+    jsgantt.config.columns = [{name: 'jobChain', tree: !0, label: workflow, align: 'left'}, {
+      name: 'orderId', label: orderId, width: '*', align: 'left'
+    }];
+    jsgantt.config.btnRemoveOrder = btnRemoveOrder;
+    jsgantt.config.btnChangeParameter = btnChangeParameter;
 
     jsgantt.templates.task_class = function (start, end, task) {
       return task.class;
@@ -376,45 +375,70 @@ export class GanttComponent implements OnInit, OnDestroy {
     });
 
     $(document).on('mouseout', '.my-tooltip', function () {
-       $('.tooltip').tooltip('hide');
+      $('.tooltip').tooltip('hide');
+    });
+    $(document).on('click', '.dropdown-item', function (e) {
+      const id = $(this).attr('id');
+      if(id) {
+        let _id = '';
+        const _len = self.tasks.length;
+        let order = {action: '', orderId: '', workflow: ''};
+        if (id.match('editBtn')) {
+          order.action = 'CHANGE_PARAMETER';
+          _id = id.substring(0, id.lastIndexOf('editBtn'));
+        } else {
+          order.action = 'REMOVE_ORDER';
+          _id = id.substring(0, id.lastIndexOf('removeBtn'));
+        }
+        for (let x = 0; x < _len; x++) {
+          if (self.tasks[x].id == _id) {
+            order.orderId = self.tasks[x].orderId;
+            order.workflow = self.tasks[x].jobChain;
+            break;
+          }
+        }
+        self.dataEvent.emit(order);
+      }
     });
 
-
     jsgantt.init(this.ganttContainer.nativeElement);
-    const len = this.data.length;
-    if (this.data && len > 0) {
+    const len = plans.length;
+    if (len > 0) {
+      let count = 0;
       for (let i = 0; i < len; i++) {
-        let dur = moment(this.data[i].expectedEndTime).diff(this.data[i].plannedStartTime) / 1000; // In second
-        let obj: any = {
-          id: i + 1,
-          jobChain: this.data[i].jobChain,
-          orderId: this.data[i].orderId,
-          plannedDate: moment(this.data[i].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
-          begin: this.data[i].period.begin ? moment(this.data[i].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-          end: this.data[i].period.end ? moment(this.data[i].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
-          repeat: this.data[i].period.repeat,
-          class: this.coreService.getColor(this.data[i].state.severity, 'bg'),
-          duration: dur > 60 ? dur / 60 : 1,
-          progress: dur > 60 ? dur / 60 * 60 : 0.1,
+        let _obj = {
+          id: ++count,
+          jobChain: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].jobChain,
+          orderId: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
+          open: true,
+          isWorkflow: this.groupBy === 'WORKFLOW'
         };
-        if (obj.id > 1) {
-          obj.parent = 1;
-        } else {
-          obj.open = true;
+        this.tasks.push(_obj);
+        let _len = plans[i].value.length;
+        for (let j = 0; j < _len; j++) {
+          let dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
+          let obj: any = {
+            id: ++count,
+            jobChain: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].jobChain,
+            orderId: plans[i].value[j].orderId,
+            plannedDate: moment(plans[i].value[j].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
+            begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+            end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
+            repeat: plans[i].value[j].period.repeat,
+            class: this.coreService.getColor(plans[i].value[j].state.severity, 'bg'),
+            duration: dur > 60 ? (dur / (60 * 60)) : 1,
+            progress: dur > 60 ? (dur / (60 * 60)) : 0.1,
+            parent: _obj.id
+          };
+          this.tasks.push(obj);
         }
-
-        this.tasks.push(obj);
       }
+
       $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
-
-
-      setTimeout(() => {
-        $('.scrollHor-cell').css({'left': $('.jsgantt-resizer-x').position().left + 'px'});
-      }, 10);
     }
     Promise.all([this.getTask(), []])
       .then(([data, links]) => {
-          jsgantt.parse({data, links});
+        jsgantt.parse({data, links});
       });
   }
 
@@ -423,7 +447,8 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-     $('.tooltip').hide();
+    $('.tooltip').hide();
+    jsgantt = null;
   }
 
 }
@@ -459,7 +484,7 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private dataService: DataService,
-              private modalService: NgbModal, private groupBy: GroupByPipe) {
+              private modalService: NgbModal, private groupBy: GroupByPipe ) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -467,6 +492,14 @@ export class DailyPlanComponent implements OnInit, OnDestroy {
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.initConf();
     });
+  }
+
+  receiveData(object) {
+    if (object.action === 'CHANGE_PARAMETER') {
+      this.changeParameter(object, null);
+    } else {
+      this.removeOrder(object);
+    }
   }
 
   ngOnInit() {

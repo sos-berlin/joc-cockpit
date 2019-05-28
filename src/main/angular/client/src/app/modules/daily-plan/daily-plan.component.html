@@ -164,7 +164,7 @@
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
             <div *ngIf="pageView==='grid' && plans.length>0">
                 <div class="box p-a">
-                    <app-gantt [data]="plans" [preferences]="preferences"></app-gantt>
+                    <app-gantt [data]="plans" [groupBy]="this.dailyPlanFilters.filter.groupBy" (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
                 </div>
             </div>
             <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid' && plans.length>0}">

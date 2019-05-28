@@ -1,6 +1,3 @@
-/**
-Core script to handle the entire gantt chart functions
-**/
 var JSGantt = function () {
   return function (t) {
     var e = {};
@@ -10,7 +7,8 @@ var JSGantt = function () {
       let r = e[n] = {i: n, l: !1, exports: {}};
       return t[n].call(r.exports, r, r.exports, i), r.l = !0, r.exports
     }
-    return i(i.s = 159);
+
+    return i(i.s = 159)
   }([function (t, e, i) {
     var n, r = i(3);
     t.exports = {
@@ -57,11 +55,11 @@ var JSGantt = function () {
     function i(t) {
       var e = 0, i = 0, n = 0, r = 0;
       if (t.getBoundingClientRect) {
-        var o = t.getBoundingClientRect(), a = document.body,
-          s = document.documentElement || document.body.parentNode || document.body,
-          l = window.pageYOffset || s.scrollTop || a.scrollTop, c = window.pageXOffset || s.scrollLeft || a.scrollLeft,
-          u = s.clientTop || a.clientTop || 0, d = s.clientLeft || a.clientLeft || 0;
-        e = o.top + l - u, i = o.left + c - d, n = document.body.offsetWidth - o.right, r = document.body.offsetHeight - o.bottom
+        var a = t.getBoundingClientRect(), s = document.body,
+          o = document.documentElement || document.body.parentNode || document.body,
+          l = window.pageYOffset || o.scrollTop || s.scrollTop, c = window.pageXOffset || o.scrollLeft || s.scrollLeft,
+          d = o.clientTop || s.clientTop || 0, h = o.clientLeft || s.clientLeft || 0;
+        e = a.top + l - d, i = a.left + c - h, n = document.body.offsetWidth - a.right, r = document.body.offsetHeight - a.bottom
       } else {
         for (; t;) e += parseInt(t.offsetTop, 10), i += parseInt(t.offsetLeft, 10), t = t.offsetParent;
         n = document.body.offsetWidth - t.offsetWidth - i, r = document.body.offsetHeight - t.offsetHeight - e
@@ -77,63 +75,30 @@ var JSGantt = function () {
     }
 
     function n(t) {
-      var e = !1, i = !1;
-      if (window.getComputedStyle) {
-        var n = window.getComputedStyle(t, null);
-        e = n.display, i = n.visibility
-      } else t.currentStyle && (e = t.currentStyle.display, i = t.currentStyle.visibility);
-      return "none" != e && "hidden" != i
-    }
-
-    function r(t) {
-      return !isNaN(t.getAttribute("tabindex")) && 1 * t.getAttribute("tabindex") >= 0
-    }
-
-    function o(t) {
-      return !{a: !0, area: !0}[t.nodeName.loLowerCase()] || !!t.getAttribute("href")
-    }
-
-    function a(t) {
-      return !{
-        input: !0,
-        select: !0,
-        textarea: !0,
-        button: !0,
-        object: !0
-      }[t.nodeName.toLowerCase()] || !t.hasAttribute("disabled")
-    }
-
-    function s(t) {
       if (!t) return "";
       var e = t.className || "";
-      return e.baseVal && (e = e.baseVal), e.indexOf || (e = ""), u(e)
+      return e.baseVal && (e = e.baseVal), e.indexOf || (e = ""), s(e)
     }
 
-    var l = document.createElement("div");
+    var r = document.createElement("div");
 
-    function c(t) {
+    function a(t) {
       return t.tagName ? t : (t = t || window.event).target
     }
 
-    function u(t) {
+    function s(t) {
       return (String.prototype.trim || function () {
         return this.replace(/^\s+|\s+$/g, "")
       }).apply(t)
     }
 
     t.exports = {
-      getNodePosition: i, getFocusableNodes: function (t) {
-        for (var e = t.querySelectorAll(["a[href]", "area[href]", "input", "select", "textarea", "button", "iframe", "object", "embed", "[tabindex]", "[contenteditable]"].join(", ")), i = Array.prototype.slice.call(e, 0), s = 0; s < i.length; s++) {
-          var l = i[s];
-          (r(l) || a(l) || o(l)) && n(l) || (i.splice(s, 1), s--)
-        }
-        return i
-      }, getScrollSize: function () {
+      getNodePosition: i, getScrollSize: function () {
         var t = document.createElement("div");
         t.style.cssText = "visibility:hidden;position:absolute;left:-1000px;width:100px;padding:0px;margin:0px;height:110px;min-height:100px;overflow-y:scroll;", document.body.appendChild(t);
         var e = t.offsetWidth - t.clientWidth;
         return document.body.removeChild(t), e
-      }, getClassName: s, addClassName: function (t, e) {
+      }, getClassName: n, addClassName: function (t, e) {
         e && -1 === t.className.indexOf(e) && (t.className += " " + e)
       }, removeClassName: function (t, e) {
         e = e.split(" ");
@@ -142,42 +107,42 @@ var JSGantt = function () {
           t.className = t.className.replace(n, "")
         }
       }, insertNode: function (t, e) {
-        l.innerHTML = e;
-        var i = l.firstChild;
+        r.innerHTML = e;
+        var i = r.firstChild;
         return t.appendChild(i), i
       }, removeNode: function (t) {
         t && t.parentNode && t.parentNode.removeChild(t)
       }, getChildNodes: function (t, e) {
-        for (var i = t.childNodes, n = i.length, r = [], o = 0; o < n; o++) {
-          var a = i[o];
-          a.className && -1 !== a.className.indexOf(e) && r.push(a)
+        for (var i = t.childNodes, n = i.length, r = [], a = 0; a < n; a++) {
+          var s = i[a];
+          s.className && -1 !== s.className.indexOf(e) && r.push(s)
         }
         return r
       }, toNode: function (t) {
         return "string" == typeof t ? document.getElementById(t) || document.querySelector(t) || document.body : t || document.body
       }, locateClassName: function (t, e, i) {
-        var n = c(t), r = "";
-        for (void 0 === i && (i = !0); n;) {
-          if (r = s(n)) {
-            var o = r.indexOf(e);
-            if (o >= 0) {
-              if (!i) return n;
-              var a = 0 === o || !u(r.charAt(o - 1)), l = o + e.length >= r.length || !u(r.charAt(o + e.length));
-              if (a && l) return n
+        var r = a(t), o = "";
+        for (void 0 === i && (i = !0); r;) {
+          if (o = n(r)) {
+            var l = o.indexOf(e);
+            if (l >= 0) {
+              if (!i) return r;
+              var c = 0 === l || !s(o.charAt(l - 1)), d = l + e.length >= o.length || !s(o.charAt(l + e.length));
+              if (c && d) return r
             }
           }
-          n = n.parentNode
+          r = r.parentNode
         }
         return null
       }, locateAttribute: function (t, e) {
         if (e) {
-          for (var i = c(t); i;) {
+          for (var i = a(t); i;) {
             if (i.getAttribute && i.getAttribute(e)) return i;
             i = i.parentNode
           }
           return null
         }
-      }, getTargetNode: c, getRelativeEventPosition: function (t, e) {
+      }, getTargetNode: a, getRelativeEventPosition: function (t, e) {
         var n = document.documentElement, r = i(e);
         return {
           x: t.clientX + n.scrollLeft - n.clientLeft - r.x + e.scrollLeft,
@@ -228,7 +193,7 @@ var JSGantt = function () {
     function n(t, e) {
       var i = [];
       if (t.filter) return t.filter(e);
-      for (var n = 0; n < t.length; n++) e(t[n], n) && (i[i.length] = t[n]);
+      for (let n = 0; n < t.length; n++) e(t[n], n) && (i[i.length] = t[n]);
       return i
     }
 
@@ -241,28 +206,10 @@ var JSGantt = function () {
         if (t.map) return t.map(e);
         for (var i = t.slice(), n = [], r = 0; r < i.length; r++) n.push(e(i[r], r));
         return n
-      }, arrayFind: function (t, e) {
-        if (t.find) return t.find(e);
-        for (var i = 0; i < t.length; i++) if (e(t[i], i)) return t[i]
       }, arrayFilter: n, arrayDifference: function (t, e) {
         return n(t, function (t, i) {
           return !e(t, i)
         })
-      }, arraySome: function (t, e) {
-        if (0 === t.length) return !1;
-        for (var i = 0; i < t.length; i++) if (e(t[i], i, t)) return !0;
-        return !1
-      }, hashToArray: function (t) {
-        var e = [];
-        for (var i in t) t.hasOwnProperty(i) && e.push(t[i]);
-        return e
-      }, throttle: function (t, e) {
-        var i = !1;
-        return function () {
-          i || (t.apply(null, arguments), i = !0, setTimeout(function () {
-            i = !1
-          }, e))
-        }
       }, isArray: function (t) {
         return Array.isArray ? Array.isArray(t) : t && void 0 !== t.length && t.pop && t.push
       }, isDate: function (t) {
@@ -286,24 +233,13 @@ var JSGantt = function () {
         }, n.$execute = function () {
           t(), t.$cancelTimeout()
         }, n
-      }, objectKeys: function (t) {
-        if (Object.keys) return Object.keys(t);
-        var e, i = [];
-        for (e in t) Object.prototype.hasOwnProperty.call(t, e) && i.push(e);
-        return i
       }
     }
   }, function (t, e) {
     var i = function () {
       this._connected = [], this._silent_mode = !1
     };
-    i.prototype = {
-      _silentStart: function () {
-        this._silent_mode = !0
-      }, _silentEnd: function () {
-        this._silent_mode = !1
-      }
-    }, t.exports = function (t) {
+    i.prototype = {}, t.exports = function (t) {
       var e = new i;
       t.attachEvent = function (t, i, n) {
         return t = "ev_" + t.toLowerCase(), e[t] || (e[t] = function (t) {
@@ -338,17 +274,20 @@ var JSGantt = function () {
       }
     }
   }, function (t, e) {
-    function n() {
+    function i() {
     }
+
     t.exports = function (t) {
-      return n
+      return i
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(4), o = i(1), a = function () {
+    var n = i(0), r = i(4), a = i(1), s = function () {
       "use strict";
-      function t(t, e, i, a) {
-        t && (this.$container = o.toNode(t), this.$parent = t), this.$config = n.mixin(e, {headerHeight: 33}), this.$jsgantt = a, this.$domEvents = a._createDomEventScope(), this.$id = e.id || "c" + n.uid(), this.$name = "cell", this.$factory = i, r(this)
+
+      function t(t, e, i, s) {
+        t && (this.$container = a.toNode(t), this.$parent = t), this.$config = n.mixin(e, {headerHeight: 33}), this.$jsgantt = s, this.$domEvents = s._createDomEventScope(), this.$id = e.id || "c" + n.uid(), this.$name = "cell", this.$factory = i, r(this)
       }
+
       return t.prototype.destructor = function () {
         this.$parent = this.$container = this.$view = null, this.$jsgantt.$services.getService("mouseEvents").detach("click", "jsgantt-header-arrow", this._headerClickHandler), this.$domEvents.detachAll(), this.callEvent("onDestroy", []), this.detachAllEvents()
       }, t.prototype.cell = function (t) {
@@ -383,7 +322,7 @@ var JSGantt = function () {
       }, t.prototype.init = function () {
         var t = this;
         this._headerClickHandler = function (e) {
-          o.locateAttribute(e, "data-cell-id") == t.$id && t.toggle()
+          a.locateAttribute(e, "data-cell-id") == t.$id && t.toggle()
         }, this.$jsgantt.$services.getService("mouseEvents").delegate("click", "jsgantt-header-arrow", this._headerClickHandler), this.callEvent("onReady", [])
       }, t.prototype.toggle = function () {
         this.$config.collapsed = !this.$config.collapsed, this.resize()
@@ -411,7 +350,17 @@ var JSGantt = function () {
         var t = {top: 0, right: 0, bottom: 0, left: 0, horizontal: 0, vertical: 0};
         return this._currentBorders && (this._currentBorders[this._borders.left] && (t.left = 1, t.horizontal++), this._currentBorders[this._borders.right] && (t.right = 1, t.horizontal++), this._currentBorders[this._borders.top] && (t.top = 1, t.vertical++), this._currentBorders[this._borders.bottom] && (t.bottom = 1, t.vertical++)), t
       }, t.prototype.setSize = function (t, e) {
-        this.$view.style.width = t + "px", this.$view.style.height = e + "px";
+        this.$view.style.height = e + "px";
+        if($(this.$view).hasClass('jsgantt-layout-cell jsgantt-hor-scroll')) {
+          let self = this;
+          setTimeout(function () {
+            let l = $('.jsgantt-resizer-x').position().left;
+            self.$view.style.width = (t - l) + "px";
+            self.$view.style.marginLeft = l + "px";
+          }, 0)
+        } else {
+          this.$view.style.width = t + "px";
+        }
         var i = this._getBorderSizes(), n = e - i.vertical, r = t - i.horizontal;
         this.$lastSize = {
           x: t,
@@ -427,10 +376,10 @@ var JSGantt = function () {
       }, t.prototype._setBorders = function (t, e) {
         e || (e = this);
         var i = e.$view;
-        for (var n in this._borders) o.removeClassName(i, this._borders[n]);
+        for (var n in this._borders) a.removeClassName(i, this._borders[n]);
         "string" == typeof t && (t = [t]);
         var r = {};
-        for (n = 0; n < t.length; n++) o.addClassName(i, t[n]), r[t[n]] = !0;
+        for (n = 0; n < t.length; n++) a.addClassName(i, t[n]), r[t[n]] = !0;
         e._currentBorders = r
       }, t.prototype._sizeContent = function () {
         var t = this.$view.childNodes[0];
@@ -447,31 +396,11 @@ var JSGantt = function () {
         e.style.height = this.$config.headerHeight + "px"
       }, t
     }();
-    t.exports = a
+    t.exports = s
   }, function (t, e) {
     t.exports = function (t) {
-      var e = function () {
-      };
-      return e.prototype = {
-        show: function (t, e, i, n) {
-        }, hide: function () {
-        }, set_value: function (t, e, i, n) {
-          this.get_input(n).value = t
-        }, get_value: function (t, e, i) {
-          return this.get_input(i).value || ""
-        }, is_changed: function (t, e, i, n) {
-          var r = this.get_value(e, i, n);
-          return r && t && r.valueOf && t.valueOf ? r.valueOf() != t.valueOf() : r != t
-        }, is_valid: function (t, e, i, n) {
-          return !0
-        }, save: function (t, e, i) {
-        }, get_input: function (t) {
-          return t.querySelector("input")
-        }, focus: function (t) {
-          var e = this.get_input(t);
-          e && (e.focus && e.focus(), e.select && e.select())
-        }
-      }, e
+      return function () {
+      }
     }
   }, function (t, e) {
     var i = {
@@ -486,62 +415,19 @@ var JSGantt = function () {
     };
     t.exports = i
   }, , , function (t, e, i) {
-    var n = i(3), r = {
-      getHtmlSelect: function (t, e, i) {
-        var r = "", a = this;
-        return t = t || [], n.forEach(t, function (t) {
-          var e = [{key: "value", value: t.key}];
-          i == t.key && (e[e.length] = {
-            key: "selected",
-            value: "selected"
-          }), t.attributes && (e = e.concat(t.attributes)), r += a.getHtmlOption({innerHTML: t.label}, e)
-        }), o("select", {innerHTML: r}, e)
-      }, getHtmlOption: function (t, e) {
-        return o("option", t, e)
-      }, getHtmlButton: function (t, e) {
-        return o("button", t, e)
-      }, getHtmlDiv: function (t, e) {
-        return o("div", t, e)
-      }, getHtmlLabel: function (t, e) {
-        return o("label", t, e)
-      }, getHtmlInput: function (t) {
-        return "<input" + a(t || []) + ">"
-      }
-    };
-
-    function o(t, e, i) {
-      return e = e || [], "<" + t + a(i || []) + ">" + (e.innerHTML || "") + "</" + t + ">"
-    }
-
-    function a(t) {
-      var e = "";
-      return n.forEach(t, function (t) {
-        e += " " + t.key + "='" + t.value + "'"
-      }), e
-    }
-
-    t.exports = r
+    i(3);
+    t.exports = {}
   }, function (t, e, i) {
-    var n = i(2), r = i(11);
+    var n = i(2);
+    i(11);
     t.exports = function (t) {
       var e = i(5)(t);
 
-      function o() {
+      function r() {
         return e.apply(this, arguments) || this
       }
 
-      return n(o, e), o.prototype.render = function (t) {
-        var e = "<div class='jsgantt-cal-ltext' style='height:" + (t.height || "23") + "px;'>";
-        return (e += r.getHtmlSelect(t.options, [{key: "style", value: "width:100%;"}])) + "</div>"
-      }, o.prototype.set_value = function (t, e, i, n) {
-        var r = t.firstChild;
-        !r._joc_onchange && n.onchange && (r.onchange = n.onchange, r._joc_onchange = !0), void 0 === e && (e = (r.options[0] || {}).value), r.value = e || ""
-      }, o.prototype.get_value = function (t) {
-        return t.firstChild.value
-      }, o.prototype.focus = function (e) {
-        var i = e.firstChild;
-        t._focus(i, !0)
-      }, o
+      return n(r, e), r
     }
   }, function (t, e, i) {
     var n = i(0);
@@ -584,16 +470,16 @@ var JSGantt = function () {
           if (this.$config.rowStore && this.$jsgantt.$data.tasksStore) {
             var t = this.$jsgantt.$data.tasksStore, e = this.$config.rowStore;
             r(this);
-            var i = this, o = n.delay(function () {
-              i.$jsgantt.getState().lightbox ? o() : i.$config.rowStore.refresh()
+            var i = this, a = n.delay(function () {
+              i.$jsgantt.getState().lightbox ? a() : i.$config.rowStore.refresh()
             }, 300);
-            this._delayRender = o;
-            var a = "_attached_" + e.$config.name;
-            i[a] || (i[a] = t.attachEvent("onStoreUpdated", o)), this.$jsgantt.attachEvent("onDestroy", function () {
+            this._delayRender = a;
+            var s = "_attached_" + e.$config.name;
+            i[s] || (i[s] = t.attachEvent("onStoreUpdated", a)), this.$jsgantt.attachEvent("onDestroy", function () {
               return r(i), !0
             }), e.$attachedResourceViewHandler || (e.$attachedResourceViewHandler = e.attachEvent("onBeforeStoreUpdate", function () {
               if (i.$jsgantt.getState().lightbox) return !1;
-              o.$pending && o.$cancelTimeout(), i._updateNestedTasks()
+              a.$pending && a.$cancelTimeout(), i._updateNestedTasks()
             }))
           }
         }, _updateNestedTasks: function () {
@@ -601,13 +487,13 @@ var JSGantt = function () {
           if (e.$config.fetchTasks) {
             var i = t.config.resource_property;
             e.silent(function () {
-              var n = [], r = {}, o = {};
-              for (var a in e.eachItem(function (a) {
-                "task" != a.$role ? t.getTaskBy(i, a.id).forEach(function (i) {
-                  var o = t.copy(i);
-                  o.id = i.id + "_" + a.id, o.$task_id = i.id, o.$resource_id = a.id, o[e.$parentProperty] = a.id, o.$role = "task", n.push(o), r[o.id] = !0
-                }) : o[a.id] = !0
-              }), o) r[a] || e.removeItem(a);
+              var n = [], r = {}, a = {};
+              for (var s in e.eachItem(function (s) {
+                "task" != s.$role ? t.getTaskBy(i, s.id).forEach(function (i) {
+                  var a = t.copy(i);
+                  a.id = i.id + "_" + s.id, a.$task_id = i.id, a.$resource_id = s.id, a[e.$parentProperty] = s.id, a.$role = "task", n.push(a), r[a.id] = !0
+                }) : a[s.id] = !0
+              }), a) r[s] || e.removeItem(s);
               e.parse(n)
             })
           }
@@ -618,8 +504,8 @@ var JSGantt = function () {
     t.exports = function (t) {
       var e = [];
       return {
-        delegate: function (i, n, r, o) {
-          e.push([i, n, r, o]), t.$services.getService("mouseEvents").delegate(i, n, r, o)
+        delegate: function (i, n, r, a) {
+          e.push([i, n, r, a]), t.$services.getService("mouseEvents").delegate(i, n, r, a)
         }, destructor: function () {
           for (var i = t.$services.getService("mouseEvents"), n = 0; n < e.length; n++) {
             var r = e[n];
@@ -630,19 +516,19 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(1), r = i(0), o = i(4), a = i(128), s = i(32), l = function (t, e, i, n) {
-      this.$config = r.mixin({}, e || {}), this.$jsgantt = n, this.$parent = t, o(this), this.$state = {}
+    var n = i(1), r = i(0), a = i(4), s = i(128), o = i(32), l = function (t, e, i, n) {
+      this.$config = r.mixin({}, e || {}), this.$jsgantt = n, this.$parent = t, a(this), this.$state = {}
     };
     l.prototype = {
       init: function (t) {
         var e = this.$jsgantt, n = e._waiAria.gridAttrString(), r = e._waiAria.gridDataAttrString();
         t.innerHTML = "<div class='jsgantt-grid' style='height:inherit;width:inherit;' " + n + "></div>", this.$grid = t.childNodes[0], this.$grid.innerHTML = "<div class='jsgantt-grid-scale' " + e._waiAria.gridScaleRowAttrString() + "></div><div class='jsgantt-grid-data' " + r + "></div>", this.$grid_scale = this.$grid.childNodes[0], this.$grid_data = this.$grid.childNodes[1];
-        var o = this.$getConfig()[this.$config.bind + "_attribute"];
-        if (!o && this.$config.bind && (o = this.$config.bind + "_id"), this.$config.item_attribute = o || null, !this.$config.layers) {
-          var s = this._createLayerConfig();
-          this.$config.layers = s
+        var a = this.$getConfig()[this.$config.bind + "_attribute"];
+        if (!a && this.$config.bind && (a = this.$config.bind + "_id"), this.$config.item_attribute = a || null, !this.$config.layers) {
+          var o = this._createLayerConfig();
+          this.$config.layers = o
         }
-        var l = a(e, this);
+        var l = s(e, this);
         l.init(), this._renderHeaderResizers = l.doOnRender, this._mouseDelegates = i(15)(e), this._addLayers(this.$jsgantt), this._initEvents(), this.callEvent("onReady", [])
       }, _validateColumnWidth: function (t, e) {
         var i = t[e];
@@ -652,11 +538,11 @@ var JSGantt = function () {
         }
       }, setSize: function (t, e) {
         this.$config.width = this.$state.width = t, this.$state.height = e;
-        for (var i, n = this.getGridColumns(), r = 0, o = 0, a = n.length; o < a; o++) this._validateColumnWidth(n[o], "min_width"), this._validateColumnWidth(n[o], "max_width"), this._validateColumnWidth(n[o], "width"), r += 1 * n[o].width;
+        for (var i, n = this.getGridColumns(), r = 0, a = 0, s = n.length; a < s; a++) this._validateColumnWidth(n[a], "min_width"), this._validateColumnWidth(n[a], "max_width"), this._validateColumnWidth(n[a], "width"), r += 1 * n[a].width;
         !isNaN(r) && this.$config.scrollable || (r = i = this._setColumnsWidth(t + 1)), this.$config.scrollable ? (this.$grid_scale.style.width = r + "px", this.$grid_data.style.width = r + "px") : (this.$grid_scale.style.width = "inherit", this.$grid_data.style.width = "inherit"), this.$config.width -= 1;
-        var s = this.$getConfig();
-        i !== t && (s.grid_width = i, this.$config.width = i - 1);
-        var l = Math.max(this.$state.height - s.scale_height, 0);
+        var o = this.$getConfig();
+        i !== t && (o.grid_width = i, this.$config.width = i - 1);
+        var l = Math.max(this.$state.height - o.scale_height, 0);
         this.$grid_data.style.height = l + "px", this.refresh()
       }, getSize: function () {
         var t = this.$getConfig(), e = this.$config.rowStore, i = e ? t.row_height * e.countVisible() : 0,
@@ -701,11 +587,11 @@ var JSGantt = function () {
               return e.$grid_data
             }
           }));
-          for (var r = this.$config.layers, o = 0; r && o < r.length; o++) {
-            var a = r[o];
-            a.host = this;
-            var s = n.addLayer(a);
-            this._taskLayers.push(s)
+          for (var r = this.$config.layers, a = 0; r && a < r.length; a++) {
+            var s = r[a];
+            s.host = this;
+            var o = n.addLayer(s);
+            this._taskLayers.push(o)
           }
           this.$config.bind && (this.$config.rowStore = this.$jsgantt.getDatastore(this.$config.bind)), this._initSmartRenderingPlaceholder()
         }
@@ -719,8 +605,8 @@ var JSGantt = function () {
           }
           if (n || (n = i ? e.row_height * i.countVisible() : 0), n) {
             this.$rowsPlaceholder && this.$rowsPlaceholder.parentNode && this.$rowsPlaceholder.parentNode.removeChild(this.$rowsPlaceholder);
-            var o = this.$rowsPlaceholder = document.createElement("div");
-            o.style.visibility = "hidden", o.style.height = n + "px", o.style.width = "1px", this.$grid_data.appendChild(o)
+            var a = this.$rowsPlaceholder = document.createElement("div");
+            a.style.visibility = "hidden", a.style.height = n + "px", a.style.width = "1px", this.$grid_data.appendChild(a)
           }
         }
       }, _initSmartRenderingPlaceholder: function () {
@@ -732,15 +618,13 @@ var JSGantt = function () {
         this._mouseDelegates.delegate("click", "jsgantt-close", t.bind(function (t, e, i) {
           var r = this.$config.rowStore;
           if (!r) return !0;
-          var o = n.locateAttribute(t, this.$config.item_attribute);
-          return setTimeout(function () {
-            $(".jsgantt-resizer.jsgantt-resizer-x").height() > $(".jsgantt-task-bg").height() && $(".jsgantt-container").css({height: 45 + $(".jsgantt-task-bg").height() + "px"})
-          }, 10), o && r.close(o.getAttribute(this.$config.item_attribute)), !1
+          var a = n.locateAttribute(t, this.$config.item_attribute);
+          return a && r.close(a.getAttribute(this.$config.item_attribute)), !1
         }, this), this.$grid), this._mouseDelegates.delegate("click", "jsgantt-open", t.bind(function (t, e, i) {
           var r = this.$config.rowStore;
           if (!r) return !0;
-          var o = n.locateAttribute(t, this.$config.item_attribute);
-          return $(".jsgantt-container").css({height: $(".jsgantt-resizer.jsgantt-resizer-x").height()}), o && r.open(o.getAttribute(this.$config.item_attribute)), !1
+          var a = n.locateAttribute(t, this.$config.item_attribute);
+          return a && r.open(a.getAttribute(this.$config.item_attribute)), !1
         }, this), this.$grid)
       }, _clearLayers: function (t) {
         var e = this.$jsgantt.$services.getService("layers").getDataRender(this.$config.bind);
@@ -753,21 +637,21 @@ var JSGantt = function () {
         for (var t = this.$getConfig(), e = this.getGridColumns(), i = 0, n = 0, r = 0; r < e.length; r++) i += e[r].min_width ? e[r].min_width : t.min_grid_column_width, void 0 !== n && (n = e[r].max_width ? n + e[r].max_width : void 0);
         return [i, n]
       }, _setColumnsWidth: function (t, e) {
-        var i = this.$getConfig(), n = this.getGridColumns(), r = 0, o = t;
+        var i = this.$getConfig(), n = this.getGridColumns(), r = 0, a = t;
         e = window.isNaN(e) ? -1 : e;
-        for (var a = 0, s = n.length; a < s; a++) r += 1 * n[a].width;
-        if (window.isNaN(r)) for (this._calculateGridWidth(), r = 0, a = 0, s = n.length; a < s; a++) r += 1 * n[a].width;
-        var l = o - r, c = 0;
-        for (a = 0; a < e + 1; a++) c += n[a].width;
-        for (r -= c, a = e + 1; a < n.length; a++) {
-          var u = n[a], d = Math.round(l * (u.width / r));
-          l < 0 ? u.min_width && u.width + d < u.min_width ? d = u.min_width - u.width : !u.min_width && i.min_grid_column_width && u.width + d < i.min_grid_column_width && (d = i.min_grid_column_width - u.width) : u.max_width && u.width + d > u.max_width && (d = u.max_width - u.width), r -= u.width, u.width += d, l -= d
+        for (var s = 0, o = n.length; s < o; s++) r += 1 * n[s].width;
+        if (window.isNaN(r)) for (this._calculateGridWidth(), r = 0, s = 0, o = n.length; s < o; s++) r += 1 * n[s].width;
+        var l = a - r, c = 0;
+        for (s = 0; s < e + 1; s++) c += n[s].width;
+        for (r -= c, s = e + 1; s < n.length; s++) {
+          var d = n[s], h = Math.round(l * (d.width / r));
+          l < 0 ? d.min_width && d.width + h < d.min_width ? h = d.min_width - d.width : !d.min_width && i.min_grid_column_width && d.width + h < i.min_grid_column_width && (h = i.min_grid_column_width - d.width) : d.max_width && d.width + h > d.max_width && (h = d.max_width - d.width), r -= d.width, d.width += h, l -= h
         }
-        for (var h = l > 0 ? 1 : -1; l > 0 && 1 === h || l < 0 && -1 === h;) {
+        for (var u = l > 0 ? 1 : -1; l > 0 && 1 === u || l < 0 && -1 === u;) {
           var f = l;
-          for (a = e + 1; a < n.length; a++) {
+          for (s = e + 1; s < n.length; s++) {
             var g;
-            if ((g = n[a].width + h) == this._getColumnWidth(n[a], i, g) && (l -= h, n[a].width = g), !l) break
+            if ((g = n[s].width + u) == this._getColumnWidth(n[s], i, g) && (l -= u, n[s].width = g), !l) break
           }
           if (f == l) break
         }
@@ -780,52 +664,50 @@ var JSGantt = function () {
         }
         return e
       }, _calculateGridWidth: function () {
-        for (var t = this.$getConfig(), e = this.getGridColumns(), i = 0, n = [], r = [], o = 0; o < e.length; o++) {
-          var a = parseFloat(e[o].width);
-          window.isNaN(a) && (a = t.min_grid_column_width || 10, n.push(o)), r[o] = a, i += a
+        for (var t = this.$getConfig(), e = this.getGridColumns(), i = 0, n = [], r = [], a = 0; a < e.length; a++) {
+          var s = parseFloat(e[a].width);
+          window.isNaN(s) && (s = t.min_grid_column_width || 10, n.push(a)), r[a] = s, i += s
         }
-        var s = this._getGridWidth() + 1;
+        var o = this._getGridWidth() + 1;
         if (t.autofit || n.length) {
-          var l = s - i;
-          if (t.autofit) for (o = 0; o < r.length; o++) {
-            var c = Math.round(l / (r.length - o));
-            r[o] += c, (u = this._getColumnWidth(e[o], t, r[o])) != r[o] && (c = u - r[o], r[o] = u), l -= c
-          } else if (n.length) for (o = 0; o < n.length; o++) {
-            c = Math.round(l / (n.length - o));
-            var u, d = n[o];
-            r[d] += c, (u = this._getColumnWidth(e[d], t, r[d])) != r[d] && (c = u - r[d], r[d] = u), l -= c
+          var l = o - i;
+          if (t.autofit) for (a = 0; a < r.length; a++) {
+            var c = Math.round(l / (r.length - a));
+            r[a] += c, (d = this._getColumnWidth(e[a], t, r[a])) != r[a] && (c = d - r[a], r[a] = d), l -= c
+          } else if (n.length) for (a = 0; a < n.length; a++) {
+            c = Math.round(l / (n.length - a));
+            var d, h = n[a];
+            r[h] += c, (d = this._getColumnWidth(e[h], t, r[h])) != r[h] && (c = d - r[h], r[h] = d), l -= c
           }
-          for (o = 0; o < r.length; o++) e[o].width = r[o]
+          for (a = 0; a < r.length; a++) e[a].width = r[a]
         } else {
-          var h = s != i;
-          this.$config.width = i - 1, t.grid_width = i, h && this.$parent._setContentSize(this.$config.width, this.$config.height)
+          var u = o != i;
+          this.$config.width = i - 1, t.grid_width = i, u && this.$parent._setContentSize(this.$config.width, this.$config.height)
         }
       }, _renderGridHeader: function () {
         var t = this.$jsgantt, e = this.$getConfig(), i = this.$jsgantt.locale, n = this.$jsgantt.templates,
           r = this.getGridColumns();
         e.rtl && (r = r.reverse());
-        for (var o = [], a = 0, s = i.labels, l = e.scale_height - 1, c = 0; c < r.length; c++) {
-          var u = c == r.length - 1, d = r[c];
-          d.name || (d.name = t.uid() + "");
-          var h = 1 * d.width, f = this._getGridWidth();
-          u && f > a + h && (d.width = h = f - a), a += h;
-          var g = t._sort && d.name == t._sort.name ? "<div class='jsgantt-sort jsgantt-" + t._sort.direction + "'></div>" : "",
-            p = ["jsgantt-grid-head-cell", "jsgantt-grid-head-" + d.name, u ? "jsgantt-last-cell" : "", n.grid_header_class(d.name, d)].join(" "),
-            _ = "width:" + (h - (u ? 1 : 0)) + "px;padding-right:16px", v = d.label || s["column_" + d.name] || s[d.name];
-          if(u) {
-            _ = "width:auto;padding-right:16px";
-          }
-          v = v || "";
-          var m = "<div class='" + p + "' style='" + _ + "' " + t._waiAria.gridScaleCellAttrString(d, v) + " data-column-id='" + d.name + "' column_id='" + d.name + "'>" + v + g + "</div>";
-          o.push(m)
+        for (var a = [], s = 0, o = i.labels, l = e.scale_height - 1, c = 0; c < r.length; c++) {
+          var d = c == r.length - 1, h = r[c];
+          h.name || (h.name = t.uid() + "");
+          var u = 1 * h.width, f = this._getGridWidth();
+          d && f > s + u && (h.width = u = f - s), s += u;
+          var g = t._sort && h.name == t._sort.name ? "<div class='jsgantt-sort jsgantt-" + t._sort.direction + "'></div>" : "",
+            _ = ["jsgantt-grid-head-cell", "jsgantt-grid-head-" + h.name, d ? "jsgantt-last-cell" : "", n.grid_header_class(h.name, h)].join(" "),
+            p = "width:" + (u - (d ? 1 : 0)) + "px;padding-right:16px",
+            v = h.label || o["column_" + h.name] || o[h.name];
+          d && (p = "width:auto;padding-right:16px"), v = v || "";
+          var m = "<div class='" + _ + "' style='" + p + "' " + t._waiAria.gridScaleCellAttrString(h, v) + " data-column-id='" + h.name + "' column_id='" + h.name + "'>" + v + g + "</div>";
+          a.push(m)
         }
-        this.$grid_scale.style.height = e.scale_height + "px", this.$grid_scale.style.lineHeight = l + "px", this.$grid_scale.innerHTML = o.join(""), this._renderHeaderResizers && this._renderHeaderResizers()
+        this.$grid_scale.style.height = e.scale_height + "px", this.$grid_scale.style.lineHeight = l + "px", this.$grid_scale.innerHTML = a.join(""), this._renderHeaderResizers && this._renderHeaderResizers()
       }, _getGridWidth: function () {
         return this.$config.width
       }, destructor: function () {
         this._clearLayers(this.$jsgantt), this._mouseDelegates && (this._mouseDelegates.destructor(), this._mouseDelegates = null), this.$grid = null, this.$grid_scale = null, this.$grid_data = null, this.$jsgantt = null, this.$config.rowStore && (this.$config.rowStore.detachEvent(this._staticBgHandler), this.$config.rowStore = null), this.callEvent("onDestroy", []), this.detachAllEvents()
       }
-    }, r.mixin(l.prototype, s()), t.exports = l
+    }, r.mixin(l.prototype, o()), t.exports = l
   }, function (t, e) {
     var i;
     i = function () {
@@ -842,40 +724,40 @@ var JSGantt = function () {
     var n = i(0);
     t.exports = function t(e, i) {
       e = e || n.event, i = i || n.eventRemove;
-      var r = [], o = {
-        attach: function (t, i, n, o) {
-          r.push({element: t, event: i, callback: n, capture: o}), e(t, i, n, o)
-        }, detach: function (t, e, n, o) {
-          i(t, e, n, o);
-          for (var a = 0; a < r.length; a++) {
-            var s = r[a];
-            s.element === t && s.event === e && s.callback === n && s.capture === o && (r.splice(a, 1), a--)
+      var r = [], a = {
+        attach: function (t, i, n, a) {
+          r.push({element: t, event: i, callback: n, capture: a}), e(t, i, n, a)
+        }, detach: function (t, e, n, a) {
+          i(t, e, n, a);
+          for (var s = 0; s < r.length; s++) {
+            var o = r[s];
+            o.element === t && o.event === e && o.callback === n && o.capture === a && (r.splice(s, 1), s--)
           }
         }, detachAll: function () {
           for (var t = r.slice(), e = 0; e < t.length; e++) {
             var i = t[e];
-            o.detach(i.element, i.event, i.callback, i.capture), o.detach(i.element, i.event, i.callback, void 0), o.detach(i.element, i.event, i.callback, !1), o.detach(i.element, i.event, i.callback, !0)
+            a.detach(i.element, i.event, i.callback, i.capture), a.detach(i.element, i.event, i.callback, void 0), a.detach(i.element, i.event, i.callback, !1), a.detach(i.element, i.event, i.callback, !0)
           }
           r.splice(0, r.length)
         }, extend: function () {
           return t(this.event, this.eventRemove)
         }
       };
-      return window.scopes || (window.scopes = []), window.scopes.push(r), o
+      return window.scopes || (window.scopes = []), window.scopes.push(r), a
     }
   }, , , , function (t, e, i) {
     var n = i(0), r = i(3);
 
-    function o(t, e, i, n, r) {
+    function a(t, e, i, n, r) {
       return this.date = t, this.unit = e, this.task = i, this.id = n, this.calendar = r, this
     }
 
-    function a(t, e, i, n, r, o) {
-      return this.date = t, this.dir = e, this.unit = i, this.task = n, this.id = r, this.calendar = o, this
+    function s(t, e, i, n, r, a) {
+      return this.date = t, this.dir = e, this.unit = i, this.task = n, this.id = r, this.calendar = a, this
     }
 
-    function s(t, e, i, n, r, o, a) {
-      return this.plannedDate = t, this.duration = e, this.unit = i, this.step = n, this.task = r, this.id = o, this.calendar = a, this
+    function o(t, e, i, n, r, a, s) {
+      return this.plannedDate = t, this.duration = e, this.unit = i, this.step = n, this.task = r, this.id = a, this.calendar = s, this
     }
 
     function l(t, e, i, n) {
@@ -893,10 +775,10 @@ var JSGantt = function () {
           return arguments[0]
         }, isWorkTimeArguments: function () {
           var e, i = arguments[0];
-          return i instanceof o ? i : ((e = i.date ? new o(i.date, i.unit, i.task, null, i.calendar) : new o(arguments[0], arguments[1], arguments[2], null, arguments[3])).unit = e.unit || t.config.durationUnit, e)
+          return i instanceof a ? i : ((e = i.date ? new a(i.date, i.unit, i.task, null, i.calendar) : new a(arguments[0], arguments[1], arguments[2], null, arguments[3])).unit = e.unit || t.config.durationUnit, e)
         }, getClosestWorkTimeArguments: function (e) {
           var i, n = arguments[0];
-          return n instanceof a ? n : (i = r.isDate(n) ? new a(n) : new a(n.date, n.dir, n.unit, n.task, null, n.calendar), n.id && (i.task = n), i.dir = n.dir || "any", i.unit = n.unit || t.config.durationUnit, i)
+          return n instanceof s ? n : (i = r.isDate(n) ? new s(n) : new s(n.date, n.dir, n.unit, n.task, null, n.calendar), n.id && (i.task = n), i.dir = n.dir || "any", i.unit = n.unit || t.config.durationUnit, i)
         }, _getStartEndConfig: function (e) {
           var i, n = l;
           return e instanceof n ? e : (r.isDate(e) ? i = new n(arguments[0], arguments[1], arguments[2], arguments[3]) : (i = new n(e.plannedDate, e.end_date, e.task), e.id && (i.task = e)), i.unit = i.unit || t.config.durationUnit, i.step = i.step || t.config.durationStep, i.plannedDate = i.plannedDate || i.start || i.date, i)
@@ -904,9 +786,9 @@ var JSGantt = function () {
           return this._getStartEndConfig.apply(this, arguments)
         }, hasDurationArguments: function (t, e, i, n) {
           return this._getStartEndConfig.apply(this, arguments)
-        }, calculateEndDateArguments: function (e, i, n, o) {
-          var a, l = arguments[0];
-          return l instanceof s ? l : (a = r.isDate(l) ? new s(arguments[0], arguments[1], arguments[2], void 0, arguments[3], void 0, arguments[4]) : new s(l.plannedDate, l.duration, l.unit, l.step, l.task, null, l.calendar), l.id && (a.task = l), a.unit = a.unit || t.config.durationUnit, a.step = a.step || t.config.durationStep, a)
+        }, calculateEndDateArguments: function (e, i, n, a) {
+          var s, l = arguments[0];
+          return l instanceof o ? l : (s = r.isDate(l) ? new o(arguments[0], arguments[1], arguments[2], void 0, arguments[3], void 0, arguments[4]) : new o(l.plannedDate, l.duration, l.unit, l.step, l.task, null, l.calendar), l.id && (s.task = l), s.unit = s.unit || t.config.durationUnit, s.step = s.step || t.config.durationStep, s)
         }
       }
     }
@@ -939,11 +821,11 @@ var JSGantt = function () {
         var e = function (t) {
           var e = t.config.scale_unit, i = t.config.step;
           if (t.config.scale_offset_minimal) {
-            var r = new n(t), o = [r.primaryScale()].concat(t.config.subscales);
-            r.sortScales(o), e = o[o.length - 1].unit, i = o[o.length - 1].step || 1
+            var r = new n(t), a = [r.primaryScale()].concat(t.config.subscales);
+            r.sortScales(a), e = a[a.length - 1].unit, i = a[a.length - 1].step || 1
           }
           return {unit: e, step: i}
-        }(t), i = e.unit, r = e.step, o = function (t, e) {
+        }(t), i = e.unit, r = e.step, a = function (t, e) {
           var i = {plannedDate: null, end_date: null};
           if (e.config.plannedDate && e.config.end_date) {
             i.plannedDate = e.date[t + "_start"](new Date(e.config.plannedDate));
@@ -952,22 +834,22 @@ var JSGantt = function () {
           }
           return i
         }(i, t);
-        o.plannedDate && o.end_date || ((o = function (t) {
+        a.plannedDate && a.end_date || ((a = function (t) {
           return t.getSubtaskDates()
-        }(t)).plannedDate && o.end_date || (o = {
+        }(t)).plannedDate && a.end_date || (a = {
           plannedDate: new Date,
           end_date: new Date
-        }), o.plannedDate = t.date[i + "_start"](o.plannedDate), o.plannedDate = t.calculateEndDate({
-          plannedDate: t.date[i + "_start"](o.plannedDate),
+        }), a.plannedDate = t.date[i + "_start"](a.plannedDate), a.plannedDate = t.calculateEndDate({
+          plannedDate: t.date[i + "_start"](a.plannedDate),
           duration: -1,
           unit: i,
           step: r
-        }), o.end_date = t.date[i + "_start"](o.end_date), o.end_date = t.calculateEndDate({
-          plannedDate: o.end_date,
+        }), a.end_date = t.date[i + "_start"](a.end_date), a.end_date = t.calculateEndDate({
+          plannedDate: a.end_date,
           duration: 2,
           unit: i,
           step: r
-        })), t._min_date = o.plannedDate, t._max_date = o.end_date
+        })), t._min_date = a.plannedDate, t._max_date = a.end_date
       })(t), function (t) {
         if (t.config.fit_tasks) {
           var e = +t._min_date, i = +t._max_date;
@@ -976,8 +858,8 @@ var JSGantt = function () {
       }(t)
     }
   }, function (t, e, i) {
-    var n = i(28), r = i(0), o = i(29), a = function (t) {
-      return o.apply(this, [t]), this._branches = {}, this.pull = {}, this.$initItem = t.initItem, this.$parentProperty = t.parentProperty || "parent", "function" != typeof t.rootId ? this.$getRootId = function (t) {
+    var n = i(28), r = i(0), a = i(29), s = function (t) {
+      return a.apply(this, [t]), this._branches = {}, this.pull = {}, this.$initItem = t.initItem, this.$parentProperty = t.parentProperty || "parent", "function" != typeof t.rootId ? this.$getRootId = function (t) {
         return function () {
           return t
         }
@@ -988,10 +870,10 @@ var JSGantt = function () {
         }, e), !!i
       }), this
     };
-    a.prototype = r.mixin({
+    s.prototype = r.mixin({
       _buildTree: function (t) {
-        for (var e = null, i = this.$getRootId(), n = 0, o = t.length; n < o; n++) e = t[n], this.setParent(e, this.getParent(e) || i);
-        for (n = 0, o = t.length; n < o; n++) e = t[n], this._add_branch(e), e.$level = this.calculateItemLevel(e), r.defined(e.$open) || (e.$open = r.defined(e.open) ? e.open : this.$openInitially());
+        for (var e = null, i = this.$getRootId(), n = 0, a = t.length; n < a; n++) e = t[n], this.setParent(e, this.getParent(e) || i);
+        for (n = 0, a = t.length; n < a; n++) e = t[n], this._add_branch(e), e.$level = this.calculateItemLevel(e), r.defined(e.$open) || (e.$open = r.defined(e.open) ? e.open : this.$openInitially());
         this._updateOrder()
       }, _isSplitItem: function (t) {
         return "split" == t.render && this.hasChild(t.id)
@@ -1003,13 +885,13 @@ var JSGantt = function () {
         var i = this.getParent(t);
         r.defined(i) || (i = this.$getRootId(), this.setParent(t, i));
         var n = this.getIndexById(i) + Math.min(Math.max(e, 0), this.visibleOrder.length);
-        1 * n !== n && (n = void 0), o.prototype._addItemInner.call(this, t, n), this.setParent(t, i), t.hasOwnProperty("$rendered_parent") && this._move_branch(t, t.$rendered_parent), this._add_branch(t, e)
+        1 * n !== n && (n = void 0), a.prototype._addItemInner.call(this, t, n), this.setParent(t, i), t.hasOwnProperty("$rendered_parent") && this._move_branch(t, t.$rendered_parent), this._add_branch(t, e)
       }, _changeIdInner: function (t, e) {
         var i = this.getChildren(t), n = this._searchVisibleOrder[t];
-        o.prototype._changeIdInner.call(this, t, e);
+        a.prototype._changeIdInner.call(this, t, e);
         var r = this.getParent(e);
         this._replace_branch_child(r, t, e);
-        for (var a = 0; a < i.length; a++) this.setParent(this.getItem(i[a]), e);
+        for (var s = 0; s < i.length; s++) this.setParent(this.getItem(i[s]), e);
         this._searchVisibleOrder[e] = n, delete this._branches[t]
       }, _traverseBranches: function (t, e) {
         e = e || this.$getRootId();
@@ -1021,13 +903,13 @@ var JSGantt = function () {
       }, _updateOrder: function (t) {
         this.fullOrder = n.$create(), this._traverseBranches(function (t) {
           this.fullOrder.push(t)
-        }), t && o.prototype._updateOrder.call(this, t)
+        }), t && a.prototype._updateOrder.call(this, t)
       }, _removeItemInner: function (t) {
         var e = [];
         this.eachItem(function (t) {
           e.push(t)
         }, t), e.push(this.getItem(t));
-        for (var i = 0; i < e.length; i++) this._move_branch(e[i], this.getParent(e[i]), null), o.prototype._removeItemInner.call(this, e[i].id), this._move_branch(e[i], this.getParent(e[i]), null)
+        for (var i = 0; i < e.length; i++) this._move_branch(e[i], this.getParent(e[i]), null), a.prototype._removeItemInner.call(this, e[i].id), this._move_branch(e[i], this.getParent(e[i]), null)
       }, move: function (t, e, i) {
         var n = arguments[3];
         if (n) {
@@ -1036,13 +918,13 @@ var JSGantt = function () {
         }
         if (t != i) {
           i = i || this.$getRootId();
-          var r = this.getItem(t), o = this.getParent(r.id), a = this.getChildren(i);
-          if (-1 == e && (e = a.length + 1), o == i && this.getBranchIndex(t) == e) return;
+          var r = this.getItem(t), a = this.getParent(r.id), s = this.getChildren(i);
+          if (-1 == e && (e = s.length + 1), a == i && this.getBranchIndex(t) == e) return;
           if (!1 !== this.callEvent("onBeforeItemMove", [t, i, e])) {
-            this._replace_branch_child(o, t), (a = this.getChildren(i))[e] ? a = a.slice(0, e).concat([t]).concat(a.slice(e)) : a.push(t), this.setParent(r, i), this._branches[i] = a;
-            var s = this.calculateItemLevel(r) - r.$level;
-            r.$level += s, this.eachItem(function (t) {
-              t.$level += s
+            this._replace_branch_child(a, t), (s = this.getChildren(i))[e] ? s = s.slice(0, e).concat([t]).concat(s.slice(e)) : s.push(t), this.setParent(r, i), this._branches[i] = s;
+            var o = this.calculateItemLevel(r) - r.$level;
+            r.$level += o, this.eachItem(function (t) {
+              t.$level += o
             }, r.id, this), this._moveInner(this.getIndexById(t), this.getIndexById(i) + e), this.callEvent("onAfterItemMove", [t, i, e]), this.refresh()
           }
         }
@@ -1078,7 +960,7 @@ var JSGantt = function () {
         var e;
         return (e = void 0 !== t.id ? t : this.getItem(t)) ? e[this.$parentProperty] : this.$getRootId()
       }, clearAll: function () {
-        this._branches = {}, o.prototype.clearAll.call(this)
+        this._branches = {}, a.prototype.clearAll.call(this)
       }, calculateItemLevel: function (t) {
         var e = 0;
         return this.eachParent(function () {
@@ -1103,11 +985,11 @@ var JSGantt = function () {
       }, _add_branch: function (t, e, i) {
         var r = void 0 === i ? this.getParent(t) : i;
         this.hasChild(r) || (this._branches[r] = n.$create());
-        for (var o = this.getChildren(r), a = !1, s = 0, l = o.length; s < l; s++) if (o[s] == t.id) {
-          a = !0;
+        for (var a = this.getChildren(r), s = !1, o = 0, l = a.length; o < l; o++) if (a[o] == t.id) {
+          s = !0;
           break
         }
-        a || (1 * e == e ? o.splice(e, 0, t.id) : o.push(t.id), t.$rendered_parent = r)
+        s || (1 * e == e ? a.splice(e, 0, t.id) : a.push(t.id), t.$rendered_parent = r)
       }, _move_branch: function (t, e, i) {
         this._replace_branch_child(e, t.id), this.exists(i) || i == this.$getRootId() ? this._add_branch(t, void 0, i) : delete this._branches[t.id], t.$level = this.calculateItemLevel(t), this.eachItem(function (t) {
           t.$level = this.calculateItemLevel(t)
@@ -1115,8 +997,8 @@ var JSGantt = function () {
       }, _replace_branch_child: function (t, e, i) {
         var r = this.getChildren(t);
         if (r && void 0 !== t) {
-          for (var o = n.$create(), a = 0; a < r.length; a++) r[a] != e ? o.push(r[a]) : i && o.push(i);
-          this._branches[t] = o
+          for (var a = n.$create(), s = 0; s < r.length; s++) r[s] != e ? a.push(r[s]) : i && a.push(i);
+          this._branches[t] = a
         }
       }, sort: function (t, e, i) {
         this.exists(i) || (i = this.$getRootId()), t || (t = "order");
@@ -1129,22 +1011,22 @@ var JSGantt = function () {
             return r(e, t)
           }
         }
-        var o = this.getChildren(i);
-        if (o) {
-          for (var a = [], s = o.length - 1; s >= 0; s--) a[s] = this.getItem(o[s]);
-          for (a.sort(n), s = 0; s < a.length; s++) o[s] = a[s].id, this.sort(t, e, o[s])
+        var a = this.getChildren(i);
+        if (a) {
+          for (var s = [], o = a.length - 1; o >= 0; o--) s[o] = this.getItem(a[o]);
+          for (s.sort(n), o = 0; o < s.length; o++) a[o] = s[o].id, this.sort(t, e, a[o])
         }
       }, filter: function (t) {
         for (var e in this.pull) this.pull[e].$rendered_parent !== this.getParent(this.pull[e]) && this._move_branch(this.pull[e], this.pull[e].$rendered_parent, this.getParent(this.pull[e]));
-        return o.prototype.filter.apply(this, arguments)
+        return a.prototype.filter.apply(this, arguments)
       }, open: function (t) {
         this.exists(t) && (this.getItem(t).$open = !0, this.callEvent("onItemOpen", [t]))
       }, close: function (t) {
         this.exists(t) && (this.getItem(t).$open = !1, this.callEvent("onItemClose", [t]))
       }, destructor: function () {
-        o.prototype.destructor.call(this), this._branches = null
+        a.prototype.destructor.call(this), this._branches = null
       }
-    }, o.prototype), t.exports = a
+    }, a.prototype), t.exports = s
   }, function (t, e, i) {
     var n = i(0), r = {
       $create: function (t) {
@@ -1173,10 +1055,10 @@ var JSGantt = function () {
     };
     t.exports = r
   }, function (t, e, i) {
-    var n = i(28), r = i(0), o = i(4), a = function (t) {
-      return this.pull = {}, this.$initItem = t.initItem, this.visibleOrder = n.$create(), this.fullOrder = n.$create(), this._skip_refresh = !1, this._filterRule = null, this._searchVisibleOrder = {}, this.$config = t, o(this), this
+    var n = i(28), r = i(0), a = i(4), s = function (t) {
+      return this.pull = {}, this.$initItem = t.initItem, this.visibleOrder = n.$create(), this.fullOrder = n.$create(), this._skip_refresh = !1, this._filterRule = null, this._searchVisibleOrder = {}, this.$config = t, a(this), this
     };
-    a.prototype = {
+    s.prototype = {
       _parseInner: function (t) {
         for (var e = null, i = [], n = 0, r = t.length; n < r; n++) e = t[n], this.$initItem && (e = this.$initItem(e)), this.callEvent("onItemLoading", [e]) && (this.pull.hasOwnProperty(e.id) || (this.fullOrder.push(e.id), i.push(e)), this.pull[e.id] = e);
         return i
@@ -1295,66 +1177,61 @@ var JSGantt = function () {
       }, destructor: function () {
         this.detachAllEvents(), this.pull = null, this.$initItem = null, this.visibleOrder = null, this.fullOrder = null, this._skip_refresh = null, this._filterRule = null, this._searchVisibleOrder = null
       }
-    }, t.exports = a
+    }, t.exports = s
   }, function (t, e) {
     t.exports = function (t) {
-      function e(e, o) {
-        if (!t._isAllowedUnscheduledTask(e)) {
-          var a = o.getItemPosition(e), s = o.$getConfig(), l = o.$getTemplates(), c = o.getItemHeight(),
-            u = t.getTaskType(e.type), d = Math.floor((t.config.row_height - c) / 2);
-
-          // u == s.types.milestone && s.link_line_width > 1 && (d += 1), u == s.types.milestone && (a.left -= Math.round(c / 2), a.width = c);
-          var h = document.createElement("div"), f = Math.round(a.width);
-          o.$config.item_attribute && h.setAttribute(o.$config.item_attribute, e.id), s.show_progress && u != s.types.milestone && function (e, i, n, r, o) {
-            var a = 1 * e.progress || 0;
-            n = Math.max(n - 2, 0);
-            var s = document.createElement("div"), l = Math.round(n * a);
-            l = Math.min(n, l), e.progressColor && (s.style.backgroundColor = e.progressColor, s.style.opacity = 1), s.style.width = l + "px", s.className = "jsgantt-task-background", r.rtl && (s.style.position = "absolute", s.style.right = "0px");
-            var c = document.createElement("div");
-            if (c.className = "jsgantt-task-progress-wrapper", c.appendChild(s), i.appendChild(c), t.config.drag_progress && !t.isReadonly(e)) {
-              var u = document.createElement("div"), d = l;
-              r.rtl && (d = n - l), u.style.left = d + "px", u.className = "jsgantt-task-progress-drag", s.appendChild(u), i.appendChild(u)
-            }
-          }(e, h, f, s);
-          var g = function (e, i, n) {
-            var r = document.createElement("div");
-            r.className = "jsgantt-task-content my-tooltip", r.title = "<b>Order ID:</b>" + e.orderId + "<br/>Repeat every " + e.repeat + "<br/>" + e.begin + " - " + e.end;
-            var o = document.createAttribute("data-toggle");
-            o.value = "tooltip", r.setAttributeNode(o);
-            var a = document.createAttribute("data-html");
-            return a.value = "true", r.setAttributeNode(a), t.getTaskType(e.type), t.config.types.milestone, r
-          }(e);
-          e.textColor && (g.style.color = e.textColor), h.appendChild(g);
-          var p = function (e, i, n, r) {
-            let a = ["jsgantt-task-line"];
-            i && a.push(i);
-            a.push('jsgantt-bar-task');
-            return a.join(" ")
-          }(0, l.task_class(e.plannedDate, e.end_date, e), e.id, o);
-          (e.color || e.progressColor || e.textColor) && (p += " jsgantt-task-inline-color"), h.className = p;
-          var _ = ["left:" + a.left + "px", "top:" + (d + a.top) + "px", "height:" + c + "px", "line-height:" + Math.max(c < 30 ? c - 2 : c, 0) + "px", "width:" + f + "px"];
-          e.color && _.push("background-color:" + e.color), e.textColor && _.push("color:" + e.textColor), h.style.cssText = _.join(";");
-          var v = function (t, e, r) {
-            var o = "jsgantt-left " + n(!s.rtl, t);
-            return i(t, r.leftside_text, o)
-          }(e, 0, l);
-          v && h.appendChild(v), (v = function (t, e, r) {
-            var o = "jsgantt-right " + n(!!s.rtl, t);
-            return i(t, r.rightside_text, o)
-          }(e, 0, l)) && h.appendChild(v), t._waiAria.setTaskBarAttr(e, h);
-          var m = t.getState();
-          return t.isReadonly(e) || (s.drag_resize && !t.isSummaryTask(e) && u != s.types.milestone && r(h, "jsgantt-task-drag", e, function (t) {
-            var e = document.createElement("div");
-            return e.className = t, e
-          }, s), s.drag_links && s.show_links && r(h, "jsgantt-link-control", e, function (t) {
-            var e = document.createElement("div");
-            e.className = t, e.style.cssText = ["height:" + c + "px", "line-height:" + c + "px"].join(";");
-            var i = document.createElement("div");
-            i.className = "jsgantt-link-point";
-            var n = !1;
-            return m.link_source_id && s.touch && (n = !0), i.style.display = n ? "block" : "", e.appendChild(i), e
-          }, s)), h
-        }
+      function e(e, a) {
+        var s = a.getItemPosition(e), o = a.$getConfig(), l = a.$getTemplates(), c = a.getItemHeight(),
+          d = t.getTaskType(e.type), h = Math.floor((t.config.row_height - c) / 2);
+        d == o.types.milestone && o.link_line_width > 1 && (h += 1), d == o.types.milestone && (s.left -= Math.round(c / 2), s.width = c);
+        var u = document.createElement("div"), f = Math.round(s.width);
+        a.$config.item_attribute && u.setAttribute(a.$config.item_attribute, e.id), o.show_progress && d != o.types.milestone && function (e, i, n, r, a) {
+          var s = 1 * e.progress || 0;
+          n = Math.max(n - 2, 0);
+          var o = document.createElement("div"), l = Math.round(n * s);
+          l = Math.min(n, l), e.progressColor && (o.style.backgroundColor = e.progressColor, o.style.opacity = 1), o.style.width = l + "px", o.className = "jsgantt-task-background", r.rtl && (o.style.position = "absolute", o.style.right = "0px");
+          var c = document.createElement("div");
+          if (c.className = "jsgantt-task-progress-wrapper", c.appendChild(o), i.appendChild(c), t.config.drag_progress && !t.isReadonly(e)) {
+            var d = document.createElement("div"), h = l;
+            r.rtl && (h = n - l), d.style.left = h + "px", d.className = "jsgantt-task-progress-drag", o.appendChild(d), i.appendChild(d)
+          }
+        }(e, u, f, o);
+        var g = function (e, i, n) {
+          var r = document.createElement("div");
+          r.className = "jsgantt-task-content my-tooltip", r.title = "<b>Order ID:</b>" + e.orderId + "<br/>Repeat every " + e.repeat + "<br/>" + e.begin + " - " + e.end;
+          var a = document.createAttribute("data-toggle");
+          a.value = "tooltip", r.setAttributeNode(a);
+          var s = document.createAttribute("data-html");
+          return s.value = "true", r.setAttributeNode(s), t.getTaskType(e.type), t.config.types.milestone, r
+        }(e);
+        e.textColor && (g.style.color = e.textColor), u.appendChild(g);
+        var _ = function (t, e, i, n) {
+          let r = ["jsgantt-task-line"];
+          return e && r.push(e), r.push("jsgantt-bar-task"), r.join(" ")
+        }(0, l.task_class(e.plannedDate, e.end_date, e), e.id);
+        (e.color || e.progressColor || e.textColor) && (_ += " jsgantt-task-inline-color"), u.className = _;
+        var p = ["left:" + s.left + "px", "top:" + (h + s.top) + "px", "height:" + c + "px", "line-height:" + Math.max(c < 30 ? c - 2 : c, 0) + "px", "width:" + f + "px"];
+        e.color && p.push("background-color:" + e.color), e.textColor && p.push("color:" + e.textColor), u.style.cssText = p.join(";");
+        var v = function (t, e, r) {
+          var a = "jsgantt-left " + n(!o.rtl, t);
+          return i(t, r.leftside_text, a)
+        }(e, 0, l);
+        v && u.appendChild(v), (v = function (t, e, r) {
+          var a = "jsgantt-right " + n(!!o.rtl, t);
+          return i(t, r.rightside_text, a)
+        }(e, 0, l)) && u.appendChild(v), t._waiAria.setTaskBarAttr(e, u);
+        var m = t.getState();
+        return t.isReadonly(e) || (o.drag_resize && !t.isSummaryTask(e) && d != o.types.milestone && r(u, "jsgantt-task-drag", e, function (t) {
+          var e = document.createElement("div");
+          return e.className = t, e
+        }, o), o.drag_links && o.show_links && r(u, "jsgantt-link-control", e, function (t) {
+          var e = document.createElement("div");
+          e.className = t, e.style.cssText = ["height:" + c + "px", "line-height:" + c + "px"].join(";");
+          var i = document.createElement("div");
+          i.className = "jsgantt-link-point";
+          var n = !1;
+          return m.link_source_id && o.touch && (n = !0), i.style.display = n ? "block" : "", e.appendChild(i), e
+        }, o)), u
       }
 
       function i(t, e, i) {
@@ -1375,30 +1252,30 @@ var JSGantt = function () {
             $target: [t.config.links.finish_to_finish]
           }
         }(e);
-        for (var r in n) for (var o = i[r], a = 0; a < o.length; a++) for (var s = t.getLink(o[a]), l = 0; l < n[r].length; l++) if (s.type == n[r][l]) return "jsgantt-link-crossing";
+        for (var r in n) for (var a = i[r], s = 0; s < a.length; s++) for (var o = t.getLink(a[s]), l = 0; l < n[r].length; l++) if (o.type == n[r][l]) return "jsgantt-link-crossing";
         return ""
       }
 
-      function r(e, i, n, r, o) {
-        var a, s = t.getState();
-        +n.plannedDate >= +s.min_date && ((a = r([i, o.rtl ? "task-right" : "task-left", "task-start-date"].join(" "))).setAttribute("data-bind-property", "plannedDate"), e.appendChild(a)), +n.end_date <= +s.max_date && ((a = r([i, o.rtl ? "task-left" : "task-right", "task-end_date"].join(" "))).setAttribute("data-bind-property", "end_date"), e.appendChild(a))
+      function r(e, i, n, r, a) {
+        var s, o = t.getState();
+        +n.plannedDate >= +o.min_date && ((s = r([i, a.rtl ? "task-right" : "task-left", "task-start-date"].join(" "))).setAttribute("data-bind-property", "plannedDate"), e.appendChild(s)), +n.end_date <= +o.max_date && ((s = r([i, a.rtl ? "task-left" : "task-right", "task-end_date"].join(" "))).setAttribute("data-bind-property", "end_date"), e.appendChild(s))
       }
 
       return function (i, n) {
-        var r = n.$getConfig().type_renderers[t.getTaskType(i.type)], o = e;
+        var r = n.$getConfig().type_renderers[t.getTaskType(i.type)], a = e;
         return r ? r.call(t, i, function (e) {
-          return o.call(t, e, n)
-        }, n) : o.call(t, i, n)
+          return a.call(t, e, n)
+        }, n) : a.call(t, i, n)
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(34), o = i(14), a = i(2), s = function (t) {
+    var n = i(0), r = i(34), a = i(14), s = i(2), o = function (t) {
       function e(e, i, n, r) {
-        var o = t.apply(this, arguments) || this;
-        return o.$config.bindLinks = null, o
+        var a = t.apply(this, arguments) || this;
+        return a.$config.bindLinks = null, a
       }
 
-      return a(e, t), n.mixin(e.prototype, {
+      return s(e, t), n.mixin(e.prototype, {
         init: function () {
           void 0 === this.$config.bind && (this.$config.bind = this.$getConfig().resource_store), t.prototype.init.apply(this, arguments)
         }, _createLayerConfig: function () {
@@ -1413,9 +1290,9 @@ var JSGantt = function () {
             }, {renderer: this.$jsgantt.$ui.layers.taskBg, container: this.$task_bg, filter: [e]}], links: []
           }
         }
-      }, !0), n.mixin(e.prototype, o(e), !0), e
+      }, !0), n.mixin(e.prototype, a(e), !0), e
     }(r);
-    t.exports = s
+    t.exports = o
   }, function (t, e) {
     t.exports = function () {
       return {
@@ -1456,18 +1333,18 @@ var JSGantt = function () {
       }, e
     }
   }, function (t, e, i) {
-    var n = i(33), r = i(4), o = i(0), a = i(32), s = i(129), l = function (t, e, i, a) {
-      this.$config = o.mixin({}, e || {}), this.$scaleHelper = new n(a), this.$jsgantt = a, r(this)
+    var n = i(33), r = i(4), a = i(0), s = i(32), o = i(129), l = function (t, e, i, s) {
+      this.$config = a.mixin({}, e || {}), this.$scaleHelper = new n(s), this.$jsgantt = s, r(this)
     };
 
     function c(t, e) {
-      for (var i, n, r, o = 0, a = t.length - 1; o <= a;) if (n = +t[i = Math.floor((o + a) / 2)], r = +t[i - 1], n < e) o = i + 1; else {
+      for (var i, n, r, a = 0, s = t.length - 1; a <= s;) if (n = +t[i = Math.floor((a + s) / 2)], r = +t[i - 1], n < e) a = i + 1; else {
         if (!(n > e)) {
           for (; +t[i] == +t[i + 1];) i++;
           return i
         }
         if (!isNaN(r) && r < e) return i - 1;
-        a = i - 1
+        s = i - 1
       }
       return t.length - 1
     }
@@ -1497,9 +1374,9 @@ var JSGantt = function () {
           var r = this.$config.rowStore;
           this.$task_bg.style.height = i.row_height * r.countVisible() + "px"
         } else this.$task_bg.style.height = "";
-        for (var o = this._tasks, a = this.$task_data.childNodes, s = 0, l = a.length; s < l; s++) {
-          var c = a[s];
-          c.hasAttribute("data-layer") && c.style && (c.style.width = o.full_width + "px")
+        for (var a = this._tasks, s = this.$task_data.childNodes, o = 0, l = s.length; o < l; o++) {
+          var c = s[o];
+          c.hasAttribute("data-layer") && c.style && (c.style.width = a.full_width + "px")
         }
       }, isVisible: function () {
         return this.$parent && this.$parent.$config ? !this.$parent.$config.hidden : this.$task.offsetWidth
@@ -1555,37 +1432,37 @@ var JSGantt = function () {
           })), n.container = function () {
             return e.$task_data
           };
-          for (var r = this.$config.layers, o = 0; r && o < r.length; o++) {
-            "string" == typeof (c = r[o]) && (c = this.$jsgantt.$ui.layers[c]), "function" == typeof c && (c = {renderer: c}), c.host = this;
-            var a = n.addLayer(c);
-            this._taskLayers.push(a), c.expose && (this._taskRenderer = n.getLayer(a))
+          for (var r = this.$config.layers, a = 0; r && a < r.length; a++) {
+            "string" == typeof (c = r[a]) && (c = this.$jsgantt.$ui.layers[c]), "function" == typeof c && (c = {renderer: c}), c.host = this;
+            var s = n.addLayer(c);
+            this._taskLayers.push(s), c.expose && (this._taskRenderer = n.getLayer(s))
           }
           this._initStaticBackgroundRender()
         }
         if (this.$config.bindLinks) {
           e.$config.linkStore = e.$jsgantt.getDatastore(e.$config.bindLinks);
-          var s = i.getDataRender(this.$config.bindLinks);
-          s || (s = i.createDataRender({
+          var o = i.getDataRender(this.$config.bindLinks);
+          o || (o = i.createDataRender({
             name: this.$config.bindLinks, defaultContainer: function () {
               return e.$task_data
             }
           }));
           var l = this.$config.linkLayers;
-          for (o = 0; l && o < l.length; o++) {
+          for (a = 0; l && a < l.length; a++) {
             var c;
-            "string" == typeof c && (c = this.$jsgantt.$ui.layers[c]), (c = l[o]).host = this;
-            var u = s.addLayer(c);
-            this._taskLayers.push(u), l[o].expose && (this._linkRenderer = s.getLayer(u))
+            "string" == typeof c && (c = this.$jsgantt.$ui.layers[c]), (c = l[a]).host = this;
+            var d = o.addLayer(c);
+            this._taskLayers.push(d), l[a].expose && (this._linkRenderer = o.getLayer(d))
           }
         }
       }, _initStaticBackgroundRender: function () {
-        var t = this, e = s.create(), i = t.$config.rowStore;
+        var t = this, e = o.create(), i = t.$config.rowStore;
         i && (this._staticBgHandler = i.attachEvent("onStoreUpdated", function (i, n, r) {
           if (null === i && t.isVisible()) {
-            var o = t.$getConfig();
-            if (o.static_background) {
-              var a = t.$jsgantt.getDatastore(t.$config.bind);
-              a && e.render(t.$task_bg, o, t.getScale(), o.row_height * a.countVisible())
+            var a = t.$getConfig();
+            if (a.static_background) {
+              var s = t.$jsgantt.getDatastore(t.$config.bind);
+              s && e.render(t.$task_bg, a, t.getScale(), a.row_height * s.countVisible())
             }
           }
         }), this.attachEvent("onDestroy", function () {
@@ -1601,44 +1478,44 @@ var JSGantt = function () {
       }, _render_tasks_scales: function () {
         var t = this.$getConfig(), e = "", i = 0, n = 0, r = this.$jsgantt.getState();
         if (this.isVisible()) {
-          var o = this.$scaleHelper, a = this._getScales();
+          var a = this.$scaleHelper, s = this._getScales();
           n = t.scale_height;
-          var s = this.$config.width;
-          "x" != t.autosize && "xy" != t.autosize || (s = Math.max(t.autosize_min_width, 0));
-          var l = o.prepareConfigs(a, t.min_column_width, s, n - 1, r.min_date, r.max_date, t.rtl),
+          var o = this.$config.width;
+          "x" != t.autosize && "xy" != t.autosize || (o = Math.max(t.autosize_min_width, 0));
+          var l = a.prepareConfigs(s, t.min_column_width, o, n - 1, r.min_date, r.max_date, t.rtl),
             c = this._tasks = l[l.length - 1];
           this._scales = l, e = this._getScaleChunkHtml(l, 0, this.$config.width), i = c.full_width + "px", n += "px"
         }
         this.$task_scale.style.height = n, this.$task_data.style.width = this.$task_scale.style.width = i, this.$task_scale.innerHTML = e
       }, _getScaleChunkHtml: function (t, e, i) {
-        for (var n = [], r = this.$jsgantt.$services.templates().scale_row_class, o = 0; o < t.length; o++) {
-          var a = "jsgantt-scale-line", s = r(t[o]);
-          s && (a += " " + s), n.push('<div class="' + a + '" style="height:' + t[o].height + "px;position:relative;line-height:" + t[o].height + 'px">' + this._prepareScaleHtml(t[o], e, i) + "</div>")
+        for (var n = [], r = this.$jsgantt.$services.templates().scale_row_class, a = 0; a < t.length; a++) {
+          var s = "jsgantt-scale-line", o = r(t[a]);
+          o && (s += " " + o), n.push('<div class="' + s + '" style="height:' + t[a].height + "px;position:relative;line-height:" + t[a].height + 'px">' + this._prepareScaleHtml(t[a], e, i) + "</div>")
         }
         return n.join("")
       }, _prepareScaleHtml: function (t, e, i) {
-        var n = this.$getConfig(), r = this.$jsgantt.$services.templates(), o = [], a = null, s = null, l = null;
-        (t.template || t.date) && (s = t.template || this.$jsgantt.date.date_to_str(t.date));
-        var u = 0, d = t.count;
-        !n.smart_scales || isNaN(e) || isNaN(i) || (u = c(t.left, e), d = c(t.left, i) + 1), l = t.css || function () {
+        var n = this.$getConfig(), r = this.$jsgantt.$services.templates(), a = [], s = null, o = null, l = null;
+        (t.template || t.date) && (o = t.template || this.$jsgantt.date.date_to_str(t.date));
+        var d = 0, h = t.count;
+        !n.smart_scales || isNaN(e) || isNaN(i) || (d = c(t.left, e), h = c(t.left, i) + 1), l = t.css || function () {
         }, !t.css && n.inherit_scale_class && (l = r.scale_cell_class);
-        for (var h = u; h < d && t.trace_x[h]; h++) {
-          a = new Date(t.trace_x[h]);
-          var f = s.call(this, a), g = t.width[h], p = t.height, _ = t.left[h], v = "", m = "", y = "";
+        for (var u = d; u < h && t.trace_x[u]; u++) {
+          s = new Date(t.trace_x[u]);
+          var f = o.call(this, s), g = t.width[u], _ = t.height, p = t.left[u], v = "", m = "", $ = "";
           if (g) {
-            v = "width:" + g + "px;height:" + p + "px;" + (n.smart_scales ? "position:absolute;left:" + _ + "px" : ""), y = "jsgantt-scale-cell" + (h == t.count - 1 ? " jsgantt-last-cell" : ""), (m = l.call(this, a)) && (y += " " + m);
-            var k = "<div class='" + y + "'" + this.$jsgantt._waiAria.getTimelineCellAttr(f) + " style='" + v + "'>" + f + "</div>";
-            o.push(k)
+            v = "width:" + g + "px;height:" + _ + "px;" + (n.smart_scales ? "position:absolute;left:" + p + "px" : ""), $ = "jsgantt-scale-cell" + (u == t.count - 1 ? " jsgantt-last-cell" : ""), (m = l.call(this, s)) && ($ += " " + m);
+            var y = "<div class='" + $ + "'" + this.$jsgantt._waiAria.getTimelineCellAttr(f) + " style='" + v + "'>" + f + "</div>";
+            a.push(y)
           }
         }
-        return o.join("")
+        return a.join("")
       }, dateFromPos: function (t) {
         var e = this._tasks;
         if (t < 0 || t > e.full_width || !e.full_width) return null;
-        var i = c(this._tasks.left, t), n = this._tasks.left[i], r = e.width[i] || e.col_width, o = 0;
-        r && (o = (t - n) / r, e.rtl && (o = 1 - o));
-        var a = 0;
-        return o && (a = this._getColumnDuration(e, e.trace_x[i])), new Date(e.trace_x[i].valueOf() + Math.round(o * a))
+        var i = c(this._tasks.left, t), n = this._tasks.left[i], r = e.width[i] || e.col_width, a = 0;
+        r && (a = (t - n) / r, e.rtl && (a = 1 - a));
+        var s = 0;
+        return a && (s = this._getColumnDuration(e, e.trace_x[i])), new Date(e.trace_x[i].valueOf() + Math.round(a * s))
       }, posFromDate: function (t) {
         if (!this.isVisible()) return 0;
         var e = this.columnIndexByDate(t);
@@ -1659,24 +1536,20 @@ var JSGantt = function () {
           r = this.$jsgantt.getState();
         if (e <= r.min_date) return this._tasks.rtl ? i.length : 0;
         if (e >= r.max_date) return this._tasks.rtl ? 0 : i.length;
-        var o = c(i, e), a = this._getClosestVisibleColumn(o, i, n), s = i[a], l = this._tasks.trace_index_transition;
-        if (!s) return l ? l[0] : 0;
-        var u = (t - i[a]) / this._getColumnDuration(this._tasks, i[a]);
-        return l ? l[a] + (1 - u) : a + u
+        var a = c(i, e), s = this._getClosestVisibleColumn(a, i, n), o = i[s], l = this._tasks.trace_index_transition;
+        if (!o) return l ? l[0] : 0;
+        var d = (t - i[s]) / this._getColumnDuration(this._tasks, i[s]);
+        return l ? l[s] + (1 - d) : s + d
       }, getItemPosition: function (t, e, i) {
-        var n, r, o;
-        return this._tasks.rtl ? (r = this.posFromDate(e || t.plannedDate), n = this.posFromDate(i || t.end_date)) : (n = this.posFromDate(e || t.plannedDate), r = this.posFromDate(i || t.end_date)), o = Math.max(r - n, 0), {
+        var n, r, a;
+        return this._tasks.rtl ? (r = this.posFromDate(e || t.plannedDate), n = this.posFromDate(i || t.end_date)) : (n = this.posFromDate(e || t.plannedDate), r = this.posFromDate(i || t.end_date)), a = Math.max(r - n, 0), {
           left: n,
           top: this.getItemTop(t.id),
           height: this.getItemHeight(),
-          width: o
+          width: a
         }
       }, getItemHeight: function () {
-        var t = this.$getConfig(), e = t.task_height;
-        if ("full" == e) {
-          var i = t.task_height_offset || 5;
-          e = t.row_height - i
-        }
+        var t = this.$getConfig(), e = 18;
         return e = Math.min(e, t.row_height), Math.max(e, 0)
       }, getScale: function () {
         return this._tasks
@@ -1691,9 +1564,9 @@ var JSGantt = function () {
         var t = this.$jsgantt;
         this._clearLayers(t), this.$task = null, this.$task_scale = null, this.$task_data = null, this.$task_bg = null, this.$task_links = null, this.$task_bars = null, this.$jsgantt = null, this.$config.rowStore && (this.$config.rowStore.detachEvent(this._staticBgHandler), this.$config.rowStore = null), this.$config.linkStore && (this.$config.linkStore = null), this.callEvent("onDestroy", []), this.detachAllEvents()
       }
-    }, o.mixin(l.prototype, a()), t.exports = l
+    }, a.mixin(l.prototype, s()), t.exports = l
   }, function (t, e, i) {
-    var n = i(2), r = i(1), o = function (t) {
+    var n = i(2), r = i(1), a = function (t) {
       "use strict";
 
       function e(e, i, n) {
@@ -1706,20 +1579,20 @@ var JSGantt = function () {
         for (var e = 0; e < this.$cells.length; e++) this.$cells[e].destructor();
         this.$cells = [], t.prototype.destructor.call(this)
       }, e.prototype._resizeScrollbars = function (t, e) {
-        var i, n = !1, r = [], o = [];
+        var i, n = !1, r = [], a = [];
 
-        function a(t) {
+        function s(t) {
           t.$parent.show(), n = !0, r.push(t)
         }
 
-        function s(t) {
-          t.$parent.hide(), n = !0, o.push(t)
+        function o(t) {
+          t.$parent.hide(), n = !0, a.push(t)
         }
 
-        for (var l = 0; l < e.length; l++) t[(i = e[l]).$config.scroll] ? s(i) : i.shouldHide() ? s(i) : i.shouldShow() ? a(i) : i.isVisible() ? r.push(i) : o.push(i);
+        for (var l = 0; l < e.length; l++) t[(i = e[l]).$config.scroll] ? o(i) : i.shouldHide() ? o(i) : i.shouldShow() ? s(i) : i.isVisible() ? r.push(i) : a.push(i);
         var c = {};
         for (l = 0; l < r.length; l++) r[l].$config.group && (c[r[l].$config.group] = !0);
-        for (l = 0; l < o.length; l++) (i = o[l]).$config.group && c[i.$config.group] && a(i);
+        for (l = 0; l < a.length; l++) (i = a[l]).$config.group && c[i.$config.group] && s(i);
         return n
       }, e.prototype._syncCellSizes = function (t, e) {
         if (t) {
@@ -1730,25 +1603,25 @@ var JSGantt = function () {
         }
       }, e.prototype._syncGroupSize = function (t, e) {
         if (t.length) for (var i = t[0].$parent._xLayout ? "width" : "height", n = t[0].$parent.getNextSibling(t[0].$id) ? 1 : -1, r = 0; r < t.length; r++) {
-          var o = t[r].getSize(),
-            a = n > 0 ? t[r].$parent.getNextSibling(t[r].$id) : t[r].$parent.getPrevSibling(t[r].$id);
-          "resizer" == a.$name && (a = n > 0 ? a.$parent.getNextSibling(a.$id) : a.$parent.getPrevSibling(a.$id));
-          var s = a.getSize();
-          if (a[i]) {
-            var l = o.gravity + s.gravity, c = o[i] + s[i], u = l / c;
-            t[r].$config.gravity = u * e, a.$config[i] = c - e, a.$config.gravity = l - u * e
+          var a = t[r].getSize(),
+            s = n > 0 ? t[r].$parent.getNextSibling(t[r].$id) : t[r].$parent.getPrevSibling(t[r].$id);
+          "resizer" == s.$name && (s = n > 0 ? s.$parent.getNextSibling(s.$id) : s.$parent.getPrevSibling(s.$id));
+          var o = s.getSize();
+          if (s[i]) {
+            var l = a.gravity + o.gravity, c = a[i] + o[i], d = l / c;
+            t[r].$config.gravity = d * e, s.$config[i] = c - e, s.$config.gravity = l - d * e
           } else t[r].$config[i] = e;
-          var d = this.$jsgantt.$ui.getView("grid");
-          d && t[r].$content === d && !d.$config.scrollable && (this.$jsgantt.config.grid_width = e)
+          var h = this.$jsgantt.$ui.getView("grid");
+          h && t[r].$content === h && !h.$config.scrollable && (this.$jsgantt.config.grid_width = e)
         }
       }, e.prototype.resize = function (e) {
         var i = !1;
         if (this.$root && !this._resizeInProgress && (this.callEvent("onBeforeResize", []), i = !0, this._resizeInProgress = !0), t.prototype.resize.call(this, !0), t.prototype.resize.call(this, !1), i) {
           var n = [];
           n = (n = (n = n.concat(this.getCellsByType("viewCell"))).concat(this.getCellsByType("viewLayout"))).concat(this.getCellsByType("hostCell"));
-          for (var r = this.getCellsByType("scroller"), o = 0; o < n.length; o++) n[o].$config.hidden || n[o].setContentSize();
-          var a = this._getAutosizeMode(this.$config.autosize), s = this._resizeScrollbars(a, r);
-          if (this.$config.autosize && (this.autosize(this.$config.autosize), s = !0), s) for (this.resize(), o = 0; o < n.length; o++) n[o].$config.hidden || n[o].setContentSize();
+          for (var r = this.getCellsByType("scroller"), a = 0; a < n.length; a++) n[a].$config.hidden || n[a].setContentSize();
+          var s = this._getAutosizeMode(this.$config.autosize), o = this._resizeScrollbars(s, r);
+          if (this.$config.autosize && (this.autosize(this.$config.autosize), o = !0), o) for (this.resize(), a = 0; a < n.length; a++) n[a].$config.hidden || n[a].setContentSize();
           this.callEvent("onResize", [])
         }
         i && (this._resizeInProgress = !1)
@@ -1803,17 +1676,17 @@ var JSGantt = function () {
       }, e.prototype.$fill = function (t, e) {
         this.$view = t, this.$parent = e;
         for (var i = r.getChildNodes(t, "jsgantt-layout-cell"), n = i.length - 1; n >= 0; n--) {
-          var o = this.$cells[n];
-          o.$fill(i[n], this), o.$config.hidden && o.$view.parentNode.removeChild(o.$view)
+          var a = this.$cells[n];
+          a.$fill(i[n], this), a.$config.hidden && a.$view.parentNode.removeChild(a.$view)
         }
       }, e.prototype.$toHTML = function () {
         for (var e = this._xLayout ? "x" : "y", i = [], n = 0; n < this.$cells.length; n++) i.push(this.$cells[n].$toHTML());
         return t.prototype.$toHTML.call(this, i.join(""), (this.$root ? "jsgantt-layout-root " : "") + "jsgantt-layout jsgantt-layout-" + e)
       }, e.prototype.getContentSize = function (t) {
-        for (var e, i, n, r = 0, o = 0, a = 0; a < this.$cells.length; a++) (i = this.$cells[a]).$config.hidden || (e = i.getContentSize(t), "scrollbar" === i.$config.view && t[i.$config.scroll] && (e.height = 0, e.width = 0), i.$config.resizer && (this._xLayout ? e.height = 0 : e.width = 0), n = i._getBorderSizes(), this._xLayout ? (r += e.width + n.horizontal, o = Math.max(o, e.height + n.vertical)) : (r = Math.max(r, e.width + n.horizontal), o += e.height + n.vertical));
-        return r += (n = this._getBorderSizes()).horizontal, o += n.vertical, this.$root && (r += 1, o += 1), {
+        for (var e, i, n, r = 0, a = 0, s = 0; s < this.$cells.length; s++) (i = this.$cells[s]).$config.hidden || (e = i.getContentSize(t), "scrollbar" === i.$config.view && t[i.$config.scroll] && (e.height = 0, e.width = 0), i.$config.resizer && (this._xLayout ? e.height = 0 : e.width = 0), n = i._getBorderSizes(), this._xLayout ? (r += e.width + n.horizontal, a = Math.max(a, e.height + n.vertical)) : (r = Math.max(r, e.width + n.horizontal), a += e.height + n.vertical));
+        return r += (n = this._getBorderSizes()).horizontal, a += n.vertical, this.$root && (r += 1, a += 1), {
           width: r,
-          height: o
+          height: a
         }
       }, e.prototype._cleanElSize = function (t) {
         return 1 * (t || "").toString().replace("px", "") || 0
@@ -1828,7 +1701,7 @@ var JSGantt = function () {
           };
         e.MozBoxSizing && (n.boxSizing = "border-box" == e.MozBoxSizing);
         for (var r = 0; r < i.length; r++) n[i[r]] = e[i[r]] ? this._cleanElSize(e[i[r]]) : 0;
-        var o = {
+        var a = {
           horPaddings: n.paddingLeft + n.paddingRight + n.borderLeftWidth + n.borderRightWidth,
           vertPaddings: n.paddingTop + n.paddingBottom + n.borderTopWidth + n.borderBottomWidth,
           borderBox: n.boxSizing,
@@ -1837,7 +1710,7 @@ var JSGantt = function () {
           outerWidth: n.width,
           outerHeight: n.height
         };
-        return o.borderBox ? (o.innerWidth -= o.horPaddings, o.innerHeight -= o.vertPaddings) : (o.outerWidth += o.horPaddings, o.outerHeight += o.vertPaddings), o
+        return a.borderBox ? (a.innerWidth -= a.horPaddings, a.innerHeight -= a.vertPaddings) : (a.outerWidth += a.horPaddings, a.outerHeight += a.vertPaddings), a
       }, e.prototype._getAutosizeMode = function (t) {
         var e = {x: !1, y: !1};
         return "xy" === t ? e.x = e.y = !0 : "y" === t || !0 === t ? e.y = !0 : "x" === t && (e.x = !0), e
@@ -1847,18 +1720,18 @@ var JSGantt = function () {
         e.x && (i.borderBox && (n.width += i.horPaddings), r.style.width = n.width + "px"), e.y && (i.borderBox && (n.height += i.vertPaddings), r.style.height = n.height + "px")
       }, e.prototype.getSize = function () {
         this._sizes = [];
-        for (var e = 0, i = 0, n = 1e5, r = 0, o = 1e5, a = 0, s = 0; s < this.$cells.length; s++) {
-          var l = this._sizes[s] = this.$cells[s].getSize();
-          this.$cells[s].$config.hidden || (this._xLayout ? (!l.width && l.minWidth ? e += l.minWidth : e += l.width, n += l.maxWidth, i += l.minWidth, r = Math.max(r, l.height), o = Math.min(o, l.maxHeight), a = Math.max(a, l.minHeight)) : (!l.height && l.minHeight ? r += l.minHeight : r += l.height, o += l.maxHeight, a += l.minHeight, e = Math.max(e, l.width), n = Math.min(n, l.maxWidth), i = Math.max(i, l.minWidth)))
+        for (var e = 0, i = 0, n = 1e5, r = 0, a = 1e5, s = 0, o = 0; o < this.$cells.length; o++) {
+          var l = this._sizes[o] = this.$cells[o].getSize();
+          this.$cells[o].$config.hidden || (this._xLayout ? (!l.width && l.minWidth ? e += l.minWidth : e += l.width, n += l.maxWidth, i += l.minWidth, r = Math.max(r, l.height), a = Math.min(a, l.maxHeight), s = Math.max(s, l.minHeight)) : (!l.height && l.minHeight ? r += l.minHeight : r += l.height, a += l.maxHeight, s += l.minHeight, e = Math.max(e, l.width), n = Math.min(n, l.maxWidth), i = Math.max(i, l.minWidth)))
         }
         var c = t.prototype.getSize.call(this);
-        return c.maxWidth >= 1e5 && (c.maxWidth = n), c.maxHeight >= 1e5 && (c.maxHeight = o), c.minWidth = c.minWidth != c.minWidth ? 0 : c.minWidth, c.minHeight = c.minHeight != c.minHeight ? 0 : c.minHeight, this._xLayout ? (c.minWidth += this.$config.margin * this.$cells.length || 0, c.minWidth += 2 * this.$config.padding || 0, c.minHeight += 2 * this.$config.padding || 0) : (c.minHeight += this.$config.margin * this.$cells.length || 0, c.minHeight += 2 * this.$config.padding || 0), c
+        return c.maxWidth >= 1e5 && (c.maxWidth = n), c.maxHeight >= 1e5 && (c.maxHeight = a), c.minWidth = c.minWidth != c.minWidth ? 0 : c.minWidth, c.minHeight = c.minHeight != c.minHeight ? 0 : c.minHeight, this._xLayout ? (c.minWidth += this.$config.margin * this.$cells.length || 0, c.minWidth += 2 * this.$config.padding || 0, c.minHeight += 2 * this.$config.padding || 0) : (c.minHeight += this.$config.margin * this.$cells.length || 0, c.minHeight += 2 * this.$config.padding || 0), c
       }, e.prototype._calcFreeSpace = function (t, e, i) {
-        var n = i ? e.minWidth : e.minHeight, r = e.maxWidth, o = t;
-        return o ? (o > r && (o = r), o < n && (o = n), this._free -= o) : ((o = Math.floor(this._free / this._gravity * e.gravity)) > r && (o = r, this._free -= o, this._gravity -= e.gravity), o < n && (o = n, this._free -= o, this._gravity -= e.gravity)), o
+        var n = i ? e.minWidth : e.minHeight, r = e.maxWidth, a = t;
+        return a ? (a > r && (a = r), a < n && (a = n), this._free -= a) : ((a = Math.floor(this._free / this._gravity * e.gravity)) > r && (a = r, this._free -= a, this._gravity -= e.gravity), a < n && (a = n, this._free -= a, this._gravity -= e.gravity)), a
       }, e.prototype._calcSize = function (t, e, i) {
-        var n = t, r = i ? e.minWidth : e.minHeight, o = i ? e.maxWidth : e.maxHeight;
-        return n || (n = Math.floor(this._free / this._gravity * e.gravity)), n > o && (n = o), n < r && (n = r), n
+        var n = t, r = i ? e.minWidth : e.minHeight, a = i ? e.maxWidth : e.maxHeight;
+        return n || (n = Math.floor(this._free / this._gravity * e.gravity)), n > a && (n = a), n < r && (n = r), n
       }, e.prototype._configureBorders = function () {
         this.$root && this._setBorders([this._borders.left, this._borders.top, this._borders.right, this._borders.bottom], this);
         for (var t = this._xLayout ? this._borders.right : this._borders.bottom, e = this.$cells, i = e.length - 1, n = i; n >= 0; n--) if (!e[n].$config.hidden) {
@@ -1866,48 +1739,46 @@ var JSGantt = function () {
           break
         }
         for (n = 0; n < e.length; n++) if (!e[n].$config.hidden) {
-          var r = n >= i, o = "";
-          !r && e[n + 1] && "scrollbar" == e[n + 1].$config.view && (this._xLayout ? r = !0 : o = "jsgantt-layout-cell-border-transparent"), this._setBorders(r ? [] : [t, o], e[n])
+          var r = n >= i, a = "";
+          !r && e[n + 1] && "scrollbar" == e[n + 1].$config.view && (this._xLayout ? r = !0 : a = "jsgantt-layout-cell-border-transparent"), this._setBorders(r ? [] : [t, a], e[n])
         }
       }, e.prototype._updateCellVisibility = function () {
         for (var t, e = this._visibleCells || {}, i = !this._visibleCells, n = {}, r = 0; r < this._sizes.length; r++) t = this.$cells[r], !i && t.$config.hidden && e[t.$id] ? t._hide(!0) : t.$config.hidden || e[t.$id] || t._hide(!1), t.$config.hidden || (n[t.$id] = !0);
         this._visibleCells = n
       }, e.prototype.setSize = function (e, i) {
         this._configureBorders(), t.prototype.setSize.call(this, e, i), i = this.$lastSize.contentY, e = this.$lastSize.contentX;
-        var n, r, o = this.$config.padding || 0;
-        this.$view.style.padding = o + "px", this._gravity = 0, this._free = this._xLayout ? e : i, this._free -= 2 * o, this._updateCellVisibility();
-        for (var a = 0; a < this._sizes.length; a++) if (!(n = this.$cells[a]).$config.hidden) {
-          var s = this.$config.margin || 0;
-          "resizer" != n.$name || s || (s = -1);
+        var n, r, a = this.$config.padding || 0;
+        this.$view.style.padding = a + "px", this._gravity = 0, this._free = this._xLayout ? e : i, this._free -= 2 * a, this._updateCellVisibility();
+        for (var s = 0; s < this._sizes.length; s++) if (!(n = this.$cells[s]).$config.hidden) {
+          var o = this.$config.margin || 0;
+          "resizer" != n.$name || o || (o = -1);
           var l = n.$view, c = this._xLayout ? "marginRight" : "marginBottom";
-          a !== this.$cells.length - 1 && (l.style[c] = s + "px", this._free -= s), r = this._sizes[a], this._xLayout ? r.width || (this._gravity += r.gravity) : r.height || (this._gravity += r.gravity)
+          s !== this.$cells.length - 1 && (l.style[c] = o + "px", this._free -= o), r = this._sizes[s], this._xLayout ? r.width || (this._gravity += r.gravity) : r.height || (this._gravity += r.gravity)
         }
-        for (a = 0; a < this._sizes.length; a++) if (!(n = this.$cells[a]).$config.hidden) {
-          var u = (r = this._sizes[a]).width, d = r.height;
-          this._xLayout ? this._calcFreeSpace(u, r, !0) : this._calcFreeSpace(d, r, !1)
+        for (s = 0; s < this._sizes.length; s++) if (!(n = this.$cells[s]).$config.hidden) {
+          var d = (r = this._sizes[s]).width, h = r.height;
+          this._xLayout ? this._calcFreeSpace(d, r, !0) : this._calcFreeSpace(h, r, !1)
         }
-        for (a = 0; a < this.$cells.length; a++) if (!(n = this.$cells[a]).$config.hidden) {
-          r = this._sizes[a];
-          var h = void 0, f = void 0;
-          this._xLayout ? (h = this._calcSize(r.width, r, !0), f = i - 2 * o) : (h = e - 2 * o, f = this._calcSize(r.height, r, !1)), n.setSize(h, f)
+        for (s = 0; s < this.$cells.length; s++) if (!(n = this.$cells[s]).$config.hidden) {
+          r = this._sizes[s];
+          var u = void 0, f = void 0;
+          this._xLayout ? (u = this._calcSize(r.width, r, !0), f = i - 2 * a) : (u = e - 2 * a, f = this._calcSize(r.height, r, !1)), n.setSize(u, f)
         }
       }, e
     }(i(6));
-    t.exports = o
+    t.exports = a
   }, function (t, e) {
     var i, n, r = t.exports = {};
 
-    function o() {
-
-    }
-
     function a() {
-
     }
 
-    function s(t) {
+    function s() {
+    }
+
+    function o(t) {
       if (i === setTimeout) return setTimeout(t, 0);
-      if ((i === o || !i) && setTimeout) return i = setTimeout, setTimeout(t, 0);
+      if ((i === a || !i) && setTimeout) return i = setTimeout, setTimeout(t, 0);
       try {
         return i(t, 0)
       } catch (e) {
@@ -1921,33 +1792,33 @@ var JSGantt = function () {
 
     !function () {
       try {
-        i = "function" == typeof setTimeout ? setTimeout : o
+        i = "function" == typeof setTimeout ? setTimeout : a
       } catch (t) {
-        i = o
+        i = a
       }
       try {
-        n = "function" == typeof clearTimeout ? clearTimeout : a
+        n = "function" == typeof clearTimeout ? clearTimeout : s
       } catch (t) {
-        n = a
+        n = s
       }
     }();
-    var l, c = [], u = !1, d = -1;
+    var l, c = [], d = !1, h = -1;
 
-    function h() {
-      u && l && (u = !1, l.length ? c = l.concat(c) : d = -1, c.length && f())
+    function u() {
+      d && l && (d = !1, l.length ? c = l.concat(c) : h = -1, c.length && f())
     }
 
     function f() {
-      if (!u) {
-        var t = s(h);
-        u = !0;
+      if (!d) {
+        var t = o(u);
+        d = !0;
         for (var e = c.length; e;) {
-          for (l = c, c = []; ++d < e;) l && l[d].run();
-          d = -1, e = c.length
+          for (l = c, c = []; ++h < e;) l && l[h].run();
+          h = -1, e = c.length
         }
-        l = null, u = !1, function (t) {
+        l = null, d = !1, function (t) {
           if (n === clearTimeout) return clearTimeout(t);
-          if ((n === a || !n) && clearTimeout) return n = clearTimeout, clearTimeout(t);
+          if ((n === s || !n) && clearTimeout) return n = clearTimeout, clearTimeout(t);
           try {
             n(t)
           } catch (e) {
@@ -1965,23 +1836,21 @@ var JSGantt = function () {
       this.fun = t, this.array = e
     }
 
-    function p() {
+    function _() {
     }
 
     r.nextTick = function (t) {
       var e = new Array(arguments.length - 1);
       if (arguments.length > 1) for (var i = 1; i < arguments.length; i++) e[i - 1] = arguments[i];
-      c.push(new g(t, e)), 1 !== c.length || u || s(f)
+      c.push(new g(t, e)), 1 !== c.length || d || o(f)
     }, g.prototype.run = function () {
       this.fun.apply(null, this.array)
-    }, r.title = "browser", r.browser = !0, r.env = {}, r.argv = [], r.version = "", r.versions = {}, r.on = p, r.addListener = p, r.once = p, r.off = p, r.removeListener = p, r.removeAllListeners = p, r.emit = p, r.prependListener = p, r.prependOnceListener = p, r.listeners = function (t) {
+    }, r.title = "browser", r.browser = !0, r.env = {}, r.argv = [], r.version = "", r.versions = {}, r.on = _, r.addListener = _, r.once = _, r.off = _, r.removeListener = _, r.removeAllListeners = _, r.emit = _, r.prependListener = _, r.prependOnceListener = _, r.listeners = function (t) {
       return []
     }, r.binding = function (t) {
-
     }, r.cwd = function () {
       return "/"
     }, r.chdir = function (t) {
-
     }, r.umask = function () {
       return 0
     }
@@ -2006,11 +1875,7 @@ var JSGantt = function () {
   }, function (t, e) {
     t.exports = function (t) {
       return function (e, i) {
-        e || t.config.show_errors && !1 !== t.callEvent("onError", [i]) && t.message({
-          type: "error",
-          text: i,
-          expire: -1
-        })
+        e || t.config.show_errors && t.callEvent("onError", [i])
       }
     }
   }, function (t, e, i) {
@@ -2018,7 +1883,7 @@ var JSGantt = function () {
     t.exports = function (t) {
       var e = i(26);
 
-      function o(t, e) {
+      function a(t, e) {
         var i;
         t.event(e, "resize", function () {
           clearTimeout(i), i = setTimeout(function () {
@@ -2039,18 +1904,16 @@ var JSGantt = function () {
         }), this.callEvent("onGanttLayoutReady", []), this.$layout.render(), t.$container = this.$layout.$container.firstChild, function (t) {
           "static" == window.getComputedStyle(t.$root).getPropertyValue("position") && (t.$root.style.position = "relative");
           var e = document.createElement("iframe");
-          e.className = "jsgantt-container-resize-watcher", e.tabIndex = -1, t.$root.appendChild(e), e.contentWindow ? o(t, e.contentWindow) : (t.$root.removeChild(e), o(t, window))
+          e.className = "jsgantt-container-resize-watcher", e.tabIndex = -1, t.$root.appendChild(e), e.contentWindow ? a(t, e.contentWindow) : (t.$root.removeChild(e), a(t, window))
         }(t), this.callEvent("onTemplatesReady", []), this.$mouseEvents.reset(this.$root), this.callEvent("onGanttReady", []), this.render()
-      }, t.$click = {
-
-      }, t.render = function () {
+      }, t.$click = {}, t.render = function () {
         this.callEvent("onBeforeGanttRender", []), !this.config.sort && this._sort && (this._sort = void 0);
         var i = this.getScrollState(), n = i ? i.x : 0;
         this._getHorizontalScrollbar() && (n = this._getHorizontalScrollbar().$config.codeScrollLeft || n || 0);
         var r = null;
         if (n && (r = t.dateFromPos(n + this.config.task_scroll_offset)), e(this), this.$layout.$config.autosize = this.config.autosize, this.$layout.resize(), this.config.preserve_scroll && i && n) {
-          var o = t.getScrollState();
-          +r == +t.dateFromPos(o.x) && o.y == i.y || (r && this.showDate(r), i.y && t.scrollTo(void 0, i.y))
+          var a = t.getScrollState();
+          +r == +t.dateFromPos(a.x) && a.y == i.y || (r && this.showDate(r), i.y && t.scrollTo(void 0, i.y))
         }
         this.callEvent("onGanttRender", [])
       }, t.setSizes = t.render, t.locate = function (t) {
@@ -2073,13 +1936,13 @@ var JSGantt = function () {
         if (!(r = "object" == typeof t ? t : {source: t, target: e, type: this._get_link_type(i, n)})) return !1;
         if (!(r.source && r.target && r.type)) return !1;
         if (r.source == r.target) return !1;
-        var o = !0;
-        return this.checkEvent("onLinkValidation") && (o = this.callEvent("onLinkValidation", [r])), o
-      }, t._correct_dst_change = function (e, i, n, o) {
-        var a = r.getSecondsInUnit(o) * n;
-        if (a > 3600 && a < 86400) {
-          var s = e.getTimezoneOffset() - i;
-          s && (e = t.date.add(e, s, "minute"))
+        var a = !0;
+        return this.checkEvent("onLinkValidation") && (a = this.callEvent("onLinkValidation", [r])), a
+      }, t._correct_dst_change = function (e, i, n, a) {
+        var s = r.getSecondsInUnit(a) * n;
+        if (s > 3600 && s < 86400) {
+          var o = e.getTimezoneOffset() - i;
+          o && (e = t.date.add(e, o, "minute"))
         }
         return e
       }, t.isSplitTask = function (e) {
@@ -2100,7 +1963,7 @@ var JSGantt = function () {
           month_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
           day_full: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
           day_short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        }, labels: {}
+        }
       }
     }
   }, function (t, e) {
@@ -2142,21 +2005,21 @@ var JSGantt = function () {
         }
       }, t));
       var i = [];
-      t._touch_events = function (n, r, o) {
-        for (var a, s = 0, l = !1, c = !1, u = null, d = null, h = null, f = 0; f < i.length; f++) t.eventRemove(i[f][0], i[f][1], i[f][2]);
+      t._touch_events = function (n, r, a) {
+        for (var s, o = 0, l = !1, c = !1, d = null, h = null, u = null, f = 0; f < i.length; f++) t.eventRemove(i[f][0], i[f][1], i[f][2]);
         for ((i = []).push([t.$container, n[0], function (i) {
           var n = e();
-          if (!o(i) && l) {
-            d && clearTimeout(d);
-            var h = r(i);
-            if (n && (n.drag.id || n.drag.start_drag)) return n.on_mouse_move(h), i.preventDefault && i.preventDefault(), i.cancelBubble = !0, !1;
+          if (!a(i) && l) {
+            h && clearTimeout(h);
+            var u = r(i);
+            if (n && (n.drag.id || n.drag.start_drag)) return n.on_mouse_move(u), i.preventDefault && i.preventDefault(), i.cancelBubble = !0, !1;
             if (!t._prevent_touch_scroll) {
-              if (h && u) {
-                var f = u.pageX - h.pageX, p = u.pageY - h.pageY;
-                if (!c && (Math.abs(f) > 5 || Math.abs(p) > 5) && (t._touch_scroll_active = c = !0, s = 0, a = t.getScrollState()), c) {
-                  t.scrollTo(a.x + f, a.y + p);
-                  var _ = t.getScrollState();
-                  if (a.x != _.x && p > 2 * f || a.y != _.y && f > 2 * p) return g(i)
+              if (u && d) {
+                var f = d.pageX - u.pageX, _ = d.pageY - u.pageY;
+                if (!c && (Math.abs(f) > 5 || Math.abs(_) > 5) && (t._touch_scroll_active = c = !0, o = 0, s = t.getScrollState()), c) {
+                  t.scrollTo(s.x + f, s.y + _);
+                  var p = t.getScrollState();
+                  if (s.x != p.x && _ > 2 * f || s.y != p.y && f > 2 * _) return g(i)
                 }
               }
               return g(i)
@@ -2166,28 +2029,28 @@ var JSGantt = function () {
         }]), i.push([this.$container, "contextmenu", function (t) {
           if (l) return g(t)
         }]), i.push([this.$container, n[1], function (i) {
-          if (!o(i)) if (i.touches && i.touches.length > 1) l = !1; else {
-            u = r(i), t._locate_css(u, "jsgantt-hor-scroll") || t._locate_css(u, "jsgantt-ver-scroll") || (l = !0);
+          if (!a(i)) if (i.touches && i.touches.length > 1) l = !1; else {
+            d = r(i), t._locate_css(d, "jsgantt-hor-scroll") || t._locate_css(d, "jsgantt-ver-scroll") || (l = !0);
             var n = e();
-            d = setTimeout(function () {
-              var e = t.locate(u);
-              n && e && !t._locate_css(u, "jsgantt-link-control") && !t._locate_css(u, "jsgantt-grid-data") && (n.on_mouse_down(u), n.drag && n.drag.start_drag && (function (e) {
+            h = setTimeout(function () {
+              var e = t.locate(d);
+              n && e && !t._locate_css(d, "jsgantt-link-control") && !t._locate_css(d, "jsgantt-grid-data") && (n.on_mouse_down(d), n.drag && n.drag.start_drag && (function (e) {
                 var i = t._getTaskLayers(), n = t.getTask(e);
                 if (n && t.isTaskVisible(e)) for (var r = 0; r < i.length; r++) if ((n = i[r].rendered[e]) && n.getAttribute(t.config.task_attribute) && n.getAttribute(t.config.task_attribute) == e) {
-                  var o = n.cloneNode(!0);
-                  h = n, i[r].rendered[e] = o, n.style.display = "none", o.className += " jsgantt-drag-move ", n.parentNode.appendChild(o)
+                  var a = n.cloneNode(!0);
+                  u = n, i[r].rendered[e] = a, n.style.display = "none", a.className += " jsgantt-drag-move ", n.parentNode.appendChild(a)
                 }
-              }(e), n._start_dnd(u), t._touch_drag = !0, t.refreshTask(e), t._touch_feedback())), d = null
+              }(e), n._start_dnd(d), t._touch_drag = !0, t.refreshTask(e), t._touch_feedback())), h = null
             }, t.config.touch_drag)
           }
         }]), i.push([this.$container, n[2], function (i) {
-          if (!o(i)) {
-            d && clearTimeout(d), t._touch_drag = !1, l = !1;
-            var n = r(i), a = e();
-            if (a && a.on_mouse_up(n), h && (t.refreshTask(t.locate(h)), h.parentNode && (h.parentNode.removeChild(h), t._touch_feedback())), t._touch_scroll_active = l = c = !1, h = null, u && s) {
+          if (!a(i)) {
+            h && clearTimeout(h), t._touch_drag = !1, l = !1;
+            var n = r(i), s = e();
+            if (s && s.on_mouse_up(n), u && (t.refreshTask(t.locate(u)), u.parentNode && (u.parentNode.removeChild(u), t._touch_feedback())), t._touch_scroll_active = l = c = !1, u = null, d && o) {
               var f = new Date;
-              f - s < 500 ? (t.$services.getService("mouseEvents").onDoubleClick(u), g(i)) : s = f
-            } else s = new Date
+              f - o < 500 ? g(i) : o = f
+            } else o = new Date
           }
         }]), f = 0; f < i.length; f++) t.event(i[f][0], i[f][1], i[f][2]);
 
@@ -2219,21 +2082,14 @@ var JSGantt = function () {
     }
   }, function (t, e) {
     function i(t, e) {
-      var i = {
-        config: {
-          grid_width: 350,
-          row_height: 23,
-          scale_height: 30,
-          link_line_width: 2,
-          link_arrow_size: 6
-        }, _second_column_width: 95, _third_column_width: 80
-      };
+      var i = {grid_width: 350, row_height: 23, scale_height: 30, link_line_width: 2, link_arrow_size: 6}, n = 95,
+        a = 80;
       !function (t, e, i) {
         for (var n in e) (void 0 === t[n] || i) && (t[n] = e[n])
-      }(e.config, i.config, t);
-      var n = e.getGridColumns();
-      for (n[1] && !e.defined(n[1].width) && (n[1].width = i._second_column_width), n[2] && !e.defined(n[2].width) && (n[2].width = i._third_column_width), r = 0; r < n.length; r++) {
-        var o = n[r];
+      }(e.config, i, t);
+      var s = e.getGridColumns();
+      for (s[1] && !e.defined(s[1].width) && (s[1].width = n), s[2] && !e.defined(s[2].width) && (s[2].width = a), r = 0; r < s.length; r++) {
+        var o = s[r];
         "add" == o.name && (o.width || (o.width = 44), e.defined(o.min_width) && e.defined(o.max_width) || (o.min_width = o.min_width || o.width, o.max_width = o.max_width || o.width), o.min_width && (o.min_width = +o.min_width), o.max_width && (o.max_width = +o.max_width), o.width && (o.width = +o.width, o.width = o.min_width && o.min_width > o.width ? o.min_width : o.width, o.width = o.max_width && o.max_width < o.width ? o.max_width : o.width))
       }
     }
@@ -2260,14 +2116,14 @@ var JSGantt = function () {
           if (i) {
             var n = this;
             e._prefetch_originals[t] = i, e[t] = function () {
-              for (var e = new Array(arguments.length), r = 0, o = arguments.length; r < o; r++) e[r] = arguments[r];
+              for (var e = new Array(arguments.length), r = 0, a = arguments.length; r < a; r++) e[r] = arguments[r];
               if (n.active) {
-                var a = n.get_arguments_hash(Array.prototype.slice.call(e));
+                var s = n.get_arguments_hash(Array.prototype.slice.call(e));
                 n.cache[t] || (n.cache[t] = {});
-                var s = n.cache[t];
-                if (n.has_cached_value(s, a)) return n.get_cached_value(s, a);
+                var o = n.cache[t];
+                if (n.has_cached_value(o, s)) return n.get_cached_value(o, s);
                 var l = i.apply(this, e);
-                return n.cache_value(s, a, l), l
+                return n.cache_value(o, s, l), l
               }
               return i.apply(this, e)
             }
@@ -2319,13 +2175,11 @@ var JSGantt = function () {
       }
 
       return n(r, e), r.prototype.render = function (i) {
-        var n = t.config.types, r = t.locale.labels, o = [], a = i.filter || function (t, e) {
+        var n = t.config.types, r = t.locale.labels, a = [], s = i.filter || function (t, e) {
           return !n.placeholder || e !== n.placeholder
         };
-        for (var s in n) 0 == !a(s, n[s]) && o.push({key: n[s], label: r["type_" + s]});
-        i.options = o;
-        i.onchange;
-        return i.onchange = function () {
+        for (var o in n) 0 == !s(o, n[o]) && a.push({key: n[o], label: r["type_" + o]});
+        return i.options = a, i.onchange, i.onchange = function () {
         }, e.prototype.render.apply(this, arguments)
       }, r
     }
@@ -2340,34 +2194,24 @@ var JSGantt = function () {
     }
   }, function (t, e) {
     t.exports = function (t) {
-
     }
   }, function (t, e, i) {
-    var n = i(2), r = i(11);
+    var n = i(2);
+    i(11);
     t.exports = function (t) {
       var e = i(5)(t);
 
-      function o() {
+      function r() {
         return e.apply(this, arguments) || this
       }
 
-      function a(e) {
-        return !e || e === t.config.constraint_types.ASAP || e === t.config.constraint_types.ALAP
-      }
-
-      function s(t, e) {
-        for (var i = a(e), n = 0; n < t.length; n++) t[n].disabled = i
-      }
-
-      return n(o, e), o
+      return n(r, e), r
     }
   }, function (t, e, i) {
-    var n = i(3), r = i(1), o = i(11), a = i(2);
+    i(3), i(1), i(11), i(2);
     t.exports = function (t) {
-      var e = i(5)(t), s = {resources: {}, resourcesValues: {}, filter: {}, eventsInitialized: {}};
+      i(5)(t)
     }
-
-
   }, function (t, e, i) {
     var n = i(2);
     t.exports = function (t) {
@@ -2377,7 +2221,7 @@ var JSGantt = function () {
         return e.apply(this, arguments) || this
       }
 
-      function o(e, i) {
+      function a(e, i) {
         var n = [], r = [];
         i && (n = t.getTaskByTime(), e.allow_root && n.unshift({
           id: t.config.root_id,
@@ -2387,26 +2231,26 @@ var JSGantt = function () {
             return !0
           };
           e = e.slice(0);
-          for (var o = 0; o < e.length; o++) {
-            var a = e[o];
-            (a.id == n || t.isChildOf(a.id, n) || !1 === r(a.id, a)) && (e.splice(o, 1), o--)
+          for (var a = 0; a < e.length; a++) {
+            var s = e[a];
+            (s.id == n || t.isChildOf(s.id, n) || !1 === r(s.id, s)) && (e.splice(a, 1), a--)
           }
           return e
         }(n, e, i), e.sort && n.sort(e.sort));
-        for (var o = e.template || t.templates.task_text, a = 0; a < n.length; a++) {
-          var s = o.apply(t, [n[a].plannedDate, n[a].end_date, n[a]]);
-          void 0 === s && (s = ""), r.push({key: n[a].id, label: s})
+        for (var a = e.template || t.templates.task_text, s = 0; s < n.length; s++) {
+          var o = a.apply(t, [n[s].plannedDate, n[s].end_date, n[s]]);
+          void 0 === o && (o = ""), r.push({key: n[s].id, label: o})
         }
         return e.options = r, e.map_to = e.map_to || "parent", t.form_blocks.select.render.apply(this, arguments)
       }
 
       return n(r, e), r.prototype.render = function (t) {
-        return o(t, !1)
+        return a(t, !1)
       }, r.prototype.set_value = function (e, i, n, r) {
-        var a = document.createElement("div");
-        a.innerHTML = o(r, n.id);
-        var s = a.removeChild(a.firstChild);
-        return e.onselect = null, e.parentNode.replaceChild(s, e), t.form_blocks.select.set_value.apply(t, [s, i, n, r])
+        var s = document.createElement("div");
+        s.innerHTML = a(r, n.id);
+        var o = s.removeChild(s.firstChild);
+        return e.onselect = null, e.parentNode.replaceChild(o, e), t.form_blocks.select.set_value.apply(t, [o, i, n, r])
       }, r
     }
   }, function (t, e, i) {
@@ -2418,56 +2262,7 @@ var JSGantt = function () {
         return e.apply(this, arguments) || this
       }
 
-      function o(e, i) {
-        var n = e.getElementsByTagName("select"), r = i._time_format_order, o = 0, a = 0;
-        if (t.defined(r[3])) {
-          var s = n[r[3]], l = parseInt(s.value, 10);
-          isNaN(l) && s.hasAttribute("data-value") && (l = parseInt(s.getAttribute("data-value"), 10)), o = Math.floor(l / 60), a = l % 60
-        }
-        return new Date(n[r[2]].value, n[r[1]].value, n[r[0]].value, o, a)
-      }
-
-      function a(t) {
-        var e = t.getElementsByTagName("input")[1];
-        return (e = parseInt(e.value, 10)) && !window.isNaN(e) || (e = 1), e < 0 && (e *= -1), e
-      }
-
-      return n(r, e), r.prototype.set_value = function (e, i, n, r) {
-        var s, l, c, u, d = r, h = e.getElementsByTagName("select"), f = e.getElementsByTagName("input"), g = f[1],
-          p = [f[0], f[2]], _ = e.getElementsByTagName("span")[0], v = r._time_format_order;
-
-        function m() {
-          var i = o.call(t, e, r), s = a.call(t, e, r), l = t.calculateEndDate({plannedDate: i, duration: s, task: n});
-          _.innerHTML = t.templates.task_date(l)
-        }
-
-        function y(t) {
-          var e = g.value;
-          e = parseInt(e, 10), window.isNaN(e) && (e = 0), (e += t) < 1 && (e = 1), g.value = e, m()
-        }
-
-        p[0].onclick = t.bind(function () {
-          y(-1 * t.config.durationStep)
-        }, this), p[1].onclick = t.bind(function () {
-          y(1 * t.config.durationStep)
-        }, this), h[0].onchange = m, h[1].onchange = m, h[2].onchange = m, h[3] && (h[3].onchange = m), g.onkeydown = t.bind(function (e) {
-          var i;
-          return (i = (e = e || window.event).charCode || e.keyCode || e.which) == t.constants.KEY_CODES.DOWN ? (y(-1 * t.config.durationStep), !1) : i == t.constants.KEY_CODES.UP ? (y(1 * t.config.durationStep), !1) : void window.setTimeout(m, 1)
-        }, this), g.onchange = t.bind(m, this), "string" == typeof (s = t._resolve_default_mapping(r)) && (s = {plannedDate: s}), l = n[s.plannedDate] || new Date, c = n[s.end_date] || t.calculateEndDate({
-          plannedDate: l,
-          duration: 1,
-          task: n
-        }), u = Math.round(n[s.duration]) || t.calculateDuration({
-          plannedDate: l,
-          end_date: c,
-          task: n
-        }), g.value = u, m()
-      }, r.prototype.get_value = function (e, i, n) {
-        var r = o(e, n), s = a(e), l = t.calculateEndDate({plannedDate: r, duration: s, task: i});
-        return "string" == typeof t._resolve_default_mapping(n) ? r : {plannedDate: r, end_date: l, duration: s}
-      }, r.prototype.focus = function (e) {
-        t._focus(e.getElementsByTagName("select")[0])
-      }, r
+      return n(r, e), r
     }
   }, function (t, e, i) {
     var n = i(2);
@@ -2478,33 +2273,19 @@ var JSGantt = function () {
         return e.apply(this, arguments) || this
       }
 
-      return n(r, e),  r
+      return n(r, e), r
     }
   }, function (t, e, i) {
-    var n = i(3), r = i(2);
+    i(3);
+    var n = i(2);
     t.exports = function (t) {
       var e = i(5)(t);
 
-      function o() {
+      function r() {
         return e.apply(this, arguments) || this
       }
 
-      return r(o, e), o.prototype.render = function (t) {
-        var e = "<div class='jsgantt-cal-ltext' style='height:" + (t.height || "23") + "px;'>";
-        if (t.options && t.options.length) for (var i = 0; i < t.options.length; i++) e += "<label><input type='checkbox' value='" + t.options[i].key + "' name='" + t.name + "'>" + t.options[i].label + "</label>";
-        return e + "</div>"
-      }, o.prototype.set_value = function (t, e, i, r) {
-        var o = Array.prototype.slice.call(t.querySelectorAll("input[type=checkbox]"));
-        !t._joc_onchange && r.onchange && (t.onchange = r.onchange, t._joc_onchange = !0), n.forEach(o, function (t) {
-          t.checked = !!e && e.indexOf(t.value) >= 0
-        })
-      }, o.prototype.get_value = function (t) {
-        return n.arrayMap(Array.prototype.slice.call(t.querySelectorAll("input[type=checkbox]:checked")), function (t) {
-          return t.value
-        })
-      }, o.prototype.focus = function (e) {
-        t._focus(e.querySelector("input[type=checkbox]"))
-      }, o
+      return n(r, e), r
     }
   }, function (t, e, i) {
     var n = i(2);
@@ -2549,31 +2330,23 @@ var JSGantt = function () {
   }, function (t, e, i) {
     t.exports = function (t) {
       i(1);
-      var e = i(64)(t), n = i(62)(t), r = i(59)(t), o = i(58)(t);
-      t.showModal = function (x) {
-        let task = t.getTask(x);
-        t.deleteTask(x);
-        t.callEvent("onRowClick", [task]);
-      }, t.form_blocks = {template: new e, time: new n, duration: new r, parent: new o}
+      var e = i(64)(t), n = i(62)(t), r = i(59)(t), a = i(58)(t);
+      t.form_blocks = {template: new e, time: new n, duration: new r, parent: new a}
     }
   }, function (t, e, i) {
     var n = i(3);
     t.exports = function (t) {
-      t.isUnscheduledTask = function (e) {
-        return t.assert(e && e instanceof Object, "Invalid argument"), !!e.unscheduled || !e.plannedDate
-      }, t._isAllowedUnscheduledTask = function (e) {
-        return !(!e.unscheduled || !t.config.show_unscheduled)
-      }, t.isTaskVisible = function (e) {
+      t.isTaskVisible = function (e) {
         if (!this.isTaskExists(e)) return !1;
         var i = this.getTask(e), n = i.plannedDate ? i.plannedDate.valueOf() : null,
           r = i.end_date ? i.end_date.valueOf() : null;
-        return !!(t._isAllowedUnscheduledTask(i) || n && r && n <= this._max_date.valueOf() && r >= this._min_date.valueOf()) && !!(t.getGlobalTaskIndex(e) >= 0)
+        return !!(n && r && n <= this._max_date.valueOf() && r >= this._min_date.valueOf()) && !!(t.getGlobalTaskIndex(e) >= 0)
       }, t._defaultTaskDate = function (e, i) {
         var n = !(!i || i == t.config.root_id) && t.getTask(i), r = null;
         if (n) r = n.plannedDate; else {
-          var o = t.getTaskByIndex(0);
-          r = o ? o.plannedDate ? o.plannedDate : o.end_date ? t.calculateEndDate({
-            plannedDate: o.end_date,
+          var a = t.getTaskByIndex(0);
+          r = a ? a.plannedDate ? a.plannedDate : a.end_date ? t.calculateEndDate({
+            plannedDate: a.end_date,
             duration: -t.config.durationStep,
             task: e
           }) : null : t.config.plannedDate || t.getState().min_date
@@ -2584,37 +2357,36 @@ var JSGantt = function () {
       }, t.createTask = function (e, i, n) {
         return e = e || {}, t.defined(e.id) || (e.id = t.uid()), e.plannedDate || (e.plannedDate = t._defaultTaskDate(e, i)), void 0 === e.orderId && (e.orderId = t.locale.labels.new_task), void 0 === e.duration && (e.duration = 1), this.isTaskExists(i) && (this.setParent(e, i, !0), this.getTask(i).$open = !0), this.callEvent("onTaskCreated", [e]) ? (this.config.details_on_create ? (e.$new = !0, this.silent(function () {
           t.$data.tasksStore.addItem(e, n)
-        }), this.selectTask(e.id), this.refreshData(), this.showModal(e.id)) : this.addTask(e, i, n) && (this.showTask(e.id), this.selectTask(e.id)), e.id) : null
-      }, t._update_flags = function (e, i) {
-
+        }), this.selectTask(e.id), this.refreshData()) : this.addTask(e, i, n) && (this.showTask(e.id), this.selectTask(e.id)), e.id) : null
+      }, t._update_flags = function (t, e) {
       }, t._get_task_timing_mode = function (t, e) {
         var i = this.getTaskType(t.type), n = {type: i, $no_start: !1, $no_end: !1};
-        return e || i != t.$rendered_type ? (i == this.config.types.project ? n.$no_end = n.$no_start = !0 : i != this.config.types.milestone && (n.$no_end = !(t.end_date || t.duration), n.$no_start = !t.plannedDate, this._isAllowedUnscheduledTask(t) && (n.$no_end = n.$no_start = !1)), n) : (n.$no_start = t.$no_start, n.$no_end = t.$no_end, n)
+        return e || i != t.$rendered_type ? (i != this.config.types.milestone && (n.$no_end = !(t.end_date || t.duration), n.$no_start = !t.plannedDate), n) : (n.$no_start = t.$no_start, n.$no_end = t.$no_end, n)
       }, t._init_task_timing = function (e) {
         var i = t._get_task_timing_mode(e, !0), n = e.$rendered_type != i.type, r = i.type;
-        n && (e.$no_start = i.$no_start, e.$no_end = i.$no_end, e.$rendered_type = i.type), n && r != this.config.types.milestone && r == this.config.types.project && this._set_default_task_timing(e), r == this.config.types.milestone && (e.end_date = e.plannedDate), e.plannedDate && e.end_date && (e.duration = this.calculateDuration(e)), e.end_date || (e.end_date = e.plannedDate), e.duration = e.duration || 0
+        n && (e.$no_start = i.$no_start, e.$no_end = i.$no_end, e.$rendered_type = i.type), n && r != this.config.types.milestone && this._set_default_task_timing(e), r == this.config.types.milestone && (e.end_date = e.plannedDate), e.plannedDate && e.end_date && (e.duration = this.calculateDuration(e)), e.end_date || (e.end_date = e.plannedDate), e.duration = e.duration || 0
       }, t.isSummaryTask = function (e) {
         t.assert(e && e instanceof Object, "Invalid argument");
         var i = t._get_task_timing_mode(e);
         return !(!i.$no_end && !i.$no_start)
       }, t.getSubtaskDuration = function (e) {
         var i = 0, n = void 0 !== e ? e : t.config.root_id;
-        return this.eachTask(function (e) {
-          this.getTaskType(e.type) == t.config.types.project || this.isUnscheduledTask(e) || (i += e.duration)
+        return this.eachTask(function (t) {
+          i += t.duration
         }, n), i
       }, t.getSubtaskDates = function (e) {
         var i = null, n = null, r = void 0 !== e ? e : t.config.root_id;
-        return this.eachTask(function (e) {
-          this.getTaskType(e.type) == t.config.types.project || this.isUnscheduledTask(e) || (e.plannedDate && !e.$no_start && (!i || i > e.plannedDate.valueOf()) && (i = e.plannedDate.valueOf()), e.end_date && !e.$no_end && (!n || n < e.end_date.valueOf()) && (n = e.end_date.valueOf()))
+        return this.eachTask(function (t) {
+          t.plannedDate && !t.$no_start && (!i || i > t.plannedDate.valueOf()) && (i = t.plannedDate.valueOf()), t.end_date && !t.$no_end && (!n || n < t.end_date.valueOf()) && (n = t.end_date.valueOf())
         }, r), {plannedDate: i ? new Date(i) : null, end_date: n ? new Date(n) : null}
-      }, t._update_parents = function (e, i) {
-        if (e) {
-          var n = this.getTask(e), r = this.getParent(n), o = this._get_task_timing_mode(n), a = !0;
-          if (o.$no_start || o.$no_end) {
-            var s = n.plannedDate.valueOf(), l = n.end_date.valueOf();
-            s == n.plannedDate.valueOf() && l == n.end_date.valueOf() && (a = !1), a && !i && this.refreshTask(n.id, !0)
+      }, t._update_parents = function (t, e) {
+        if (t) {
+          var i = this.getTask(t), n = this.getParent(i), r = this._get_task_timing_mode(i), a = !0;
+          if (r.$no_start || r.$no_end) {
+            var s = i.plannedDate.valueOf(), o = i.end_date.valueOf();
+            s == i.plannedDate.valueOf() && o == i.end_date.valueOf() && (a = !1), a && !e && this.refreshTask(i.id, !0)
           }
-          a && r && this.isTaskExists(r) && this._update_parents(r, i)
+          a && n && this.isTaskExists(n) && this._update_parents(n, e)
         }
       }, t.roundDate = function (e) {
         var i = t.getScale();
@@ -2623,16 +2395,16 @@ var JSGantt = function () {
           unit: i ? i.unit : t.config.durationUnit,
           step: i ? i.step : t.config.durationStep
         });
-        var r, o, a, s = e.date, l = e.step, c = e.unit;
-        if (!i) return s;
-        if (c == i.unit && l == i.step && +s >= +i.min_date && +s <= +i.max_date) a = Math.floor(t.columnIndexByDate(s)), i.trace_x[a] || (a -= 1, i.rtl && (a = 0)), o = new Date(i.trace_x[a]), r = t.date.add(o, l, c); else {
-          for (a = Math.floor(t.columnIndexByDate(s)), r = t.date[c + "_start"](new Date(i.min_date)), i.trace_x[a] && (r = t.date[c + "_start"](i.trace_x[a])); +r < +s;) {
-            var u = (r = t.date[c + "_start"](t.date.add(r, l, c))).getTimezoneOffset();
-            r = t._correct_dst_change(r, u, r, c), t.date[c + "_start"] && (r = t.date[c + "_start"](r))
+        var r, a, s, o = e.date, l = e.step, c = e.unit;
+        if (!i) return o;
+        if (c == i.unit && l == i.step && +o >= +i.min_date && +o <= +i.max_date) s = Math.floor(t.columnIndexByDate(o)), i.trace_x[s] || (s -= 1, i.rtl && (s = 0)), a = new Date(i.trace_x[s]), r = t.date.add(a, l, c); else {
+          for (s = Math.floor(t.columnIndexByDate(o)), r = t.date[c + "_start"](new Date(i.min_date)), i.trace_x[s] && (r = t.date[c + "_start"](i.trace_x[s])); +r < +o;) {
+            var d = (r = t.date[c + "_start"](t.date.add(r, l, c))).getTimezoneOffset();
+            r = t._correct_dst_change(r, d, r, c), t.date[c + "_start"] && (r = t.date[c + "_start"](r))
           }
-          o = t.date.add(r, -1 * l, c)
+          a = t.date.add(r, -1 * l, c)
         }
-        return e.dir && "future" == e.dir ? r : e.dir && "past" == e.dir ? o : Math.abs(s - o) < Math.abs(r - s) ? o : r
+        return e.dir && "future" == e.dir ? r : e.dir && "past" == e.dir ? a : Math.abs(o - a) < Math.abs(r - o) ? a : r
       }, t.correctTaskWorkTime = function (e) {
         t.config.work_time && t.config.correct_work_time && (this.isWorkTime(e.plannedDate, void 0, e) ? this.isWorkTime(new Date(+e.end_date - 1), void 0, e) || (e.end_date = this.calculateEndDate(e)) : (e.plannedDate = this.getClosestWorkTime({
           date: e.plannedDate,
@@ -2646,15 +2418,14 @@ var JSGantt = function () {
       })
     }
   }, function (t, e, i) {
-    i(0);
-    t.exports = {
+    i(0), t.exports = {
       create: function (t, e) {
         return {
           getWorkHours: function (t) {
             return e.getWorkHours(t)
           }, setWorkTime: function (t) {
             return e.setWorkTime(t)
-          },isWorkTime: function (t, i, n) {
+          }, isWorkTime: function (t, i, n) {
             return e.isWorkTime(t, i, n)
           }, getClosestWorkTime: function (t) {
             return e.getClosestWorkTime(t)
@@ -2687,12 +2458,12 @@ var JSGantt = function () {
           i = t.end_date, n = t.unit, r = t.step;
         return this._calculateDuration(e, i, n, r)
       }, _calculateDuration: function (t, e, i, n) {
-        var r = this.$jsgantt.date, o = {week: 6048e5, day: 864e5, hour: 36e5, minute: 6e4}, a = 0;
-        if (o[i]) a = Math.round((e - t) / (n * o[i])); else {
-          for (var s = new Date(t), l = new Date(e); s.valueOf() < l.valueOf();) a += 1, s = r.add(s, n, i);
-          s.valueOf() != e.valueOf() && (a += (l - s) / (r.add(s, n, i) - s))
+        var r = this.$jsgantt.date, a = {week: 6048e5, day: 864e5, hour: 36e5, minute: 6e4}, s = 0;
+        if (a[i]) s = Math.round((e - t) / (n * a[i])); else {
+          for (var o = new Date(t), l = new Date(e); o.valueOf() < l.valueOf();) s += 1, o = r.add(o, n, i);
+          o.valueOf() != e.valueOf() && (s += (l - o) / (r.add(o, n, i) - o))
         }
-        return Math.round(a)
+        return Math.round(s)
       }, hasDuration: function () {
         var t = this.argumentsHelper.getDurationArguments.apply(this.argumentsHelper, arguments), e = t.plannedDate,
           i = t.end_date;
@@ -2706,11 +2477,11 @@ var JSGantt = function () {
   }, function (t, e, i) {
     var n = i(24), r = i(68);
 
-    function o(t) {
+    function a(t) {
       this.$jsgantt = t.$jsgantt, this.argumentsHelper = n(this.$jsgantt), this.calendarManager = t, this.$disabledCalendar = new r(this.$jsgantt, this.argumentsHelper)
     }
 
-    o.prototype = {
+    a.prototype = {
       _getCalendar: function (t) {
         var e;
         if (this.$jsgantt.$services.config().work_time) {
@@ -2736,7 +2507,7 @@ var JSGantt = function () {
       }, calculateEndDate: function (t) {
         return t = this.argumentsHelper.calculateEndDateArguments.apply(this.argumentsHelper, arguments), this._getCalendar(t).calculateEndDate(t)
       }
-    }, t.exports = o
+    }, t.exports = a
   }, function (t, e, i) {
     "use strict";
     Object.defineProperty(e, "__esModule", {value: !0});
@@ -2796,11 +2567,11 @@ var JSGantt = function () {
   }, function (t, e, i) {
     var n = i(72), r = i(0);
 
-    function o(t, e) {
+    function a(t, e) {
       this.argumentsHelper = e, this.$jsgantt = t, this._workingUnitsCache = n.createCacheObject()
     }
 
-    o.prototype = {
+    a.prototype = {
       units: ["year", "month", "week", "day", "hour", "minute"], _getUnitOrder: function (t) {
         for (var e = 0, i = this.units.length; e < i; e++) if (this.units[e] == t) return e
       }, _timestamp: function (t) {
@@ -2820,13 +2591,13 @@ var JSGantt = function () {
       }, _internDatesPull: {}, _nextDate: function (t, e, i) {
         return this.$jsgantt.date.add(t, i, e)
       }, _getWorkUnitsBetweenGeneric: function (t, e, i, n) {
-        var r = this.$jsgantt.date, o = new Date(t), a = new Date(e);
+        var r = this.$jsgantt.date, a = new Date(t), s = new Date(e);
         n = n || 1;
-        var s, l, c = 0, u = null, d = !1;
-        (s = r[i + "_start"](new Date(o))).valueOf() != o.valueOf() && (d = !0);
-        var h = !1;
-        (l = r[i + "_start"](new Date(e))).valueOf() != e.valueOf() && (h = !0);
-        for (var f = !1; o.valueOf() < a.valueOf();) f = (u = this._nextDate(o, i, n)).valueOf() > a.valueOf(), this._isWorkTime(o, i) && ((d || h && f) && (s = r[i + "_start"](new Date(o)), l = r.add(s, n, i)), d ? (d = !1, u = this._nextDate(s, i, n), c += (l.valueOf() - o.valueOf()) / (l.valueOf() - s.valueOf())) : h && f ? (h = !1, c += (a.valueOf() - o.valueOf()) / (l.valueOf() - s.valueOf())) : c++), o = u;
+        var o, l, c = 0, d = null, h = !1;
+        (o = r[i + "_start"](new Date(a))).valueOf() != a.valueOf() && (h = !0);
+        var u = !1;
+        (l = r[i + "_start"](new Date(e))).valueOf() != e.valueOf() && (u = !0);
+        for (var f = !1; a.valueOf() < s.valueOf();) f = (d = this._nextDate(a, i, n)).valueOf() > s.valueOf(), this._isWorkTime(a, i) && ((h || u && f) && (o = r[i + "_start"](new Date(a)), l = r.add(o, n, i)), h ? (h = !1, d = this._nextDate(o, i, n), c += (l.valueOf() - a.valueOf()) / (l.valueOf() - o.valueOf())) : u && f ? (u = !1, c += (s.valueOf() - a.valueOf()) / (l.valueOf() - o.valueOf())) : c++), a = d;
         return c
       }, _getMinutesPerDay: function (t) {
         return 60 * this._getHoursPerDay(t)
@@ -2834,17 +2605,17 @@ var JSGantt = function () {
         for (var e = this._getWorkHours(t), i = 0, n = 0; n < e.length; n += 2) i += e[n + 1] - e[n] || 0;
         return i
       }, _getWorkUnitsForRange: function (t, e, i, n) {
-        var o, a = 0, s = new Date(t), l = new Date(e);
-        for (o = "minute" == i ? r.bind(this._getMinutesPerDay, this) : r.bind(this._getHoursPerDay, this); s.valueOf() < l.valueOf();) this._isWorkTime(s, "day") && (a += o(s)), s = this._nextDate(s, "day", 1);
-        return a / n
+        var a, s = 0, o = new Date(t), l = new Date(e);
+        for (a = "minute" == i ? r.bind(this._getMinutesPerDay, this) : r.bind(this._getHoursPerDay, this); o.valueOf() < l.valueOf();) this._isWorkTime(o, "day") && (s += a(o)), o = this._nextDate(o, "day", 1);
+        return s / n
       }, _getWorkUnitsBetweenQuick: function (t, e, i, n) {
-        var r = new Date(t), o = new Date(e);
+        var r = new Date(t), a = new Date(e);
         n = n || 1;
-        var a = new Date(r), s = this.$jsgantt.date.add(this.$jsgantt.date.day_start(new Date(r)), 1, "day");
-        if (o.valueOf() <= s.valueOf()) return this._getWorkUnitsBetweenGeneric(t, e, i, n);
-        var l = this.$jsgantt.date.day_start(new Date(o)), c = o, u = this._getWorkUnitsBetweenGeneric(a, s, i, n),
-          d = this._getWorkUnitsBetweenGeneric(l, c, i, n);
-        return u + this._getWorkUnitsForRange(s, l, i, n) + d
+        var s = new Date(r), o = this.$jsgantt.date.add(this.$jsgantt.date.day_start(new Date(r)), 1, "day");
+        if (a.valueOf() <= o.valueOf()) return this._getWorkUnitsBetweenGeneric(t, e, i, n);
+        var l = this.$jsgantt.date.day_start(new Date(a)), c = a, d = this._getWorkUnitsBetweenGeneric(s, o, i, n),
+          h = this._getWorkUnitsBetweenGeneric(l, c, i, n);
+        return d + this._getWorkUnitsForRange(o, l, i, n) + h
       }, _getCalendar: function () {
         return this.worktime
       }, _setCalendar: function (t) {
@@ -2856,8 +2627,7 @@ var JSGantt = function () {
         var e = this._timestamp({date: t}), i = !0, n = this._getCalendar();
         return void 0 !== n.dates[e] ? i = n.dates[e] : void 0 !== n.dates[t.getDay()] && (i = n.dates[t.getDay()]), !0 === i ? n.hours : i || []
       }, setWorkTime: function (t) {
-
-      },  _isWorkTime: function (t, e, i) {
+      }, _isWorkTime: function (t, e, i) {
         var n = String(t.valueOf()), r = this._workingUnitsCache.getItem(e, n);
         return -1 == r && (r = this._checkIfWorkingUnit(t, e, i), this._workingUnitsCache.setItem(e, n, r)), r
       }, isWorkTime: function () {
@@ -2873,62 +2643,62 @@ var JSGantt = function () {
         var t = this.argumentsHelper.getDurationArguments.apply(this.argumentsHelper, arguments), e = t.plannedDate,
           i = t.end_date, n = t.unit, r = t.step;
         if (!n) return !1;
-        var o = new Date(e), a = new Date(i);
-        for (r = r || 1; o.valueOf() < a.valueOf();) {
-          if (this._isWorkTime(o, n)) return !0;
-          o = this._nextDate(o, n, r)
+        var a = new Date(e), s = new Date(i);
+        for (r = r || 1; a.valueOf() < s.valueOf();) {
+          if (this._isWorkTime(a, n)) return !0;
+          a = this._nextDate(a, n, r)
         }
         return !1
       }, calculateEndDate: function () {
         var t = this.argumentsHelper.calculateEndDateArguments.apply(this.argumentsHelper, arguments),
           e = t.plannedDate, i = t.duration, n = t.unit, r = t.step;
         if (!n) return !1;
-        var o = t.duration >= 0 ? 1 : -1;
-        return i = Math.abs(1 * i), this._calculateEndDate(e, i, n, r * o)
+        var a = t.duration >= 0 ? 1 : -1;
+        return i = Math.abs(1 * i), this._calculateEndDate(e, i, n, r * a)
       }, _calculateEndDate: function (t, e, i, n) {
         return !!i && (1 == n && "minute" == i ? this._calculateMinuteEndDate(t, e, n) : 1 == n && "hour" == i ? this._calculateHourEndDate(t, e, n) : this._addInterval(t, e, i, n, null).end)
       }, _addInterval: function (t, e, i, n, r) {
-        for (var o = 0, a = t; o < e && (!r || !r(a));) {
-          var s = this._nextDate(a, i, n);
-          this._isWorkTime(n > 0 ? new Date(s.valueOf() - 1) : new Date(s.valueOf() + 1), i) && o++, a = s
+        for (var a = 0, s = t; a < e && (!r || !r(s));) {
+          var o = this._nextDate(s, i, n);
+          this._isWorkTime(n > 0 ? new Date(o.valueOf() - 1) : new Date(o.valueOf() + 1), i) && a++, s = o
         }
-        return {end: a, satrt: t, added: o}
+        return {end: s, satrt: t, added: a}
       }, _calculateHourEndDate: function (t, e, i) {
         var n = new Date(t), r = 0;
         i = i || 1, e = Math.abs(1 * e);
-        var o = this._addInterval(n, e, "hour", i, function (t) {
+        var a = this._addInterval(n, e, "hour", i, function (t) {
           return !(t.getHours() || t.getMinutes() || t.getSeconds() || t.getMilliseconds())
         });
-        if (r = o.added, n = o.end, (c = e - r) && c > 24) {
-          for (var a = n; r < e;) {
-            var s = this._nextDate(a, "day", i);
-            if (this._isWorkTime(i > 0 ? new Date(s.valueOf() - 1) : new Date(s.valueOf() + 1), "day")) {
-              var l = this._getHoursPerDay(a);
+        if (r = a.added, n = a.end, (c = e - r) && c > 24) {
+          for (var s = n; r < e;) {
+            var o = this._nextDate(s, "day", i);
+            if (this._isWorkTime(i > 0 ? new Date(o.valueOf() - 1) : new Date(o.valueOf() + 1), "day")) {
+              var l = this._getHoursPerDay(s);
               if (r + l >= e) break;
               r += l
             }
-            a = s
+            s = o
           }
-          n = a
+          n = s
         }
         if (r < e) {
           var c = e - r;
-          n = (o = this._addInterval(n, c, "hour", i, null)).end
+          n = (a = this._addInterval(n, c, "hour", i, null)).end
         }
         return n
       }, _calculateMinuteEndDate: function (t, e, i) {
         var n = new Date(t), r = 0;
         i = i || 1, e = Math.abs(1 * e);
-        var o = this._addInterval(n, e, "minute", i, function (t) {
+        var a = this._addInterval(n, e, "minute", i, function (t) {
           return !(t.getMinutes() || t.getSeconds() || t.getMilliseconds())
         });
-        if (r = o.added, n = o.end, r < e) {
-          var a = e - r, s = Math.floor(a / 60);
-          s && (n = this._calculateEndDate(n, s, "hour", i > 0 ? 1 : -1), r += 60 * s)
+        if (r = a.added, n = a.end, r < e) {
+          var s = e - r, o = Math.floor(s / 60);
+          o && (n = this._calculateEndDate(n, o, "hour", i > 0 ? 1 : -1), r += 60 * o)
         }
         if (r < e) {
           var l = e - r;
-          n = (o = this._addInterval(n, l, "minute", i, null)).end
+          n = (a = this._addInterval(n, l, "minute", i, null)).end
         }
         return n
       }, getClosestWorkTime: function () {
@@ -2938,8 +2708,8 @@ var JSGantt = function () {
         var n = new Date(t);
         if (this._isWorkTime(n, e)) return n;
         if (n = this.$jsgantt.date[e + "_start"](n), "any" != i && i) n = "past" == i ? this._getClosestWorkTimePast(n, e) : this._getClosestWorkTimeFuture(n, e); else {
-          var r = this._getClosestWorkTimeFuture(n, e), o = this._getClosestWorkTimePast(n, e);
-          n = Math.abs(r - t) <= Math.abs(t - o) ? r : o
+          var r = this._getClosestWorkTimeFuture(n, e), a = this._getClosestWorkTimePast(n, e);
+          n = Math.abs(r - t) <= Math.abs(t - a) ? r : a
         }
         return n
       }, _getClosestWorkTimeFuture: function (t, e) {
@@ -2948,35 +2718,31 @@ var JSGantt = function () {
         var i = this._getClosestWorkTimeGeneric(t, e, -1);
         return this.$jsgantt.date.add(i, 1, e)
       }, _getClosestWorkTimeGeneric: function (t, e, i) {
-        for (var n = this._getUnitOrder(e), r = this.units[n - 1], o = t, a = 0; !this._isWorkTime(o, e) && (!r || this._isWorkTime(o, r) || (o = this._getClosestWorkTimeGeneric(o, r, i), !this._isWorkTime(o, e)));) {
-          if (++a > 3e3) return this.$jsgantt.assert(!1, "Invalid working time check"), !1;
-          var s = o.getTimezoneOffset();
-          o = this.$jsgantt.date.add(o, i, e), o = this.$jsgantt._correct_dst_change(o, s, i, e), this.$jsgantt.date[e + "_start"] && (o = this.$jsgantt.date[e + "_start"](o))
+        for (var n = this._getUnitOrder(e), r = this.units[n - 1], a = t, s = 0; !this._isWorkTime(a, e) && (!r || this._isWorkTime(a, r) || (a = this._getClosestWorkTimeGeneric(a, r, i), !this._isWorkTime(a, e)));) {
+          if (++s > 3e3) return this.$jsgantt.assert(!1, "Invalid working time check"), !1;
+          var o = a.getTimezoneOffset();
+          a = this.$jsgantt.date.add(a, i, e), a = this.$jsgantt._correct_dst_change(a, o, i, e), this.$jsgantt.date[e + "_start"] && (a = this.$jsgantt.date[e + "_start"](a))
         }
-        return o
+        return a
       }
-    }, t.exports = o
+    }, t.exports = a
   }, function (t, e, i) {
-    i(0), i(24), i(73);
-
-    function n(t) {
+    i(0), i(24), i(73), t.exports = function (t) {
       this.$jsgantt = t
     }
-
-    t.exports = n
   }, function (t, e, i) {
-    var n = i(74), r = i(69), o = i(67), a = i(0);
+    var n = i(74), r = i(69), a = i(67), s = i(0);
     t.exports = function (t) {
-      var e = new n(t), i = new r(e), s = o.create(e, i);
-      a.mixin(t, s)
+      var e = new n(t), i = new r(e), o = a.create(e, i);
+      s.mixin(t, o)
     }
   }, function (t, e, i) {
     var n = i(3);
     t.exports = function (t) {
-      t.load = function (e, i, n) {
-        this._load_url = e, this.assert(arguments.length, "Invalid load arguments");
-        var r = "json", o = null;
-        return arguments.length >= 3 ? (r = i, o = n) : "string" == typeof arguments[1] ? r = arguments[1] : "function" == typeof arguments[1] && (o = arguments[1]), this._load_type = r, this.callEvent("onLoadStart", [e, r])
+      t.load = function (t, e, i) {
+        this._load_url = t, this.assert(arguments.length, "Invalid load arguments");
+        var n = "json";
+        return arguments.length >= 3 ? (n = e, i) : "string" == typeof arguments[1] ? n = arguments[1] : "function" == typeof arguments[1] && arguments[1], this._load_type = n, this.callEvent("onLoadStart", [t, n])
       }, t.parse = function (t, e) {
         this.on_load({xmlDoc: {responseText: t}}, e)
       }, t.serialize = function (t) {
@@ -2999,13 +2765,13 @@ var JSGantt = function () {
           var n = t[i], r = this.serverList[i];
           if (!r) continue;
           r.splice(0, r.length);
-          for (var o = 0; o < n.length; o++) {
-            var a = n[o], s = this.copy(a);
-            for (var l in s.key = s.value, a) if (a.hasOwnProperty(l)) {
+          for (var a = 0; a < n.length; a++) {
+            var s = n[a], o = this.copy(s);
+            for (var l in o.key = o.value, s) if (s.hasOwnProperty(l)) {
               if ("value" == l || "label" == l) continue;
-              s[l] = a[l]
+              o[l] = s[l]
             }
-            r.push(s)
+            r.push(o)
           }
         }
         e && this.callEvent("onOptionsLoad", [])
@@ -3028,8 +2794,8 @@ var JSGantt = function () {
           return i
         }, serialize: function () {
           var e = [], i = [];
-          t.eachTask(function (i) {
-             e.push(this.serializeTask(i))
+          t.eachTask(function (t) {
+            e.push(this.serializeTask(t))
           }, t.config.root_id, this);
           for (var n = t.getLinks(), r = 0; r < n.length; r++) i.push(this.serializeLink(n[r]));
           return {data: e, links: i}
@@ -3054,15 +2820,15 @@ var JSGantt = function () {
 
       var r = new RegExp("'", "gm");
 
-      function o(t) {
+      function a(t) {
         return (t + "").replace(r, "&#39;")
       }
 
-      for (var a in t._waiAria = {
+      for (var s in t._waiAria = {
         getAttributeString: function (t) {
           var e = [" "];
           for (var i in t) {
-            var r = o(n(t[i]));
+            var r = a(n(t[i]));
             e.push(i + "='" + r + "'")
           }
           return e.push(" "), e.join(" ")
@@ -3075,14 +2841,14 @@ var JSGantt = function () {
         }, taskRowAttr: function (e, i) {
           this._taskCommonAttr(e, i), !t.isReadonly(e) && t.config.order_branch && i.setAttribute("aria-grabbed", !1), i.setAttribute("role", "row"), i.setAttribute("aria-level", e.$level), t.hasChild(e.id) && i.setAttribute("aria-expanded", e.$open ? "true" : "false")
         }, linkAttr: function (e, i) {
-          var r = t.config.links, o = e.type == r.finish_to_start || e.type == r.start_to_start,
-            a = e.type == r.start_to_start || e.type == r.start_to_finish,
-            s = t.locale.labels.link + " " + t.templates.drag_link(e.source, a, e.target, o);
-          i.setAttribute("aria-label", n(s)), t.isReadonly(e) && i.setAttribute("aria-readonly", !0)
+          var r = t.config.links, a = e.type == r.finish_to_start || e.type == r.start_to_start,
+            s = e.type == r.start_to_start || e.type == r.start_to_finish,
+            o = t.locale.labels.link + " " + t.templates.drag_link(e.source, s, e.target, a);
+          i.setAttribute("aria-label", n(o)), t.isReadonly(e) && i.setAttribute("aria-readonly", !0)
         }, gridSeparatorAttr: function (t) {
           t.setAttribute("role", "separator")
         }, gridAttrString: function () {
-          return [" role='treegrid'", t.config.multiselect ? "aria-multiselectable='true'" : "aria-multiselectable='false'", " "].join(" ")
+          return [" role='treegrid'", "aria-multiselectable='false'", " "].join(" ")
         }, gridScaleRowAttrString: function () {
           return "role='row'"
         }, gridScaleCellAttrString: function (e, i) {
@@ -3100,11 +2866,11 @@ var JSGantt = function () {
         }, gridCellAttrString: function (t, e) {
           return this.getAttributeString({role: "gridcell", "aria-label": e})
         }
-      }, t._waiAria) t._waiAria[a] = function (e) {
+      }, t._waiAria) t._waiAria[s] = function (e) {
         return function () {
           return t.config.wai_aria_attributes ? e.apply(this, arguments) : ""
         }
-      }(t._waiAria[a])
+      }(t._waiAria[s])
     }
   }, function (t, e) {
     t.exports = function (t) {
@@ -3144,7 +2910,7 @@ var JSGantt = function () {
     t.exports = function (t) {
       function e(e) {
         return function () {
-          return !t.config.auto_types || t.getTaskType(t.config.types.project) != t.config.types.project || e.apply(this, arguments)
+          return !t.config.auto_types || e.apply(this, arguments)
         }
       }
 
@@ -3153,7 +2919,7 @@ var JSGantt = function () {
           !function e(i) {
             !function (e) {
               e = e.id || e;
-              var i = t.getTask(e), n = o(i);
+              var i = t.getTask(e), n = a(i);
               !1 !== n && r(i, n)
             }(i);
             var n = t.getParent(i);
@@ -3163,22 +2929,26 @@ var JSGantt = function () {
       }
 
       var n;
+
       function r(e, i) {
         e.type = i, t.updateTask(e.id)
       }
-      function o(e) {
+
+      function a(e) {
         var i = t.config.types, n = t.hasChild(e.id), r = t.getTaskType(e.type);
-        return n && r === i.task ? i.project : !n && r === i.project && i.task
+        return n && r === i.task ? i.project : !n && !1
       }
-      var a, s, l = !0;
+
+      var s, o, l = !0;
 
       function c(e) {
         e != t.config.root_id && t.isTaskExists(e) && i(e)
       }
+
       t.attachEvent("onParse", e(function () {
         l = !1, t.batchUpdate(function () {
           t.eachTask(function (t) {
-            var e = o(t);
+            var e = a(t);
             !1 !== e && r(t, e)
           })
         }), l = !0
@@ -3191,63 +2961,17 @@ var JSGantt = function () {
       })), t.attachEvent("onAfterTaskDelete", e(function (t, e) {
         c(n)
       })), t.attachEvent("onRowDragStart", e(function (e, i, n) {
-        return a = t.getParent(e), !0
-      })), t.attachEvent("onRowDragEnd", e(function (t, e) {
-        c(a), i(t)
-      })), t.attachEvent("onBeforeTaskMove", e(function (e, i, n) {
         return s = t.getParent(e), !0
+      })), t.attachEvent("onRowDragEnd", e(function (t, e) {
+        c(s), i(t)
+      })), t.attachEvent("onBeforeTaskMove", e(function (e, i, n) {
+        return o = t.getParent(e), !0
       })), t.attachEvent("onAfterTaskMove", e(function (t, e, n) {
-        document.querySelector(".jsgantt-drag-marker") || (c(s), i(t))
+        document.querySelector(".jsgantt-drag-marker") || (c(o), i(t))
       }))
     }
   }, function (t, e) {
     t.exports = function (t) {
-      function e(e) {
-        return function () {
-          return !t.config.placeholder_task || e.apply(this, arguments)
-        }
-      }
-
-      function i() {
-        var e = t.getTaskBy("type", t.config.types.placeholder);
-        if (!e.length || !t.isTaskExists(e[0].id)) {
-          var i = {unscheduled: !0, type: t.config.types.placeholder, duration: 0, orderId: t.locale.labels.new_task};
-          if (!1 === t.callEvent("onTaskCreated", [i])) return;
-          t.addTask(i)
-        }
-      }
-
-      function n(e) {
-        var i = t.getTask(e);
-        i.type == t.config.types.placeholder && (i.plannedDate && i.end_date && i.unscheduled && (i.unscheduled = !1), t.batchUpdate(function () {
-          var e = t.copy(i);
-          t.silent(function () {
-            t.deleteTask(i.id)
-          }), delete e["!nativeeditor_status"], e.type = t.config.types.task, e.id = t.uid(), t.addTask(e)
-        }))
-      }
-
-      t.config.types.placeholder = "placeholder", t.attachEvent("onDataProcessorReady", e(function (i) {
-        i && !i._silencedPlaceholder && (i._silencedPlaceholder = !0, i.attachEvent("onBeforeUpdate", e(function (e, n, r) {
-          return r.type != t.config.types.placeholder || (i.setUpdated(e, !1), !1)
-        })))
-      }));
-      var r = !1;
-      t.attachEvent("onGanttReady", function () {
-        r || (r = !0, t.attachEvent("onAfterTaskUpdate", e(n)), t.attachEvent("onAfterTaskAdd", e(function (e, n) {
-          n.type != t.config.types.placeholder && (t.getTaskBy("type", t.config.types.placeholder).forEach(function (e) {
-            t.silent(function () {
-              t.isTaskExists(e.id) && t.deleteTask(e.id)
-            })
-          }), i())
-        })), t.attachEvent("onParse", e(i)))
-      }), t.attachEvent("onBeforeUndoStack", function (e) {
-        for (var i = 0; i < e.commands.length; i++) {
-          var n = e.commands[i];
-          "task" === n.entity && n.value.type === t.config.types.placeholder && (e.commands.splice(i, 1), i--)
-        }
-        return !0
-      })
     }
   }, function (t, e, i) {
     var n = i(3);
@@ -3265,59 +2989,59 @@ var JSGantt = function () {
         }
 
         function r(i, r) {
-          for (var o, a = r.join("_") + "_" + i, s = {}, l = 0; l < r.length; l++) s[r[l]] = !0;
-          return e[a] ? o = e[a] : (o = e[a] = [], t.eachTask(function (e) {
-            var r;
-            e.type != t.config.types.project && (r = n.isArray(e[i]) ? e[i] : [e[i]], n.forEach(r, function (t) {
-              t && (s[t] || s[t.resource_id]) && o.push(e)
-            }))
-          })), o
+          for (var a, s = r.join("_") + "_" + i, o = {}, l = 0; l < r.length; l++) o[r[l]] = !0;
+          return e[s] ? a = e[s] : (a = e[s] = [], t.eachTask(function (t) {
+            var e;
+            e = n.isArray(t[i]) ? t[i] : [t[i]], n.forEach(e, function (e) {
+              e && (o[e] || o[e.resource_id]) && a.push(t)
+            })
+          })), a
         }
 
-        function o(n, r, o, a) {
-          var s = n.id + "_" + r + "_" + o.unit + "_" + o.step;
-          return e[s] ? e[s] : e[s] = function (e, n, r, o) {
-            p = "task" == e.$role ? [] : i(n, e.id);
-            for (var a = r.unit, s = {}, l = 0; l < p.length; l++) for (var c = p[l], u = t.date[a + "_start"](new Date(c.plannedDate)); u < c.end_date;) {
-              var d = u;
-              if (u = t.date.add(u, 1, a), t.isWorkTime({date: d, task: c, unit: a})) {
-                var h = d.valueOf();
-                s[h] || (s[h] = []), s[h].push(c)
+        function a(n, r, a, s) {
+          var o = n.id + "_" + r + "_" + a.unit + "_" + a.step;
+          return e[o] ? e[o] : e[o] = function (e, n, r, a) {
+            _ = "task" == e.$role ? [] : i(n, e.id);
+            for (var s = r.unit, o = {}, l = 0; l < _.length; l++) for (var c = _[l], d = t.date[s + "_start"](new Date(c.plannedDate)); d < c.end_date;) {
+              var h = d;
+              if (d = t.date.add(d, 1, s), t.isWorkTime({date: h, task: c, unit: s})) {
+                var u = h.valueOf();
+                o[u] || (o[u] = []), o[u].push(c)
               }
             }
-            var f, g, p, _ = [], v = o.$getConfig();
-            for (l = 0; l < r.trace_x.length; l++) f = new Date(r.trace_x[l]), g = t.date.add(f, 1, a), ((p = s[f.valueOf()] || []).length || v.resource_render_empty_cells) && _.push({
+            var f, g, _, p = [], v = a.$getConfig();
+            for (l = 0; l < r.trace_x.length; l++) f = new Date(r.trace_x[l]), g = t.date.add(f, 1, s), ((_ = o[f.valueOf()] || []).length || v.resource_render_empty_cells) && p.push({
               plannedDate: f,
               end_date: g,
-              tasks: p
+              tasks: _
             });
-            return _
-          }(n, r, o, a)
+            return p
+          }(n, r, a, s)
         }
 
-        function a(t, e, i, n) {
-          var r = 100 * (1 - (1 * t || 0)), o = n.posFromDate(e), a = n.posFromDate(i),
-            s = document.createElement("div");
-          return s.className = "jsgantt-histogram-hor-bar", s.style.top = r + "%", s.style.left = o + "px", s.style.width = a - o + 1 + "px", s
+        function s(t, e, i, n) {
+          var r = 100 * (1 - (1 * t || 0)), a = n.posFromDate(e), s = n.posFromDate(i),
+            o = document.createElement("div");
+          return o.className = "jsgantt-histogram-hor-bar", o.style.top = r + "%", o.style.left = a + "px", o.style.width = s - a + 1 + "px", o
         }
 
-        function s(t, e, i) {
+        function o(t, e, i) {
           if (t === e) return null;
-          var n = 1 - Math.max(t, e), r = Math.abs(t - e), o = document.createElement("div");
-          return o.className = "jsgantt-histogram-vert-bar", o.style.top = 100 * n + "%", o.style.height = 100 * r + "%", o.style.left = i + "px", o
+          var n = 1 - Math.max(t, e), r = Math.abs(t - e), a = document.createElement("div");
+          return a.className = "jsgantt-histogram-vert-bar", a.style.top = 100 * n + "%", a.style.height = 100 * r + "%", a.style.left = i + "px", a
         }
 
         function l(e, i, n) {
-          var r = t.config.resource_property, o = [];
+          var r = t.config.resource_property, a = [];
           if (t.getDatastore("task").exists(i)) {
-            var a = t.getTask(i);
-            o = a[r] || []
+            var s = t.getTask(i);
+            a = s[r] || []
           }
-          Array.isArray(o) || (o = [o]);
-          for (var s = 0; s < o.length; s++) o[s].resource_id == e && n.push({
-            task_id: a.id,
-            resource_id: o[s].resource_id,
-            value: o[s].value
+          Array.isArray(a) || (a = [a]);
+          for (var o = 0; o < a.length; o++) a[o].resource_id == e && n.push({
+            task_id: s.id,
+            resource_id: a[o].resource_id,
+            value: a[o].value
           })
         }
 
@@ -3325,46 +3049,46 @@ var JSGantt = function () {
           e = {}
         }), {
           renderLine: function (t, e) {
-            for (var i = e.$getConfig(), n = e.$getTemplates(), r = o(t, i.resource_property, e.getScale(), e), a = [], s = 0; s < r.length; s++) {
-              var l = r[s], c = n.resource_cell_class(l.plannedDate, l.end_date, t, l.tasks),
-                u = n.resource_cell_value(l.plannedDate, l.end_date, t, l.tasks);
-              if (c || u) {
-                var d = e.getItemPosition(t, l.plannedDate, l.end_date), h = document.createElement("div");
-                h.className = ["jsgantt-resource-marker", c].join(" "), h.style.cssText = ["left:" + d.left + "px", "width:" + d.width + "px", "height:" + (i.row_height - 1) + "px", "line-height:" + (i.row_height - 1) + "px", "top:" + d.top + "px"].join(";"), u && (h.innerHTML = u), a.push(h)
+            for (var i = e.$getConfig(), n = e.$getTemplates(), r = a(t, i.resource_property, e.getScale(), e), s = [], o = 0; o < r.length; o++) {
+              var l = r[o], c = n.resource_cell_class(l.plannedDate, l.end_date, t, l.tasks),
+                d = n.resource_cell_value(l.plannedDate, l.end_date, t, l.tasks);
+              if (c || d) {
+                var h = e.getItemPosition(t, l.plannedDate, l.end_date), u = document.createElement("div");
+                u.className = ["jsgantt-resource-marker", c].join(" "), u.style.cssText = ["left:" + h.left + "px", "width:" + h.width + "px", "height:" + (i.row_height - 1) + "px", "line-height:" + (i.row_height - 1) + "px", "top:" + h.top + "px"].join(";"), d && (u.innerHTML = d), s.push(u)
               }
             }
             var f = null;
-            if (a.length) for (f = document.createElement("div"), s = 0; s < a.length; s++) f.appendChild(a[s]);
+            if (s.length) for (f = document.createElement("div"), o = 0; o < s.length; o++) f.appendChild(s[o]);
             return f
           }, renderHistogram: function (e, i) {
-            for (var n = i.$getConfig(), r = i.$getTemplates(), l = o(e, n.resource_property, i.getScale(), i), c = [], u = {}, d = e.capacity || i.$config.capacity || 24, h = 0; h < l.length; h++) {
-              var f = l[h], g = r.histogram_cell_class(f.plannedDate, f.end_date, e, f.tasks),
-                p = r.histogram_cell_label(f.plannedDate, f.end_date, e, f.tasks),
-                _ = r.histogram_cell_allocated(f.plannedDate, f.end_date, e, f.tasks),
+            for (var n = i.$getConfig(), r = i.$getTemplates(), l = a(e, n.resource_property, i.getScale(), i), c = [], d = {}, h = e.capacity || i.$config.capacity || 24, u = 0; u < l.length; u++) {
+              var f = l[u], g = r.histogram_cell_class(f.plannedDate, f.end_date, e, f.tasks),
+                _ = r.histogram_cell_label(f.plannedDate, f.end_date, e, f.tasks),
+                p = r.histogram_cell_allocated(f.plannedDate, f.end_date, e, f.tasks),
                 v = r.histogram_cell_capacity(f.plannedDate, f.end_date, e, f.tasks);
-              if (u[f.plannedDate.valueOf()] = v || 0, g || p) {
-                var m = i.getItemPosition(e, f.plannedDate, f.end_date), y = document.createElement("div");
-                y.className = ["jsgantt-histogram-cell", g].join(" "), y.style.cssText = ["left:" + m.left + "px", "width:" + m.width + "px", "height:" + (n.row_height - 1) + "px", "line-height:" + (n.row_height - 1) + "px", "top:" + (m.top + 1) + "px"].join(";"), p && (p = "<div class='jsgantt-histogram_label'>" + p + "</div>"), _ && (p = "<div class='jsgantt-histogram-fill' style='height:" + 100 * Math.min(_ / d || 0, 1) + "%;'></div>" + p), p && (y.innerHTML = p), c.push(y)
+              if (d[f.plannedDate.valueOf()] = v || 0, g || _) {
+                var m = i.getItemPosition(e, f.plannedDate, f.end_date), $ = document.createElement("div");
+                $.className = ["jsgantt-histogram-cell", g].join(" "), $.style.cssText = ["left:" + m.left + "px", "width:" + m.width + "px", "height:" + (n.row_height - 1) + "px", "line-height:" + (n.row_height - 1) + "px", "top:" + (m.top + 1) + "px"].join(";"), _ && (_ = "<div class='jsgantt-histogram_label'>" + _ + "</div>"), p && (_ = "<div class='jsgantt-histogram-fill' style='height:" + 100 * Math.min(p / h || 0, 1) + "%;'></div>" + _), _ && ($.innerHTML = _), c.push($)
               }
             }
-            var k = null;
+            var y = null;
             if (c.length) {
-              for (k = document.createElement("div"), h = 0; h < c.length; h++) k.appendChild(c[h]);
-              var b = function (e, i, n) {
-                for (var r = i.getScale(), o = document.createElement("div"), l = 0; l < r.trace_x.length; l++) {
-                  var c = r.trace_x[l], u = r.trace_x[l + 1] || t.date.add(c, r.step, r.unit),
-                    d = r.trace_x[l].valueOf(), h = Math.min(e[d] / n, 1) || 0;
-                  if (h < 0) return null;
-                  var f = Math.min(e[u.valueOf()] / n, 1) || 0, g = a(h, c, u, i);
-                  g && o.appendChild(g);
-                  var p = s(h, f, i.posFromDate(u));
-                  p && o.appendChild(p)
+              for (y = document.createElement("div"), u = 0; u < c.length; u++) y.appendChild(c[u]);
+              var k = function (e, i, n) {
+                for (var r = i.getScale(), a = document.createElement("div"), l = 0; l < r.trace_x.length; l++) {
+                  var c = r.trace_x[l], d = r.trace_x[l + 1] || t.date.add(c, r.step, r.unit),
+                    h = r.trace_x[l].valueOf(), u = Math.min(e[h] / n, 1) || 0;
+                  if (u < 0) return null;
+                  var f = Math.min(e[d.valueOf()] / n, 1) || 0, g = s(u, c, d, i);
+                  g && a.appendChild(g);
+                  var _ = o(u, f, i.posFromDate(d));
+                  _ && a.appendChild(_)
                 }
-                return o
-              }(u, i, d);
-              b && (b.setAttribute("data-resource-id", e.id), b.style.position = "absolute", b.style.top = m.top + 1 + "px", b.style.height = n.row_height - 1 + "px", b.style.left = 0, k.appendChild(b))
+                return a
+              }(d, i, h);
+              k && (k.setAttribute("data-resource-id", e.id), k.style.position = "absolute", k.style.top = m.top + 1 + "px", k.style.height = n.row_height - 1 + "px", k.style.left = 0, y.appendChild(k))
             }
-            return k
+            return y
           }, filterTasks: i, getResourceAssignments: function (e, i) {
             var n = [], r = t.config.resource_property;
             return void 0 !== i ? l(e, i, n) : t.getTaskBy(r, e).forEach(function (t) {
@@ -3433,9 +3157,9 @@ var JSGantt = function () {
             return this._getWBSCode(t)
           }, getByWBSCode: function (e) {
             for (var i = e.split("."), n = t.config.root_id, r = 0; r < i.length; r++) {
-              var o = t.getChildren(n), a = 1 * i[r] - 1;
-              if (!t.isTaskExists(o[a])) return null;
-              n = o[a]
+              var a = t.getChildren(n), s = 1 * i[r] - 1;
+              if (!t.isTaskExists(a[s])) return null;
+              n = a[s]
             }
             return t.isTaskExists(n) ? t.getTask(n) : null
           }, _calcWBS: function () {
@@ -3448,8 +3172,8 @@ var JSGantt = function () {
                   var r = t.getTask(n).$wbs;
                   r && ((r = r.split("."))[r.length - 1]++, this._setWBSCode(i, r.join(".")))
                 } else {
-                  var o = t.getParent(i.id);
-                  this._setWBSCode(i, t.getTask(o).$wbs + ".1")
+                  var a = t.getParent(i.id);
+                  this._setWBSCode(i, t.getTask(a).$wbs + ".1")
                 }
               }, t.config.root_id, this), this._needRecalc = !1
             }
@@ -3470,40 +3194,20 @@ var JSGantt = function () {
   }, function (t, e) {
     t.exports = function (t) {
       t.batchUpdate = function (t) {
-        var e = {}, i = !1;
-
-        function n(t, i) {
-          i = "function" == typeof i ? i : function () {
-          }, e[t] || (e[t] = this[t], this[t] = i)
-        }
-
-        function r(t) {
-          e[t] && (this[t] = e[t], e[t] = null)
-        }
-
-        function o() {
-          for (var t in e) r.call(this, t)
-        }
-
-        function a(t) {
-          try {
-            t()
-          } catch (t) {
-            window.console.error(t)
-          }
-        }
-
+        var e = !1;
         return t.$services.getService("state").registerProvider("batchUpdate", function () {
-          return {batch_update: i}
-        }, !0), function (t, e) {
-          if (i) a(t); else {
-            var r, s = this._dp && "off" != this._dp.updateMode;
-            s && (r = this._dp.updateMode, this._dp.setUpdateMode("off"));
-            var l = {}, c = {
-              render: !0, refreshData: !0, refreshTask: !0, refreshLink: !0
-            };
-
-            i = !1, e || this.render(), s && (this._dp.setUpdateMode(r), this._dp.setGanttMode("task"), this._dp.sendData(), this._dp.setGanttMode("link"), this._dp.sendData())
+          return {batch_update: e}
+        }, !0), function (t, i) {
+          if (e) !function (t) {
+            try {
+              t()
+            } catch (t) {
+              window.console.error(t)
+            }
+          }(t); else {
+            var n, r = this._dp && "off" != this._dp.updateMode;
+            r && (n = this._dp.updateMode, this._dp.setUpdateMode("off"));
+            e = !1, i || this.render(), r && (this._dp.setUpdateMode(n), this._dp.setGanttMode("task"), this._dp.sendData(), this._dp.setGanttMode("link"), this._dp.sendData())
           }
         }
       }(t)
@@ -3511,48 +3215,48 @@ var JSGantt = function () {
   }, function (t, e, i) {
     var n = i(1);
     t.exports = function (t) {
-      var e = 50, i = 30, r = 10, o = 50, a = null, s = !1, l = null, c = {started: !1}, u = {};
+      var e = 50, i = 30, r = 10, a = 50, s = null, o = !1, l = null, c = {started: !1}, d = {};
 
-      function d() {
+      function h() {
         var e = !!document.querySelector(".jsgantt-drag-marker"),
           i = !!document.querySelector(".jsgantt-drag-marker.jsgantt-grid-resize-area"),
           n = !!document.querySelector(".jsgantt-link-direction");
-        return s = e && !i && !n, !(!t.getState().drag_mode && !e || i)
+        return o = e && !i && !n, !(!t.getState().drag_mode && !e || i)
       }
 
-      function h(e) {
+      function u(e) {
         if (l && (clearTimeout(l), l = null), e) {
           var i = t.config.autoscroll_speed;
           i && i < 10 && (i = 10), l = setTimeout(function () {
-            a = setInterval(p, i || o)
+            s = setInterval(_, i || a)
           }, t.config.autoscroll_delay || r)
         }
       }
 
       function f(t) {
-        t ? (h(!0), c.started || (c.x = u.x, c.y = u.y, c.started = !0)) : (a && (clearInterval(a), a = null), h(!1), c.started = !1)
+        t ? (u(!0), c.started || (c.x = d.x, c.y = d.y, c.started = !0)) : (s && (clearInterval(s), s = null), u(!1), c.started = !1)
       }
 
       function g(e) {
-        var i = d();
-        if (!a && !l || i || f(!1), !t.config.autoscroll || !i) return !1;
-        u = {x: e.clientX, y: e.clientY}, !a && i && f(!0)
+        var i = h();
+        if (!s && !l || i || f(!1), !t.config.autoscroll || !i) return !1;
+        d = {x: e.clientX, y: e.clientY}, !s && i && f(!0)
       }
 
-      function p() {
-        if (!d()) return f(!1), !1;
-        var e = n.getNodePosition(t.$task || t.$grid || t.$root), r = u.x - e.x, o = u.y - e.y,
-          a = s ? 0 : _(r, e.width, c.x - e.x), l = _(o, e.height, c.y - e.y), h = t.getScrollState(), g = h.y,
-          p = h.inner_height, v = h.height, m = h.x, y = h.inner_width, k = h.width;
-        l && !p ? l = 0 : l < 0 && !g ? l = 0 : l > 0 && g + p >= v + 2 && (l = 0), a && !y ? a = 0 : a < 0 && !m ? a = 0 : a > 0 && m + y >= k && (a = 0);
-        var b = t.config.autoscroll_step;
-        b && b < 2 && (b = 2), l *= b || i, ((a *= b || i) || l) && function (e, i) {
-          var n = t.getScrollState(), r = null, o = null;
-          e && (r = n.x + e, r = Math.min(n.width, r), r = Math.max(0, r)), i && (o = n.y + i, o = Math.min(n.height, o), o = Math.max(0, o)), t.scrollTo(r, o)
-        }(a, l)
+      function _() {
+        if (!h()) return f(!1), !1;
+        var e = n.getNodePosition(t.$task || t.$grid || t.$root), r = d.x - e.x, a = d.y - e.y,
+          s = o ? 0 : p(r, e.width, c.x - e.x), l = p(a, e.height, c.y - e.y), u = t.getScrollState(), g = u.y,
+          _ = u.inner_height, v = u.height, m = u.x, $ = u.inner_width, y = u.width;
+        l && !_ ? l = 0 : l < 0 && !g ? l = 0 : l > 0 && g + _ >= v + 2 && (l = 0), s && !$ ? s = 0 : s < 0 && !m ? s = 0 : s > 0 && m + $ >= y && (s = 0);
+        var k = t.config.autoscroll_step;
+        k && k < 2 && (k = 2), l *= k || i, ((s *= k || i) || l) && function (e, i) {
+          var n = t.getScrollState(), r = null, a = null;
+          e && (r = n.x + e, r = Math.min(n.width, r), r = Math.max(0, r)), i && (a = n.y + i, a = Math.min(n.height, a), a = Math.max(0, a)), t.scrollTo(r, a)
+        }(s, l)
       }
 
-      function _(t, i, n) {
+      function p(t, i, n) {
         return t - e < 0 && t < n ? -1 : t > i - e && t > n ? 1 : 0
       }
 
@@ -3593,8 +3297,8 @@ var JSGantt = function () {
       return t.prototype.attach = function () {
         var t = this.$dp, e = this.$jsgantt, n = i(25), r = {};
 
-        function o(i) {
-          for (var n = t.updatedRows.slice(), r = !1, o = 0; o < n.length && !t._in_progress[i]; o++) n[o] === i && ("inserted" === e.getUserData(i, "!nativeeditor_status") && (r = !0), t.setUpdated(i, !1));
+        function a(i) {
+          for (var n = t.updatedRows.slice(), r = !1, a = 0; a < n.length && !t._in_progress[i]; a++) n[a] === i && ("inserted" === e.getUserData(i, "!nativeeditor_status") && (r = !0), t.setUpdated(i, !1));
           return r
         }
 
@@ -3608,14 +3312,14 @@ var JSGantt = function () {
             links: n.getSubtreeLinks(e, t)
           }, !0)
         })), this._dataProcessorHandlers.push(e.attachEvent("onAfterTaskDelete", function (i, n) {
-          if (t.setGanttMode("tasks"), !o(i)) {
+          if (t.setGanttMode("tasks"), !a(i)) {
             if (e.config.cascade_delete && r[i]) {
-              var a = t.updateMode;
+              var s = t.updateMode;
               t.setUpdateMode("off");
-              var s = r[i];
-              for (var l in s.tasks) o(l) || t.setUpdated(l, !0, "deleted");
-              for (var l in t.setGanttMode("links"), s.links) o(l) || t.setUpdated(l, !0, "deleted");
-              r[i] = null, "off" !== a && t.sendAllData(), t.setGanttMode("tasks"), t.setUpdateMode(a)
+              var o = r[i];
+              for (var l in o.tasks) a(l) || t.setUpdated(l, !0, "deleted");
+              for (var l in t.setGanttMode("links"), o.links) a(l) || t.setUpdated(l, !0, "deleted");
+              r[i] = null, "off" !== s && t.sendAllData(), t.setGanttMode("tasks"), t.setUpdateMode(s)
             }
             t.setUpdated(i, !0, "deleted"), "off" === t.updateMode || t._tSend || t.sendAllData()
           }
@@ -3624,62 +3328,62 @@ var JSGantt = function () {
         })), this._dataProcessorHandlers.push(e.attachEvent("onAfterLinkAdd", function (i, n) {
           e.isLinkExists(i) && (t.setGanttMode("links"), t.setUpdated(i, !0, "inserted"))
         })), this._dataProcessorHandlers.push(e.attachEvent("onAfterLinkDelete", function (e, i) {
-          t.setGanttMode("links"), !o(e) && t.setUpdated(e, !0, "deleted")
+          t.setGanttMode("links"), !a(e) && t.setUpdated(e, !0, "deleted")
         })), this._dataProcessorHandlers.push(e.attachEvent("onRowDragEnd", function (t, i) {
           e._sendTaskOrder(t, e.getTask(t))
         }));
-        var a = null, s = null;
+        var s = null, o = null;
         this._dataProcessorHandlers.push(e.attachEvent("onTaskIdChange", function (i, n) {
           if (t._waitMode) {
             var r = e.getChildren(n);
             if (r.length) {
-              a = a || {};
-              for (var o = 0; o < r.length; o++) {
-                var l = this.getTask(r[o]);
-                a[l.id] = l
+              s = s || {};
+              for (var a = 0; a < r.length; a++) {
+                var l = this.getTask(r[a]);
+                s[l.id] = l
               }
             }
             var c = function (t) {
               var e = [];
               return t.$source && (e = e.concat(t.$source)), t.$target && (e = e.concat(t.$target)), e
             }(this.getTask(n));
-            if (c.length) for (s = s || {}, o = 0; o < c.length; o++) {
-              var u = this.getLink(c[o]);
-              s[u.id] = u
+            if (c.length) for (o = o || {}, a = 0; a < c.length; a++) {
+              var d = this.getLink(c[a]);
+              o[d.id] = d
             }
           }
         })), t.attachEvent("onAfterUpdateFinish", function () {
-          (a || s) && (e.batchUpdate(function () {
-            for (var t in a) e.updateTask(a[t].id);
-            for (var t in s) e.updateLink(s[t].id);
-            a = null, s = null
-          }), a ? e._dp.setGanttMode("tasks") : e._dp.setGanttMode("links"))
+          (s || o) && (e.batchUpdate(function () {
+            for (var t in s) e.updateTask(s[t].id);
+            for (var t in o) e.updateLink(o[t].id);
+            s = null, o = null
+          }), s ? e._dp.setGanttMode("tasks") : e._dp.setGanttMode("links"))
         }), t.attachEvent("insertCallback", function (t, i, n, r) {
-          var o = t.data, a = {add: e.addTask, isExist: e.isTaskExists};
-          "links" === r && (a.add = e.addLink, a.isExist = e.isLinkExists), a.isExist.call(e, i) || (o.id = i, a.add.call(e, o))
+          var a = t.data, s = {add: e.addTask, isExist: e.isTaskExists};
+          "links" === r && (s.add = e.addLink, s.isExist = e.isLinkExists), s.isExist.call(e, i) || (a.id = i, s.add.call(e, a))
         }), t.attachEvent("updateCallback", function (t, i) {
           var n = t.data;
           if (e.isTaskExists(i)) {
             var r = e.getTask(i);
-            for (var o in n) {
-              var a = n[o];
-              switch (o) {
+            for (var a in n) {
+              var s = n[a];
+              switch (a) {
                 case"id":
                   continue;
                 case"plannedDate":
                 case"end_date":
-                  a = e.templates.dateFormat(a);
+                  s = e.templates.dateFormat(s);
                   break;
                 case"duration":
-                  r.end_date = e.calculateEndDate({plannedDate: r.plannedDate, duration: a, task: r})
+                  r.end_date = e.calculateEndDate({plannedDate: r.plannedDate, duration: s, task: r})
               }
-              r[o] = a
+              r[a] = s
             }
             e.updateTask(i), e.refreshData()
           }
         }), t.attachEvent("deleteCallback", function (t, i, n, r) {
-          var o = {delete: e.deleteTask, isExist: e.isTaskExists};
-          "links" === r && (o.delete = e.deleteLink, o.isExist = e.isLinkExists), o.isExist.call(e, i) && o.delete.call(e, i)
+          var a = {delete: e.deleteTask, isExist: e.isTaskExists};
+          "links" === r && (a.delete = e.deleteLink, a.isExist = e.isLinkExists), a.isExist.call(e, i) && a.delete.call(e, i)
         })
       }, t.prototype.detach = function () {
         var t = this;
@@ -3691,27 +3395,25 @@ var JSGantt = function () {
     e.default = r
   }, function (t, e, i) {
     "use strict";
-
-    var n = i(4), r = i(3), o = i(0), a = i(92), s = i(91);
-
+    i(4), i(3), i(0), i(92), i(91)
   }, function (t, e, i) {
-      i(93);
-
+    i(93)
   }, function (t, e) {
     t.exports = {
       bindDataStore: function (t, e) {
         var i = e.getDatastore(t), n = function (t, e) {
           var n = e.getLayers(), r = i.getItem(t);
-          if (r && i.isVisible(t)) for (var o = 0; o < n.length; o++) n[o].render_item(r)
+          if (r && i.isVisible(t)) for (var a = 0; a < n.length; a++) n[a].render_item(r)
         };
 
         function r(t) {
           return !!t.$services.getService("state").getState("batchUpdate").batch_update
         }
-        i.attachEvent("onStoreUpdated", function (o, a, s) {
+
+        i.attachEvent("onStoreUpdated", function (a, s, o) {
           if (!r(e)) {
             var l = e.$services.getService("layers").getDataRender(t);
-            l && (o && "move" != s && "delete" != s ? (i.callEvent("onBeforeRefreshItem", [a.id]), n(a.id, l), i.callEvent("onAfterRefreshItem", [a.id])) : (i.callEvent("onBeforeRefreshAll", []), function (t) {
+            l && (a && "move" != o && "delete" != o ? (i.callEvent("onBeforeRefreshItem", [s.id]), n(s.id, l), i.callEvent("onAfterRefreshItem", [s.id])) : (i.callEvent("onBeforeRefreshAll", []), function (t) {
               for (var e = l.getLayers(), n = 0; n < e.length; n++) e[n].clear();
               var r = i.getVisibleItems();
               for (n = 0; n < e.length; n++) e[n].render_items(r)
@@ -3721,12 +3423,12 @@ var JSGantt = function () {
           e.render()
         }), i.attachEvent("onItemClose", function () {
           e.render()
-        }), i.attachEvent("onIdChange", function (o, a) {
-          if (i.callEvent("onBeforeIdChange", [o, a]), !r(e)) {
-            var s = e.$services.getService("layers").getDataRender(t);
+        }), i.attachEvent("onIdChange", function (a, s) {
+          if (i.callEvent("onBeforeIdChange", [a, s]), !r(e)) {
+            var o = e.$services.getService("layers").getDataRender(t);
             !function (t, e, i, n) {
               for (var r = 0; r < t.length; r++) t[r].change_id(e, i)
-            }(s.getLayers(), o, a, i.getItem(a)), n(a, s)
+            }(o.getLayers(), a, s, i.getItem(s)), n(s, o)
           }
         })
       }
@@ -3766,9 +3468,7 @@ var JSGantt = function () {
     var n = i(0);
     t.exports = function () {
       return {
-        getLinkCount: function () {
-          return this.$data.linksStore.count()
-        }, getLink: function (t) {
+        getLink: function (t) {
           return this.$data.linksStore.getItem(t)
         }, getLinks: function () {
           return this.$data.linksStore.getItems()
@@ -3798,8 +3498,8 @@ var JSGantt = function () {
           if (t || e) {
             t = +t || -1 / 0, e = +e || 1 / 0;
             for (var r = 0; r < i.length; r++) {
-              var o = i[r];
-              +o.plannedDate < e && +o.end_date > t && n.push(o)
+              var a = i[r];
+              +a.plannedDate < e && +a.end_date > t && n.push(a)
             }
           } else n = i;
           return n
@@ -3822,11 +3522,9 @@ var JSGantt = function () {
           var i = this.$data.tasksStore.getItem(e), n = [];
           i.$source && (n = n.concat(i.$source)), i.$target && (n = n.concat(i.$target));
           for (var r = 0; r < n.length; r++) {
-            var o = this.getLink(n[r]);
-            o.source == t && (o.source = e), o.target == t && (o.target = e)
+            var a = this.getLink(n[r]);
+            a.source == t && (a.source = e), a.target == t && (a.target = e)
           }
-        }, calculateTaskLevel: function (t) {
-          return this.$data.tasksStore.calculateItemLevel(t)
         }, getNext: function (t) {
           return this.$data.tasksStore.getNext(t)
         }, getPrev: function (t) {
@@ -3859,9 +3557,9 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(98), o = i(97), a = i(29), s = i(27), l = i(96), c = i(95);
+    var n = i(0), r = i(98), a = i(97), s = i(29), o = i(27), l = i(96), c = i(95);
 
-    function u() {
+    function d() {
       for (var t = this.$services.getService("datastores"), e = [], i = 0; i < t.length; i++) e.push(this.getDatastore(t[i]));
       return e
     }
@@ -3870,7 +3568,7 @@ var JSGantt = function () {
       create: function () {
         var t = n.mixin({}, {
           createDatastore: function (t) {
-            var e = "treedatastore" == (t.type || "").toLowerCase() ? s : a;
+            var e = "treedatastore" == (t.type || "").toLowerCase() ? o : s;
             if (t) {
               var i = this;
               t.openInitially = function () {
@@ -3893,7 +3591,7 @@ var JSGantt = function () {
           }, refreshData: function () {
             var t = this.getScrollState();
             this.callEvent("onBeforeDataRender", []);
-            for (var e = u.call(this), i = 0; i < e.length; i++) e[i].refresh();
+            for (var e = d.call(this), i = 0; i < e.length; i++) e[i].refresh();
             (t.x || t.y) && this.scrollTo(t.x, t.y), this.callEvent("onDataRender", [])
           }, isChildOf: function (t, e) {
             return this.$data.tasksStore.isChildOf(t, e)
@@ -3914,10 +3612,8 @@ var JSGantt = function () {
               })
             })
           }, clearAll: function () {
-            for (var t = u.call(this), e = 0; e < t.length; e++) t[e].clearAll();
+            for (var t = d.call(this), e = 0; e < t.length; e++) t[e].clearAll();
             this._update_flags(), this.userdata = {}, this.callEvent("onClear", []), this.render()
-          }, _clear_data: function () {
-            this.$data.tasksStore.clearAll(), this.$data.linksStore.clearAll(), this._update_flags(), this.userdata = {}
           }, selectTask: function (t) {
             var e = this.$data.tasksStore;
             return !!this.config.select_task && (t && e.select(t), e.getSelectedId())
@@ -3925,15 +3621,15 @@ var JSGantt = function () {
             return this.$data.tasksStore.getSelectedId()
           }
         });
-        return n.mixin(t, r()), n.mixin(t, o()), t
+        return n.mixin(t, r()), n.mixin(t, a()), t
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(99), o = i(26);
+    var n = i(0), r = i(99), a = i(26);
     t.exports = function (t) {
       var e = r.create();
       n.mixin(t, e);
-      var a = t.createDatastore({
+      var s = t.createDatastore({
         name: "task", type: "treeDatastore", rootId: function () {
           return t.config.root_id
         }, initItem: n.bind(function (e) {
@@ -3943,9 +3639,9 @@ var JSGantt = function () {
             plannedDate: e.end_date,
             duration: -e.duration,
             task: e
-          }))), e.progress = Number(e.progress) || 0, this._isAllowedUnscheduledTask(e) && this._set_default_task_timing(e), this._init_task_timing(e), e.plannedDate && e.end_date && this.correctTaskWorkTime(e), e.$source = [], e.$target = [], void 0 === e.parent && this.setParent(e, this.config.root_id), e
+          }))), e.progress = Number(e.progress) || 0, this._init_task_timing(e), e.plannedDate && e.end_date && this.correctTaskWorkTime(e), e.$source = [], e.$target = [], void 0 === e.parent && this.setParent(e, this.config.root_id), e
         }, t)
-      }), s = t.createDatastore({
+      }), o = t.createDatastore({
         name: "link", initItem: n.bind(function (t) {
           return this.defined(t.id) || (t.id = this.uid()), t
         }, t)
@@ -3971,7 +3667,7 @@ var JSGantt = function () {
         }
       }
 
-      function u(e) {
+      function d(e) {
         if (t.isTaskExists(e.source)) for (var i = t.getTask(e.source), n = 0; n < i.$source.length; n++) if (i.$source[n] == e.id) {
           i.$source.splice(n, 1);
           break
@@ -3985,13 +3681,13 @@ var JSGantt = function () {
         }
       }
 
-      function d() {
+      function h() {
         for (var e = null, i = t.$data.tasksStore.getItems(), n = 0, r = i.length; n < r; n++) (e = i[n]).$source = [], e.$target = [];
-        var o = t.$data.linksStore.getItems();
-        for (n = 0, r = o.length; n < r; n++) c(o[n])
+        var a = t.$data.linksStore.getItems();
+        for (n = 0, r = a.length; n < r; n++) c(a[n])
       }
 
-      function h(t) {
+      function u(t) {
         var e = t.source, i = t.target;
         for (var n in t.events) !function (t, n) {
           e.attachEvent(t, function () {
@@ -4000,96 +3696,81 @@ var JSGantt = function () {
         }(n, t.events[n])
       }
 
-      a.attachEvent("onBeforeRefreshAll", function () {
-        for (var e = a.getVisibleItems(), i = 0; i < e.length; i++) {
-          var n = e[i];
-          n.$index = i
+      s.attachEvent("onBeforeRefreshAll", function () {
+        for (var t = s.getVisibleItems(), e = 0; e < t.length; e++) {
+          t[e].$index = e
         }
-      }), a.attachEvent("onFilterItem", function (e, i) {
+      }), s.attachEvent("onFilterItem", function (e, i) {
         var n = null, r = null;
-        if (t.config.plannedDate && t.config.end_date) {
-          if (t._isAllowedUnscheduledTask(i)) return !0;
-          if (n = t.config.plannedDate.valueOf(), r = t.config.end_date.valueOf(), +i.plannedDate > r || +i.end_date < +n) return !1
-        }
-        return !0
-      }), a.attachEvent("onIdChange", function (e, i) {
+        return !(t.config.plannedDate && t.config.end_date && (n = t.config.plannedDate.valueOf(), r = t.config.end_date.valueOf(), +i.plannedDate > r || +i.end_date < +n))
+      }), s.attachEvent("onIdChange", function (e, i) {
         t._update_flags(e, i)
-      }), a.attachEvent("onAfterUpdate", function (e) {
+      }), s.attachEvent("onAfterUpdate", function (e) {
         if (t._update_parents(e), t.getState("batchUpdate").batch_update) return !0;
-        for (var i = a.getItem(e), n = 0; n < i.$source.length; n++) s.refresh(i.$source[n]);
-        for (n = 0; n < i.$target.length; n++) s.refresh(i.$target[n])
-      }), a.attachEvent("onAfterItemMove", function (e, i, n) {
+        for (var i = s.getItem(e), n = 0; n < i.$source.length; n++) o.refresh(i.$source[n]);
+        for (n = 0; n < i.$target.length; n++) o.refresh(i.$target[n])
+      }), s.attachEvent("onAfterItemMove", function (e, i, n) {
         var r = t.getTask(e);
         null !== this.getNextSibling(e) ? r.$drop_target = this.getNextSibling(e) : null !== this.getPrevSibling(e) ? r.$drop_target = "next:" + this.getPrevSibling(e) : r.$drop_target = "next:null"
-      }), a.attachEvent("onStoreUpdated", function (e, i, n) {
+      }), s.attachEvent("onStoreUpdated", function (e, i, n) {
         if ("delete" == n && t._update_flags(e, null), !t.$services.getService("state").getState("batchUpdate").batch_update) {
           if (t.config.fit_tasks && "paint" !== n) {
             var r = t.getState();
-            o(t);
-            var a = t.getState();
-            if (+r.min_date != +a.min_date || +r.max_date != +a.max_date) return t.render(), t.callEvent("onScaleAdjusted", []), !0
+            a(t);
+            var s = t.getState();
+            if (+r.min_date != +s.min_date || +r.max_date != +s.max_date) return t.render(), t.callEvent("onScaleAdjusted", []), !0
           }
-          "add" == n || "move" == n || "delete" == n ? t.$layout.resize() : e || s.refresh()
+          "add" == n || "move" == n || "delete" == n ? t.$layout.resize() : e || o.refresh()
         }
-      }), s.attachEvent("onAfterAdd", function (t, e) {
+      }), o.attachEvent("onAfterAdd", function (t, e) {
         c(e)
-      }), s.attachEvent("onAfterUpdate", function (t, e) {
-        d()
-      }), s.attachEvent("onAfterDelete", function (t, e) {
-        u(e)
-      }), s.attachEvent("onBeforeIdChange", function (e, i) {
-        u(t.mixin({id: e}, t.$data.linksStore.getItem(i))), c(t.$data.linksStore.getItem(i))
-      }), s.attachEvent("onFilterItem", function (e, i) {
+      }), o.attachEvent("onAfterUpdate", function (t, e) {
+        h()
+      }), o.attachEvent("onAfterDelete", function (t, e) {
+        d(e)
+      }), o.attachEvent("onBeforeIdChange", function (e, i) {
+        d(t.mixin({id: e}, t.$data.linksStore.getItem(i))), c(t.$data.linksStore.getItem(i))
+      }), o.attachEvent("onFilterItem", function (e, i) {
         if (!t.config.show_links) return !1;
         var n = l(i.source), r = l(i.target);
-        return !(!n || !r || t._isAllowedUnscheduledTask(t.getTask(i.source)) || t._isAllowedUnscheduledTask(t.getTask(i.target))) && t.callEvent("onBeforeLinkDisplay", [e, i])
+        return !(!n || !r) && t.callEvent("onBeforeLinkDisplay", [e, i])
       }), function () {
         var e = i(25), n = {};
         t.attachEvent("onBeforeTaskDelete", function (i, r) {
           return n[i] = e.getSubtreeLinks(t, i), !0
         }), t.attachEvent("onAfterTaskDelete", function (e, i) {
           n[e] && t.$data.linksStore.silent(function () {
-            for (var i in n[e]) t.$data.linksStore.removeItem(i), u(n[e][i]);
+            for (var i in n[e]) t.$data.linksStore.removeItem(i), d(n[e][i]);
             n[e] = null
           })
         })
       }(), t.attachEvent("onAfterLinkDelete", function (e, i) {
         t.refreshTask(i.source), t.refreshTask(i.target)
-      }), t.attachEvent("onParse", d), h({
-        source: s,
+      }), t.attachEvent("onParse", h), u({
+        source: o,
         target: t,
         events: {
           onItemLoading: "onLinkLoading",
-          onBeforeAdd: "onBeforeLinkAdd",
-          onAfterAdd: "onAfterLinkAdd",
-          onBeforeUpdate: "onBeforeLinkUpdate",
-          onAfterUpdate: "onAfterLinkUpdate",
           onBeforeDelete: "onBeforeLinkDelete",
           onAfterDelete: "onAfterLinkDelete",
           onIdChange: "onLinkIdChange"
         }
-      }), h({
-        source: a,
+      }), u({
+        source: s,
         target: t,
         events: {
           onItemLoading: "onTaskLoading",
-          onBeforeAdd: "onBeforeTaskAdd",
-          onAfterAdd: "onAfterTaskAdd",
-          onBeforeUpdate: "onBeforeTaskUpdate",
-          onAfterUpdate: "onAfterTaskUpdate",
           onBeforeDelete: "onBeforeTaskDelete",
           onAfterDelete: "onAfterTaskDelete",
           onIdChange: "onTaskIdChange",
           onBeforeItemMove: "onBeforeTaskMove",
           onAfterItemMove: "onAfterTaskMove",
           onFilterItem: "onBeforeTaskDisplay",
-          onItemOpen: "onTaskOpened",
-          onItemClose: "onTaskClosed",
           onBeforeSelect: "onBeforeTaskSelected",
           onAfterSelect: "onTaskSelected",
           onAfterUnselect: "onTaskUnselected"
         }
-      }), t.$data = {tasksStore: a, linksStore: s}
+      }), t.$data = {tasksStore: s, linksStore: o}
     }
   }, function (t, e) {
     t.exports = function () {
@@ -4111,46 +3792,46 @@ var JSGantt = function () {
 
       var r = "DEFAULT_VALUE";
 
-      function o(t, e, i, n) {
-        var o = t(this);
-        return o && o.isVisible() ? o[e].apply(o, i) : n ? n() : r
+      function a(t, e, i, n) {
+        var a = t(this);
+        return a && a.isVisible() ? a[e].apply(a, i) : n ? n() : r
       }
 
       return {
         getColumnIndex: function (t) {
-          var i = o.call(this, e, "getColumnIndex", [t]);
+          var i = a.call(this, e, "getColumnIndex", [t]);
           return i === r ? 0 : i
         }, dateFromPos: function (e) {
-          var i = o.call(this, t, "dateFromPos", Array.prototype.slice.call(arguments));
+          var i = a.call(this, t, "dateFromPos", Array.prototype.slice.call(arguments));
           return i === r ? this.getState().min_date : i
         }, posFromDate: function (e) {
-          var i = o.call(this, t, "posFromDate", [e]);
+          var i = a.call(this, t, "posFromDate", [e]);
           return i === r ? 0 : i
         }, getRowTop: function (i) {
-          var n = this, a = o.call(n, t, "getRowTop", [i], function () {
-            return o.call(n, e, "getRowTop", [i])
+          var n = this, s = a.call(n, t, "getRowTop", [i], function () {
+            return a.call(n, e, "getRowTop", [i])
           });
-          return a === r ? 0 : a
+          return s === r ? 0 : s
         }, getTaskTop: function (i) {
-          var n = this, a = o.call(n, t, "getItemTop", [i], function () {
-            return o.call(n, e, "getItemTop", [i])
+          var n = this, s = a.call(n, t, "getItemTop", [i], function () {
+            return a.call(n, e, "getItemTop", [i])
           });
-          return a === r ? 0 : a
+          return s === r ? 0 : s
         }, getTaskPosition: function (e, i, n) {
-          var a = o.call(this, t, "getItemPosition", [e, i, n]);
-          return a === r ? {left: 0, top: this.getTaskTop(e.id), height: this.getTaskHeight(), width: 0} : a
+          var s = a.call(this, t, "getItemPosition", [e, i, n]);
+          return s === r ? {left: 0, top: this.getTaskTop(e.id), height: this.getTaskHeight(), width: 0} : s
         }, getTaskHeight: function () {
-          var i = this, n = o.call(i, t, "getItemHeight", [], function () {
-            return o.call(i, e, "getItemHeight", [])
+          var i = this, n = a.call(i, t, "getItemHeight", [], function () {
+            return a.call(i, e, "getItemHeight", [])
           });
           return n === r ? 0 : n
         }, columnIndexByDate: function (e) {
-          var i = o.call(this, t, "columnIndexByDate", [e]);
+          var i = a.call(this, t, "columnIndexByDate", [e]);
           return i === r ? 0 : i
         }, roundTaskDates: function () {
-          o.call(this, t, "roundTaskDates", [])
+          a.call(this, t, "roundTaskDates", [])
         }, getScale: function () {
-          var e = o.call(this, t, "getScale", []);
+          var e = a.call(this, t, "getScale", []);
           return e === r ? null : e
         }, getTaskNode: function (e) {
           var i = t(this);
@@ -4159,10 +3840,10 @@ var JSGantt = function () {
           var i = t(this);
           return i.isVisible() ? i._linkRenderer.rendered[e] : null
         }, scrollTo: function (t, e) {
-          var r = i(this), o = n(this), a = {position: 0}, s = {position: 0};
-          r && (s = r.getScrollState()), o && (a = o.getScrollState()), o && 1 * t == t && o.scroll(t), r && 1 * e == e && r.scroll(e);
+          var r = i(this), a = n(this), s = {position: 0}, o = {position: 0};
+          r && (o = r.getScrollState()), a && (s = a.getScrollState()), a && 1 * t == t && a.scroll(t), r && 1 * e == e && r.scroll(e);
           var l = {position: 0}, c = {position: 0};
-          r && (l = r.getScrollState()), o && (c = o.getScrollState()), this.callEvent("onGanttScroll", [a.position, s.position, c.position, l.position])
+          r && (l = r.getScrollState()), a && (c = a.getScrollState()), this.callEvent("onGanttScroll", [s.position, o.position, c.position, l.position])
         }, showDate: function (t) {
           var e = this.posFromDate(t), i = Math.max(e - this.config.task_scroll_offset, 0);
           this.scrollTo(i)
@@ -4174,12 +3855,12 @@ var JSGantt = function () {
           var t = {x: !1, y: !1, x_pos: 0, y_pos: 0, scroll_size: this.config.scroll_size + 1, x_inner: 0, y_inner: 0},
             e = i(this), r = n(this);
           if (r) {
-            var o = r.getScrollState();
-            o.visible && (t.x = o.size, t.x_inner = o.scrollSize), t.x_pos = o.position || 0
+            var a = r.getScrollState();
+            a.visible && (t.x = a.size, t.x_inner = a.scrollSize), t.x_pos = a.position || 0
           }
           if (e) {
-            var a = e.getScrollState();
-            a.visible && (t.y = a.size, t.y_inner = a.scrollSize), t.y_pos = a.position || 0
+            var s = e.getScrollState();
+            s.visible && (t.y = s.size, t.y_inner = s.scrollSize), t.y_pos = s.position || 0
           }
           return t
         }, getScrollState: function () {
@@ -4201,10 +3882,10 @@ var JSGantt = function () {
           return t.$ui.getView("scrollHor")
         }, _legacyGridResizerClass: function (t) {
           for (var e = t.getCellsByType("resizer"), i = 0; i < e.length; i++) {
-            var n = e[i], r = !1, o = n.$parent.getPrevSibling(n.$id);
-            if (o && o.$config && "grid" === o.$config.id) r = !0; else {
-              var a = n.$parent.getNextSibling(n.$id);
-              a && a.$config && "grid" === a.$config.id && (r = !0)
+            var n = e[i], r = !1, a = n.$parent.getPrevSibling(n.$id);
+            if (a && a.$config && "grid" === a.$config.id) r = !0; else {
+              var s = n.$parent.getNextSibling(n.$id);
+              s && s.$config && "grid" === s.$config.id && (r = !0)
             }
             r && (n.$config.css = (n.$config.css ? n.$config.css + " " : "") + "jsgantt-grid-resize-wrap")
           }
@@ -4213,17 +3894,17 @@ var JSGantt = function () {
           this._legacyGridResizerClass(e), e.attachEvent("onBeforeResize", function () {
             var r = t.$ui.getView("timeline");
             r && (r.$config.hidden = r.$parent.$config.hidden = !t.config.show_chart);
-            var o = t.$ui.getView("grid");
-            if (o) {
-              var a = t.config.show_grid;
+            var a = t.$ui.getView("grid");
+            if (a) {
+              var s = t.config.show_grid;
               if (i) {
-                var s = o._getColsTotalWidth();
-                !1 !== s && (t.config.grid_width = s), a = a && !!t.config.grid_width, t.config.show_grid = a
+                var o = a._getColsTotalWidth();
+                !1 !== o && (t.config.grid_width = o), s = s && !!t.config.grid_width, t.config.show_grid = s
               }
-              if (o.$config.hidden = o.$parent.$config.hidden = !a, !o.$config.hidden) {
-                var l = o._getGridWidthLimits();
-                if (l[0] && t.config.grid_width < l[0] && (t.config.grid_width = l[0]), l[1] && t.config.grid_width > l[1] && (t.config.grid_width = l[1]), r && t.config.show_chart) if (o.$config.width = t.config.grid_width - 1, i) o.$parent.$config.width = t.config.grid_width, o.$parent.$config.group && t.$layout._syncCellSizes(o.$parent.$config.group, o.$parent.$config.width); else if (r && !n.isChildOf(r.$task, e.$view)) {
-                  if (!o.$config.original_grid_width) {
+              if (a.$config.hidden = a.$parent.$config.hidden = !s, !a.$config.hidden) {
+                var l = a._getGridWidthLimits();
+                if (l[0] && t.config.grid_width < l[0] && (t.config.grid_width = l[0]), l[1] && t.config.grid_width > l[1] && (t.config.grid_width = l[1]), r && t.config.show_chart) if (a.$config.width = t.config.grid_width - 1, i) a.$parent.$config.width = t.config.grid_width, a.$parent.$config.group && t.$layout._syncCellSizes(a.$parent.$config.group, a.$parent.$config.width); else if (r && !n.isChildOf(r.$task, e.$view)) {
+                  if (!a.$config.original_grid_width) {
                     var c = {
                       config: {
                         grid_width: 350,
@@ -4234,10 +3915,10 @@ var JSGantt = function () {
                         lightbox_additional_height: 72
                       }, _second_column_width: 95, _third_column_width: 80
                     };
-                    c && c.config && c.config.grid_width ? o.$config.original_grid_width = c.config.grid_width : o.$config.original_grid_width = 0
+                    c && c.config && c.config.grid_width ? a.$config.original_grid_width = c.config.grid_width : a.$config.original_grid_width = 0
                   }
-                  t.config.grid_width = o.$config.original_grid_width, o.$parent.$config.width = t.config.grid_width
-                } else o.$parent._setContentSize(o.$config.width, o.$config.height), t.$layout._syncCellSizes(o.$parent.$config.group, t.config.grid_width); else r && n.isChildOf(r.$task, e.$view) && (o.$config.original_grid_width = t.config.grid_width), i || (o.$parent.$config.width = 0)
+                  t.config.grid_width = a.$config.original_grid_width, a.$parent.$config.width = t.config.grid_width
+                } else a.$parent._setContentSize(a.$config.width, a.$config.height), t.$layout._syncCellSizes(a.$parent.$config.group, t.config.grid_width); else r && n.isChildOf(r.$task, e.$view) && (a.$config.original_grid_width = t.config.grid_width), i || (a.$parent.$config.width = 0)
               }
               i = !1
             }
@@ -4255,16 +3936,16 @@ var JSGantt = function () {
             i && !t.$scroll_ver && (t.$scroll_ver = i.$scroll_ver), n && !t.$scroll_hor && (t.$scroll_hor = n.$scroll_hor)
           })
         }, _findGridResizer: function (t, e) {
-          for (var i, n = t.getCellsByType("resizer"), r = !0, o = 0; o < n.length; o++) {
-            var a = n[o];
-            a._getSiblings();
-            var s = a._behind, l = a._front;
-            if (s && s.$content === e || s.isChild && s.isChild(e)) {
-              i = a, r = !0;
+          for (var i, n = t.getCellsByType("resizer"), r = !0, a = 0; a < n.length; a++) {
+            var s = n[a];
+            s._getSiblings();
+            var o = s._behind, l = s._front;
+            if (o && o.$content === e || o.isChild && o.isChild(e)) {
+              i = s, r = !0;
               break
             }
             if (l && l.$content === e || l.isChild && l.isChild(e)) {
-              i = a, r = !1;
+              i = s, r = !1;
               break
             }
           }
@@ -4272,22 +3953,31 @@ var JSGantt = function () {
         }, onInitialized: function (e) {
           var i = t.$ui.getView("grid"), n = this._findGridResizer(e, i);
           if (n.resizer) {
-            var r, o = n.gridFirst, a = n.resizer;
-            a.attachEvent("onResizeStart", function (e, i) {
-              var n = t.$ui.getView("grid"), a = n ? n.$parent : null;
-              if (a) {
-                var s = n._getGridWidthLimits();
-                n.$config.scrollable || (a.$config.minWidth = s[0]), a.$config.maxWidth = s[1]
+            let ht = 0;
+            var r, a = n.gridFirst, s = n.resizer;
+            s.attachEvent("onResizeStart", function (e, i) {
+              var n = t.$ui.getView("grid"), s = n ? n.$parent : null;
+              if (s) {
+                var o = n._getGridWidthLimits();
+                n.$config.scrollable || (s.$config.minWidth = o[0]), s.$config.maxWidth = o[1]
               }
-              return r = o ? e : i, t.callEvent("onPanelResizeStart", [r])
-            }), a.attachEvent("onResize", function (e, i) {
-              var n = o ? e : i;
+              return r = a ? e : i, t.callEvent("onPanelResizeStart", [r])
+            }), s.attachEvent("onResize", function (e, i) {
+              var n = a ? e : i;
+              const dom = $('.timeline-cell');
+              if (ht == 0) {
+                ht = dom.width();
+              }
+              $('.grid-cell.jsgantt-layout-outer-scroll.jsgantt-layout-cell-border-right').css({'width': n + 'px'});
+              $('.scrollHor-cell .jsgantt-hor-scroll').css({'margin-left': n + 'px', 'width': ($('.scrollHor-cell').width() - n) + 'px'});
+              dom.css({'width': ht + (-n + r) + 'px'});
               return t.callEvent("onPanelResize", [r, n])
-            }), a.attachEvent("onResizeEnd", function (e, i, n, r) {
-              var a = o ? e : i, s = o ? n : r, l = t.$ui.getView("grid"), c = l ? l.$parent : null;
+            }), s.attachEvent("onResizeEnd", function (e, i, n, r) {
+              var s = a ? e : i, o = a ? n : r, l = t.$ui.getView("grid"), c = l ? l.$parent : null;
               c && (c.$config.minWidth = void 0);
-              var u = t.callEvent("onPanelResizeEnd", [a, s]);
-              return u && (t.config.grid_width = s), u
+              ht = 0;
+              var d = t.callEvent("onPanelResizeEnd", [s, o]);
+              return d && (t.config.grid_width = o), d
             })
           }
         }, onDestroyed: function (t) {
@@ -4296,35 +3986,35 @@ var JSGantt = function () {
     }
   }, function (t, e, i) {
     var n = i(1), r = function (t, e) {
-      var i, r, o, a, s;
+      var i, r, a, s, o;
 
       function l() {
-        return {link_source_id: a, link_target_id: r, link_from_start: s, link_to_start: o, link_landing_area: i}
+        return {link_source_id: s, link_target_id: r, link_from_start: o, link_to_start: a, link_landing_area: i}
       }
 
-      var c = e.$services, u = c.getService("state"), d = c.getService("dnd");
-      u.registerProvider("linksDnD", l);
-      var h = new d(t.$task_bars, {sensitivity: 0, updates_per_second: 60});
+      var c = e.$services, d = c.getService("state"), h = c.getService("dnd");
+      d.registerProvider("linksDnD", l);
+      var u = new h(t.$task_bars, {sensitivity: 0, updates_per_second: 60});
 
-      function f(i, n, r, o, a) {
-        var s = function (i, n, r) {
-          var o = function (t) {
+      function f(i, n, r, a, s) {
+        var o = function (i, n, r) {
+          var a = function (t) {
             return e.getTaskPosition(t)
-          }(i), a = {x: o.left, y: o.top, width: o.width, height: o.height};
-          if (r.rtl ? (a.xEnd = a.x, a.x = a.xEnd + a.width) : a.xEnd = a.x + a.width, a.yEnd = a.y + a.height, e.getTaskType(i.type) == e.config.types.milestone) {
-            var s = function () {
+          }(i), s = {x: a.left, y: a.top, width: a.width, height: a.height};
+          if (r.rtl ? (s.xEnd = s.x, s.x = s.xEnd + s.width) : s.xEnd = s.x + s.width, s.yEnd = s.y + s.height, e.getTaskType(i.type) == e.config.types.milestone) {
+            var o = function () {
               var e = t.getItemHeight();
               return Math.round(Math.sqrt(2 * e * e)) - 2
             }();
-            a.x += (r.rtl ? 1 : -1) * (s / 2), a.xEnd += (r.rtl ? -1 : 1) * (s / 2), a.width = o.xEnd - o.x
+            s.x += (r.rtl ? 1 : -1) * (o / 2), s.xEnd += (r.rtl ? -1 : 1) * (o / 2), s.width = a.xEnd - a.x
           }
-          return a
-        }(i, 0, o), l = {x: s.x, y: s.y};
-        n || (l.x = s.xEnd), l.y += e.config.row_height / 2;
+          return s
+        }(i, 0, a), l = {x: o.x, y: o.y};
+        n || (l.x = o.xEnd), l.y += e.config.row_height / 2;
         var c = function (t) {
           return e.getTaskType(t.type) == e.config.types.milestone
-        }(i) && a ? 2 : 0;
-        return r = r || 0, o.rtl && (r *= -1), l.x += (n ? -1 : 1) * r - c, l
+        }(i) && s ? 2 : 0;
+        return r = r || 0, a.rtl && (r *= -1), l.x += (n ? -1 : 1) * r - c, l
       }
 
       function g(t) {
@@ -4332,78 +4022,78 @@ var JSGantt = function () {
         i.link_source_id && i.link_target_id && (e.isLinkAllowed(i.link_source_id, i.link_target_id, i.link_from_start, i.link_to_start) ? n.push("jsgantt-allowed-link") : n.push("jsgantt-invalid-link"));
         var r = e.templates.drag_link_class(i.link_source_id, i.link_from_start, i.link_target_id, i.link_to_start);
         r && n.push(r);
-        var o = "<div class='" + r + "'>" + e.templates.drag_link(i.link_source_id, i.link_from_start, i.link_target_id, i.link_to_start) + "</div>";
-        t.innerHTML = o
+        var a = "<div class='" + r + "'>" + e.templates.drag_link(i.link_source_id, i.link_from_start, i.link_target_id, i.link_to_start) + "</div>";
+        t.innerHTML = a
       }
 
-      function p() {
-        a = s = r = null, o = !0
+      function _() {
+        s = o = r = null, a = !0
       }
 
-      function _(t, e, i, n) {
+      function p(t, e, i, n) {
         return e >= t ? n <= i ? 1 : 4 : n <= i ? 2 : 3
       }
 
-      h.attachEvent("onBeforeDragStart", e.bind(function (i, r) {
-        var o = r.target;
-        if (p(), e.getState().drag_id) return !1;
-        if (n.locateClassName(o, "jsgantt-link-point")) {
-          n.locateClassName(o, "task-start-date") && (s = !0);
+      u.attachEvent("onBeforeDragStart", e.bind(function (i, r) {
+        var a = r.target;
+        if (_(), e.getState().drag_id) return !1;
+        if (n.locateClassName(a, "jsgantt-link-point")) {
+          n.locateClassName(a, "task-start-date") && (o = !0);
           var l = e.locate(r);
-          a = l;
+          s = l;
           var c = e.getTask(l);
-          return e.isReadonly(c) ? (p(), !1) : (this._dir_start = f(c, !!s, 0, t.$getConfig(), !0), !0)
+          return e.isReadonly(c) ? (_(), !1) : (this._dir_start = f(c, !!o, 0, t.$getConfig(), !0), !0)
         }
         return !1
-      }, this)), h.attachEvent("onAfterDragStart", e.bind(function (t, i) {
-        e.config.touch && e.refreshData(), g(h.config.marker)
-      }, this)), h.attachEvent("onDragMove", e.bind(function (a, s) {
-        var c = h.config, u = h.getPosition(s);
+      }, this)), u.attachEvent("onAfterDragStart", e.bind(function (t, i) {
+        e.config.touch && e.refreshData(), g(u.config.marker)
+      }, this)), u.attachEvent("onDragMove", e.bind(function (s, o) {
+        var c = u.config, d = u.getPosition(o);
         !function (t, e) {
           t.style.left = e.x + 5 + "px", t.style.top = e.y + 5 + "px"
-        }(c.marker, u);
-        var d = !!n.locateClassName(s, "jsgantt-link-control"), p = r, v = i, m = o, y = e.locate(s), k = !0;
-        if (n.isChildOf(s.target, e.$root) || (d = !1, y = null), d && (k = !n.locateClassName(s, "task-end-date"), d = !!y), r = y, i = d, o = k, d) {
-          var b = e.getTask(y), w = t.$getConfig(), $ = n.locateClassName(s, "jsgantt-link-control"), x = 0;
-          $ && (x = Math.floor($.offsetWidth / 2)), this._dir_end = f(b, !!o, x, w)
-        } else this._dir_end = n.getRelativeEventPosition(s, t.$task_data);
-        var S = !(v == d && p == y && m == k);
-        return S && (p && e.refreshTask(p, !1), y && e.refreshTask(y, !1)), S && g(c.marker), function (i, n, r, o) {
-          var a = (h._direction || (h._direction = document.createElement("div"), t.$task_links.appendChild(h._direction)), h._direction),
-            s = l(), c = ["jsgantt-link-direction"];
-          e.templates.link_direction_class && c.push(e.templates.link_direction_class(s.link_source_id, s.link_from_start, s.link_target_id, s.link_to_start));
-          var u = Math.sqrt(Math.pow(r - i, 2) + Math.pow(o - n, 2));
-          if (u = Math.max(0, u - 3)) {
-            a.className = c.join(" ");
-            var d = (o - n) / (r - i), f = Math.atan(d);
-            2 == _(i, r, n, o) ? f += Math.PI : 3 == _(i, r, n, o) && (f -= Math.PI);
-            var g = Math.sin(f), p = Math.cos(f), v = Math.round(n), m = Math.round(i),
-              y = ["-webkit-transform: rotate(" + f + "rad)", "-moz-transform: rotate(" + f + "rad)", "-ms-transform: rotate(" + f + "rad)", "-o-transform: rotate(" + f + "rad)", "transform: rotate(" + f + "rad)", "width:" + Math.round(u) + "px"];
+        }(c.marker, d);
+        var h = !!n.locateClassName(o, "jsgantt-link-control"), _ = r, v = i, m = a, $ = e.locate(o), y = !0;
+        if (n.isChildOf(o.target, e.$root) || (h = !1, $ = null), h && (y = !n.locateClassName(o, "task-end-date"), h = !!$), r = $, i = h, a = y, h) {
+          var k = e.getTask($), w = t.$getConfig(), b = n.locateClassName(o, "jsgantt-link-control"), x = 0;
+          b && (x = Math.floor(b.offsetWidth / 2)), this._dir_end = f(k, !!a, x, w)
+        } else this._dir_end = n.getRelativeEventPosition(o, t.$task_data);
+        var S = !(v == h && _ == $ && m == y);
+        return S && (_ && e.refreshTask(_, !1), $ && e.refreshTask($, !1)), S && g(c.marker), function (i, n, r, a) {
+          var s = (u._direction || (u._direction = document.createElement("div"), t.$task_links.appendChild(u._direction)), u._direction),
+            o = l(), c = ["jsgantt-link-direction"];
+          e.templates.link_direction_class && c.push(e.templates.link_direction_class(o.link_source_id, o.link_from_start, o.link_target_id, o.link_to_start));
+          var d = Math.sqrt(Math.pow(r - i, 2) + Math.pow(a - n, 2));
+          if (d = Math.max(0, d - 3)) {
+            s.className = c.join(" ");
+            var h = (a - n) / (r - i), f = Math.atan(h);
+            2 == p(i, r, n, a) ? f += Math.PI : 3 == p(i, r, n, a) && (f -= Math.PI);
+            var g = Math.sin(f), _ = Math.cos(f), v = Math.round(n), m = Math.round(i),
+              $ = ["-webkit-transform: rotate(" + f + "rad)", "-moz-transform: rotate(" + f + "rad)", "-ms-transform: rotate(" + f + "rad)", "-o-transform: rotate(" + f + "rad)", "transform: rotate(" + f + "rad)", "width:" + Math.round(d) + "px"];
             if (-1 != window.navigator.userAgent.indexOf("MSIE 8.0")) {
-              y.push('-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11 = ' + p + ",M12 = -" + g + ",M21 = " + g + ",M22 = " + p + ",SizingMethod = 'auto expand')\"");
-              var k = Math.abs(Math.round(i - r)), b = Math.abs(Math.round(o - n));
-              switch (_(i, r, n, o)) {
+              $.push('-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11 = ' + _ + ",M12 = -" + g + ",M21 = " + g + ",M22 = " + _ + ",SizingMethod = 'auto expand')\"");
+              var y = Math.abs(Math.round(i - r)), k = Math.abs(Math.round(a - n));
+              switch (p(i, r, n, a)) {
                 case 1:
-                  v -= b;
+                  v -= k;
                   break;
                 case 2:
-                  m -= k, v -= b;
+                  m -= y, v -= k;
                   break;
                 case 3:
-                  m -= k
+                  m -= y
               }
             }
-            y.push("top:" + v + "px"), y.push("left:" + m + "px"), a.style.cssText = y.join(";")
+            $.push("top:" + v + "px"), $.push("left:" + m + "px"), s.style.cssText = $.join(";")
           }
         }(this._dir_start.x, this._dir_start.y, this._dir_end.x, this._dir_end.y), !0
-      }, this)), h.attachEvent("onDragEnd", e.bind(function () {
+      }, this)), u.attachEvent("onDragEnd", e.bind(function () {
         var t = l();
         if (t.link_source_id && t.link_target_id && t.link_source_id != t.link_target_id) {
           var i = e._get_link_type(t.link_from_start, t.link_to_start),
             n = {source: t.link_source_id, target: t.link_target_id, type: i};
           n.type && e.isLinkAllowed(n) && e.addLink(n)
         }
-        p(), e.config.touch ? e.refreshData() : (t.link_source_id && e.refreshTask(t.link_source_id, !1), t.link_target_id && e.refreshTask(t.link_target_id, !1)), h._direction && (h._direction.parentNode && h._direction.parentNode.removeChild(h._direction), h._direction = null)
+        _(), e.config.touch ? e.refreshData() : (t.link_source_id && e.refreshTask(t.link_source_id, !1), t.link_target_id && e.refreshTask(t.link_target_id, !1)), u._direction && (u._direction.parentNode && u._direction.parentNode.removeChild(u._direction), u._direction = null)
       }, this))
     };
     t.exports = {
@@ -4412,7 +4102,7 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(1), r = i(0), o = i(37);
+    var n = i(1), r = i(0), a = i(37);
     t.exports = {
       createTaskDND: function () {
         var t;
@@ -4444,7 +4134,7 @@ var JSGantt = function () {
                     before_finish: "onBeforeTaskChanged",
                     after_finish: "onAfterTaskDrag"
                   };
-                  for (var o in this._events) for (var a in t) this._events[o][a] = n[o];
+                  for (var a in this._events) for (var s in t) this._events[a][s] = n[a];
                   this._handlers[t.move] = this._move, this._handlers[t.resize] = this._resize, this._handlers[t.progress] = this._resize_progress
                 },
                 set_actions: function () {
@@ -4469,8 +4159,8 @@ var JSGantt = function () {
                   }, this.dragMultiple = {}
                 },
                 _resize: function (i, n, r) {
-                  var o = t.$getConfig(), a = this._drag_task_coords(i, r);
-                  r.left ? (i.plannedDate = e.dateFromPos(a.start + n), i.plannedDate || (i.plannedDate = new Date(e.getState().min_date))) : (i.end_date = e.dateFromPos(a.end + n), i.end_date || (i.end_date = new Date(e.getState().max_date))), i.end_date - i.plannedDate < o.minDuration && (r.left ? i.plannedDate = e.calculateEndDate({
+                  var a = t.$getConfig(), s = this._drag_task_coords(i, r);
+                  r.left ? (i.plannedDate = e.dateFromPos(s.start + n), i.plannedDate || (i.plannedDate = new Date(e.getState().min_date))) : (i.end_date = e.dateFromPos(s.end + n), i.end_date || (i.end_date = new Date(e.getState().max_date))), i.end_date - i.plannedDate < a.minDuration && (r.left ? i.plannedDate = e.calculateEndDate({
                     plannedDate: i.end_date,
                     duration: -1,
                     task: i
@@ -4481,29 +4171,29 @@ var JSGantt = function () {
                   })), e._init_task_timing(i)
                 },
                 _resize_progress: function (e, i, n) {
-                  var r = this._drag_task_coords(e, n), o = t.$getConfig().rtl ? r.start - n.pos.x : n.pos.x - r.start,
-                    a = Math.max(0, o);
-                  e.progress = Math.min(1, a / Math.abs(r.end - r.start))
+                  var r = this._drag_task_coords(e, n), a = t.$getConfig().rtl ? r.start - n.pos.x : n.pos.x - r.start,
+                    s = Math.max(0, a);
+                  e.progress = Math.min(1, s / Math.abs(r.end - r.start))
                 },
                 _find_max_shift: function (t, i) {
                   var n;
                   for (var r in t) {
-                    var o = t[r], a = e.getTask(o.id), s = this._drag_task_coords(a, o),
+                    var a = t[r], s = e.getTask(a.id), o = this._drag_task_coords(s, a),
                       l = e.posFromDate(new Date(e.getState().min_date)),
                       c = e.posFromDate(new Date(e.getState().max_date));
-                    if (s.end + i > c) {
-                      var u = c - s.end;
-                      (u < n || void 0 === n) && (n = u)
-                    } else if (s.start + i < l) {
-                      var d = l - s.start;
+                    if (o.end + i > c) {
+                      var d = c - o.end;
                       (d < n || void 0 === n) && (n = d)
+                    } else if (o.start + i < l) {
+                      var h = l - o.start;
+                      (h < n || void 0 === n) && (n = h)
                     }
                   }
                   return n
                 },
                 _move: function (t, i, n) {
-                  var r = this._drag_task_coords(t, n), o = e.dateFromPos(r.start + i), a = e.dateFromPos(r.end + i);
-                  o ? a ? (t.plannedDate = o, t.end_date = a) : (t.end_date = new Date(e.getState().max_date), t.plannedDate = e.dateFromPos(e.posFromDate(t.end_date) - (r.end - r.start))) : (t.plannedDate = new Date(e.getState().min_date), t.end_date = e.dateFromPos(e.posFromDate(t.plannedDate) + (r.end - r.start)))
+                  var r = this._drag_task_coords(t, n), a = e.dateFromPos(r.start + i), s = e.dateFromPos(r.end + i);
+                  a ? s ? (t.plannedDate = a, t.end_date = s) : (t.end_date = new Date(e.getState().max_date), t.plannedDate = e.dateFromPos(e.posFromDate(t.end_date) - (r.end - r.start))) : (t.plannedDate = new Date(e.getState().min_date), t.end_date = e.dateFromPos(e.posFromDate(t.plannedDate) + (r.end - r.start)))
                 },
                 _drag_task_coords: function (t, i) {
                   return {
@@ -4521,65 +4211,65 @@ var JSGantt = function () {
                 on_mouse_move: function (t) {
                   if (this.drag.start_drag) {
                     var i = n.getRelativeEventPosition(t, e.$task_data), r = this.drag.start_drag.start_x,
-                      a = this.drag.start_drag.start_y;
-                    (Date.now() - this.drag.timestamp > 50 || this._is_number(r) && this._is_number(a) && this._mouse_position_change({
+                      s = this.drag.start_drag.start_y;
+                    (Date.now() - this.drag.timestamp > 50 || this._is_number(r) && this._is_number(s) && this._mouse_position_change({
                       x: r,
-                      y: a
+                      y: s
                     }, i) > 20) && this._start_dnd(t)
                   }
                   if (this.drag.mode) {
-                    if (!o(this, 40)) return;
+                    if (!a(this, 40)) return;
                     this._update_on_move(t)
                   }
                 },
-                _update_item_on_move: function (t, i, n, r, o) {
-                  var a = e.getTask(i), s = e.mixin({}, a), l = e.mixin({}, a);
-                  this._handlers[n].apply(this, [l, t, r]), e.mixin(a, l, !0), e.callEvent("onTaskDrag", [a.id, n, l, s, o]), e.mixin(a, l, !0), e.refreshTask(i)
+                _update_item_on_move: function (t, i, n, r, a) {
+                  var s = e.getTask(i), o = e.mixin({}, s), l = e.mixin({}, s);
+                  this._handlers[n].apply(this, [l, t, r]), e.mixin(s, l, !0), e.callEvent("onTaskDrag", [s.id, n, l, o, a]), e.mixin(s, l, !0), e.refreshTask(i)
                 },
                 _update_on_move: function (i) {
-                  var o = this.drag, a = t.$getConfig();
-                  if (o.mode) {
-                    var s = n.getRelativeEventPosition(i, t.$task_data);
-                    if (o.pos && o.pos.x == s.x) return;
-                    o.pos = s;
-                    var l = e.dateFromPos(s.x);
+                  var a = this.drag, s = t.$getConfig();
+                  if (a.mode) {
+                    var o = n.getRelativeEventPosition(i, t.$task_data);
+                    if (a.pos && a.pos.x == o.x) return;
+                    a.pos = o;
+                    var l = e.dateFromPos(o.x);
                     if (!l || isNaN(l.getTime())) return;
-                    var c = s.x - o.start_x, u = e.getTask(o.id);
-                    if (this._handlers[o.mode]) {
-                      if (e.isSummaryTask(u) && o.mode == a.drag_mode.move) {
-                        var d = {};
-                        d[o.id] = r.copy(o);
-                        var h = this._find_max_shift(r.mixin(d, this.dragMultiple), c);
-                        for (var f in void 0 !== h && (c = h), this._update_item_on_move(c, o.id, o.mode, o, i), this.dragMultiple) {
+                    var c = o.x - a.start_x, d = e.getTask(a.id);
+                    if (this._handlers[a.mode]) {
+                      if (e.isSummaryTask(d) && a.mode == s.drag_mode.move) {
+                        var h = {};
+                        h[a.id] = r.copy(a);
+                        var u = this._find_max_shift(r.mixin(h, this.dragMultiple), c);
+                        for (var f in void 0 !== u && (c = u), this._update_item_on_move(c, a.id, a.mode, a, i), this.dragMultiple) {
                           var g = this.dragMultiple[f];
                           this._update_item_on_move(c, g.id, g.mode, g, i)
                         }
-                      } else this._update_item_on_move(c, o.id, o.mode, o, i);
-                      e._update_parents(o.id)
+                      } else this._update_item_on_move(c, a.id, a.mode, a, i);
+                      e._update_parents(a.id)
                     }
                   }
                 },
                 on_mouse_down: function (i, r) {
                   if (2 != i.button || void 0 === i.button) {
-                    var o = t.$getConfig(), a = e.locate(i), s = null;
-                    if (e.isTaskExists(a) && (s = e.getTask(a)), !e.isReadonly(s) && !this.drag.mode) {
+                    var a = t.$getConfig(), s = e.locate(i), o = null;
+                    if (e.isTaskExists(s) && (o = e.getTask(s)), !e.isReadonly(o) && !this.drag.mode) {
                       this.clear_drag_state(), r = r || i.target;
                       var l = n.getClassName(r), c = this._get_drag_mode(l, r);
                       if (!l || !c) return r.parentNode ? this.on_mouse_down(i, r.parentNode) : void 0;
-                      if (c) if (c.mode && c.mode != o.drag_mode.ignore && o["drag_" + c.mode]) {
-                        if (a = e.locate(r), s = e.copy(e.getTask(a) || {}), e.isReadonly(s)) return this.clear_drag_state(), !1;
-                        if (e.isSummaryTask(s) && c.mode != o.drag_mode.progress) return void this.clear_drag_state();
-                        c.id = a;
-                        var u = n.getRelativeEventPosition(i, e.$task_data);
-                        c.start_x = u.x, c.start_y = u.y, c.obj = s, this.drag.start_drag = c, this.drag.timestamp = Date.now()
+                      if (c) if (c.mode && c.mode != a.drag_mode.ignore && a["drag_" + c.mode]) {
+                        if (s = e.locate(r), o = e.copy(e.getTask(s) || {}), e.isReadonly(o)) return this.clear_drag_state(), !1;
+                        if (e.isSummaryTask(o) && c.mode != a.drag_mode.progress) return void this.clear_drag_state();
+                        c.id = s;
+                        var d = n.getRelativeEventPosition(i, e.$task_data);
+                        c.start_x = d.x, c.start_y = d.y, c.obj = o, this.drag.start_drag = c, this.drag.timestamp = Date.now()
                       } else this.clear_drag_state(); else if (e.checkEvent("onMouseDown") && e.callEvent("onMouseDown", [l.split(" ")[0]]) && r.parentNode) return this.on_mouse_down(i, r.parentNode)
                     }
                   }
                 },
                 _fix_dnd_scale_time: function (i, n) {
-                  var r = t.$getConfig(), o = e.getScale().unit, a = e.getScale().step;
+                  var r = t.$getConfig(), a = e.getScale().unit, s = e.getScale().step;
 
-                  function s(i) {
+                  function o(i) {
                     if (e.config.correct_work_time) {
                       var n = t.$getConfig();
                       e.isWorkTime(i.plannedDate, void 0, i) || (i.plannedDate = e.calculateEndDate({
@@ -4591,11 +4281,11 @@ var JSGantt = function () {
                     }
                   }
 
-                  r.round_dnd_dates || (o = "minute", a = r.time_step), n.mode == r.drag_mode.resize ? n.left ? (i.plannedDate = e.roundDate({
+                  r.round_dnd_dates || (a = "minute", s = r.time_step), n.mode == r.drag_mode.resize ? n.left ? (i.plannedDate = e.roundDate({
                     date: i.plannedDate,
-                    unit: o,
-                    step: a
-                  }), s(i)) : (i.end_date = e.roundDate({date: i.end_date, unit: o, step: a}), function (i) {
+                    unit: a,
+                    step: s
+                  }), o(i)) : (i.end_date = e.roundDate({date: i.end_date, unit: a, step: s}), function (i) {
                     if (e.config.correct_work_time) {
                       var n = t.$getConfig();
                       e.isWorkTime(new Date(i.end_date - 1), void 0, i) || (i.end_date = e.calculateEndDate({
@@ -4607,9 +4297,9 @@ var JSGantt = function () {
                     }
                   }(i)) : n.mode == r.drag_mode.move && (i.plannedDate = e.roundDate({
                     date: i.plannedDate,
-                    unit: o,
-                    step: a
-                  }), s(i), i.end_date = e.calculateEndDate(i))
+                    unit: a,
+                    step: s
+                  }), o(i), i.end_date = e.calculateEndDate(i))
                 },
                 _fix_working_times: function (i, n) {
                   var r = t.$getConfig();
@@ -4624,17 +4314,17 @@ var JSGantt = function () {
                   }) : n.mode == r.drag_mode.move && e.correctTaskWorkTime(i)
                 },
                 _finalize_mouse_up: function (t, i, n, r) {
-                  var o = e.getTask(t);
-                  if (i.work_time && i.correct_work_time && this._fix_working_times(o, n), this._fix_dnd_scale_time(o, n), this._fireEvent("before_finish", n.mode, [t, n.mode, e.copy(n.obj), r])) {
-                    var a = t;
-                    e._init_task_timing(o), this.clear_drag_state(), e.updateTask(o.id), this._fireEvent("after_finish", n.mode, [a, n.mode, r])
-                  } else this.clear_drag_state(), t == n.id && (n.obj._joc_changed = !1, e.mixin(o, n.obj, !0)), e.refreshTask(o.id)
+                  var a = e.getTask(t);
+                  if (i.work_time && i.correct_work_time && this._fix_working_times(a, n), this._fix_dnd_scale_time(a, n), this._fireEvent("before_finish", n.mode, [t, n.mode, e.copy(n.obj), r])) {
+                    var s = t;
+                    e._init_task_timing(a), this.clear_drag_state(), e.updateTask(a.id), this._fireEvent("after_finish", n.mode, [s, n.mode, r])
+                  } else this.clear_drag_state(), t == n.id && (n.obj._joc_changed = !1, e.mixin(a, n.obj, !0)), e.refreshTask(a.id)
                 },
                 on_mouse_up: function (i) {
                   var n = this.drag;
                   if (n.mode && n.id) {
-                    var r = t.$getConfig(), o = e.getTask(n.id), a = this.dragMultiple;
-                    if (e.isSummaryTask(o) && n.mode == r.drag_mode.move) for (var s in a) this._finalize_mouse_up(a[s].id, r, a[s], i);
+                    var r = t.$getConfig(), a = e.getTask(n.id), s = this.dragMultiple;
+                    if (e.isSummaryTask(a) && n.mode == r.drag_mode.move) for (var o in s) this._finalize_mouse_up(s[o].id, r, s[o], i);
                     this._finalize_mouse_up(n.id, r, n, i)
                   }
                   this.clear_drag_state()
@@ -4648,8 +4338,8 @@ var JSGantt = function () {
                       break;
                     case"jsgantt-task-drag":
                       r.mode = n.resize;
-                      var o = i.getAttribute("data-bind-property");
-                      r.left = "plannedDate" == o;
+                      var a = i.getAttribute("data-bind-property");
+                      r.left = "plannedDate" == a;
                       break;
                     case"jsgantt-task-progress-drag":
                       r.mode = n.progress;
@@ -4666,13 +4356,13 @@ var JSGantt = function () {
                 _start_dnd: function (i) {
                   var n = this.drag = this.drag.start_drag;
                   delete n.start_drag;
-                  var r = t.$getConfig(), o = n.id;
-                  if (r["drag_" + n.mode] && e.callEvent("onBeforeDrag", [o, n.mode, i]) && this._fireEvent("before_start", n.mode, [o, n.mode, i])) {
+                  var r = t.$getConfig(), a = n.id;
+                  if (r["drag_" + n.mode] && e.callEvent("onBeforeDrag", [a, n.mode, i]) && this._fireEvent("before_start", n.mode, [a, n.mode, i])) {
                     delete n.start_drag;
-                    var a = e.getTask(o);
-                    e.isSummaryTask(a) && n.mode == r.drag_mode.move && e.eachTask(function (t) {
+                    var s = e.getTask(a);
+                    e.isSummaryTask(s) && n.mode == r.drag_mode.move && e.eachTask(function (t) {
                       this.dragMultiple[t.id] = e.mixin({id: t.id, obj: t}, this.drag)
-                    }, a.id, this), e.callEvent("onTaskDragStart", [])
+                    }, s.id, this), e.callEvent("onTaskDragStart", [])
                   } else this.clear_drag_state()
                 },
                 _fireEvent: function (t, i, n) {
@@ -4696,13 +4386,13 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(105), o = i(104), a = i(1);
+    var n = i(0), r = i(105), a = i(104), s = i(1);
     t.exports = function (t) {
       var e = t.$services;
       return {
         onCreated: function (e) {
-          var a = e.$config;
-          a.bind = n.defined(a.bind) ? a.bind : "task", a.bindLinks = n.defined(a.bindLinks) ? a.bindLinks : "link", e._linksDnD = o.createLinkDND(), e._tasksDnD = r.createTaskDND(), e._tasksDnD.extend(e), this._mouseDelegates = i(15)(t)
+          var s = e.$config;
+          s.bind = n.defined(s.bind) ? s.bind : "task", s.bindLinks = n.defined(s.bindLinks) ? s.bindLinks : "link", e._linksDnD = a.createLinkDND(), e._tasksDnD = r.createTaskDND(), e._tasksDnD.extend(e), this._mouseDelegates = i(15)(t)
         }, onInitialized: function (e) {
           this._attachDomEvents(t), this._attachStateProvider(t, e), e._tasksDnD.init(e, t), e._linksDnD.init(e, t), "timeline" == e.$config.id && this.extendDom(e)
         }, onDestroyed: function (e) {
@@ -4712,27 +4402,13 @@ var JSGantt = function () {
         }, _clearDomEvents: function () {
           this._mouseDelegates.destructor(), this._mouseDelegates = null
         }, _attachDomEvents: function (t) {
-          function e(t, e) {
-            if (t && this.callEvent("onLinkDblClick", [t, e])) {
-              var i = this.getLink(t);
-              if (this.isReadonly(i)) return;
-              this.locale.labels.link, this.templates.link_description(this.getLink(t)), this.locale.labels.confirm_link_deleting
-            }
-          }
-
           this._mouseDelegates.delegate("click", "jsgantt-task-link", t.bind(function (t, e) {
             var i = this.locate(t, this.config.link_attribute);
             i && this.callEvent("onLinkClick", [i, t])
           }, t), this.$task), this._mouseDelegates.delegate("click", "jsgantt-scale-cell", t.bind(function (e, i) {
-            var n = a.getRelativeEventPosition(e, t.$task_data), r = t.dateFromPos(n.x),
-              o = Math.floor(t.columnIndexByDate(r)), s = t.getScale().trace_x[o];
-            t.callEvent("onScaleClick", [e, s])
-          }, t), this.$task), this._mouseDelegates.delegate("doubleclick", "jsgantt-task-link", t.bind(function (i, n, r) {
-            n = this.locate(i, t.config.link_attribute), e.call(this, n, i)
-          }, t), this.$task), this._mouseDelegates.delegate("doubleclick", "jsgantt-link-point", t.bind(function (t, i, n) {
-            i = this.locate(t);
-            var r = this.getTask(i), o = null;
-            return n.parentNode && a.getClassName(n.parentNode) && (o = a.getClassName(n.parentNode).indexOf("_left") > -1 ? r.$target[0] : r.$source[0]), o && e.call(this, o, t), !1
+            var n = s.getRelativeEventPosition(e, t.$task_data), r = t.dateFromPos(n.x),
+              a = Math.floor(t.columnIndexByDate(r)), o = t.getScale().trace_x[a];
+            t.callEvent("onScaleClick", [e, o])
           }, t), this.$task)
         }, _attachStateProvider: function (t, i) {
           var n = i;
@@ -4756,113 +4432,113 @@ var JSGantt = function () {
       removeLineHighlight: function (t) {
         t.markerLine && t.markerLine.parentNode && t.markerLine.parentNode.removeChild(t.markerLine), t.markerLine = null
       }, highlightPosition: function (t, e, i) {
-        var o = function (t, e) {
+        var a = function (t, e) {
           var i = n.getNodePosition(e.$grid_data), r = n.getRelativeEventPosition(t, e.$grid_data),
-            o = e.$config.rowStore, a = i.x, s = r.y - 10, l = e.$getConfig();
-          s < i.y && (s = i.y);
-          var c = o.countVisible() * l.row_height;
-          return s > i.y + c - l.row_height && (s = i.y + c - l.row_height), i.x = a, i.y = s, i
+            a = e.$config.rowStore, s = i.x, o = r.y - 10, l = e.$getConfig();
+          o < i.y && (o = i.y);
+          var c = a.countVisible() * l.row_height;
+          return o > i.y + c - l.row_height && (o = i.y + c - l.row_height), i.x = s, i.y = o, i
         }(t, i);
-        e.marker.style.left = o.x + 9 + "px", e.marker.style.top = o.y + "px";
-        var a = e.markerLine;
-        a || ((a = document.createElement("div")).className = "jsgantt-drag-marker jsgantt-grid-dnd-marker", a.innerHTML = "<div class='jsgantt-grid-dnd-marker-line'></div>", a.style.pointerEvents = "none", document.body.appendChild(a), e.markerLine = a), t.child ? function (t, e, i) {
-          var n = t.targetParent, o = r({x: 0, y: i.getItemTop(n)}, i);
-          e.innerHTML = "<div class='jsgantt-grid-dnd-marker-folder'></div>", e.style.width = i.$grid_data.offsetWidth + "px", e.style.top = o.y + "px", e.style.left = o.x + "px", e.style.height = i.getItemHeight(n) + "px"
-        }(t, a, i) : function (t, e, i) {
+        e.marker.style.left = a.x + 9 + "px", e.marker.style.top = a.y + "px";
+        var s = e.markerLine;
+        s || ((s = document.createElement("div")).className = "jsgantt-drag-marker jsgantt-grid-dnd-marker", s.innerHTML = "<div class='jsgantt-grid-dnd-marker-line'></div>", s.style.pointerEvents = "none", document.body.appendChild(s), e.markerLine = s), t.child ? function (t, e, i) {
+          var n = t.targetParent, a = r({x: 0, y: i.getItemTop(n)}, i);
+          e.innerHTML = "<div class='jsgantt-grid-dnd-marker-folder'></div>", e.style.width = i.$grid_data.offsetWidth + "px", e.style.top = a.y + "px", e.style.left = a.x + "px", e.style.height = i.getItemHeight(n) + "px"
+        }(t, s, i) : function (t, e, i) {
           var n = function (t, e) {
-            var i = e.$config.rowStore, n = {x: 0, y: 0}, o = e.$grid_data.querySelector(".jsgantt-tree-indent"),
-              a = 15, s = 0;
-            if (o && (a = o.offsetWidth), t.targetId !== i.$getRootId()) {
+            var i = e.$config.rowStore, n = {x: 0, y: 0}, a = e.$grid_data.querySelector(".jsgantt-tree-indent"),
+              s = 15, o = 0;
+            if (a && (s = a.offsetWidth), t.targetId !== i.$getRootId()) {
               var l = e.getItemTop(t.targetId), c = e.getItemHeight(t.targetId);
-              if (s = i.exists(t.targetId) ? i.calculateItemLevel(i.getItem(t.targetId)) : 0, t.prevSibling) n.y = l; else if (t.nextSibling) {
-                var u = 0;
+              if (o = i.exists(t.targetId) ? i.calculateItemLevel(i.getItem(t.targetId)) : 0, t.prevSibling) n.y = l; else if (t.nextSibling) {
+                var d = 0;
                 i.eachItem(function (t) {
-                  -1 !== i.getIndexById(t.id) && u++
-                }, t.targetId), n.y = l + c + u * c
-              } else n.y = l + c, s += 1
+                  -1 !== i.getIndexById(t.id) && d++
+                }, t.targetId), n.y = l + c + d * c
+              } else n.y = l + c, o += 1
             }
-            return n.x = 40 + s * a, n.width = Math.max(e.$grid_data.offsetWidth - n.x, 0), r(n, e)
+            return n.x = 40 + o * s, n.width = Math.max(e.$grid_data.offsetWidth - n.x, 0), r(n, e)
           }(t, i);
           e.innerHTML = "<div class='jsgantt-grid-dnd-marker-line'></div>", e.style.left = n.x + "px", e.style.height = "4px", e.style.top = n.y - 2 + "px", e.style.width = n.width + "px"
-        }(t, a, i)
+        }(t, s, i)
       }
     }
   }, function (t, e, i) {
     var n = i(13);
-    t.exports = function (t, e, i, r, o) {
-      var a;
-      if (e !== o.$getRootId()) a = i < .25 ? n.prevSiblingTarget(t, e, o) : !(i > .6) || o.hasChild(e) && o.getItem(e).$open ? n.firstChildTarget(t, e, o) : n.nextSiblingTarget(t, e, o); else {
-        var s = o.$getRootId();
-        a = o.hasChild(s) && r >= 0 ? n.lastChildTarget(t, s, o) : n.firstChildTarget(t, s, o)
+    t.exports = function (t, e, i, r, a) {
+      var s;
+      if (e !== a.$getRootId()) s = i < .25 ? n.prevSiblingTarget(t, e, a) : !(i > .6) || a.hasChild(e) && a.getItem(e).$open ? n.firstChildTarget(t, e, a) : n.nextSiblingTarget(t, e, a); else {
+        var o = a.$getRootId();
+        s = a.hasChild(o) && r >= 0 ? n.lastChildTarget(t, o, a) : n.firstChildTarget(t, o, a)
       }
-      return a
+      return s
     }
   }, function (t, e, i) {
     var n = i(13);
 
-    function r(t, e, i, r, o) {
-      for (var a = e; r.exists(a);) {
-        var s = r.calculateItemLevel(r.getItem(a));
-        if ((s === i || s === i - 1) && r.getBranchIndex(a) > -1) break;
-        a = o ? r.getPrev(a) : r.getNext(a)
+    function r(t, e, i, r, a) {
+      for (var s = e; r.exists(s);) {
+        var o = r.calculateItemLevel(r.getItem(s));
+        if ((o === i || o === i - 1) && r.getBranchIndex(s) > -1) break;
+        s = a ? r.getPrev(s) : r.getNext(s)
       }
-      return r.exists(a) ? r.calculateItemLevel(r.getItem(a)) === i ? o ? n.nextSiblingTarget(t, a, r) : n.prevSiblingTarget(t, a, r) : n.firstChildTarget(t, a, r) : null
-    }
-
-    function o(t, e, i, n) {
-      return r(t, e, i, n, !0)
+      return r.exists(s) ? r.calculateItemLevel(r.getItem(s)) === i ? a ? n.nextSiblingTarget(t, s, r) : n.prevSiblingTarget(t, s, r) : n.firstChildTarget(t, s, r) : null
     }
 
     function a(t, e, i, n) {
+      return r(t, e, i, n, !0)
+    }
+
+    function s(t, e, i, n) {
       return r(t, e, i, n, !1)
     }
 
-    t.exports = function (t, e, i, r, s, l) {
+    t.exports = function (t, e, i, r, o, l) {
       var c;
-      if (e !== s.$getRootId()) i < .5 ? s.calculateItemLevel(s.getItem(e)) === l ? c = s.getPrevSibling(e) ? n.nextSiblingTarget(t, s.getPrevSibling(e), s) : n.prevSiblingTarget(t, e, s) : (c = o(t, e, l, s)) && (c = a(t, e, l, s)) : s.calculateItemLevel(s.getItem(e)) === l ? c = n.nextSiblingTarget(t, e, s) : (c = a(t, e, l, s)) && (c = o(t, e, l, s)); else {
-        var u = s.$getRootId(), d = s.getChildren(u);
-        c = n.createDropTargetObject(), c = d.length && r >= 0 ? o(t, function (t) {
+      if (e !== o.$getRootId()) i < .5 ? o.calculateItemLevel(o.getItem(e)) === l ? c = o.getPrevSibling(e) ? n.nextSiblingTarget(t, o.getPrevSibling(e), o) : n.prevSiblingTarget(t, e, o) : (c = a(t, e, l, o)) && (c = s(t, e, l, o)) : o.calculateItemLevel(o.getItem(e)) === l ? c = n.nextSiblingTarget(t, e, o) : (c = s(t, e, l, o)) && (c = a(t, e, l, o)); else {
+        var d = o.$getRootId(), h = o.getChildren(d);
+        c = n.createDropTargetObject(), c = h.length && r >= 0 ? a(t, function (t) {
           for (var e = t.getNext(); t.exists(e);) {
             var i = t.getNext(e);
             if (!t.exists(i)) return e;
             e = i
           }
           return null
-        }(s), l, s) : a(t, u, l, s)
+        }(o), l, o) : s(t, d, l, o)
       }
       return c
     }
   }, function (t, e, i) {
-    var n = i(1), r = i(13), o = i(109), a = i(108), s = i(107);
+    var n = i(1), r = i(13), a = i(109), s = i(108), o = i(107);
     t.exports = {
       init: function (t, e) {
         var i = t.$services.getService("dnd");
         if (e.$config.bind && t.getDatastore(e.$config.bind)) {
           var l = new i(e.$grid_data, {updates_per_second: 60});
           t.defined(e.$getConfig().dnd_sensitivity) && (l.config.sensitivity = e.$getConfig().dnd_sensitivity), l.attachEvent("onBeforeDragStart", t.bind(function (i, r) {
-            var o = c(r);
-            if (!o) return !1;
+            var a = c(r);
+            if (!a) return !1;
             if (t.hideQuickInfo && t._hideQuickInfo(), n.closest(r.target, ".jsgantt-grid-editor-placeholder")) return !1;
-            var a = o.getAttribute(e.$config.item_attribute), s = e.$config.rowStore.getItem(a);
-            return !t.isReadonly(s) && (l.config.initial_open_state = s.$open, !!t.callEvent("onRowDragStart", [a, r.target, r]) && void 0)
+            var s = a.getAttribute(e.$config.item_attribute), o = e.$config.rowStore.getItem(s);
+            return !t.isReadonly(o) && (l.config.initial_open_state = o.$open, !!t.callEvent("onRowDragStart", [s, r.target, r]) && void 0)
           }, t)), l.attachEvent("onAfterDragStart", t.bind(function (t, i) {
             var n = c(i);
             l.config.marker.innerHTML = n.outerHTML;
-            var o = l.config.marker.firstChild;
-            o && (l.config.marker.style.opacity = .4, o.style.position = "static", o.style.pointerEvents = "none"), l.config.id = n.getAttribute(e.$config.item_attribute);
-            var a = e.$config.rowStore, s = a.getItem(l.config.id);
-            l.config.level = a.calculateItemLevel(s), l.config.drop_target = r.createDropTargetObject({
-              targetParent: a.getParent(s.id),
-              targetIndex: a.getBranchIndex(s.id),
-              targetId: s.id,
+            var a = l.config.marker.firstChild;
+            a && (l.config.marker.style.opacity = .4, a.style.position = "static", a.style.pointerEvents = "none"), l.config.id = n.getAttribute(e.$config.item_attribute);
+            var s = e.$config.rowStore, o = s.getItem(l.config.id);
+            l.config.level = s.calculateItemLevel(o), l.config.drop_target = r.createDropTargetObject({
+              targetParent: s.getParent(o.id),
+              targetIndex: s.getBranchIndex(o.id),
+              targetId: o.id,
               nextSibling: !0
-            }), s.$open = !1, s.$transparent = !0, this.refreshData()
+            }), o.$open = !1, o.$transparent = !0, this.refreshData()
           }, t)), l.attachEvent("onDragMove", t.bind(function (i, n) {
-            var o = u(n);
-            return o && !1 !== t.callEvent("onBeforeRowDragMove", [l.config.id, o.targetParent, o.targetIndex]) || (o = r.createDropTargetObject(l.config.drop_target)), s.highlightPosition(o, l.config, e), l.config.drop_target = o, this.callEvent("onRowDragMove", [l.config.id, o.targetParent, o.targetIndex]), !0
+            var a = d(n);
+            return a && !1 !== t.callEvent("onBeforeRowDragMove", [l.config.id, a.targetParent, a.targetIndex]) || (a = r.createDropTargetObject(l.config.drop_target)), o.highlightPosition(a, l.config, e), l.config.drop_target = a, this.callEvent("onRowDragMove", [l.config.id, a.targetParent, a.targetIndex]), !0
           }, t)), l.attachEvent("onDragEnd", t.bind(function () {
             var t = e.$config.rowStore, i = t.getItem(l.config.id);
-            s.removeLineHighlight(l.config), i.$transparent = !1, i.$open = l.config.initial_open_state;
+            o.removeLineHighlight(l.config), i.$transparent = !1, i.$open = l.config.initial_open_state;
             var n = l.config.drop_target;
             !1 === this.callEvent("onBeforeRowDragEnd", [l.config.id, n.targetParent, n.targetIndex]) ? i.$drop_target = null : (t.move(l.config.id, n.targetIndex, n.targetParent), this.callEvent("onRowDragEnd", [l.config.id, n.targetParent, n.targetIndex])), t.refresh(i.id)
           }, t))
@@ -4872,15 +4548,15 @@ var JSGantt = function () {
           return n.locateAttribute(t, e.$config.item_attribute)
         }
 
-        function u(t) {
+        function d(t) {
           var i = function (t) {
               var i = n.getRelativeEventPosition(t, e.$grid_data).y, r = e.$config.rowStore;
               if ((i = i || 0) < 0) return r.$getRootId();
-              var o = Math.floor(i / e.getItemHeight());
-              return o > r.countVisible() - 1 ? r.$getRootId() : r.getIdByIndex(o)
-            }(t), r = null, s = e.$config.rowStore, c = !e.$getConfig().order_branch_free,
-            u = n.getRelativeEventPosition(t, e.$grid_data).y;
-          return i !== s.$getRootId() && (r = (u - e.getItemTop(i)) / e.getItemHeight()), c ? o(l.config.id, i, r, u, s, l.config.level) : a(l.config.id, i, r, u, s)
+              var a = Math.floor(i / e.getItemHeight());
+              return a > r.countVisible() - 1 ? r.$getRootId() : r.getIdByIndex(a)
+            }(t), r = null, o = e.$config.rowStore, c = !e.$getConfig().order_branch_free,
+            d = n.getRelativeEventPosition(t, e.$grid_data).y;
+          return i !== o.$getRootId() && (r = (d - e.getItemTop(i)) / e.getItemHeight()), c ? a(l.config.id, i, r, d, o, l.config.level) : s(l.config.id, i, r, d, o)
         }
       }
     }
@@ -4891,110 +4567,117 @@ var JSGantt = function () {
         var i = t.$services.getService("dnd");
         if (e.$config.bind && t.getDatastore(e.$config.bind)) {
           var r = new i(e.$grid_data, {updates_per_second: 60});
-          t.defined(e.$getConfig().dnd_sensitivity) && (r.config.sensitivity = e.$getConfig().dnd_sensitivity), r.attachEvent("onBeforeDragStart", t.bind(function (i, s) {
-            var l = o(s);
+          t.defined(e.$getConfig().dnd_sensitivity) && (r.config.sensitivity = e.$getConfig().dnd_sensitivity), r.attachEvent("onBeforeDragStart", t.bind(function (i, o) {
+            var l = a(o);
             if (!l) return !1;
-            if (t.hideQuickInfo && t._hideQuickInfo(), n.closest(s.target, ".jsgantt-grid-editor-placeholder")) return !1;
-            var c = l.getAttribute(e.$config.item_attribute), u = a().getItem(c);
-            return !t.isReadonly(u) && (r.config.initial_open_state = u.$open, !!t.callEvent("onRowDragStart", [c, s.target, s]) && void 0)
+            if (t.hideQuickInfo && t._hideQuickInfo(), n.closest(o.target, ".jsgantt-grid-editor-placeholder")) return !1;
+            var c = l.getAttribute(e.$config.item_attribute), d = s().getItem(c);
+            return !t.isReadonly(d) && (r.config.initial_open_state = d.$open, !!t.callEvent("onRowDragStart", [c, o.target, o]) && void 0)
           }, t)), r.attachEvent("onAfterDragStart", t.bind(function (t, i) {
-            var n = o(i);
+            var n = a(i);
             r.config.marker.innerHTML = n.outerHTML;
-            var s = r.config.marker.firstChild;
-            s && (s.style.position = "static"), r.config.id = n.getAttribute(e.$config.item_attribute);
-            var l = a(), c = l.getItem(r.config.id);
+            var o = r.config.marker.firstChild;
+            o && (o.style.position = "static"), r.config.id = n.getAttribute(e.$config.item_attribute);
+            var l = s(), c = l.getItem(r.config.id);
             r.config.index = l.getBranchIndex(r.config.id), r.config.parent = c.parent, c.$open = !1, c.$transparent = !0, this.refreshData()
           }, t)), r.lastTaskOfLevel = function (t) {
-            for (var e = null, i = a().getItems(), n = 0, r = i.length; n < r; n++) i[n].$level == t && (e = i[n]);
+            for (var e = null, i = s().getItems(), n = 0, r = i.length; n < r; n++) i[n].$level == t && (e = i[n]);
             return e ? e.id : null
           }, r._getGridPos = t.bind(function (t) {
-            var i = n.getNodePosition(e.$grid_data), r = a(), o = i.x, s = t.pos.y - 10, l = e.$getConfig();
-            s < i.y && (s = i.y);
+            var i = n.getNodePosition(e.$grid_data), r = s(), a = i.x, o = t.pos.y - 10, l = e.$getConfig();
+            o < i.y && (o = i.y);
             var c = r.countVisible() * l.row_height;
-            return s > i.y + c - l.row_height && (s = i.y + c - l.row_height), i.x = o, i.y = s, i
+            return o > i.y + c - l.row_height && (o = i.y + c - l.row_height), i.x = a, i.y = o, i
           }, t), r._getTargetY = t.bind(function (t) {
             var i = n.getNodePosition(e.$grid_data), r = t.pageY - i.y + (e.$state.scrollTop || 0);
             return r < 0 && (r = 0), r
           }, t), r._getTaskByY = t.bind(function (t, i) {
-            var n = e.$getConfig(), r = a();
+            var n = e.$getConfig(), r = s();
             t = t || 0;
-            var o = Math.floor(t / n.row_height);
-            return (o = i < o ? o - 1 : o) > r.countVisible() - 1 ? null : r.getIdByIndex(o)
+            var a = Math.floor(t / n.row_height);
+            return (a = i < a ? a - 1 : a) > r.countVisible() - 1 ? null : r.getIdByIndex(a)
           }, t), r.attachEvent("onDragMove", t.bind(function (t, i) {
-            var n = r.config, o = r._getGridPos(i), s = e.$getConfig(), l = a();
-            n.marker.style.left = o.x + 10 + "px", n.marker.style.top = o.y + "px";
-            var c = l.getItem(r.config.id), u = r._getTargetY(i), d = r._getTaskByY(u, l.getIndexById(c.id));
+            var n = r.config, a = r._getGridPos(i), o = e.$getConfig(), l = s();
+            n.marker.style.left = a.x + 10 + "px", n.marker.style.top = a.y + "px";
+            var c = l.getItem(r.config.id), d = r._getTargetY(i), h = r._getTaskByY(d, l.getIndexById(c.id));
 
-            function h(t, e) {
-              return !l.isChildOf(f.id, e.id) && (t.$level == e.$level || s.order_branch_free)
+            function u(t, e) {
+              return !l.isChildOf(f.id, e.id) && (t.$level == e.$level || o.order_branch_free)
             }
 
-            if (l.exists(d) || (d = r.lastTaskOfLevel(s.order_branch_free ? c.$level : 0)) == r.config.id && (d = null), l.exists(d)) {
-              var f = l.getItem(d);
-              if (l.getIndexById(f.id) * s.row_height + s.row_height / 2 < u) {
-                var g = l.getIndexById(f.id), p = l.getNext(f.id), _ = l.getItem(p);
-                if (_) {
-                  if (_.id == c.id) return s.order_branch_free && l.isChildOf(c.id, f.id) && 1 == l.getChildren(f.id).length ? void l.move(c.id, l.getBranchIndex(f.id) + 1, l.getParent(f.id)) : void 0;
-                  f = _
-                } else if (p = l.getIdByIndex(g), h(_ = l.getItem(p), c) && _.id != c.id) return void l.move(c.id, -1, l.getParent(_.id))
-              } else if (s.order_branch_free && f.id != c.id && h(f, c)) {
+            if (l.exists(h) || (h = r.lastTaskOfLevel(o.order_branch_free ? c.$level : 0)) == r.config.id && (h = null), l.exists(h)) {
+              var f = l.getItem(h);
+              if (l.getIndexById(f.id) * o.row_height + o.row_height / 2 < d) {
+                var g = l.getIndexById(f.id), _ = l.getNext(f.id), p = l.getItem(_);
+                if (p) {
+                  if (p.id == c.id) return o.order_branch_free && l.isChildOf(c.id, f.id) && 1 == l.getChildren(f.id).length ? void l.move(c.id, l.getBranchIndex(f.id) + 1, l.getParent(f.id)) : void 0;
+                  f = p
+                } else if (_ = l.getIdByIndex(g), u(p = l.getItem(_), c) && p.id != c.id) return void l.move(c.id, -1, l.getParent(p.id))
+              } else if (o.order_branch_free && f.id != c.id && u(f, c)) {
                 if (!l.hasChild(f.id)) return f.$open = !0, void l.move(c.id, -1, f.id);
-                if (l.getIndexById(f.id) || s.row_height / 3 < u) return
+                if (l.getIndexById(f.id) || o.row_height / 3 < d) return
               }
               g = l.getIndexById(f.id);
-              for (var v = l.getIdByIndex(g - 1), m = l.getItem(v), y = 1; (!m || m.id == f.id) && g - y >= 0;) v = l.getIdByIndex(g - y), m = l.getItem(v), y++;
+              for (var v = l.getIdByIndex(g - 1), m = l.getItem(v), $ = 1; (!m || m.id == f.id) && g - $ >= 0;) v = l.getIdByIndex(g - $), m = l.getItem(v), $++;
               if (c.id == f.id) return;
-              h(f, c) && c.id != f.id ? l.move(c.id, 0, 0, f.id) : f.$level != c.$level - 1 || l.getChildren(f.id).length ? m && h(m, c) && c.id != m.id && l.move(c.id, -1, l.getParent(m.id)) : l.move(c.id, 0, f.id)
+              u(f, c) && c.id != f.id ? l.move(c.id, 0, 0, f.id) : f.$level != c.$level - 1 || l.getChildren(f.id).length ? m && u(m, c) && c.id != m.id && l.move(c.id, -1, l.getParent(m.id)) : l.move(c.id, 0, f.id)
             }
             return !0
           }, t)), r.attachEvent("onDragEnd", t.bind(function () {
-            var t = a(), e = t.getItem(r.config.id);
+            var t = s(), e = t.getItem(r.config.id);
             e.$transparent = !1, e.$open = r.config.initial_open_state, !1 === this.callEvent("onBeforeRowDragEnd", [r.config.id, r.config.parent, r.config.index]) ? (t.move(r.config.id, r.config.index, r.config.parent), e.$drop_target = null) : this.callEvent("onRowDragEnd", [r.config.id, e.$drop_target]), this.refreshData()
           }, t))
         }
 
-        function o(t) {
+        function a(t) {
           return n.locateAttribute(t, e.$config.item_attribute)
         }
 
-        function a() {
+        function s() {
           return t.getDatastore(e.$config.bind)
         }
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(111), o = i(110);
+    var n = i(0), r = i(111), a = i(110);
     t.exports = function (t) {
       return {
         onCreated: function (e) {
-          e.$config = n.mixin(e.$config, {bind: "task"}), "grid" == e.$config.id && (this.extendGantt(e), t.ext.inlineEditors = t.ext._inlineEditors.createEditors(e), t.ext.inlineEditors.init()), this._mouseDelegates = i(15)(t)
+          e.$config = n.mixin(e.$config, {bind: "task"}), "grid" == e.$config.id && this.extendGantt(e), this._mouseDelegates = i(15)(t)
         }, onInitialized: function (e) {
           var i = e.$getConfig();
-          i.order_branch && ("marker" == i.order_branch ? o.init(e.$jsgantt, e) : r.init(e.$jsgantt, e)), this.initEvents(e, t), "grid" == e.$config.id && this.extendDom(e)
+          i.order_branch && ("marker" == i.order_branch ? a.init(e.$jsgantt, e) : r.init(e.$jsgantt, e)), this.initEvents(e, t), "grid" == e.$config.id && this.extendDom(e)
         }, onDestroyed: function (e) {
           "grid" == e.$config.id && t.ext.inlineEditors.destructor(), this.clearEvents(e, t)
         }, initEvents: function (t, e) {
           this._mouseDelegates.delegate("click", "jsgantt-row", e.bind(function (i, n, r) {
-            var o = t.$getConfig();
-            if (null !== n) {
-              var a = this.getTask(n);
-              o.scroll_on_click && !e._is_icon_open_click(i) && this.showDate(a.plannedDate), e.callEvent("onTaskRowClick", [n, r])
+            if ($(r).hasClass("fa")) {
+              const t = i.clientY + 8, e = i.clientX - 20;
+              $(".list-dropdown").css({
+                top: t + "px",
+                left: e + "px",
+                bottom: "auto"
+              }).removeClass("arrow-down reverse").addClass("dropdown-ac")
+            } else {
+              var a = t.$getConfig();
+              if (null !== n) {
+                var s = this.getTask(n);
+                a.scroll_on_click && !e._is_icon_open_click(i) && this.showDate(s.plannedDate), e.callEvent("onTaskRowClick", [n, r])
+              }
             }
           }, e), t.$grid), this._mouseDelegates.delegate("click", "jsgantt-grid-head-cell", e.bind(function (i, n, r) {
-            var o = r.getAttribute("data-column-id");
-            if (e.callEvent("onPanelHeaderClick", [o, i])) {
-              var a = t.$getConfig();
-              if ("add" != o) {
-                if (a.sort) {
-                  for (var s, l = o, c = 0; c < a.columns.length; c++) if (a.columns[c].name == o) {
-                    s = a.columns[c];
-                    break
-                  }
-                  if (s && void 0 !== s.sort && !0 !== s.sort && !(l = s.sort)) return;
-                  var u = this._sort && this._sort.direction && this._sort.name == o ? this._sort.direction : "desc";
-                  u = "desc" == u ? "asc" : "desc", this._sort = {name: o, direction: u}, this.sort(l, "desc" == u)
+            var a = r.getAttribute("data-column-id");
+            if (e.callEvent("onPanelHeaderClick", [a, i])) {
+              var s = t.$getConfig();
+              if ("add" != a && s.sort) {
+                for (var o, l = a, c = 0; c < s.columns.length; c++) if (s.columns[c].name == a) {
+                  o = s.columns[c];
+                  break
                 }
-              } else e.$services.getService("mouseEvents").callHandler("click", "jsgantt-add", t.$grid, [i, a.root_id])
+                if (o && void 0 !== o.sort && !0 !== o.sort && !(l = o.sort)) return;
+                var d = this._sort && this._sort.direction && this._sort.name == a ? this._sort.direction : "desc";
+                d = "desc" == d ? "asc" : "desc", this._sort = {name: a, direction: d}, this.sort(l, "desc" == d)
+              }
             }
           }, e), t.$grid), this._mouseDelegates.delegate("click", "jsgantt-add", e.bind(function (i, n, r) {
             if (!t.$getConfig().readonly) return this.createTask({}, n || e.config.root_id), !1
@@ -5020,34 +4703,40 @@ var JSGantt = function () {
     var n = i(3);
     t.exports = function (t) {
       return function (e, i) {
-        var r = i.getGridColumns(), o = i.$getConfig(), a = i.$getTemplates(), s = i.$config.rowStore;
-        o.rtl && (r = r.reverse());
+        var r = i.getGridColumns(), a = i.$getConfig(), s = i.$getTemplates(), o = i.$config.rowStore;
+        a.rtl && (r = r.reverse());
         for (var l = [], c = 0; c < r.length; c++) {
-          var u, d, h, f = c == r.length - 1, g = r[c];
-          "add" == g.name ? (d = "<div " + (y = t._waiAria.gridAddButtonAttrString(g)) + " class='jsgantt-add'></div>", h = "") : (d = g.template ? g.template(e) : e[g.name], n.isDate(d) && (d = a.date_grid(d, e)), h = d, d = "<div class='jsgantt-tree-content'>" + d + "</div>");
-          var p = "jsgantt-cell" + (f ? " jsgantt-last-cell" : ""), _ = [];
+          var d, h, u, f = c == r.length - 1, g = r[c];
+          h = g.template ? g.template(e) : e[g.name], n.isDate(h) && (h = s.date_grid(h, e)), u = h, h = "<div class='jsgantt-tree-content'>" + h + "</div>";
+          var _ = "jsgantt-cell" + (f ? " jsgantt-last-cell" : ""), p = [];
           if (g.tree) {
-            for (var v = 0; v < e.$level; v++) _.push(a.grid_indent(e));
-            s.hasChild(e.id) && !t.isSplitTask(e) ? (_.push(a.grid_open(e)), _.push(a.grid_folder(e))) : (_.push(a.grid_blank(e)), _.push(a.grid_file(e)))
+            for (var v = 0; v < e.$level; v++) p.push(s.grid_indent(e));
+            o.hasChild(e.id) && !t.isSplitTask(e) ? (p.push(s.grid_open(e)), p.push(s.grid_folder(e))) : (p.push(s.grid_blank(e)), p.push(s.grid_file(e)))
           }
-
           var m = "width:" + (g.width - (f ? 1 : 0)) + "px;padding-right:16px";
-          if(f){
-            m = "width:auto;padding-right:16px";
+          f && (m = "width:auto;padding-right:16px"), this.defined(g.align) && (m += "text-align:" + g.align + ";");
+          var $ = t._waiAria.gridCellAttrString(g, u);
+          if (0 == c && !e.isWorkflow) {
+            let i = e.id;
+            let str = '<div class="btn-group dropdown m-r-sm" style="vertical-align: top"><button type="button" class="btn-drop dropdown-timeline more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button> <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">';
+            if(e.open) {
+              str = str +  '<a id="' + i + 'removeBtn" class="dropdown-item bg-hover-color">' + t.config.btnRemoveOrder + '</a></div></div>';
+            }else {
+             str = str +  '<a id="' + i + 'editBtn" class="dropdown-item">' + t.config.btnChangeParameter + '</a><a id="' + i + 'removeBtn" class="dropdown-item bg-hover-color">' + t.config.btnRemoveOrder + '</a></div></div>';
+            }
+            p.push(str);
           }
-          this.defined(g.align) && (m += "text-align:" + g.align + ";");
-          var y = t._waiAria.gridCellAttrString(g, h);
-          _.push(d), o.rtl && (_ = _.reverse()), u = "<div class='" + p + "' data-column-index='" + c + "' data-column-name='" + g.name + "' style='" + m + "' " + y + ">" + _.join("") + "</div>", l.push(u)
+          p.push(h), a.rtl && (p = p.reverse()), d = "<div class='" + _ + "' data-column-index='" + c + "' data-column-name='" + g.name + "' style='" + m + "' " + $ + ">" + p.join("") + "</div>", l.push(d)
         }
-        if (p = t.getGlobalTaskIndex(e.id) % 2 == 0 ? "" : " odd", p += e.$transparent ? " jsgantt-transparent" : "", p += e.$dataprocessor_class ? " " + e.$dataprocessor_class : "", a.grid_row_class) {
-          var k = a.grid_row_class.call(t, e.plannedDate, e.end_date, e);
-          k && (p += " " + k)
+        if (_ = t.getGlobalTaskIndex(e.id) % 2 == 0 ? "" : " odd", _ += e.$transparent ? " jsgantt-transparent" : "", _ += e.$dataprocessor_class ? " " + e.$dataprocessor_class : "", s.grid_row_class) {
+          var y = s.grid_row_class.call(t, e.plannedDate, e.end_date, e);
+          y && (_ += " " + y)
         }
-        s.getSelectedId() == e.id && (p += " jsgantt-selected");
-        var b = document.createElement("div");
-        b.className = "jsgantt-row" + p + " jsgantt-row-" + t.getTaskType(e.type);
+        o.getSelectedId() == e.id && (_ += " jsgantt-selected");
+        var k = document.createElement("div");
+        k.className = "jsgantt-row" + _ + " jsgantt-row-" + t.getTaskType(e.type);
         var w = i.getItemHeight();
-        return b.style.height = w + "px", b.style.lineHeight = w + "px", o.smart_rendering && (b.style.position = "absolute", b.style.left = "0px", b.style.top = i.getItemTop(e.id) + "px"), i.$config.item_attribute && b.setAttribute(i.$config.item_attribute, e.id), t._waiAria.taskRowAttr(e, b), b.innerHTML = l.join(""), b
+        return k.style.height = w + "px", k.style.lineHeight = w + "px", a.smart_rendering && (k.style.position = "absolute", k.style.left = "0px", k.style.top = i.getItemTop(e.id) + "px"), i.$config.item_attribute && k.setAttribute(i.$config.item_attribute, e.id), t._waiAria.taskRowAttr(e, k), k.innerHTML = l.join(""), k
       }
     }
   }, function (t, e) {
@@ -5067,38 +4756,38 @@ var JSGantt = function () {
         }, get_path: function () {
           return this.path
         }, get_wrapper_sizes: function (t, e) {
-          var i, n = e.$getConfig(), r = n.link_wrapper_width, o = t.y + (n.row_height - r) / 2;
+          var i, n = e.$getConfig(), r = n.link_wrapper_width, a = t.y + (n.row_height - r) / 2;
           switch (t.direction) {
             case this.dirs.left:
-              i = {top: o, height: r, lineHeight: r, left: t.x - t.size - r / 2, width: t.size + r};
+              i = {top: a, height: r, lineHeight: r, left: t.x - t.size - r / 2, width: t.size + r};
               break;
             case this.dirs.right:
-              i = {top: o, lineHeight: r, height: r, left: t.x - r / 2, width: t.size + r};
+              i = {top: a, lineHeight: r, height: r, left: t.x - r / 2, width: t.size + r};
               break;
             case this.dirs.up:
-              i = {top: o - t.size, lineHeight: t.size + r, height: t.size + r, left: t.x - r / 2, width: r};
+              i = {top: a - t.size, lineHeight: t.size + r, height: t.size + r, left: t.x - r / 2, width: r};
               break;
             case this.dirs.down:
-              i = {top: o, lineHeight: t.size + r, height: t.size + r, left: t.x - r / 2, width: r}
+              i = {top: a, lineHeight: t.size + r, height: t.size + r, left: t.x - r / 2, width: r}
           }
           return i
         }, get_line_sizes: function (t, e) {
-          var i, n = e.$getConfig(), r = n.link_line_width, o = n.link_wrapper_width, a = t.size + r;
+          var i, n = e.$getConfig(), r = n.link_line_width, a = n.link_wrapper_width, s = t.size + r;
           switch (t.direction) {
             case this.dirs.left:
             case this.dirs.right:
-              i = {height: r, width: a, marginTop: (o - r) / 2, marginLeft: (o - r) / 2};
+              i = {height: r, width: s, marginTop: (a - r) / 2, marginLeft: (a - r) / 2};
               break;
             case this.dirs.up:
             case this.dirs.down:
-              i = {height: a, width: r, marginTop: (o - r) / 2, marginLeft: (o - r) / 2}
+              i = {height: s, width: r, marginTop: (a - r) / 2, marginLeft: (a - r) / 2}
           }
           return i
         }, render_line: function (t, e, i) {
           var n = this.get_wrapper_sizes(t, i), r = document.createElement("div");
           r.style.cssText = ["top:" + n.top + "px", "left:" + n.left + "px", "height:" + n.height + "px", "width:" + n.width + "px"].join(";"), r.className = "jsgantt-line-wrapper";
-          var o = this.get_line_sizes(t, i), a = document.createElement("div");
-          return a.style.cssText = ["height:" + o.height + "px", "width:" + o.width + "px", "margin-top:" + o.marginTop + "px", "margin-left:" + o.marginLeft + "px"].join(";"), a.className = "jsgantt-link-line-" + t.direction, r.appendChild(a), r
+          var a = this.get_line_sizes(t, i), s = document.createElement("div");
+          return s.style.cssText = ["height:" + a.height + "px", "width:" + a.width + "px", "margin-top:" + a.marginTop + "px", "margin-left:" + a.marginLeft + "px"].join(";"), s.className = "jsgantt-link-line-" + t.direction, r.appendChild(s), r
         }, _get_line: function (t, e) {
           var i = this.get_direction(t, e), n = {x: t.x, y: t.y, direction: this.get_direction(t, e)};
           return i == this.dirs.left || i == this.dirs.right ? n.size = Math.abs(t.x - e.x) : n.size = Math.abs(t.y - e.y), n
@@ -5114,100 +4803,100 @@ var JSGantt = function () {
           return e ? (this.path.push(t.copy(e)), e) : this.current()
         }, point_to: function (i, n, r) {
           r = r ? {x: r.x, y: r.y} : t.copy(this.point());
-          var o = e.dirs;
+          var a = e.dirs;
           switch (i) {
-            case o.left:
+            case a.left:
               r.x -= n;
               break;
-            case o.right:
+            case a.right:
               r.x += n;
               break;
-            case o.up:
+            case a.up:
               r.y -= n;
               break;
-            case o.down:
+            case a.down:
               r.y += n
           }
           return this.point(r)
         }, get_points: function (i, n) {
-          var r = this.get_endpoint(i, n), o = t.config, a = r.e_y - r.y, s = r.e_x - r.x, l = e.dirs;
+          var r = this.get_endpoint(i, n), a = t.config, s = r.e_y - r.y, o = r.e_x - r.x, l = e.dirs;
           this.clear(), this.point({x: r.x, y: r.y});
-          var c = 2 * o.link_arrow_size, u = this.get_line_type(i, n.$getConfig()), d = r.e_x > r.x;
-          if (u.from_start && u.to_start) this.point_to(l.left, c), d ? (this.point_to(l.down, a), this.point_to(l.right, s)) : (this.point_to(l.right, s), this.point_to(l.down, a)), this.point_to(l.right, c); else if (!u.from_start && u.to_start) if (d = r.e_x > r.x + 2 * c, this.point_to(l.right, c), d) s -= c, this.point_to(l.down, a), this.point_to(l.right, s); else {
-            s -= 2 * c;
-            var h = a > 0 ? 1 : -1;
-            this.point_to(l.down, h * (o.row_height / 2)), this.point_to(l.right, s), this.point_to(l.down, h * (Math.abs(a) - o.row_height / 2)), this.point_to(l.right, c)
-          } else u.from_start || u.to_start ? u.from_start && !u.to_start && (d = r.e_x > r.x - 2 * c, this.point_to(l.left, c), d ? (s += 2 * c, h = a > 0 ? 1 : -1, this.point_to(l.down, h * (o.row_height / 2)), this.point_to(l.right, s), this.point_to(l.down, h * (Math.abs(a) - o.row_height / 2)), this.point_to(l.left, c)) : (s += c, this.point_to(l.down, a), this.point_to(l.right, s))) : (this.point_to(l.right, c), d ? (this.point_to(l.right, s), this.point_to(l.down, a)) : (this.point_to(l.down, a), this.point_to(l.right, s)), this.point_to(l.left, c));
+          var c = 2 * a.link_arrow_size, d = this.get_line_type(i, n.$getConfig()), h = r.e_x > r.x;
+          if (d.from_start && d.to_start) this.point_to(l.left, c), h ? (this.point_to(l.down, s), this.point_to(l.right, o)) : (this.point_to(l.right, o), this.point_to(l.down, s)), this.point_to(l.right, c); else if (!d.from_start && d.to_start) if (h = r.e_x > r.x + 2 * c, this.point_to(l.right, c), h) o -= c, this.point_to(l.down, s), this.point_to(l.right, o); else {
+            o -= 2 * c;
+            var u = s > 0 ? 1 : -1;
+            this.point_to(l.down, u * (a.row_height / 2)), this.point_to(l.right, o), this.point_to(l.down, u * (Math.abs(s) - a.row_height / 2)), this.point_to(l.right, c)
+          } else d.from_start || d.to_start ? d.from_start && !d.to_start && (h = r.e_x > r.x - 2 * c, this.point_to(l.left, c), h ? (o += 2 * c, u = s > 0 ? 1 : -1, this.point_to(l.down, u * (a.row_height / 2)), this.point_to(l.right, o), this.point_to(l.down, u * (Math.abs(s) - a.row_height / 2)), this.point_to(l.left, c)) : (o += c, this.point_to(l.down, s), this.point_to(l.right, o))) : (this.point_to(l.right, c), h ? (this.point_to(l.right, o), this.point_to(l.down, s)) : (this.point_to(l.down, s), this.point_to(l.right, o)), this.point_to(l.left, c));
           return this.path
         }, get_line_type: function (e, i) {
-          var n = i.links, r = !1, o = !1;
-          return e.type == n.start_to_start ? r = o = !0 : e.type == n.finish_to_finish ? r = o = !1 : e.type == n.finish_to_start ? (r = !1, o = !0) : e.type == n.start_to_finish ? (r = !0, o = !1) : t.assert(!1, "Invalid link type"), i.rtl && (r = !r, o = !o), {
+          var n = i.links, r = !1, a = !1;
+          return e.type == n.start_to_start ? r = a = !0 : e.type == n.finish_to_finish ? r = a = !1 : e.type == n.finish_to_start ? (r = !1, a = !0) : e.type == n.start_to_finish ? (r = !0, a = !1) : t.assert(!1, "Invalid link type"), i.rtl && (r = !r, a = !a), {
             from_start: r,
-            to_start: o
+            to_start: a
           }
         }, get_endpoint: function (e, i) {
-          var r = i.$getConfig(), o = this.get_line_type(e, r), a = o.from_start, s = o.to_start,
-            l = t.getTask(e.source), c = t.getTask(e.target), u = n(l, i), d = n(c, i);
-          return {x: a ? u.left : u.left + u.width, e_x: s ? d.left : d.left + d.width, y: u.top, e_y: d.top}
+          var r = i.$getConfig(), a = this.get_line_type(e, r), s = a.from_start, o = a.to_start,
+            l = t.getTask(e.source), c = t.getTask(e.target), d = n(l, i), h = n(c, i);
+          return {x: s ? d.left : d.left + d.width, e_x: o ? h.left : h.left + h.width, y: d.top, e_y: h.top}
         }
       };
 
       function n(e, i) {
         var n = i.$getConfig(), r = i.getItemPosition(e);
         if (t.getTaskType(e.type) == n.types.milestone) {
-          var o = t.getTaskHeight(), a = Math.sqrt(2 * o * o);
-          r.left -= a / 2, r.width = a
+          var a = t.getTaskHeight(), s = Math.sqrt(2 * a * a);
+          r.left -= s / 2, r.width = s
         }
         return r
       }
 
       return function (n, r) {
-        var o = r.$getConfig(), a = i.get_endpoint(n, r), s = a.e_y - a.y;
-        if (!(a.e_x - a.x || s)) return null;
-        var l = i.get_points(n, r), c = e.get_lines(l, r), u = document.createElement("div"), d = "jsgantt-task-link";
-        n.color && (d += " jsgantt-link-inline-color");
-        var h = t.templates.link_class ? t.templates.link_class(n) : "";
-        h && (d += " " + h), o.highlight_critical_path && t.isCriticalLink && t.isCriticalLink(n) && (d += " jsgantt-critical-link"), u.className = d, r.$config.link_attribute && u.setAttribute(r.$config.link_attribute, n.id);
+        var a = r.$getConfig(), s = i.get_endpoint(n, r), o = s.e_y - s.y;
+        if (!(s.e_x - s.x || o)) return null;
+        var l = i.get_points(n, r), c = e.get_lines(l, r), d = document.createElement("div"), h = "jsgantt-task-link";
+        n.color && (h += " jsgantt-link-inline-color");
+        var u = t.templates.link_class ? t.templates.link_class(n) : "";
+        u && (h += " " + u), a.highlight_critical_path && t.isCriticalLink && t.isCriticalLink(n) && (h += " jsgantt-critical-link"), d.className = h, r.$config.link_attribute && d.setAttribute(r.$config.link_attribute, n.id);
         for (var f = 0; f < c.length; f++) {
-          f == c.length - 1 && (c[f].size -= o.link_arrow_size);
+          f == c.length - 1 && (c[f].size -= a.link_arrow_size);
           var g = e.render_line(c[f], c[f + 1], r);
-          n.color && (g.firstChild.style.backgroundColor = n.color), u.appendChild(g)
+          n.color && (g.firstChild.style.backgroundColor = n.color), d.appendChild(g)
         }
-        var p = c[c.length - 1].direction, _ = function (t, i, n) {
-          var r = n.$getConfig(), o = document.createElement("div"), a = t.y, s = t.x, l = r.link_arrow_size,
-            c = r.row_height, u = "jsgantt-link-arrow jsgantt-link-arrow-" + i;
+        var _ = c[c.length - 1].direction, p = function (t, i, n) {
+          var r = n.$getConfig(), a = document.createElement("div"), s = t.y, o = t.x, l = r.link_arrow_size,
+            c = r.row_height, d = "jsgantt-link-arrow jsgantt-link-arrow-" + i;
           switch (i) {
             case e.dirs.right:
-              a -= (l - c) / 2, s -= l;
+              s -= (l - c) / 2, o -= l;
               break;
             case e.dirs.left:
-              a -= (l - c) / 2;
+              s -= (l - c) / 2;
               break;
             case e.dirs.up:
-              s -= l;
+              o -= l;
               break;
             case e.dirs.down:
-              a += 2 * l, s -= l
+              s += 2 * l, o -= l
           }
-          return o.style.cssText = ["top:" + a + "px", "left:" + s + "px"].join(";"), o.className = u, o
-        }(l[l.length - 1], p, r);
-        return n.color && (_.style.borderColor = n.color), u.appendChild(_), t._waiAria.linkAttr(n, u), u
+          return a.style.cssText = ["top:" + s + "px", "left:" + o + "px"].join(";"), a.className = d, a
+        }(l[l.length - 1], _, r);
+        return n.color && (p.style.borderColor = n.color), d.appendChild(p), t._waiAria.linkAttr(n, d), d
       }
     }
   }, function (t, e) {
     t.exports = function (t) {
       return function (e, i) {
-        var n = i.$getConfig(), r = i.$getTemplates(), o = i.getScale(), a = o.count, s = document.createElement("div");
-        if (n.show_task_cells) for (var l = 0; l < a; l++) {
-          var c = o.width[l], u = "";
+        var n = i.$getConfig(), r = i.$getTemplates(), a = i.getScale(), s = a.count, o = document.createElement("div");
+        if (n.show_task_cells) for (var l = 0; l < s; l++) {
+          var c = a.width[l], d = "";
           if (c > 0) {
-            var d = document.createElement("div");
-            d.style.width = c + "px", u = "jsgantt-task-cell" + (l == a - 1 ? " jsgantt-last-cell" : ""), (f = r.task_cell_class(e, o.trace_x[l])) && (u += " " + f), d.className = u, s.appendChild(d)
+            var h = document.createElement("div");
+            h.style.width = c + "px", d = "jsgantt-task-cell" + (l == s - 1 ? " jsgantt-last-cell" : ""), (f = r.task_cell_class(e, a.trace_x[l])) && (d += " " + f), h.className = d, o.appendChild(h)
           }
         }
-        var h = t.getGlobalTaskIndex(e.id) % 2 != 0, f = r.task_row_class(e.plannedDate, e.end_date, e),
-          g = "jsgantt-task-row" + (h ? " odd" : "") + (f ? " " + f : "");
-        return i.$config.rowStore.getSelectedId() == e.id && (g += " jsgantt-selected"), s.className = g, n.smart_rendering && (s.style.position = "absolute", s.style.top = i.getItemTop(e.id) + "px", s.style.width = "100%"), s.style.height = n.row_height + "px", i.$config.item_attribute && s.setAttribute(i.$config.item_attribute, e.id), s
+        var u = t.getGlobalTaskIndex(e.id) % 2 != 0, f = r.task_row_class(e.plannedDate, e.end_date, e),
+          g = "jsgantt-task-row" + (u ? " odd" : "") + (f ? " " + f : "");
+        return i.$config.rowStore.getSelectedId() == e.id && (g += " jsgantt-selected"), o.className = g, n.smart_rendering && (o.style.position = "absolute", o.style.top = i.getItemTop(e.id) + "px", o.style.width = "100%"), o.style.height = n.row_height + "px", i.$config.item_attribute && o.setAttribute(i.$config.item_attribute, e.id), o
       }
     }
   }, function (t, e, i) {
@@ -5215,11 +4904,11 @@ var JSGantt = function () {
       var e = i(30)(t);
       return function (i, n) {
         if (t.isSplitTask(i)) {
-          for (var r = document.createElement("div"), o = t.getTaskPosition(i), a = t.getChildren(i.id), s = 0; s < a.length; s++) {
-            var l = t.getTask(a[s]), c = e(l, n);
+          for (var r = document.createElement("div"), a = t.getTaskPosition(i), s = t.getChildren(i.id), o = 0; o < s.length; o++) {
+            var l = t.getTask(s[o]), c = e(l, n);
             if (c) {
-              var u = Math.floor((t.config.row_height - o.height) / 2);
-              c.style.top = o.top + u + "px", c.className += " jsgantt-split-child", r.appendChild(c)
+              var d = Math.floor((t.config.row_height - a.height) / 2);
+              c.style.top = a.top + d + "px", c.className += " jsgantt-split-child", r.appendChild(c)
             }
           }
           return r
@@ -5235,96 +4924,7 @@ var JSGantt = function () {
         return e.apply(this, arguments) || this
       }
 
-      function o(t, e) {
-        for (var i = (t || "").split(e.delimiter || ","), n = 0; n < i.length; n++) {
-          var r = i[n].trim();
-          r ? i[n] = r : (i.splice(n, 1), n--)
-        }
-        return i.sort(), i
-      }
-
-      function a(t, e, i) {
-        for (var n = t.$target, r = [], o = 0; o < n.length; o++) {
-          var a = i.getLink(n[o]), s = i.getTask(a.source);
-          r.push(i.getWBSCode(s))
-        }
-        return r.join((e.delimiter || ",") + " ")
-      }
-
-      return i(2)(r, e), n.mixin(r.prototype, {
-        show: function (t, e, i, n) {
-          var r = "<div><input type='text' name='" + e.name + "'></div>";
-          n.innerHTML = r
-        }, hide: function () {
-        }, set_value: function (e, i, n, r) {
-          this.get_input(r).value = a(e, n.editor, t)
-        }, get_value: function (t, e, i) {
-          return o(this.get_input(i).value || "", e.editor)
-        }, save: function (e, i, n) {
-          var r = function (e, i) {
-            var n = function (e, i) {
-              var n = [];
-              return i.forEach(function (i) {
-                var r = t.getTaskByWBSCode(i);
-                if (r) {
-                  var o = {source: r.id, target: e, type: t.config.links.finish_to_start, lag: 0};
-                  t.isLinkAllowed(o) && n.push(o)
-                }
-              }), n
-            }(e.id, i), r = {};
-            e.$target.forEach(function (e) {
-              var i = t.getLink(e);
-              r[i.source + "_" + i.target] = i.id
-            });
-            var o = [];
-            n.forEach(function (t) {
-              var e = t.source + "_" + t.target;
-              r[e] ? delete r[e] : o.push(t)
-            });
-            var a = [];
-            for (var s in r) a.push(r[s]);
-            return {add: o, remove: a}
-          }(t.getTask(e), this.get_value(e, i, n));
-          (r.add.length || r.remove.length) && t.batchUpdate(function () {
-            r.add.forEach(function (e) {
-              t.addLink(e)
-            }), r.remove.forEach(function (e) {
-              t.deleteLink(e)
-            }), t.autoSchedule && t.autoSchedule()
-          })
-        }, is_changed: function (e, i, n, r) {
-          var s = this.get_value(i, n, r), l = o(a(e, n.editor, t), n.editor);
-          return s.join() !== l.join()
-        }
-      }, !0), r
-    }
-  }, function (t, e, i) {
-    t.exports = function (t) {
-      var e = i(7)(t), n = i(0), r = "%Y-%m-%d", o = null, a = null;
-
-      function s() {
-        return e.apply(this, arguments) || this
-      }
-
-      return i(2)(s, e), n.mixin(s.prototype, {
-        show: function (e, i, n, s) {
-          o || (o = t.date.date_to_str(r)), a || (a = t.date.str_to_date(r));
-          var l = "<div style='width:140px'><input type='date' min='" + o(n.min || t.getState().min_date) + "' max='" + o(n.max || t.getState().max_date) + "' name='" + i.name + "'></div>";
-          s.innerHTML = l
-        }, set_value: function (t, e, i, n) {
-          t && t.getFullYear ? this.get_input(n).value = o(t) : this.get_input(n).value = t
-        }, is_valid: function (t, e, i, n) {
-          return !(!t || isNaN(t.getTime()))
-        }, get_value: function (t, e, i) {
-          var n;
-          try {
-            n = a(this.get_input(i).value || "")
-          } catch (t) {
-            n = null
-          }
-          return n
-        }
-      }, !0), s
+      return i(2)(r, e), n.mixin(r.prototype, {}, !0), r
     }
   }, function (t, e, i) {
     t.exports = function (t) {
@@ -5334,390 +4934,64 @@ var JSGantt = function () {
         return e.apply(this, arguments) || this
       }
 
-      return i(2)(r, e), n.mixin(r.prototype, {
-        show: function (t, e, i, n) {
-          for (var r = "<div><select name='" + e.name + "'>", o = [], a = i.options || [], s = 0; s < a.length; s++) o.push("<option value='" + i.options[s].key + "'>" + a[s].label + "</option>");
-          r += o.join("") + "</select></div>", n.innerHTML = r
-        }, get_input: function (t) {
-          return t.querySelector("select")
-        }
-      }, !0), r
+      return i(2)(r, e), n.mixin(r.prototype, !0), r
     }
   }, function (t, e, i) {
     t.exports = function (t) {
-      var e = i(7)(t), n = i(0);
+      var e = i(7)(t);
+      i(0);
 
-      function r() {
+      function n() {
         return e.apply(this, arguments) || this
       }
 
-      return i(2)(r, e), n.mixin(r.prototype, {
-        show: function (t, e, i, n) {
-          var r = "<div><input type='number' min='" + (i.min || 0) + "' max='" + (i.max || 100) + "' name='" + e.name + "'></div>";
-          n.innerHTML = r
-        }, get_value: function (t, e, i) {
-          return this.get_input(i).value || ""
-        }, is_valid: function (t, e, i, n) {
-          return !isNaN(parseInt(t, 10))
-        }
-      }, !0), r
+      return i(2)(n, e), n
     }
   }, function (t, e, i) {
     t.exports = function (t) {
-      var e = i(7)(t), n = i(0);
+      var e = i(7)(t);
+      i(0);
 
-      function r() {
+      function n() {
         return e.apply(this, arguments) || this
       }
 
-      return i(2)(r, e), n.mixin(r.prototype, {
-        show: function (t, e, i, n) {
-          var r = "<div><input type='text' name='" + e.name + "'></div>";
-          n.innerHTML = r
-        }
-      }, !0), r
+      return i(2)(n, e), n
+    }
+  }, function (t, e, i) {
+    t.exports = function (t) {
+      var e = i(7)(t);
+      i(0);
+
+      function n() {
+        return e.apply(this, arguments) || this
+      }
+
+      return i(2)(n, e), n
     }
   }, function (t, e) {
-    t.exports = {
-      init: function (t, e) {
-        var i = t, n = e.$jsgantt, r = null, o = n.ext.keyboardNavigation;
-        o.attachEvent("onBeforeFocus", function (e) {
-          var n = t.locateCell(e);
-          if (clearTimeout(r), n) {
-            var o = n.columnName, a = n.id, s = i.getState();
-            if (i.isVisible() && s.id == a && s.columnName === o) return !1
-          }
-          return !0
-        }), o.attachEvent("onFocus", function (e) {
-          var n = t.locateCell(e), o = t.getState();
-          return clearTimeout(r), !n || n.id == o.id && n.columnName == o.columnName || i.isVisible() && i.save(), !0
-        }), t.attachEvent("onHide", function () {
-          clearTimeout(r)
-        }), o.attachEvent("onBlur", function () {
-          return r = setTimeout(function () {
-            i.save()
-          }), !0
-        }), n.attachEvent("onTaskDblClick", function (e, i) {
-          var n = t.getState(), r = t.locateCell(i.target);
-          return !r || !t.isVisible() || r.columnName != n.columnName
-        }), n.attachEvent("onTaskClick", function (e, i) {
-          if (n._is_icon_open_click(i)) return !0;
-          var r = t.getState(), o = t.locateCell(i.target);
-          return !o || !t.getEditorConfig(o.columnName) || (t.isVisible() && r.id == o.id && r.columnName == o.columnName || t.startEdit(o.id, o.columnName), !1)
-        }), n.attachEvent("onEmptyClick", function () {
-          return i.save(), !0
-        }), o.attachEvent("onKeyDown", function (e, r) {
-          var a = t.locateCell(r.target), s = !!a && t.getEditorConfig(a.columnName), l = t.getState(),
-            c = n.constants.KEY_CODES, u = r.keyCode, d = !1;
-          switch (u) {
-            case c.ENTER:
-              t.isVisible() ? (t.save(), r.preventDefault(), d = !0) : s && !(r.ctrlKey || r.metaKey || r.shiftKey) && (i.startEdit(a.id, a.columnName), r.preventDefault(), d = !0);
-              break;
-            case c.ESC:
-              t.isVisible() && (t.hide(), r.preventDefault(), d = !0);
-              break;
-            case c.UP:
-            case c.DOWN:
-              break;
-            case c.LEFT:
-            case c.RIGHT:
-              "date" === l.editorType && (d = !0);
-              break;
-            case c.SPACE:
-              t.isVisible() && (d = !0), s && !t.isVisible() && (i.startEdit(a.id, a.columnName), r.preventDefault(), d = !0);
-              break;
-            case c.DELETE:
-              s && !t.isVisible() && (i.startEdit(a.id, a.columnName), d = !0);
-              break;
-            case c.TAB:
-              if (t.isVisible()) {
-                r.shiftKey ? t.editPrevCell(!0) : t.editNextCell(!0);
-                var h = t.getState();
-                h.id && o.focus({type: "taskCell", id: h.id, column: h.columnName}), r.preventDefault(), d = !0
-              }
-              break;
-            default:
-              if (t.isVisible()) d = !0; else if (u >= 48 && u <= 57 || u > 95 && u < 112 || u >= 64 && u <= 91 || u > 185 && u < 193 || u > 218 && u < 223) {
-                var f = e.modifiers, g = f.alt || f.ctrl || f.meta || f.shift;
-                f.alt || g && o.getCommandHandler(e, "taskCell") || s && !t.isVisible() && (i.startEdit(a.id, a.columnName), d = !0)
-              }
-          }
-          return !d
-        })
-      }, onShow: function (t, e, i) {
-      }, onHide: function (t, e, i) {
-        i.$jsgantt.focus()
-      }, destroy: function () {
-      }
-    }
+    t.exports = {}
   }, function (t, e) {
-    t.exports = {
-      init: function (t, e) {
-        var i = e.$jsgantt;
-        i.attachEvent("onTaskClick", function (e, n) {
-          if (i._is_icon_open_click(n)) return !0;
-          var r = t.getState(), o = t.locateCell(n.target);
-          return !o || !t.getEditorConfig(o.columnName) || (t.isVisible() && r.id == o.id && r.columnName == o.columnName || t.startEdit(o.id, o.columnName), !1)
-        }), i.attachEvent("onEmptyClick", function () {
-          return t.isVisible() && t.isChanged() ? t.save() : t.hide(), !0
-        }), i.attachEvent("onTaskDblClick", function (e, i) {
-          var n = t.getState(), r = t.locateCell(i.target);
-          return !r || !t.isVisible() || r.columnName != n.columnName
-        })
-      }, onShow: function (t, e, i) {
-        if (!i.$getConfig().keyboard_navigation) {
-          var n = i.$jsgantt;
-          e.onkeydown = function (e) {
-            e = e || window.event;
-            var i = n.constants.KEY_CODES;
-            if (!(e.defaultPrevented || e.shiftKey && e.keyCode != i.TAB)) {
-              var r = !0;
-              switch (e.keyCode) {
-                case n.keys.edit_save:
-                  t.save();
-                  break;
-                case n.keys.edit_cancel:
-                  t.hide();
-                  break;
-                case i.TAB:
-                  e.shiftKey ? t.editPrevCell(!0) : t.editNextCell(!0);
-                  break;
-                default:
-                  r = !1
-              }
-              r && e.preventDefault()
-            }
-          }
-        }
-      }, onHide: function () {
-      }, destroy: function () {
-      }
-    }
+    t.exports = {}
   }, function (t, e, i) {
-    var n = i(123), r = i(122);
     t.exports = function (t) {
-      var e = null;
-      return {
-        setMapping: function (t) {
-          e = t
-        }, getMapping: function () {
-          return e || (t.config.keyboard_navigation_cells ? r : n)
-        }
-      }
     }
   }, function (t, e, i) {
-    var n = i(124), r = i(121), o = i(120), a = i(119), s = i(118), l = i(117), c = i(0), u = i(1), d = i(4);
-
-    function h(t) {
-      t.config.editor_types = {
-        text: new (r(t)),
-        number: new (o(t)),
-        select: new (a(t)),
-        date: new (s(t)),
-        predecessor: new (l(t))
-      }
-    }
-
+    var n = i(124), r = i(0), a = (i(1), i(4));
     t.exports = function (t) {
       var e = n(t), i = {};
-      d(i);
-      var r = {
-        init: h, createEditors: function (n) {
-          var r = [], o = null, a = {
-            _itemId: null,
-            _columnName: null,
-            _editor: null,
-            _editorType: null,
-            _placeholder: null,
-            locateCell: function (t) {
-              if (!u.isChildOf(t, n.$grid)) return null;
-              var e = u.locateAttribute(t, n.$config.item_attribute), i = u.locateAttribute(t, "data-column-name");
-              if (i) {
-                var r = i.getAttribute("data-column-name");
-                return {id: e.getAttribute(n.$config.item_attribute), columnName: r}
-              }
-              return null
-            },
-            getEditorConfig: function (t) {
-              return n.getColumn(t).editor
-            },
-            init: function () {
-              var t = e.getMapping();
-              t.init && t.init(this, n), o = n.$jsgantt.getDatastore(n.$config.bind);
-              var i = this;
-              r.push(o.attachEvent("onIdChange", function (t, e) {
-                i._itemId == t && (i._itemId = e)
-              })), r.push(o.attachEvent("onStoreUpdated", function () {
-                n.$jsgantt.getState("batchUpdate").batch_update || i.isVisible() && !o.isVisible(i._itemId) && i.hide()
-              })), this.init = function () {
-              }
-            },
-            getState: function () {
-              return {
-                editor: this._editor,
-                editorType: this._editorType,
-                placeholder: this._placeholder,
-                id: this._itemId,
-                columnName: this._columnName
-              }
-            },
-            startEdit: function (e, i) {
-              if (this.isVisible() && this.save(), o.exists(e)) {
-                var n = {id: e, columnName: i};
-                t.isReadonly(o.getItem(e)) ? this.callEvent("onEditPrevent", [n]) : !1 !== this.callEvent("onBeforeEditStart", [n]) ? (this.show(n.id, n.columnName), this.setValue(), this.callEvent("onEditStart", [n])) : this.callEvent("onEditPrevent", [n])
-              }
-            },
-            isVisible: function () {
-              return !(!this._editor || !u.isChildOf(this._placeholder, document.body))
-            },
-            show: function (t, i) {
-              this.isVisible() && this.save();
-              var r = {id: t, columnName: i}, o = n.getColumn(r.columnName), a = this.getEditorConfig(o.name);
-              if (a) {
-                var s = n.$getConfig().editor_types[a.type], l = function (t, e) {
-                  var i = function (t, e) {
-                    for (var i = n.getItemTop(t), r = n.getItemHeight(t), o = n.getGridColumns(), a = 0, s = 0, l = 0; l < o.length; l++) {
-                      if (o[l].name == e) {
-                        s = o[l].width;
-                        break
-                      }
-                      a += o[l].width
-                    }
-                    return {top: i, left: a, height: r, width: s}
-                  }(t, e), r = document.createElement("div");
-                  r.className = "jsgantt-grid-editor-placeholder", r.setAttribute(n.$config.item_attribute, t), r.setAttribute("data-column-name", e);
-                  var o = function (t, e) {
-                    for (var i = t.getGridColumns(), n = 0; n < i.length; n++) if (i[n].name == e) return n;
-                    return 0
-                  }(n, e);
-                  return r.setAttribute("data-column-index", o), r.style.cssText = ["top:" + i.top + "px", "left:" + i.left + "px", "width:" + i.width + "px", "height:" + i.height + "px"].join(";"), r
-                }(r.id, r.columnName);
-                n.$grid_data.appendChild(l), s.show(r.id, o, a, l), this._editor = s, this._placeholder = l, this._itemId = r.id, this._columnName = r.columnName, this._editorType = a.type;
-                var c = e.getMapping();
-                c.onShow && c.onShow(this, l, n)
-              }
-            },
-            setValue: function () {
-              var t = this.getState(), e = t.id, i = t.columnName, r = n.getColumn(i), a = o.getItem(e),
-                s = this.getEditorConfig(i);
-              if (s) {
-                var l = a[s.map_to];
-                "auto" == s.map_to && (l = o.getItem(e)), this._editor.set_value(l, e, r, this._placeholder), this.focus()
-              }
-            },
-            focus: function () {
-              this._editor.focus(this._placeholder)
-            },
-            getValue: function () {
-              var t = n.getColumn(this._columnName);
-              return this._editor.get_value(this._itemId, t, this._placeholder)
-            },
-            _getItemValue: function () {
-              var e = this.getEditorConfig(this._columnName);
-              if (e) {
-                var i = t.getTask(this._itemId)[e.map_to];
-                return "auto" == e.map_to && (i = o.getItem(this._itemId)), i
-              }
-            },
-            isChanged: function () {
-              var t = n.getColumn(this._columnName), e = this._getItemValue();
-              return this._editor.is_changed(e, this._itemId, t, this._placeholder)
-            },
-            hide: function () {
-              if (this._itemId) {
-                var t = this._itemId, i = this._columnName, r = e.getMapping();
-                r.onHide && r.onHide(this, this._placeholder, n), this._itemId = null, this._columnName = null, this._editorType = null, this._placeholder && (this._editor && this._editor.hide(this._placeholder), this._editor = null, this._placeholder.parentNode && this._placeholder.parentNode.removeChild(this._placeholder), this._placeholder = null, this.callEvent("onEditEnd", [{
-                  id: t,
-                  columnName: i
-                }]))
-              }
-            },
-            save: function () {
-              if (this.isVisible() && o.exists(this._itemId) && this.isChanged()) {
-                var e = this._itemId, i = this._columnName;
-                if (o.exists(e)) {
-                  var r = o.getItem(e), a = this.getEditorConfig(i),
-                    s = {id: e, columnName: i, newValue: this.getValue(), oldValue: this._getItemValue()};
-                  if (!1 !== this.callEvent("onBeforeSave", [s]) && this._editor.is_valid(s.newValue, s.id, s.columnName, this._placeholder)) {
-                    var l = a.map_to, c = s.newValue;
-                    "auto" != l ? (r[l] = c, "duration" == l ? r.end_date = t.calculateEndDate(r) : "end_date" == l ? r.plannedDate = t.calculateEndDate({
-                      plannedDate: r.end_date,
-                      duration: -r.duration,
-                      task: r
-                    }) : "plannedDate" == l && (r.end_date = t.calculateEndDate(r)), o.updateItem(e)) : this._editor.save(e, n.getColumn(i), this._placeholder), this.callEvent("onSave", [s])
-                  }
-                  this.hide()
-                }
-              } else this.hide()
-            },
-            _findEditableCell: function (t, e) {
-              var i = t, r = n.getGridColumns()[i], o = r ? r.name : null;
-              if (o) {
-                for (; o && !this.getEditorConfig(o);) o = this._findEditableCell(t + e, e);
-                return o
-              }
-              return null
-            },
-            getNextCell: function (t) {
-              return this._findEditableCell(n.getColumnIndex(this._columnName) + t, t)
-            },
-            getFirstCell: function () {
-              return this._findEditableCell(0, 1)
-            },
-            getLastCell: function () {
-              return this._findEditableCell(n.getGridColumns().length - 1, -1)
-            },
-            editNextCell: function (t) {
-              var e = this.getNextCell(1);
-              if (e) {
-                var i = this.getNextCell(1);
-                i && this.getEditorConfig(i) && this.startEdit(this._itemId, i)
-              } else if (t && this.moveRow(1)) {
-                var n = this.moveRow(1);
-                (e = this.getFirstCell()) && this.getEditorConfig(e) && this.startEdit(n, e)
-              }
-            },
-            editPrevCell: function (t) {
-              var e = this.getNextCell(-1);
-              if (e) {
-                var i = this.getNextCell(-1);
-                i && this.getEditorConfig(i) && this.startEdit(this._itemId, i)
-              } else if (t && this.moveRow(-1)) {
-                var n = this.moveRow(-1);
-                (e = this.getLastCell()) && this.getEditorConfig(e) && this.startEdit(n, e)
-              }
-            },
-            moveRow: function (e) {
-              for (var i = e > 0 ? t.getNext : t.getPrev, n = (i = t.bind(i, t))(this._itemId); t.isTaskExists(n) && t.isReadonly(t.getTask(n));) n = i(n);
-              return n
-            },
-            editNextRow: function () {
-              var t = this.getNextCell(1);
-              t && this.startEdit(t, this._columnName)
-            },
-            editPrevRow: function () {
-              var t = this.getNextCell(-1);
-              t && this.startEdit(t, this._columnName)
-            },
-            destructor: function () {
-              r.forEach(function (t) {
-                o.detachEvent(t)
-              }), o = null, this.hide(), this.detachAllEvents()
-            }
-          };
-          return c.mixin(a, e), c.mixin(a, i), a
-        }
-      };
-      return c.mixin(r, e), c.mixin(r, i), r
+      a(i);
+      var s = {};
+      return r.mixin(s, e), r.mixin(s, i), s
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(31), o = i(14), a = i(2), s = function (t) {
+    var n = i(0), r = i(31), a = i(14), s = i(2), o = function (t) {
       function e(e, i, n, r) {
-        var o = t.apply(this, arguments) || this;
-        return o.$config.bindLinks = null, o
+        var a = t.apply(this, arguments) || this;
+        return a.$config.bindLinks = null, a
       }
 
-      return a(e, t), n.mixin(e.prototype, {
+      return s(e, t), n.mixin(e.prototype, {
         _createLayerConfig: function () {
           var t = this, e = function () {
             return t.isVisible()
@@ -5730,16 +5004,16 @@ var JSGantt = function () {
             }, {renderer: this.$jsgantt.$ui.layers.taskBg, container: this.$task_bg, filter: [e]}], links: []
           }
         }
-      }, !0), n.mixin(e.prototype, o(t), !0), e
+      }, !0), n.mixin(e.prototype, a(t), !0), e
     }(r);
-    t.exports = s
+    t.exports = o
   }, function (t, e, i) {
-    var n = i(1), r = i(0), o = i(14), a = i(16), s = i(2), l = function (t) {
+    var n = i(1), r = i(0), a = i(14), s = i(16), o = i(2), l = function (t) {
       function e(e, i, n, r) {
         return t.apply(this, arguments) || this
       }
 
-      return s(e, t), r.mixin(e.prototype, {
+      return o(e, t), r.mixin(e.prototype, {
         init: function () {
           void 0 === this.$config.bind && (this.$config.bind = this.$getConfig().resource_store), t.prototype.init.apply(this, arguments)
         }, _initEvents: function () {
@@ -5747,71 +5021,71 @@ var JSGantt = function () {
           t.prototype._initEvents.apply(this, arguments), this._mouseDelegates.delegate("click", "jsgantt-row", e.bind(function (t, e, i) {
             var r = this.$config.rowStore;
             if (!r) return !0;
-            var o = n.locateAttribute(t, this.$config.item_attribute);
-            return o && r.select(o.getAttribute(this.$config.item_attribute)), !1
+            var a = n.locateAttribute(t, this.$config.item_attribute);
+            return a && r.select(a.getAttribute(this.$config.item_attribute)), !1
           }, this), this.$grid)
         }
-      }, !0), r.mixin(e.prototype, o(e), !0), e
-    }(a);
+      }, !0), r.mixin(e.prototype, a(e), !0), e
+    }(s);
     t.exports = l
   }, function (t, e, i) {
     var n = i(1);
     t.exports = function (t, e) {
       var i = {
         column_before_start: t.bind(function (t, i, r) {
-          var o = e.$getConfig();
-          if (!n.locateAttribute(r, o.grid_resizer_column_attribute)) return !1;
-          var a = this.locate(r, o.grid_resizer_column_attribute), s = e.getGridColumns()[a];
-          return !1 !== e.callEvent("onColumnResizeStart", [a, s]) && void 0
+          var a = e.$getConfig();
+          if (!n.locateAttribute(r, a.grid_resizer_column_attribute)) return !1;
+          var s = this.locate(r, a.grid_resizer_column_attribute), o = e.getGridColumns()[s];
+          return !1 !== e.callEvent("onColumnResizeStart", [s, o]) && void 0
         }, t), column_after_start: t.bind(function (t, i, n) {
-          var r = e.$getConfig(), o = this.locate(n, r.grid_resizer_column_attribute);
-          t.config.marker.innerHTML = "", t.config.marker.className += " jsgantt-grid-resize-area", t.config.marker.style.height = e.$grid.offsetHeight + "px", t.config.marker.style.top = "0px", t.config.drag_index = o
-        }, t), column_drag_move: t.bind(function (i, r, o) {
-          var a = e.$getConfig(), s = i.config, l = e.getGridColumns(), c = parseInt(s.drag_index, 10), u = l[c],
-            d = n.getNodePosition(e.$grid_scale), h = parseInt(s.marker.style.left, 10),
-            f = u.min_width ? u.min_width : a.min_grid_column_width, g = e.$grid_data.offsetWidth, p = 0, _ = 0;
-          a.rtl ? h = d.x + d.width - 1 - h : h -= d.x - 1;
-          for (var v = 0; v < c; v++) f += l[v].width, p += l[v].width;
-          if (h < f && (h = f), a.keep_grid_width) {
+          var r = e.$getConfig(), a = this.locate(n, r.grid_resizer_column_attribute);
+          t.config.marker.innerHTML = "", t.config.marker.className += " jsgantt-grid-resize-area", t.config.marker.style.height = e.$grid.offsetHeight + "px", t.config.marker.style.top = "0px", t.config.drag_index = a
+        }, t), column_drag_move: t.bind(function (i, r, a) {
+          var s = e.$getConfig(), o = i.config, l = e.getGridColumns(), c = parseInt(o.drag_index, 10), d = l[c],
+            h = n.getNodePosition(e.$grid_scale), u = parseInt(o.marker.style.left, 10),
+            f = d.min_width ? d.min_width : s.min_grid_column_width, g = e.$grid_data.offsetWidth, _ = 0, p = 0;
+          s.rtl ? u = h.x + h.width - 1 - u : u -= h.x - 1;
+          for (var v = 0; v < c; v++) f += l[v].width, _ += l[v].width;
+          if (u < f && (u = f), s.keep_grid_width) {
             var m = 0;
-            for (v = c + 1; v < l.length; v++) l[v].min_width ? g -= l[v].min_width : a.min_grid_column_width && (g -= a.min_grid_column_width), l[v].max_width && !1 !== m ? m += l[v].max_width : m = !1;
-            m && (f = e.$grid_data.offsetWidth - m), h < f && (h = f), h > g && (h = g)
+            for (v = c + 1; v < l.length; v++) l[v].min_width ? g -= l[v].min_width : s.min_grid_column_width && (g -= s.min_grid_column_width), l[v].max_width && !1 !== m ? m += l[v].max_width : m = !1;
+            m && (f = e.$grid_data.offsetWidth - m), u < f && (u = f), u > g && (u = g)
           } else if (!e.$config.scrollable) {
-            var y = h, k = 0;
-            for (v = c + 1; v < l.length; v++) k += l[v].width;
-            y + k > t.$container.offsetWidth && (h = t.$container.offsetWidth - k)
+            var $ = u, y = 0;
+            for (v = c + 1; v < l.length; v++) y += l[v].width;
+            $ + y > t.$container.offsetWidth && (u = t.$container.offsetWidth - y)
           }
-          return s.left = h - 1, _ = Math.abs(h - p), u.max_width && _ > u.max_width && (_ = u.max_width), a.rtl && (p = d.width - p + 2 - _), s.marker.style.top = d.y + "px", s.marker.style.left = d.x - 1 + p + "px", s.marker.style.width = _ + "px", e.callEvent("onColumnResize", [c, l[c], _ - 1]), !0
+          return o.left = u - 1, p = Math.abs(u - _), d.max_width && p > d.max_width && (p = d.max_width), s.rtl && (_ = h.width - _ + 2 - p), o.marker.style.top = h.y + "px", o.marker.style.left = h.x - 1 + _ + "px", o.marker.style.width = p + "px", e.callEvent("onColumnResize", [c, l[c], p - 1]), !0
         }, t), column_drag_end: t.bind(function (i, n, r) {
-          for (var o = e.$getConfig(), a = e.getGridColumns(), s = 0, l = parseInt(i.config.drag_index, 10), c = a[l], u = 0; u < l; u++) s += a[u].width;
-          var d = c.min_width && i.config.left - s < c.min_width ? c.min_width : i.config.left - s;
-          if (c.max_width && c.max_width < d && (d = c.max_width), !1 !== e.callEvent("onColumnResizeEnd", [l, c, d]) && c.width != d) {
-            if (c.width = d, o.keep_grid_width) s = o.grid_width; else {
-              u = l;
-              for (var h = a.length; u < h; u++) s += a[u].width
+          for (var a = e.$getConfig(), s = e.getGridColumns(), o = 0, l = parseInt(i.config.drag_index, 10), c = s[l], d = 0; d < l; d++) o += s[d].width;
+          var h = c.min_width && i.config.left - o < c.min_width ? c.min_width : i.config.left - o;
+          if (c.max_width && c.max_width < h && (h = c.max_width), !1 !== e.callEvent("onColumnResizeEnd", [l, c, h]) && c.width != h) {
+            if (c.width = h, a.keep_grid_width) o = a.grid_width; else {
+              d = l;
+              for (var u = s.length; d < u; d++) o += s[d].width
             }
-            e.callEvent("onColumnResizeComplete", [a, e._setColumnsWidth(s, l)]), e.$config.scrollable || t.$layout._syncCellSizes(e.$config.group, o.grid_width), this.render()
+            e.callEvent("onColumnResizeComplete", [s, e._setColumnsWidth(o, l)]), e.$config.scrollable || t.$layout._syncCellSizes(e.$config.group, a.grid_width), this.render()
           }
         }, t)
       };
       return {
         init: function () {
-          var n = t.$services.getService("dnd"), r = e.$getConfig(), o = new n(e.$grid_scale, {updates_per_second: 60});
-          t.defined(r.dnd_sensitivity) && (o.config.sensitivity = r.dnd_sensitivity), o.attachEvent("onBeforeDragStart", function (t, e) {
-            return i.column_before_start(o, t, e)
-          }), o.attachEvent("onAfterDragStart", function (t, e) {
-            return i.column_after_start(o, t, e)
-          }), o.attachEvent("onDragMove", function (t, e) {
-            return i.column_drag_move(o, t, e)
-          }), o.attachEvent("onDragEnd", function (t, e) {
-            return i.column_drag_end(o, t, e)
+          var n = t.$services.getService("dnd"), r = e.$getConfig(), a = new n(e.$grid_scale, {updates_per_second: 60});
+          t.defined(r.dnd_sensitivity) && (a.config.sensitivity = r.dnd_sensitivity), a.attachEvent("onBeforeDragStart", function (t, e) {
+            return i.column_before_start(a, t, e)
+          }), a.attachEvent("onAfterDragStart", function (t, e) {
+            return i.column_after_start(a, t, e)
+          }), a.attachEvent("onDragMove", function (t, e) {
+            return i.column_drag_move(a, t, e)
+          }), a.attachEvent("onDragEnd", function (t, e) {
+            return i.column_drag_end(a, t, e)
           })
         }, doOnRender: function () {
-          for (var i = e.getGridColumns(), n = e.$getConfig(), r = 0, o = e.$config.width, a = n.scale_height, s = 0; s < i.length; s++) {
-            var l, c = i[s];
-            if (r += c.width, l = n.rtl ? o - r : r, c.resize) {
-              var u = document.createElement("div");
-              u.className = "jsgantt-grid-column-resize-wrap", u.style.top = "0px", u.style.height = a + "px", u.innerHTML = "<div class='jsgantt-grid-column-resize'></div>", u.setAttribute(n.grid_resizer_column_attribute, s), t._waiAria.gridSeparatorAttr(u), e.$grid_scale.appendChild(u), u.style.left = Math.max(0, l) + "px"
+          for (var i = e.getGridColumns(), n = e.$getConfig(), r = 0, a = e.$config.width, s = n.scale_height, o = 0; o < i.length; o++) {
+            var l, c = i[o];
+            if (r += c.width, l = n.rtl ? a - r : r, c.resize) {
+              var d = document.createElement("div");
+              d.className = "jsgantt-grid-column-resize-wrap", d.style.top = "0px", d.style.height = s + "px", d.innerHTML = "<div class='jsgantt-grid-column-resize'></div>", d.setAttribute(n.grid_resizer_column_attribute, o), t._waiAria.gridSeparatorAttr(d), e.$grid_scale.appendChild(d), d.style.left = Math.max(0, l) + "px"
             }
           }
         }
@@ -5829,35 +5103,35 @@ var JSGantt = function () {
             return e ? {r: 1 * e[1], g: 1 * e[2], b: 1 * e[3], a: 255 * e[5] || 255} : null
           }
 
-          function o(t) {
+          function a(t) {
             return i[t] || null
           }
 
-          function a(t, e, i) {
+          function s(t, e, i) {
             return (t + "" + e + i.bottomBorderColor + i.rightBorderColor).replace(/[^\w\d]/g, "")
           }
 
-          function s(t, e) {
+          function o(t, e) {
             i[t] = e
           }
 
           function l(t, e, i) {
-            var n = Math.floor(500 / t) || 1, o = Math.floor(500 / e) || 1, a = document.createElement("canvas");
-            a.height = e * o, a.width = t * n;
-            var s = a.getContext("2d");
-            return function (t, e, i, n, o, a) {
-              var s = o.createImageData(e * n, t * i);
-              s.imageSmoothingEnabled = !1;
-              for (var c = 1 * a.rightBorderWidth, u = r(a.rightBorderColor), d = 0, h = 0, f = 0, g = 1; g <= n; g++) for (d = g * e - 1, f = 0; f < c; f++) for (h = 0; h < t * i; h++) l(d - f, h, u, s);
-              var p = 1 * a.bottomBorderWidth, _ = r(a.bottomBorderColor);
-              h = 0;
-              for (var v = 1; v <= i; v++) for (h = v * t - 1, f = 0; f < p; f++) for (d = 0; d < e * n; d++) l(d, h - f, _, s);
-              o.putImageData(s, 0, 0)
-            }(e, t, o, n, s, i), a.toDataURL();
+            var n = Math.floor(500 / t) || 1, a = Math.floor(500 / e) || 1, s = document.createElement("canvas");
+            s.height = e * a, s.width = t * n;
+            var o = s.getContext("2d");
+            return function (t, e, i, n, a, s) {
+              var o = a.createImageData(e * n, t * i);
+              o.imageSmoothingEnabled = !1;
+              for (var c = 1 * s.rightBorderWidth, d = r(s.rightBorderColor), h = 0, u = 0, f = 0, g = 1; g <= n; g++) for (h = g * e - 1, f = 0; f < c; f++) for (u = 0; u < t * i; u++) l(h - f, u, d, o);
+              var _ = 1 * s.bottomBorderWidth, p = r(s.bottomBorderColor);
+              u = 0;
+              for (var v = 1; v <= i; v++) for (u = v * t - 1, f = 0; f < _; f++) for (h = 0; h < e * n; h++) l(h, u - f, p, o);
+              a.putImageData(o, 0, 0)
+            }(e, t, a, n, o, i), s.toDataURL();
 
-            function l(e, i, r, o) {
-              var a = 4 * (i * (t * n) + e);
-              o.data[a] = r.r, o.data[a + 1] = r.g, o.data[a + 2] = r.b, o.data[a + 3] = r.a
+            function l(e, i, r, a) {
+              var s = 4 * (i * (t * n) + e);
+              a.data[s] = r.r, a.data[s + 1] = r.g, a.data[s + 2] = r.b, a.data[s + 3] = r.a
             }
           }
 
@@ -5866,62 +5140,62 @@ var JSGantt = function () {
           }
 
           return {
-            render: function (t, i, r, u) {
+            render: function (t, i, r, d) {
               if (i.static_background && document.createElement("canvas").getContext) {
                 t.innerHTML = "";
-                var d = function (t, i, n, r) {
-                  var o, a, s = [], l = 0, c = n.width.filter(function (t) {
+                var h = function (t, i, n, r) {
+                  var a, s, o = [], l = 0, c = n.width.filter(function (t) {
                     return !!t
-                  }), u = 0, d = 1e5;
+                  }), d = 0, h = 1e5;
                   if (e.isIE) {
-                    var h = navigator.appVersion || "";
-                    -1 == h.indexOf("Windows NT 6.2") && -1 == h.indexOf("Windows NT 6.1") && -1 == h.indexOf("Windows NT 6.0") || (d = 2e4)
+                    var u = navigator.appVersion || "";
+                    -1 == u.indexOf("Windows NT 6.2") && -1 == u.indexOf("Windows NT 6.1") && -1 == u.indexOf("Windows NT 6.0") || (h = 2e4)
                   }
                   for (var f = 0; f < c.length; f++) {
                     var g = c[f];
-                    if (g != a && void 0 !== a || f == c.length - 1 || l > d) {
-                      for (var p = r, _ = 0, v = Math.floor(d / i.row_height) * i.row_height, m = l; p > 0;) {
-                        var y = Math.min(p, v);
-                        p -= v, (o = document.createElement("div")).style.height = y + "px", o.style.position = "absolute", o.style.top = _ + "px", o.style.left = u + "px", o.style.whiteSpace = "no-wrap", o.className = t[a || g], f == c.length - 1 && (m = g + m - 1), o.style.width = m + "px", s.push(o), _ += y
+                    if (g != s && void 0 !== s || f == c.length - 1 || l > h) {
+                      for (var _ = r, p = 0, v = Math.floor(h / i.row_height) * i.row_height, m = l; _ > 0;) {
+                        var $ = Math.min(_, v);
+                        _ -= v, (a = document.createElement("div")).style.height = $ + "px", a.style.position = "absolute", a.style.top = p + "px", a.style.left = d + "px", a.style.whiteSpace = "no-wrap", a.className = t[s || g], f == c.length - 1 && (m = g + m - 1), a.style.width = m + "px", o.push(a), p += $
                       }
-                      l = 0, u += m
+                      l = 0, d += m
                     }
-                    g && (l += g, a = g)
+                    g && (l += g, s = g)
                   }
-                  return s
+                  return o
                 }(function (t, e, i) {
-                  var r = {}, u = function (t) {
+                  var r = {}, d = function (t) {
                     for (var e = t.width, i = {}, n = 0; n < e.length; n++) 1 * e[n] && (i[e[n]] = !0);
                     return i
-                  }(i), d = e.row_height, h = "";
-                  for (var f in u) {
-                    var g = 1 * f, p = a(g, d, t);
-                    if (!o(p)) {
-                      var _ = l(g, d, t);
-                      s(p, _), h += "." + c(p) + "{ background-image: url('" + _ + "');}"
+                  }(i), h = e.row_height, u = "";
+                  for (var f in d) {
+                    var g = 1 * f, _ = s(g, h, t);
+                    if (!a(_)) {
+                      var p = l(g, h, t);
+                      o(_, p), u += "." + c(_) + "{ background-image: url('" + p + "');}"
                     }
-                    r[f] = c(p)
+                    r[f] = c(_)
                   }
-                  return h && ((function () {
+                  return u && ((function () {
                     var t = document.getElementById(n);
                     return t || ((t = document.createElement("style")).id = n, document.body.appendChild(t)), t
-                  }()).innerHTML += h), r
+                  }()).innerHTML += u), r
                 }(function (t) {
                   var e = document.createElement("div");
                   e.className = "jsgantt-task-cell";
                   var i = document.createElement("div");
                   i.className = "jsgantt-task-row", i.appendChild(e), t.appendChild(i);
-                  var n = getComputedStyle(i), r = getComputedStyle(e), o = {
+                  var n = getComputedStyle(i), r = getComputedStyle(e), a = {
                     bottomBorderWidth: n.getPropertyValue("border-bottom-width").replace("px", ""),
                     rightBorderWidth: r.getPropertyValue("border-right-width").replace("px", ""),
                     bottomBorderColor: n.getPropertyValue("border-bottom-color"),
                     rightBorderColor: r.getPropertyValue("border-right-color")
                   };
-                  return t.removeChild(i), o
-                }(t), i, r), i, r, u), h = document.createDocumentFragment();
-                d.forEach(function (t) {
-                  h.appendChild(t)
-                }), t.appendChild(h)
+                  return t.removeChild(i), a
+                }(t), i, r), i, r, d), u = document.createDocumentFragment();
+                h.forEach(function (t) {
+                  u.appendChild(t)
+                }), t.appendChild(u)
               }
             }, destroy: function () {
               var t = document.getElementById(n);
@@ -5943,19 +5217,19 @@ var JSGantt = function () {
         }, setSumWidth: function (t, e, i, n) {
           var r = e.width;
           void 0 === n && (n = r.length - 1), void 0 === i && (i = 0);
-          var o = n - i + 1;
-          if (!(i > r.length - 1 || o <= 0 || n > r.length - 1)) {
-            var a = t - this.getSum(r, i, n);
-            this.adjustSize(a, r, i, n), this.adjustSize(-a, r, n + 1), e.full_width = this.getSum(r)
+          var a = n - i + 1;
+          if (!(i > r.length - 1 || a <= 0 || n > r.length - 1)) {
+            var s = t - this.getSum(r, i, n);
+            this.adjustSize(s, r, i, n), this.adjustSize(-s, r, n + 1), e.full_width = this.getSum(r)
           }
         }, splitSize: function (t, e) {
           for (var i = [], n = 0; n < e; n++) i[n] = 0;
           return this.adjustSize(t, i), i
         }, adjustSize: function (t, e, i, n) {
           i || (i = 0), void 0 === n && (n = e.length - 1);
-          for (var r = n - i + 1, o = this.getSum(e, i, n), a = i; a <= n; a++) {
-            var s = Math.floor(t * (o ? e[a] / o : 1 / r));
-            o -= e[a], t -= s, r--, e[a] += s
+          for (var r = n - i + 1, a = this.getSum(e, i, n), s = i; s <= n; s++) {
+            var o = Math.floor(t * (a ? e[s] / a : 1 / r));
+            a -= e[s], t -= o, r--, e[s] += o
           }
           e[e.length - 1] += t
         }, sortScales: function (t) {
@@ -5976,13 +5250,13 @@ var JSGantt = function () {
             date: i.config().dateScale,
             css: i.templates().scale_cell_class
           }
-        }, prepareConfigs: function (t, e, i, n, r, o, a) {
-          for (var s = this.splitSize(n, t.length), l = i, c = [], u = t.length - 1; u >= 0; u--) {
-            var d = u == t.length - 1, h = this.initScaleConfig(t[u], r, o);
-            d && this.processIgnores(h), this.initColSizes(h, e, l, s[u]), this.limitVisibleRange(h), d && (l = h.full_width), c.unshift(h)
+        }, prepareConfigs: function (t, e, i, n, r, a, s) {
+          for (var o = this.splitSize(n, t.length), l = i, c = [], d = t.length - 1; d >= 0; d--) {
+            var h = d == t.length - 1, u = this.initScaleConfig(t[d], r, a);
+            h && this.processIgnores(u), this.initColSizes(u, e, l, o[d]), this.limitVisibleRange(u), h && (l = u.full_width), c.unshift(u)
           }
-          for (u = 0; u < c.length - 1; u++) this.alineScaleColumns(c[c.length - 1], c[u]);
-          for (u = 0; u < c.length; u++) a && this.reverseScale(c[u]), this.setPosSettings(c[u]);
+          for (d = 0; d < c.length - 1; d++) this.alineScaleColumns(c[c.length - 1], c[d]);
+          for (d = 0; d < c.length; d++) s && this.reverseScale(c[d]), this.setPosSettings(c[d]);
           return c
         }, reverseScale: function (t) {
           t.width = t.width.reverse(), t.trace_x = t.trace_x.reverse();
@@ -5994,22 +5268,22 @@ var JSGantt = function () {
           for (var e = 0, i = t.trace_x.length; e < i; e++) t.left.push((t.width[e - 1] || 0) + (t.left[e - 1] || 0))
         }, _ignore_time_config: function (t, n) {
           if (i.config().skip_off_time) {
-            for (var r = !0, o = t, a = 0; a < n.step; a++) a && (o = e.add(t, a, n.unit)), r = r && !this.isWorkTime(o, n.unit);
+            for (var r = !0, a = t, s = 0; s < n.step; s++) s && (a = e.add(t, s, n.unit)), r = r && !this.isWorkTime(a, n.unit);
             return r
           }
           return !1
         }, processIgnores: function (t) {
           t.ignore_x = {}, t.display_count = t.count
         }, initColSizes: function (t, i, n, r) {
-          var o = n;
+          var a = n;
           t.height = r;
-          var a = void 0 === t.display_count ? t.count : t.display_count;
-          a || (a = 1), t.col_width = Math.floor(o / a), i && t.col_width < i && (t.col_width = i, o = t.col_width * a), t.width = [];
-          for (var s = t.ignore_x || {}, l = 0; l < t.trace_x.length; l++) if (s[t.trace_x[l].valueOf()] || t.display_count == t.count) t.width[l] = 0; else {
+          var s = void 0 === t.display_count ? t.count : t.display_count;
+          s || (s = 1), t.col_width = Math.floor(a / s), i && t.col_width < i && (t.col_width = i, a = t.col_width * s), t.width = [];
+          for (var o = t.ignore_x || {}, l = 0; l < t.trace_x.length; l++) if (o[t.trace_x[l].valueOf()] || t.display_count == t.count) t.width[l] = 0; else {
             var c = 1;
             "month" == t.unit && (c = Math.round((e.add(t.trace_x[l], t.step, t.unit) - t.trace_x[l]) / 864e5)), t.width[l] = c
           }
-          this.adjustSize(o - this.getSum(t.width), t.width), t.full_width = this.getSum(t.width)
+          this.adjustSize(a - this.getSum(t.width), t.width), t.full_width = this.getSum(t.width)
         }, initScaleConfig: function (t, e, i) {
           var r = n.mixin({
             count: 0,
@@ -6027,50 +5301,50 @@ var JSGantt = function () {
             r.count++, r.trace_x.push(new Date(t)), r.trace_indexes[t.valueOf()] = r.trace_x.length - 1
           }), r.trace_x_ascending = r.trace_x.slice(), r
         }, iterateScales: function (t, e, i, n, r) {
-          for (var o = e.trace_x, a = t.trace_x, s = i || 0, l = n || a.length - 1, c = 0, u = 1; u < o.length; u++) {
-            var d = t.trace_indexes[+o[u]];
-            void 0 !== d && d <= l && (r && r.apply(this, [c, u, s, d]), s = d, c = u)
+          for (var a = e.trace_x, s = t.trace_x, o = i || 0, l = n || s.length - 1, c = 0, d = 1; d < a.length; d++) {
+            var h = t.trace_indexes[+a[d]];
+            void 0 !== h && h <= l && (r && r.apply(this, [c, d, o, h]), o = h, c = d)
           }
         }, alineScaleColumns: function (t, e, i, n) {
-          this.iterateScales(t, e, i, n, function (i, n, r, o) {
-            var a = this.getSum(t.width, r, o - 1);
-            this.getSum(e.width, i, n - 1) != a && this.setSumWidth(a, e, i, n - 1)
+          this.iterateScales(t, e, i, n, function (i, n, r, a) {
+            var s = this.getSum(t.width, r, a - 1);
+            this.getSum(e.width, i, n - 1) != s && this.setSumWidth(s, e, i, n - 1)
           })
-        }, eachColumn: function (i, n, r, o, a) {
-          var s = new Date(r), l = new Date(o);
-          e[i + "_start"] && (s = e[i + "_start"](s));
-          var c = new Date(s);
+        }, eachColumn: function (i, n, r, a, s) {
+          var o = new Date(r), l = new Date(a);
+          e[i + "_start"] && (o = e[i + "_start"](o));
+          var c = new Date(o);
           for (+c >= +l && (l = e.add(c, n, i)); +c < +l;) {
-            a.call(this, new Date(c));
-            var u = c.getTimezoneOffset();
-            c = e.add(c, n, i), c = t._correct_dst_change(c, u, n, i), e[i + "_start"] && (c = e[i + "_start"](c))
+            s.call(this, new Date(c));
+            var d = c.getTimezoneOffset();
+            c = e.add(c, n, i), c = t._correct_dst_change(c, d, n, i), e[i + "_start"] && (c = e[i + "_start"](c))
           }
         }, limitVisibleRange: function (t) {
           var i = t.trace_x, n = t.width.length - 1, r = 0;
           if (+i[0] < +t.min_date && 0 != n) {
-            var o = Math.floor(t.width[0] * ((i[1] - t.min_date) / (i[1] - i[0])));
-            r += t.width[0] - o, t.width[0] = o, i[0] = new Date(t.min_date)
+            var a = Math.floor(t.width[0] * ((i[1] - t.min_date) / (i[1] - i[0])));
+            r += t.width[0] - a, t.width[0] = a, i[0] = new Date(t.min_date)
           }
-          var a = i.length - 1, s = i[a], l = e.add(s, t.step, t.unit);
-          if (+l > +t.max_date && a > 0 && (o = t.width[a] - Math.floor(t.width[a] * ((l - t.max_date) / (l - s))), r += t.width[a] - o, t.width[a] = o), r) {
-            for (var c = this.getSum(t.width), u = 0, d = 0; d < t.width.length; d++) {
-              var h = Math.floor(r * (t.width[d] / c));
-              t.width[d] += h, u += h
+          var s = i.length - 1, o = i[s], l = e.add(o, t.step, t.unit);
+          if (+l > +t.max_date && s > 0 && (a = t.width[s] - Math.floor(t.width[s] * ((l - t.max_date) / (l - o))), r += t.width[s] - a, t.width[s] = a), r) {
+            for (var c = this.getSum(t.width), d = 0, h = 0; h < t.width.length; h++) {
+              var u = Math.floor(r * (t.width[h] / c));
+              t.width[h] += u, d += u
             }
-            this.adjustSize(r - u, t.width)
+            this.adjustSize(r - d, t.width)
           }
         }
       }
     }
   }, function (t, e, i) {
-    var n = i(2), r = i(1), o = i(0), a = i(8), s = function (t) {
+    var n = i(2), r = i(1), a = i(0), s = i(8), o = function (t) {
       "use strict";
 
       function e(e, i, n, r) {
-        var a = t.apply(this, arguments) || this;
-        this.$config = o.mixin(i, {scroll: "x"}), a._scrollHorizontalHandler = o.bind(a._scrollHorizontalHandler, a), a._scrollVerticalHandler = o.bind(a._scrollVerticalHandler, a), a._outerScrollVerticalHandler = o.bind(a._outerScrollVerticalHandler, a), a._outerScrollHorizontalHandler = o.bind(a._outerScrollHorizontalHandler, a), a._mouseWheelHandler = o.bind(a._mouseWheelHandler, a), this.$config.hidden = !0;
-        var s = r.config.scroll_size;
-        return r.env.isIE && (s += 1), this._isHorizontal() ? (a.$config.height = s, a.$parent.$config.height = s) : (a.$config.width = s, a.$parent.$config.width = s), this.$config.scrollPosition = 0, a.$name = "scroller", a
+        var s = t.apply(this, arguments) || this;
+        this.$config = a.mixin(i, {scroll: "x"}), s._scrollHorizontalHandler = a.bind(s._scrollHorizontalHandler, s), s._scrollVerticalHandler = a.bind(s._scrollVerticalHandler, s), s._outerScrollVerticalHandler = a.bind(s._outerScrollVerticalHandler, s), s._outerScrollHorizontalHandler = a.bind(s._outerScrollHorizontalHandler, s), s._mouseWheelHandler = a.bind(s._mouseWheelHandler, s), this.$config.hidden = !0;
+        var o = r.config.scroll_size;
+        return r.env.isIE && (o += 1), this._isHorizontal() ? (s.$config.height = o, s.$parent.$config.height = o) : (s.$config.width = o, s.$parent.$config.width = o), this.$config.scrollPosition = 0, s.$name = "scroller", s
       }
 
       return n(e, t), e.prototype.init = function (t) {
@@ -6096,7 +5370,7 @@ var JSGantt = function () {
         this.$scroll_ver = this.$view, this.$domEvents.attach(this.$view, "scroll", this._scrollVerticalHandler)
       }, e.prototype._updateLinkedViews = function () {
       }, e.prototype._initMouseWheel = function () {
-        a.isFF ? this.$domEvents.attach(this._getRootParent().$view, "wheel", this._mouseWheelHandler) : this.$domEvents.attach(this._getRootParent().$view, "mousewheel", this._mouseWheelHandler)
+        s.isFF ? this.$domEvents.attach(this._getRootParent().$view, "wheel", this._mouseWheelHandler) : this.$domEvents.attach(this._getRootParent().$view, "mousewheel", this._mouseWheelHandler)
       }, e.prototype.scrollHorizontally = function (t) {
         if (!this._scrolling) {
           this._scrolling = !0, this.$scroll_hor.scrollLeft = t, this.$config.codeScrollLeft = t, t = this.$scroll_hor.scrollLeft;
@@ -6130,11 +5404,11 @@ var JSGantt = function () {
       }, e.prototype.hide = function () {
         this.$parent.hide()
       }, e.prototype._getScrollSize = function () {
-        for (var t, e = 0, i = 0, n = this._isHorizontal(), r = this._getLinkedViews(), o = n ? "scrollWidth" : "scrollHeight", a = n ? "contentX" : "contentY", s = n ? "x" : "y", l = this._getScrollOffset(), c = 0; c < r.length; c++) if ((t = r[c]) && t.$content && t.$content.getSize && !t.$config.hidden) {
-          var u, d = t.$content.getSize();
-          if (u = d.hasOwnProperty(o) ? d[o] : d[a], l) d[a] > d[s] && d[a] > e && u > d[s] - l + 2 && (e = u + (n ? 0 : 2), i = d[s]); else {
-            var h = Math.max(d[a] - u, 0);
-            (u += h) > Math.max(d[s] - h, 0) && u > e && (e = u, i = d[s])
+        for (var t, e = 0, i = 0, n = this._isHorizontal(), r = this._getLinkedViews(), a = n ? "scrollWidth" : "scrollHeight", s = n ? "contentX" : "contentY", o = n ? "x" : "y", l = this._getScrollOffset(), c = 0; c < r.length; c++) if ((t = r[c]) && t.$content && t.$content.getSize && !t.$config.hidden) {
+          var d, h = t.$content.getSize();
+          if (d = h.hasOwnProperty(a) ? h[a] : h[s], l) h[s] > h[o] && h[s] > e && d > h[o] - l + 2 && (e = d + (n ? 0 : 2), i = h[o]); else {
+            var u = Math.max(h[s] - d, 0);
+            (d += u) > Math.max(h[o] - u, 0) && d > e && (e = d, i = h[o])
           }
         }
         return {outerScroll: i, innerScroll: e}
@@ -6171,17 +5445,17 @@ var JSGantt = function () {
           var e = this.$parent.$parent;
           t = Math.max(this._getScaleOffset(e.getPrevSibling(this.$parent.$id)), this._getScaleOffset(e.getNextSibling(this.$parent.$id)))
         } else for (var i = this._getLinkedViews(), n = 0; n < i.length; n++) {
-          var r = i[n].$parent.$cells, o = r[r.length - 1];
-          if (o && "scrollbar" == o.$config.view && !1 === o.$config.hidden) {
-            t = o.$config.width;
+          var r = i[n].$parent.$cells, a = r[r.length - 1];
+          if (a && "scrollbar" == a.$config.view && !1 === a.$config.hidden) {
+            t = a.$config.width;
             break
           }
         }
         return t || 0
       }, e.prototype._setScrollSize = function (t) {
         var e = this._isHorizontal() ? "width" : "height",
-          i = this._isHorizontal() ? this.$scroll_hor : this.$scroll_ver, n = this._getScrollOffset(), o = i.firstChild;
-        n ? this._isVertical() ? (this.$config.outerSize = this.$config.height - n + 3, i.style.height = this.$config.outerSize + "px", i.style.top = n - 1 + "px", r.addClassName(i, this.$parent._borders.top), r.addClassName(i.parentNode, "jsgantt-task-vscroll")) : (this.$config.outerSize = this.$config.width - n + 1, i.style.width = this.$config.outerSize + "px") : (i.style.top = "auto", r.removeClassName(i, this.$parent._borders.top), r.removeClassName(i.parentNode, "jsgantt-task-vscroll"), this.$config.outerSize = this.$config.height), o.style[e] = t + "px"
+          i = this._isHorizontal() ? this.$scroll_hor : this.$scroll_ver, n = this._getScrollOffset(), a = i.firstChild;
+        n ? this._isVertical() ? (this.$config.outerSize = this.$config.height - n + 3, i.style.height = this.$config.outerSize + "px", i.style.top = n - 1 + "px", r.addClassName(i, this.$parent._borders.top), r.addClassName(i.parentNode, "jsgantt-task-vscroll")) : (this.$config.outerSize = this.$config.width - n + 1, i.style.width = this.$config.outerSize + "px") : (i.style.top = "auto", r.removeClassName(i, this.$parent._borders.top), r.removeClassName(i.parentNode, "jsgantt-task-vscroll"), this.$config.outerSize = this.$config.height), a.style[e] = t + "px"
       }, e.prototype._scrollVerticalHandler = function (t) {
         if (!this._scrollHorizontalHandler() && !this._scrolling && !this.$jsgantt._touch_scroll_active) {
           var e = this.$scroll_ver.scrollTop;
@@ -6199,61 +5473,61 @@ var JSGantt = function () {
         var e = t.target;
         if (this._checkWheelTarget(e)) {
           this._wheel_time = new Date;
-          var i = {}, n = a.isFF, r = n ? -20 * t.deltaX : 2 * t.wheelDeltaX, o = n ? -40 * t.deltaY : t.wheelDelta;
-          if (!t.shiftKey || t.deltaX || t.wheelDeltaX || (r = 2 * o, o = 0), r && Math.abs(r) > Math.abs(o)) {
+          var i = {}, n = s.isFF, r = n ? -20 * t.deltaX : 2 * t.wheelDeltaX, a = n ? -40 * t.deltaY : t.wheelDelta;
+          if (!t.shiftKey || t.deltaX || t.wheelDeltaX || (r = 2 * a, a = 0), r && Math.abs(r) > Math.abs(a)) {
             if (this._isVertical()) return;
             if (i.x) return !0;
             if (!this.$scroll_hor || !this.$scroll_hor.offsetWidth) return !0;
-            var s = r / -40, l = this._oldLeft, c = l + 30 * s;
+            var o = r / -40, l = this._oldLeft, c = l + 30 * o;
             if (this.scrollHorizontally(c), this.$scroll_hor.scrollLeft = c, l == this.$scroll_hor.scrollLeft) return !0;
             this._oldLeft = this.$scroll_hor.scrollLeft
           } else {
             if (this._isHorizontal()) return;
             if (i.y) return !0;
             if (!this.$scroll_ver || !this.$scroll_ver.offsetHeight) return !0;
-            s = o / -40, void 0 === o && (s = t.detail);
-            var u = this._oldTop, d = this.$scroll_ver.scrollTop + 30 * s;
-            if (this.scrollVertically(d), this.$scroll_ver.scrollTop = d, u == this.$scroll_ver.scrollTop) return !0;
+            o = a / -40, void 0 === a && (o = t.detail);
+            var d = this._oldTop, h = this.$scroll_ver.scrollTop + 30 * o;
+            if (this.scrollVertically(h), this.$scroll_ver.scrollTop = h, d == this.$scroll_ver.scrollTop) return !0;
             this._oldTop = this.$scroll_ver.scrollTop
           }
           return t.preventDefault && t.preventDefault(), t.cancelBubble = !0, !1
         }
       }, e
     }(i(6));
-    t.exports = s
+    t.exports = o
   }, function (t, e, i) {
-    var n = i(2), r = i(1), o = i(0), a = i(6), s = function (t) {
+    var n = i(2), r = i(1), a = i(0), s = i(6), o = function (t) {
       "use strict";
 
       function e(e, i, n) {
-        var r, o, a = t.apply(this, arguments) || this;
-        return a._moveHandler = function (t) {
-          a._moveResizer(a._resizer, t.pageX, t.pageY)
-        }, a._upHandler = function () {
-          var t = a._getNewSizes();
-          !1 !== a.callEvent("onResizeEnd", [r, o, t ? t.back : 0, t ? t.front : 0]) && a._setSizes(), a._setBackground(!1), a._clearResizer(), a._clearListeneres()
-        }, a._clearListeneres = function () {
-          this.$domEvents.detach(document, "mouseup", a._upHandler), this.$domEvents.detach(document, "mousemove", a._moveHandler), this.$domEvents.detach(document, "mousemove", a._startOnMove), this.$domEvents.detach(document, "mouseup", a._cancelDND)
-        }, a._callStartDNDEvent = function () {
-          if (this._xMode ? (r = this._behind.$config.width || this._behind.$view.offsetWidth, o = this._front.$config.width || this._front.$view.offsetWidth) : (r = this._behind.$config.height || this._behind.$view.offsetHeight, o = this._front.$config.height || this._front.$view.offsetHeight), !1 === a.callEvent("onResizeStart", [r, o])) return !1
-        }, a._startDND = function (t) {
+        var r, a, s = t.apply(this, arguments) || this;
+        return s._moveHandler = function (t) {
+          s._moveResizer(s._resizer, t.pageX, t.pageY)
+        }, s._upHandler = function () {
+          var t = s._getNewSizes();
+          !1 !== s.callEvent("onResizeEnd", [r, a, t ? t.back : 0, t ? t.front : 0]) && s._setSizes(), s._setBackground(!1), s._clearResizer(), s._clearListeneres()
+        }, s._clearListeneres = function () {
+          this.$domEvents.detach(document, "mouseup", s._upHandler), this.$domEvents.detach(document, "mousemove", s._moveHandler), this.$domEvents.detach(document, "mousemove", s._startOnMove), this.$domEvents.detach(document, "mouseup", s._cancelDND)
+        }, s._callStartDNDEvent = function () {
+          if (this._xMode ? (r = this._behind.$config.width || this._behind.$view.offsetWidth, a = this._front.$config.width || this._front.$view.offsetWidth) : (r = this._behind.$config.height || this._behind.$view.offsetHeight, a = this._front.$config.height || this._front.$view.offsetHeight), !1 === s.callEvent("onResizeStart", [r, a])) return !1
+        }, s._startDND = function (t) {
           if (!1 !== this._callStartDNDEvent()) {
             var e = !1;
             this._eachGroupItem(function (t) {
               t._getSiblings(), !1 === t._callStartDNDEvent() && (e = !0)
-            }), e || (a._moveHandler(t), a.$domEvents.attach(document, "mousemove", a._moveHandler), a.$domEvents.attach(document, "mouseup", a._upHandler))
+            }), e || (s._moveHandler(t), s.$domEvents.attach(document, "mousemove", s._moveHandler), s.$domEvents.attach(document, "mouseup", s._upHandler))
           }
-        }, a._cancelDND = function () {
-          a._setBackground(!1), a._clearResizer(), a._clearListeneres()
-        }, a._startOnMove = function (t) {
-          a._isPosChanged(t) && (a._clearListeneres(), a._startDND(t))
-        }, a._downHandler = function (t) {
-          a._getSiblings(), a._behind.$config.collapsed || a._front.$config.collapsed || (a._setBackground(!0), a._resizer = a._setResizer(), a._positions = {
+        }, s._cancelDND = function () {
+          s._setBackground(!1), s._clearResizer(), s._clearListeneres()
+        }, s._startOnMove = function (t) {
+          s._isPosChanged(t) && (s._clearListeneres(), s._startDND(t))
+        }, s._downHandler = function (t) {
+          s._getSiblings(), s._behind.$config.collapsed || s._front.$config.collapsed || (s._setBackground(!0), s._resizer = s._setResizer(), s._positions = {
             x: t.pageX,
             y: t.pageY,
             timestamp: Date.now()
-          }, a.$domEvents.attach(document, "mousemove", a._startOnMove), a.$domEvents.attach(document, "mouseup", a._cancelDND))
-        }, a.$name = "resizer", a
+          }, s.$domEvents.attach(document, "mousemove", s._startOnMove), s.$domEvents.attach(document, "mouseup", s._cancelDND))
+        }, s.$name = "resizer", s
       }
 
       return n(e, t), e.prototype.init = function () {
@@ -6267,7 +5541,7 @@ var JSGantt = function () {
         return !!this._positions && (Math.abs(this._positions.x - t.pageX) > 3 || Math.abs(this._positions.y - t.pageY) > 3 || Date.now() - this._positions.timestamp > 300)
       }, e.prototype._getSiblings = function () {
         var t = this.$parent.getCells();
-        this.$config.prev && (this._behind = this.$factory.getView(this.$config.prev), this._behind instanceof a || (this._behind = this._behind.$parent)), this.$config.next && (this._front = this.$factory.getView(this.$config.next), this._front instanceof a || (this._front = this._behind.$parent));
+        this.$config.prev && (this._behind = this.$factory.getView(this.$config.prev), this._behind instanceof s || (this._behind = this._behind.$parent)), this.$config.next && (this._front = this.$factory.getView(this.$config.next), this._front instanceof s || (this._front = this._behind.$parent));
         for (var e = 0; e < t.length; e++) this === t[e] && (this._behind || (this._behind = t[e - 1]), this._front || (this._front = t[e + 1]))
       }, e.prototype._setBackground = function (t) {
         var e = "jsgantt-resizing";
@@ -6280,34 +5554,34 @@ var JSGantt = function () {
         var i;
         return (i = this._xMode ? t - this._positions.x : e - this._positions.y) ? i < 0 ? -1 : 1 : 0
       }, e.prototype._getResizePosition = function (t, e) {
-        var i, n, r, o, a;
-        this._xMode ? (i = t - this._positions.x, n = this._behind.$config.width || this._behind.$view.offsetWidth, o = this._front.$config.width || this._front.$view.offsetWidth, r = this._behind.$config.minWidth, a = this._front.$config.minWidth) : (i = e - this._positions.y, n = this._behind.$config.height || this._behind.$view.offsetHeight, o = this._front.$config.height || this._front.$view.offsetHeight, r = this._front.$config.minHeight, a = this._front.$config.minHeight);
-        var s, l, c = this._getDirection(t, e);
+        var i, n, r, a, s;
+        this._xMode ? (i = t - this._positions.x, n = this._behind.$config.width || this._behind.$view.offsetWidth, a = this._front.$config.width || this._front.$view.offsetWidth, r = this._behind.$config.minWidth, s = this._front.$config.minWidth) : (i = e - this._positions.y, n = this._behind.$config.height || this._behind.$view.offsetHeight, a = this._front.$config.height || this._front.$view.offsetHeight, r = this._front.$config.minHeight, s = this._front.$config.minHeight);
+        var o, l, c = this._getDirection(t, e);
         if (-1 === c) {
-          if (l = o - i, s = n - Math.abs(i), o - i > this._front.$config.maxWidth) return;
+          if (l = a - i, o = n - Math.abs(i), a - i > this._front.$config.maxWidth) return;
           Math.abs(i) >= n && (i = -Math.abs(n - 2)), n - Math.abs(i) <= r && (i = -Math.abs(n - r))
-        } else l = o - Math.abs(i), s = n + i, n + i > this._behind.$config.maxWidth && (i = this._behind.$config.maxWidth - n), Math.abs(i) >= o && (i = o - 2), o - Math.abs(i) <= a && (i = Math.abs(o - a));
-        return -1 === c ? (l = o - i, s = n - Math.abs(i)) : (l = o - Math.abs(i), s = n + i), {
+        } else l = a - Math.abs(i), o = n + i, n + i > this._behind.$config.maxWidth && (i = this._behind.$config.maxWidth - n), Math.abs(i) >= a && (i = a - 2), a - Math.abs(i) <= s && (i = Math.abs(a - s));
+        return -1 === c ? (l = a - i, o = n - Math.abs(i)) : (l = a - Math.abs(i), o = n + i), {
           size: i,
           newFrontSide: l,
-          newBehindSide: s
+          newBehindSide: o
         }
       }, e.prototype._getGroupName = function () {
         return this._getSiblings(), this._front.$config.group || this._behind.$config.group
       }, e.prototype._eachGroupItem = function (t, e) {
-        for (var i = this.$factory.getView("main"), n = this._getGroupName(), r = i.getCellsByType("resizer"), o = 0; o < r.length; o++) r[o]._getGroupName() == n && r[o] != this && t.call(e || this, r[o])
+        for (var i = this.$factory.getView("main"), n = this._getGroupName(), r = i.getCellsByType("resizer"), a = 0; a < r.length; a++) r[a]._getGroupName() == n && r[a] != this && t.call(e || this, r[a])
       }, e.prototype._getGroupResizePosition = function (t, e) {
         var i = this._getResizePosition(t, e);
         if (!this._getGroupName()) return i;
         var n, r = [i];
         this._eachGroupItem(function (i) {
           i._getSiblings();
-          var n = o.copy(this._positions);
+          var n = a.copy(this._positions);
           this._xMode ? n.x += i._behind.$config.width - this._behind.$config.width : n.y += i._behind.$config.height - this._behind.$config.height, i._positions = n, r.push(i._getResizePosition(t, e))
         });
-        for (var a = 0; a < r.length; a++) {
-          if (!r[a]) return;
-          void 0 === n ? n = r[a] : r[a].newBehindSide > n.newBehindSide && (n = r[a])
+        for (var s = 0; s < r.length; s++) {
+          if (!r[s]) return;
+          void 0 === n ? n = r[s] : r[s].newBehindSide > n.newBehindSide && (n = r[s])
         }
         return n
       }, e.prototype._moveResizer = function (t, e, i) {
@@ -6318,9 +5592,9 @@ var JSGantt = function () {
       }, e.prototype._setGravity = function (t) {
         var e = this._xMode ? "offsetWidth" : "offsetHeight",
           i = this._xMode ? this._positions.nextX : this._positions.nextY, n = this._front.$view[e],
-          r = this._behind.$view[e], o = (n - i) / n * this._front.getSize().gravity,
-          a = (r + i) / r * this._behind.getSize().gravity;
-        "front" !== t && (this._front.$config.gravity = o), "behind" !== t && (this._behind.$config.gravity = a)
+          r = this._behind.$view[e], a = (n - i) / n * this._front.getSize().gravity,
+          s = (r + i) / r * this._behind.getSize().gravity;
+        "front" !== t && (this._front.$config.gravity = a), "behind" !== t && (this._behind.$config.gravity = s)
       }, e.prototype._getNewSizes = function () {
         var t = this._xMode ? this._behind.$config.width : this._behind.$config.height,
           e = this._xMode ? this._front.$config.width : this._front.$config.height,
@@ -6339,20 +5613,20 @@ var JSGantt = function () {
           this._front.$config.group ? this.$jsgantt.$layout._syncCellSizes(this._front.$config.group, this._front.$config[e]) : this._behind.$config.group && this.$jsgantt.$layout._syncCellSizes(this._behind.$config.group, this._behind.$config[e]), this._getGroupName() ? this.$factory.getView("main").resize() : this.$parent.resize()
         }
       }, e
-    }(a);
-    t.exports = s
+    }(s);
+    t.exports = o
   }, function (t, e, i) {
-    var n = i(2), r = i(0), o = function (t) {
+    var n = i(2), r = i(0), a = function (t) {
       "use strict";
 
       function e(e, i, n) {
-        var o = t.apply(this, arguments) || this;
+        var a = t.apply(this, arguments) || this;
         if (i.view) {
           i.id && (this.$id = r.uid());
-          var a = r.copy(i);
-          if (delete a.config, delete a.templates, this.$content = this.$factory.createView(i.view, this, a, this), !this.$content) return !1
+          var s = r.copy(i);
+          if (delete s.config, delete s.templates, this.$content = this.$factory.createView(i.view, this, s, this), !this.$content) return !1
         }
-        return o.$name = "viewCell", o
+        return a.$name = "viewCell", a
       }
 
       return n(e, t), e.prototype.destructor = function () {
@@ -6386,13 +5660,13 @@ var JSGantt = function () {
         return e.width += n.horizontal, e.height += n.vertical, e
       }, e
     }(i(6));
-    t.exports = o
+    t.exports = a
   }, function (t, e, i) {
-    var n = i(2), r = i(35), o = i(6), a = function (t) {
+    var n = i(2), r = i(35), a = i(6), s = function (t) {
       "use strict";
 
       function e(e, i, n) {
-        for (var r = t.apply(this, arguments) || this, o = 0; o < r.$cells.length; o++) r.$cells[o].$config.hidden = 0 !== o;
+        for (var r = t.apply(this, arguments) || this, a = 0; a < r.$cells.length; a++) r.$cells[a].$config.hidden = 0 !== a;
         return r.$cell = r.$cells[0], r.$name = "viewLayout", r
       }
 
@@ -6403,7 +5677,7 @@ var JSGantt = function () {
         var e = this.$view;
         this.$cell && (this.$cell.$config.hidden = !0, e.removeChild(this.$cell.$view)), this.$cell = t, e.appendChild(t.$view)
       }, e.prototype.setSize = function (t, e) {
-        o.prototype.setSize.call(this, t, e)
+        a.prototype.setSize.call(this, t, e)
       }, e.prototype.setContentSize = function () {
         var t = this.$lastSize;
         this.$cell.setSize(t.contentX, t.contentY)
@@ -6413,37 +5687,37 @@ var JSGantt = function () {
           var i = this.$cell.getSize();
           if (this.$config.byMaxSize) for (var n = 0; n < this.$cells.length; n++) {
             var r = this.$cells[n].getSize();
-            for (var o in i) i[o] = Math.max(i[o], r[o])
+            for (var a in i) i[a] = Math.max(i[a], r[a])
           }
-          for (var a in e) e[a] = e[a] || i[a];
+          for (var s in e) e[s] = e[s] || i[s];
           e.gravity = Math.max(e.gravity, i.gravity)
         }
         return e
       }, e
     }(r);
-    t.exports = a
+    t.exports = s
   }, function (t, e) {
     t.exports = function (t) {
       var e = t.$services, i = {}, n = {};
 
-      function r(r, o, a) {
+      function r(r, a, s) {
         if (n[r]) return n[r];
-        o.renderer || t.assert(!1, "Invalid renderer call");
-        var s = o.filter;
-        return a && a.setAttribute(e.config().layer_attribute, !0), n[r] = {
+        a.renderer || t.assert(!1, "Invalid renderer call");
+        var o = a.filter;
+        return s && s.setAttribute(e.config().layer_attribute, !0), n[r] = {
           render_item: function (e, i) {
-            if (i = i || a, !s || s(e)) {
+            if (i = i || s, !o || o(e)) {
               var n = function (t) {
-                return o.renderer.call(this, t, o.host)
+                return a.renderer.call(this, t, a.host)
               }.call(t, e);
               this.append(e, n, i)
             } else this.remove_item(e.id)
           }, clear: function (t) {
-            this.rendered = i[r] = {}, o.append || this.clear_container(t)
+            this.rendered = i[r] = {}, a.append || this.clear_container(t)
           }, clear_container: function (t) {
-            (t = t || a) && (t.innerHTML = "")
+            (t = t || s) && (t.innerHTML = "")
           }, render_items: function (t, e) {
-            e = e || a;
+            e = e || s;
             var i = document.createDocumentFragment();
             this.clear(e);
             for (var n = 0, r = t.length; n < r; n++) this.render_item(t[n], i);
@@ -6460,10 +5734,10 @@ var JSGantt = function () {
             e && e.parentNode && e.parentNode.removeChild(e)
           }, restore: function (t) {
             var e = this.rendered[t.id];
-            e ? e.parentNode || this.append(t, e, a) : this.render_item(t, a)
+            e ? e.parentNode || this.append(t, e, s) : this.render_item(t, s)
           }, change_id: function (t, e) {
             this.rendered[e] = this.rendered[t], delete this.rendered[t]
-          }, rendered: i[r], node: a, destructor: function () {
+          }, rendered: i[r], node: s, destructor: function () {
             this.clear(), delete n[r], delete i[r]
           }
         }, n[r]
@@ -6476,13 +5750,13 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(135), r = i(0), o = i(1);
+    var n = i(135), r = i(0), a = i(1);
 
-    function a(t) {
+    function s(t) {
       return t instanceof Array || (t = Array.prototype.slice.call(arguments, 0)), function (e) {
         for (var i = !0, n = 0, r = t.length; n < r; n++) {
-          var o = t[n];
-          o && (i = i && !1 !== o(e.id, e))
+          var a = t[n];
+          a && (i = i && !1 !== a(e.id, e))
         }
         return i
       }
@@ -6491,7 +5765,7 @@ var JSGantt = function () {
     t.exports = function (t) {
       var e = n(t);
       return {
-        createGroup: function (i, n, s) {
+        createGroup: function (i, n, o) {
           var l = {
             tempCollection: [], renderers: {}, container: i, filters: [], getLayers: function () {
               this._add();
@@ -6502,16 +5776,16 @@ var JSGantt = function () {
               return this.renderers[t]
             }, _add: function (t) {
               t && (t.id = t.id || r.uid(), this.tempCollection.push(t));
-              for (var i = this.container(), a = this.tempCollection, s = 0; s < a.length; s++) if (t = a[s], this.container() || t && t.container && o.isChildOf(t.container, document.body)) {
-                var l = t.container, c = t.id, u = t.topmost;
-                if (!l.parentNode) if (u) i.appendChild(l); else {
-                  var d = n ? n() : i.firstChild;
-                  d ? i.insertBefore(l, d) : i.appendChild(l)
+              for (var i = this.container(), s = this.tempCollection, o = 0; o < s.length; o++) if (t = s[o], this.container() || t && t.container && a.isChildOf(t.container, document.body)) {
+                var l = t.container, c = t.id, d = t.topmost;
+                if (!l.parentNode) if (d) i.appendChild(l); else {
+                  var h = n ? n() : i.firstChild;
+                  h ? i.insertBefore(l, h) : i.appendChild(l)
                 }
-                this.renderers[c] = e.getRenderer(c, t, l), this.tempCollection.splice(s, 1), s--
+                this.renderers[c] = e.getRenderer(c, t, l), this.tempCollection.splice(o, 1), o--
               }
             }, addLayer: function (t) {
-              return t && ("function" == typeof t && (t = {renderer: t}), void 0 === t.filter ? t.filter = a(s || []) : t.filter instanceof Array && (t.filter.push(s), t.filter = a(t.filter)), t.container || (t.container = document.createElement("div"))), this._add(t), t ? t.id : void 0
+              return t && ("function" == typeof t && (t = {renderer: t}), void 0 === t.filter ? t.filter = s(o || []) : t.filter instanceof Array && (t.filter.push(o), t.filter = s(t.filter)), t.container || (t.container = document.createElement("div"))), this._add(t), t ? t.id : void 0
             }, eachLayer: function (t) {
               for (var e in this.renderers) t(this.renderers[e])
             }, removeLayer: function (t) {
@@ -6535,16 +5809,16 @@ var JSGantt = function () {
         getDataRender: function (e) {
           return t.$services.getService("layer:" + e) || null
         }, createDataRender: function (i) {
-          var n = i.name, r = i.defaultContainer, o = i.defaultContainerSibling,
-            a = e.createGroup(r, o, function (t, e) {
-              if (!a.filters) return !0;
-              for (var i = 0; i < a.filters.length; i++) if (!1 === a.filters[i](t, e)) return !1
+          var n = i.name, r = i.defaultContainer, a = i.defaultContainerSibling,
+            s = e.createGroup(r, a, function (t, e) {
+              if (!s.filters) return !0;
+              for (var i = 0; i < s.filters.length; i++) if (!1 === s.filters[i](t, e)) return !1
             });
           return t.$services.setService("layer:" + n, function () {
-            return a
+            return s
           }), t.attachEvent("onGanttReady", function () {
-            a.addLayer()
-          }), a
+            s.addLayer()
+          }), s
         }, init: function () {
           var e = this.createDataRender({
             name: "task", defaultContainer: function () {
@@ -6583,7 +5857,7 @@ var JSGantt = function () {
   }, function (t, e, i) {
     var n = function (t) {
       return function (e) {
-        var i = {click: {}, doubleclick: {}, contextMenu: {}};
+        var i = {click: {}};
 
         function n(t, e, n, r) {
           i[t][e] || (i[t][e] = []), i[t][e].push({handler: n, root: r})
@@ -6591,60 +5865,48 @@ var JSGantt = function () {
 
         function r(t) {
           t = t || window.event;
-          var n = e.locate(t), r = a(t, i.click), o = !0;
-          if (null !== n ? o = !e.checkEvent("onTaskClick") || e.callEvent("onTaskClick", [n, t]) : e.callEvent("onEmptyClick", [t]), o) {
-            if (!s(r, t, n)) return;
-            n && e.getTask(n) && e.config.select_task && !e.config.multiselect && e.selectTask(n)
+          var n = e.locate(t), r = s(t, i.click), a = !0;
+          if (null !== n ? a = !e.checkEvent("onTaskClick") || e.callEvent("onTaskClick", [n, t]) : e.callEvent("onEmptyClick", [t]), a) {
+            if (!function (t, i, n) {
+              for (var r = !0, a = 0; a < t.length; a++) {
+                var s = t[a].call(e, i, n, i.target);
+                r = r && !(void 0 !== s && !0 !== s)
+              }
+              return r
+            }(r, t, n)) return;
+            n && e.getTask(n)
           }
         }
 
-        function o(t) {
-          var i = (t = t || window.event).target, n = e.locate(i), r = e.locate(i, e.config.link_attribute),
-            o = !e.checkEvent("onContextMenu") || e.callEvent("onContextMenu", [n, r, t]);
-          return o || (t.preventDefault ? t.preventDefault() : t.returnValue = !1), o
+        function a(t) {
         }
 
-        function a(e, i) {
+        function s(e, i) {
           for (var n = e.target, r = []; n;) {
-            var o = t.getClassName(n);
-            if (o) {
-              o = o.split(" ");
-              for (var a = 0; a < o.length; a++) if (o[a] && i[o[a]]) for (var s = i[o[a]], l = 0; l < s.length; l++) s[l].root && !t.isChildOf(n, s[l].root) || r.push(s[l].handler)
+            var a = t.getClassName(n);
+            if (a) {
+              a = a.split(" ");
+              for (var s = 0; s < a.length; s++) if (a[s] && i[a[s]]) for (var o = i[a[s]], l = 0; l < o.length; l++) o[l].root && !t.isChildOf(n, o[l].root) || r.push(o[l].handler)
             }
             n = n.parentNode
           }
           return r
         }
 
-        function s(t, i, n) {
-          for (var r = !0, o = 0; o < t.length; o++) {
-            var a = t[o].call(e, i, n, i.target);
-            r = r && !(void 0 !== a && !0 !== a)
-          }
-          return r
+        function o(t) {
         }
 
         function l(t) {
-          t = t || window.event;
-          var n = e.locate(t), r = a(t, i.doubleclick),
-            o = !e.checkEvent("onTaskDblClick") || null === n || e.callEvent("onTaskDblClick", [n, t]);
-          if (o) {
-            if (!s(r, t, n)) return;
-            null !== n && e.getTask(n) && o && e.config.details_on_dblclick && e.showModal(n)
-          }
-        }
-
-        function c(t) {
           if (e.checkEvent("onMouseMove")) {
             var i = e.locate(t);
             e._last_move_event = t, e.callEvent("onMouseMove", [i, t])
           }
         }
 
-        var u = e._createDomEventScope();
+        var c = e._createDomEventScope();
 
         function d(t) {
-          u.detachAll(), t && (u.attach(t, "click", r), u.attach(t, "dblclick", l), u.attach(t, "mousemove", c), u.attach(t, "contextmenu", o))
+          c.detachAll(), t && (c.attach(t, "click", r), c.attach(t, "dblclick", o), c.attach(t, "mousemove", l), c.attach(t, "contextmenu", a))
         }
 
         return {
@@ -6652,14 +5914,14 @@ var JSGantt = function () {
             n(t, e, i, null)
           }, delegate: n, detach: function (t, e, n, r) {
             if (i[t] && i[t][e]) {
-              for (var o = i[t], a = o[e], s = 0; s < a.length; s++) a[s].root == r && (a.splice(s, 1), s--);
-              a.length || delete o[e]
+              for (var a = i[t], s = a[e], o = 0; o < s.length; o++) s[o].root == r && (s.splice(o, 1), o--);
+              s.length || delete a[e]
             }
           }, callHandler: function (t, e, n, r) {
-            var o = i[t][e];
-            if (o) for (var a = 0; a < o.length; a++) (n || o[a].root) && o[a].root !== n || o[a].handler.apply(this, r)
-          }, onDoubleClick: l, onMouseMove: c, onContextMenu: o, onClick: r, destructor: function () {
-            d(), i = null, u = null
+            var a = i[t][e];
+            if (a) for (var s = 0; s < a.length; s++) (n || a[s].root) && a[s].root !== n || a[s].handler.apply(this, r)
+          }, onMouseMove: l, onClick: r, destructor: function () {
+            d(), i = null, c = null
           }
         }
       }
@@ -6672,7 +5934,7 @@ var JSGantt = function () {
       n.mixin(this, t, !0)
     }
 
-    function o(t, e) {
+    function a(t, e) {
       var i = this.$config[t];
       return i ? i instanceof r ? i : (r.prototype = e, this.$config[t] = new r(i), this.$config[t]) : e
     }
@@ -6682,9 +5944,9 @@ var JSGantt = function () {
         var e, i;
         return {
           $getConfig: function () {
-            return e || (e = t ? t.$getConfig() : this.$jsgantt.config), o.call(this, "config", e)
+            return e || (e = t ? t.$getConfig() : this.$jsgantt.config), a.call(this, "config", e)
           }, $getTemplates: function () {
-            return i || (i = t ? t.$getTemplates() : this.$jsgantt.templates), o.call(this, "templates", i)
+            return i || (i = t ? t.$getTemplates() : this.$jsgantt.templates), a.call(this, "templates", i)
           }
         }
       }(e))
@@ -6695,32 +5957,32 @@ var JSGantt = function () {
       createFactory: function (t) {
         var e = {}, i = {};
 
-        function o(o, a, s, l) {
-          var c = e[o];
+        function a(a, s, o, l) {
+          var c = e[a];
           if (!c || !c.create) return !1;
-          "resizer" != o || s.mode || (l.$config.cols ? s.mode = "x" : s.mode = "y"), "viewcell" != o || "scrollbar" != s.view || s.scroll || (l.$config.cols ? s.scroll = "y" : s.scroll = "x"), (s = n.copy(s)).id || i[s.view] || (s.id = s.view), s.id && !s.css && (s.css = s.id + "-cell");
-          var u = new c.create(a, s, this, t);
-          return c.configure && c.configure(u), r(u, l), u.$id || (u.$id = s.id || t.uid()), u.$parent || "object" != typeof a || (u.$parent = a), u.$config || (u.$config = s), i[u.$id] && (u.$id = t.uid()), i[u.$id] = u, u
+          "resizer" != a || o.mode || (l.$config.cols ? o.mode = "x" : o.mode = "y"), "viewcell" != a || "scrollbar" != o.view || o.scroll || (l.$config.cols ? o.scroll = "y" : o.scroll = "x"), (o = n.copy(o)).id || i[o.view] || (o.id = o.view), o.id && !o.css && (o.css = o.id + "-cell");
+          var d = new c.create(s, o, this, t);
+          return c.configure && c.configure(d), r(d, l), d.$id || (d.$id = o.id || t.uid()), d.$parent || "object" != typeof s || (d.$parent = s), d.$config || (d.$config = o), i[d.$id] && (d.$id = t.uid()), i[d.$id] = d, d
         }
 
         return {
           initUI: function (t, e) {
             var i = "cell";
-            return t.view ? i = "viewcell" : t.resizer ? i = "resizer" : t.rows || t.cols ? i = "layout" : t.views && (i = "multiview"), o.call(this, i, null, t, e)
+            return t.view ? i = "viewcell" : t.resizer ? i = "resizer" : t.rows || t.cols ? i = "layout" : t.views && (i = "multiview"), a.call(this, i, null, t, e)
           }, reset: function () {
             i = {}
           }, registerView: function (t, i, n) {
             e[t] = {create: i, configure: n}
-          }, createView: o, getView: function (t) {
+          }, createView: a, getView: function (t) {
             return i[t]
           }
         }
       }
     }
   }, function (t, e, i) {
-    var n = i(140), r = i(138), o = i(137), a = i(6), s = i(35), l = i(134), c = i(133), u = i(132), d = i(131),
-      h = i(34), f = i(16), g = i(127), p = i(31), _ = i(126), v = i(125), m = i(30), y = i(116), k = i(115),
-      b = i(114), w = i(113), $ = i(112), x = i(106), S = i(103);
+    var n = i(140), r = i(138), a = i(137), s = i(6), o = i(35), l = i(134), c = i(133), d = i(132), h = i(131),
+      u = i(34), f = i(16), g = i(127), _ = i(31), p = i(126), v = i(125), m = i(30), $ = i(116), y = i(115),
+      k = i(114), w = i(113), b = i(112), x = i(106), S = i(103);
     t.exports = {
       init: function (t) {
         function e(e, i) {
@@ -6733,43 +5995,42 @@ var JSGantt = function () {
         }
 
         var i = n.createFactory(t);
-        i.registerView("cell", a), i.registerView("resizer", u), i.registerView("scrollbar", d), i.registerView("layout", s, function (t) {
+        i.registerView("cell", s), i.registerView("resizer", d), i.registerView("scrollbar", h), i.registerView("layout", o, function (t) {
           "main" === (t.$config ? t.$config.id : null) && e(t, S)
-        }), i.registerView("viewcell", c), i.registerView("multiview", l), i.registerView("timeline", h, function (t) {
+        }), i.registerView("viewcell", c), i.registerView("multiview", l), i.registerView("timeline", u, function (t) {
           "timeline" !== (t.$config ? t.$config.id : null) && "task" != t.$config.bind || e(t, x)
         }), i.registerView("grid", f, function (t) {
-          "grid" !== (t.$config ? t.$config.id : null) && "task" != t.$config.bind || e(t, $)
-        }), i.registerView("resourceGrid", g), i.registerView("resourceTimeline", p), i.registerView("resourceHistogram", _);
-        var C = o(t), T = v(t);
-        return t.ext.inlineEditors = T, t.ext._inlineEditors = T, T.init(t), {
+          "grid" !== (t.$config ? t.$config.id : null) && "task" != t.$config.bind || e(t, b)
+        }), i.registerView("resourceGrid", g), i.registerView("resourceTimeline", _), i.registerView("resourceHistogram", p);
+        var T = a(t), D = v(t);
+        return t.ext.inlineEditors = D, t.ext._inlineEditors = D, {
           factory: i,
           mouseEvents: r.init(t),
-          layersApi: C.init(),
-          render: {gridLine: w(t), taskBg: k(t), taskBar: m(t), taskSplitBar: y(t), link: b(t)},
+          layersApi: T.init(),
+          render: {gridLine: w(t), taskBg: y(t), taskBar: m(t), taskSplitBar: $(t), link: k(t)},
           layersService: {
             getDataRender: function (e) {
-              return C.getDataRender(e, t)
+              return T.getDataRender(e, t)
             }, createDataRender: function (e) {
-              return C.createDataRender(e, t)
+              return T.createDataRender(e, t)
             }
           }
         }
       }
     }
   }, function (t, e, i) {
-    var n = i(0), r = i(1);
+    i(0), i(1);
     t.exports = function (t) {
-
     }
   }, function (t, e, i) {
     (function (t, e) {
       !function (t, i) {
         "use strict";
         if (!t.setImmediate) {
-          var n, r = 1, o = {}, a = !1, s = t.document, l = Object.getPrototypeOf && Object.getPrototypeOf(t);
+          var n, r = 1, a = {}, s = !1, o = t.document, l = Object.getPrototypeOf && Object.getPrototypeOf(t);
           l = l && l.setTimeout ? l : t, "[object process]" === {}.toString.call(t.process) ? n = function (t) {
             e.nextTick(function () {
-              u(t)
+              d(t)
             })
           } : function () {
             if (t.postMessage && !t.importScripts) {
@@ -6780,7 +6041,7 @@ var JSGantt = function () {
             }
           }() ? function () {
             var e = "setImmediate$" + Math.random() + "$", i = function (i) {
-              i.source === t && "string" == typeof i.data && 0 === i.data.indexOf(e) && u(+i.data.slice(e.length))
+              i.source === t && "string" == typeof i.data && 0 === i.data.indexOf(e) && d(+i.data.slice(e.length))
             };
             t.addEventListener ? t.addEventListener("message", i, !1) : t.attachEvent("onmessage", i), n = function (i) {
               t.postMessage(e + i, "*")
@@ -6788,37 +6049,37 @@ var JSGantt = function () {
           }() : t.MessageChannel ? function () {
             var t = new MessageChannel;
             t.port1.onmessage = function (t) {
-              u(t.data)
+              d(t.data)
             }, n = function (e) {
               t.port2.postMessage(e)
             }
-          }() : s && "onreadystatechange" in s.createElement("script") ? function () {
-            var t = s.documentElement;
+          }() : o && "onreadystatechange" in o.createElement("script") ? function () {
+            var t = o.documentElement;
             n = function (e) {
-              var i = s.createElement("script");
+              var i = o.createElement("script");
               i.onreadystatechange = function () {
-                u(e), i.onreadystatechange = null, t.removeChild(i), i = null
+                d(e), i.onreadystatechange = null, t.removeChild(i), i = null
               }, t.appendChild(i)
             }
           }() : n = function (t) {
-            setTimeout(u, 0, t)
+            setTimeout(d, 0, t)
           }, l.setImmediate = function (t) {
             "function" != typeof t && (t = new Function("" + t));
             for (var e = new Array(arguments.length - 1), i = 0; i < e.length; i++) e[i] = arguments[i + 1];
-            var a = {callback: t, args: e};
-            return o[r] = a, n(r), r++
+            var s = {callback: t, args: e};
+            return a[r] = s, n(r), r++
           }, l.clearImmediate = c
         }
 
         function c(t) {
-          delete o[t]
+          delete a[t]
         }
 
-        function u(t) {
-          if (a) setTimeout(u, 0, t); else {
-            var e = o[t];
+        function d(t) {
+          if (s) setTimeout(d, 0, t); else {
+            var e = a[t];
             if (e) {
-              a = !0;
+              s = !0;
               try {
                 !function (t) {
                   var e = t.callback, n = t.args;
@@ -6840,7 +6101,7 @@ var JSGantt = function () {
                   }
                 }(e)
               } finally {
-                c(t), a = !1
+                c(t), s = !1
               }
             }
           }
@@ -6851,18 +6112,18 @@ var JSGantt = function () {
     (function (t) {
       var n = void 0 !== t && t || "undefined" != typeof self && self || window, r = Function.prototype.apply;
 
-      function o(t, e) {
+      function a(t, e) {
         this._id = t, this._clearFn = e
       }
 
       e.setTimeout = function () {
-        return new o(r.call(setTimeout, n, arguments), clearTimeout)
+        return new a(r.call(setTimeout, n, arguments), clearTimeout)
       }, e.setInterval = function () {
-        return new o(r.call(setInterval, n, arguments), clearInterval)
+        return new a(r.call(setInterval, n, arguments), clearInterval)
       }, e.clearTimeout = e.clearInterval = function (t) {
         t && t.close()
-      }, o.prototype.unref = o.prototype.ref = function () {
-      }, o.prototype.close = function () {
+      }, a.prototype.unref = a.prototype.ref = function () {
+      }, a.prototype.close = function () {
         this._clearFn.call(n, this._id)
       }, e.enroll = function (t, e) {
         clearTimeout(t._idleTimeoutId), t._idleTimeout = e
@@ -6877,2573 +6138,6 @@ var JSGantt = function () {
       }, i(143), e.setImmediate = "undefined" != typeof self && self.setImmediate || void 0 !== t && t.setImmediate || this && this.setImmediate, e.clearImmediate = "undefined" != typeof self && self.clearImmediate || void 0 !== t && t.clearImmediate || this && this.clearImmediate
     }).call(this, i(17))
   }, function (t, e, i) {
-    (function (e, i, n) {
-      t.exports = function t(e, i, n) {
-        function r(a, s) {
-          if (!i[a]) {
-            if (!e[a]) {
-              var l = "function" == typeof _dereq_ && _dereq_;
-              if (!s && l) return l(a, !0);
-              if (o) return o(a, !0);
-              var c = new Error("Cannot find module '" + a + "'");
-              throw c.code = "MODULE_NOT_FOUND", c
-            }
-            var u = i[a] = {exports: {}};
-            e[a][0].call(u.exports, function (t) {
-              return r(e[a][1][t] || t)
-            }, u, u.exports, t, e, i, n)
-          }
-          return i[a].exports
-        }
-
-        for (var o = "function" == typeof _dereq_ && _dereq_, a = 0; a < n.length; a++) r(n[a]);
-        return r
-      }({
-        1: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t) {
-            var e = t._SomePromiseArray;
-
-            function i(t) {
-              var i = new e(t), n = i.promise();
-              return i.setHowMany(1), i.setUnwrap(), i.init(), n
-            }
-
-            t.any = function (t) {
-              return i(t)
-            }, t.prototype.any = function () {
-              return i(this)
-            }
-          }
-        }, {}], 2: [function (t, i, n) {
-          "use strict";
-          var r;
-          try {
-            throw new Error
-          } catch (t) {
-            r = t
-          }
-          var o = t("./schedule"), a = t("./queue"), s = t("./util");
-
-          function l() {
-            this._customScheduler = !1, this._isTickUsed = !1, this._lateQueue = new a(16), this._normalQueue = new a(16), this._haveDrainedQueues = !1, this._trampolineEnabled = !0;
-            var t = this;
-            this.drainQueues = function () {
-              t._drainQueues()
-            }, this._schedule = o
-          }
-
-          function c(t, e, i) {
-            this._lateQueue.push(t, e, i), this._queueTick()
-          }
-
-          function u(t, e, i) {
-            this._normalQueue.push(t, e, i), this._queueTick()
-          }
-
-          function d(t) {
-            this._normalQueue._pushOne(t), this._queueTick()
-          }
-
-          function h(t) {
-            for (; t.length() > 0;) f(t)
-          }
-
-          function f(t) {
-            var e = t.shift();
-            if ("function" != typeof e) e._settlePromises(); else {
-              var i = t.shift(), n = t.shift();
-              e.call(i, n)
-            }
-          }
-
-          l.prototype.setScheduler = function (t) {
-            var e = this._schedule;
-            return this._schedule = t, this._customScheduler = !0, e
-          }, l.prototype.hasCustomScheduler = function () {
-            return this._customScheduler
-          }, l.prototype.enableTrampoline = function () {
-            this._trampolineEnabled = !0
-          }, l.prototype.disableTrampolineIfNecessary = function () {
-            s.hasDevTools && (this._trampolineEnabled = !1)
-          }, l.prototype.haveItemsQueued = function () {
-            return this._isTickUsed || this._haveDrainedQueues
-          }, l.prototype.fatalError = function (t, i) {
-            i ? (e.stderr.write("Fatal " + (t instanceof Error ? t.stack : t) + "\n"), e.exit(2)) : this.throwLater(t)
-          }, l.prototype.throwLater = function (t, e) {
-            if (1 === arguments.length && (e = t, t = function () {
-              throw e
-            }), "undefined" != typeof setTimeout) setTimeout(function () {
-              t(e)
-            }, 0); else try {
-              this._schedule(function () {
-                t(e)
-              })
-            } catch (t) {
-              throw t
-            }
-          }, s.hasDevTools ? (l.prototype.invokeLater = function (t, e, i) {
-            this._trampolineEnabled ? c.call(this, t, e, i) : this._schedule(function () {
-              setTimeout(function () {
-                t.call(e, i)
-              }, 100)
-            })
-          }, l.prototype.invoke = function (t, e, i) {
-            this._trampolineEnabled ? u.call(this, t, e, i) : this._schedule(function () {
-              t.call(e, i)
-            })
-          }, l.prototype.settlePromises = function (t) {
-            this._trampolineEnabled ? d.call(this, t) : this._schedule(function () {
-              t._settlePromises()
-            })
-          }) : (l.prototype.invokeLater = c, l.prototype.invoke = u, l.prototype.settlePromises = d), l.prototype._drainQueues = function () {
-            h(this._normalQueue), this._reset(), this._haveDrainedQueues = !0, h(this._lateQueue)
-          }, l.prototype._queueTick = function () {
-            this._isTickUsed || (this._isTickUsed = !0, this._schedule(this.drainQueues))
-          }, l.prototype._reset = function () {
-            this._isTickUsed = !1
-          }, i.exports = l, i.exports.firstLineError = r
-        }, {"./queue": 26, "./schedule": 29, "./util": 36}], 3: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t, e, i, n) {
-            var r = !1, o = function (t, e) {
-              this._reject(e)
-            }, a = function (t, e) {
-              e.promiseRejectionQueued = !0, e.bindingPromise._then(o, o, null, this, t)
-            }, s = function (t, e) {
-              0 == (50397184 & this._bitField) && this._resolveCallback(e.target)
-            }, l = function (t, e) {
-              e.promiseRejectionQueued || this._reject(t)
-            };
-            t.prototype.bind = function (o) {
-              r || (r = !0, t.prototype._propagateFrom = n.propagateFromFunction(), t.prototype._boundValue = n.boundValueFunction());
-              var c = i(o), u = new t(e);
-              u._propagateFrom(this, 1);
-              var d = this._target();
-              if (u._setBoundTo(c), c instanceof t) {
-                var h = {promiseRejectionQueued: !1, promise: u, target: d, bindingPromise: c};
-                d._then(e, a, void 0, u, h), c._then(s, l, void 0, u, h), u._setOnCancel(c)
-              } else u._resolveCallback(d);
-              return u
-            }, t.prototype._setBoundTo = function (t) {
-              void 0 !== t ? (this._bitField = 2097152 | this._bitField, this._boundTo = t) : this._bitField = -2097153 & this._bitField
-            }, t.prototype._isBound = function () {
-              return 2097152 == (2097152 & this._bitField)
-            }, t.bind = function (e, i) {
-              return t.resolve(i).bind(e)
-            }
-          }
-        }, {}], 4: [function (t, e, i) {
-          "use strict";
-          var n;
-          "undefined" != typeof Promise && (n = Promise);
-          var r = t("./promise")();
-          r.noConflict = function () {
-            try {
-              Promise === r && (Promise = n)
-            } catch (t) {
-            }
-            return r
-          }, e.exports = r
-        }, {"./promise": 22}], 5: [function (t, e, i) {
-          "use strict";
-          var n = Object.create;
-          if (n) {
-            var r = n(null), o = n(null);
-            r[" size"] = o[" size"] = 0
-          }
-          e.exports = function (e) {
-            var i = t("./util"), n = i.canEvaluate;
-
-            function r(t) {
-              return function (t, n) {
-                var r;
-                if (null != t && (r = t[n]), "function" != typeof r) {
-                  var o = "Object " + i.classString(t) + " has no method '" + i.toString(n) + "'";
-                  throw new e.TypeError(o)
-                }
-                return r
-              }(t, this.pop()).apply(t, this)
-            }
-
-            function o(t) {
-              return t[this]
-            }
-
-            function a(t) {
-              var e = +this;
-              return e < 0 && (e = Math.max(0, e + t.length)), t[e]
-            }
-
-            i.isIdentifier, e.prototype.call = function (t) {
-              var e = [].slice.call(arguments, 1);
-              return e.push(t), this._then(r, void 0, void 0, e, void 0)
-            }, e.prototype.get = function (t) {
-              var e;
-              if ("number" == typeof t) e = a; else if (n) {
-                var i = (void 0)(t);
-                e = null !== i ? i : o
-              } else e = o;
-              return this._then(e, void 0, void 0, t, void 0)
-            }
-          }
-        }, {"./util": 36}], 6: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r) {
-            var o = t("./util"), a = o.tryCatch, s = o.errorObj, l = e._async;
-            e.prototype.break = e.prototype.cancel = function () {
-              if (!r.cancellation()) return this._warn("cancellation is disabled");
-              for (var t = this, e = t; t._isCancellable();) {
-                if (!t._cancelBy(e)) {
-                  e._isFollowing() ? e._followee().cancel() : e._cancelBranched();
-                  break
-                }
-                var i = t._cancellationParent;
-                if (null == i || !i._isCancellable()) {
-                  t._isFollowing() ? t._followee().cancel() : t._cancelBranched();
-                  break
-                }
-                t._isFollowing() && t._followee().cancel(), t._setWillBeCancelled(), e = t, t = i
-              }
-            }, e.prototype._branchHasCancelled = function () {
-              this._branchesRemainingToCancel--
-            }, e.prototype._enoughBranchesHaveCancelled = function () {
-              return void 0 === this._branchesRemainingToCancel || this._branchesRemainingToCancel <= 0
-            }, e.prototype._cancelBy = function (t) {
-              return t === this ? (this._branchesRemainingToCancel = 0, this._invokeOnCancel(), !0) : (this._branchHasCancelled(), !!this._enoughBranchesHaveCancelled() && (this._invokeOnCancel(), !0))
-            }, e.prototype._cancelBranched = function () {
-              this._enoughBranchesHaveCancelled() && this._cancel()
-            }, e.prototype._cancel = function () {
-              this._isCancellable() && (this._setCancelled(), l.invoke(this._cancelPromises, this, void 0))
-            }, e.prototype._cancelPromises = function () {
-              this._length() > 0 && this._settlePromises()
-            }, e.prototype._unsetOnCancel = function () {
-              this._onCancelField = void 0
-            }, e.prototype._isCancellable = function () {
-              return this.isPending() && !this._isCancelled()
-            }, e.prototype.isCancellable = function () {
-              return this.isPending() && !this.isCancelled()
-            }, e.prototype._doInvokeOnCancel = function (t, e) {
-              if (o.isArray(t)) for (var i = 0; i < t.length; ++i) this._doInvokeOnCancel(t[i], e); else if (void 0 !== t) if ("function" == typeof t) {
-                if (!e) {
-                  var n = a(t).call(this._boundValue());
-                  n === s && (this._attachExtraTrace(n.e), l.throwLater(n.e))
-                }
-              } else t._resultCancelled(this)
-            }, e.prototype._invokeOnCancel = function () {
-              var t = this._onCancel();
-              this._unsetOnCancel(), l.invoke(this._doInvokeOnCancel, this, t)
-            }, e.prototype._invokeInternalOnCancel = function () {
-              this._isCancellable() && (this._doInvokeOnCancel(this._onCancel(), !0), this._unsetOnCancel())
-            }, e.prototype._resultCancelled = function () {
-              this.cancel()
-            }
-          }
-        }, {"./util": 36}], 7: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e) {
-            var i = t("./util"), n = t("./es5").keys, r = i.tryCatch, o = i.errorObj;
-            return function (t, a, s) {
-              return function (l) {
-                var c = s._boundValue();
-                t:for (var u = 0; u < t.length; ++u) {
-                  var d = t[u];
-                  if (d === Error || null != d && d.prototype instanceof Error) {
-                    if (l instanceof d) return r(a).call(c, l)
-                  } else if ("function" == typeof d) {
-                    var h = r(d).call(c, l);
-                    if (h === o) return h;
-                    if (h) return r(a).call(c, l)
-                  } else if (i.isObject(l)) {
-                    for (var f = n(d), g = 0; g < f.length; ++g) {
-                      var p = f[g];
-                      if (d[p] != l[p]) continue t
-                    }
-                    return r(a).call(c, l)
-                  }
-                }
-                return e
-              }
-            }
-          }
-        }, {"./es5": 13, "./util": 36}], 8: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t) {
-            var e = !1, i = [];
-
-            function n() {
-              this._trace = new n.CapturedTrace(r())
-            }
-
-            function r() {
-              var t = i.length - 1;
-              if (t >= 0) return i[t]
-            }
-
-            return t.prototype._promiseCreated = function () {
-            }, t.prototype._pushContext = function () {
-            }, t.prototype._popContext = function () {
-              return null
-            }, t._peekContext = t.prototype._peekContext = function () {
-            }, n.prototype._pushContext = function () {
-              void 0 !== this._trace && (this._trace._promiseCreated = null, i.push(this._trace))
-            }, n.prototype._popContext = function () {
-              if (void 0 !== this._trace) {
-                var t = i.pop(), e = t._promiseCreated;
-                return t._promiseCreated = null, e
-              }
-              return null
-            }, n.CapturedTrace = null, n.create = function () {
-              if (e) return new n
-            }, n.deactivateLongStackTraces = function () {
-            }, n.activateLongStackTraces = function () {
-              var i = t.prototype._pushContext, o = t.prototype._popContext, a = t._peekContext,
-                s = t.prototype._peekContext, l = t.prototype._promiseCreated;
-              n.deactivateLongStackTraces = function () {
-                t.prototype._pushContext = i, t.prototype._popContext = o, t._peekContext = a, t.prototype._peekContext = s, t.prototype._promiseCreated = l, e = !1
-              }, e = !0, t.prototype._pushContext = n.prototype._pushContext, t.prototype._popContext = n.prototype._popContext, t._peekContext = t.prototype._peekContext = r, t.prototype._promiseCreated = function () {
-                var t = this._peekContext();
-                t && null == t._promiseCreated && (t._promiseCreated = this)
-              }
-            }, n
-          }
-        }, {}], 9: [function (t, i, n) {
-          "use strict";
-          i.exports = function (i, n) {
-            var r, o, a, s = i._getDomain, l = i._async, c = t("./errors").Warning, u = t("./util"), d = t("./es5"),
-              h = u.canAttachTrace, f = /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/,
-              g = /\((?:timers\.js):\d+:\d+\)/, p = /[\/<(](.+?):(\d+):(\d+)\)?\s*$/, _ = null, v = null, m = !1,
-              y = !(0 == u.env("BLUEBIRD_DEBUG")),
-              k = !(0 == u.env("BLUEBIRD_WARNINGS") || !y && !u.env("BLUEBIRD_WARNINGS")),
-              b = !(0 == u.env("BLUEBIRD_LONG_STACK_TRACES") || !y && !u.env("BLUEBIRD_LONG_STACK_TRACES")),
-              w = 0 != u.env("BLUEBIRD_W_FORGOTTEN_RETURN") && (k || !!u.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
-            i.prototype.suppressUnhandledRejections = function () {
-              var t = this._target();
-              t._bitField = -1048577 & t._bitField | 524288
-            }, i.prototype._ensurePossibleRejectionHandled = function () {
-              if (0 == (524288 & this._bitField)) {
-                this._setRejectionIsUnhandled();
-                var t = this;
-                setTimeout(function () {
-                  t._notifyUnhandledRejection()
-                }, 1)
-              }
-            }, i.prototype._notifyUnhandledRejectionIsHandled = function () {
-              U("rejectionHandled", r, void 0, this)
-            }, i.prototype._setReturnedNonUndefined = function () {
-              this._bitField = 268435456 | this._bitField
-            }, i.prototype._returnedNonUndefined = function () {
-              return 0 != (268435456 & this._bitField)
-            }, i.prototype._notifyUnhandledRejection = function () {
-              if (this._isRejectionUnhandled()) {
-                var t = this._settledValue();
-                this._setUnhandledRejectionIsNotified(), U("unhandledRejection", o, t, this)
-              }
-            }, i.prototype._setUnhandledRejectionIsNotified = function () {
-              this._bitField = 262144 | this._bitField
-            }, i.prototype._unsetUnhandledRejectionIsNotified = function () {
-              this._bitField = -262145 & this._bitField
-            }, i.prototype._isUnhandledRejectionNotified = function () {
-              return (262144 & this._bitField) > 0
-            }, i.prototype._setRejectionIsUnhandled = function () {
-              this._bitField = 1048576 | this._bitField
-            }, i.prototype._unsetRejectionIsUnhandled = function () {
-              this._bitField = -1048577 & this._bitField, this._isUnhandledRejectionNotified() && (this._unsetUnhandledRejectionIsNotified(), this._notifyUnhandledRejectionIsHandled())
-            }, i.prototype._isRejectionUnhandled = function () {
-              return (1048576 & this._bitField) > 0
-            }, i.prototype._warn = function (t, e, i) {
-              return B(t, e, i || this)
-            }, i.onPossiblyUnhandledRejection = function (t) {
-              var e = s();
-              o = "function" == typeof t ? null === e ? t : u.domainBind(e, t) : void 0
-            }, i.onUnhandledRejectionHandled = function (t) {
-              var e = s();
-              r = "function" == typeof t ? null === e ? t : u.domainBind(e, t) : void 0
-            };
-            var $ = function () {
-            };
-            i.longStackTraces = function () {
-              if (l.haveItemsQueued() && !Z.longStackTraces) throw new Error("Error");
-              if (!Z.longStackTraces && Y()) {
-                var t = i.prototype._captureStackTrace, e = i.prototype._attachExtraTrace,
-                  r = i.prototype._dereferenceTrace;
-                Z.longStackTraces = !0, $ = function () {
-                  if (l.haveItemsQueued() && !Z.longStackTraces) throw new Error("Error");
-                  i.prototype._captureStackTrace = t, i.prototype._attachExtraTrace = e, i.prototype._dereferenceTrace = r, n.deactivateLongStackTraces(), l.enableTrampoline(), Z.longStackTraces = !1
-                }, i.prototype._captureStackTrace = z, i.prototype._attachExtraTrace = L, i.prototype._dereferenceTrace = H, n.activateLongStackTraces(), l.disableTrampolineIfNecessary()
-              }
-            }, i.hasLongStackTraces = function () {
-              return Z.longStackTraces && Y()
-            };
-            var x = function () {
-              try {
-                if ("function" == typeof CustomEvent) {
-                  var t = new CustomEvent("CustomEvent");
-                  return u.global.dispatchEvent(t), function (t, e) {
-                    var i = {detail: e, cancelable: !0};
-                    d.defineProperty(i, "promise", {value: e.promise}), d.defineProperty(i, "reason", {value: e.reason});
-                    var n = new CustomEvent(t.toLowerCase(), i);
-                    return !u.global.dispatchEvent(n)
-                  }
-                }
-                return "function" == typeof Event ? (t = new Event("CustomEvent"), u.global.dispatchEvent(t), function (t, e) {
-                  var i = new Event(t.toLowerCase(), {cancelable: !0});
-                  return i.detail = e, d.defineProperty(i, "promise", {value: e.promise}), d.defineProperty(i, "reason", {value: e.reason}), !u.global.dispatchEvent(i)
-                }) : ((t = document.createEvent("CustomEvent")).initCustomEvent("testingtheevent", !1, !0, {}), u.global.dispatchEvent(t), function (t, e) {
-                  var i = document.createEvent("CustomEvent");
-                  return i.initCustomEvent(t.toLowerCase(), !1, !0, e), !u.global.dispatchEvent(i)
-                })
-              } catch (t) {
-              }
-              return function () {
-                return !1
-              }
-            }(), S = u.isNode ? function () {
-              return e.emit.apply(e, arguments)
-            } : u.global ? function (t) {
-              var e = "on" + t.toLowerCase(), i = u.global[e];
-              return !!i && (i.apply(u.global, [].slice.call(arguments, 1)), !0)
-            } : function () {
-              return !1
-            };
-
-            function C(t, e) {
-              return {promise: e}
-            }
-
-            var T = {
-              promiseCreated: C,
-              promiseFulfilled: C,
-              promiseRejected: C,
-              promiseResolved: C,
-              promiseCancelled: C,
-              promiseChained: function (t, e, i) {
-                return {promise: e, child: i}
-              },
-              warning: function (t, e) {
-                return {warning: e}
-              },
-              unhandledRejection: function (t, e, i) {
-                return {reason: e, promise: i}
-              },
-              rejectionHandled: C
-            }, E = function (t) {
-              var e = !1;
-              try {
-                e = S.apply(null, arguments)
-              } catch (t) {
-                l.throwLater(t), e = !0
-              }
-              var i = !1;
-              try {
-                i = x(t, T[t].apply(null, arguments))
-              } catch (t) {
-                l.throwLater(t), i = !0
-              }
-              return i || e
-            };
-
-            function j() {
-              return !1
-            }
-
-            function D(t, e, i) {
-              var n = this;
-              try {
-                t(e, i, function (t) {
-                  if ("function" != typeof t) throw new TypeError("onCancel must be a function, got: " + u.toString(t));
-                  n._attachCancellationCallback(t)
-                })
-              } catch (t) {
-                return t
-              }
-            }
-
-            function I(t) {
-              if (!this._isCancellable()) return this;
-              var e = this._onCancel();
-              void 0 !== e ? u.isArray(e) ? e.push(t) : this._setOnCancel([e, t]) : this._setOnCancel(t)
-            }
-
-            function A() {
-              return this._onCancelField
-            }
-
-            function P(t) {
-              this._onCancelField = t
-            }
-
-            function M() {
-              this._cancellationParent = void 0, this._onCancelField = void 0
-            }
-
-            function O(t, e) {
-              if (0 != (1 & e)) {
-                this._cancellationParent = t;
-                var i = t._branchesRemainingToCancel;
-                void 0 === i && (i = 0), t._branchesRemainingToCancel = i + 1
-              }
-              0 != (2 & e) && t._isBound() && this._setBoundTo(t._boundTo)
-            }
-
-            i.config = function (t) {
-              if ("longStackTraces" in (t = Object(t)) && (t.longStackTraces ? i.longStackTraces() : !t.longStackTraces && i.hasLongStackTraces() && $()), "warnings" in t) {
-                var e = t.warnings;
-                Z.warnings = !!e, w = Z.warnings, u.isObject(e) && "wForgottenReturn" in e && (w = !!e.wForgottenReturn)
-              }
-              if ("cancellation" in t && t.cancellation && !Z.cancellation) {
-                if (l.haveItemsQueued()) throw new Error("cannot enable cancellation after promises are in use");
-                i.prototype._clearCancellationData = M, i.prototype._propagateFrom = O, i.prototype._onCancel = A, i.prototype._setOnCancel = P, i.prototype._attachCancellationCallback = I, i.prototype._execute = D, N = O, Z.cancellation = !0
-              }
-              return "monitoring" in t && (t.monitoring && !Z.monitoring ? (Z.monitoring = !0, i.prototype._fireEvent = E) : !t.monitoring && Z.monitoring && (Z.monitoring = !1, i.prototype._fireEvent = j)), i
-            }, i.prototype._fireEvent = j, i.prototype._execute = function (t, e, i) {
-              try {
-                t(e, i)
-              } catch (t) {
-                return t
-              }
-            }, i.prototype._onCancel = function () {
-            }, i.prototype._setOnCancel = function (t) {
-            }, i.prototype._attachCancellationCallback = function (t) {
-            }, i.prototype._captureStackTrace = function () {
-            }, i.prototype._attachExtraTrace = function () {
-            }, i.prototype._dereferenceTrace = function () {
-            }, i.prototype._clearCancellationData = function () {
-            }, i.prototype._propagateFrom = function (t, e) {
-            };
-            var N = function (t, e) {
-              0 != (2 & e) && t._isBound() && this._setBoundTo(t._boundTo)
-            };
-
-            function R() {
-              var t = this._boundTo;
-              return void 0 !== t && t instanceof i ? t.isFulfilled() ? t.value() : void 0 : t
-            }
-
-            function z() {
-              this._trace = new Q(this._peekContext())
-            }
-
-            function L(t, e) {
-              if (h(t)) {
-                var i = this._trace;
-                if (void 0 !== i && e && (i = i._parent), void 0 !== i) i.attachExtraTrace(t); else if (!t.__stackCleaned__) {
-                  var n = V(t);
-                  u.notEnumerableProp(t, "stack", n.message + "\n" + n.stack.join("\n")), u.notEnumerableProp(t, "__stackCleaned__", !0)
-                }
-              }
-            }
-
-            function H() {
-              this._trace = void 0
-            }
-
-            function B(t, e, n) {
-              if (Z.warnings) {
-                var r, o = new c(t);
-                if (e) n._attachExtraTrace(o); else if (Z.longStackTraces && (r = i._peekContext())) r.attachExtraTrace(o); else {
-                  var a = V(o);
-                  o.stack = a.message + "\n" + a.stack.join("\n")
-                }
-                E("warning", o) || W(o, "", !0)
-              }
-            }
-
-            function F(t) {
-              for (var e = [], i = 0; i < t.length; ++i) {
-                var n = t[i], r = "    (No stack trace)" === n || _.test(n), o = r && q(n);
-                r && !o && (m && " " !== n.charAt(0) && (n = "    " + n), e.push(n))
-              }
-              return e
-            }
-
-            function V(t) {
-              var e = t.stack, i = t.toString();
-              return e = "string" == typeof e && e.length > 0 ? function (t) {
-                for (var e = t.stack.replace(/\s+$/g, "").split("\n"), i = 0; i < e.length; ++i) {
-                  var n = e[i];
-                  if ("    (No stack trace)" === n || _.test(n)) break
-                }
-                return i > 0 && "SyntaxError" != t.name && (e = e.slice(i)), e
-              }(t) : ["    (No stack trace)"], {message: i, stack: "SyntaxError" == t.name ? e : F(e)}
-            }
-
-            function W(t, e, i) {
-              if ("undefined" != typeof console) {
-                var n;
-                if (u.isObject(t)) {
-                  var r = t.stack;
-                  n = e + v(r, t)
-                } else n = e + String(t);
-                "function" == typeof a ? a(n, i) : "function" != typeof console.log && "object" != typeof console.log || console.log(n)
-              }
-            }
-
-            function U(t, e, i, n) {
-              var r = !1;
-              try {
-                "function" == typeof e && (r = !0, "rejectionHandled" === t ? e(n) : e(i, n))
-              } catch (t) {
-                l.throwLater(t)
-              }
-              "unhandledRejection" === t ? E(t, i, n) || r || W(i, "Unhandled rejection ") : E(t, n)
-            }
-
-            function G(t) {
-              var e;
-              if ("function" == typeof t) e = "[function " + (t.name || "anonymous") + "]"; else {
-                if (e = t && "function" == typeof t.toString ? t.toString() : u.toString(t), /\[object [a-zA-Z0-9$_]+]/.test(e)) try {
-                  e = JSON.stringify(t)
-                } catch (t) {
-                }
-                0 === e.length && (e = "(empty array)")
-              }
-              return "(<" + function (t) {
-                return t.length < 41 ? t : t.substr(0, 38) + "..."
-              }(e) + ">, no stack trace)"
-            }
-
-            function Y() {
-              return "function" == typeof K
-            }
-
-            var q = function () {
-              return !1
-            }, X = /[\/<(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
-
-            function J(t) {
-              var e = t.match(X);
-              if (e) return {fileName: e[1], line: parseInt(e[2], 10)}
-            }
-
-            function Q(t) {
-              this._parent = t, this._promisesCreated = 0;
-              var e = this._length = 1 + (void 0 === t ? 0 : t._length);
-              K(this, Q), e > 32 && this.uncycle()
-            }
-
-            u.inherits(Q, Error), n.CapturedTrace = Q, Q.prototype.uncycle = function () {
-              var t = this._length;
-              if (!(t < 2)) {
-                for (var e = [], i = {}, n = 0, r = this; void 0 !== r; ++n) e.push(r), r = r._parent;
-                for (n = (t = this._length = n) - 1; n >= 0; --n) {
-                  var o = e[n].stack;
-                  void 0 === i[o] && (i[o] = n)
-                }
-                for (n = 0; n < t; ++n) {
-                  var a = i[e[n].stack];
-                  if (void 0 !== a && a !== n) {
-                    a > 0 && (e[a - 1]._parent = void 0, e[a - 1]._length = 1), e[n]._parent = void 0, e[n]._length = 1;
-                    var s = n > 0 ? e[n - 1] : this;
-                    a < t - 1 ? (s._parent = e[a + 1], s._parent.uncycle(), s._length = s._parent._length + 1) : (s._parent = void 0, s._length = 1);
-                    for (var l = s._length + 1, c = n - 2; c >= 0; --c) e[c]._length = l, l++;
-                    return
-                  }
-                }
-              }
-            }, Q.prototype.attachExtraTrace = function (t) {
-              if (!t.__stackCleaned__) {
-                this.uncycle();
-                for (var e = V(t), i = e.message, n = [e.stack], r = this; void 0 !== r;) n.push(F(r.stack.split("\n"))), r = r._parent;
-                !function (t) {
-                  for (var e = t[0], i = 1; i < t.length; ++i) {
-                    for (var n = t[i], r = e.length - 1, o = e[r], a = -1, s = n.length - 1; s >= 0; --s) if (n[s] === o) {
-                      a = s;
-                      break
-                    }
-                    for (s = a; s >= 0; --s) {
-                      var l = n[s];
-                      if (e[r] !== l) break;
-                      e.pop(), r--
-                    }
-                    e = n
-                  }
-                }(n), function (t) {
-                  for (var e = 0; e < t.length; ++e) (0 === t[e].length || e + 1 < t.length && t[e][0] === t[e + 1][0]) && (t.splice(e, 1), e--)
-                }(n), u.notEnumerableProp(t, "stack", function (t, e) {
-                  for (var i = 0; i < e.length - 1; ++i) e[i].push("From previous event:"), e[i] = e[i].join("\n");
-                  return i < e.length && (e[i] = e[i].join("\n")), t + "\n" + e.join("\n")
-                }(i, n)), u.notEnumerableProp(t, "__stackCleaned__", !0)
-              }
-            };
-            var K = function () {
-              var t = /^\s*at\s*/, e = function (t, e) {
-                return "string" == typeof t ? t : void 0 !== e.name && void 0 !== e.message ? e.toString() : G(e)
-              };
-              if ("number" == typeof Error.stackTraceLimit && "function" == typeof Error.captureStackTrace) {
-                Error.stackTraceLimit += 6, _ = t, v = e;
-                var i = Error.captureStackTrace;
-                return q = function (t) {
-                  return f.test(t)
-                }, function (t, e) {
-                  Error.stackTraceLimit += 6, i(t, e), Error.stackTraceLimit -= 6
-                }
-              }
-              var n, r = new Error;
-              if ("string" == typeof r.stack && r.stack.split("\n")[0].indexOf("stackDetection@") >= 0) return _ = /@/, v = e, m = !0, function (t) {
-                t.stack = (new Error).stack
-              };
-              try {
-                throw new Error
-              } catch (t) {
-                n = "stack" in t
-              }
-              return "stack" in r || !n || "number" != typeof Error.stackTraceLimit ? (v = function (t, e) {
-                return "string" == typeof t ? t : "object" != typeof e && "function" != typeof e || void 0 === e.name || void 0 === e.message ? G(e) : e.toString()
-              }, null) : (_ = t, v = e, function (t) {
-                Error.stackTraceLimit += 6;
-                try {
-                  throw new Error
-                } catch (e) {
-                  t.stack = e.stack
-                }
-                Error.stackTraceLimit -= 6
-              })
-            }();
-            "undefined" != typeof console && void 0 !== console.warn && (a = function (t) {
-              console.warn(t)
-            }, u.isNode && e.stderr.isTTY ? a = function (t, e) {
-              var i = e ? "[33m" : "[31m";
-              console.warn(i + t + "[0m\n")
-            } : u.isNode || "string" != typeof (new Error).stack || (a = function (t, e) {
-              console.warn("%c" + t, e ? "color: darkorange" : "color: red")
-            }));
-            var Z = {warnings: k, longStackTraces: !1, cancellation: !1, monitoring: !1};
-            return b && i.longStackTraces(), {
-              longStackTraces: function () {
-                return Z.longStackTraces
-              }, warnings: function () {
-                return Z.warnings
-              }, cancellation: function () {
-                return Z.cancellation
-              }, monitoring: function () {
-                return Z.monitoring
-              }, propagateFromFunction: function () {
-                return N
-              }, boundValueFunction: function () {
-                return R
-              }, checkForgottenReturns: function (t, e, i, n, r) {
-                if (void 0 === t && null !== e && w) {
-                  if (void 0 !== r && r._returnedNonUndefined()) return;
-                  if (0 == (65535 & n._bitField)) return;
-                  i && (i += " ");
-                  var o = "";
-                  if (e._trace) {
-                    for (var a = e._trace.stack.split("\n"), s = F(a), l = s.length - 1; l >= 0; --l) {
-                      var c = s[l];
-                      if (!g.test(c)) {
-                        var u = c.match(p);
-                        u && (u[1], u[2], u[3]);
-                        break
-                      }
-                    }
-                    if (s.length > 0) {
-                      var d = s[0];
-                      for (l = 0; l < a.length; ++l) if (a[l] === d) {
-                        l > 0 && (o = "\n" + a[l - 1]);
-                        break
-                      }
-                    }
-                  }
-                  n._warn(o, !0, e)
-                }
-              }, setBounds: function (t, e) {
-                if (Y()) {
-                  for (var i, n, r = t.stack.split("\n"), o = e.stack.split("\n"), a = -1, s = -1, l = 0; l < r.length; ++l) if (c = J(r[l])) {
-                    i = c.fileName, a = c.line;
-                    break
-                  }
-                  for (l = 0; l < o.length; ++l) {
-                    var c;
-                    if (c = J(o[l])) {
-                      n = c.fileName, s = c.line;
-                      break
-                    }
-                  }
-                  a < 0 || s < 0 || !i || !n || i !== n || a >= s || (q = function (t) {
-                    if (f.test(t)) return !0;
-                    var e = J(t);
-                    return !!(e && e.fileName === i && a <= e.line && e.line <= s)
-                  })
-                }
-              }, warn: B, deprecated: function (t, e) {
-                var i = t + " is deprecated and will be removed in a future version.";
-                return e && (i += " Use " + e + " instead."), B(i)
-              }, CapturedTrace: Q, fireDomEvent: x, fireGlobalEvent: S
-            }
-          }
-        }, {"./errors": 12, "./es5": 13, "./util": 36}], 10: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t) {
-            function e() {
-              return this.value
-            }
-
-            function i() {
-              throw this.reason
-            }
-
-            t.prototype.return = t.prototype.thenReturn = function (i) {
-              return i instanceof t && i.suppressUnhandledRejections(), this._then(e, void 0, void 0, {value: i}, void 0)
-            }, t.prototype.throw = t.prototype.thenThrow = function (t) {
-              return this._then(i, void 0, void 0, {reason: t}, void 0)
-            }, t.prototype.catchThrow = function (t) {
-              if (arguments.length <= 1) return this._then(void 0, i, void 0, {reason: t}, void 0);
-              var e = arguments[1];
-              return this.caught(t, function () {
-                throw e
-              })
-            }, t.prototype.catchReturn = function (i) {
-              if (arguments.length <= 1) return i instanceof t && i.suppressUnhandledRejections(), this._then(void 0, e, void 0, {value: i}, void 0);
-              var n = arguments[1];
-              return n instanceof t && n.suppressUnhandledRejections(), this.caught(i, function () {
-                return n
-              })
-            }
-          }
-        }, {}], 11: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t, e) {
-            var i = t.reduce, n = t.all;
-
-            function r() {
-              return n(this)
-            }
-
-            t.prototype.each = function (t) {
-              return i(this, t, e, 0)._then(r, void 0, void 0, this, void 0)
-            }, t.prototype.mapSeries = function (t) {
-              return i(this, t, e, e)
-            }, t.each = function (t, n) {
-              return i(t, n, e, 0)._then(r, void 0, void 0, t, void 0)
-            }, t.mapSeries = function (t, n) {
-              return i(t, n, e, e)
-            }
-          }
-        }, {}], 12: [function (t, e, i) {
-          "use strict";
-          var n, r, o = t("./es5"), a = o.freeze, s = t("./util"), l = s.inherits, c = s.notEnumerableProp;
-
-          function u(t, e) {
-            function i(n) {
-              if (!(this instanceof i)) return new i(n);
-              c(this, "message", "string" == typeof n ? n : e), c(this, "name", t), Error.captureStackTrace ? Error.captureStackTrace(this, this.constructor) : Error.call(this)
-            }
-
-            return l(i, Error), i
-          }
-
-          var d = u("Warning", "warning"), h = u("CancellationError", "cancellation error"),
-            f = u("TimeoutError", "timeout error"), g = u("AggregateError", "aggregate error");
-          try {
-            n = TypeError, r = RangeError
-          } catch (t) {
-            n = u("TypeError", "type error"), r = u("RangeError", "range error")
-          }
-          for (var p = "join pop push shift unshift slice filter forEach some every map indexOf lastIndexOf reduce reduceRight sort reverse".split(" "), _ = 0; _ < p.length; ++_) "function" == typeof Array.prototype[p[_]] && (g.prototype[p[_]] = Array.prototype[p[_]]);
-          o.defineProperty(g.prototype, "length", {
-            value: 0,
-            configurable: !1,
-            writable: !0,
-            enumerable: !0
-          }), g.prototype.isOperational = !0;
-          var v = 0;
-
-          function m(t) {
-            if (!(this instanceof m)) return new m(t);
-            c(this, "name", "OperationalError"), c(this, "message", t), this.cause = t, this.isOperational = !0, t instanceof Error ? (c(this, "message", t.message), c(this, "stack", t.stack)) : Error.captureStackTrace && Error.captureStackTrace(this, this.constructor)
-          }
-
-          g.prototype.toString = function () {
-            var t = Array(4 * v + 1).join(" "), e = "\n" + t + "AggregateError of:\n";
-            v++, t = Array(4 * v + 1).join(" ");
-            for (var i = 0; i < this.length; ++i) {
-              for (var n = this[i] === this ? "[Circular AggregateError]" : this[i] + "", r = n.split("\n"), o = 0; o < r.length; ++o) r[o] = t + r[o];
-              e += (n = r.join("\n")) + "\n"
-            }
-            return v--, e
-          }, l(m, Error);
-          var y = Error.__BluebirdErrorTypes__;
-          y || (y = a({
-            CancellationError: h,
-            TimeoutError: f,
-            OperationalError: m,
-            RejectionError: m,
-            AggregateError: g
-          }), o.defineProperty(Error, "__BluebirdErrorTypes__", {
-            value: y,
-            writable: !1,
-            enumerable: !1,
-            configurable: !1
-          })), e.exports = {
-            Error: Error,
-            TypeError: n,
-            RangeError: r,
-            CancellationError: y.CancellationError,
-            OperationalError: y.OperationalError,
-            TimeoutError: y.TimeoutError,
-            AggregateError: y.AggregateError,
-            Warning: d
-          }
-        }, {"./es5": 13, "./util": 36}], 13: [function (t, e, i) {
-          var n = function () {
-            "use strict";
-            return void 0 === this
-          }();
-          if (n) e.exports = {
-            freeze: Object.freeze,
-            defineProperty: Object.defineProperty,
-            getDescriptor: Object.getOwnPropertyDescriptor,
-            keys: Object.keys,
-            names: Object.getOwnPropertyNames,
-            getPrototypeOf: Object.getPrototypeOf,
-            isArray: Array.isArray,
-            isES5: n,
-            propertyIsWritable: function (t, e) {
-              var i = Object.getOwnPropertyDescriptor(t, e);
-              return !(i && !i.writable && !i.set)
-            }
-          }; else {
-            var r = {}.hasOwnProperty, o = {}.toString, a = {}.constructor.prototype, s = function (t) {
-              var e = [];
-              for (var i in t) r.call(t, i) && e.push(i);
-              return e
-            };
-            e.exports = {
-              isArray: function (t) {
-                try {
-                  return "[object Array]" === o.call(t)
-                } catch (t) {
-                  return !1
-                }
-              }, keys: s, names: s, defineProperty: function (t, e, i) {
-                return t[e] = i.value, t
-              }, getDescriptor: function (t, e) {
-                return {value: t[e]}
-              }, freeze: function (t) {
-                return t
-              }, getPrototypeOf: function (t) {
-                try {
-                  return Object(t).constructor.prototype
-                } catch (t) {
-                  return a
-                }
-              }, isES5: n, propertyIsWritable: function () {
-                return !0
-              }
-            }
-          }
-        }, {}], 14: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t, e) {
-            var i = t.map;
-            t.prototype.filter = function (t, n) {
-              return i(this, t, n, e)
-            }, t.filter = function (t, n, r) {
-              return i(t, n, r, e)
-            }
-          }
-        }, {}], 15: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n) {
-            var r = t("./util"), o = e.CancellationError, a = r.errorObj, s = t("./catch_filter")(n);
-
-            function l(t, e, i) {
-              this.promise = t, this.type = e, this.handler = i, this.called = !1, this.cancelPromise = null
-            }
-
-            function c(t) {
-              this.finallyHandler = t
-            }
-
-            function u(t, e) {
-              return null != t.cancelPromise && (arguments.length > 1 ? t.cancelPromise._reject(e) : t.cancelPromise._cancel(), t.cancelPromise = null, !0)
-            }
-
-            function d() {
-              return f.call(this, this.promise._target()._settledValue())
-            }
-
-            function h(t) {
-              if (!u(this, t)) return a.e = t, a
-            }
-
-            function f(t) {
-              var r = this.promise, s = this.handler;
-              if (!this.called) {
-                this.called = !0;
-                var l = this.isFinallyHandler() ? s.call(r._boundValue()) : s.call(r._boundValue(), t);
-                if (l === n) return l;
-                if (void 0 !== l) {
-                  r._setReturnedNonUndefined();
-                  var f = i(l, r);
-                  if (f instanceof e) {
-                    if (null != this.cancelPromise) {
-                      if (f._isCancelled()) {
-                        var g = new o("late cancellation observer");
-                        return r._attachExtraTrace(g), a.e = g, a
-                      }
-                      f.isPending() && f._attachCancellationCallback(new c(this))
-                    }
-                    return f._then(d, h, void 0, this, void 0)
-                  }
-                }
-              }
-              return r.isRejected() ? (u(this), a.e = t, a) : (u(this), t)
-            }
-
-            return l.prototype.isFinallyHandler = function () {
-              return 0 === this.type
-            }, c.prototype._resultCancelled = function () {
-              u(this.finallyHandler)
-            }, e.prototype._passThrough = function (t, e, i, n) {
-              return "function" != typeof t ? this.then() : this._then(i, n, void 0, new l(this, e, t), void 0)
-            }, e.prototype.lastly = e.prototype.finally = function (t) {
-              return this._passThrough(t, 0, f, f)
-            }, e.prototype.tap = function (t) {
-              return this._passThrough(t, 1, f)
-            }, e.prototype.tapCatch = function (t) {
-              var i = arguments.length;
-              if (1 === i) return this._passThrough(t, 1, void 0, f);
-              var n, o = new Array(i - 1), a = 0;
-              for (n = 0; n < i - 1; ++n) {
-                var l = arguments[n];
-                if (!r.isObject(l)) return e.reject(new TypeError("tapCatch statement predicate: expecting an object but got " + r.classString(l)));
-                o[a++] = l
-              }
-              o.length = a;
-              var c = arguments[n];
-              return this._passThrough(s(o, c, this), 1, void 0, f)
-            }, l
-          }
-        }, {"./catch_filter": 7, "./util": 36}], 16: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o, a) {
-            var s = t("./errors").TypeError, l = t("./util"), c = l.errorObj, u = l.tryCatch, d = [];
-
-            function h(t, i, r, o) {
-              if (a.cancellation()) {
-                var s = new e(n), l = this._finallyPromise = new e(n);
-                this._promise = s.lastly(function () {
-                  return l
-                }), s._captureStackTrace(), s._setOnCancel(this)
-              } else (this._promise = new e(n))._captureStackTrace();
-              this._stack = o, this._generatorFunction = t, this._receiver = i, this._generator = void 0, this._yieldHandlers = "function" == typeof r ? [r].concat(d) : d, this._yieldedPromise = null, this._cancellationPhase = !1
-            }
-
-            l.inherits(h, o), h.prototype._isResolved = function () {
-              return null === this._promise
-            }, h.prototype._cleanup = function () {
-              this._promise = this._generator = null, a.cancellation() && null !== this._finallyPromise && (this._finallyPromise._fulfill(), this._finallyPromise = null)
-            }, h.prototype._promiseCancelled = function () {
-              if (!this._isResolved()) {
-                var t;
-                if (void 0 !== this._generator.return) this._promise._pushContext(), t = u(this._generator.return).call(this._generator, void 0), this._promise._popContext(); else {
-                  var i = new e.CancellationError("generator .return() sentinel");
-                  e.coroutine.returnSentinel = i, this._promise._attachExtraTrace(i), this._promise._pushContext(), t = u(this._generator.throw).call(this._generator, i), this._promise._popContext()
-                }
-                this._cancellationPhase = !0, this._yieldedPromise = null, this._continue(t)
-              }
-            }, h.prototype._promiseFulfilled = function (t) {
-              this._yieldedPromise = null, this._promise._pushContext();
-              var e = u(this._generator.next).call(this._generator, t);
-              this._promise._popContext(), this._continue(e)
-            }, h.prototype._promiseRejected = function (t) {
-              this._yieldedPromise = null, this._promise._attachExtraTrace(t), this._promise._pushContext();
-              var e = u(this._generator.throw).call(this._generator, t);
-              this._promise._popContext(), this._continue(e)
-            }, h.prototype._resultCancelled = function () {
-              if (this._yieldedPromise instanceof e) {
-                var t = this._yieldedPromise;
-                this._yieldedPromise = null, t.cancel()
-              }
-            }, h.prototype.promise = function () {
-              return this._promise
-            }, h.prototype._run = function () {
-              this._generator = this._generatorFunction.call(this._receiver), this._receiver = this._generatorFunction = void 0, this._promiseFulfilled(void 0)
-            }, h.prototype._continue = function (t) {
-              var i = this._promise;
-              if (t === c) return this._cleanup(), this._cancellationPhase ? i.cancel() : i._rejectCallback(t.e, !1);
-              var n = t.value;
-              if (!0 === t.done) return this._cleanup(), this._cancellationPhase ? i.cancel() : i._resolveCallback(n);
-              var o = r(n, this._promise);
-              if (o instanceof e || null !== (o = function (t, i, n) {
-                for (var o = 0; o < i.length; ++o) {
-                  n._pushContext();
-                  var a = u(i[o])(t);
-                  if (n._popContext(), a === c) {
-                    n._pushContext();
-                    var s = e.reject(c.e);
-                    return n._popContext(), s
-                  }
-                  var l = r(a, n);
-                  if (l instanceof e) return l
-                }
-                return null
-              }(o, this._yieldHandlers, this._promise))) {
-                var a = (o = o._target())._bitField;
-                0 == (50397184 & a) ? (this._yieldedPromise = o, o._proxy(this, null)) : 0 != (33554432 & a) ? e._async.invoke(this._promiseFulfilled, this, o._value()) : 0 != (16777216 & a) ? e._async.invoke(this._promiseRejected, this, o._reason()) : this._promiseCancelled()
-              } else this._promiseRejected(new s(" "))
-            }, e.coroutine = function (t, e) {
-              if ("function" != typeof t) throw new s("");
-              var i = Object(e).yieldHandler, n = h, r = (new Error).stack;
-              return function () {
-                var e = t.apply(this, arguments), o = new n(void 0, void 0, i, r), a = o.promise();
-                return o._generator = e, o._promiseFulfilled(void 0), a
-              }
-            }, e.coroutine.addYieldHandler = function (t) {
-              if ("function" != typeof t) throw new s("expecting a function but got " + l.classString(t));
-              d.push(t)
-            }, e.spawn = function (t) {
-              if (a.deprecated("Promise.spawn()", "Promise.coroutine()"), "function" != typeof t) return i("");
-              var n = new h(t, this), r = n.promise();
-              return n._run(e.spawn), r
-            }
-          }
-        }, {"./errors": 12, "./util": 36}], 17: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o, a) {
-            var s = t("./util");
-            s.canEvaluate, s.tryCatch, s.errorObj, e.join = function () {
-              var t, e = arguments.length - 1;
-              e > 0 && "function" == typeof arguments[e] && (t = arguments[e]);
-              var n = [].slice.call(arguments);
-              t && n.pop();
-              var r = new i(n).promise();
-              return void 0 !== t ? r.spread(t) : r
-            }
-          }
-        }, {"./util": 36}], 18: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o, a) {
-            var s = e._getDomain, l = t("./util"), c = l.tryCatch, u = l.errorObj, d = e._async;
-
-            function h(t, e, i, n) {
-              this.constructor$(t), this._promise._captureStackTrace();
-              var r = s();
-              this._callback = null === r ? e : l.domainBind(r, e), this._preservedValues = n === o ? new Array(this.length()) : null, this._limit = i, this._inFlight = 0, this._queue = [], d.invoke(this._asyncInit, this, void 0)
-            }
-
-            function f(t, i, r, o) {
-              if ("function" != typeof i) return n("expecting a function but got " + l.classString(i));
-              var a = 0;
-              if (void 0 !== r) {
-                if ("object" != typeof r || null === r) return e.reject(new TypeError("options argument must be an object but it is " + l.classString(r)));
-                if ("number" != typeof r.concurrency) return e.reject(new TypeError("'concurrency' must be a number but it is " + l.classString(r.concurrency)));
-                a = r.concurrency
-              }
-              return new h(t, i, a = "number" == typeof a && isFinite(a) && a >= 1 ? a : 0, o).promise()
-            }
-
-            l.inherits(h, i), h.prototype._asyncInit = function () {
-              this._init$(void 0, -2)
-            }, h.prototype._init = function () {
-            }, h.prototype._promiseFulfilled = function (t, i) {
-              var n = this._values, o = this.length(), s = this._preservedValues, l = this._limit;
-              if (i < 0) {
-                if (n[i = -1 * i - 1] = t, l >= 1 && (this._inFlight--, this._drainQueue(), this._isResolved())) return !0
-              } else {
-                if (l >= 1 && this._inFlight >= l) return n[i] = t, this._queue.push(i), !1;
-                null !== s && (s[i] = t);
-                var d = this._promise, h = this._callback, f = d._boundValue();
-                d._pushContext();
-                var g = c(h).call(f, t, i, o), p = d._popContext();
-                if (a.checkForgottenReturns(g, p, null !== s ? "Promise.filter" : "Promise.map", d), g === u) return this._reject(g.e), !0;
-                var _ = r(g, this._promise);
-                if (_ instanceof e) {
-                  var v = (_ = _._target())._bitField;
-                  if (0 == (50397184 & v)) return l >= 1 && this._inFlight++, n[i] = _, _._proxy(this, -1 * (i + 1)), !1;
-                  if (0 == (33554432 & v)) return 0 != (16777216 & v) ? (this._reject(_._reason()), !0) : (this._cancel(), !0);
-                  g = _._value()
-                }
-                n[i] = g
-              }
-              return ++this._totalResolved >= o && (null !== s ? this._filter(n, s) : this._resolve(n), !0)
-            }, h.prototype._drainQueue = function () {
-              for (var t = this._queue, e = this._limit, i = this._values; t.length > 0 && this._inFlight < e;) {
-                if (this._isResolved()) return;
-                var n = t.pop();
-                this._promiseFulfilled(i[n], n)
-              }
-            }, h.prototype._filter = function (t, e) {
-              for (var i = e.length, n = new Array(i), r = 0, o = 0; o < i; ++o) t[o] && (n[r++] = e[o]);
-              n.length = r, this._resolve(n)
-            }, h.prototype.preservedValues = function () {
-              return this._preservedValues
-            }, e.prototype.map = function (t, e) {
-              return f(this, t, e, null)
-            }, e.map = function (t, e, i, n) {
-              return f(t, e, i, n)
-            }
-          }
-        }, {"./util": 36}], 19: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o) {
-            var a = t("./util"), s = a.tryCatch;
-            e.method = function (t) {
-              if ("function" != typeof t) throw new e.TypeError("expecting a function but got " + a.classString(t));
-              return function () {
-                var n = new e(i);
-                n._captureStackTrace(), n._pushContext();
-                var r = s(t).apply(this, arguments), a = n._popContext();
-                return o.checkForgottenReturns(r, a, "Promise.method", n), n._resolveFromSyncValue(r), n
-              }
-            }, e.attempt = e.try = function (t) {
-              if ("function" != typeof t) return r("expecting a function but got " + a.classString(t));
-              var n, l = new e(i);
-              if (l._captureStackTrace(), l._pushContext(), arguments.length > 1) {
-                o.deprecated("calling Promise.try with more than 1 argument");
-                var c = arguments[1], u = arguments[2];
-                n = a.isArray(c) ? s(t).apply(u, c) : s(t).call(u, c)
-              } else n = s(t)();
-              var d = l._popContext();
-              return o.checkForgottenReturns(n, d, "Promise.try", l), l._resolveFromSyncValue(n), l
-            }, e.prototype._resolveFromSyncValue = function (t) {
-              t === a.errorObj ? this._rejectCallback(t.e, !1) : this._resolveCallback(t, !0)
-            }
-          }
-        }, {"./util": 36}], 20: [function (t, e, i) {
-          "use strict";
-          var n = t("./util"), r = n.maybeWrapAsError, o = t("./errors").OperationalError, a = t("./es5"),
-            s = /^(?:name|message|stack|cause)$/;
-
-          function l(t) {
-            var e;
-            if (function (t) {
-              return t instanceof Error && a.getPrototypeOf(t) === Error.prototype
-            }(t)) {
-              (e = new o(t)).name = t.name, e.message = t.message, e.stack = t.stack;
-              for (var i = a.keys(t), r = 0; r < i.length; ++r) {
-                var l = i[r];
-                s.test(l) || (e[l] = t[l])
-              }
-              return e
-            }
-            return n.markAsOriginatingFromRejection(t), t
-          }
-
-          e.exports = function (t, e) {
-            return function (i, n) {
-              if (null !== t) {
-                if (i) {
-                  var o = l(r(i));
-                  t._attachExtraTrace(o), t._reject(o)
-                } else if (e) {
-                  var a = [].slice.call(arguments, 1);
-                  t._fulfill(a)
-                } else t._fulfill(n);
-                t = null
-              }
-            }
-          }
-        }, {"./errors": 12, "./es5": 13, "./util": 36}], 21: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e) {
-            var i = t("./util"), n = e._async, r = i.tryCatch, o = i.errorObj;
-
-            function a(t, e) {
-              if (!i.isArray(t)) return s.call(this, t, e);
-              var a = r(e).apply(this._boundValue(), [null].concat(t));
-              a === o && n.throwLater(a.e)
-            }
-
-            function s(t, e) {
-              var i = this._boundValue(), a = void 0 === t ? r(e).call(i, null) : r(e).call(i, null, t);
-              a === o && n.throwLater(a.e)
-            }
-
-            function l(t, e) {
-              if (!t) {
-                var i = new Error(t + "");
-                i.cause = t, t = i
-              }
-              var a = r(e).call(this._boundValue(), t);
-              a === o && n.throwLater(a.e)
-            }
-
-            e.prototype.asCallback = e.prototype.nodeify = function (t, e) {
-              if ("function" == typeof t) {
-                var i = s;
-                void 0 !== e && Object(e).spread && (i = a), this._then(i, l, void 0, this, t)
-              }
-              return this
-            }
-          }
-        }, {"./util": 36}], 22: [function (t, i, n) {
-          "use strict";
-          i.exports = function () {
-            var n = function () {
-              return new g("")
-            }, r = function () {
-              return new j.PromiseInspection(this._target())
-            }, o = function (t) {
-              return j.reject(new g(t))
-            };
-
-            function a() {
-            }
-
-            var s, l = {}, c = t("./util");
-            s = c.isNode ? function () {
-              var t = e.domain;
-              return void 0 === t && (t = null), t
-            } : function () {
-              return null
-            }, c.notEnumerableProp(j, "_getDomain", s);
-            var u = t("./es5"), d = t("./async"), h = new d;
-            u.defineProperty(j, "_async", {value: h});
-            var f = t("./errors"), g = j.TypeError = f.TypeError;
-            j.RangeError = f.RangeError;
-            var p = j.CancellationError = f.CancellationError;
-            j.TimeoutError = f.TimeoutError, j.OperationalError = f.OperationalError, j.RejectionError = f.OperationalError, j.AggregateError = f.AggregateError;
-            var _ = function () {
-              }, v = {}, m = {}, y = t("./thenables")(j, _), k = t("./promise_array")(j, _, y, o, a),
-              b = t("./context")(j), w = b.create, $ = t("./debuggability")(j, b),
-              x = ($.CapturedTrace, t("./finally")(j, y, m)), S = t("./catch_filter")(m), C = t("./nodeback"),
-              T = c.errorObj, E = c.tryCatch;
-
-            function j(t) {
-              t !== _ && function (t, e) {
-                if (null == t || t.constructor !== j) throw new g("");
-                if ("function" != typeof e) throw new g("expecting a function but got " + c.classString(e))
-              }(this, t), this._bitField = 0, this._fulfillmentHandler0 = void 0, this._rejectionHandler0 = void 0, this._promise0 = void 0, this._receiver0 = void 0, this._resolveFromExecutor(t), this._promiseCreated(), this._fireEvent("promiseCreated", this)
-            }
-
-            function D(t) {
-              this.promise._resolveCallback(t)
-            }
-
-            function I(t) {
-              this.promise._rejectCallback(t, !1)
-            }
-
-            function A(t) {
-              var e = new j(_);
-              e._fulfillmentHandler0 = t, e._rejectionHandler0 = t, e._promise0 = t, e._receiver0 = t
-            }
-
-            return j.prototype.toString = function () {
-              return "[object Promise]"
-            }, j.prototype.caught = j.prototype.catch = function (t) {
-              var e = arguments.length;
-              if (e > 1) {
-                var i, n = new Array(e - 1), r = 0;
-                for (i = 0; i < e - 1; ++i) {
-                  var a = arguments[i];
-                  if (!c.isObject(a)) return o("Catch statement predicate: expecting an object but got " + c.classString(a));
-                  n[r++] = a
-                }
-                return n.length = r, t = arguments[i], this.then(void 0, S(n, t, this))
-              }
-              return this.then(void 0, t)
-            }, j.prototype.reflect = function () {
-              return this._then(r, r, void 0, this, void 0)
-            }, j.prototype.then = function (t, e) {
-              if ($.warnings() && arguments.length > 0 && "function" != typeof t && "function" != typeof e) {
-                var i = ".then() only accepts functions but was passed: " + c.classString(t);
-                arguments.length > 1 && (i += ", " + c.classString(e)), this._warn(i)
-              }
-              return this._then(t, e, void 0, void 0, void 0)
-            }, j.prototype.done = function (t, e) {
-              this._then(t, e, void 0, void 0, void 0)._setIsFinal()
-            }, j.prototype.spread = function (t) {
-              return "function" != typeof t ? o("expecting a function but got " + c.classString(t)) : this.all()._then(t, void 0, void 0, v, void 0)
-            }, j.prototype.toJSON = function () {
-              var t = {isFulfilled: !1, isRejected: !1, fulfillmentValue: void 0, rejectionReason: void 0};
-              return this.isFulfilled() ? (t.fulfillmentValue = this.value(), t.isFulfilled = !0) : this.isRejected() && (t.rejectionReason = this.reason(), t.isRejected = !0), t
-            }, j.prototype.all = function () {
-              return arguments.length > 0 && this._warn(".all() was passed arguments but it does not take any"), new k(this).promise()
-            }, j.prototype.error = function (t) {
-              return this.caught(c.originatesFromRejection, t)
-            }, j.getNewLibraryCopy = i.exports, j.is = function (t) {
-              return t instanceof j
-            }, j.fromNode = j.fromCallback = function (t) {
-              var e = new j(_);
-              e._captureStackTrace();
-              var i = arguments.length > 1 && !!Object(arguments[1]).multiArgs, n = E(t)(C(e, i));
-              return n === T && e._rejectCallback(n.e, !0), e._isFateSealed() || e._setAsyncGuaranteed(), e
-            }, j.all = function (t) {
-              return new k(t).promise()
-            }, j.cast = function (t) {
-              var e = y(t);
-              return e instanceof j || ((e = new j(_))._captureStackTrace(), e._setFulfilled(), e._rejectionHandler0 = t), e
-            }, j.resolve = j.fulfilled = j.cast, j.reject = j.rejected = function (t) {
-              var e = new j(_);
-              return e._captureStackTrace(), e._rejectCallback(t, !0), e
-            }, j.setScheduler = function (t) {
-              if ("function" != typeof t) throw new g("expecting a function but got " + c.classString(t));
-              return h.setScheduler(t)
-            }, j.prototype._then = function (t, e, i, n, r) {
-              var o = void 0 !== r, a = o ? r : new j(_), l = this._target(), u = l._bitField;
-              o || (a._propagateFrom(this, 3), a._captureStackTrace(), void 0 === n && 0 != (2097152 & this._bitField) && (n = 0 != (50397184 & u) ? this._boundValue() : l === this ? void 0 : this._boundTo), this._fireEvent("promiseChained", this, a));
-              var d = s();
-              if (0 != (50397184 & u)) {
-                var f, g, v = l._settlePromiseCtx;
-                0 != (33554432 & u) ? (g = l._rejectionHandler0, f = t) : 0 != (16777216 & u) ? (g = l._fulfillmentHandler0, f = e, l._unsetRejectionIsUnhandled()) : (v = l._settlePromiseLateCancellationObserver, g = new p("late cancellation observer"), l._attachExtraTrace(g), f = e), h.invoke(v, l, {
-                  handler: null === d ? f : "function" == typeof f && c.domainBind(d, f),
-                  promise: a,
-                  receiver: n,
-                  value: g
-                })
-              } else l._addCallbacks(t, e, a, n, d);
-              return a
-            }, j.prototype._length = function () {
-              return 65535 & this._bitField
-            }, j.prototype._isFateSealed = function () {
-              return 0 != (117506048 & this._bitField)
-            }, j.prototype._isFollowing = function () {
-              return 67108864 == (67108864 & this._bitField)
-            }, j.prototype._setLength = function (t) {
-              this._bitField = -65536 & this._bitField | 65535 & t
-            }, j.prototype._setFulfilled = function () {
-              this._bitField = 33554432 | this._bitField, this._fireEvent("promiseFulfilled", this)
-            }, j.prototype._setRejected = function () {
-              this._bitField = 16777216 | this._bitField, this._fireEvent("promiseRejected", this)
-            }, j.prototype._setFollowing = function () {
-              this._bitField = 67108864 | this._bitField, this._fireEvent("promiseResolved", this)
-            }, j.prototype._setIsFinal = function () {
-              this._bitField = 4194304 | this._bitField
-            }, j.prototype._isFinal = function () {
-              return (4194304 & this._bitField) > 0
-            }, j.prototype._unsetCancelled = function () {
-              this._bitField = -65537 & this._bitField
-            }, j.prototype._setCancelled = function () {
-              this._bitField = 65536 | this._bitField, this._fireEvent("promiseCancelled", this)
-            }, j.prototype._setWillBeCancelled = function () {
-              this._bitField = 8388608 | this._bitField
-            }, j.prototype._setAsyncGuaranteed = function () {
-              h.hasCustomScheduler() || (this._bitField = 134217728 | this._bitField)
-            }, j.prototype._receiverAt = function (t) {
-              var e = 0 === t ? this._receiver0 : this[4 * t - 4 + 3];
-              if (e !== l) return void 0 === e && this._isBound() ? this._boundValue() : e
-            }, j.prototype._promiseAt = function (t) {
-              return this[4 * t - 4 + 2]
-            }, j.prototype._fulfillmentHandlerAt = function (t) {
-              return this[4 * t - 4 + 0]
-            }, j.prototype._rejectionHandlerAt = function (t) {
-              return this[4 * t - 4 + 1]
-            }, j.prototype._boundValue = function () {
-            }, j.prototype._migrateCallback0 = function (t) {
-              t._bitField;
-              var e = t._fulfillmentHandler0, i = t._rejectionHandler0, n = t._promise0, r = t._receiverAt(0);
-              void 0 === r && (r = l), this._addCallbacks(e, i, n, r, null)
-            }, j.prototype._migrateCallbackAt = function (t, e) {
-              var i = t._fulfillmentHandlerAt(e), n = t._rejectionHandlerAt(e), r = t._promiseAt(e),
-                o = t._receiverAt(e);
-              void 0 === o && (o = l), this._addCallbacks(i, n, r, o, null)
-            }, j.prototype._addCallbacks = function (t, e, i, n, r) {
-              var o = this._length();
-              if (o >= 65531 && (o = 0, this._setLength(0)), 0 === o) this._promise0 = i, this._receiver0 = n, "function" == typeof t && (this._fulfillmentHandler0 = null === r ? t : c.domainBind(r, t)), "function" == typeof e && (this._rejectionHandler0 = null === r ? e : c.domainBind(r, e)); else {
-                var a = 4 * o - 4;
-                this[a + 2] = i, this[a + 3] = n, "function" == typeof t && (this[a + 0] = null === r ? t : c.domainBind(r, t)), "function" == typeof e && (this[a + 1] = null === r ? e : c.domainBind(r, e))
-              }
-              return this._setLength(o + 1), o
-            }, j.prototype._proxy = function (t, e) {
-              this._addCallbacks(void 0, void 0, e, t, null)
-            }, j.prototype._resolveCallback = function (t, e) {
-              if (0 == (117506048 & this._bitField)) {
-                if (t === this) return this._rejectCallback(n(), !1);
-                var i = y(t, this);
-                if (!(i instanceof j)) return this._fulfill(t);
-                e && this._propagateFrom(i, 2);
-                var r = i._target();
-                if (r !== this) {
-                  var o = r._bitField;
-                  if (0 == (50397184 & o)) {
-                    var a = this._length();
-                    a > 0 && r._migrateCallback0(this);
-                    for (var s = 1; s < a; ++s) r._migrateCallbackAt(this, s);
-                    this._setFollowing(), this._setLength(0), this._setFollowee(r)
-                  } else if (0 != (33554432 & o)) this._fulfill(r._value()); else if (0 != (16777216 & o)) this._reject(r._reason()); else {
-                    var l = new p("late cancellation observer");
-                    r._attachExtraTrace(l), this._reject(l)
-                  }
-                } else this._reject(n())
-              }
-            }, j.prototype._rejectCallback = function (t, e, i) {
-              var n = c.ensureErrorObject(t), r = n === t;
-              if (!r && !i && $.warnings()) {
-                var o = "a promise was rejected with a non-error: " + c.classString(t);
-                this._warn(o, !0)
-              }
-              this._attachExtraTrace(n, !!e && r), this._reject(t)
-            }, j.prototype._resolveFromExecutor = function (t) {
-              if (t !== _) {
-                var e = this;
-                this._captureStackTrace(), this._pushContext();
-                var i = !0, n = this._execute(t, function (t) {
-                  e._resolveCallback(t)
-                }, function (t) {
-                  e._rejectCallback(t, i)
-                });
-                i = !1, this._popContext(), void 0 !== n && e._rejectCallback(n, !0)
-              }
-            }, j.prototype._settlePromiseFromHandler = function (t, e, i, n) {
-              var r = n._bitField;
-              if (0 == (65536 & r)) {
-                var o;
-                n._pushContext(), e === v ? i && "number" == typeof i.length ? o = E(t).apply(this._boundValue(), i) : (o = T).e = new g("cannot .spread() a non-array: " + c.classString(i)) : o = E(t).call(e, i);
-                var a = n._popContext();
-                0 == (65536 & (r = n._bitField)) && (o === m ? n._reject(i) : o === T ? n._rejectCallback(o.e, !1) : ($.checkForgottenReturns(o, a, "", n, this), n._resolveCallback(o)))
-              }
-            }, j.prototype._target = function () {
-              for (var t = this; t._isFollowing();) t = t._followee();
-              return t
-            }, j.prototype._followee = function () {
-              return this._rejectionHandler0
-            }, j.prototype._setFollowee = function (t) {
-              this._rejectionHandler0 = t
-            }, j.prototype._settlePromise = function (t, e, i, n) {
-              var o = t instanceof j, s = this._bitField, l = 0 != (134217728 & s);
-              0 != (65536 & s) ? (o && t._invokeInternalOnCancel(), i instanceof x && i.isFinallyHandler() ? (i.cancelPromise = t, E(e).call(i, n) === T && t._reject(T.e)) : e === r ? t._fulfill(r.call(i)) : i instanceof a ? i._promiseCancelled(t) : o || t instanceof k ? t._cancel() : i.cancel()) : "function" == typeof e ? o ? (l && t._setAsyncGuaranteed(), this._settlePromiseFromHandler(e, i, n, t)) : e.call(i, n, t) : i instanceof a ? i._isResolved() || (0 != (33554432 & s) ? i._promiseFulfilled(n, t) : i._promiseRejected(n, t)) : o && (l && t._setAsyncGuaranteed(), 0 != (33554432 & s) ? t._fulfill(n) : t._reject(n))
-            }, j.prototype._settlePromiseLateCancellationObserver = function (t) {
-              var e = t.handler, i = t.promise, n = t.receiver, r = t.value;
-              "function" == typeof e ? i instanceof j ? this._settlePromiseFromHandler(e, n, r, i) : e.call(n, r, i) : i instanceof j && i._reject(r)
-            }, j.prototype._settlePromiseCtx = function (t) {
-              this._settlePromise(t.promise, t.handler, t.receiver, t.value)
-            }, j.prototype._settlePromise0 = function (t, e, i) {
-              var n = this._promise0, r = this._receiverAt(0);
-              this._promise0 = void 0, this._receiver0 = void 0, this._settlePromise(n, t, r, e)
-            }, j.prototype._clearCallbackDataAtIndex = function (t) {
-              var e = 4 * t - 4;
-              this[e + 2] = this[e + 3] = this[e + 0] = this[e + 1] = void 0
-            }, j.prototype._fulfill = function (t) {
-              var e = this._bitField;
-              if (!((117506048 & e) >>> 16)) {
-                if (t === this) {
-                  var i = n();
-                  return this._attachExtraTrace(i), this._reject(i)
-                }
-                this._setFulfilled(), this._rejectionHandler0 = t, (65535 & e) > 0 && (0 != (134217728 & e) ? this._settlePromises() : h.settlePromises(this), this._dereferenceTrace())
-              }
-            }, j.prototype._reject = function (t) {
-              var e = this._bitField;
-              if (!((117506048 & e) >>> 16)) {
-                if (this._setRejected(), this._fulfillmentHandler0 = t, this._isFinal()) return h.fatalError(t, c.isNode);
-                (65535 & e) > 0 ? h.settlePromises(this) : this._ensurePossibleRejectionHandled()
-              }
-            }, j.prototype._fulfillPromises = function (t, e) {
-              for (var i = 1; i < t; i++) {
-                var n = this._fulfillmentHandlerAt(i), r = this._promiseAt(i), o = this._receiverAt(i);
-                this._clearCallbackDataAtIndex(i), this._settlePromise(r, n, o, e)
-              }
-            }, j.prototype._rejectPromises = function (t, e) {
-              for (var i = 1; i < t; i++) {
-                var n = this._rejectionHandlerAt(i), r = this._promiseAt(i), o = this._receiverAt(i);
-                this._clearCallbackDataAtIndex(i), this._settlePromise(r, n, o, e)
-              }
-            }, j.prototype._settlePromises = function () {
-              var t = this._bitField, e = 65535 & t;
-              if (e > 0) {
-                if (0 != (16842752 & t)) {
-                  var i = this._fulfillmentHandler0;
-                  this._settlePromise0(this._rejectionHandler0, i, t), this._rejectPromises(e, i)
-                } else {
-                  var n = this._rejectionHandler0;
-                  this._settlePromise0(this._fulfillmentHandler0, n, t), this._fulfillPromises(e, n)
-                }
-                this._setLength(0)
-              }
-              this._clearCancellationData()
-            }, j.prototype._settledValue = function () {
-              var t = this._bitField;
-              return 0 != (33554432 & t) ? this._rejectionHandler0 : 0 != (16777216 & t) ? this._fulfillmentHandler0 : void 0
-            }, j.defer = j.pending = function () {
-              return $.deprecated("Promise.defer", "new Promise"), {promise: new j(_), resolve: D, reject: I}
-            }, c.notEnumerableProp(j, "_makeSelfResolutionError", n), t("./method")(j, _, y, o, $), t("./bind")(j, _, y, $), t("./cancel")(j, k, o, $), t("./direct_resolve")(j), t("./synchronous_inspection")(j), t("./join")(j, k, y, _, h, s), j.Promise = j, j.version = "3.5.4", t("./map.js")(j, k, o, y, _, $), t("./call_get.js")(j), t("./using.js")(j, o, y, w, _, $), t("./timers.js")(j, _, $), t("./generators.js")(j, o, _, y, a, $), t("./nodeify.js")(j), t("./promisify.js")(j, _), t("./props.js")(j, k, y, o), t("./race.js")(j, _, y, o), t("./reduce.js")(j, k, o, y, _, $), t("./settle.js")(j, k, $), t("./some.js")(j, k, o), t("./filter.js")(j, _), t("./each.js")(j, _), t("./any.js")(j), c.toFastProperties(j), c.toFastProperties(j.prototype), A({a: 1}), A({b: 2}), A({c: 3}), A(1), A(function () {
-            }), A(void 0), A(!1), A(new j(_)), $.setBounds(d.firstLineError, c.lastLineError), j
-          }
-        }, {
-          "./any.js": 1,
-          "./async": 2,
-          "./bind": 3,
-          "./call_get.js": 5,
-          "./cancel": 6,
-          "./catch_filter": 7,
-          "./context": 8,
-          "./debuggability": 9,
-          "./direct_resolve": 10,
-          "./each.js": 11,
-          "./errors": 12,
-          "./es5": 13,
-          "./filter.js": 14,
-          "./finally": 15,
-          "./generators.js": 16,
-          "./join": 17,
-          "./map.js": 18,
-          "./method": 19,
-          "./nodeback": 20,
-          "./nodeify.js": 21,
-          "./promise_array": 23,
-          "./promisify.js": 24,
-          "./props.js": 25,
-          "./race.js": 27,
-          "./reduce.js": 28,
-          "./settle.js": 30,
-          "./some.js": 31,
-          "./synchronous_inspection": 32,
-          "./thenables": 33,
-          "./timers.js": 34,
-          "./using.js": 35,
-          "./util": 36
-        }], 23: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o) {
-            var a = t("./util");
-
-            function s(t) {
-              var n = this._promise = new e(i);
-              t instanceof e && n._propagateFrom(t, 3), n._setOnCancel(this), this._values = t, this._length = 0, this._totalResolved = 0, this._init(void 0, -2)
-            }
-
-            return a.isArray, a.inherits(s, o), s.prototype.length = function () {
-              return this._length
-            }, s.prototype.promise = function () {
-              return this._promise
-            }, s.prototype._init = function t(i, o) {
-              var s = n(this._values, this._promise);
-              if (s instanceof e) {
-                var l = (s = s._target())._bitField;
-                if (this._values = s, 0 == (50397184 & l)) return this._promise._setAsyncGuaranteed(), s._then(t, this._reject, void 0, this, o);
-                if (0 == (33554432 & l)) return 0 != (16777216 & l) ? this._reject(s._reason()) : this._cancel();
-                s = s._value()
-              }
-              if (null !== (s = a.asArray(s))) 0 !== s.length ? this._iterate(s) : -5 === o ? this._resolveEmptyArray() : this._resolve(function (t) {
-                switch (o) {
-                  case-2:
-                    return [];
-                  case-3:
-                    return {};
-                  case-6:
-                    return new Map
-                }
-              }()); else {
-                var c = r("expecting an array or an iterable object but got " + a.classString(s)).reason();
-                this._promise._rejectCallback(c, !1)
-              }
-            }, s.prototype._iterate = function (t) {
-              var i = this.getActualLength(t.length);
-              this._length = i, this._values = this.shouldCopyValues() ? new Array(i) : this._values;
-              for (var r = this._promise, o = !1, a = null, s = 0; s < i; ++s) {
-                var l = n(t[s], r);
-                a = l instanceof e ? (l = l._target())._bitField : null, o ? null !== a && l.suppressUnhandledRejections() : null !== a ? 0 == (50397184 & a) ? (l._proxy(this, s), this._values[s] = l) : o = 0 != (33554432 & a) ? this._promiseFulfilled(l._value(), s) : 0 != (16777216 & a) ? this._promiseRejected(l._reason(), s) : this._promiseCancelled(s) : o = this._promiseFulfilled(l, s)
-              }
-              o || r._setAsyncGuaranteed()
-            }, s.prototype._isResolved = function () {
-              return null === this._values
-            }, s.prototype._resolve = function (t) {
-              this._values = null, this._promise._fulfill(t)
-            }, s.prototype._cancel = function () {
-              !this._isResolved() && this._promise._isCancellable() && (this._values = null, this._promise._cancel())
-            }, s.prototype._reject = function (t) {
-              this._values = null, this._promise._rejectCallback(t, !1)
-            }, s.prototype._promiseFulfilled = function (t, e) {
-              return this._values[e] = t, ++this._totalResolved >= this._length && (this._resolve(this._values), !0)
-            }, s.prototype._promiseCancelled = function () {
-              return this._cancel(), !0
-            }, s.prototype._promiseRejected = function (t) {
-              return this._totalResolved++, this._reject(t), !0
-            }, s.prototype._resultCancelled = function () {
-              if (!this._isResolved()) {
-                var t = this._values;
-                if (this._cancel(), t instanceof e) t.cancel(); else for (var i = 0; i < t.length; ++i) t[i] instanceof e && t[i].cancel()
-              }
-            }, s.prototype.shouldCopyValues = function () {
-              return !0
-            }, s.prototype.getActualLength = function (t) {
-              return t
-            }, s
-          }
-        }, {"./util": 36}], 24: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i) {
-            var n = {}, r = t("./util"), o = t("./nodeback"), a = r.withAppended, s = r.maybeWrapAsError,
-              l = r.canEvaluate, c = t("./errors").TypeError, u = {__isPromisified__: !0},
-              d = new RegExp("^(?:" + ["arity", "length", "name", "arguments", "caller", "callee", "prototype", "__isPromisified__"].join("|") + ")$"),
-              h = function (t) {
-                return r.isIdentifier(t) && "_" !== t.charAt(0) && "constructor" !== t
-              };
-
-            function f(t) {
-              return !d.test(t)
-            }
-
-            function g(t) {
-              try {
-                return !0 === t.__isPromisified__
-              } catch (t) {
-                return !1
-              }
-            }
-
-            function p(t, e, i) {
-              var n = r.getDataPropertyOrDefault(t, e + i, u);
-              return !!n && g(n)
-            }
-
-            function _(t, e, i, n) {
-              for (var o = r.inheritedDataKeys(t), a = [], s = 0; s < o.length; ++s) {
-                var l = o[s], u = t[l], d = n === h || h(l, u, t);
-                "function" != typeof u || g(u) || p(t, l, e) || !n(l, u, t, d) || a.push(l, u)
-              }
-              return function (t, e, i) {
-                for (var n = 0; n < t.length; n += 2) {
-                  var r = t[n];
-                  if (i.test(r)) for (var o = r.replace(i, ""), a = 0; a < t.length; a += 2) if (t[a] === o) throw new c(e)
-                }
-              }(a, e, i), a
-            }
-
-            var v = function (t) {
-              return t.replace(/([$])/, "\\$")
-            }, m = l ? void 0 : function (t, l, c, u, d, h) {
-              var f = function () {
-                return this
-              }(), g = t;
-
-              function p() {
-                var r = l;
-                l === n && (r = this);
-                var c = new e(i);
-                c._captureStackTrace();
-                var u = "string" == typeof g && this !== f ? this[g] : t, d = o(c, h);
-                try {
-                  u.apply(r, a(arguments, d))
-                } catch (t) {
-                  c._rejectCallback(s(t), !0, !0)
-                }
-                return c._isFateSealed() || c._setAsyncGuaranteed(), c
-              }
-
-              return "string" == typeof g && (t = u), r.notEnumerableProp(p, "__isPromisified__", !0), p
-            };
-
-            function y(t, e, i, o, a) {
-              for (var s = new RegExp(v(e) + "$"), l = _(t, e, s, i), c = 0, u = l.length; c < u; c += 2) {
-                var d = l[c], h = l[c + 1], f = d + e;
-                if (o === m) t[f] = m(d, n, d, h, e, a); else {
-                  var g = o(h, function () {
-                    return m(d, n, d, h, e, a)
-                  });
-                  r.notEnumerableProp(g, "__isPromisified__", !0), t[f] = g
-                }
-              }
-              return r.toFastProperties(t), t
-            }
-
-            e.promisify = function (t, e) {
-              if ("function" != typeof t) throw new c("expecting a function but got " + r.classString(t));
-              if (g(t)) return t;
-              var i = void 0 === (e = Object(e)).context ? n : e.context, o = !!e.multiArgs, a = function (t, e, i) {
-                return m(t, e, void 0, t, null, o)
-              }(t, i);
-              return r.copyDescriptors(t, a, f), a
-            }, e.promisifyAll = function (t, e) {
-              if ("function" != typeof t && "object" != typeof t) throw new c("");
-              var i = !!(e = Object(e)).multiArgs, n = e.suffix;
-              "string" != typeof n && (n = "Async");
-              var o = e.filter;
-              "function" != typeof o && (o = h);
-              var a = e.promisifier;
-              if ("function" != typeof a && (a = m), !r.isIdentifier(n)) throw new RangeError("");
-              for (var s = r.inheritedDataKeys(t), l = 0; l < s.length; ++l) {
-                var u = t[s[l]];
-                "constructor" !== s[l] && r.isClass(u) && (y(u.prototype, n, o, a, i), y(u, n, o, a, i))
-              }
-              return y(t, n, o, a, i)
-            }
-          }
-        }, {"./errors": 12, "./nodeback": 20, "./util": 36}], 25: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r) {
-            var o, a = t("./util"), s = a.isObject, l = t("./es5");
-            "function" == typeof Map && (o = Map);
-            var c = function () {
-              var t = 0, e = 0;
-
-              function i(i, n) {
-                this[t] = i, this[t + e] = n, t++
-              }
-
-              return function (n) {
-                e = n.size, t = 0;
-                var r = new Array(2 * n.size);
-                return n.forEach(i, r), r
-              }
-            }();
-
-            function u(t) {
-              var e, i = !1;
-              if (void 0 !== o && t instanceof o) e = c(t), i = !0; else {
-                var n = l.keys(t), r = n.length;
-                e = new Array(2 * r);
-                for (var a = 0; a < r; ++a) {
-                  var s = n[a];
-                  e[a] = t[s], e[a + r] = s
-                }
-              }
-              this.constructor$(e), this._isMap = i, this._init$(void 0, i ? -6 : -3)
-            }
-
-            function d(t) {
-              var i, o = n(t);
-              return s(o) ? (i = o instanceof e ? o._then(e.props, void 0, void 0, void 0, void 0) : new u(o).promise(), o instanceof e && i._propagateFrom(o, 2), i) : r("")
-            }
-
-            a.inherits(u, i), u.prototype._init = function () {
-            }, u.prototype._promiseFulfilled = function (t, e) {
-              if (this._values[e] = t, ++this._totalResolved >= this._length) {
-                var i;
-                if (this._isMap) i = function (t) {
-                  for (var e = new o, i = t.length / 2 | 0, n = 0; n < i; ++n) {
-                    var r = t[i + n], a = t[n];
-                    e.set(r, a)
-                  }
-                  return e
-                }(this._values); else {
-                  i = {};
-                  for (var n = this.length(), r = 0, a = this.length(); r < a; ++r) i[this._values[r + n]] = this._values[r]
-                }
-                return this._resolve(i), !0
-              }
-              return !1
-            }, u.prototype.shouldCopyValues = function () {
-              return !1
-            }, u.prototype.getActualLength = function (t) {
-              return t >> 1
-            }, e.prototype.props = function () {
-              return d(this)
-            }, e.props = function (t) {
-              return d(t)
-            }
-          }
-        }, {"./es5": 13, "./util": 36}], 26: [function (t, e, i) {
-          "use strict";
-
-          function n(t) {
-            this._capacity = t, this._length = 0, this._front = 0
-          }
-
-          n.prototype._willBeOverCapacity = function (t) {
-            return this._capacity < t
-          }, n.prototype._pushOne = function (t) {
-            var e = this.length();
-            this._checkCapacity(e + 1), this[this._front + e & this._capacity - 1] = t, this._length = e + 1
-          }, n.prototype.push = function (t, e, i) {
-            var n = this.length() + 3;
-            if (this._willBeOverCapacity(n)) return this._pushOne(t), this._pushOne(e), void this._pushOne(i);
-            var r = this._front + n - 3;
-            this._checkCapacity(n);
-            var o = this._capacity - 1;
-            this[r + 0 & o] = t, this[r + 1 & o] = e, this[r + 2 & o] = i, this._length = n
-          }, n.prototype.shift = function () {
-            var t = this._front, e = this[t];
-            return this[t] = void 0, this._front = t + 1 & this._capacity - 1, this._length--, e
-          }, n.prototype.length = function () {
-            return this._length
-          }, n.prototype._checkCapacity = function (t) {
-            this._capacity < t && this._resizeTo(this._capacity << 1)
-          }, n.prototype._resizeTo = function (t) {
-            var e = this._capacity;
-            this._capacity = t, function (t, e, i, n, r) {
-              for (var o = 0; o < r; ++o) i[o + n] = t[o + 0], t[o + 0] = void 0
-            }(this, 0, this, e, this._front + this._length & e - 1)
-          }, e.exports = n
-        }, {}], 27: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r) {
-            var o = t("./util"), a = function (t) {
-              return t.then(function (e) {
-                return s(e, t)
-              })
-            };
-
-            function s(t, s) {
-              var l = n(t);
-              if (l instanceof e) return a(l);
-              if (null === (t = o.asArray(t))) return r("expecting an array or an iterable object but got " + o.classString(t));
-              var c = new e(i);
-              void 0 !== s && c._propagateFrom(s, 3);
-              for (var u = c._fulfill, d = c._reject, h = 0, f = t.length; h < f; ++h) {
-                var g = t[h];
-                (void 0 !== g || h in t) && e.cast(g)._then(u, d, void 0, c, null)
-              }
-              return c
-            }
-
-            e.race = function (t) {
-              return s(t, void 0)
-            }, e.prototype.race = function () {
-              return s(this, void 0)
-            }
-          }
-        }, {"./util": 36}], 28: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o, a) {
-            var s = e._getDomain, l = t("./util"), c = l.tryCatch;
-
-            function u(t, i, n, r) {
-              this.constructor$(t);
-              var a = s();
-              this._fn = null === a ? i : l.domainBind(a, i), void 0 !== n && (n = e.resolve(n))._attachCancellationCallback(this), this._initialValue = n, this._currentCancellable = null, this._eachValues = r === o ? Array(this._length) : 0 === r ? null : void 0, this._promise._captureStackTrace(), this._init$(void 0, -5)
-            }
-
-            function d(t, e) {
-              this.isFulfilled() ? e._resolve(t) : e._reject(t)
-            }
-
-            function h(t, e, i, r) {
-              return "function" != typeof e ? n("expecting a function but got " + l.classString(e)) : new u(t, e, i, r).promise()
-            }
-
-            function f(t) {
-              this.accum = t, this.array._gotAccum(t);
-              var i = r(this.value, this.array._promise);
-              return i instanceof e ? (this.array._currentCancellable = i, i._then(g, void 0, void 0, this, void 0)) : g.call(this, i)
-            }
-
-            function g(t) {
-              var i, n = this.array, r = n._promise, o = c(n._fn);
-              r._pushContext(), (i = void 0 !== n._eachValues ? o.call(r._boundValue(), t, this.index, this.length) : o.call(r._boundValue(), this.accum, t, this.index, this.length)) instanceof e && (n._currentCancellable = i);
-              var s = r._popContext();
-              return a.checkForgottenReturns(i, s, void 0 !== n._eachValues ? "Promise.each" : "Promise.reduce", r), i
-            }
-
-            l.inherits(u, i), u.prototype._gotAccum = function (t) {
-              void 0 !== this._eachValues && null !== this._eachValues && t !== o && this._eachValues.push(t)
-            }, u.prototype._eachComplete = function (t) {
-              return null !== this._eachValues && this._eachValues.push(t), this._eachValues
-            }, u.prototype._init = function () {
-            }, u.prototype._resolveEmptyArray = function () {
-              this._resolve(void 0 !== this._eachValues ? this._eachValues : this._initialValue)
-            }, u.prototype.shouldCopyValues = function () {
-              return !1
-            }, u.prototype._resolve = function (t) {
-              this._promise._resolveCallback(t), this._values = null
-            }, u.prototype._resultCancelled = function (t) {
-              if (t === this._initialValue) return this._cancel();
-              this._isResolved() || (this._resultCancelled$(), this._currentCancellable instanceof e && this._currentCancellable.cancel(), this._initialValue instanceof e && this._initialValue.cancel())
-            }, u.prototype._iterate = function (t) {
-              var i, n;
-              this._values = t;
-              var r = t.length;
-              if (void 0 !== this._initialValue ? (i = this._initialValue, n = 0) : (i = e.resolve(t[0]), n = 1), this._currentCancellable = i, !i.isRejected()) for (; n < r; ++n) {
-                var o = {accum: null, value: t[n], index: n, length: r, array: this};
-                i = i._then(f, void 0, void 0, o, void 0)
-              }
-              void 0 !== this._eachValues && (i = i._then(this._eachComplete, void 0, void 0, this, void 0)), i._then(d, d, void 0, i, this)
-            }, e.prototype.reduce = function (t, e) {
-              return h(this, t, e, null)
-            }, e.reduce = function (t, e, i, n) {
-              return h(t, e, i, n)
-            }
-          }
-        }, {"./util": 36}], 29: [function (t, r, o) {
-          "use strict";
-          var a, s = t("./util"), l = s.getNativePromise();
-          if (s.isNode && "undefined" == typeof MutationObserver) {
-            var c = i.setImmediate, u = e.nextTick;
-            a = s.isRecentNode ? function (t) {
-              c.call(i, t)
-            } : function (t) {
-              u.call(e, t)
-            }
-          } else if ("function" == typeof l && "function" == typeof l.resolve) {
-            var d = l.resolve();
-            a = function (t) {
-              d.then(t)
-            }
-          } else a = "undefined" == typeof MutationObserver || "undefined" != typeof window && window.navigator && (window.navigator.standalone || window.cordova) ? void 0 !== n ? function (t) {
-            n(t)
-          } : "undefined" != typeof setTimeout ? function (t) {
-            setTimeout(t, 0)
-          } : function () {
-            throw new Error("")
-          } : function () {
-            var t = document.createElement("div"), e = {attributes: !0}, i = !1, n = document.createElement("div");
-            return new MutationObserver(function () {
-              t.classList.toggle("foo"), i = !1
-            }).observe(n, e), function (r) {
-              var o = new MutationObserver(function () {
-                o.disconnect(), r()
-              });
-              o.observe(t, e), i || (i = !0, n.classList.toggle("foo"))
-            }
-          }();
-          r.exports = a
-        }, {"./util": 36}], 30: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n) {
-            var r = e.PromiseInspection;
-
-            function o(t) {
-              this.constructor$(t)
-            }
-
-            t("./util").inherits(o, i), o.prototype._promiseResolved = function (t, e) {
-              return this._values[t] = e, ++this._totalResolved >= this._length && (this._resolve(this._values), !0)
-            }, o.prototype._promiseFulfilled = function (t, e) {
-              var i = new r;
-              return i._bitField = 33554432, i._settledValueField = t, this._promiseResolved(e, i)
-            }, o.prototype._promiseRejected = function (t, e) {
-              var i = new r;
-              return i._bitField = 16777216, i._settledValueField = t, this._promiseResolved(e, i)
-            }, e.settle = function (t) {
-              return n.deprecated(".settle()", ".reflect()"), new o(t).promise()
-            }, e.prototype.settle = function () {
-              return e.settle(this)
-            }
-          }
-        }, {"./util": 36}], 31: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n) {
-            var r = t("./util"), o = t("./errors").RangeError, a = t("./errors").AggregateError, s = r.isArray, l = {};
-
-            function c(t) {
-              this.constructor$(t), this._howMany = 0, this._unwrap = !1, this._initialized = !1
-            }
-
-            function u(t, e) {
-              if ((0 | e) !== e || e < 0) return n("");
-              var i = new c(t), r = i.promise();
-              return i.setHowMany(e), i.init(), r
-            }
-
-            r.inherits(c, i), c.prototype._init = function () {
-              if (this._initialized) if (0 !== this._howMany) {
-                this._init$(void 0, -5);
-                var t = s(this._values);
-                !this._isResolved() && t && this._howMany > this._canPossiblyFulfill() && this._reject(this._getRangeError(this.length()))
-              } else this._resolve([])
-            }, c.prototype.init = function () {
-              this._initialized = !0, this._init()
-            }, c.prototype.setUnwrap = function () {
-              this._unwrap = !0
-            }, c.prototype.howMany = function () {
-              return this._howMany
-            }, c.prototype.setHowMany = function (t) {
-              this._howMany = t
-            }, c.prototype._promiseFulfilled = function (t) {
-              return this._addFulfilled(t), this._fulfilled() === this.howMany() && (this._values.length = this.howMany(), 1 === this.howMany() && this._unwrap ? this._resolve(this._values[0]) : this._resolve(this._values), !0)
-            }, c.prototype._promiseRejected = function (t) {
-              return this._addRejected(t), this._checkOutcome()
-            }, c.prototype._promiseCancelled = function () {
-              return this._values instanceof e || null == this._values ? this._cancel() : (this._addRejected(l), this._checkOutcome())
-            }, c.prototype._checkOutcome = function () {
-              if (this.howMany() > this._canPossiblyFulfill()) {
-                for (var t = new a, e = this.length(); e < this._values.length; ++e) this._values[e] !== l && t.push(this._values[e]);
-                return t.length > 0 ? this._reject(t) : this._cancel(), !0
-              }
-              return !1
-            }, c.prototype._fulfilled = function () {
-              return this._totalResolved
-            }, c.prototype._rejected = function () {
-              return this._values.length - this.length()
-            }, c.prototype._addRejected = function (t) {
-              this._values.push(t)
-            }, c.prototype._addFulfilled = function (t) {
-              this._values[this._totalResolved++] = t
-            }, c.prototype._canPossiblyFulfill = function () {
-              return this.length() - this._rejected()
-            }, c.prototype._getRangeError = function (t) {
-              var e = "Input array must contain at least " + this._howMany + " items but contains only " + t + " items";
-              return new o(e)
-            }, c.prototype._resolveEmptyArray = function () {
-              this._reject(this._getRangeError(0))
-            }, e.some = function (t, e) {
-              return u(t, e)
-            }, e.prototype.some = function (t) {
-              return u(this, t)
-            }, e._SomePromiseArray = c
-          }
-        }, {"./errors": 12, "./util": 36}], 32: [function (t, e, i) {
-          "use strict";
-          e.exports = function (t) {
-            function e(t) {
-              void 0 !== t ? (t = t._target(), this._bitField = t._bitField, this._settledValueField = t._isFateSealed() ? t._settledValue() : void 0) : (this._bitField = 0, this._settledValueField = void 0)
-            }
-
-            e.prototype._settledValue = function () {
-              return this._settledValueField
-            };
-            var i = e.prototype.value = function () {
-              if (!this.isFulfilled()) throw new TypeError("");
-              return this._settledValue()
-            }, n = e.prototype.error = e.prototype.reason = function () {
-              if (!this.isRejected()) throw new TypeError("");
-              return this._settledValue()
-            }, r = e.prototype.isFulfilled = function () {
-              return 0 != (33554432 & this._bitField)
-            }, o = e.prototype.isRejected = function () {
-              return 0 != (16777216 & this._bitField)
-            }, a = e.prototype.isPending = function () {
-              return 0 == (50397184 & this._bitField)
-            }, s = e.prototype.isResolved = function () {
-              return 0 != (50331648 & this._bitField)
-            };
-            e.prototype.isCancelled = function () {
-              return 0 != (8454144 & this._bitField)
-            }, t.prototype.__isCancelled = function () {
-              return 65536 == (65536 & this._bitField)
-            }, t.prototype._isCancelled = function () {
-              return this._target().__isCancelled()
-            }, t.prototype.isCancelled = function () {
-              return 0 != (8454144 & this._target()._bitField)
-            }, t.prototype.isPending = function () {
-              return a.call(this._target())
-            }, t.prototype.isRejected = function () {
-              return o.call(this._target())
-            }, t.prototype.isFulfilled = function () {
-              return r.call(this._target())
-            }, t.prototype.isResolved = function () {
-              return s.call(this._target())
-            }, t.prototype.value = function () {
-              return i.call(this._target())
-            }, t.prototype.reason = function () {
-              var t = this._target();
-              return t._unsetRejectionIsUnhandled(), n.call(t)
-            }, t.prototype._value = function () {
-              return this._settledValue()
-            }, t.prototype._reason = function () {
-              return this._unsetRejectionIsUnhandled(), this._settledValue()
-            }, t.PromiseInspection = e
-          }
-        }, {}], 33: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i) {
-            var n = t("./util"), r = n.errorObj, o = n.isObject, a = {}.hasOwnProperty;
-            return function (t, s) {
-              if (o(t)) {
-                if (t instanceof e) return t;
-                var l = function (t) {
-                  try {
-                    return function (t) {
-                      return t.then
-                    }(t)
-                  } catch (t) {
-                    return r.e = t, r
-                  }
-                }(t);
-                if (l === r) {
-                  s && s._pushContext();
-                  var c = e.reject(l.e);
-                  return s && s._popContext(), c
-                }
-                if ("function" == typeof l) return function (t) {
-                  try {
-                    return a.call(t, "_promise0")
-                  } catch (t) {
-                    return !1
-                  }
-                }(t) ? (c = new e(i), t._then(c._fulfill, c._reject, void 0, c, null), c) : function (t, o, a) {
-                  var s = new e(i), l = s;
-                  a && a._pushContext(), s._captureStackTrace(), a && a._popContext();
-                  var c = !0, u = n.tryCatch(o).call(t, function (t) {
-                    s && (s._resolveCallback(t), s = null)
-                  }, function (t) {
-                    s && (s._rejectCallback(t, c, !0), s = null)
-                  });
-                  return c = !1, s && u === r && (s._rejectCallback(u.e, !0, !0), s = null), l
-                }(t, l, s)
-              }
-              return t
-            }
-          }
-        }, {"./util": 36}], 34: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n) {
-            var r = t("./util"), o = e.TimeoutError;
-
-            function a(t) {
-              this.handle = t
-            }
-
-            a.prototype._resultCancelled = function () {
-              clearTimeout(this.handle)
-            };
-            var s = function (t) {
-              return l(+this).thenReturn(t)
-            }, l = e.delay = function (t, r) {
-              var o, l;
-              return void 0 !== r ? (o = e.resolve(r)._then(s, null, null, t, void 0), n.cancellation() && r instanceof e && o._setOnCancel(r)) : (o = new e(i), l = setTimeout(function () {
-                o._fulfill()
-              }, +t), n.cancellation() && o._setOnCancel(new a(l)), o._captureStackTrace()), o._setAsyncGuaranteed(), o
-            };
-
-            function c(t) {
-              return clearTimeout(this.handle), t
-            }
-
-            function u(t) {
-              throw clearTimeout(this.handle), t
-            }
-
-            e.prototype.delay = function (t) {
-              return l(t, this)
-            }, e.prototype.timeout = function (t, e) {
-              var i, s;
-              t = +t;
-              var l = new a(setTimeout(function () {
-                i.isPending() && function (t, e, i) {
-                  var n;
-                  n = "string" != typeof e ? e instanceof Error ? e : new o("operation timed out") : new o(e), r.markAsOriginatingFromRejection(n), t._attachExtraTrace(n), t._reject(n), null != i && i.cancel()
-                }(i, e, s)
-              }, t));
-              return n.cancellation() ? (s = this.then(), (i = s._then(c, u, void 0, l, void 0))._setOnCancel(l)) : i = this._then(c, u, void 0, l, void 0), i
-            }
-          }
-        }, {"./util": 36}], 35: [function (t, e, i) {
-          "use strict";
-          e.exports = function (e, i, n, r, o, a) {
-            var s = t("./util"), l = t("./errors").TypeError, c = t("./util").inherits, u = s.errorObj, d = s.tryCatch,
-              h = {};
-
-            function f(t) {
-              setTimeout(function () {
-                throw t
-              }, 0)
-            }
-
-            function g(t, i) {
-              var r = 0, a = t.length, s = new e(o);
-              return function o() {
-                if (r >= a) return s._fulfill();
-                var l = function (t) {
-                  var e = n(t);
-                  return e !== t && "function" == typeof t._isDisposable && "function" == typeof t._getDisposer && t._isDisposable() && e._setDisposable(t._getDisposer()), e
-                }(t[r++]);
-                if (l instanceof e && l._isDisposable()) {
-                  try {
-                    l = n(l._getDisposer().tryDispose(i), t.promise)
-                  } catch (t) {
-                    return f(t)
-                  }
-                  if (l instanceof e) return l._then(o, f, null, null, null)
-                }
-                o()
-              }(), s
-            }
-
-            function p(t, e, i) {
-              this._data = t, this._promise = e, this._context = i
-            }
-
-            function _(t, e, i) {
-              this.constructor$(t, e, i)
-            }
-
-            function v(t) {
-              return p.isDisposer(t) ? (this.resources[this.index]._setDisposable(t), t.promise()) : t
-            }
-
-            function m(t) {
-              this.length = t, this.promise = null, this[t - 1] = null
-            }
-
-            p.prototype.data = function () {
-              return this._data
-            }, p.prototype.promise = function () {
-              return this._promise
-            }, p.prototype.resource = function () {
-              return this.promise().isFulfilled() ? this.promise().value() : h
-            }, p.prototype.tryDispose = function (t) {
-              var e = this.resource(), i = this._context;
-              void 0 !== i && i._pushContext();
-              var n = e !== h ? this.doDispose(e, t) : null;
-              return void 0 !== i && i._popContext(), this._promise._unsetDisposable(), this._data = null, n
-            }, p.isDisposer = function (t) {
-              return null != t && "function" == typeof t.resource && "function" == typeof t.tryDispose
-            }, c(_, p), _.prototype.doDispose = function (t, e) {
-              return this.data().call(t, t, e)
-            }, m.prototype._resultCancelled = function () {
-              for (var t = this.length, i = 0; i < t; ++i) {
-                var n = this[i];
-                n instanceof e && n.cancel()
-              }
-            }, e.using = function () {
-              var t = arguments.length;
-              if (t < 2) return i("you must pass at least 2 arguments to Promise.using");
-              var r, o = arguments[t - 1];
-              if ("function" != typeof o) return i("expecting a function but got " + s.classString(o));
-              var l = !0;
-              2 === t && Array.isArray(arguments[0]) ? (t = (r = arguments[0]).length, l = !1) : (r = arguments, t--);
-              for (var c = new m(t), h = 0; h < t; ++h) {
-                var f = r[h];
-                if (p.isDisposer(f)) {
-                  var _ = f;
-                  (f = f.promise())._setDisposable(_)
-                } else {
-                  var y = n(f);
-                  y instanceof e && (f = y._then(v, null, null, {resources: c, index: h}, void 0))
-                }
-                c[h] = f
-              }
-              var k = new Array(c.length);
-              for (h = 0; h < k.length; ++h) k[h] = e.resolve(c[h]).reflect();
-              var b = e.all(k).then(function (t) {
-                for (var e = 0; e < t.length; ++e) {
-                  var i = t[e];
-                  if (i.isRejected()) return u.e = i.error(), u;
-                  if (!i.isFulfilled()) return void b.cancel();
-                  t[e] = i.value()
-                }
-                w._pushContext(), o = d(o);
-                var n = l ? o.apply(void 0, t) : o(t), r = w._popContext();
-                return a.checkForgottenReturns(n, r, "Promise.using", w), n
-              }), w = b.lastly(function () {
-                var t = new e.PromiseInspection(b);
-                return g(c, t)
-              });
-              return c.promise = w, w._setOnCancel(c), w
-            }, e.prototype._setDisposable = function (t) {
-              this._bitField = 131072 | this._bitField, this._disposer = t
-            }, e.prototype._isDisposable = function () {
-              return (131072 & this._bitField) > 0
-            }, e.prototype._getDisposer = function () {
-              return this._disposer
-            }, e.prototype._unsetDisposable = function () {
-              this._bitField = -131073 & this._bitField, this._disposer = void 0
-            }, e.prototype.disposer = function (t) {
-              if ("function" == typeof t) return new _(t, this, r());
-              throw new l
-            }
-          }
-        }, {"./errors": 12, "./util": 36}], 36: [function (t, n, r) {
-          "use strict";
-          var o, a = t("./es5"), s = "undefined" == typeof navigator, l = {e: {}},
-            c = "undefined" != typeof self ? self : "undefined" != typeof window ? window : void 0 !== i ? i : void 0 !== this ? this : null;
-
-          function u() {
-            try {
-              var t = o;
-              return o = null, t.apply(this, arguments)
-            } catch (t) {
-              return l.e = t, l
-            }
-          }
-
-          function d(t) {
-            return null == t || !0 === t || !1 === t || "string" == typeof t || "number" == typeof t
-          }
-
-          function h(t, e, i) {
-            if (d(t)) return t;
-            var n = {value: i, configurable: !0, enumerable: !1, writable: !0};
-            return a.defineProperty(t, e, n), t
-          }
-
-          var f = function () {
-            var t = [Array.prototype, Object.prototype, Function.prototype], e = function (e) {
-              for (var i = 0; i < t.length; ++i) if (t[i] === e) return !0;
-              return !1
-            };
-            if (a.isES5) {
-              var i = Object.getOwnPropertyNames;
-              return function (t) {
-                for (var n = [], r = Object.create(null); null != t && !e(t);) {
-                  var o;
-                  try {
-                    o = i(t)
-                  } catch (t) {
-                    return n
-                  }
-                  for (var s = 0; s < o.length; ++s) {
-                    var l = o[s];
-                    if (!r[l]) {
-                      r[l] = !0;
-                      var c = Object.getOwnPropertyDescriptor(t, l);
-                      null != c && null == c.get && null == c.set && n.push(l)
-                    }
-                  }
-                  t = a.getPrototypeOf(t)
-                }
-                return n
-              }
-            }
-            var n = {}.hasOwnProperty;
-            return function (i) {
-              if (e(i)) return [];
-              var r = [];
-              t:for (var o in i) if (n.call(i, o)) r.push(o); else {
-                for (var a = 0; a < t.length; ++a) if (n.call(t[a], o)) continue t;
-                r.push(o)
-              }
-              return r
-            }
-          }(), g = /this\s*\.\s*\S+\s*=/, p = /^[a-z$_][a-z$_0-9]*$/i;
-
-          function _(t) {
-            try {
-              return t + ""
-            } catch (t) {
-              return "[no string representation]"
-            }
-          }
-
-          function v(t) {
-            return t instanceof Error || null !== t && "object" == typeof t && "string" == typeof t.message && "string" == typeof t.name
-          }
-
-          function m(t) {
-            return v(t) && a.propertyIsWritable(t, "stack")
-          }
-
-          var y = "stack" in new Error ? function (t) {
-            return m(t) ? t : new Error(_(t))
-          } : function (t) {
-            if (m(t)) return t;
-            try {
-              throw new Error(_(t))
-            } catch (t) {
-              return t
-            }
-          };
-
-          function k(t) {
-            return {}.toString.call(t)
-          }
-
-          var b = function (t) {
-            return a.isArray(t) ? t : null
-          };
-          if ("undefined" != typeof Symbol && Symbol.iterator) {
-            var w = "function" == typeof Array.from ? function (t) {
-              return Array.from(t)
-            } : function (t) {
-              for (var e, i = [], n = t[Symbol.iterator](); !(e = n.next()).done;) i.push(e.value);
-              return i
-            };
-            b = function (t) {
-              return a.isArray(t) ? t : null != t && "function" == typeof t[Symbol.iterator] ? w(t) : null
-            }
-          }
-          var $ = void 0 !== e && "[object process]" === k(e).toLowerCase(), x = void 0 !== e && void 0 !== e.env, S = {
-            isClass: function (t) {
-              try {
-                if ("function" == typeof t) {
-                  var e = a.names(t.prototype), i = a.isES5 && e.length > 1,
-                    n = e.length > 0 && !(1 === e.length && "constructor" === e[0]),
-                    r = g.test(t + "") && a.names(t).length > 0;
-                  if (i || n || r) return !0
-                }
-                return !1
-              } catch (t) {
-                return !1
-              }
-            },
-            isIdentifier: function (t) {
-              return p.test(t)
-            },
-            inheritedDataKeys: f,
-            getDataPropertyOrDefault: function (t, e, i) {
-              if (!a.isES5) return {}.hasOwnProperty.call(t, e) ? t[e] : void 0;
-              var n = Object.getOwnPropertyDescriptor(t, e);
-              return null != n ? null == n.get && null == n.set ? n.value : i : void 0
-            },
-            thrower: function (t) {
-              throw t
-            },
-            isArray: a.isArray,
-            asArray: b,
-            notEnumerableProp: h,
-            isPrimitive: d,
-            isObject: function (t) {
-              return "function" == typeof t || "object" == typeof t && null !== t
-            },
-            isError: v,
-            canEvaluate: s,
-            errorObj: l,
-            tryCatch: function (t) {
-              return o = t, u
-            },
-            inherits: function (t, e) {
-              var i = {}.hasOwnProperty;
-
-              function n() {
-                for (var n in this.constructor = t, this.constructor$ = e, e.prototype) i.call(e.prototype, n) && "$" !== n.charAt(n.length - 1) && (this[n + "$"] = e.prototype[n])
-              }
-
-              return n.prototype = e.prototype, t.prototype = new n, t.prototype
-            },
-            withAppended: function (t, e) {
-              var i, n = t.length, r = new Array(n + 1);
-              for (i = 0; i < n; ++i) r[i] = t[i];
-              return r[i] = e, r
-            },
-            maybeWrapAsError: function (t) {
-              return d(t) ? new Error(_(t)) : t
-            },
-            toFastProperties: function (t) {
-              function e() {
-              }
-
-              e.prototype = t;
-              var i = new e;
-
-              function n() {
-                return typeof i.foo
-              }
-
-              return n(), n(), t
-            },
-            filledRange: function (t, e, i) {
-              for (var n = new Array(t), r = 0; r < t; ++r) n[r] = e + r + i;
-              return n
-            },
-            toString: _,
-            canAttachTrace: m,
-            ensureErrorObject: y,
-            originatesFromRejection: function (t) {
-              return null != t && (t instanceof Error.__BluebirdErrorTypes__.OperationalError || !0 === t.isOperational)
-            },
-            markAsOriginatingFromRejection: function (t) {
-              try {
-                h(t, "isOperational", !0)
-              } catch (t) {
-              }
-            },
-            classString: k,
-            copyDescriptors: function (t, e, i) {
-              for (var n = a.names(t), r = 0; r < n.length; ++r) {
-                var o = n[r];
-                if (i(o)) try {
-                  a.defineProperty(e, o, a.getDescriptor(t, o))
-                } catch (t) {
-                }
-              }
-            },
-            hasDevTools: "undefined" != typeof chrome && chrome && "function" == typeof chrome.loadTimes,
-            isNode: $,
-            hasEnvVariables: x,
-            env: function (t) {
-              return x ? e.env[t] : void 0
-            },
-            global: c,
-            getNativePromise: function () {
-              if ("function" == typeof Promise) try {
-                var t = new Promise(function () {
-                });
-                if ("[object Promise]" === {}.toString.call(t)) return Promise
-              } catch (t) {
-              }
-            },
-            domainBind: function (t, e) {
-              return t.bind(e)
-            }
-          };
-          S.isRecentNode = S.isNode && function () {
-            var t;
-            return e.versions && e.versions.node ? t = e.versions.node.split(".").map(Number) : e.version && (t = e.version.split(".").map(Number)), 0 === t[0] && t[1] > 10 || t[0] > 0
-          }(), S.isNode && S.toFastProperties(e);
-          try {
-            throw new Error
-          } catch (t) {
-            S.lastLineError = t
-          }
-          n.exports = S
-        }, {"./es5": 13}]
-      }, {}, [4])(4), "undefined" != typeof window && null !== window ? window.P = window.Promise : "undefined" != typeof self && null !== self && (self.P = self.Promise)
-    }).call(this, i(36), i(17), i(144).setImmediate)
   }, function (t, e, i) {
     t.exports = i(145)
   }, function (t, e, i) {
@@ -9469,17 +6163,16 @@ var JSGantt = function () {
 
       function i(i, n, r) {
         r = r || i;
-        var o = t.config, a = t.templates;
-        t.config[i] && e[r] != o[i] && (n && a[r] || (a[r] = t.date.date_to_str(o[i]), e[r] = o[i]))
+        var a = t.config, s = t.templates;
+        t.config[i] && e[r] != a[i] && (n && s[r] || (s[r] = t.date.date_to_str(a[i]), e[r] = a[i]))
       }
 
       return {
         initTemplates: function () {
-          var n = t.date, r = n.date_to_str, o = t.config;
+          var e = t.date, n = e.date_to_str, r = t.config;
           i("dateScale", !0, void 0, t.config, t.templates), i("date_grid", !0, "grid_date_format", t.config, t.templates), i("task-date", !0, void 0, t.config, t.templates), t.mixin(t.templates, {
-            dateFormat: n.str_to_date(o.dateFormat, o.utcFormat),
-            xml_format: r(o.dateFormat, o.utcFormat),
-
+            dateFormat: e.str_to_date(r.dateFormat, r.utcFormat),
+            xml_format: n(r.dateFormat, r.utcFormat),
             grid_header_class: function (t, e) {
               return ""
             },
@@ -9519,16 +6212,6 @@ var JSGantt = function () {
             grid_blank: function (t) {
               return "<div class='jsgantt-tree-icon jsgantt-blank'></div>"
             },
-            date_grid: function (e, i) {
-              return i && t.isUnscheduledTask(i) && t.config.show_unscheduled ? t.templates.task_unscheduled_time(i) : t.templates.grid_date_format(e)
-            },
-            task_time: function (e, i, n) {
-              return t.isUnscheduledTask(n) && t.config.show_unscheduled ? t.templates.task_unscheduled_time(n) : t.templates.task_date(e) + " - " + t.templates.task_date(i)
-            },
-            task_unscheduled_time: function (t) {
-              return ""
-            },
-
             link_class: function (t) {
               return ""
             },
@@ -9538,14 +6221,14 @@ var JSGantt = function () {
             },
             drag_link: function (e, i, n, r) {
               e = t.getTask(e);
-              var o = t.locale.labels, a = "<b>" + e.orderId + "</b> " + (i ? o.link_start : o.link_end) + "<br/>";
-              return n && (a += "<b> " + (n = t.getTask(n)).orderId + "</b> " + (r ? o.link_start : o.link_end) + "<br/>"), a
+              var a = t.locale.labels, s = "<b>" + e.orderId + "</b> " + (i ? a.link_start : a.link_end) + "<br/>";
+              return n && (s += "<b> " + (n = t.getTask(n)).orderId + "</b> " + (r ? a.link_start : a.link_end) + "<br/>"), s
             },
             drag_link_class: function (e, i, n, r) {
-              var o = "";
-              return e && n && (o = " " + (t.isLinkAllowed(e, n, i, r) ? "jsgantt-link-allow" : "jsgantt-link-deny")), "jsgantt-link-tooltip" + o
+              var a = "";
+              return e && n && (a = " " + (t.isLinkAllowed(e, n, i, r) ? "jsgantt-link-allow" : "jsgantt-link-deny")), "jsgantt-link-tooltip" + a
             },
-            tooltip_date_format: n.date_to_str("%Y-%m-%d"),
+            tooltip_date_format: e.date_to_str("%Y-%m-%d"),
             tooltip_text: function (e, i, n) {
               return "<b>Task:</b> " + n.orderId + "<br/><b>Start date:</b> " + t.templates.tooltip_date_format(e) + "<br/><b>End date:</b> " + t.templates.tooltip_date_format(i)
             }
@@ -9554,7 +6237,7 @@ var JSGantt = function () {
       }
     }
   }, function (t, e, i) {
-    var n = i(4), r = i(0), o = i(37);
+    var n = i(4), r = i(0), a = i(37);
     t.exports = function (t) {
       function e(t) {
         return {
@@ -9570,21 +6253,21 @@ var JSGantt = function () {
         }
       }
 
-      function i(i, o) {
-        this._obj = i, this._settings = o || {}, n(this);
-        var a = this.getInputMethods();
+      function i(i, a) {
+        this._obj = i, this._settings = a || {}, n(this);
+        var s = this.getInputMethods();
         this._drag_start_timer = null, t.attachEvent("onGanttScroll", r.bind(function (t, e) {
           this.clearDragTimer()
         }, this));
-        for (var s = 0; s < a.length; s++) r.bind(function (n) {
-          t.event(i, n.down, r.bind(function (o) {
-            n.accessor(o) && (this._settings.original_target = e(o), t.config.touch ? (this.clearDragTimer(), this._drag_start_timer = setTimeout(r.bind(function () {
-              this.dragStart(i, o, n)
-            }, this), t.config.touch_drag)) : this.dragStart(i, o, n))
+        for (var o = 0; o < s.length; o++) r.bind(function (n) {
+          t.event(i, n.down, r.bind(function (a) {
+            n.accessor(a) && (this._settings.original_target = e(a), t.config.touch ? (this.clearDragTimer(), this._drag_start_timer = setTimeout(r.bind(function () {
+              this.dragStart(i, a, n)
+            }, this), t.config.touch_drag)) : this.dragStart(i, a, n))
           }, this)), t.event(document.body, n.up, r.bind(function (t) {
             n.accessor(t) && this.clearDragTimer()
           }, this))
-        }, this)(a[s])
+        }, this)(s[o])
       }
 
       return i.prototype = {
@@ -9595,15 +6278,15 @@ var JSGantt = function () {
           r.bind(function (t) {
             return this.dragScroll(e, t)
           }, this);
-          var a = r.bind(function (t) {
-            if (!this.config.started || !r.defined(this.config.updates_per_second) || o(this, this.config.updates_per_second)) {
+          var s = r.bind(function (t) {
+            if (!this.config.started || !r.defined(this.config.updates_per_second) || a(this, this.config.updates_per_second)) {
               var e = n(t);
               return e && (t && t.preventDefault && t.preventDefault(), t.cancelBubble = !0), e
             }
-          }, this), s = r.bind(function (n) {
-            return t.eventRemove(document.body, i.move, a), t.eventRemove(document.body, i.up, s), this.dragEnd(e)
+          }, this), o = r.bind(function (n) {
+            return t.eventRemove(document.body, i.move, s), t.eventRemove(document.body, i.up, o), this.dragEnd(e)
           }, this);
-          t.event(document.body, i.move, a), t.event(document.body, i.up, s)
+          t.event(document.body, i.move, s), t.event(document.body, i.up, o)
         }, checkPositionChange: function (t) {
           var e = t.x - this.config.pos.x, i = t.y - this.config.pos.y;
           return Math.sqrt(Math.pow(Math.abs(e), 2) + Math.pow(Math.abs(i), 2)) > this.config.sensitivity
@@ -9612,8 +6295,8 @@ var JSGantt = function () {
           t.className = "jsgantt-drag-marker", t.innerHTML = "Dragging object", document.body.appendChild(t)
         }, backupEventTarget: function (i, n) {
           if (t.config.touch) {
-            var r = n(i), o = r.target, a = o.cloneNode(!0);
-            this.config.original_target = e(r), this.config.original_target.target = a, this.config.backup_element = o, o.parentNode.appendChild(a), o.style.display = "none", document.body.appendChild(o)
+            var r = n(i), a = r.target, s = a.cloneNode(!0);
+            this.config.original_target = e(r), this.config.original_target.target = s, this.config.backup_element = a, a.parentNode.appendChild(s), a.style.display = "none", document.body.appendChild(a)
           }
         }, getInputMethods: function () {
           var e = [];
@@ -9669,8 +6352,8 @@ var JSGantt = function () {
           var r = n(i);
           if (!r) return !1;
           if (!this.config.marker && !this.config.started) {
-            var o = this.getPosition(r);
-            if (t.config.touch || this.checkPositionChange(o)) {
+            var a = this.getPosition(r);
+            if (t.config.touch || this.checkPositionChange(a)) {
               if (this.config.started = !0, this.config.ignore = !1, !1 === this.callEvent("onBeforeDragStart", [e, this.config.original_target])) return this.config.ignore = !0, !1;
               this.backupEventTarget(i, n), this.initDnDMarker(), t._touch_feedback(), this.callEvent("onAfterDragStart", [e, this.config.original_target])
             } else this.config.ignore = !0
@@ -9802,48 +6485,48 @@ var JSGantt = function () {
             return r(i, e.to_fixed, t.locale, e.getISOWeek, e.getWeek)
           }
         }, str_to_date: function (e, i) {
-          for (var n = "var temp=date.match(/[a-zA-Z]+|[0-9]+/g);", r = e.match(/%[a-zA-Z]/g), o = 0; o < r.length; o++) switch (r[o]) {
+          for (var n = "var temp=date.match(/[a-zA-Z]+|[0-9]+/g);", r = e.match(/%[a-zA-Z]/g), a = 0; a < r.length; a++) switch (r[a]) {
             case"%j":
             case"%d":
-              n += "set[2]=temp[" + o + "]||1;";
+              n += "set[2]=temp[" + a + "]||1;";
               break;
             case"%n":
             case"%m":
-              n += "set[1]=(temp[" + o + "]||1)-1;";
+              n += "set[1]=(temp[" + a + "]||1)-1;";
               break;
             case"%y":
-              n += "set[0]=temp[" + o + "]*1+(temp[" + o + "]>50?1900:2000);";
+              n += "set[0]=temp[" + a + "]*1+(temp[" + a + "]>50?1900:2000);";
               break;
             case"%g":
             case"%G":
             case"%h":
             case"%H":
-              n += "set[3]=temp[" + o + "]||0;";
+              n += "set[3]=temp[" + a + "]||0;";
               break;
             case"%i":
-              n += "set[4]=temp[" + o + "]||0;";
+              n += "set[4]=temp[" + a + "]||0;";
               break;
             case"%Y":
-              n += "set[0]=temp[" + o + "]||0;";
+              n += "set[0]=temp[" + a + "]||0;";
               break;
             case"%a":
             case"%A":
-              n += "set[3]=set[3]%12+((temp[" + o + "]||'').toLowerCase()=='am'?0:12);";
+              n += "set[3]=set[3]%12+((temp[" + a + "]||'').toLowerCase()=='am'?0:12);";
               break;
             case"%s":
-              n += "set[5]=temp[" + o + "]||0;";
+              n += "set[5]=temp[" + a + "]||0;";
               break;
             case"%M":
-              n += "set[1]=locale.date.month_short_hash[temp[" + o + "]]||0;";
+              n += "set[1]=locale.date.month_short_hash[temp[" + a + "]]||0;";
               break;
             case"%F":
-              n += "set[1]=locale.date.month_full_hash[temp[" + o + "]]||0;"
+              n += "set[1]=locale.date.month_full_hash[temp[" + a + "]]||0;"
           }
-          var a = "set[0],set[1],set[2],set[3],set[4],set[5]";
-          i && (a = " Date.UTC(" + a + ")");
-          var s = new Function("date", "locale", "var set=[0,0,1,0,0,0]; " + n + " return new Date(" + a + ");");
+          var s = "set[0],set[1],set[2],set[3],set[4],set[5]";
+          i && (s = " Date.UTC(" + s + ")");
+          var o = new Function("date", "locale", "var set=[0,0,1,0,0,0]; " + n + " return new Date(" + s + ");");
           return function (e) {
-            return s(e, t.locale)
+            return o(e, t.locale)
           }
         }, getISOWeek: function (e) {
           return t.date._getWeekNumber(e, !0)
@@ -9853,14 +6536,10 @@ var JSGantt = function () {
           e && 0 === i && (i = 7);
           var n = new Date(t.valueOf());
           n.setDate(t.getDate() + (4 - i));
-          var r = n.getFullYear(), o = Math.round((n.getTime() - new Date(r, 0, 1).getTime()) / 864e5);
-          return 1 + Math.floor(o / 7)
+          var r = n.getFullYear(), a = Math.round((n.getTime() - new Date(r, 0, 1).getTime()) / 864e5);
+          return 1 + Math.floor(a / 7)
         }, getWeek: function (e) {
           return t.date._getWeekNumber(e, t.config.startFromMonday)
-        }, getUTCISOWeek: function (e) {
-          return t.date.getISOWeek(e)
-        }, convert_to_utc: function (t) {
-          return new Date(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate(), t.getUTCHours(), t.getUTCMinutes(), t.getUTCSeconds())
         }, parseDate: function (e, i) {
           return e && !e.getFullYear && ("function" != typeof i && (i = "string" == typeof i ? t.defined(t.templates[i]) ? t.templates[i] : t.date.str_to_date(i) : t.templates.dateFormat), e = e ? i(e) : null), e
         }
@@ -9935,7 +6614,10 @@ var JSGantt = function () {
           width: "*",
           align: "left"
         }],
+        btnRemoveOrder: "Remove Order",
+        btnChangeParameter: "Change Parameter",
         step: 1,
+        scrollable: !0,
         scale_unit: "day",
         scale_offset_minimal: !0,
         subscales: [{unit: "hour", step: 1, date: "%H"}],
@@ -9955,14 +6637,12 @@ var JSGantt = function () {
         task_scroll_offset: 100,
         order_branch: !1,
         order_branch_free: !1,
-        task_height: "full",
         min_column_width: 44,
         min_grid_column_width: 44,
         grid_resizer_column_attribute: "column_index",
         grid_resizer_attribute: "grid-resizer",
         keep_grid_width: !1,
         grid_resize: !0,
-        show_unscheduled: !0,
         readonly_property: "readonly",
         editable_property: "editable",
         type_renderers: {},
@@ -9972,8 +6652,7 @@ var JSGantt = function () {
         show_errors: !0,
         wai_aria_attributes: !0,
         smart_scales: !0,
-        rtl: !1,
-        placeholder_task: !1
+        rtl: !1
       }
     }
   }, function (t, e) {
@@ -10035,20 +6714,20 @@ var JSGantt = function () {
       }), t.getState = r.getState, t.$services.setService("state", function () {
         return r
       });
-      var o = i(0);
-      o.mixin(t, o), t.Promise = i(146), t.env = i(8);
-      var a = i(1);
+      var a = i(0);
+      a.mixin(t, a), t.Promise = i(146), t.env = i(8);
+      var s = i(1);
       t.utils = {
         dom: {
-          getNodePosition: a.getNodePosition,
-          getRelativeEventPosition: a.getRelativeEventPosition,
-          isChildOf: a.isChildOf,
-          hasClass: a.hasClass,
-          closest: a.closest
+          getNodePosition: s.getNodePosition,
+          getRelativeEventPosition: s.getRelativeEventPosition,
+          isChildOf: s.isChildOf,
+          hasClass: s.hasClass,
+          closest: s.closest
         }
       };
-      var s = i(20)();
-      t.event = s.attach, t.eventRemove = s.detach, t._eventRemoveAll = s.detachAll, t._createDomEventScope = s.extend, o.mixin(t, i(142)(t));
+      var o = i(20)();
+      t.event = o.attach, t.eventRemove = o.detach, t._eventRemoveAll = o.detachAll, t._createDomEventScope = o.extend, a.mixin(t, i(142)(t));
       var l = i(141).init(t);
       t.$ui = l.factory, t.$ui.layers = l.render, t.$mouseEvents = l.mouseEvents, t.$services.setService("mouseEvents", function () {
         return t.$mouseEvents
@@ -10057,8 +6736,8 @@ var JSGantt = function () {
       });
       var c = i(101);
       t.mixin(t, c()), i(100)(t);
-      var u = i(94);
-      return  t.createDataProcessor = u.createDataProcessor, i(90)(t), i(81)(t), i(80)(t), i(78)(t), i(77)(t), i(76)(t), i(75)(t), i(66)(t), i(65)(t), i(55)(t), i(54)(t), i(52)(t), i(51)(t), i(50)(t), i(49)(t), i(48)(t), i(47)(t), i(46)(t), i(45)(t), i(44)(t), i(43)(t), i(42)(t), i(41)(t), i(39)(t), t
+      var d = i(94);
+      return t.createDataProcessor = d.createDataProcessor, i(90)(t), i(81)(t), i(80)(t), i(78)(t), i(77)(t), i(76)(t), i(75)(t), i(66)(t), i(65)(t), i(55)(t), i(54)(t), i(52)(t), i(51)(t), i(50)(t), i(49)(t), i(48)(t), i(47)(t), i(46)(t), i(45)(t), i(44)(t), i(43)(t), i(42)(t), i(41)(t), i(39)(t), t
     }
   }, function (t, e, i) {
     var n = {
@@ -10070,6 +6749,6 @@ var JSGantt = function () {
     t.exports = n
   }, function (t, e, i) {
     let n = i(158);
-    window.jsgantt = n.getGanttInstance();
+    window.jsgantt = n.getGanttInstance()
   }])
 };
