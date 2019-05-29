@@ -9,6 +9,7 @@ import {
 } from 'angular-gridster2';
 import {DataService} from '../../services/data.service';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DeleteModalComponent} from '../../components/delete-modal/delete.component';
 
 declare const $;
 
@@ -20,12 +21,13 @@ export class AddWidgetModalComponent {
   @Input() widgets: any;
   @Input() dashboard: any;
   @Input() addWidget;
+  @Input() self;
 
   constructor(public activeModal: NgbActiveModal, public coreService: CoreService) {
   }
 
   addWidgetFunc(widget) {
-    this.addWidget(widget);
+    this.addWidget(widget, this.self);
   }
 }
 
@@ -147,9 +149,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   resetLayout() {
-    this.preferences.dashboardLayout = undefined;
-    this.initWidgets();
-    this.setWidgetPreference();
+    const modalRef = this.modalService.open(DeleteModalComponent, {backdrop: 'static', size: 'lg'});
+    modalRef.componentInstance.dashboardReset = true;
+    modalRef.result.then(() => {
+      this.preferences.dashboardLayout = undefined;
+      this.initWidgets();
+      this.setWidgetPreference();
+    }, (reason) => {
+
+    });
   }
 
   saveWidget() {
@@ -182,6 +190,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.dashboard = this.dashboard;
     modalRef.componentInstance.widgets = this.widgets;
     modalRef.componentInstance.addWidget = this.addWidget;
+    modalRef.componentInstance.self = this;
     modalRef.result.then(() => {
 
     }, (reason) => {
@@ -189,10 +198,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  addWidget(widget) {
+  addWidget(widget, self) {
     widget.visible = true;
-    this.dashboard.push(widget);
-    this.setWidgetPreference();
+    self.dashboard.push(widget);
+    self.setWidgetPreference();
   }
 
   setWidgetPreference() {

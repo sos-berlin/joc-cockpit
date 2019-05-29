@@ -354,9 +354,11 @@ var JSGantt = function () {
         if($(this.$view).hasClass('jsgantt-layout-cell jsgantt-hor-scroll')) {
           let self = this;
           setTimeout(function () {
-            let l = $('.jsgantt-resizer-x').position().left;
-            self.$view.style.width = (t - l) + "px";
-            self.$view.style.marginLeft = l + "px";
+            if($('.jsgantt-resizer-x').position()) {
+              let l = $('.jsgantt-resizer-x').position().left;
+              self.$view.style.width = (t - l) + "px";
+              self.$view.style.marginLeft = l + "px";
+            }
           }, 0)
         } else {
           this.$view.style.width = t + "px";
@@ -6630,7 +6632,7 @@ var JSGantt = function () {
         task_attribute: "task_id",
         link_attribute: "link_id",
         layer_attribute: "data-layer",
-        sort: !0,
+        sort: !1,
         details_on_create: !0,
         details_on_dblclick: !0,
         initial_scroll: !0,

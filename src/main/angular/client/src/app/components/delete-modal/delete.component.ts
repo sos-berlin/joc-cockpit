@@ -21,6 +21,7 @@ export class DeleteModalComponent implements OnInit, OnDestroy {
   @Input() folder: any;
   @Input() permission: any;
   @Input() object: any;
+  @Input() dashboardReset: any;
   profiles = 'profiles';
 
   constructor(public activeModal: NgbActiveModal) {

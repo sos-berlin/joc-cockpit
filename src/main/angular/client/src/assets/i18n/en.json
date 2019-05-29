@@ -1372,6 +1372,7 @@
   "label.searching": "Searching",
   "placeholder.searchWorkingCalendars": "Search Working Calendars",
   "placeholder.searchNonWorkingCalendars": "Search Non Working Calendars",
+  "dashboard.message.resetLayout": "Are you sure you want to reset current Dashboard layout?",
   "tab.designer": "DESIGNER",
   "tab.xmlEditor": "XML EDITOR",
   "workflow.button.zoomIn": "Zoom In",

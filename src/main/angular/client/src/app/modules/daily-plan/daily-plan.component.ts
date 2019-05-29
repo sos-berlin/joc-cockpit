@@ -1,4 +1,15 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input, OnChanges,
+  OnDestroy,
+  OnInit,
+  Output, SimpleChange,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {SaveService} from '../../services/save.service';
 import {AuthService} from '../../components/guard';
@@ -331,7 +342,7 @@ export class SearchComponent implements OnInit {
   selector: 'app-gantt',
   template: `<div #jsgantt class='jsgantt-chart'></div>`,
 })
-export class GanttComponent implements OnInit, OnDestroy {
+export class GanttComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('jsgantt') ganttContainer: ElementRef;
 
   @Input() data: any;
@@ -346,7 +357,6 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const self = this;
-    let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'jobChain' : 'order');
     let workflow = '', orderId = '', btnRemoveOrder = '', btnChangeParameter = '';
     this.translate.get('label.workflow').subscribe(translatedValue => {
       workflow = translatedValue;
@@ -379,7 +389,7 @@ export class GanttComponent implements OnInit, OnDestroy {
     });
     $(document).on('click', '.dropdown-item', function (e) {
       const id = $(this).attr('id');
-      if(id) {
+      if (id) {
         let _id = '';
         const _len = self.tasks.length;
         let order = {action: '', orderId: '', workflow: ''};
@@ -402,6 +412,13 @@ export class GanttComponent implements OnInit, OnDestroy {
     });
 
     jsgantt.init(this.ganttContainer.nativeElement);
+    this.init();
+    $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
+  }
+
+  private init(): void {
+    const self = this;
+    let plans = this.groupByPipe.transform(this.data, this.groupBy === 'WORKFLOW' ? 'jobChain' : 'order');
     const len = plans.length;
     if (len > 0) {
       let count = 0;
@@ -434,7 +451,7 @@ export class GanttComponent implements OnInit, OnDestroy {
         }
       }
 
-      $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
+
     }
     Promise.all([this.getTask(), []])
       .then(([data, links]) => {
@@ -444,6 +461,14 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   getTask(): Promise<any[]> {
     return Promise.resolve(this.tasks);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const _groupBy: SimpleChange = changes.groupBy;
+    if (_groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
+      this.init();
+      jsgantt.render();
+    }
   }
 
   ngOnDestroy(): void {

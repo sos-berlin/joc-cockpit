@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!calendar">
+    <span *ngIf="!calendar && !dashboardReset">
       <span class="text-capitalize" translate>label.delete</span> :
       {{entry}} {{user}} {{role}} {{master}} {{folder}} {{permission}} {{profiles}}
       ?
@@ -25,6 +25,9 @@
     <span *ngIf="documentArr && documentArr.length>0">
       <span class="text-capitalize" translate>label.deleteAllDocument</span>?
     </span>
+    <span *ngIf="dashboardReset">
+      <span translate>button.resetLayout</span>?
+    </span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
@@ -34,6 +37,7 @@
   <div class="row text-center">
     <div class="col-sm-12">
       <span translate class="text" *ngIf="entry">message.deleteMainSection</span>
+      <span translate class="text" *ngIf="dashboardReset">dashboard.message.resetLayout</span>
       <span translate class="text" *ngIf="user">message.deleteUser</span>
       <span translate class="text" *ngIf="role">message.deleteRole</span>
       <span translate class="text" *ngIf="master">message.deleteMaster</span>
@@ -237,10 +241,10 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" *ngIf="!calendar" class="btn btn-danger btn-sm" (click)="activeModal.close()" translate>
+  <button type="button" *ngIf="!calendar && !dashboardReset" class="btn btn-danger btn-sm" (click)="activeModal.close()" translate>
     {{'button.delete' | translate}}
   </button>
-  <button type="button" *ngIf="calendar" class="btn btn-primary btn-sm" (click)="activeModal.close()" translate>
+  <button type="button" *ngIf="calendar || dashboardReset" class="btn btn-primary btn-sm" (click)="activeModal.close()" translate>
     {{'button.confirm' | translate}}
   </button>
   <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.dismiss('Cross click')" translate>
