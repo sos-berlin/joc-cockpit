@@ -12,3 +12,14 @@ body{color:rgba(255,255,255,.87);background:#00445a}.bg-blue-color{background-co
 .bg-white{
   background-color: #003040 !important;;
 }
+.collapse.in {
+    background: #003040;
+}
+.collapse.in::before {
+
+    border-bottom: solid 8px #003040;
+}
+
+.collapse.in > ul > li.nav-item .text-white {
+    color: #fff !important;
+}

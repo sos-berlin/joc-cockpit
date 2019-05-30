@@ -87,7 +87,7 @@
                             </div>
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
-                        <div class="inline" ng-if="pageView == 'in-out-conditions' && permission.Condition.view.graph">
+                        <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions' && permission.Condition.view.graph}">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                 <li class="nav-item">
                                   <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
@@ -159,20 +159,22 @@
         <div id="rightPanel1">
             <div class="row m-b m-t-sm" ng-class="{'hide':pageView=='in-out-conditions'}">
                 <div class="col-md-12">
-                    <button class="btn btn-sm btn-grey {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="expandDetails()" >
-                        <i class="fa fa fa-caret-down"></i>
+                    <button class="btn btn-sm btn-grey hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="expandDetails()" >
+                        <i class="fa fa-angle-double-down"></i>
                         <span translate>button.expandDetails</span>
                     </button>
-                    <button class="btn btn-sm btn-grey m-l-sm {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="collapseDetails()">
-                        <i class="fa fa fa-caret-up"></i>
+                    <button class="btn btn-sm btn-grey m-l-sm hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="collapseDetails()">
+                        <i class="fa fa-angle-double-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
-                        <i class="fa fa fa-refresh"></i>
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm hidden-btn-text" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa-refresh"></i>
                         <span translate>button.resetPanel</span>
                     </button>
-                    <button class="hide btn btn-grey btn-sm button-group-ellipsis" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
-                            ng-click="toggleCompactView()" translate>button.compactView
+                    <button class="hide btn btn-grey btn-sm hidden-btn-text" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
+                            ng-click="toggleCompactView()">
+                         <i class="fa fa-th-list"></i>
+                        <span translate>button.compactView</span>
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
@@ -181,7 +183,7 @@
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                     </button>
                     <div class="pull-right search-box-field">
-                        <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="jobFilters.searchText" ng-change="searchInResult()">
+                        <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="jobFilters.searchText" ng-change="searchInResult()">
                         <i ng-if="jobFilters.searchText" class="fa fa-times search-close" ng-click="jobFilters.searchText = '';searchInResult()"></i>
                     </div>
                 </div>

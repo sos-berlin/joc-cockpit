@@ -4190,8 +4190,9 @@
                 vm.reset();
         });
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.filtered.length > 0) {
-                vm.object.jobs = vm.filtered;
+            if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
+                var _job = $filter('orderBy')($scope.allJobs, vm.jobFilters.filter.sortBy, vm.jobFilters.reverse);
+                vm.object.jobs = _job.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();
             }
@@ -5985,7 +5986,6 @@
         };
 
         vm.assignWorkflow = function () {
-            console.log(vm.object.jobs);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/assign-workflow-dialog.html',
                 controller: 'DialogCtrl1',
@@ -8065,7 +8065,7 @@
             let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 38) + 'px)';
             $('#graph').slimscroll({height: ht});
             const panel = $('.property-panel');
-            $('.sidebar-open', panel).click(() => {
+            $('.sidebar-open', panel).click(function (){
                 $('.sidebar').css({'width': '296px', opacity: 1});
                 $('.sidebar-open').css('right', '-20px');
                 $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
@@ -8074,7 +8074,7 @@
                 //makeCenter(vm.editor.graph);
             });
 
-            $('.sidebar-close', panel).click(() => {
+            $('.sidebar-close', panel).click(function () {
                 $('.sidebar-open').css('right', '0');
                 $('.sidebar').css({'width': '0', opacity: 0});
                 $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
@@ -8082,7 +8082,8 @@
                 $('.sidebar-close').css('right', '-20px');
                 //makeCenter(vm.editor.graph);
             });
-            setTimeout(() => {
+            setTimeout(function () {
+                $('#outlineContainer').css({opacity: 1});
                 $('.sidebar-open').click();
             }, 100);
             recursivelyConnectJobs(false);
@@ -8090,7 +8091,7 @@
             /**
              * Changes the zoom on mouseWheel events
              */
-            $('.graph-container').bind('mousewheel DOMMouseScroll', (event) => {
+            $('.graph-container').bind('mousewheel DOMMouseScroll', function (event) {
                 if (vm.editor) {
                     if (event.ctrlKey) {
                         event.preventDefault();
@@ -8428,7 +8429,7 @@
             }
             for (let i = 0; i < edges2.length; i++) {
                 let state = graph.view.getState(edges2[i]);
-                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class',);
+                state.shape.node.getElementsByTagName('path')[1].removeAttribute('class');
             }
         }
 
@@ -8841,7 +8842,7 @@
                     const node = mxUtils.load(vm.configXml).getDocumentElement();
                     editor = new mxEditor(node);
                     vm.editor = editor;
-                    initEditorConf(editor, null);
+                    initEditorConf(editor);
                     const outln = document.getElementById('outlineContainer');
                     outln.style['border'] = '1px solid lightgray';
                     outln.style['background'] = '#FFFFFF';
@@ -8867,7 +8868,7 @@
          * Function to centered the flow diagram
          */
         function makeCenter(graph) {
-            let timeout = setTimeout(() => {
+            let timeout = setTimeout(function() {
                 graph.zoomActual();
                 graph.center(true, true, 0.5, 0);
                 clearTimeout(timeout);
@@ -8911,7 +8912,7 @@
         /**
          * Function to cverride Mxgraph properties and functions
          */
-        function initEditorConf(editor,) {
+        function initEditorConf(editor) {
             const graph = editor.graph;
 
             // Alt disables guides

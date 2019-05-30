@@ -56,8 +56,8 @@
                     <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                 </div>
                 <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}" ng-hide="!isLoadedAgentCluster">
-                    <div class="col-xs-offset-1 col-xs-4" ng-class="{'col-xs-11': agentClusterData.length==0}">
-                        <div ng-class="{'hide': agentClusterData.length==0}">
+                    <div class="col-xs-offset-1 col-md-offset-0 col-lg-offset-1 col-xs-4 col-md-4 col-lg-4" ng-class="{'col-xs-11': agentClusterData.length==0}">
+                        <div class="m-l-n-30" ng-class="{'hide': agentClusterData.length==0}">
                             <nvd3 options="pieOptions" data="agentClusterData"></nvd3>
                         </div>
                         <div ng-if="agentClusterData.length==0" class="text-u-c"
@@ -65,10 +65,10 @@
                             {{'message.noDataAvailable' | translate}}
                         </div>
                     </div>
-                    <div class="col-xs-7" ng-if="agentClusterData.length>0">
+                    <div class="col-xs-7 col-md-8 col-lg-7" ng-if="agentClusterData.length>0">
                         <ul class="status-list p-l"
                             ng-class="{'m-top-132': agentClusterData.length==1, 'm-top-122': agentClusterData.length==2 }">
-                            <li id="{{data.key}}" ng-repeat="data in agentClusterData | orderBy: 'key'" class="p-a-xs ">
+                            <li id="{{data.key}}" ng-repeat="data in agentClusterData | orderBy: 'key'" class="p-a-xs block-ellipsis-job">
                                 <i class="fa fa-stop {{data.key.substring(6)}}"></i>
                                 <a href="" ng-click="setLabel(data.key)"> {{data.key | translate}}</a></li>
                         </ul>
@@ -88,7 +88,10 @@
                 <div class="box-tool" ng-if="agentStatusChart[0].values.length>0">
                     <ul class="nav">
                         <li class="nav-item inline">
-                            <a href="" class="text-primary pull-right" ng-click="viewAllAgents()" translate>button.viewAllAgentsDetails</a>
+                            <a href="" class="text-primary pull-right view-all-agent" ng-click="viewAllAgents()">
+                                <span translate>button.viewAllAgentsDetails</span>
+                                <i class="fa fa-eye"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>

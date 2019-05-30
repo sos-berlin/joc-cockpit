@@ -193,10 +193,11 @@
             }
         };
 
+        vm.navObj = {collapse : false};
         vm.checkNavHeader = function () {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
-                $('a.navbar-item').addClass('collapsed');
+                vm.navObj.collapse = false;
             }
         };
 
@@ -353,17 +354,7 @@
                         $window.sessionStorage.preferences = JSON.stringify(preferences);
                         $window.localStorage.$SOS$THEME = preferences.theme;
                         $window.localStorage.$SOS$HEADERTHEME = preferences.headerColor;
-                        if (preferences.theme === 'lighter' || (preferences.theme === 'light' && preferences.headerColor === 'header-yellow')) {
-                            $('#orders_id img').attr("src", 'images/order.png');
-                            $('#jobs_id img').attr("src", 'images/job.png');
-                            $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
-                            $('#resources_id img').attr("src", 'images/resources1.png');
-                        } else {
-                            $('#orders_id img').attr("src", 'images/order1.png');
-                            $('#jobs_id img').attr("src", 'images/job1.png');
-                            $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
-                            $('#resources_id img').attr("src", 'images/resources.png');
-                        }
+
                         $window.localStorage.$SOS$LANG = preferences.locale;
 
                         $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {

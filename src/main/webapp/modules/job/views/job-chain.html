@@ -126,20 +126,22 @@
         <div id="rightPanel1">
             <div class="row m-b m-t-sm">
                 <div class="col-md-12">
-                    <button class="hide btn btn-sm btn-grey" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
-                        <i class="fa fa fa-caret-down"></i>
+                    <button class="hide btn btn-sm btn-grey hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
+                        <i class="fa fa-angle-double-down"></i>
                         <span translate>button.expandDetails</span>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
-                        <i class="fa fa fa-caret-up"></i>
+                    <button class="hide btn btn-sm btn-grey m-l-sm hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
+                        <i class="fa fa-angle-double-up"></i>
                         <span translate>button.collapseDetails</span>
                     </button>
-                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
-                        <i class="fa fa fa-refresh"></i>
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm hidden-btn-text" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa-refresh"></i>
                         <span translate>button.resetPanel</span>
                     </button>
-                    <button class="hide btn btn-grey btn-sm button-group-ellipsis" ng-class="{'btn-primary': jobChainFilters.isCompact == true, 'show-block':allJobChains.length>0}"
-                            ng-click="toggleCompactView()" translate>button.compactView
+                    <button class="hide btn btn-grey btn-sm hidden-btn-text" ng-class="{'btn-primary': jobChainFilters.isCompact == true, 'show-block':allJobChains.length>0}"
+                            ng-click="toggleCompactView()" >
+                        <i class="fa fa-th-list"></i>
+                        <span translate>button.compactView</span>
                     </button>
                     <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>

@@ -4,3 +4,6 @@
 }.nav-active-border3 .nav-text i {color: #333;}.text-check {
     color: #0b6623 !important
 }
+.collapse.in {
+   box-shadow: 3px 0px 6px rgba(0, 0, 0, 0.2);
+}

@@ -12,3 +12,14 @@ body{color:rgba(255,255,255,.87);background:#4e5c6a}.bg-blue-color{background-co
 .property-panel .sidebar-open, .property-panel .sidebar-close {
   background: url(../images/left-tips-blue-lt.svg) center no-repeat;
 }
+.collapse.in {
+    background: #46525f;
+}
+.collapse.in::before {
+
+    border-bottom: solid 8px #46525f;
+}
+
+.collapse.in > ul > li.nav-item .text-white {
+    color: #fff !important;
+}

@@ -1,6 +1,6 @@
 
 <div class="navbar box-shadow-z0 p-l-0 p-r-20">
-    <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hide-menubar m-a-0 m-l">
+    <a ng-click="navObj.collapse = !navObj.collapse" class="navbar-item pull-right hide-menubar m-a-0 m-l">
         <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
@@ -180,7 +180,7 @@
     </ul>
 
     <!-- navbar collapse -->
-    <div class="collapse navbar-toggleable-custom" id="navbar1">
+    <div class="collapse navbar-toggleable-custom" id="navbar1" ng-class="{'in': navObj.collapse}">
         <!-- link -->
         <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
             <li class="nav-item" ng-if="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">
@@ -193,8 +193,8 @@
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : permission.DailyPlan.view.status">
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
-                    <span class="nav-text" id="dailyPlan_id">
-                         <img src="images/daily_plan.png" width="15" height="16">
+                    <span class="nav-text icon">
+                        <i class="icon-daily-plan-icon text-white"></i>
                         <span  class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
                     </span>
                 </a>
@@ -209,16 +209,16 @@
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.orders != undefined) ? showViews.orders : permission.Order.view.status">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
-                    <span class="nav-text" id="orders_id" >
-                        <img src="images/order1.png" width="18" height="23" class="order-icon">
+                    <span class="nav-text icon"  >
+                        <i class="icon-orders-icon text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.orders</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.jobs != undefined) ? showViews.jobs : permission.Job.view.status">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
-                    <span class="nav-text " id="jobs_id">
-                        <img src="images/job1.png" width="22" height="21" class="job-icon">
+                    <span class="nav-text icon">
+                         <i class="icon-jobs-icon text-white"></i>
                         <span  class="font11 text-white text-u-c _600" translate>label.jobs</span>
                     </span>
                 </a>
@@ -234,8 +234,8 @@
             <li class="nav-item" ng-if="(showViews && showViews.resources != undefined) ? showViews.resources :  true">
                 <a class="nav-link" ui-sref="app.resources" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
                 permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status || permission.Event.view.status">
-                    <span class="nav-text" id="resources_id">
-                        <img src="images/resources.png">
+                    <span class="nav-text icon">
+                        <i class="icon-resources-icon text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
                     <span class="hide" ui-sref="app.resources.agentClusters"></span>
@@ -273,13 +273,5 @@
         e.stopPropagation();
     });
 
-    window.setTimeout(function () {
-        if (window.localStorage.$SOS$THEME === 'lighter' || (window.localStorage.$SOS$THEME === 'light' && window.localStorage.$SOS$HEADERTHEME === 'header-yellow')) {
-            $('#orders_id img').attr("src", 'images/order.png');
-            $('#jobs_id img').attr("src", 'images/job.png');
-            $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
-            $('#resources_id img').attr("src", 'images/resources1.png');
-        }
-    }, 0);
 </script>
 
