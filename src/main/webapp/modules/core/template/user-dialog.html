@@ -18,7 +18,7 @@
             <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
                 <label class="col-sm-4 form-control-label" translate>label.user</label>
                 <div class=" col-sm-6" >
-                    <input type="text" class="form-control" name="name" placeholder="{{'placeholder.user' | translate}}" autocomplete="false" ng-model="user.user" required ng-blur="checkUser()">
+                    <input type="text" class="form-control" name="name" placeholder="{{'placeholder.user' | translate}}" autocomplete="off" ng-model="user.user" required ng-blur="checkUser()">
                     <div class="help-block text-danger" ng-if="form.name.$dirty"
                          ng-messages="form.name.$error">
                         <div ng-message="required" translate>message.requiredError</div>
@@ -31,7 +31,7 @@
             <div class="form-group row" ng-if="!copy">
                 <label class="col-sm-4 form-control-label" translate>label.password</label>
                 <div class=" col-sm-6">
-                    <input type="password" class="form-control" name="password" placeholder="{{'placeholder.password' | translate}}" ng-model="user.fakepassword">
+                    <input type="password" class="form-control" autocomplete="off" name="password" placeholder="{{'placeholder.password' | translate}}" ng-model="user.fakepassword">
                 </div>
             </div>
             <div class="form-group row" ng-if="!copy" ng-class="{ 'has-error' : form.role.$invalid && form.role.$dirty}">

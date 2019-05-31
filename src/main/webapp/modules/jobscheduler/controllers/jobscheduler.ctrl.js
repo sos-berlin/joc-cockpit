@@ -5139,8 +5139,11 @@
             if (toState.name == 'app.resources.agentClusters') {
                 vm.resourceFilters.state = 'agent';
                 vm.pageView = views.agent;
-                if (toParams.type && toParams.type != 'all')
+                if (toParams.type && toParams.type != 'all') {
                     vm.agentsFilters.filter.state = toParams.type == 'healthy' ? '0' : toParams.type == 'unhealthy' ? '1' : '2';
+                }else{
+                    vm.agentsFilters.filter.state = 'all';
+                }
                 vm.treeAgent = [];
                 initAgentTree(toParams.type);
             } else if (toState.name == 'app.resources.locks') {

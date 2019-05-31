@@ -41,9 +41,9 @@
             vm.isLoading = true;
             return;
         }
-
+        var t1, t2;
         function resizeSidePanel() {
-            let timeout = setTimeout(function () {
+            t1 = $timeout(function () {
                 let ht = ($('.app-header').height() || 61)
                     + ($('.top-header-bar').height() || 16)
                     + $('.sub-header').height() + 24;
@@ -51,7 +51,7 @@
                 $('#leftPanel').stickySidebar({
                     sidebarTopMargin: ht
                 });
-                clearTimeout(timeout);
+
             }, 0);
         }
 
@@ -738,7 +738,7 @@
         });
 
         function _updatePanelHeight(info) {
-            setTimeout(function () {
+             t2 = $timeout(function () {
                 let num = info ? 20 : 50;
                 let ht = (parseInt($('#jobChainTableId').height()) + num);
                 let el = info ? document.getElementById('jobChainInfoDivId') : document.getElementById('jobChainDivId');
@@ -2993,7 +2993,7 @@
 
         var loadFileBasedObj = true, isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false,
             jobChainPaths = [];
-        var t1 = '';
+
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 if (!isOperationGoingOn) {
@@ -3295,6 +3295,9 @@
             watcher6();
             if (t1) {
                 $timeout.cancel(t1);
+            }
+            if (t2) {
+                $timeout.cancel(t2);
             }
         });
     }
@@ -4120,7 +4123,7 @@
                 vm.loading = false;
                 vm.isLoaded = true;
                 volatileInformation(obj, null, true);
-                if(reload) {
+                if (reload) {
                     $scope.$broadcast('reloadWorkflow');
                 }
             }, function () {
@@ -6006,7 +6009,7 @@
                 job: job.path
             }).then(function (res) {
                 vm._job.inconditions = res.inconditions;
-                if(vm._job.inconditions && vm._job.inconditions.length > 0) {
+                if (vm._job.inconditions && vm._job.inconditions.length > 0) {
                     openDialog();
                 }
                 ConditionService.outCondition({
@@ -6014,7 +6017,7 @@
                     job: job.path
                 }).then(function (result) {
                     vm._job.outconditions = result.outconditions;
-                    if(vm._job.inconditions && vm._job.inconditions.length === 0) {
+                    if (vm._job.inconditions && vm._job.inconditions.length === 0) {
                         openDialog();
                     }
                 });
@@ -6119,7 +6122,6 @@
         }
 
         var isOperationGoingOn = false, isAnyFileEventOnHold = false, isFuncCalled = false, jobPaths = [];
-        var t1 = '';
         $scope.$on('event-started', function () {
             if (!isOperationGoingOn) {
                 if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
@@ -6403,13 +6405,11 @@
             watcher5();
             watcher6();
             watcher7();
-            if (t1) {
-                $timeout.cancel(t1);
-            }
         });
     }
 
     JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter"];
+
     function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
@@ -7997,9 +7997,9 @@
                 }
             }
         }
-
+        var t1;
         function _updatePanelHeight() {
-            let timeout = setTimeout(function () {
+            t1 = $timeout(function () {
                 let ht = (parseInt($('#jobTableId').height()) + 50);
                 let el = document.getElementById('jobDivId');
                 if (el && el.scrollWidth > el.clientWidth) {
@@ -8010,7 +8010,7 @@
                 }
                 vm.resizerHeight = ht + 'px';
                 $('#jobDivId').css('height', vm.resizerHeight);
-                clearTimeout(timeout);
+
             }, 5);
         }
 
@@ -8037,12 +8037,16 @@
             watcher2();
             watcher3();
             watcher4();
+            if (t1) {
+                $timeout.cancel(t1);
+            }
+
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.jobFilters.isWorkflowCompact = vm.jobFilters.isWorkflowCompact ? vm.jobFilters.isWorkflowCompact : false;
@@ -8065,7 +8069,7 @@
             let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 38) + 'px)';
             $('#graph').slimscroll({height: ht});
             const panel = $('.property-panel');
-            $('.sidebar-open', panel).click(function (){
+            $('.sidebar-open', panel).click(function () {
                 $('.sidebar').css({'width': '296px', opacity: 1});
                 $('.sidebar-open').css('right', '-20px');
                 $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
@@ -8370,7 +8374,7 @@
                 }
                 for (let i = 0; i < vertexes.length; i++) {
                     if (graph.getOutgoingEdges(vertexes[i]) && graph.getOutgoingEdges(vertexes[i]).length === 0) {
-                       graph.removeCells([vertexes[i]], true);
+                        graph.removeCells([vertexes[i]], true);
                     }
                 }
                 if (reload) {
@@ -8545,7 +8549,7 @@
             });
         };
 
-        let isFunction = false;
+        let isFunction = false,  t1;
         vm.generateExpression = function (operator, func) {
             if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
                 isFunction = false;
@@ -8868,10 +8872,9 @@
          * Function to centered the flow diagram
          */
         function makeCenter(graph) {
-            let timeout = setTimeout(function() {
+             t1 = $timeout(function () {
                 graph.zoomActual();
                 graph.center(true, true, 0.5, 0);
-                clearTimeout(timeout);
             }, 0);
         }
 
@@ -8898,7 +8901,7 @@
                 w = size.width + 16 < 60 ? 60 : size.width + 16;
                 if (w > 100) {
                     h = w / 2;
-                }else{
+                } else {
                     h = w - 3;
                 }
             } else if (style === 'event' || style === 'event1') {
@@ -9198,7 +9201,7 @@
                 }
                 if (state.cell && state.cell.value.tagName === 'OutCondition') {
                     return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s),
-                        Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) +3, w * s, h * s);
+                        Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) + 3, w * s, h * s);
                 } else {
                     return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s),
                         Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) - 3, w * s, h * s);
@@ -9235,6 +9238,9 @@
         });
 
         $scope.$on('$destroy', function () {
+            if (t1) {
+                $timeout.cancel(t1);
+            }
             try {
                 if (vm.editor) {
                     vm.editor.destroy();
@@ -9243,6 +9249,7 @@
             } catch (e) {
                 console.error(e);
             }
+
         });
     }
 })();

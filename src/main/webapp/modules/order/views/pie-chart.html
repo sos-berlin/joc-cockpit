@@ -12,7 +12,7 @@
     <div class="order-panel" style="margin-top: -10px;">
         <div class="all" >
             <span class="text-black-lt _300" ng-class="{'_600': status =='ALL'}"><a id="allorders_id" href ng-click="setFilter('ALL')" class="primary-text-hover-color" translate>label.allOrders</a></span>
-            <a ng-click="setFilter('ALL')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='ALL'}" ng-bind="snapshot.running+snapshot.suspended+snapshot.setback+snapshot.waitingForResource+snapshot.pending || 0"></a>
+            <a ng-click="setFilter('ALL')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='ALL'}" ng-bind="snapshot.running+snapshot.suspended+snapshot.setback+snapshot.waitingForResource+snapshot.pending+snapshot.blacklist || 0"></a>
         </div>
         <div class="pending" >
             <span class="text-black-lt _300" ng-class="{'_600': status =='PENDING'}"><a href ng-click="setFilter('PENDING')" class="primary-text-hover-color" translate>label.ordersPending</a></span>

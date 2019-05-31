@@ -56,7 +56,7 @@
                     <i ng-if="editLayoutObj" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                 </div>
                 <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}" ng-hide="!isLoadedAgentCluster">
-                    <div class="col-xs-offset-1 col-md-offset-0 col-lg-offset-1 col-xs-4 col-md-4 col-lg-4" ng-class="{'col-xs-11': agentClusterData.length==0}">
+                    <div class="col-xs-offset-1 col-md-offset-0 col-lg-offset-1 col-xs-4 col-md-4 col-lg-4" ng-class="{'col-xs-11 col-md-11 col-lg-11': agentClusterData.length==0}">
                         <div class="m-l-n-30" ng-class="{'hide': agentClusterData.length==0}">
                             <nvd3 options="pieOptions" data="agentClusterData"></nvd3>
                         </div>

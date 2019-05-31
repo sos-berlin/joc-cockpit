@@ -3685,7 +3685,12 @@ input[type=search] {
     width: 100%;
     border-bottom: 1px solid #ccc
 }
-
+.ui-select-multiple input[type=search] {
+    top: 0;
+}
+.ui-select-multiple{
+    background: transparent !important;
+}
 input[type=search]:focus {
     font-weight: 300;
     width: 100%;
@@ -4760,7 +4765,9 @@ div.min-ht-widget-master-status {
     background: 0 0;
     border: 1px solid rgba(120, 130, 140, .13)
 }
-
+span.btn-default {
+    border-width: 0;
+}
 input[type=search]::-ms-clear, input[type=text]::-ms-clear {
     display: none;
     width: 0;
@@ -4924,27 +4931,11 @@ i.fa-hand-o-up:hover {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-compactview:before {
-  content: "\e000";
-}
-
-.icon-audit-log-icon:before {
-  content: "\e004";
-}
-.icon-bell-icon:before {
-  content: "\e005";
-}
-.icon-jobs-icon:before {
-  content: "\e006";
-}
-.icon-lock-icon:before {
-  content: "\e007";
+.icon-alarm-icon:before {
+  content: "\e001";
 }
 .icon-calendar-icon:before {
   content: "\e008";
-}
-.icon-category-icon:before {
-  content: "\e009";
 }
 .icon-orders-icon:before {
   content: "\e00b";
@@ -4955,29 +4946,24 @@ i.fa-hand-o-up:hover {
 .icon-daily-plan-icon:before {
   content: "\e00f";
 }
-.icon-resources-icon:before {
-  content: "\e010";
-}
 .icon-restore-clock-icon:before {
   content: "\e011";
 }
-
 .icon-upload-icon:before {
   content: "\e014";
-}
-.icon-waiting-icon:before {
-  content: "\e015";
-}
-.icon-export-icon:before {
-  content: "\e016";
 }
 .icon-file-transfers-icon:before {
   content: "\e017";
 }
-.icon-workflows-icon:before {
-  content: "\e018";
+.icon-newcompactview:before {
+  content: "\e00c";
 }
-
+.icon-share-resource:before {
+  content: "\e01a";
+}
+.icon-jobs-icon:before {
+  content: "\e002";
+}
 div.mxTooltip {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     background: black;
@@ -5088,3 +5074,7 @@ span.icon span{
     margin-top: 5px;
 }
 
+input:-webkit-autofill {
+  background-color: transparent;
+  -webkit-box-shadow: 0 0 0 100px white inset;
+}
