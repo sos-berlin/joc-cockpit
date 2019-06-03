@@ -32,7 +32,7 @@ export class CalendarService {
       return 'every month';
     }
 
-    months.sort(this.compareNumbers).forEach(function (value) {
+    months.sort(this.compareNumbers).forEach((value) => {
       if (value == 1) {
         str = str + 'Jan,';
       } else if (value == 2) {
@@ -60,7 +60,7 @@ export class CalendarService {
       }
     });
 
-    if (str.length == 1) {
+    if (str.length === 1) {
       return '';
     } else {
       if (str.substring(str.length - 1) == ',') {
@@ -78,7 +78,7 @@ export class CalendarService {
     if (!_.isArray(day)) {
       days = day.toString().split(' ');
     }
-    if (days.length == 7) {
+    if (days.length === 7) {
       return 'Every day';
     }
     let str = '';
@@ -102,11 +102,12 @@ export class CalendarService {
       }
     });
 
-    if (str.length == 1) {
+    if (str.length === 1) {
       return '';
     } else {
-      if (str.substring(str.length - 1) == ',')
+      if (str.substring(str.length - 1) == ',') {
         str = str.substring(0, str.length - 1);
+      }
     }
     return str;
   }
@@ -159,10 +160,9 @@ export class CalendarService {
       } else {
         str = str + months[i] + 'th,';
       }
-
     }
 
-    if (str.length == 1) {
+    if (str.length === 1) {
       return '';
     } else {
       if (str.substring(str.length - 1) == ',') {
@@ -226,15 +226,14 @@ export class CalendarService {
       } else {
         str = data.interval + 'th ';
       }
-      let repetitions = data.dateEntity == 'DAILY' ? 'day' : data.dateEntity == 'WEEKLY' ? 'week' : data.dateEntity == 'MONTHLY' ? 'month' : 'year';
+      let repetitions = data.dateEntity === 'DAILY' ? 'day' : data.dateEntity == 'WEEKLY' ? 'week' : data.dateEntity == 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
         let formattedDate = moment(data.startingWith, 'DD-MM-YYYY');
         return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(formattedDate, dataFormat);
       } else {
         return 'Every ' + str + repetitions;
       }
-
-    } else if (data.tab == 'nationalHoliday') {
+    } else if (data.tab === 'nationalHoliday') {
       if (data.nationalHoliday) {
         str = moment(data.nationalHoliday[0]).format('YYYY') + ' national holidays ';
 
@@ -314,8 +313,9 @@ export class CalendarService {
           obj.includes.weekdays.push({days: data.days, from: from, to: to});
         } else if (data.tab == 'monthDays') {
           if (data.isUltimos == 'months') {
-            if (!obj.includes.monthdays)
+            if (!obj.includes.monthdays) {
               obj.includes.monthdays = [];
+            }
 
             if (data.startingWithM) {
               from = moment(data.startingWithM).format('YYYY-MM-DD');
@@ -349,8 +349,9 @@ export class CalendarService {
             to = moment(data.endOnS).format('YYYY-MM-DD');
           }
           if (data.which > 0) {
-            if (!obj.includes.monthdays)
+            if (!obj.includes.monthdays) {
               obj.includes.monthdays = [];
+            }
             obj.includes.monthdays.push({weeklyDays: arr, from: from, to: to});
           } else {
             if (!obj.includes.ultimos)

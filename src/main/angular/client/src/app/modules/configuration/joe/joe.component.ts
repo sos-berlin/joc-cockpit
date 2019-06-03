@@ -791,8 +791,9 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
     if (this.holidayDays.checked && this.holidayList.length > 0) {
       let temp = [];
       for (let m = 0; m < this.holidayList.length; m++) {
-        if (this.frequency.nationalHoliday.indexOf(this.holidayList[m].date) == -1)
+        if (this.frequency.nationalHoliday.indexOf(this.holidayList[m].date) == -1) {
           temp.push(this.holidayList[m].date);
+        }
       }
 
       this.frequency.nationalHoliday = this.frequency.nationalHoliday.concat(temp);
@@ -857,13 +858,15 @@ export class FrequencyModalComponent implements OnInit, OnDestroy {
   }
 
   getSelectedMonthDays(value) {
-    if (this.selectedMonths.indexOf(value) != -1)
+    if (this.selectedMonths.indexOf(value) != -1) {
       return true;
+    }
   }
 
   getSelectedMonthDaysU(value) {
-    if (this.selectedMonthsU.indexOf(value) != -1)
+    if (this.selectedMonthsU.indexOf(value) != -1) {
       return true;
+    }
   }
 
   selectAllWeek() {
@@ -2544,12 +2547,6 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
         outln.style['border'] = '1px solid lightgray';
         outln.style['background'] = '#FFFFFF';
         new mxOutline(this.editor.graph, outln);
-        editor.graph.allowAutoPanning = true;
-        editor.graph.timerAutoScroll = true;
-        editor.addListener(mxEvent.OPEN);
-        // Prints the current root in the window title if the
-        // current root of the graph changes (drilling).
-        editor.addListener(mxEvent.ROOT);
       }
     } catch (e) {
       // Shows an error message if the editor cannot start
@@ -2710,8 +2707,14 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
     $('.sidebar-open', panel).click(() => {
       $('.sidebar').css({'width': '296px', opacity: 1});
       $('.sidebar-open').css('right', '-20px');
-      $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
-      $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+      if (window.innerWidth > 1024) {
+        $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
+        $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+      } else {
+        $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+        $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+      }
+
       $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
       this.centered();
     });
@@ -2724,9 +2727,11 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       $('.sidebar-close').css('right', '-20px');
       this.centered();
     });
-    setTimeout(() => {
-      $('.sidebar-open').click();
-    }, 100);
+    if (window.innerWidth > 1024) {
+      setTimeout(() => {
+        $('.sidebar-open').click();
+      }, 100);
+    }
 
   }
 
@@ -3855,6 +3860,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
       mxEdgeHandler.prototype.snapToTerminals = true;
 
       graph.setConnectable(false);
+      graph.setPanning(true);
       graph.setEnabled(false);
       graph.setDisconnectOnMove(false);
       graph.collapseToPreferredSize = false;
@@ -4011,7 +4017,7 @@ export class WorkFlowTemplateComponent implements OnInit, OnDestroy {
           const dom = $('#toolbar');
           if (dom.find('img.mxToolbarModeSelected').not('img:first-child')[0]) {
             const sourceCell = dom.find('img.mxToolbarModeSelected').not('img:first-child');
-            if (result === 'valid') {
+            if (result === 'valid' || evt.pointerType === 'touch') {
               let _result = checkValidTarget(cell, sourceCell.attr('src'));
               if(_result !== 'select'){
                 result = _result;

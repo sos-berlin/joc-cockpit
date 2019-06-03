@@ -343,10 +343,11 @@ export class SearchComponent implements OnInit {
   template: `<div #jsgantt class='jsgantt-chart'></div>`,
 })
 export class GanttComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild('jsgantt') ganttContainer: ElementRef;
+  @ViewChild('jsgantt') editor: ElementRef;
 
   @Input() data: any;
   @Input() groupBy: any;
+  @Input() sortBy: any;
   @Input() preferences: any;
   @Output() dataEvent = new EventEmitter<any>();
   tasks = [];
@@ -370,8 +371,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
     this.translate.get('button.changeParameter').subscribe(translatedValue => {
       btnChangeParameter = translatedValue;
     });
-    jsgantt.config.columns = [{name: 'jobChain', tree: !0, label: workflow, align: 'left'}, {
-      name: 'orderId', label: orderId, width: '*', align: 'left'
+    jsgantt.config.columns = [{name: 'col2', tree: !0, label: workflow, align: 'left'}, {
+      name: 'col1', label: orderId, width: '*', align: 'left'
     }];
     jsgantt.config.btnRemoveOrder = btnRemoveOrder;
     jsgantt.config.btnChangeParameter = btnChangeParameter;
@@ -380,11 +381,11 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       return task.class;
     };
 
-    $(document).on('mouseover', '.my-tooltip', function () {
+    $(this.editor.nativeElement).on('mouseover', '.my-tooltip', function () {
       $(this).tooltip('show');
     });
 
-    $(document).on('mouseout', '.my-tooltip', function () {
+    $(this.editor.nativeElement).on('mouseout', '.my-tooltip', function () {
       $('.tooltip').tooltip('hide');
     });
     $(document).on('click', '.dropdown-item', function (e) {
@@ -402,8 +403,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
         }
         for (let x = 0; x < _len; x++) {
           if (self.tasks[x].id == _id) {
-            order.orderId = self.tasks[x].orderId;
-            order.workflow = self.tasks[x].jobChain;
+            order.orderId = self.tasks[x].col1;
+            order.workflow = self.tasks[x].col2;
             break;
           }
         }
@@ -411,9 +412,10 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       }
     });
 
-    jsgantt.init(this.ganttContainer.nativeElement);
+    this.editor.nativeElement.style.height = 'calc(100vh - 248px)';
+    jsgantt.init(this.editor.nativeElement);
     this.init();
-    $('.jsgantt-chart').css({height: 'calc(100vh - 248px)'});
+
   }
 
   private init(): void {
@@ -425,8 +427,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
       for (let i = 0; i < len; i++) {
         let _obj = {
           id: ++count,
-          jobChain: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].jobChain,
-          orderId: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
+          col1: this.groupBy === 'WORKFLOW' ? plans[i].value[0].orderId : plans[i].key,
+          col2: this.groupBy === 'WORKFLOW' ? plans[i].key : plans[i].value[0].jobChain,
           open: true,
           isWorkflow: this.groupBy === 'WORKFLOW'
         };
@@ -436,8 +438,8 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           let dur = moment(plans[i].value[j].expectedEndTime).diff(plans[i].value[j].plannedStartTime) / 1000; // In second
           let obj: any = {
             id: ++count,
-            jobChain: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].jobChain,
-            orderId: plans[i].value[j].orderId,
+            col1: plans[i].value[j].orderId,
+            col2: this.groupBy === 'WORKFLOW' ? '' : plans[i].value[j].jobChain,
             plannedDate: moment(plans[i].value[j].plannedStartTime).tz(this.preferences.zone).format('YYYY-MM-DD HH:mm:ss'),
             begin: plans[i].value[j].period.begin ? moment(plans[i].value[j].period.begin).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
             end: plans[i].value[j].period.end ? moment(plans[i].value[j].period.end).tz(self.preferences.zone).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -450,24 +452,24 @@ export class GanttComponent implements OnInit, OnDestroy, OnChanges {
           this.tasks.push(obj);
         }
       }
-
-
     }
-    Promise.all([this.getTask(), []])
-      .then(([data, links]) => {
-        jsgantt.parse({data, links});
-      });
+    jsgantt.parse({data: this.tasks});
   }
 
-  getTask(): Promise<any[]> {
-    return Promise.resolve(this.tasks);
-  }
+
 
   ngOnChanges(changes: SimpleChanges): void {
+
     const _groupBy: SimpleChange = changes.groupBy;
-    if (_groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
+    const _sortBy: SimpleChange = changes.sortBy;
+    if (_groupBy && _groupBy.previousValue && (_groupBy.previousValue !== _groupBy.currentValue)) {
       this.init();
       jsgantt.render();
+    }
+    if (_sortBy && _sortBy.previousValue && (_sortBy.previousValue !== _sortBy.currentValue)) {
+     
+     // this.init();
+      //jsgantt.render();
     }
   }
 

@@ -8,7 +8,7 @@ var JSGantt = function () {
       return t[n].call(r.exports, r, r.exports, i), r.l = !0, r.exports
     }
 
-    return i(i.s = 159)
+    return i(i.s = 158)
   }([function (t, e, i) {
     var n, r = i(3);
     t.exports = {
@@ -351,14 +351,16 @@ var JSGantt = function () {
         return this._currentBorders && (this._currentBorders[this._borders.left] && (t.left = 1, t.horizontal++), this._currentBorders[this._borders.right] && (t.right = 1, t.horizontal++), this._currentBorders[this._borders.top] && (t.top = 1, t.vertical++), this._currentBorders[this._borders.bottom] && (t.bottom = 1, t.vertical++)), t
       }, t.prototype.setSize = function (t, e) {
         this.$view.style.height = e + "px";
+       // console.log('is call on tooltip', this.$view);
         if($(this.$view).hasClass('jsgantt-layout-cell jsgantt-hor-scroll')) {
           let self = this;
-          setTimeout(function () {
+          let x = setTimeout(function () {
             if($('.jsgantt-resizer-x').position()) {
               let l = $('.jsgantt-resizer-x').position().left;
               self.$view.style.width = (t - l) + "px";
               self.$view.style.marginLeft = l + "px";
             }
+            clearTimeout(x);
           }, 0)
         } else {
           this.$view.style.width = t + "px";
@@ -407,7 +409,6 @@ var JSGantt = function () {
   }, function (t, e) {
     var i = {
       isIE: navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0,
-      isIE8: navigator.userAgent.indexOf("MSIE 8.0") >= 0 && navigator.userAgent.indexOf("Trident") >= 0,
       isOpera: navigator.userAgent.indexOf("Opera") >= 0,
       isChrome: navigator.userAgent.indexOf("Chrome") >= 0,
       isKHTML: navigator.userAgent.indexOf("Safari") >= 0 || navigator.userAgent.indexOf("Konqueror") >= 0,
@@ -795,26 +796,8 @@ var JSGantt = function () {
       }
     }
   }, function (t, e) {
-    function i(t, e, i) {
-      for (var n = 0; n < e.length; n++) t.isLinkExists(e[n]) && (i[e[n]] = t.getLink(e[n]))
-    }
-
-    function n(t, e, n) {
-      i(t, e.$source, n), i(t, e.$target, n)
-    }
-
     t.exports = {
-      getSubtreeLinks: function (t, e) {
-        var i = {};
-        return t.isTaskExists(e) && n(t, t.getTask(e), i), t.eachTask(function (e) {
-          n(t, e, i)
-        }, e), i
-      }, getSubtreeTasks: function (t, e) {
-        var i = {};
-        return t.eachTask(function (t) {
-          i[t.id] = t
-        }, e), i
-      }
+
     }
   }, function (t, e, i) {
     var n = i(33);
@@ -1200,7 +1183,7 @@ var JSGantt = function () {
         }(e, u, f, o);
         var g = function (e, i, n) {
           var r = document.createElement("div");
-          r.className = "jsgantt-task-content my-tooltip", r.title = "<b>Order ID:</b>" + e.orderId + "<br/>Repeat every " + e.repeat + "<br/>" + e.begin + " - " + e.end;
+          r.className = "jsgantt-task-content my-tooltip", r.title = "<b>Order ID:</b>" + e.col1 + "<br/>Repeat every " + e.repeat + "<br/>" + e.begin + " - " + e.end;
           var a = document.createAttribute("data-toggle");
           a.value = "tooltip", r.setAttributeNode(a);
           var s = document.createAttribute("data-html");
@@ -1245,16 +1228,6 @@ var JSGantt = function () {
       }
 
       function n(e, i) {
-        var n = function (e) {
-          return e ? {
-            $source: [t.config.links.start_to_start],
-            $target: [t.config.links.start_to_start, t.config.links.finish_to_start]
-          } : {
-            $source: [t.config.links.finish_to_start, t.config.links.finish_to_finish],
-            $target: [t.config.links.finish_to_finish]
-          }
-        }(e);
-        for (var r in n) for (var a = i[r], s = 0; s < a.length; s++) for (var o = t.getLink(a[s]), l = 0; l < n[r].length; l++) if (o.type == n[r][l]) return "jsgantt-link-crossing";
         return ""
       }
 
@@ -1624,7 +1597,7 @@ var JSGantt = function () {
           for (var r = this.getCellsByType("scroller"), a = 0; a < n.length; a++) n[a].$config.hidden || n[a].setContentSize();
           var s = this._getAutosizeMode(this.$config.autosize), o = this._resizeScrollbars(s, r);
           if (this.$config.autosize && (this.autosize(this.$config.autosize), o = !0), o) for (this.resize(), a = 0; a < n.length; a++) n[a].$config.hidden || n[a].setContentSize();
-          this.callEvent("onResize", [])
+          this.callEvent("onPanelResize", [])
         }
         i && (this._resizeInProgress = !1)
       }, e.prototype._eachChild = function (t, e) {
@@ -1901,13 +1874,13 @@ var JSGantt = function () {
       }, t._reinit = function (i) {
         this.callEvent("onBeforeGanttReady", []), this._eventRemoveAll(), this.$mouseEvents.reset(), this._update_flags(), this.$services.getService("templateLoader").initTemplates(this), this._clearTaskLayers(), this._clearLinkLayers(), this.$layout && (this.$layout.destructor(), this.$ui.reset()), this.$root = n.toNode(i), this.$root && (this.$root.innerHTML = ""), this.$root.jsgantt = this, e(this), this.config.layout.id = "main", this.$layout = this.$ui.createView("layout", i, this.config.layout), this.$layout.attachEvent("onBeforeResize", function () {
           for (var e = t.$services.getService("datastores"), i = 0; i < e.length; i++) t.getDatastore(e[i]).filter()
-        }), this.$layout.attachEvent("onResize", function () {
+        }), this.$layout.attachEvent("onPanelResize", function () {
           t.refreshData()
-        }), this.callEvent("onGanttLayoutReady", []), this.$layout.render(), t.$container = this.$layout.$container.firstChild, function (t) {
+        }), this.callEvent("onJSGanttLayoutReady", []), this.$layout.render(), t.$container = this.$layout.$container.firstChild, function (t) {
           "static" == window.getComputedStyle(t.$root).getPropertyValue("position") && (t.$root.style.position = "relative");
           var e = document.createElement("iframe");
           e.className = "jsgantt-container-resize-watcher", e.tabIndex = -1, t.$root.appendChild(e), e.contentWindow ? a(t, e.contentWindow) : (t.$root.removeChild(e), a(t, window))
-        }(t), this.callEvent("onTemplatesReady", []), this.$mouseEvents.reset(this.$root), this.callEvent("onGanttReady", []), this.render()
+        }(t), this.callEvent("onTemplatesReady", []), this.$mouseEvents.reset(this.$root), this.callEvent("onJSGanttReady", []), this.render()
       }, t.$click = {}, t.render = function () {
         this.callEvent("onBeforeGanttRender", []), !this.config.sort && this._sort && (this._sort = void 0);
         var i = this.getScrollState(), n = i ? i.x : 0;
@@ -1917,7 +1890,7 @@ var JSGantt = function () {
           var a = t.getScrollState();
           +r == +t.dateFromPos(a.x) && a.y == i.y || (r && this.showDate(r), i.y && t.scrollTo(void 0, i.y))
         }
-        this.callEvent("onGanttRender", [])
+        this.callEvent("onJSGanttRender", [])
       }, t.setSizes = t.render, t.locate = function (t) {
         var e = n.getTargetNode(t);
         if ((n.getClassName(e) || "").indexOf("jsgantt-task-cell") >= 0) return null;
@@ -1961,105 +1934,15 @@ var JSGantt = function () {
     t.exports = function (t) {
       t.locale = {
         date: {
-          month_full: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-          month_short: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          day_full: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-          day_short: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          fullMonth: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+          shortMonth: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          fullDay: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          shortDay: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
         }
       }
     }
   }, function (t, e) {
     t.exports = function (t) {
-      function e() {
-        var e;
-        return t.$ui.getView("timeline") && (e = t.$ui.getView("timeline")._tasks_dnd), e
-      }
-
-      t.config.touch_drag = 500, t.config.touch = !0, t.config.touch_feedback = !0, t.config.touch_feedback_duration = 1, t._prevent_touch_scroll = !1, t._touch_feedback = function () {
-        t.config.touch_feedback && navigator.vibrate && navigator.vibrate(t.config.touch_feedback_duration)
-      }, t.attachEvent("onGanttReady", t.bind(function () {
-        if ("force" != this.config.touch && (this.config.touch = this.config.touch && (-1 != navigator.userAgent.indexOf("Mobile") || -1 != navigator.userAgent.indexOf("iPad") || -1 != navigator.userAgent.indexOf("Android") || -1 != navigator.userAgent.indexOf("Touch"))), this.config.touch) {
-          var t = !0;
-          try {
-            document.createEvent("TouchEvent")
-          } catch (e) {
-            t = !1
-          }
-          t ? this._touch_events(["touchmove", "touchstart", "touchend"], function (t) {
-            return t.touches && t.touches.length > 1 ? null : t.touches[0] ? {
-              target: t.target,
-              pageX: t.touches[0].pageX,
-              pageY: t.touches[0].pageY,
-              clientX: t.touches[0].clientX,
-              clientY: t.touches[0].clientY
-            } : t
-          }, function () {
-            return !1
-          }) : window.navigator.pointerEnabled ? this._touch_events(["pointermove", "pointerdown", "pointerup"], function (t) {
-            return "mouse" == t.pointerType ? null : t
-          }, function (t) {
-            return !t || "mouse" == t.pointerType
-          }) : window.navigator.msPointerEnabled && this._touch_events(["MSPointerMove", "MSPointerDown", "MSPointerUp"], function (t) {
-            return t.pointerType == t.MSPOINTER_TYPE_MOUSE ? null : t
-          }, function (t) {
-            return !t || t.pointerType == t.MSPOINTER_TYPE_MOUSE
-          })
-        }
-      }, t));
-      var i = [];
-      t._touch_events = function (n, r, a) {
-        for (var s, o = 0, l = !1, c = !1, d = null, h = null, u = null, f = 0; f < i.length; f++) t.eventRemove(i[f][0], i[f][1], i[f][2]);
-        for ((i = []).push([t.$container, n[0], function (i) {
-          var n = e();
-          if (!a(i) && l) {
-            h && clearTimeout(h);
-            var u = r(i);
-            if (n && (n.drag.id || n.drag.start_drag)) return n.on_mouse_move(u), i.preventDefault && i.preventDefault(), i.cancelBubble = !0, !1;
-            if (!t._prevent_touch_scroll) {
-              if (u && d) {
-                var f = d.pageX - u.pageX, _ = d.pageY - u.pageY;
-                if (!c && (Math.abs(f) > 5 || Math.abs(_) > 5) && (t._touch_scroll_active = c = !0, o = 0, s = t.getScrollState()), c) {
-                  t.scrollTo(s.x + f, s.y + _);
-                  var p = t.getScrollState();
-                  if (s.x != p.x && _ > 2 * f || s.y != p.y && f > 2 * _) return g(i)
-                }
-              }
-              return g(i)
-            }
-            return !0
-          }
-        }]), i.push([this.$container, "contextmenu", function (t) {
-          if (l) return g(t)
-        }]), i.push([this.$container, n[1], function (i) {
-          if (!a(i)) if (i.touches && i.touches.length > 1) l = !1; else {
-            d = r(i), t._locate_css(d, "jsgantt-hor-scroll") || t._locate_css(d, "jsgantt-ver-scroll") || (l = !0);
-            var n = e();
-            h = setTimeout(function () {
-              var e = t.locate(d);
-              n && e && !t._locate_css(d, "jsgantt-link-control") && !t._locate_css(d, "jsgantt-grid-data") && (n.on_mouse_down(d), n.drag && n.drag.start_drag && (function (e) {
-                var i = t._getTaskLayers(), n = t.getTask(e);
-                if (n && t.isTaskVisible(e)) for (var r = 0; r < i.length; r++) if ((n = i[r].rendered[e]) && n.getAttribute(t.config.task_attribute) && n.getAttribute(t.config.task_attribute) == e) {
-                  var a = n.cloneNode(!0);
-                  u = n, i[r].rendered[e] = a, n.style.display = "none", a.className += " jsgantt-drag-move ", n.parentNode.appendChild(a)
-                }
-              }(e), n._start_dnd(d), t._touch_drag = !0, t.refreshTask(e), t._touch_feedback())), h = null
-            }, t.config.touch_drag)
-          }
-        }]), i.push([this.$container, n[2], function (i) {
-          if (!a(i)) {
-            h && clearTimeout(h), t._touch_drag = !1, l = !1;
-            var n = r(i), s = e();
-            if (s && s.on_mouse_up(n), u && (t.refreshTask(t.locate(u)), u.parentNode && (u.parentNode.removeChild(u), t._touch_feedback())), t._touch_scroll_active = l = c = !1, u = null, d && o) {
-              var f = new Date;
-              f - o < 500 ? g(i) : o = f
-            } else o = new Date
-          }
-        }]), f = 0; f < i.length; f++) t.event(i[f][0], i[f][1], i[f][2]);
-
-        function g(t) {
-          return t && t.preventDefault && t.preventDefault(), (t || event).cancelBubble = !0, !1
-        }
-      }
     }
   }, function (t, e) {
     t.exports = function (t) {
@@ -2099,7 +1982,7 @@ var JSGantt = function () {
     t.exports = function (t) {
       t.resetSkin || (t.resetSkin = function () {
         i(!0, this)
-      }, t.attachEvent("onGanttLayoutReady", function () {
+      }, t.attachEvent("onJSGanttLayoutReady", function () {
         i(!1, this)
       }))
     }
@@ -2227,7 +2110,7 @@ var JSGantt = function () {
         var n = [], r = [];
         i && (n = t.getTaskByTime(), e.allow_root && n.unshift({
           id: t.config.root_id,
-          orderId: e.root_label || ""
+          col1: e.root_label || ""
         }), n = function (e, i, n) {
           var r = i.filter || function () {
             return !0
@@ -2357,7 +2240,7 @@ var JSGantt = function () {
       }, t._set_default_task_timing = function (e) {
         e.plannedDate = e.plannedDate || t._defaultTaskDate(e, t.getParent(e)), e.duration = e.duration || t.config.durationStep, e.end_date = e.end_date || t.calculateEndDate(e)
       }, t.createTask = function (e, i, n) {
-        return e = e || {}, t.defined(e.id) || (e.id = t.uid()), e.plannedDate || (e.plannedDate = t._defaultTaskDate(e, i)), void 0 === e.orderId && (e.orderId = t.locale.labels.new_task), void 0 === e.duration && (e.duration = 1), this.isTaskExists(i) && (this.setParent(e, i, !0), this.getTask(i).$open = !0), this.callEvent("onTaskCreated", [e]) ? (this.config.details_on_create ? (e.$new = !0, this.silent(function () {
+        return e = e || {}, t.defined(e.id) || (e.id = t.uid()), e.plannedDate || (e.plannedDate = t._defaultTaskDate(e, i)), void 0 === e.col1 && (e.col1 = t.locale.labels.new_task), void 0 === e.duration && (e.duration = 1), this.isTaskExists(i) && (this.setParent(e, i, !0), this.getTask(i).$open = !0), this.callEvent("onTaskCreated", [e]) ? (this.config.details_on_create ? (e.$new = !0, this.silent(function () {
           t.$data.tasksStore.addItem(e, n)
         }), this.selectTask(e.id), this.refreshData()) : this.addTask(e, i, n) && (this.showTask(e.id), this.selectTask(e.id)), e.id) : null
       }, t._update_flags = function (t, e) {
@@ -2613,9 +2496,9 @@ var JSGantt = function () {
       }, _getWorkUnitsBetweenQuick: function (t, e, i, n) {
         var r = new Date(t), a = new Date(e);
         n = n || 1;
-        var s = new Date(r), o = this.$jsgantt.date.add(this.$jsgantt.date.day_start(new Date(r)), 1, "day");
+        var s = new Date(r), o = this.$jsgantt.date.add(this.$jsgantt.date.dayStart(new Date(r)), 1, "day");
         if (a.valueOf() <= o.valueOf()) return this._getWorkUnitsBetweenGeneric(t, e, i, n);
-        var l = this.$jsgantt.date.day_start(new Date(a)), c = a, d = this._getWorkUnitsBetweenGeneric(s, o, i, n),
+        var l = this.$jsgantt.date.dayStart(new Date(a)), c = a, d = this._getWorkUnitsBetweenGeneric(s, o, i, n),
           h = this._getWorkUnitsBetweenGeneric(l, c, i, n);
         return d + this._getWorkUnitsForRange(o, l, i, n) + h
       }, _getCalendar: function () {
@@ -2746,6 +2629,7 @@ var JSGantt = function () {
         var n = "json";
         return arguments.length >= 3 ? (n = e, i) : "string" == typeof arguments[1] ? n = arguments[1] : "function" == typeof arguments[1] && arguments[1], this._load_type = n, this.callEvent("onLoadStart", [t, n])
       }, t.parse = function (t, e) {
+        console.log(t, e)
         this.on_load({xmlDoc: {responseText: t}}, e)
       }, t.serialize = function (t) {
         return this[t = t || "json"].serialize()

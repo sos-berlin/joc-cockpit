@@ -52,6 +52,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   static calculateHeight() {
+    const navBar = $('#navbar1');
+    if(navBar.hasClass('in')) {
+      navBar.removeClass('in');
+      $('a.navbar-item').addClass('collapsed');
+    }
     const headerHt = $('.fixed-top').height() || 70;
     $('.app-body').css('margin-top', headerHt + 'px');
   }

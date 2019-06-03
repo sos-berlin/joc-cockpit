@@ -17,24 +17,37 @@ export class TreeComponent implements OnInit {
   constructor(public coreService: CoreService) {
   }
 
-  static setGraphHt() {
+  static calcTop() {
     const dom = $('.scroll-y');
+    let count = 0;
     if (dom && dom.position()) {
-      let top = dom.position().top + 12;
-      top = top - $(window).scrollTop();
-      if (top < 70) {
-        top = 92;
-      }
-      $('.sticky').css('top', top);
-      const ht = window.innerHeight - top;
-      if (ht > 400) {
-         $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
-      }
-      if (top < 139 && top > 92) {
-        setTimeout(() => {
-          TreeComponent.setGraphHt();
-        }, 5);
-      }
+      const recursiveCheck = () => {
+        ++count;
+        let top = dom.position().top + 12;
+       
+        top = top - $(window).scrollTop();
+        if (top < 70) {
+          top = 92;
+        }
+        $('.sticky').css('top', top);
+        const ht = window.innerHeight - top;
+        if (ht > 400) {
+          $('.tree-block').height((ht - 20 + $(window).scrollTop()) + 'px');
+        }
+        if (count < 5) {
+          if (top < 139 && top > 92) {
+            setTimeout(() => {
+              recursiveCheck();
+            }, 5);
+          } else {
+            let intval = setInterval(() => {
+              recursiveCheck();
+              clearInterval(intval);
+            }, 100);
+          }
+        }
+      };
+      recursiveCheck();
     }
   }
 
@@ -42,13 +55,13 @@ export class TreeComponent implements OnInit {
     if (sessionStorage.preferences) {
       this.preferences = JSON.parse(sessionStorage.preferences) || {};
     }
-    TreeComponent.setGraphHt();
+    TreeComponent.calcTop();
     const interval = setInterval(() => {
       if (this.treeCtrl && this.treeCtrl.treeModel) {
         const node = this.treeCtrl.treeModel.getNodeById(1);
         if (node) {
           node.expand();
-          TreeComponent.setGraphHt();
+          TreeComponent.calcTop();
           clearInterval(interval);
         }
       }
@@ -97,12 +110,12 @@ export class TreeComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    TreeComponent.setGraphHt();
+    TreeComponent.calcTop();
   }
 
   @HostListener('window:scroll', ['$event'])
   onScroll() {
-    TreeComponent.setGraphHt();
+    TreeComponent.calcTop();
   }
 
   private traverseTree(data) {

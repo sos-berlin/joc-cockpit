@@ -131,14 +131,15 @@
     <div class="padding p-b-0">
       <div class="row m-b-sm m-t-xs">
         <div class="col-lg-12">
-          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm button-group-ellipsis"
+          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm hidden-btn-text"
                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy!=='ORDER'}" (click)="groupByWorkflow()">
+            <i class="fa fa-object-group"></i>&nbsp;
             <span translate>button.groupByWorkflow</span>
           </button>
-          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-sm bg-hover-color button-group-ellipsis" (click)="removeAllOrder()">
+          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-sm bg-hover-color hidden-btn-text" (click)="removeAllOrder()">
             <i class="fa fa-trash"></i>&nbsp;
             <span class="hidden-sm-down" translate>button.removeOrders</span></button>
-          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" (click)="removeAllPlan()">
+          <button *ngIf="object.orders.length === 0" class="btn btn-grey btn-sm m-l-sm hidden-btn-text" (click)="removeAllPlan()">
             <i class="fa fa-refresh"></i>&nbsp;
             <span class="hidden-sm-down" translate>button.reCalculatePlans</span></button>
           <button class="btn btn-sm inline pull-right m-l btn-grey" (click)="advancedSearch()" [hidden]="showSearchPanel">
@@ -166,7 +167,7 @@
         <div class="hide p-t-sm" [ngClass]="{'show': isLoaded }">
             <div *ngIf="pageView==='grid' && plans.length>0">
                 <div class="box p-a">
-                    <app-gantt [data]="plans" [groupBy]="this.dailyPlanFilters.filter.groupBy" (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
+                    <app-gantt [data]="plans" [groupBy]="dailyPlanFilters.filter.groupBy" [sortBy]="dailyPlanFilters.filter.sortBy" (dataEvent)="receiveData($event)" [preferences]="preferences"></app-gantt>
                 </div>
             </div>
             <div class="hide box p-a " [ngClass]="{'show': pageView !=='grid' && plans.length>0}">

@@ -6,8 +6,8 @@
     [ngStyle]="{'max-height':(ybody * 105 -25) +'px'}">
         <div class="col-md-12">
 
-            <div class="col-xs-offset-1 col-xs-4"
-                 [ngClass]="{'col-xs-11': data.length==0}">
+            <div class="col-xs-offset-1 col-md-offset-0 col-lg-offset-1 col-xs-4 col-md-4 col-lg-4"
+                 [ngClass]="{'col-xs-11 col-md-11 col-lg-11': data.length==0}">
                 <div [ngClass]="{'hide': data.length==0}">
                     <ngx-charts-pie-chart
                       [view]="view"
@@ -23,9 +23,9 @@
                     {{'message.noDataAvailable' | translate}}
                 </div>
             </div>
-            <div class="col-xs-7" *ngIf="data.length>0">
+            <div class="col-xs-7 col-md-8 col-lg-7" *ngIf="data.length>0">
                 <ul class="status-list p-l" [ngClass]="{'m-top-132': data.length==1, 'm-top-122': data.length==2 }">
-                    <li id="{{d.name}}" *ngFor="let d of data" class="p-a-xs ">
+                    <li id="{{d.name}}" *ngFor="let d of data" class="p-a-xs block-ellipsis-job">
                         <i class="fa fa-stop" [ngStyle]="{color: d.color}"></i>
                         <a (click)="setLabel(d.name)" > {{d.name | translate}}</a></li>
                 </ul>

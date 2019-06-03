@@ -7,8 +7,8 @@
       <form #myForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((master.dirty || master.touched) && master.invalid))}">
-          <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-          <div class="col-md-6 col-sm-8">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobSchedulerId</label>
+          <div class="col-md-8 col-lg-6">
             <input required class="form-control" placeholder="{{'placeholder.master' | translate}}"
                    name="master" [(ngModel)]="order.master" #master="ngModel">
             <div *ngIf="master.invalid && (master.dirty || master.touched)" class="text-danger help-block">
@@ -20,8 +20,8 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((path.dirty || path.touched) && path.invalid))}">
-          <label class="col-md-2 col-sm-4 form-control-label" translate>label.workflowPath</label>
-          <div class="col-md-6 col-sm-8">
+          <label class="col-md-4 col-lg-3  form-control-label" translate>label.workflowPath</label>
+          <div class="col-md-8 col-lg-6">
             <input required class="form-control" placeholder="{{'placeholder.workflowPath' | translate}}"
                    name="path" [(ngModel)]="order.path" #path="ngModel">
             <div *ngIf="path.invalid && (path.dirty || path.touched)" class="text-danger help-block">
@@ -33,8 +33,8 @@
         </div>
         <div class="form-group row"
              [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-2 col-sm-4 form-control-label" translate>label.orderName</label>
-          <div class="col-md-6 col-sm-8">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderName</label>
+          <div class="col-md-8 col-lg-6">
             <input required class="form-control" placeholder="{{'placeholder.orderName' | translate}}"
                    name="name" [(ngModel)]="order.name" #name="ngModel">
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
@@ -45,8 +45,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-2 col-sm-4 form-control-label" translate>label.calendars</label>
-          <div class="col-md-6 col-sm-8">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.calendars</label>
+          <div class="col-md-8 col-lg-6">
             <ng-template #rt1 let-r="result" let-t="term">
               <i class="fa fa-calendar m-r-sm"></i>
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="form-group row m-b-0" *ngIf="order.calendars && order.calendars.length>0">
-          <div class="col-md-8 m-b-sm">
+          <div class="col-md-12 col-lg-9  m-b-sm">
              <div class="table-responsive">
                <table class="table table-hover table-bordered ">
                  <thead>
@@ -100,8 +100,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-md-2 col-sm-4 form-control-label" translate>label.nonWorkingCalendars</label>
-          <div class="col-md-6 col-sm-8">
+          <label class="col-md-4 col-lg-3 form-control-label" translate>label.nonWorkingCalendars</label>
+          <div class="col-md-8 col-lg-6">
             <ng-template #rt2 let-r="result" let-t="term">
               <i class="fa fa-calendar m-r-sm"></i>
               <ngb-highlight [result]="r.path" [term]="t"></ngb-highlight>
@@ -116,7 +116,7 @@
           </div>
         </div>
         <div class="form-group row m-b-0" *ngIf="order.nonWorkingCalendars && order.nonWorkingCalendars.length>0">
-          <div class="col-md-8 m-b-sm">
+          <div class="col-md-12 col-lg-9 m-b-sm">
             <table class="table table-hover table-bordered ">
               <tbody>
               <tr *ngFor="let calendar of order.nonWorkingCalendars; let i = index">
@@ -139,10 +139,10 @@
         </div>
         <div class="form-group row m-b-sm" *ngFor="let variable of order.variables; let i = index">
           <div class="col-md-12 m-b-sm _600" *ngIf="i==0" translate>label.changeVariables</div>
-          <label class="col-md-2 col-sm-4 form-control-label" style="white-space: normal;word-wrap: break-word;">
+          <label class="col-md-4 col-lg-3 form-control-label" style="white-space: normal;word-wrap: break-word;">
             {{variable.name}}
           </label>
-          <div class="col-md-6 col-sm-8">
+          <div class="col-md-8 col-lg-6">
             <input type="text" class="form-control" name="value" [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}}">
           </div>
         </div>
@@ -150,15 +150,15 @@
           <div class="col-md-12" translate>label.declareNewVariables</div>
         </div>
         <div class="form-group row m-b-0" *ngFor="let variable of variableObject.variables; let i = index">
-          <div class="col-md-2 col-sm-4 m-b-sm" *ngIf="i==0" translate>label.name</div>
-          <div class="col-md-10 col-sm-8 m-b-sm" *ngIf="i==0" translate>label.value</div>
-          <div class="col-md-2 col-sm-4 m-b-sm">
+          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.name</div>
+          <div class="col-md-8 col-lg-9 m-b-sm" *ngIf="i==0" translate>label.value</div>
+          <div class="col-md-4 col-lg-3 m-b-sm">
             <input type="text" class="form-control" name="name1" [(ngModel)]="variable.name" placeholder="{{'placeholder.name' | translate}} {{i+1}}">
           </div>
-          <div class="col-md-6 col-sm-7 m-b-sm">
+          <div class="col-md-7 col-lg-6 m-b-sm">
             <input type="text" class="form-control" name="value1" [(ngModel)]="variable.value" placeholder="{{'placeholder.value' | translate}} {{i+1}}">
           </div>
-          <div class="col-md-1 col-sm-1 p-l-0">
+          <div class="col-md-1 col-lg-1 p-l-0">
             <a><i (click)="removeVariable(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
         </div>

@@ -9,19 +9,19 @@
       <i class="fa fa-circle-o circle"></i>
       <span class="m-r-sm"><span class="text-muted" translate>label.remainingSessionTime</span>:
               <span [innerHtml]="remainingSessionTime" class="text-danger"></span></span>
-      <i class="fa fa-circle-o circle"></i>
+      <i class="fa fa-circle-o circle" *ngIf="scheduleState"></i>
       <span *ngIf="scheduleState" class="m-r-sm"><span class="text-muted" translate>label.state</span>:
               <span [innerHtml]="scheduleState | translate"
                     [ngClass]="{'text-success': scheduleState == 'RUNNING', 'text-danger': (scheduleState == 'UNREACHABLE' || scheduleState == 'TERMINATING'  || scheduleState == 'DEAD')}"
                     class="text-warn _500"></span>
           </span>
-      <i class="fa fa-circle-o circle"></i>
+      <i class="fa fa-circle-o circle" [hidden]="!selectedJobScheduler.startedAt"></i>
       <span [hidden]="!selectedJobScheduler.startedAt" class="m-r-sm">
         <span class="text-muted" translate>label.jobSchedulerStartTime</span>:
         <i [innerHtml]="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"
               class="text-primary _500"></i>
       </span>
-      <i  *ngIf="selectedJobScheduler.startedAt" class="fa fa-circle-o circle"></i>
+      <i *ngIf="schedulerIds.selected" class="fa fa-circle-o circle"></i>
       <span *ngIf="schedulerIds.selected" class="dropdown">
               <a data-toggle="dropdown">
                   <span class="backup-text text-muted" translate>label.id</span>:

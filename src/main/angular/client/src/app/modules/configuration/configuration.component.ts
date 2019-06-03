@@ -21,31 +21,43 @@ export class ConfigurationComponent {
 
   calcHeight() {
     const dom = $('.scroll-y');
+    let count = 0;
     if (dom && dom.position()) {
-      let top = dom.position().top + 12;
-      const flag = top < 78;
-      top = top - $(window).scrollTop();
-      if (top < 96) {
-        top = 96;
-      }
-      $('.sticky').css('top', top);
-      const sidebar = $('#sidebar');
-      if (sidebar) {
-        sidebar.css('top', (top - 19));
-        sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
-        $('.property-panel').css('top', (top + 16));
-      }
-      const graph = $('#graph');
-      if (graph) {
-        graph.slimscroll({height: 'calc(100vh - ' + (top + 10) + 'px' + ')'});
-      }
-      $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
+      const recursiveCheck = () => {
+        ++count;
+        let top = dom.position().top + 12;
+        const flag = top < 78;
+        top = top - $(window).scrollTop();
+        if (top < 96) {
+          top = 96;
+        }
+        $('.sticky').css('top', top);
+        const sidebar = $('#sidebar');
+        if (sidebar) {
+          sidebar.css('top', (top - 19));
+          sidebar.height('calc(100vh - ' + (top - 19) + 'px' + ')');
+          $('.property-panel').css('top', (top + 16));
+        }
+        const graph = $('#graph');
+        if (graph) {
+          graph.slimscroll({height: 'calc(100vh - ' + (top + 10) + 'px' + ')'});
+        }
+        $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
+        if (count < 5) {
+          if (top < 139 && flag) {
+            setTimeout(() => {
+              recursiveCheck();
+            }, 5);
+          } else {
+            let intval = setInterval(() => {
+              recursiveCheck();
+              clearInterval(intval);
+            }, 100);
+          }
+        }
 
-      if (top < 139 && flag) {
-        setTimeout(() => {
-          this.calcHeight();
-        }, 5);
-      }
+      };
+      recursiveCheck();
     }
   }
 

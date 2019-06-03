@@ -8,7 +8,6 @@ import * as _ from 'underscore';
 import {FileUploader} from 'ng2-file-upload';
 import {TreeModel, TreeNode} from 'angular-tree-component';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {AuthService} from '../../../components/guard';
 import {DataService} from '../../admin/data.service';
 import {Subscription} from 'rxjs';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';

@@ -503,6 +503,9 @@ export class CoreService {
   }
 
   getDateFormatMom(dateFormat: string): string {
+    if (!dateFormat) {
+      return '';
+    }
     if (dateFormat.match('HH:mm')) {
       dateFormat = dateFormat.replace('HH:mm', '');
     } else if (dateFormat.match('hh:mm')) {
@@ -523,6 +526,9 @@ export class CoreService {
   }
 
   getTimeFormat(timeFormat: string): string {
+    if (!timeFormat) {
+      return '';
+    }
     if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
       const result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
       if (result.match(/hh/g)) {

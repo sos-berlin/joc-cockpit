@@ -117,12 +117,9 @@
     border-width: 0
   }
 
-  .hidden-dropdown {
-    display: inline-block
-  }
-
-  .hidden-btn-group {
-    display: none
+  .date-center, .date-right {
+    text-align: left;
+    margin-top: 16px;
   }
 }
 
@@ -130,7 +127,8 @@
   body {
     min-width: 640px;
     right: 0;
-    left: 0
+    left: 0;
+    overflow-x: auto;
   }
 }
 
@@ -145,7 +143,7 @@
   }
 }
 
-@media (min-width: 880px) {
+@media (min-width: 1025px) {
   .navbar-toggleable-custom {
     display: block !important
   }
@@ -157,4 +155,52 @@
     overflow: hidden;
     text-overflow: ellipsis
   }
+   .view-all-agent span{
+        display: none;
+    }
+    .view-all-agent i{
+        display: block;
+    }
+}
+
+@media (max-width: 1025px) {
+  .hidden-dropdown {
+    display: inline-block
+  }
+
+  .hidden-btn-group {
+    display: none
+  }
+
+  .hide-menubar, .hide-nav-dropdown {
+    display: inline-block !important
+  }
+
+  .custom-nav-bar {
+    display: none
+  }
+
+  .hidden-btn-text span {
+    display: none;
+  }
+
+  .hidden-btn-text i {
+    font-size: 13px;
+  }
+
+  .navbar-brand img {
+    margin-left: 17px;
+    margin-right: 20px
+  }
+
+  .search-filed-w {
+    width: 180px
+  }
+
+  .hide-menubar .fa-navicon {
+    font-size: 18px;
+    top: 3px;
+    position: relative;
+  }
+
 }

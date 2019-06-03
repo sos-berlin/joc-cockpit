@@ -9,7 +9,6 @@
             if (y < 1) {
                 y = 8;
             }
-            console.log('y '+y)
             b.addClass("sticky").css("top", y);
         }, x = function () {
             let b = a(this);
