@@ -6006,19 +6006,23 @@
             vm._job = angular.copy(job);
             ConditionService.inCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
-                job: job.path
+                jobs: [{job : job.path}]
             }).then(function (res) {
-                vm._job.inconditions = res.inconditions;
-                if (vm._job.inconditions && vm._job.inconditions.length > 0) {
-                    openDialog();
+                if(res.jobsInconditions && res.jobsInconditions.length > 0 ) {
+                    vm._job.inconditions = res.jobsInconditions[0].inconditions;
+                    if (vm._job.inconditions && vm._job.inconditions.length > 0) {
+                        openDialog();
+                    }
                 }
                 ConditionService.outCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    job: job.path
+                    jobs: [{job : job.path}]
                 }).then(function (result) {
-                    vm._job.outconditions = result.outconditions;
-                    if (vm._job.inconditions && vm._job.inconditions.length === 0) {
-                        openDialog();
+                    if(result.jobsOutconditions && result.jobsOutconditions.length > 0 ) {
+                        vm._job.outconditions = result.jobsOutconditions[0].outconditions;
+                        if (vm._job.inconditions && vm._job.inconditions.length === 0) {
+                            openDialog();
+                        }
                     }
                 });
 
@@ -8044,9 +8048,9 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.jobFilters.isWorkflowCompact = vm.jobFilters.isWorkflowCompact ? vm.jobFilters.isWorkflowCompact : false;
@@ -8115,105 +8119,107 @@
         }
 
         function recursivelyConnectJobs(reload) {
-            let count = 0;
             vm.workflows = [];
-
-            function recursive() {
+            let jobPaths = [];
+            angular.forEach(vm.allJobs, function (job) {
+                jobPaths.push({job: job.path});
+            });
+            if (jobPaths.length > 0) {
                 ConditionService.inCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    job: vm.allJobs[count].path
+                    jobs: jobPaths
                 }).then(function (res) {
                     ConditionService.outCondition({
                         jobschedulerId: $scope.schedulerIds.selected,
-                        job: vm.allJobs[count].path
+                        jobs: jobPaths
                     }).then(function (result) {
-                        let wf = (res.inconditions && res.inconditions.length > 0) ? res.inconditions[0].workflow : (result.outconditions && result.outconditions.length > 0) ? result.outconditions[0].workflow : '';
-                        if (wf) {
-                            let _job = vm.allJobs[count];
-                            _job.inconditions = res.inconditions;
-                            _job.outconditions = result.outconditions;
-                            let x = {name: wf, jobs: [_job]};
-                            let _tempWorkflow;
-                            let _conditions = [];
-                            for (let i = 0; i < vm.workflows.length; i++) {
-                                if (vm.workflows[i].name === x.name) {
-                                    _conditions = vm.workflows[i].jobs;
-                                    _tempWorkflow = vm.workflows[i];
-                                    break;
-                                }
-                            }
-
-                            if ((!res.inconditions || res.inconditions.length === 0) && (result.outconditions && result.outconditions.length > 0)) {
-                                if (_conditions.length === 0) {
-                                    _conditions.push(_job);
-                                } else {
-                                    _conditions = [_job].concat(_conditions);
-                                }
-                            } else if ((!result.outconditions || result.outconditions.length === 0) && (res.inconditions && res.inconditions.length > 0)) {
-                                _conditions.push(_job);
-                            } else if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
-                                _conditions.push(_job);
-                                let _temp = angular.copy(_conditions);
-                                let arr = [];
-                                for (let i = 0; i < _temp.length; i++) {
-                                    for (let j = 0; j < _conditions.length; j++) {
-                                        if (_conditions[j].outconditions.length > 0) {
-                                            arr.push(_conditions[j]);
-                                            _conditions.splice(j, 1);
-                                            break;
-                                        }
-                                    }
-                                }
-                                _conditions = arr.concat(_conditions);
-                            }
-
-                            if (!_tempWorkflow) {
-                                vm.workflows.push(x);
-                            } else {
-                                _tempWorkflow.jobs = _conditions;
-                            }
-                        }
-
-                        if ((result.outconditions && result.outconditions.length > 0) || (res.inconditions && res.inconditions.length > 0)) {
+                        if ((res.jobsInconditions && res.jobsInconditions.length > 0) || (result.jobsOutconditions && result.jobsOutconditions.length > 0)) {
                             vm.flag = true;
                         }
-
-                        if (count === vm.allJobs.length - 1) {
-                            vm.isWorkflowLoaded = true;
-                            vm.isUpdated = true;
-                            if (reload) {
-                                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                            }
-                            if (!vm.selectedWorkflow) {
-                                vm.selectedWorkflow = vm.workflows[0].name;
-                                createWorkflowDiagram(vm.workflows[0].jobs, !reload);
-                            } else {
-                                for (let x = 0; x < vm.workflows.length; x++) {
-                                    if (vm.selectedWorkflow === vm.workflows[x].name) {
-                                        createWorkflowDiagram(vm.workflows[x].jobs, !reload);
+                        let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
+                        let len = mergeData.length;
+                        for (let i = 0; i < len; i++) {
+                            let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].workflow : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].workflow : '';
+                            if (wf) {
+                                let _job = {};
+                                for(let j =0;  j < vm.allJobs.length; j++){
+                                    if(vm.allJobs[j].path == mergeData[i].job){
+                                         _job = vm.allJobs[j];
+                                         _job.inconditions = mergeData[i].inconditions;
+                                         _job.outconditions = mergeData[i].outconditions;
                                         break;
                                     }
                                 }
+
+                                let x = {name: wf, jobs: [_job]};
+                                let _tempWorkflow;
+                                let _conditions = [];
+                                for (let i = 0; i < vm.workflows.length; i++) {
+                                    if (vm.workflows[i].name === x.name) {
+                                        _conditions = vm.workflows[i].jobs;
+                                        _tempWorkflow = vm.workflows[i];
+                                        break;
+                                    }
+                                }
+
+                                if ((!_job.inconditions || _job.inconditions.length === 0) && (_job.outconditions && _job.outconditions.length > 0)) {
+                                    if (_conditions.length === 0) {
+                                        _conditions.push(_job);
+                                    } else {
+                                        _conditions = [_job].concat(_conditions);
+                                    }
+                                } else if ((!_job.outconditions || _job.outconditions.length === 0) && (_job.inconditions && _job.inconditions.length > 0)) {
+                                    _conditions.push(_job);
+                                } else if ((_job.outconditions && _job.outconditions.length > 0) || (_job.inconditions && _job.inconditions.length > 0)) {
+                                    _conditions.push(_job);
+                                    let _temp = angular.copy(_conditions);
+                                    let arr = [];
+                                    for (let i = 0; i < _temp.length; i++) {
+                                        for (let j = 0; j < _conditions.length; j++) {
+                                            if (_conditions[j].outconditions.length > 0) {
+                                                arr.push(_conditions[j]);
+                                                _conditions.splice(j, 1);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    _conditions = arr.concat(_conditions);
+                                }
+
+                                if (!_tempWorkflow) {
+                                    vm.workflows.push(x);
+                                } else {
+                                    _tempWorkflow.jobs = _conditions;
+                                }
                             }
-                            vm.eventFilter = 'EXIST';
-                            vm.getEvents();
-                        } else {
-                            count++;
-                            recursive();
                         }
 
+                        vm.isWorkflowLoaded = true;
+                        vm.isUpdated = true;
+                        if (reload) {
+                            vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                        }
+                        if (!vm.selectedWorkflow) {
+                            vm.selectedWorkflow = vm.workflows[0].name;
+                            createWorkflowDiagram(vm.workflows[0].jobs, !reload);
+                        } else {
+                            for (let x = 0; x < vm.workflows.length; x++) {
+                                if (vm.selectedWorkflow === vm.workflows[x].name) {
+                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload);
+                                    break;
+                                }
+                            }
+                        }
+                        vm.eventFilter = 'EXIST';
+                        vm.getEvents();
                     }, function (err) {
                         vm.isWorkflowLoaded = true;
                     });
                 }, function (err) {
-                    count++;
-                    recursive();
                     vm.isWorkflowLoaded = true;
                 });
-            }
-
-            if (vm.allJobs.length > 0) {
-                recursive();
+            } else {
+                vm.isWorkflowLoaded = true;
             }
         }
 
@@ -8387,8 +8393,6 @@
                 graph.getModel().endUpdate();
                 executeLayout(graph);
             }
-
-
             vm.jobs = jobs;
         }
 
@@ -8654,8 +8658,13 @@
             }
             obj.event = cell.getAttribute('label');
             ConditionService.addEvent(obj).then(function () {
-                //updateEvent(cell, true, job);
                 recursivelyConnectJobs(true);
+            }, function (err) {
+                toasty.error({
+                    title: err.data.error.code,
+                    msg: err.data.error.message || 'API exception',
+                    timeout: 10000
+                });
             });
         };
 
@@ -8672,7 +8681,6 @@
                 }
             }
             ConditionService.deleteEvent(obj).then(function () {
-                //updateEvent(cell, false, job);
                 recursivelyConnectJobs(true);
             });
         };
@@ -8689,8 +8697,6 @@
         };
 
         vm.unconsumed = function (cell) {
-            //TODO
-            console.log('Waiting for API....... to mark un-consumed');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].source.id === cell.id) {
@@ -8757,9 +8763,11 @@
                                         if (!flg) {
                                             ConditionService.inCondition({
                                                 jobschedulerId: $scope.schedulerIds.selected,
-                                                job: vm.jobs[i].path
+                                                jobs: [{job :vm.jobs[i].path}]
                                             }).then(function (res) {
-                                                vm.jobs[i].inconditions = res.inconditions;
+                                                if(res.jobsInconditions && res.jobsInconditions.length > 0 ) {
+                                                    vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
+                                                }
                                                 updateJobs();
                                             });
                                         }
@@ -8789,9 +8797,11 @@
                                 }).then(function (res) {
                                     ConditionService.outCondition({
                                         jobschedulerId: $scope.schedulerIds.selected,
-                                        job: vm.jobs[i].path
+                                        jobs: [{job :vm.jobs[i].path}]
                                     }).then(function (res) {
-                                        vm.jobs[i].outconditions = res.outconditions;
+                                        if(res.jobsOutconditions && res.jobsOutconditions.length > 0 ) {
+                                            vm.jobs[i].outconditions = res.jobsOutconditions[0].outconditions;
+                                        }
                                         updateJobs();
                                     });
                                 });
@@ -9080,7 +9090,7 @@
                         })
                     );
                 }
-                if (state.cell.getAttribute('isConsumed') && state.cell.getAttribute('isConsumed') == 'true') {
+/*                if (state.cell.getAttribute('isConsumed') && state.cell.getAttribute('isConsumed') == 'true') {
                     // add
                     img = mxUtils.createImage('images/reset.svg');
                     img.setAttribute('title', gettextCatalog.getString('button.unconsumed'));
@@ -9094,7 +9104,7 @@
                             this.destroy();
                         })
                     );
-                }
+                }*/
 
 
                 if (img) {

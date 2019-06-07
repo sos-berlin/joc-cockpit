@@ -59,15 +59,18 @@
         <add as="perimeter" value="rhombusPerimeter"/>
         <add as="align" value="center"/>
         <add as="strokeColor" value="#666"/>
+        <add as="gradientColor" value="none"/>
       </add>
       <add as="event1" extend="event">
         <add as="fillColor" value="#CDEB8B"/>
+        <add as="gradientColor" value="white"/>
       </add>
       <add as="circle">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>
         <add as="align" value="center"/>
         <add as="strokeColor" value="#666"/>
+        <add as="gradientColor" value="none"/>
       </add>
       <add as="job">
         <add as="shape" value="ellipse"/>
@@ -79,7 +82,7 @@
         <add as="shape" value="offPageConnector"/>
         <add as="strokeColor" value="#666"/>
         <add as="direction" value="west"/>
-        <add as="fillColor" value="#DCDCDC"/>
+        <add as="fillColor" value="#FFCF8A"/>
       </add>
       <add as="condition1" extend="condition">
         <add as="fillColor" value="#A9A9A9"/>
