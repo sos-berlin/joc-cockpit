@@ -6412,9 +6412,9 @@
         });
     }
 
-    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter"];
+    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter", "$timeout"];
 
-    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter) {
+    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter, $timeout) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
         vm.jobFilters.isCompact = vm.userPreferences.isJobOverviewCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobOverviewCompact;
@@ -8133,14 +8133,12 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobs: jobPaths
                     }).then(function (result) {
-                        if ((res.jobsInconditions && res.jobsInconditions.length > 0) || (result.jobsOutconditions && result.jobsOutconditions.length > 0)) {
-                            vm.flag = true;
-                        }
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
                         for (let i = 0; i < len; i++) {
                             let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].workflow : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].workflow : '';
                             if (wf) {
+                                vm.flag = true;
                                 let _job = {};
                                 for(let j =0;  j < vm.allJobs.length; j++){
                                     if(vm.allJobs[j].path == mergeData[i].job){
@@ -8394,9 +8392,14 @@
                 executeLayout(graph);
             }
             vm.jobs = jobs;
+            setTimeout(function () {
+                updateWorkflowDiagram(vm.jobs);
+            }, 10);
         }
 
         function updateWorkflowDiagram(jobs) {
+            if(!jobs) return;
+
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
@@ -8454,14 +8457,11 @@
             vm.jobFilters.isWorkflowCompact = !vm.jobFilters.isWorkflowCompact;
             for (let x = 0; x < vm.workflows.length; x++) {
                 if (workflow === vm.workflows[x].name) {
-                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
                     }
+                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                     createWorkflowDiagram(vm.workflows[x].jobs, false);
-                    setTimeout(function () {
-                        updateWorkflowDiagram(vm.jobs);
-                    }, 10);
                     break;
                 }
             }
@@ -8658,7 +8658,7 @@
             }
             obj.event = cell.getAttribute('label');
             ConditionService.addEvent(obj).then(function () {
-                recursivelyConnectJobs(true);
+                updateSingleJob(job);
             }, function (err) {
                 toasty.error({
                     title: err.data.error.code,
@@ -8681,7 +8681,7 @@
                 }
             }
             ConditionService.deleteEvent(obj).then(function () {
-                recursivelyConnectJobs(true);
+                updateSingleJob(job);
             });
         };
 
@@ -8691,48 +8691,29 @@
                 "job": cell.getAttribute('actual'),
                 "workflow": ''
             }).then(function (res) {
-                vm.isUpdated = false;
-                recursivelyConnectJobs(true);
+                updateSingleJob(cell.getAttribute('actual'));
             })
         };
 
-        vm.unconsumed = function (cell) {
-            let job = '';
-            for (let i = 0; i < cell.edges.length; i++) {
-                if (cell.edges[i].source.id === cell.id) {
-                    job = cell.edges[i].target.getAttribute('actual');
-                    break;
-                }
-            }
-            ConditionService.resetWorkflow({
-                "masterId": $scope.schedulerIds.selected,
-                "job": job,
-                "workflow": '',
-                "incondition": cell.getAttribute('vertexId')
+        function updateSingleJob(job) {
+            ConditionService.inCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobs: [{job: job}]
             }).then(function (res) {
-                for (let i = 0; i < vm.jobs.length; i++) {
-                    if (vm.jobs[i].path === job) {
-                        for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
-                            if (vm.jobs[i].inconditions[j].conditionExpression.expression == cell.getAttribute('actual')) {
-                                vm.jobs[i].inconditions[j].isConsumed = false;
-                                vm.editor.graph.getModel().beginUpdate();
-                                try {
-                                    vm.editor.graph.getModel().setStyle(cell, 'condition');
-                                    const edit = new mxCellAttributeChange(
-                                        cell, 'isConsumed', false);
-                                    vm.editor.graph.getModel().execute(edit);
-                                } finally {
-                                    // Updates the display
-                                    vm.editor.graph.getModel().endUpdate();
-                                }
-                                break;
-                            }
+                ConditionService.outCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobs: [{job: job}]
+                }).then(function (result) {
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        if (vm.jobs[i].path === job) {
+                            vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
+                            vm.jobs[i].outconditions = result.jobsOutconditions[0].outconditions;
                         }
-                        break;
                     }
-                }
+                    updateJobs();
+                });
             });
-        };
+        }
 
         function updateExpression(cell) {
             for (let i = 0; i < vm.jobs.length; i++) {
@@ -8815,13 +8796,12 @@
         }
 
         function updateJobs() {
+            let element = document.getElementById("graph");
+            let scrollTop =  element.scrollTop;
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            for (let x = 0; x < vm.workflows.length; x++) {
-                if (vm.selectedWorkflow === vm.workflows[x].name) {
-                    createWorkflowDiagram(vm.workflows[x].jobs, false);
-                    break;
-                }
-            }
+            createWorkflowDiagram(vm.jobs, false);
+            let element2 = document.getElementById("graph");
+            element2.scrollTop = scrollTop;
         }
 
         vm.navigateToEvent = function (event) {
@@ -9132,8 +9112,7 @@
             var iconTolerance = 20;
 
             // Shows icons if the mouse is over a cell
-            graph.addMouseListener(
-                {
+            graph.addMouseListener({
                     currentState: null,
                     currentIconSet: null,
                     mouseDown: function (sender, me) {
