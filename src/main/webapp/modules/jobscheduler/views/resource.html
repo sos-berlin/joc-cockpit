@@ -26,7 +26,7 @@
                                 </button>
                             </div>
                             <div class="btn-group dropdown hidden-dropdown">
-                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                                <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                     <a class="dropdown-item" ng-model="agentsFilters.filter.state" uib-btn-radio="'all'"
                                        ng-class="{'btn-primary': agentsFilters.filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster
@@ -253,7 +253,7 @@
                                             ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-7d'}" translate>button.lastWeak
                                     </button>
                                 </div>
-                                <div class="btn-group dropdown hidden-dropdown">
+                                <div class="btn-group m-r-sm dropdown hidden-dropdown">
                                     <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"

@@ -194,9 +194,9 @@
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row"
                              ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                            <label class="col-md-3 col-sm-4 form-control-label" translate>label.filterName</label>
+                            <label class="col-lg-3 col-md-4 form-control-label" translate>label.filterName</label>
 
-                            <div class=" col-md-6 col-sm-8">
+                            <div class=" col-lg-6 col-md-8">
                                 <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text"
                                        class="form-control" placeholder="{{'placeholder.name' | translate}}"
                                        name="filterName" ng-maxlength="25" ng-model="jobFilter.name"
@@ -212,9 +212,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-sm-4 form-control-label" translate>label.regex</label>
+                            <label class="col-lg-3 col-md-4 form-control-label" translate>label.regex</label>
 
-                            <div class=" col-md-6 col-sm-8"
+                            <div class=" col-lg-6 col-md-7"
                                  ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                                 <input valid-regex type="text" class="form-control" name="regex"
                                        placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
@@ -224,13 +224,13 @@
                                     <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
                             </div>
-                            <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
+                            <div class="col-md-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
                                     class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
                         <div class="form-group row" ng-if="jobFilter.paths.length>0">
-                            <label class="col-md-3 col-sm-4" translate>label.folders</label>
+                            <label class="col-lg-3 col-md-4" translate>label.folders</label>
 
-                            <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
+                            <div class="col-lg-6 col-lg-8" style="max-height: 140px; overflow: auto">
                                 <div ng-repeat="path in jobFilter.paths track by $index">
                                     <span class="">{{path}}</span>
                                     <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
@@ -238,9 +238,9 @@
                             </div>
                         </div>
                         <div class="form-group row" >
-                            <label class="col-md-3 col-sm-4 " translate>label.jobState</label>
+                            <label class="col-lg-3 col-md-4" translate>label.jobState</label>
 
-                            <div class=" col-md-8 col-sm-8">
+                            <div class="col-lg-8 col-md-8">
                                 <div >
                                     <label class="md-check  w">
                                         <input type="checkbox" data-checklist-model="jobFilter.state"
@@ -266,9 +266,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-sm-4" translate>label.jobTypes</label>
+                            <label class="col-lg-3 col-md-4" translate>label.jobTypes</label>
 
-                            <div class="col-md-8 col-sm-8">
+                            <div class="col-lg-8 col-md-8">
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobFilter.type"
                                            data-checklist-value="'order'">
@@ -302,7 +302,7 @@
                         <div class="col-sm-12"  style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
-                        <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                        <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12"
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse track by $index">
                             <div class="box card" ng-class="colorBorderFunction(job.state.severity)">
                                 <div class="box-body" title="{{job.configurationStatus._text | translate}}">
@@ -790,24 +790,30 @@
                                                  </div>
                                              </div>
                                              <div class="tab-pane animated fadeIn " id="tab13">
-                                                 <div>
+                                                 <div class="position-relative">
                                                      <div class="row m-b">
                                                          <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="changeEvents(null)">
                                                              <span ng-if="eventFilter == 'EXIST'" translate>button.showAllEvents</span>
                                                              <span ng-if="eventFilter == 'ALL'" translate>button.showExistingEvents</span>
                                                          </button>
                                                      </div>
+                                                     <div class="del-evnt-btn text-hover-primary cursor" ng-click="removeAllEventFromWorkflow()">
+                                                         <i class="fa fa-trash-o"></i>
+                                                     </div>
                                                      <div class="dropdown m-b">
-                                                        <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary" ng-bind="filteredByWorkflow"></span></a>
-                                                        <div class="dropdown-menu dropdown-more dropdown-ac">
-                                                            <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}" ng-click="changeEvents(workflow.name)" ng-repeat="workflow in workflows | orderBy:'name'">
-                                                                <span>{{workflow.name}}</span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                     <div ng-repeat="event in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
-                                                        <a class="text-hover-primary" ng-click="navigateToEvent(event.event)"><span>{{event.event}}</span></a>
-                                                    </div>
+                                                         <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary"
+                                                                                   ng-bind="filteredByWorkflow"></span></a>
+                                                         <div class="dropdown-menu dropdown-more dropdown-ac">
+                                                             <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}"
+                                                                ng-click="changeEvents(workflow.name)"
+                                                                ng-repeat="workflow in workflows | orderBy:'name'">
+                                                                 <span>{{workflow.name}}</span>
+                                                             </a>
+                                                         </div>
+                                                     </div>
+                                                     <div ng-repeat="evt in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
+                                                         <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"><span>{{evt.event}}</span></a>
+                                                     </div>
                                                      <div ng-if="eventList.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                                          message.noEventsFound
                                                      </div>
@@ -818,8 +824,9 @@
                                 </div>
                                 <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-sm btn-grey btn-block" ng-class="{'primary':jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>
-                                            button.compactView
+                                        <button type="button" class="btn btn-sm btn-grey btn-block" ng-class="{'primary':jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)">
+                                            <span ng-if="!jobFilters.isWorkflowCompact" translate>button.compactView</span>
+                                            <span ng-if="jobFilters.isWorkflowCompact" translate>button.detailedView</span>
                                         </button>
                                     </div>
                                     <div class="col-md-12 m-t">

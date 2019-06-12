@@ -99,8 +99,8 @@
                 <div class="box p-a m-b-xs">
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.filterName</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
                                        class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
                                        ng-maxlength="25" ng-model="auditSearch.name" ng-blur="checkFilterName()">
@@ -115,8 +115,8 @@
                             </div>
                         </div>
                         <div class="m-b-sm row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
-                            <div class="col-md-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.dateRange</label>
+                            <div class="col-lg-8 col-md-8">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="auditSearch.date" value="date">
                                     <i class="primary"></i> <span translate>label.specificDate</span>
@@ -128,8 +128,8 @@
                             </div>
                         </div>
                         <div class="form-group row"  ng-if="auditSearch.date == 'process'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
-                            <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.processExecuted</label>
+                            <div class="col-lg-6 col-md-8" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
                                 <input valid-history-filter-regex type="text" name="planned" class="form-control"
                                        placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="auditSearch.planned">
                                 <div class="help-block text-danger" ng-messages="form.planned.$error">
@@ -138,8 +138,8 @@
                             </div>
                         </div>
                         <div class="form-group row " ng-if="auditSearch.date == 'date'">
-                            <label class="col-sm-2 form-control-label" translate>label.from</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.from</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="auditSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
@@ -148,8 +148,8 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="auditSearch.date == 'date'">
-                            <label class="col-sm-2 form-control-label" translate>label.to</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.to</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="auditSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{auditSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
@@ -158,14 +158,14 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.comment</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.comment</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}" ng-model="auditSearch.regex">
                             </div>
                         </div>
                         <div class="form-group row" >
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-                           <div class=" col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.jobSchedulerId</label>
+                           <div class=" col-lg-6 col-md-8">
                                <select class="form-control" ng-model="auditSearch.jobschedulerId">
                                    <option value="" translate="">label.selectJobScheduler</option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
@@ -173,32 +173,32 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.jobChain</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="auditSearch.jobChain">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.orderIds</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.orderIds</label>
+                            <div class="col-lg-6 col-md-8">
                                  <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="auditSearch.orderIds">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.job</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.job</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}" ng-model="auditSearch.job">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.calendar</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.calendar</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterCalendars' | translate}}" ng-model="auditSearch.calendars">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.account</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.account</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterAccount' | translate}}" ng-model="auditSearch.account">
                             </div>
                         </div>

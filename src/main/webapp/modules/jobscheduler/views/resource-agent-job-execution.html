@@ -4,8 +4,8 @@
             <div class="box p-a m-b-xs m-t-xs">
                 <form name="form" ng-submit="saveAsFilter(from)" novalidate>
                     <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-                        <div class=" col-sm-6">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.filterName</label>
+                        <div class=" col-lg-6 col-md-8">
                             <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control"
                                    placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"
                                    ng-model="agentJobSearch.name" ng-blur="checkFilterName()">
@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="m-b-sm row ">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.dateRange</label>
                         <div class="col-md-6">
                             <label class="md-check w-sm">
                                 <input type="radio" name="radio" ng-model="agentJobSearch.date" value="date">
@@ -33,8 +33,8 @@
                         </div>
                     </div>
                     <div class="form-group row"  ng-if="agentJobSearch.date == 'process'">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
-                        <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.processExecuted</label>
+                        <div class="col-lg-6 col-md-8" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
                             <input valid-history-filter-regex type="text" name="planned" class="form-control"
                                    placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="agentJobSearch.planned">
                             <div class="help-block text-danger" ng-messages="form.planned.$error">
@@ -43,8 +43,8 @@
                         </div>
                     </div>
                     <div class="form-group row" ng-if="agentJobSearch.date == 'date'">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
-                        <div class="col-sm-6">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.from</label>
+                        <div class="col-lg-6 col-md-8">
                             <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="agentJobSearch.from"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                    bs-datepicker type="text">
@@ -54,8 +54,8 @@
                         </div>
                     </div>
                     <div class="form-group row" ng-if="agentJobSearch.date == 'date'">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-                        <div class="col-sm-6">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.to</label>
+                        <div class="col-lg-6 col-md-8">
                             <input class="form-control input-date"
                                    style="width: 225px;background-position: 200px"
                                    ng-model="agentJobSearch.to" data-date-format="{{dataFormat}}"
@@ -72,16 +72,16 @@
                         </div>
                     </div>
                     <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-                        <div class=" col-sm-6">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.jobSchedulerId</label>
+                        <div class=" col-lg-6 col-md-8">
                             <select class="form-control" ng-model="agentJobSearch.jobschedulerId">
                                 <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.agentUrl</label>
-                        <div class=" col-sm-6">
+                        <label class="col-lg-2 col-md-4 form-control-label" translate>label.agentUrl</label>
+                        <div class=" col-lg-6 col-md-8">
                             <input type="text" class="form-control" name="url" placeholder="{{'placeholder.enterAgentUrl' | translate}}" ng-model="agentJobSearch.url">
                         </div>
                     </div>

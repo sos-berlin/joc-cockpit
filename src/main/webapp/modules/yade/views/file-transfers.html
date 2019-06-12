@@ -117,12 +117,12 @@
     <div class="padding p-b-0">
         <div class="row m-b m-t-xs">
             <div class="col-md-12">
-                <button class="btn btn-sm btn-grey" ng-click="expandDetails()">
-                    <i class="fa fa fa-caret-down"></i>
+                <button class="btn btn-sm btn-grey hidden-btn-text" ng-click="expandDetails()">
+                    <i class="fa fa-angle-double-down"></i>
                     <span translate>button.expandDetails</span>
                 </button>
-                <button class="btn btn-sm btn-grey m-l-sm" ng-click="collapseDetails()">
-                    <i class="fa fa fa-caret-up"></i>
+                <button class="btn btn-sm btn-grey m-l-sm hidden-btn-text" ng-click="collapseDetails()">
+                    <i class="fa fa-angle-double-up"></i>
                     <span translate>button.collapseDetails</span>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()"
@@ -143,8 +143,8 @@
              <div class="box p-a ">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-                           <div class=" col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.filterName</label>
+                           <div class=" col-lg-6 col-md-8">
                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="yadeSearch.name" ng-blur="checkFilterName()">
                                <div class="help-block text-danger" ng-if="form1.filterName.$dirty" ng-messages="form1.filterName.$error">
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -155,21 +155,21 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.profileId</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
                                        name="profileId" ng-model="yadeSearch.profileId">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.mandator</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.mandator</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}"
                                        name="mandator" ng-model="yadeSearch.mandator">
                             </div>
                         </div>
                         <div class="m-b-sm row ">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.dateRange</label>
 
                             <div class="col-md-6">
                                 <label class="md-check w-sm">
@@ -183,8 +183,8 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="yadeSearch.date == 'process'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.processExecuted</label>
-                            <div class=" col-sm-6" ng-class="{'has-error' : form1.planned.$invalid && form1.planned.$dirty}">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.processExecuted</label>
+                            <div class="col-lg-6 col-md-8" ng-class="{'has-error' : form1.planned.$invalid && form1.planned.$dirty}">
                                 <input valid-history-filter-regex type="text" name="planned" class="form-control"
                                        placeholder="{{'placeholder.processExecuted' | translate}}"
                                        ng-model="yadeSearch.planned">
@@ -195,8 +195,8 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="yadeSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.from</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="yadeSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
@@ -206,8 +206,8 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="yadeSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-                            <div class="col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.to</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{yadeSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
@@ -221,8 +221,8 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.jobSchedulerId</label>
+                            <div class="col-lg-6 col-md-8">
                                 <select class="form-control" ng-model="yadeSearch.jobschedulerId">
                                     <option value="" translate="">label.selectJobScheduler</option>
                                     <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
@@ -231,9 +231,8 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 " translate>label.status</label>
-
-                            <div class="col-sm-9">
+                            <label class="col-lg-2 col-md-4 " translate>label.status</label>
+                            <div class="col-lg-8 col-md-8">
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'SUCCESSFUL'">
                                     <i class="primary"></i><span translate>label.successful</span>
@@ -250,9 +249,8 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 " translate>label.operations</label>
-
-                            <div class="col-sm-8">
+                            <label class="col-lg-2 col-md-4 " translate>label.operations</label>
+                            <div class="col-lg-8 col-md-8">
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="yadeSearch.operations"
                                            data-checklist-value="'COPY'">
@@ -277,46 +275,46 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.sourceFileName</label>
 
-                            <div class=" col-sm-6">
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}"
                                        name="sourceFileName" ng-model="yadeSearch.sourceFileName">
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileRegex</label>
-                            <div class=" col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.sourceFileRegex</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.sourceFilesRegex' | translate}}"
                                        name="sourceFilesRegex" ng-model="yadeSearch.sourceFileRegex">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.targetFileName</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
                                        name="targetFileName" ng-model="yadeSearch.targetFileName">
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileRegex</label>
-                            <div class=" col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.targetFileRegex</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.targetFilesRegex' | translate}}"
                                        name="targetFilesRegex" ng-model="yadeSearch.targetFileRegex">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.sourceHost</label>
 
-                            <div class=" col-sm-6">
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}"
                                        name="sourceHost"
                                        ng-model="yadeSearch.sourceHost">
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceProtocol</label>
-                           <div class="col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.sourceProtocol</label>
+                           <div class="col-lg-6 col-md-8">
                                <ui-select multiple ng-model="yadeSearch.sourceProtocol" name="sProtocol" on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
                                 <ui-select-match placeholder="{{'placeholder.sourceProtocol' | translate}}">{{$item}}</ui-select-match>
                                 <ui-select-choices repeat="protocol as protocol in protocols">
@@ -326,16 +324,16 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetHost</label>
-                            <div class=" col-sm-6">
+                            <label class="col-lg-2 col-md-4 form-control-label" translate>label.targetHost</label>
+                            <div class="col-lg-6 col-md-8">
                                 <input class="form-control" placeholder="{{'placeholder.targetHost' | translate}}"
                                        name="targetHost"
                                        ng-model="yadeSearch.targetHost">
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetProtocol</label>
-                           <div class="col-sm-6">
+                           <label class="col-lg-2 col-md-4 form-control-label" translate>label.targetProtocol</label>
+                           <div class="col-lg-6 col-md-8">
                                <ui-select multiple ng-model="yadeSearch.targetProtocol" name="tProtocol" on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
                                 <ui-select-match placeholder="{{'placeholder.targetProtocol' | translate}}">{{$item}}</ui-select-match>
                                 <ui-select-choices repeat="protocol as protocol in protocols">

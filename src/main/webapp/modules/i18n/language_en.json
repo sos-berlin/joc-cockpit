@@ -1406,6 +1406,7 @@
   "button.updateExpression": "Update Expression",
   "button.showAllEvents": "Show All Events",
   "button.showExistingEvents": "Show Existing Events",
+  "button.detailedView": "Detailed View",
   "label.conditionEditor": "Conditions Editor",
   "label.inconditionCommands": "Incondition Commands",
   "label.validatedExpression": "Validated Expression",
