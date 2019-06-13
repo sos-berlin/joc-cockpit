@@ -14047,9 +14047,11 @@
             $uibModalInstance.dismiss('cancel');
         };
         $scope.close = function (form) {
-            vm.command = {};
+            vm.command = null;
+            vm.event = null;
             $('#command-editor').modal('hide');
             vm._incondition = null;
+            vm._outcondition = null;
             vm._index = null;
             if (form) {
                 form.$setPristine();
@@ -14162,6 +14164,17 @@
                     }
                 } else if (vm.strCommand == 'create') {
                     vm._incondition.inconditionCommands.push(vm.command);
+                }
+            } else if (vm.event && vm.event.event) {
+                if (vm._index || vm._index == 0) {
+                    for (let i = 0; i < vm._outcondition.outconditionEvents.length; i++) {
+                        if (vm._index == i) {
+                            vm._outcondition.outconditionEvents[i] = vm.event;
+                            break;
+                        }
+                    }
+                } else if (vm.strCommand == 'create') {
+                    vm._outcondition.outconditionEvents.push(vm.event);
                 }
             }
             $('#command-editor').modal('hide');

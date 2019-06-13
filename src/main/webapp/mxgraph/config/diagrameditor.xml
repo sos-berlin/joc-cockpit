@@ -65,6 +65,10 @@
         <add as="fillColor" value="#CDEB8B"/>
         <add as="gradientColor" value="white"/>
       </add>
+      <add as="event2" extend="event">
+        <add as="fillColor" value="#ebf7d0"/>
+        <add as="gradientColor" value="white"/>
+      </add>
       <add as="circle">
         <add as="shape" value="ellipse"/>
         <add as="perimeter" value="ellipsePerimeter"/>

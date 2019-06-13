@@ -792,10 +792,18 @@
                                              <div class="tab-pane animated fadeIn " id="tab13">
                                                  <div class="position-relative">
                                                      <div class="row m-b">
-                                                         <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="changeEvents(null)">
-                                                             <span ng-if="eventFilter == 'EXIST'" translate>button.showAllEvents</span>
-                                                             <span ng-if="eventFilter == 'ALL'" translate>button.showExistingEvents</span>
-                                                         </button>
+                                                         <div class="col-md-6 p-l-0 p-r-0">
+                                                             <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis"
+                                                                     ng-class="{'primary':eventFilter == 'ALL'}" ng-click="changeEvents(null)" translate>
+                                                                 button.showAllEvents
+                                                             </button>
+                                                         </div>
+                                                         <div class="col-md-6 p-l-0 p-r-0">
+                                                             <button class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis"
+                                                                     ng-class="{'primary':eventFilter == 'EXIST'}" ng-click="changeEvents(null)" translate>
+                                                                 button.showExistingEvents
+                                                             </button>
+                                                         </div>
                                                      </div>
                                                      <div class="del-evnt-btn text-hover-primary cursor" ng-click="removeAllEventFromWorkflow()">
                                                          <i class="fa fa-trash-o"></i>
@@ -824,10 +832,12 @@
                                 </div>
                                 <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-sm btn-grey btn-block" ng-class="{'primary':jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)">
-                                            <span ng-if="!jobFilters.isWorkflowCompact" translate>button.compactView</span>
-                                            <span ng-if="jobFilters.isWorkflowCompact" translate>button.detailedView</span>
-                                        </button>
+                                        <div class="col-md-6 p-l-0 p-r-0">
+                                            <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis" ng-class="{'primary':!jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>button.detailedView</button>
+                                        </div>
+                                        <div class="col-md-6 p-l-0 p-r-0">
+                                          <button  class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis" ng-class="{'primary':jobFilters.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)" translate>button.compactView</button>
+                                        </div>
                                     </div>
                                     <div class="col-md-12 m-t">
                                         <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="resetWorkflow(selectedWorkflow, '')" translate>
