@@ -8727,6 +8727,12 @@
             });
         };
 
+        vm.startConditionResolver = function(){
+          ConditionService.startConditionResolver({"masterId": $scope.schedulerIds.selected}).then(function(res){
+              console.log(res);
+          });
+        };
+
         vm.resetJob = function (cell) {
             ConditionService.resetWorkflow({
                 "masterId": $scope.schedulerIds.selected,

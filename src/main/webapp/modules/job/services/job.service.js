@@ -539,10 +539,19 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },startConditionResolver: function (filter) {
+                var deferred = $q.defer();
+                var Condition = $resource('conditions/start_condition_resolver');
+                Condition.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             },
              getEvents: function (filter) {
                 var deferred = $q.defer();
-                var Event = $resource('conditions/events');
+                var Event = $resource('conditions/eventlist');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
