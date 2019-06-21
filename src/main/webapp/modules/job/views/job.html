@@ -785,10 +785,17 @@
                                          <div class="tab-content p-a" >
                                              <div class="tab-pane animated fadeIn active" id="tab12" >
                                                  <div>
-                                                     <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%"
-                                                         ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
-                                                        <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
-                                                        <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
+
+                                                     <div ng-repeat="(key, value) in workflows | groupBy: 'path'" class="block-ellipsis" style="width: 100%"
+                                                     >
+                                                          <div>
+                                                              <span class="text-muted">Path: </span>
+                                                              <label>{{key}}</label>
+                                                          </div>
+                                                         <div ng-repeat="workflow in value | orderBy: 'name'" ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
+                                                             <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
+                                                            <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.actual}}</span></a>
+                                                         </div>
                                                     </div>
                                                  </div>
                                              </div>
@@ -813,12 +820,12 @@
                                                      </div>
                                                      <div class="dropdown m-b">
                                                          <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary"
-                                                                                   ng-bind="filteredByWorkflow"></span></a>
+                                                                                   ng-bind="filteredByWorkflow.substring(filteredByWorkflow.lastIndexOf('/')+1)"></span></a>
                                                          <div class="dropdown-menu dropdown-more dropdown-ac">
                                                              <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}"
                                                                 ng-click="changeEvents(workflow.name)"
                                                                 ng-repeat="workflow in workflows | orderBy:'name'">
-                                                                 <span>{{workflow.name}}</span>
+                                                                 <span>{{workflow.actual}}</span>
                                                              </a>
                                                          </div>
                                                      </div>

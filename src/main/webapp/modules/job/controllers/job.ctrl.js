@@ -6171,7 +6171,6 @@
                                                             }
                                                         }
                                                     }
-                                                    $scope.$broadcast('reloadWorkflow');
                                                     break;
                                                 }
                                             }
@@ -8154,7 +8153,7 @@
                                     }
                                 }
 
-                                let x = {name: wf, jobs: [_job]};
+                                let x = {name: wf, actual: wf.substring(wf.lastIndexOf('/')+1), path: wf.substring(0, wf.lastIndexOf('/')), jobs: [_job]};
                                 let _tempWorkflow;
                                 let _conditions = [];
                                 for (let i = 0; i < vm.workflows.length; i++) {
@@ -8300,13 +8299,15 @@
                             graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex);
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                    let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event);
-                                    let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow : jobs[i].outconditions[x].outconditionEvents[z].exists;
-                                    _node.setAttribute('isExist', flg);
-                                    let style = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? 'event1' : jobs[i].outconditions[x].outconditionEvents[z].exists ? 'event2' : 'event';
-                                    let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
-                                    events.push(e1);
-                                    graph.insertEdge(parent, null, getCellNode('Connection', '', ''), conditionVertex, e1);
+                                    if (jobs[i].outconditions[x].outconditionEvents[z].command == 'create') {
+                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event);
+                                        let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow : jobs[i].outconditions[x].outconditionEvents[z].exists;
+                                        _node.setAttribute('isExist', flg);
+                                        let style = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? 'event1' : jobs[i].outconditions[x].outconditionEvents[z].exists ? 'event2' : 'event';
+                                        let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
+                                        events.push(e1);
+                                        graph.insertEdge(parent, null, getCellNode('Connection', '', ''), conditionVertex, e1);
+                                    }
                                 }
                             }
                             let img = jobs[i].outconditions[x].conditionExpression.value ? './mxgraph/images/green-bar.svg' : './mxgraph/images/red-bar.svg';
@@ -8411,7 +8412,7 @@
         }
 
         function updateWorkflowDiagram(jobs) {
-            if(!jobs) return;
+            if(!jobs || !vm.editor) return;
 
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
@@ -8419,7 +8420,7 @@
             let edges = [];
             let edges2 = [];
             try {
-                let vertices = graph.getChildVertices(graph.getDefaultParent());
+                let vertices = graph.getChildVertices(parent);
                 for (let i = 0; i < vertices.length; i++) {
                     if (vertices[i].value.tagName === 'Job') {
                         for (let j = 0; j < jobs.length; j++) {
@@ -8432,9 +8433,9 @@
                                     vertices[i], 'status', jobs[j].state._text);
                                 graph.getModel().execute(edit2);
                                 if (jobs[j].state._text == 'RUNNING') {
-                                    edges = edges.concat(graph.getOutgoingEdges(vertices[i], graph.getDefaultParent()));
+                                    edges = edges.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 } else {
-                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], graph.getDefaultParent()));
+                                    edges2 = edges2.concat(graph.getOutgoingEdges(vertices[i], parent));
                                 }
                                 break;
                             }
@@ -9228,8 +9229,20 @@
                         Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) - 3, w * s, h * s);
                 }
             };
-
         }
+
+         $scope.$on('event-started', function () {
+
+             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
+                     if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
+                            updateWorkflowDiagram(vm.jobs);
+                            break;
+                     }
+                 }
+             }
+         });
+
 
         /** -------------------- Actions ------------------- */
         $scope.$on('zoomIn', function () {

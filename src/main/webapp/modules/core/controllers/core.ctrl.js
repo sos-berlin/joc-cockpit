@@ -14014,7 +14014,8 @@
     function EditConditionDialogCtrl($scope, $uibModalInstance) {
         const vm = $scope;
         vm.editor = {
-            type : 'Incondition'
+            type : 'Incondition',
+            eventType : 'create'
         };
         vm.strCommand = '';
 
@@ -14036,10 +14037,10 @@
 
         $scope.ok = function () {
             for(let i = 0; i < vm._job.inconditions.length; i++){
-                vm._job.inconditions[i].workflow = vm.editor.workflow;
+                vm._job.inconditions[i].workflow = vm._job.path + '/' + vm.editor.workflow;
             }
             for(let i = 0; i < vm._job.outconditions.length; i++){
-                vm._job.outconditions[i].workflow = vm.editor.workflow;
+                vm._job.outconditions[i].workflow = vm._job.path + '/' +  vm.editor.workflow;
             }
             $uibModalInstance.close('ok');
         };
@@ -14076,8 +14077,24 @@
                     vm.condition = {inconditionCommands: []};
                     vm.addInconditionCommands();
                 } else {
-                    vm.condition = {outconditionEvents: []};
+                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents:[]};
                     vm.addOutconditionEvents();
+                    vm.addOutconditionDeleteEvents();
+
+                }
+            }else{
+                if (vm.editor.type !== 'Incondition') {
+                    let arr = [];
+                    for (let i = 0; i < vm.condition.outconditionEvents.length; i++) {
+                        if( vm.condition.outconditionEvents[i].command === 'delete'){
+                            arr.push(vm.vm.condition.outconditionEvents[i]);
+                        }
+                    }
+                    vm.condition.outconditionDeleteEvents = arr;
+                    if(arr.length == 0){
+                       vm.addOutconditionDeleteEvents();
+                    }
+                    console.log(vm.condition, ' <><><?<>')
                 }
             }
         };
@@ -14125,13 +14142,27 @@
         vm.addOutconditionEvents = function () {
             let param = {
                 event: '',
+                command: 'create',
                 id: 0
             };
             vm.condition.outconditionEvents.push(param);
         };
 
+        vm.addOutconditionDeleteEvents = function () {
+            let param = {
+                event: '',
+                command: 'delete',
+                id: 0
+            };
+            vm.condition.outconditionDeleteEvents.push(param);
+        };
+
         vm.removeOutconditionEvents = function (index) {
             vm.condition.outconditionEvents.splice(index, 1);
+        };
+
+        vm.removeOutconditionDeleteEvents = function (index) {
+            vm.condition.outconditionDeleteEvents.splice(index, 1);
         };
 
         vm.addEvent = function (outcondition) {
@@ -14167,6 +14198,8 @@
                 }
             } else if (vm.event && vm.event.event) {
                 if (vm._index || vm._index == 0) {
+                    vm.outconditionEvents = vm.outconditionEvents.concat(vm.outconditionDeleteEvents);
+
                     for (let i = 0; i < vm._outcondition.outconditionEvents.length; i++) {
                         if (vm._index == i) {
                             vm._outcondition.outconditionEvents[i] = vm.event;
@@ -14174,7 +14207,11 @@
                         }
                     }
                 } else if (vm.strCommand == 'create') {
-                    vm._outcondition.outconditionEvents.push(vm.event);
+                    if(vm.event.command === 'create') {
+                        vm._outcondition.outconditionEvents.push(vm.event);
+                    }else{
+                         vm._outcondition.outconditionDeleteEvents.push(vm.event);
+                    }
                 }
             }
             $('#command-editor').modal('hide');

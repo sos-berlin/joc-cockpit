@@ -1447,6 +1447,8 @@
   "tooltip.actual": "Actual",
   "tab.inconditions": "In-Conditions",
   "tab.outconditions": "Out-Conditions",
+  "tab.createEvent": "Create Event",
+  "tab.deleteEvent": "Delete Event",
   "placeholder.enterWorkflow": "Enter Workflow",
   "InCondition": "In-Condition",
   "OutCondition": "Out-Condition",
