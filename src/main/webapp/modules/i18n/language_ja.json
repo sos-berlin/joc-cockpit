@@ -1404,7 +1404,7 @@
   "button.resetWorkflow": "Reset Workflow",
   "button.updateExpression": "Update Expression",
   "button.showAllEvents": "All Events",
-  "button.showExistingEvents": "Existing Events",
+  "button.showFilteredEvents": "Filtered Events",
   "button.detailedView": "Detailed View",
   "button.resolveConditions": "Resolve Conditions",
   "label.conditionEditor": "Conditions Editor",

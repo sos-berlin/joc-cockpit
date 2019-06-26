@@ -14022,13 +14022,13 @@
         function init() {
             if(vm._job.inconditions && vm._job.inconditions.length > 0) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
-                    vm.editor.workflow = vm._job.inconditions[i].workflow;
+                    vm.editor.workflow = vm._job.inconditions[i].workflow.substring(vm._job.inconditions[i].workflow.lastIndexOf('/')+1);
                     break;
                 }
             }
             if (!vm.editor.workflow && vm._job.outconditions && vm._job.outconditions.length > 0) {
                 for (let i = 0; i < vm._job.outconditions.length; i++) {
-                    vm.editor.workflow = vm._job.outconditions[i].workflow;
+                    vm.editor.workflow = vm._job.outconditions[i].workflow.substring(vm._job.outconditions[i].workflow.lastIndexOf('/')+1);
                     break;
                 }
             }
@@ -14037,10 +14037,10 @@
 
         $scope.ok = function () {
             for(let i = 0; i < vm._job.inconditions.length; i++){
-                vm._job.inconditions[i].workflow = vm._job.path + '/' + vm.editor.workflow;
+                vm._job.inconditions[i].workflow = vm._job.path1 + '/' + vm.editor.workflow;
             }
             for(let i = 0; i < vm._job.outconditions.length; i++){
-                vm._job.outconditions[i].workflow = vm._job.path + '/' +  vm.editor.workflow;
+                vm._job.outconditions[i].workflow = vm._job.path1 + '/' +  vm.editor.workflow;
             }
             $uibModalInstance.close('ok');
         };
@@ -14198,8 +14198,6 @@
                 }
             } else if (vm.event && vm.event.event) {
                 if (vm._index || vm._index == 0) {
-                    vm.outconditionEvents = vm.outconditionEvents.concat(vm.outconditionDeleteEvents);
-
                     for (let i = 0; i < vm._outcondition.outconditionEvents.length; i++) {
                         if (vm._index == i) {
                             vm._outcondition.outconditionEvents[i] = vm.event;

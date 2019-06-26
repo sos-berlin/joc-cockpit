@@ -7083,6 +7083,7 @@
 
 
         vm.clusterAction = function (objectType, action, host, port, id) {
+            $('.cluster-rect').popover('dispose');
             function performAction() {
                 var obj = {};
                 obj.jobschedulerId = id || vm.schedulerIds.selected;

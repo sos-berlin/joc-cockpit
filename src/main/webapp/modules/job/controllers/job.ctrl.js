@@ -6039,6 +6039,16 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+
+                if (vm._job.outconditions.length > 0) {
+                    for (let i = 0; i < vm._job.outconditions.length; i++) {
+                        if (vm._job.outconditions[i].outconditionDeleteEvents && vm._job.outconditions[i].outconditionDeleteEvents.length > 0) {
+                            vm._job.outconditions[i].outconditionEvents = vm._job.outconditions[i].outconditionEvents.concat(vm._job.outconditions[i].outconditionDeleteEvents);
+                            delete vm._job.outconditions[i]['outconditionDeleteEvents'];
+                        }
+                    }
+                }
+
                 ConditionService.updateInCondition({
                     masterId: $scope.schedulerIds.selected,
                     jobsInconditions: [{job: vm._job.path, inconditions : vm._job.inconditions}]
@@ -6379,6 +6389,10 @@
                 vm.isInfoResize = true;
             }
         });
+
+        vm.startConditionResolver = function(){
+            vm.$broadcast('startConditionResolver');
+        };
 
         vm.zoomIn = function () {
             vm.$broadcast('zoomIn');
@@ -8299,7 +8313,7 @@
                             graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex);
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                    if (jobs[i].outconditions[x].outconditionEvents[z].command == 'create') {
+                                    if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
                                         let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event);
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow : jobs[i].outconditions[x].outconditionEvents[z].exists;
                                         _node.setAttribute('isExist', flg);
@@ -8329,7 +8343,8 @@
                                     for (let x = 0; x < jobs[i].outconditions.length; x++) {
                                         if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                             for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                                if (jobs[m].inconditions[n].conditionExpression.expression.match(jobs[i].outconditions[x].outconditionEvents[z].event)) {
+                                                if (jobs[m].inconditions[n].conditionExpression.expression.match(jobs[i].outconditions[x].outconditionEvents[z].event) ||
+                                                    jobs[m].inconditions[n].conditionExpression.expression.indexOf(jobs[i].outconditions[x].outconditionEvents[z].event) > -1) {
                                                     if (!jobs[m].jId) {
                                                         if (!jobs[m].state) {
                                                             jobs[m].state = {};
@@ -8344,7 +8359,7 @@
                                                         let isConnected = false;
                                                         if (v1.edges) {
                                                             for (let y = 0; y < v1.edges.length; y++) {
-                                                                if (v1.edges[y].target.id == graph.getModel().getCell(jobs[m].jId).id) {
+                                                                if (v1.edges[y].target.id === graph.getModel().getCell(jobs[m].jId).id) {
                                                                     isConnected = true;
                                                                     break;
                                                                 }
@@ -8367,13 +8382,14 @@
                             for (let m = 0; m < jobs.length; m++) {
                                 if (jobs[i].path !== jobs[m].path) {
                                     for (let x = 0; x < jobs[m].inconditions.length; x++) {
-                                        if (jobs[m].inconditions[x].conditionExpression.expression.match(events[b].getAttribute('label'))) {
+                                        if (jobs[m].inconditions[x].conditionExpression.expression.match(events[b].getAttribute('label')) ||
+                                            jobs[m].inconditions[x].conditionExpression.expression.indexOf(events[b].getAttribute('label')) > -1) {
                                             for (let y = 0; y < events[b].edges.length; y++) {
-                                                if (events[b].edges[y].source.id == events[b].id) {
+                                                if (events[b].edges[y].source.id === events[b].id) {
                                                     if (!jobs[m].inconditions[x].boxId) {
                                                         jobs[m].inconditions[x].boxId = [events[b].edges[y].target.id];
                                                     } else {
-                                                        if (jobs[m].inconditions[x].boxId.indexOf(events[b].edges[y].target.id) == -1) {
+                                                        if (jobs[m].inconditions[x].boxId.indexOf(events[b].edges[y].target.id) === -1) {
                                                             jobs[m].inconditions[x].boxId.push(events[b].edges[y].target.id);
                                                         }
                                                     }
@@ -9104,22 +9120,6 @@
                         })
                     );
                 }
-/*                if (state.cell.getAttribute('isConsumed') && state.cell.getAttribute('isConsumed') == 'true') {
-                    // add
-                    img = mxUtils.createImage('images/reset.svg');
-                    img.setAttribute('title', gettextCatalog.getString('button.unconsumed'));
-                    img.style.left = (state.x - 2) + 'px';
-                    img.style.top = (state.y + 3) + 'px';
-
-                    mxEvent.addListener(img, 'click',
-                        mxUtils.bind(this, function (evt) {
-                            vm.unconsumed(state.cell);
-                            mxEvent.consume(evt);
-                            this.destroy();
-                        })
-                    );
-                }*/
-
 
                 if (img) {
                     img.style.position = 'absolute';
@@ -9232,7 +9232,6 @@
         }
 
          $scope.$on('event-started', function () {
-
              if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                  for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                      if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
@@ -9245,6 +9244,12 @@
 
 
         /** -------------------- Actions ------------------- */
+
+
+        $scope.$on('startConditionResolver', function () {
+            vm.startConditionResolver();
+        });
+
         $scope.$on('zoomIn', function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomIn();
