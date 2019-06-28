@@ -6039,16 +6039,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
-                if (vm._job.outconditions.length > 0) {
-                    for (let i = 0; i < vm._job.outconditions.length; i++) {
-                        if (vm._job.outconditions[i].outconditionDeleteEvents && vm._job.outconditions[i].outconditionDeleteEvents.length > 0) {
-                            vm._job.outconditions[i].outconditionEvents = vm._job.outconditions[i].outconditionEvents.concat(vm._job.outconditions[i].outconditionDeleteEvents);
-                            delete vm._job.outconditions[i]['outconditionDeleteEvents'];
-                        }
-                    }
-                }
-
                 ConditionService.updateInCondition({
                     masterId: $scope.schedulerIds.selected,
                     jobsInconditions: [{job: vm._job.path, inconditions : vm._job.inconditions}]
@@ -8071,6 +8061,9 @@
         vm.workflows = [];
         vm.flag = false;
         vm.isUpdated = true;
+        vm.eventNodes = [];
+        vm.tree_handler = {};
+
 
         function init() {
             if (sessionStorage.preferences) {
@@ -8158,16 +8151,21 @@
                             if (wf) {
                                 vm.flag = true;
                                 let _job = {};
-                                for(let j =0;  j < vm.allJobs.length; j++){
-                                    if(vm.allJobs[j].path == mergeData[i].job){
-                                         _job = vm.allJobs[j];
-                                         _job.inconditions = mergeData[i].inconditions;
-                                         _job.outconditions = mergeData[i].outconditions;
+                                for (let j = 0; j < vm.allJobs.length; j++) {
+                                    if (vm.allJobs[j].path == mergeData[i].job) {
+                                        _job = vm.allJobs[j];
+                                        _job.inconditions = mergeData[i].inconditions;
+                                        _job.outconditions = mergeData[i].outconditions;
                                         break;
                                     }
                                 }
 
-                                let x = {name: wf, actual: wf.substring(wf.lastIndexOf('/')+1), path: wf.substring(0, wf.lastIndexOf('/')), jobs: [_job]};
+                                let x = {
+                                    name: wf,
+                                    actual: wf.substring(wf.lastIndexOf('/') + 1),
+                                    path: wf.substring(0, wf.lastIndexOf('/')),
+                                    jobs: [_job]
+                                };
                                 let _tempWorkflow;
                                 let _conditions = [];
                                 for (let i = 0; i < vm.workflows.length; i++) {
@@ -8564,7 +8562,10 @@
                     if (cell.edges[i].target.id === cell.id) {
                         vm.expression.job = cell.edges[i].source.getAttribute('actual');
                     } else {
-                        vm.expression.events.push({event: cell.edges[i].target.getAttribute('actual')});
+                        vm.expression.events.push({
+                            event: cell.edges[i].target.getAttribute('actual'),
+                            command: 'create'
+                        });
                     }
                 }
             }
@@ -8583,7 +8584,7 @@
             });
         };
 
-        let isFunction = false,  t1;
+        let isFunction = false, t1;
         vm.generateExpression = function (operator, func) {
             if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
                 isFunction = false;
@@ -8666,15 +8667,100 @@
                 obj.workflow = vm.filteredByWorkflow;
             } else {
                 vm.eventFilter = vm.eventFilter === 'ALL' ? 'EXIST' : "ALL";
-                if (vm.eventFilter != 'ALL') {
+                if (vm.eventFilter !== 'ALL') {
                     obj.workflow = vm.filteredByWorkflow;
                 }
             }
 
             ConditionService.getEvents(obj).then(function (res) {
                 vm.eventList = res.conditionEvents;
+                if (vm.eventFilter === 'ALL') {
+                    let arr = [];
+                    for (let i = 0; i < vm.eventList.length; i++) {
+                        let path = vm.eventList[i].workflow;
+                        if (arr.indexOf(path) === -1) {
+                            arr.push(path);
+                        }
+                    }
+                    createTreeStructure(arr);
+                }
             });
         };
+
+        function createTreeStructure(list) {
+            let eventNodes = [];
+            for (let i = 0; i < list.length; i++) {
+                let nodes = list[i].split('/');
+                let arr = [];
+                let flag = true, index = 0;
+                for (let j = 0; j < nodes.length; j++) {
+                    let obj = {};
+                    obj.name = nodes[j];
+                    obj.path = nodes[j] ? list[i] : '/';
+                    if (j < nodes.length - 1) {
+                        obj.folders = [];
+                         obj.expanded = true;
+                    } else {
+                        obj.type = 'WORKFLOW';
+                        obj.events = [];
+                        for (let m = 0; m < vm.eventList.length; m++) {
+                            if(list[i] == vm.eventList[m].workflow) {
+                                obj.events.push(vm.eventList[m].event);
+                            }
+                        }
+
+                    }
+                    if (eventNodes[0] && eventNodes[0][j]) {
+                        if (eventNodes[0][j].name == nodes[j]) {
+                            flag = false;
+                            index = j;
+                        } else {
+                            if (arr.length == 0) {
+                                arr.push(obj);
+                            } else if (arr.length > 0) {
+                                recursiveUpdate(arr[0], obj);
+                            }
+                        }
+                    } else {
+                        if (arr.length == 0) {
+                            arr.push(obj);
+                        } else if (arr.length > 0) {
+                            recursiveUpdate(arr[0], obj);
+                        }
+                    }
+                }
+                if (flag) {
+                    eventNodes.push(arr);
+                } else {
+                    recursiveUpdate1(eventNodes[0][index], arr);
+                }
+            }
+
+            vm.eventNodes = eventNodes[0];
+        }
+
+        function recursiveUpdate(arr, obj) {
+            if (arr.folders.length === 0) {
+                arr.folders.push(obj);
+            } else {
+                recursiveUpdate(arr.folders[0], obj);
+            }
+        }
+
+        function recursiveUpdate1(data, arr) {
+            let flag = true;
+            if (arr[0].folders) {
+                for (let y = 0; y < data.folders.length; y++) {
+                    if (arr[0].name === data.folders[y].name) {
+                        flag = false;
+                        recursiveUpdate1(data.folders[y], arr[0].folders);
+                    }
+                }
+            }
+            if (flag) {
+                data.folders.push(arr[0]);
+            }
+        }
 
         vm.addEventFromWorkflow = function (cell) {
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
@@ -8744,10 +8830,10 @@
             });
         };
 
-        vm.startConditionResolver = function(){
-          ConditionService.startConditionResolver({"masterId": $scope.schedulerIds.selected}).then(function(res){
-              console.log(res);
-          });
+        vm.startConditionResolver = function () {
+            ConditionService.startConditionResolver({"masterId": $scope.schedulerIds.selected}).then(function (res) {
+                console.log(res);
+            });
         };
 
         vm.resetJob = function (cell) {
@@ -8785,53 +8871,60 @@
                 if (vm.expression.job === vm.jobs[i].path) {
                     if (vm.expression.label === 'InCondition') {
                         for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
-                            if (vm.jobs[i].inconditions[j].vertexId === cell.id) {
-                                if (vm.jobs[i].inconditions[j].vertexId === cell.id) {
-                                    let flg = vm.jobs[i].inconditions[j].conditionExpression.expression == vm.expression.expression;
-                                    if (!flg) {
-                                        vm.jobs[i].inconditions[j].conditionExpression.expression = vm.expression.expression;
-                                    }
-
-                                    for (let m = 0; m < vm.jobs[i].inconditions[j].inconditionCommands.length; m++) {
-                                        for (let n = 0; n < vm.expression.commands.length; n++) {
-                                            if (vm.jobs[i].inconditions[j].inconditionCommands[m].command === vm.expression.commands[n].command && vm.jobs[i].inconditions[j].inconditionCommands[m].commandParam === vm.expression.commands[n].commandParam) {
-                                                vm.expression.commands[n].id = vm.jobs[i].inconditions[j].inconditionCommands[m].id;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    vm.jobs[i].inconditions[j].inconditionCommands = vm.expression.commands;
-                                    ConditionService.updateInCondition({
-                                        masterId: $scope.schedulerIds.selected,
-                                        jobsInconditions: [{job: vm.jobs[i].path, inconditions : vm._job.inconditions}]
-                                    }).then(function (res) {
-                                        if (!flg) {
-                                            if (res.jobsInconditions && res.jobsInconditions.length > 0) {
-                                                vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
-                                            }
-                                            updateJobs();
-                                        }
-                                    });
-                                    break;
+                            if (vm.jobs[i].inconditions[j].vertexId == cell.id) {
+                                let flg = vm.jobs[i].inconditions[j].conditionExpression.expression == vm.expression.expression;
+                                if (!flg) {
+                                    vm.jobs[i].inconditions[j].conditionExpression.expression = vm.expression.expression;
                                 }
-                            }
-                        }
-                    } else if (vm.expression.label === 'OutCondition') {
-                        for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
-                            if (vm.jobs[i].outconditions[j].vertexId === cell.id) {
-                                vm.jobs[i].outconditions[j].conditionExpression.expression = vm.expression.expression;
-                                for (let m = 0; m < vm.jobs[i].outconditions[j].outconditionEvents.length; m++) {
-                                    for (let n = 0; n < vm.expression.events.length; n++) {
-                                        if (vm.jobs[i].outconditions[j].outconditionEvents[m].event === vm.expression.events[n].event) {
-                                            vm.expression.events[n].id = vm.jobs[i].outconditions[j].outconditionEvents[m].id;
+
+                                for (let m = 0; m < vm.jobs[i].inconditions[j].inconditionCommands.length; m++) {
+                                    for (let n = 0; n < vm.expression.commands.length; n++) {
+                                        if (vm.jobs[i].inconditions[j].inconditionCommands[m].command === vm.expression.commands[n].command && vm.jobs[i].inconditions[j].inconditionCommands[m].commandParam === vm.expression.commands[n].commandParam) {
+                                            vm.expression.commands[n].id = vm.jobs[i].inconditions[j].inconditionCommands[m].id;
                                             break;
                                         }
                                     }
                                 }
-                                vm.jobs[i].outconditions[j].outconditionEvents = vm.expression.events;
+                                vm.jobs[i].inconditions[j].inconditionCommands = vm.expression.commands;
+                                ConditionService.updateInCondition({
+                                    masterId: $scope.schedulerIds.selected,
+                                    jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]
+                                }).then(function (res) {
+                                    if (!flg) {
+                                        if (res.jobsInconditions && res.jobsInconditions.length > 0) {
+                                            vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
+                                        }
+                                        updateJobs();
+                                    }
+                                });
+                                break;
+
+                            }
+                        }
+                    } else if (vm.expression.label === 'OutCondition') {
+                        for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
+                            if (vm.jobs[i].outconditions[j].vertexId == cell.id) {
+                                vm.jobs[i].outconditions[j].conditionExpression.expression = vm.expression.expression;
+                                for (let m = 0; m < vm.jobs[i].outconditions[j].outconditionEvents.length; m++) {
+                                    if (vm.jobs[i].outconditions[j].outconditionEvents[m].command === 'create') {
+                                        for (let n = 0; n < vm.expression.events.length; n++) {
+                                            if (vm.jobs[i].outconditions[j].outconditionEvents[m].event === vm.expression.events[n].event) {
+                                                vm.expression.events.splice(n, 1);
+                                                break;
+                                            }
+                                        }
+
+                                    }
+                                }
+                                for (let n = 0; n < vm.expression.events.length; n++) {
+                                    vm.expression.events[n].command = 'create';
+                                }
+
+                                vm.jobs[i].outconditions[j].outconditionEvents = vm.jobs[i].outconditions[j].outconditionEvents.concat(vm.expression.events);
+
                                 ConditionService.updateOutCondition({
                                     masterId: $scope.schedulerIds.selected,
-                                    jobsOutconditions: [{job: vm.jobs[i].path, outconditions : vm._job.outconditions}]
+                                    jobsOutconditions: [{job: vm.jobs[i].path, outconditions: vm.jobs[i].outconditions}]
                                 }).then(function (res) {
                                     if (res.jobsOutconditions && res.jobsOutconditions.length > 0) {
                                         vm.jobs[i].outconditions = res.jobsOutconditions[0].outconditions;
@@ -9231,16 +9324,20 @@
             };
         }
 
-         $scope.$on('event-started', function () {
-             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
-                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
-                     if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
-                            updateWorkflowDiagram(vm.jobs);
-                            break;
-                     }
-                 }
-             }
-         });
+        $scope.$on('event-started', function () {
+            if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
+                    if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
+                        
+                        updateWorkflowDiagram(vm.jobs);
+                        break;
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {
+                       
+                        updateSingleJob(vm.events[0].eventSnapshots[m].path);
+                    }
+                }
+            }
+        });
 
 
         /** -------------------- Actions ------------------- */

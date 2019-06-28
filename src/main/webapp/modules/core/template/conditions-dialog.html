@@ -6,7 +6,7 @@
         <h4 class="modal-title"><span translate>label.conditionEditor</span> : {{_job.path}}</h4>
     </div>
     <form name="form" role="form" ng-submit="ok()" novalidate>
-        <div class="modal-body p-a" style="min-height: 350px;max-height: 650px; overflow: auto">
+        <div class="modal-body p-a" style="min-height: 400px;max-height: 650px; overflow: auto">
             <div ng-if="!condition">
                 <div class="row m-b" >
                     <div class="col-sm-2 form-control-label" translate>label.workflow</div>
@@ -46,7 +46,10 @@
                                     <th width="50" translate>label.expression</th>
                                     <th width="50">
                                         <span ng-if="editor.type=='Incondition'" translate>label.listOfCommands</span>
-                                        <span ng-if="editor.type=='Outcondition'" translate>label.listOfEvents</span>
+                                        <span ng-if="editor.type=='Outcondition'" translate>label.listOfCreateEvents</span>
+                                    </th>
+                                    <th width="25" ng-if="editor.type=='Outcondition'" translate>
+                                       label.listOfDeleteEvents
                                     </th>
                                 </tr>
                                 </thead>
@@ -87,18 +90,31 @@
                                             <i class="fa fa-times"></i></a>
                                     </td>
                                     <td>
-                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index">
-                                            <a ng-click="editEvent(events, $index);$event.stopPropagation()">{{events.event}}</a>
+                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'create'">
+                                            <a ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">{{events.event}}</a>
                                             <a class="text-xs text-hover-primary m-l-sm"
-                                               ng-click="editEvent(events, outcondition, $index);$event.stopPropagation()">
+                                               ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">
                                                 <i class="fa fa-pencil"></i></a>
                                             <a class="text-xs text-hover-color m-l-sm"
-                                               ng-click="removeEvent(outcondition.outconditionEvents, $index);$event.stopPropagation()">
+                                               ng-click="removeEvent(outcondition.outconditionEvents, $index, 'create');$event.stopPropagation()">
                                                 <i class="fa fa-times"></i></a>
                                         </div>
                                         <div class="text-xs cursor text-hover-primary">
-                                            <i class="fa fa-plus"
-                                               ng-click="addEvent(outcondition);$event.stopPropagation()"></i>
+                                            <i class="fa fa-plus" ng-click="addEvent(outcondition, 'create');$event.stopPropagation()"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'delete'">
+                                            <a ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">{{events.event}}</a>
+                                            <a class="text-xs text-hover-primary m-l-sm"
+                                               ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">
+                                                <i class="fa fa-pencil"></i></a>
+                                            <a class="text-xs text-hover-color m-l-sm"
+                                               ng-click="removeEvent(outcondition.outconditionEvents, $index, 'delete');$event.stopPropagation()">
+                                                <i class="fa fa-times"></i></a>
+                                        </div>
+                                        <div class="text-xs cursor text-hover-primary">
+                                            <i class="fa fa-plus" ng-click="addEvent(outcondition, 'delete');$event.stopPropagation()"></i>
                                         </div>
                                     </td>
                                 </tr>
@@ -197,17 +213,19 @@
                     </div>
                     <div class="form-group row m-b-0" >
                         <div class="col-sm-10 m-b-sm" ng-if="$index==0" translate>label.event</div>
-                        <div class="col-sm-10 m-b-sm">
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item">
-                                    <a class="nav-link" ng-class="{active: editor.eventType=='create'}" ng-click="editor.eventType = 'create'"
-                                        href data-toggle="tab" data-target="#tab12" translate>tab.createEvent</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" ng-class="{active: editor.eventType=='delete'}" ng-click="editor.eventType = 'delete'"
-                                        href data-toggle="tab" data-target="#tab22" translate>tab.deleteEvent</a>
-                                </li>
-                            </ul>
+                        <div class="col-sm-10 m-b">
+                            <div class="b-b">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link" ng-class="{active: editor.eventType=='create'}" ng-click="editor.eventType = 'create'"
+                                            href data-toggle="tab" data-target="#tab12" translate>tab.createEvent</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" ng-class="{active: editor.eventType=='delete'}" ng-click="editor.eventType = 'delete'"
+                                            href data-toggle="tab" data-target="#tab22" translate>tab.deleteEvent</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div ng-if="editor.eventType=='create'">
                             <div ng-repeat="outconditionEvent in condition.outconditionEvents;" ng-if="outconditionEvent.command == 'create'">
@@ -215,17 +233,17 @@
                                     <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                                 </div>
                                 <div class="col-sm-1 p-l-0">
-                                    <a><i ng-click="removeOutconditionEvents($index)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                    <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                                 </div>
                             </div>
                         </div>
                         <div ng-if="editor.eventType=='delete'">
-                            <div ng-repeat="outconditionEvent in condition.outconditionDeleteEvents;">
+                            <div ng-repeat="outconditionEvent in condition.outconditionEvents;"  ng-if="outconditionEvent.command == 'delete'">
                                 <div class="col-sm-10 m-b-sm">
                                     <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
                                 </div>
                                 <div class="col-sm-1 p-l-0">
-                                    <a><i ng-click="removeOutconditionDeleteEvents($index)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                    <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -233,17 +251,17 @@
                     <div class="form-group row" ng-if="editor.eventType=='create'">
                         <div class="col-sm-10">
                             <a class="text-u-l" ng-if="condition.outconditionEvents.length>0"
-                               ng-click="addOutconditionEvents()" translate>button.addAnotherOutconditionEvents</a>
+                               ng-click="addOutconditionEvents('create')" translate>button.addAnotherOutconditionEvents</a>
                             <a class="text-u-l" ng-if="condition.outconditionEvents.length==0"
-                               ng-click="addOutconditionEvents()" translate>button.addOutconditionEvents</a>
+                               ng-click="addOutconditionEvents('create')" translate>button.addOutconditionEvents</a>
                         </div>
                     </div>
                     <div class="form-group row" ng-if="editor.eventType=='delete'">
                         <div class="col-sm-10">
                             <a class="text-u-l" ng-if="condition.outconditionDeleteEvents.length>0"
-                               ng-click="addOutconditionDeleteEvents()" translate>button.addAnotherOutconditionEvents</a>
+                               ng-click="addOutconditionEvents('delete')" translate>button.addAnotherOutconditionEvents</a>
                             <a class="text-u-l" ng-if="condition.outconditionDeleteEvents.length==0"
-                               ng-click="addOutconditionDeleteEvents()" translate>button.addOutconditionEvents</a>
+                               ng-click="addOutconditionEvents('delete')" translate>button.addOutconditionEvents</a>
                         </div>
                     </div>
                 </div>

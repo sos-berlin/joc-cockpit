@@ -16,9 +16,10 @@
                         <td style="white-space: nowrap">
                             <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
                                 <span>
-                                    <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
+                                    <i ng-if="!row.branch.expanded && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
                                     <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open"></i>
-                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0" class="fa fa-folder"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0 && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
+                                    <i ng-if="row.branch.type == 'WORKFLOW'" class="fa fa-sitemap"></i>
                                     {{row.branch[expandingProperty.field] || '/' }}
                                 </span>
                             </span>
@@ -70,6 +71,16 @@
                                 <span class="cursor" ng-click="on_user_click({document:document.path})">
                                     <i class="fa fa-file text-sm" style="margin-top: -2px"></i>
                                     <span>{{document.name}}</span>  <span ng-if="document.title" class="text-sm text-muted">&nbsp;-&nbsp;{{document.title}}</span>
+                                 </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="row.branch.type == 'WORKFLOW' && row.branch.events.length>0">
+                        <td></td>
+                        <td>
+                            <div class="p-l-md p-t-xxs" ng-repeat="evt in row.branch.events">
+                                <span class="text-muted">
+                                    <span>{{evt}}</span>
                                  </span>
                             </div>
                         </td>

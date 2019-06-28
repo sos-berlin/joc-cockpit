@@ -14078,24 +14078,19 @@
                     vm.addInconditionCommands();
                 } else {
                     vm.condition = {outconditionEvents: [], outconditionDeleteEvents:[]};
-                    vm.addOutconditionEvents();
-                    vm.addOutconditionDeleteEvents();
-
+                    vm.addOutconditionEvents('create');
                 }
             }else{
-                if (vm.editor.type !== 'Incondition') {
                     let arr = [];
-                    for (let i = 0; i < vm.condition.outconditionEvents.length; i++) {
-                        if( vm.condition.outconditionEvents[i].command === 'delete'){
-                            arr.push(vm.vm.condition.outconditionEvents[i]);
+                    if(vm.condition.outconditionEvents) {
+                        for (let i = 0; i < vm.condition.outconditionEvents.length; i++) {
+                            if (vm.condition.outconditionEvents[i].command === 'delete') {
+                                arr.push(vm.condition.outconditionEvents[i]);
+                            }
                         }
                     }
                     vm.condition.outconditionDeleteEvents = arr;
-                    if(arr.length == 0){
-                       vm.addOutconditionDeleteEvents();
-                    }
-                    console.log(vm.condition, ' <><><?<>')
-                }
+
             }
         };
 
@@ -14139,40 +14134,35 @@
             commands.splice(index, 1);
         };
 
-        vm.addOutconditionEvents = function () {
+        vm.addOutconditionEvents = function (type) {
             let param = {
                 event: '',
-                command: 'create',
+                command: type,
                 id: 0
             };
             vm.condition.outconditionEvents.push(param);
         };
 
-        vm.addOutconditionDeleteEvents = function () {
-            let param = {
-                event: '',
-                command: 'delete',
-                id: 0
-            };
-            vm.condition.outconditionDeleteEvents.push(param);
+        vm.removeOutconditionEvents = function (condition) {
+            for(let i =0; vm.outconditionEvents.length;i++) {
+                if(angular.equals(vm.outconditionEvents[i], condition)){
+                    vm.condition.outconditionEvents.splice(index, 1);
+                }
+            }
         };
 
-        vm.removeOutconditionEvents = function (index) {
-            vm.condition.outconditionEvents.splice(index, 1);
-        };
-
-        vm.removeOutconditionDeleteEvents = function (index) {
-            vm.condition.outconditionDeleteEvents.splice(index, 1);
-        };
-
-        vm.addEvent = function (outcondition) {
+        vm.addEvent = function (outcondition, type) {
+            console.log(type);
+            vm._eventType = type;
             vm.strCommand = 'create';
             vm._outcondition = outcondition;
-            vm.event = {};
+            console.log(vm._outcondition)
+            vm.event = {command: type, id:0};
             $('#command-editor').modal('show');
         };
 
-        vm.editEvent = function (event, outcondition, index) {
+        vm.editEvent = function (event, outcondition, index, type) {
+            vm._eventType = type;
             vm.strCommand = 'edit';
             vm._outcondition = outcondition;
             vm._index = index;
@@ -14180,7 +14170,8 @@
             $('#command-editor').modal('show');
         };
 
-        vm.removeEvent = function (events, index) {
+        vm.removeEvent = function (events, index,type) {
+            vm._eventType = type;
             events.splice(index, 1);
         };
 
@@ -14205,11 +14196,7 @@
                         }
                     }
                 } else if (vm.strCommand == 'create') {
-                    if(vm.event.command === 'create') {
-                        vm._outcondition.outconditionEvents.push(vm.event);
-                    }else{
-                         vm._outcondition.outconditionDeleteEvents.push(vm.event);
-                    }
+                    vm._outcondition.outconditionEvents.push(vm.event);
                 }
             }
             $('#command-editor').modal('hide');
@@ -14256,7 +14243,7 @@
         };
 
         vm.expressionEditor = function () {
-            vm.expression = {};
+            vm.expression = {type: 'returncode'};
             if (!vm.condition.conditionExpression) {
                 vm.condition.conditionExpression = {expression: ''};
             }
@@ -14283,6 +14270,9 @@
         };
         let isFunction= false;
         vm.generateExpression = function (operator, func) {
+            if(func) {
+                vm.expression.type = func;
+            }
             if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
                 isFunction = false;
                 vm.tmpExp = null;
