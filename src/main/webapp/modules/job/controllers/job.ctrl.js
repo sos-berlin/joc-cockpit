@@ -8162,8 +8162,7 @@
 
                                 let x = {
                                     name: wf,
-                                    actual: wf.substring(wf.lastIndexOf('/') + 1),
-                                    path: wf.substring(0, wf.lastIndexOf('/')),
+                                    path: _job.path1,
                                     jobs: [_job]
                                 };
                                 let _tempWorkflow;
@@ -8677,7 +8676,7 @@
                 if (vm.eventFilter === 'ALL') {
                     let arr = [];
                     for (let i = 0; i < vm.eventList.length; i++) {
-                        let path = vm.eventList[i].workflow;
+                        let path = vm.eventList[i].path +'/'+vm.eventList[i].workflow;
                         if (arr.indexOf(path) === -1) {
                             arr.push(path);
                         }
@@ -9372,6 +9371,26 @@
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
         });
+
+         vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
+        let d = new Date();
+        let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
+        vm.functions.push('['+d.getFullYear()+'.'+day+']');
+        vm.getSuggestion = function($event){
+            let key = $event.keyCode || $event.which;
+            if(key === 91){
+                $('#event-suggestion').css({display: 'inline-block',opacity: 1, left: $event.target.value.length * 3 +'px' });
+            } else if(key === 93 || key === 13 || key === 8){
+                $('#event-suggestion').css({display: 'none',opacity: 0});
+            }
+        };
+
+        vm.addSuggestion = function(value){
+            if(vm.expression && vm.expression.expression){
+                vm.expression.expression = vm.expression.expression + value.substring(1);
+            }
+            $('#event-suggestion').css({display: 'none',opacity: 0});
+        };
 
         $scope.$on('$destroy', function () {
             if (t1) {

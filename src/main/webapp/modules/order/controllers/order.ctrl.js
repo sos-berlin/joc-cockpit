@@ -9527,12 +9527,6 @@
                     obj.folders = [{folder: data.path, recursive: false}];
                     OrderService.getOrdersP(obj).then(function (result) {
                         data.jobChains = result.orders;
-                        setTimeout(function () {
-                            if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
-                                $('.order_img').attr("src", 'images/order.png');
-                            }
-                        }, 30);
-
                     });
                 } else if (vm.historyFilters.type == 'job') {
                     data.jobs = [];
@@ -9542,11 +9536,6 @@
                     obj.folders = [{folder: data.path, recursive: false}];
                     JobService.getJobsP(obj).then(function (result) {
                         data.jobs = result.jobs;
-                        setTimeout(function () {
-                            if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
-                                $('.job_img').attr("src", 'images/job.png');
-                            }
-                        }, 30);
                     });
                 }
             } else {

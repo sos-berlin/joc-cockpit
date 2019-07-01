@@ -9,7 +9,7 @@
             <div class="modal-body p-a p-l-md p-r-md">
                 <form name="form3" ng-submit="save3(form3)" novalidate>
                     <div>
-                        <div class="row m-b">
+                        <div class="row m-b-sm">
                             <label class="col-sm-12">
                                  <span class="text-md _600" translate>label.expressionEditor</span>
                             </label>
@@ -41,7 +41,7 @@
                         <div class="form-group row">
                             <div class="col-sm-6" >
                                 <div><span translate>label.functions</span>:</div>
-                                <div class="b-a p-a" style="height: 196px">
+                                <div class="b-a p-a" style="height: 204px; overflow: auto">
                                     <div>
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'returncode')">returncode</a>
                                     </div>
@@ -49,9 +49,8 @@
                                         <i ng-if="expression.open" ng-click="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.open" ng-click="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'event')">event</a>
-                                        <ul class="m-t-xs" ng-if="expression.open">
+                                        <ul class="m-t-xs m-b-0" ng-if="expression.open">
                                             <li ng-repeat="func in functions">
-                                              <i class="fa fa-circle text-xs m-r-sm"></i>
                                               <a class="text-hover-primary"  ng-click="generateExpression('function', func)">{{func}}</a>
                                             </li>
                                         </ul>
@@ -63,7 +62,7 @@
                             </div>
                             <div class="col-sm-6" >
                                 <div><span translate>label.description</span>:</div>
-                                <div class="b-a p-a" style="height: 196px">
+                                <div class="b-a p-a" style="height: 204px;overflow: auto">
                                     <div ng-if="expression.type === 'returncode'">
                                         <label class="_600">returnCode</label>
                                         <p class="text-sm">
@@ -86,8 +85,7 @@
                                         </ul>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
-                                            <div class="text-muted">event:xxx</div>
-                                            <!--<div class="text-muted">[*], [today], [yesterday], [yesterday - 2], [2019.169]</div>-->
+                                            <div class="text-muted">{{_eventExample}}</div>
                                         </div>
                                     </div>
                                     <div ng-if="expression.type === 'fileexist'">

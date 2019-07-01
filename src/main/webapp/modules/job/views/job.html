@@ -794,7 +794,7 @@
                                                           </div>
                                                          <div ng-repeat="workflow in value | orderBy: 'name'" ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
                                                              <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
-                                                            <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.actual}}</span></a>
+                                                            <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
                                                          </div>
                                                     </div>
                                                  </div>
@@ -826,7 +826,7 @@
                                                                  <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}"
                                                                     ng-click="changeEvents(workflow.name)"
                                                                     ng-repeat="workflow in workflows | orderBy:'name'">
-                                                                     <span>{{workflow.actual}}</span>
+                                                                     <span>{{workflow.name}}</span>
                                                                  </a>
                                                              </div>
                                                          </div>

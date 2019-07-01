@@ -17,7 +17,10 @@
                 </div>
                 <div class="col-sm-9">
                     <textarea rows="5" class="form-control" required ng-model="expression.expression" placeholder="returncode:x, event:event, fileexist:filename" autofocus
-                              ng-change="validateExpression()" ng-keypress="onKepPress($event)"  name="expression"></textarea>
+                              ng-change="validateExpression()" ng-keypress="getSuggestion($event)"  name="expression"></textarea>
+           	    <div class="dropdown-menu dropdown dropdown-more" id="event-suggestion">
+                        <a class="dropdown-item" ng-click="addSuggestion(func)" ng-repeat="func in functions">{{func}}</a>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">

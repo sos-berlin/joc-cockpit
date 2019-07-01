@@ -14009,44 +14009,46 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance'];
-
-    function EditConditionDialogCtrl($scope, $uibModalInstance) {
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'OrderService', 'orderByFilter'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance, OrderService, orderBy) {
         const vm = $scope;
         vm.editor = {
-            type : 'Incondition',
-            eventType : 'create'
+            type: 'Incondition',
+            eventType: 'create'
         };
         vm.strCommand = '';
 
         function init() {
-            if(vm._job.inconditions && vm._job.inconditions.length > 0) {
+            if (vm._job.inconditions && vm._job.inconditions.length > 0) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
-                    vm.editor.workflow = vm._job.inconditions[i].workflow.substring(vm._job.inconditions[i].workflow.lastIndexOf('/')+1);
+                    vm.editor.workflow = vm._job.inconditions[i].workflow;
                     break;
                 }
             }
             if (!vm.editor.workflow && vm._job.outconditions && vm._job.outconditions.length > 0) {
                 for (let i = 0; i < vm._job.outconditions.length; i++) {
-                    vm.editor.workflow = vm._job.outconditions[i].workflow.substring(vm._job.outconditions[i].workflow.lastIndexOf('/')+1);
+                    vm.editor.workflow = vm._job.outconditions[i].workflow;
                     break;
                 }
             }
         }
+
         init();
 
         $scope.ok = function () {
-            for(let i = 0; i < vm._job.inconditions.length; i++){
-                vm._job.inconditions[i].workflow = vm._job.path1 + '/' + vm.editor.workflow;
+            for (let i = 0; i < vm._job.inconditions.length; i++) {
+                vm._job.inconditions[i].workflow = vm.editor.workflow;
             }
-            for(let i = 0; i < vm._job.outconditions.length; i++){
-                vm._job.outconditions[i].workflow = vm._job.path1 + '/' +  vm.editor.workflow;
+            for (let i = 0; i < vm._job.outconditions.length; i++) {
+                vm._job.outconditions[i].workflow = vm.editor.workflow;
             }
             $uibModalInstance.close('ok');
         };
+
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
         $scope.close = function (form) {
             vm.command = null;
             vm.event = null;
@@ -14059,6 +14061,7 @@
                 form.$setUntouched();
             }
         };
+
         $scope.close2 = function (form) {
             vm.condition = undefined;
             if (form) {
@@ -14077,19 +14080,19 @@
                     vm.condition = {inconditionCommands: []};
                     vm.addInconditionCommands();
                 } else {
-                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents:[]};
+                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: []};
                     vm.addOutconditionEvents('create');
                 }
-            }else{
-                    let arr = [];
-                    if(vm.condition.outconditionEvents) {
-                        for (let i = 0; i < vm.condition.outconditionEvents.length; i++) {
-                            if (vm.condition.outconditionEvents[i].command === 'delete') {
-                                arr.push(vm.condition.outconditionEvents[i]);
-                            }
+            } else {
+                let arr = [];
+                if (vm.condition.outconditionEvents) {
+                    for (let i = 0; i < vm.condition.outconditionEvents.length; i++) {
+                        if (vm.condition.outconditionEvents[i].command === 'delete') {
+                            arr.push(vm.condition.outconditionEvents[i]);
                         }
                     }
-                    vm.condition.outconditionDeleteEvents = arr;
+                }
+                vm.condition.outconditionDeleteEvents = arr;
 
             }
         };
@@ -14144,8 +14147,8 @@
         };
 
         vm.removeOutconditionEvents = function (condition) {
-            for(let i =0; vm.outconditionEvents.length;i++) {
-                if(angular.equals(vm.outconditionEvents[i], condition)){
+            for (let i = 0; vm.outconditionEvents.length; i++) {
+                if (angular.equals(vm.outconditionEvents[i], condition)) {
                     vm.condition.outconditionEvents.splice(index, 1);
                 }
             }
@@ -14157,7 +14160,7 @@
             vm.strCommand = 'create';
             vm._outcondition = outcondition;
             console.log(vm._outcondition)
-            vm.event = {command: type, id:0};
+            vm.event = {command: type, id: 0};
             $('#command-editor').modal('show');
         };
 
@@ -14170,7 +14173,7 @@
             $('#command-editor').modal('show');
         };
 
-        vm.removeEvent = function (events, index,type) {
+        vm.removeEvent = function (events, index, type) {
             vm._eventType = type;
             events.splice(index, 1);
         };
@@ -14268,12 +14271,18 @@
                 form.$setUntouched();
             }
         };
-        let isFunction= false;
+        let isFunction = false;
+
+        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
+        let d = new Date();
+        let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
+        vm.functions.push('['+d.getFullYear()+'.'+day+']');
+        vm._eventExample = 'event:xxx';
         vm.generateExpression = function (operator, func) {
-            if(func) {
+            if (func && !operator) {
                 vm.expression.type = func;
             }
-            if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
+            if (vm.expression.expression && vm.expression.expression != ' ' && operator && operator !== 'function') {
                 isFunction = false;
                 vm.tmpExp = null;
                 if (!vm.operator) {
@@ -14285,12 +14294,25 @@
                 }
             } else if (func) {
                 vm.tmp = null;
-                if(!isFunction) {
+                if (!isFunction) {
                     isFunction = true;
                     vm.tmpExp = vm.expression.expression;
-                    vm.expression.expression = vm.expression.expression + ' ' + func + ':';
-                } else if(vm.tmpExp || vm.tmpExp == ''){
-                     vm.expression.expression = vm.tmpExp + ' ' + func + ':';
+
+                    if(operator === 'function'){
+                        vm.expression.type = 'event';
+                        vm._eventExample = 'event:' + func;
+                        vm.expression.expression = vm.expression.expression + ' event:' + func;
+                    }else{
+                        vm.expression.expression = vm.expression.expression + ' ' + func + ':';
+                    }
+                } else if (vm.tmpExp || vm.tmpExp == '') {
+                    if(operator === 'function'){
+                        vm.expression.type = 'event';
+                        vm._eventExample = 'event:' + func;
+                        vm.expression.expression = vm.tmpExp + ' event:' + func;
+                    }else{
+                        vm.expression.expression = vm.tmpExp + ' ' + func + ':';
+                    }
                 }
             }
         };
@@ -14309,5 +14331,87 @@
             }
         };
 
+        vm.object = {};
+        vm.filter_tree1 = {};
+        vm.tree1 = [];
+        vm.selectJobchainFromTree = function (inconditionCommands) {
+            $('#objectModal').modal('show');
+            vm._inconditionCommands = inconditionCommands;
+            OrderService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ['JOBCHAIN']
+            }).then(function (res) {
+                vm.tree1 = res.folders;
+                angular.forEach(vm.tree1, function (value) {
+                    value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
+                });
+            }, function (err) {
+                $('#objectModal').modal('hide');
+            });
+        };
+
+        vm.treeHandler = function (data) {
+            data.expanded = !data.expanded;
+            if (data.expanded) {
+                data.jobChains = [];
+                let obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.compact = true;
+                obj.folders = [{folder: data.path, recursive: false}];
+                OrderService.getOrdersP(obj).then(function (result) {
+                    data.jobChains = result.orders;
+                });
+            } else {
+                data.jobChains = [];
+            }
+        };
+
+        vm.treeHandler1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+        var watcher1 = $scope.$watchCollection('object.orders', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.object.orders = [newNames[newNames.length - 1]];
+            }
+        });
+
+        var watcher2 = $scope.$watchCollection('object.jobChains', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.object.jobChains = [newNames[newNames.length - 1]];
+            }
+        });
+
+        vm.addObjectPath = function(){
+            vm._inconditionCommands.commandParam = vm.object.jobChains[0];
+            if(vm.object.orders && vm.object.orders.length > 0){
+                vm._inconditionCommands.commandParam = vm._inconditionCommands.commandParam + '('+ vm.object.orders[0].orderId +')';
+            }
+            vm.object = {};
+        };
+
+        vm.getSuggestion = function($event){
+            let key = $event.keyCode || $event.which;
+            if(key === 91){
+                $('#event-suggestion').css({display: 'inline-block',opacity: 1, left: $event.target.value.length * 3 +'px' });
+            } else if(key === 93 || key === 13 || key === 8){
+                $('#event-suggestion').css({display: 'none',opacity: 0});
+            }
+        };
+
+        vm.addSuggestion = function(value){
+            vm.condition.conditionExpression.expression = vm.condition.conditionExpression.expression + value.substring(1);
+            $('#event-suggestion').css({display: 'none',opacity: 0});
+        };
+
+        $scope.$on('$destroy', function () {
+            watcher1();
+            watcher2();
+        });
     }
 })();
