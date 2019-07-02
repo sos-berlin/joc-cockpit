@@ -14009,8 +14009,8 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'OrderService', 'orderByFilter'];
-    function EditConditionDialogCtrl($scope, $uibModalInstance, OrderService, orderBy) {
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobChainService', 'orderByFilter'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance, JobChainService, orderBy) {
         const vm = $scope;
         vm.editor = {
             type: 'Incondition',
@@ -14147,9 +14147,12 @@
         };
 
         vm.removeOutconditionEvents = function (condition) {
-            for (let i = 0; vm.outconditionEvents.length; i++) {
-                if (angular.equals(vm.outconditionEvents[i], condition)) {
-                    vm.condition.outconditionEvents.splice(index, 1);
+            if(vm.condition && vm.condition.outconditionEvents) {
+                for (let i = 0; vm.condition.outconditionEvents.length; i++) {
+                    if (angular.equals(vm.condition.outconditionEvents[i], condition)) {
+                        vm.condition.outconditionEvents.splice(i, 1);
+                        break;
+                    }
                 }
             }
         };
@@ -14159,7 +14162,6 @@
             vm._eventType = type;
             vm.strCommand = 'create';
             vm._outcondition = outcondition;
-            console.log(vm._outcondition)
             vm.event = {command: type, id: 0};
             $('#command-editor').modal('show');
         };
@@ -14277,7 +14279,7 @@
         let d = new Date();
         let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
         vm.functions.push('['+d.getFullYear()+'.'+day+']');
-        vm._eventExample = 'event:xxx';
+        vm._eventExample = 'event:name_of_event';
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
@@ -14300,16 +14302,16 @@
 
                     if(operator === 'function'){
                         vm.expression.type = 'event';
-                        vm._eventExample = 'event:' + func;
-                        vm.expression.expression = vm.expression.expression + ' event:' + func;
+                        vm._eventExample = 'event:name_of_event' + func + ',' +'event:workflow.name_of_event' + func;
+                        vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
                     }else{
                         vm.expression.expression = vm.expression.expression + ' ' + func + ':';
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
                     if(operator === 'function'){
                         vm.expression.type = 'event';
-                        vm._eventExample = 'event:' + func;
-                        vm.expression.expression = vm.tmpExp + ' event:' + func;
+                        vm._eventExample = 'event:name_of_event' + func + ',' +'event:workflow.name_of_event' + func;
+                        vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
                     }else{
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
@@ -14337,7 +14339,7 @@
         vm.selectJobchainFromTree = function (inconditionCommands) {
             $('#objectModal').modal('show');
             vm._inconditionCommands = inconditionCommands;
-            OrderService.tree({
+            JobChainService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
                 types: ['JOBCHAIN']
@@ -14362,11 +14364,11 @@
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.compact = true;
                 obj.folders = [{folder: data.path, recursive: false}];
-                OrderService.getOrdersP(obj).then(function (result) {
-                    data.jobChains = result.orders;
+                JobChainService.getJobChainsP(obj).then(function (result) {
+                    data.jobs = result.jobChains;
                 });
             } else {
-                data.jobChains = [];
+                data.jobs = [];
             }
         };
 
@@ -14375,23 +14377,15 @@
                 data.folders = orderBy(data.folders, 'name');
             }
         };
-        var watcher1 = $scope.$watchCollection('object.orders', function (newNames) {
-            if (newNames && newNames.length > 0) {
-                vm.object.orders = [newNames[newNames.length - 1]];
-            }
-        });
 
-        var watcher2 = $scope.$watchCollection('object.jobChains', function (newNames) {
+        var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.object.jobChains = [newNames[newNames.length - 1]];
+                vm.object.jobs = [newNames[newNames.length - 1]];
             }
         });
 
         vm.addObjectPath = function(){
-            vm._inconditionCommands.commandParam = vm.object.jobChains[0];
-            if(vm.object.orders && vm.object.orders.length > 0){
-                vm._inconditionCommands.commandParam = vm._inconditionCommands.commandParam + '('+ vm.object.orders[0].orderId +')';
-            }
+            vm._inconditionCommands.commandParam = vm.object.jobs[0];
             vm.object = {};
         };
 
@@ -14411,7 +14405,6 @@
 
         $scope.$on('$destroy', function () {
             watcher1();
-            watcher2();
         });
     }
 })();

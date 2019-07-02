@@ -1445,7 +1445,7 @@
   "message.clickHereToADD": "Click Here To Add",
   "message.resetWorkflow": "Are you sure you want to reset this Workflow?",
   "message.resetLayout": "Are you sure you want to reset current Dashboard layout?",
-  "message.deleteAllEvents": "Are you sure you want to delete all the Events?",
+  "message.deleteAllEvents": "Are you sure you want to delete all the listed Events?",
   "tooltip.zoomIn": "Zoom In",
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",

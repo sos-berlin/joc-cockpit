@@ -8291,13 +8291,6 @@
                             let img = jobs[i].inconditions[x].conditionExpression.value ? './mxgraph/images/green-bar.svg' : './mxgraph/images/red-bar.svg';
                             let overlay = new mxCellOverlay(new mxImage(img, conditionVertex.geometry.width, 6), '', 'center', 'bottom');
                             graph.addCellOverlay(conditionVertex, overlay);
-
-                            if (jobs[i].inconditions[x].boxId && jobs[i].inconditions[x].boxId.length > 0) {
-                                for (let b = 0; b < jobs[i].inconditions[x].boxId.length; b++) {
-                                    graph.insertEdge(parent, null, getCellNode('Connection', '', ''), graph.getModel().getCell(jobs[i].inconditions[x].boxId[b]), conditionVertex);
-                                }
-                                delete jobs[i].inconditions[x]['boxId'];
-                            }
                         }
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
@@ -8401,6 +8394,18 @@
                         }
                     }
                 }
+
+                for (let i = 0; i < jobs.length; i++) {
+                    for (let j = 0; j < jobs[i].inconditions.length; j++) {
+                        if (jobs[i].inconditions[j].boxId && jobs[i].inconditions[j].boxId.length > 0) {
+                            for (let b = 0; b < jobs[i].inconditions[j].boxId.length; b++) {
+                                graph.insertEdge(parent, null, getCellNode('Connection', '', ''), graph.getModel().getCell(jobs[i].inconditions[j].boxId[b]), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
+                            }
+                            delete jobs[i].inconditions[j]['boxId'];
+                        }
+                    }
+                }
+
                 for (let i = 0; i < vertexes.length; i++) {
                     if (graph.getOutgoingEdges(vertexes[i]) && graph.getOutgoingEdges(vertexes[i]).length === 0) {
                         graph.removeCells([vertexes[i]], true);
@@ -8676,7 +8681,7 @@
                 if (vm.eventFilter === 'ALL') {
                     let arr = [];
                     for (let i = 0; i < vm.eventList.length; i++) {
-                        let path = vm.eventList[i].path +'/'+vm.eventList[i].workflow;
+                        let path = vm.eventList[i].path + '/' + vm.eventList[i].workflow;
                         if (arr.indexOf(path) === -1) {
                             arr.push(path);
                         }
@@ -8698,12 +8703,12 @@
                     obj.path = nodes[j] ? list[i] : '/';
                     if (j < nodes.length - 1) {
                         obj.folders = [];
-                         obj.expanded = true;
+                        obj.expanded = true;
                     } else {
                         obj.type = 'WORKFLOW';
                         obj.events = [];
                         for (let m = 0; m < vm.eventList.length; m++) {
-                            if(list[i] == vm.eventList[m].workflow) {
+                            if (list[i] == (vm.eventList[m].path + '/' + vm.eventList[m].workflow)) {
                                 obj.events.push(vm.eventList[m].event);
                             }
                         }
@@ -9327,11 +9332,9 @@
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
                     if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
-                        
-                        updateWorkflowDiagram(vm.jobs);
+                        recursivelyConnectJobs(true, true);
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {
-                       
                         updateSingleJob(vm.events[0].eventSnapshots[m].path);
                     }
                 }
@@ -9372,24 +9375,28 @@
             }
         });
 
-         vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
+        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
         let d = new Date();
         let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
-        vm.functions.push('['+d.getFullYear()+'.'+day+']');
-        vm.getSuggestion = function($event){
+        vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
+        vm.getSuggestion = function ($event) {
             let key = $event.keyCode || $event.which;
-            if(key === 91){
-                $('#event-suggestion').css({display: 'inline-block',opacity: 1, left: $event.target.value.length * 3 +'px' });
-            } else if(key === 93 || key === 13 || key === 8){
-                $('#event-suggestion').css({display: 'none',opacity: 0});
+            if (key === 91) {
+                $('#event-suggestion').css({
+                    display: 'inline-block',
+                    opacity: 1,
+                    left: $event.target.value.length * 3 + 'px'
+                });
+            } else if (key === 93 || key === 13 || key === 8) {
+                $('#event-suggestion').css({display: 'none', opacity: 0});
             }
         };
 
-        vm.addSuggestion = function(value){
-            if(vm.expression && vm.expression.expression){
+        vm.addSuggestion = function (value) {
+            if (vm.expression && vm.expression.expression) {
                 vm.expression.expression = vm.expression.expression + value.substring(1);
             }
-            $('#event-suggestion').css({display: 'none',opacity: 0});
+            $('#event-suggestion').css({display: 'none', opacity: 0});
         };
 
         $scope.$on('$destroy', function () {
