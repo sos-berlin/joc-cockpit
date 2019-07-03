@@ -14121,12 +14121,14 @@
         vm.addCommand = function (incondition) {
             vm.strCommand = 'create';
             vm._incondition = incondition;
+            vm.event = undefined;
             vm.command = {};
             $('#command-editor').modal('show');
         };
 
         vm.editCommand = function (command, incondition, index) {
             vm.strCommand = 'edit';
+            vm.event = undefined;
             vm._incondition = incondition;
             vm._index = index;
             vm.command = angular.copy(command);
@@ -14147,7 +14149,7 @@
         };
 
         vm.removeOutconditionEvents = function (condition) {
-            if(vm.condition && vm.condition.outconditionEvents) {
+            if (vm.condition && vm.condition.outconditionEvents) {
                 for (let i = 0; vm.condition.outconditionEvents.length; i++) {
                     if (angular.equals(vm.condition.outconditionEvents[i], condition)) {
                         vm.condition.outconditionEvents.splice(i, 1);
@@ -14158,10 +14160,11 @@
         };
 
         vm.addEvent = function (outcondition, type) {
-            console.log(type);
             vm._eventType = type;
             vm.strCommand = 'create';
             vm._outcondition = outcondition;
+            vm.command = undefined;
+            vm._index = undefined;
             vm.event = {command: type, id: 0};
             $('#command-editor').modal('show');
         };
@@ -14326,10 +14329,18 @@
         };
 
         vm.selectCommand = function (command, index) {
-            if (command === 'start_job') {
-                vm.condition.inconditionCommands[index].commandParam = 'now';
-            } else {
-                vm.condition.inconditionCommands[index].commandParam = '';
+            if(index || index == 0) {
+                if (command === 'start_job') {
+                    vm.condition.inconditionCommands[index].commandParam = 'now';
+                } else {
+                    vm.condition.inconditionCommands[index].commandParam = '';
+                }
+            }else{
+                if (command === 'start_job') {
+                    vm.command.commandParam = 'now';
+                } else {
+                    vm.command.commandParam = '';
+                }
             }
         };
 
@@ -14391,10 +14402,17 @@
 
         vm.getSuggestion = function($event){
             let key = $event.keyCode || $event.which;
-            if(key === 91){
-                $('#event-suggestion').css({display: 'inline-block',opacity: 1, left: $event.target.value.length * 3 +'px' });
-            } else if(key === 93 || key === 13 || key === 8){
-                $('#event-suggestion').css({display: 'none',opacity: 0});
+            if (key === 91) {
+                let text = $event.key.match(/[a-zA-Z0-9]*/)[0];
+                if (text) {
+                    $('#event-suggestion').css({
+                        display: 'inline-block',
+                        opacity: 1,
+                        left: $event.target.value.length * 3 + 'px'
+                    });
+                }
+            } else if (key === 93 || key === 13 || key === 8 || key === 32) {
+                $('#event-suggestion').css({display: 'none', opacity: 0});
             }
         };
 

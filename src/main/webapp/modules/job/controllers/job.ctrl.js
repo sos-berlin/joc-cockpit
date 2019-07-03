@@ -8658,9 +8658,21 @@
             let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
             if (cell) {
                 obj.outConditionId = cell.getAttribute('_id');
+            } else {
+                if (vm.eventFilter === 'ALL') {
+                    delete obj['workflow'];
+                } else {
+                    for (let i = 0; i < vm.workflows.length; i++) {
+                        if (vm.workflows[i].name == vm.selectedWorkflow) {
+                            obj.path = vm.workflows[i].path;
+                            break;
+                        }
+                    }
+                }
             }
             ConditionService.getEvents(obj).then(function (res) {
-                vm.eventList = res.conditionEvents
+                vm.eventList = res.conditionEvents;
+                checkEventFilter();
             });
         };
 
@@ -8673,23 +8685,35 @@
                 vm.eventFilter = vm.eventFilter === 'ALL' ? 'EXIST' : "ALL";
                 if (vm.eventFilter !== 'ALL') {
                     obj.workflow = vm.filteredByWorkflow;
+                    for (let i = 0; i < vm.workflows.length; i++) {
+                        if (vm.workflows[i].name == workflow) {
+                            obj.path = vm.workflows[i].path;
+                            break;
+                        }
+                    }
                 }
             }
 
             ConditionService.getEvents(obj).then(function (res) {
                 vm.eventList = res.conditionEvents;
-                if (vm.eventFilter === 'ALL') {
-                    let arr = [];
-                    for (let i = 0; i < vm.eventList.length; i++) {
-                        let path = vm.eventList[i].path + '/' + vm.eventList[i].workflow;
-                        if (arr.indexOf(path) === -1) {
-                            arr.push(path);
-                        }
-                    }
-                    createTreeStructure(arr);
-                }
+                checkEventFilter();
             });
         };
+
+        function checkEventFilter(){
+            if (vm.eventFilter === 'ALL' && vm.eventList.length > 0) {
+                let arr = [];
+                for (let i = 0; i < vm.eventList.length; i++) {
+                    let path = vm.eventList[i].path + '/' + vm.eventList[i].workflow;
+                    if (arr.indexOf(path) === -1) {
+                        arr.push(path);
+                    }
+                }
+                createTreeStructure(arr);
+            }else{
+                vm.eventNodes = [];
+            }
+        }
 
         function createTreeStructure(list) {
             let eventNodes = [];
@@ -9336,6 +9360,18 @@
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {
                         updateSingleJob(vm.events[0].eventSnapshots[m].path);
+                    } else if(vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId){
+                        let flag = false;
+                        for(let i =0; i < vm.allJobs.length; i++) {
+                            if(vm.allJobs[i].path === vm.events[0].eventSnapshots[m].path){
+                                recursivelyConnectJobs(true, true);
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if(flag) {
+                            break;
+                        }
                     }
                 }
             }

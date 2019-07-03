@@ -8,6 +8,8 @@
                             <label class="col-sm-12" ng-show="strCommand == 'create'">
                                 <span class="text-primary  text-capitalize" translate>label.create</span>
                                 <i class="fa fa-angle-right m-l-xs fa-lg"></i>
+                                <span ng-if="_eventType === 'create'" translate>label.createEvent</span>
+                                <span ng-if="_eventType === 'delete'" translate>label.deleteEvent</span>
                             </label>
                             <label class="col-sm-12" ng-show="strCommand == 'edit'">
                                 <span class="text-primary text-capitalize" translate>label.edit</span>
@@ -21,7 +23,7 @@
                             <label class="col-sm-4 form-control-label" translate>label.command</label>
                             <div class="col-sm-6">
                                 <select class="form-control" name="command" ng-required="command"
-                                       ng-model="command.command">
+                                       ng-model="command.command" ng-change="selectCommand(command.command, null)">
                                     <option value="" translate>label.chooseCommand</option>
                                     <option value="start_job">start_job</option>
                                     <option value="show_log">show_log</option>
