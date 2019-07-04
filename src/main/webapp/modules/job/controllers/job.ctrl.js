@@ -3568,6 +3568,35 @@
             filteredTreeData();
         });
 
+        vm.noReload = false;
+
+        $scope.$on('switchPath', function($event, path){
+            let p = path.path;
+
+            p = p.substring(0, p.lastIndexOf('/')) || '/';
+            angular.forEach(vm.tree, function (value) {
+                if (value.path != p) {
+                    value.expanded = true;
+                    recursive(value, p);
+                }else{
+                    vm.noReload = true;
+                    vm.treeHandler(value);
+                }
+            });
+        });
+
+        function recursive(data, path) {
+            for (let i = 0; i < data.folders.length; i++) {
+                if (data.folders[i].path != path) {
+                    data.folders[i].expanded = true;
+                    recursive(data.folders[i], path);
+                } else {
+                    vm.noReload = true;
+                    vm.treeHandler(data.folders[i]);
+                }
+            }
+        }
+
         vm.treeHandler = function (data) {
             if (vm.userPreferences.expandOption === 'both')
                 data.expanded = true;
@@ -8049,9 +8078,9 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty", "orderByFilter"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.jobFilters.isWorkflowCompact = vm.jobFilters.isWorkflowCompact ? vm.jobFilters.isWorkflowCompact : false;
@@ -8229,7 +8258,8 @@
                                 }
                             }
                         }
-                        vm.eventFilter = 'EXIST';
+                        if(!vm.eventFilter)
+                            vm.eventFilter = 'EXIST';
                         vm.getEvents(null);
                     }, function () {
                         vm.isWorkflowLoaded = true;
@@ -8523,6 +8553,26 @@
             });
         };
 
+        vm.treeHandler = function (data) {
+            let wf = vm.workflows[0];
+            let p = wf.path === '/' ? '/' : wf.path + '/';
+            if(data.path !== p+wf.name) {
+                $rootScope.$broadcast('switchPath', {path: data.path});
+                t1 = $timeout(function () {
+                    vm.selectedWorkflow = null;
+                    recursivelyConnectJobs(true, false);
+                }, 1000);
+            }else{
+                vm.navigateToEvent(data.evt);
+            }
+        };
+
+        vm.treeHandler1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
         /**
          * Function : Parse expression to create label
 
@@ -8704,7 +8754,8 @@
             if (vm.eventFilter === 'ALL' && vm.eventList.length > 0) {
                 let arr = [];
                 for (let i = 0; i < vm.eventList.length; i++) {
-                    let path = vm.eventList[i].path + '/' + vm.eventList[i].workflow;
+                    let p =  vm.eventList[i].path === '/' ?  vm.eventList[i].path :  vm.eventList[i].path + '/';
+                    let path =  p + vm.eventList[i].workflow;
                     if (arr.indexOf(path) === -1) {
                         arr.push(path);
                     }
@@ -8732,7 +8783,8 @@
                         obj.type = 'WORKFLOW';
                         obj.events = [];
                         for (let m = 0; m < vm.eventList.length; m++) {
-                            if (list[i] == (vm.eventList[m].path + '/' + vm.eventList[m].workflow)) {
+                            let p =  vm.eventList[m].path === '/' ?  '/' + vm.eventList[m].workflow :  vm.eventList[m].path + '/' + vm.eventList[m].workflow;
+                            if (list[i] == p) {
                                 obj.events.push(vm.eventList[m].event);
                             }
                         }
@@ -9178,7 +9230,7 @@
                 let img;
                 if (state.cell && state.cell.value.tagName !== 'Job' && state.cell.value.tagName !== 'Box' && state.cell.value.tagName !== 'Event' && state.cell.value.tagName !== 'Connection') {
                     // Edit
-                    if (!state.cell.getAttribute('isConsumed') || state.cell.getAttribute('isConsumed') == 'false') {
+                   // if (!state.cell.getAttribute('isConsumed') || state.cell.getAttribute('isConsumed') == 'false') {
                         img = mxUtils.createImage('images/edit.svg');
                         img.setAttribute('title', gettextCatalog.getString('button.updateExpression'));
                         img.style.left = (state.x + state.width - 6) + 'px';
@@ -9191,7 +9243,7 @@
                                 this.destroy();
                             })
                         );
-                    }
+                   // }
 
                 } else if (state.cell.value.tagName === 'Event') {
                     if (state.cell.getAttribute('isExist') == 'true') {
@@ -9364,12 +9416,16 @@
                         let flag = false;
                         for(let i =0; i < vm.allJobs.length; i++) {
                             if(vm.allJobs[i].path === vm.events[0].eventSnapshots[m].path){
-                                recursivelyConnectJobs(true, true);
+                               
                                 flag = true;
                                 break;
                             }
                         }
-                        if(flag) {
+                        if (flag) {
+                            t1 = $timeout(function () {
+                                
+                                recursivelyConnectJobs(true, true);
+                            }, 200);
                             break;
                         }
                     }

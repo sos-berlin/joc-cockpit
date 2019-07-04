@@ -80,7 +80,7 @@
                         <td></td>
                         <td>
                             <div class="p-l-md p-t-xxs" ng-repeat="evt in row.branch.events">
-                                <span class="text-muted">
+                                <span class="text-muted text-hover-primary" ng-click="on_user_click({evt:evt, path:row.branch['path']})">
                                     <span>{{evt}}</span>
                                  </span>
                             </div>

@@ -12,7 +12,8 @@
                     <div class="col-sm-2 form-control-label" translate>label.workflow</div>
                     <div class="col-sm-2 p-l-0 p-r-0">
                         <div class="default-path">
-                            {{_job.path1}}/
+                            {{_job.path1}}
+                            <span ng-if="_job.path1 != '/'">/</span>
                         </div>
                     </div>
                     <div class="col-sm-8 pad-left-0" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
