@@ -3741,6 +3741,7 @@
                 }
                 data.jobs = result.jobs;
                 vm.allJobs = result.jobs;
+                vm.noReload = false;
                 getFilteredData();
                 vm.loading = false;
                 vm.isLoaded = true;
@@ -4030,6 +4031,7 @@
                 if (!expandNode && treeUpdate) {
                     getFilteredData();
                 }
+                vm.noReload = false;
                 $scope.$broadcast('reloadWorkflow');
                 updateTreeData(expandNode, treeUpdate);
             }, function () {
@@ -8197,7 +8199,7 @@
                                 let _tempWorkflow;
                                 let _conditions = [];
                                 for (let i = 0; i < vm.workflows.length; i++) {
-                                    if (vm.workflows[i].name === x.name) {
+                                    if (vm.workflows[i].name === x.name && vm.workflows[i].path === x.path) {
                                         _conditions = vm.workflows[i].jobs;
                                         _tempWorkflow = vm.workflows[i];
                                         break;
