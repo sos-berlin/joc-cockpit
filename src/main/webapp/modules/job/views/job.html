@@ -785,7 +785,7 @@
                                          <div class="tab-content p-a" >
                                              <div class="tab-pane animated fadeIn active" id="tab12" >
                                                  <div>
-                                                     <div ng-repeat="(key, value) in workflows | groupBy: 'path' | orderBy: 'name'" class="block-ellipsis" style="width: 100%">
+                                                     <div ng-repeat="(key, value) in workflows | orderBy: 'name' | groupBy: 'path'" class="block-ellipsis" style="width: 100%">
                                                           <div>
                                                               <span class="text-muted" translate>label.path</span>:
                                                               <label>{{key}}</label>
