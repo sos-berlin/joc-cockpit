@@ -35,6 +35,7 @@
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
         tabs._job.showTaskPanel = undefined;
+        tabs._job.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
 
         tabs._jobDetail = {};
         tabs._jobDetail.filter = {};
@@ -233,6 +234,7 @@
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
         tempTabs._job.showTaskPanel = undefined;
+        tempTabs._job.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
 
         tempTabs._jobDetail = {};
         tempTabs._jobDetail.filter = {};

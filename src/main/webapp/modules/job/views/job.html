@@ -775,16 +775,21 @@
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
-                                                  <a class="nav-link active" href data-toggle="tab" data-target="#tab12" translate>label.workflows</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'workflow' }" ng-click="changeTab('workflow')" href data-toggle="tab" data-target="#tab12" translate>label.workflows</a>
                                               </li>
                                               <li class="nav-item" >
-                                                  <a class="nav-link" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
                                               </li>
                                           </ul>
                                         </div>
                                          <div class="tab-content p-a" >
-                                             <div class="tab-pane animated fadeIn active" id="tab12" >
+                                             <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'workflow' }">
                                                  <div>
+                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" ng-class="{'text-primary _600' : selectedWorkflow == 'ALL'}" style="width: 100%">
+                                                         <div>
+                                                             <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allWorkflows</span></a>
+                                                         </div>
+                                                     </div>
                                                      <div ng-repeat="(key, value) in workflows | orderBy: 'name' | groupBy: 'path'" class="block-ellipsis" style="width: 100%">
                                                           <div>
                                                               <span class="text-muted" translate>label.path</span>:
@@ -797,23 +802,23 @@
                                                     </div>
                                                  </div>
                                              </div>
-                                             <div class="tab-pane animated fadeIn " id="tab13">
+                                             <div class="tab-pane animated fadeIn " id="tab13" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }">
                                                  <div class="position-relative">
                                                      <div class="row m-b">
                                                          <div class="col-md-6 p-l-0 p-r-0">
                                                              <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis"
-                                                                     ng-class="{'primary':eventFilter == 'ALL'}" ng-click="changeEvents(null)" translate>
+                                                                     ng-class="{'primary':jobFilters.graphViewDetail.eventFilter == 'ALL'}" ng-click="changeEvents(null)" translate>
                                                                  button.showAllEvents
                                                              </button>
                                                          </div>
                                                          <div class="col-md-6 p-l-0 p-r-0">
                                                              <button class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis"
-                                                                     ng-class="{'primary':eventFilter == 'EXIST'}" ng-click="changeEvents(null)" translate>
+                                                                     ng-class="{'primary':jobFilters.graphViewDetail.eventFilter == 'EXIST'}" ng-click="changeEvents(null)" translate>
                                                                  button.showFilteredEvents
                                                              </button>
                                                          </div>
                                                      </div>
-                                                     <div ng-if="eventFilter == 'EXIST'">
+                                                     <div ng-if="jobFilters.graphViewDetail.eventFilter == 'EXIST'">
                                                          <div class="del-evnt-btn text-hover-primary cursor" ng-click="removeAllEventFromWorkflow()">
                                                              <i class="fa fa-trash-o"></i>
                                                          </div>
@@ -836,7 +841,7 @@
                                                              <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"><span>{{evt.event}}</span></a>
                                                          </div>
                                                      </div>
-                                                     <div class="row event-tree" ng-if="eventFilter == 'ALL'">
+                                                     <div class="row event-tree" ng-if="jobFilters.graphViewDetail.eventFilter == 'ALL'">
                                                          <tree tree-data="eventNodes" tree-control="tree_handler" expand-on="expanding_property"
                                                                on-select="treeHandler1(branch)"
                                                                on-click="treeHandler(branch)"
@@ -854,10 +859,10 @@
                                 <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">
                                     <div class="col-md-12">
                                         <div class="col-md-6 p-l-0 p-r-0">
-                                            <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis" ng-class="{'primary':!jobFilters.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>button.detailedView</button>
+                                            <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis" ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>button.detailedView</button>
                                         </div>
                                         <div class="col-md-6 p-l-0 p-r-0">
-                                          <button  class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis" ng-class="{'primary':jobFilters.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)" translate>button.compactView</button>
+                                          <button  class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis" ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)" translate>button.compactView</button>
                                         </div>
                                     </div>
                                     <div class="col-md-12 m-t">

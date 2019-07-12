@@ -1439,6 +1439,7 @@
   "label.functions": "Functions",
   "label.description": "Description",
   "label.example": "Example",
+  "label.allWorkflows": "All Workflows",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
   "message.noOutconditionFound": "No Outconditions found",

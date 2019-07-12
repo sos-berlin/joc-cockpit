@@ -214,7 +214,7 @@
                                     </div>
                                     <div class="tab-pane animated fadeIn" id="tab3"
                                      ng-class="{'active':frequency.tab == 'specificDays'}">
-                                    <div>
+                                    <div ng-if="frequency.tab == 'specificDays'">
                                         <div class="text-center">
                                             <a class="m-r-sm" mwl-date-modifier date="viewDate"
                                                decrement="calendarView">

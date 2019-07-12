@@ -8085,7 +8085,6 @@
     function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
         const vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
-        vm.jobFilters.isWorkflowCompact = vm.jobFilters.isWorkflowCompact ? vm.jobFilters.isWorkflowCompact : false;
         vm.configXml = './mxgraph/config/diagrameditor.xml';
         vm.isWorkflowLoaded = false;
         vm.editor = {};
@@ -8094,7 +8093,6 @@
         vm.isUpdated = true;
         vm.eventNodes = [];
         vm.tree_handler = {};
-
 
         function init() {
             if (sessionStorage.preferences) {
@@ -8253,15 +8251,19 @@
                             vm.selectedWorkflow = vm.workflows[0].name;
                             createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                         } else {
+                            let _jobs =[];
                             for (let x = 0; x < vm.workflows.length; x++) {
-                                if (vm.selectedWorkflow === vm.workflows[x].name) {
+                                if(vm.selectedWorkflow === 'ALL'){
+                                    _jobs = _jobs.concat(vm.workflows[x].jobs);
+                                } else if (vm.selectedWorkflow === vm.workflows[x].name) {
                                     createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollTop);
                                     break;
                                 }
                             }
+                            if(_jobs.length > 0){
+                                createWorkflowDiagram(_jobs, !reload, scrollTop);
+                            }
                         }
-                        if(!vm.eventFilter)
-                            vm.eventFilter = 'EXIST';
                         vm.getEvents(null);
                     }, function () {
                         vm.isWorkflowLoaded = true;
@@ -8298,7 +8300,7 @@
                     let v1;
                     if (!jobs[i].jId) {
                         let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[i].state.severity) + '"></i> ' + jobs[i].name + ' </span>';
-                        let _node = getCellNode('Job', lb, jobs[i].path);
+                        let _node = getCellNode('Job', lb, jobs[i].path, '');
                         _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
                         v1 = createVertex(parent, _node, jobs[i].name, 'job');
                         jobs[i].jId = v1.id;
@@ -8306,10 +8308,10 @@
                         v1 = graph.getModel().getCell(jobs[i].jId)
                     }
 
-                    if (!vm.jobFilters.isWorkflowCompact) {
+                    if (!vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                         for (let x = 0; x < jobs[i].inconditions.length; x++) {
                             let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
-                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression);
+                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].workflow);
                             _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
@@ -8327,16 +8329,16 @@
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
                             let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
-                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression);
+                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].workflow);
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
 
                             let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, 'condition2');
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
-                            graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex);
+                            graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex, '');
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
                                     if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
-                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event);
+                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].workflow);
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow : jobs[i].outconditions[x].outconditionEvents[z].exists;
                                         _node.setAttribute('isExist', flg);
                                         let style = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? 'event1' : jobs[i].outconditions[x].outconditionEvents[z].exists ? 'event2' : 'event';
@@ -8352,15 +8354,16 @@
                         }
 
                         if (jobs[i].outconditions.length > 0) {
-                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path), jobs[i].name, 'circle');
+                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), jobs[i].name, 'circle');
                             vertexes.push(out);
                             for (let m = 0; m < events.length; m++) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', '', ''), events[m], out);
+                                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
                             }
                         }
                     } else {
                         for (let m = 0; m < jobs.length; m++) {
                             if (jobs[i].path !== jobs[m].path) {
+
                                 for (let n = 0; n < jobs[m].inconditions.length; n++) {
                                     for (let x = 0; x < jobs[i].outconditions.length; x++) {
                                         if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
@@ -8372,11 +8375,11 @@
                                                             jobs[m].state = {};
                                                         }
                                                         let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[m].state.severity) + '"></i> ' + jobs[m].name + ' </span>';
-                                                        let _node = getCellNode('Job', lb, jobs[m].path);
+                                                        let _node = getCellNode('Job', lb, jobs[m].path, '');
                                                         _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
                                                         let v2 = createVertex(parent, _node, jobs[i].name, 'job');
                                                         jobs[m].jId = v2.id;
-                                                        graph.insertEdge(parent, null, getCellNode('Connection', '', ''), v1, v2);
+                                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
                                                     } else {
                                                         let isConnected = false;
                                                         if (v1.edges) {
@@ -8388,7 +8391,7 @@
                                                             }
                                                         }
                                                         if (!isConnected) {
-                                                            graph.insertEdge(parent, null, getCellNode('Connection', '', ''), v1, graph.getModel().getCell(jobs[m].jId));
+                                                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(jobs[m].jId));
                                                         }
                                                     }
                                                 }
@@ -8431,7 +8434,7 @@
                     for (let j = 0; j < jobs[i].inconditions.length; j++) {
                         if (jobs[i].inconditions[j].boxId && jobs[i].inconditions[j].boxId.length > 0) {
                             for (let b = 0; b < jobs[i].inconditions[j].boxId.length; b++) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', '', ''), graph.getModel().getCell(jobs[i].inconditions[j].boxId[b]), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
+                                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(jobs[i].inconditions[j].boxId[b]), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
                             }
                             delete jobs[i].inconditions[j]['boxId'];
                         }
@@ -8508,27 +8511,54 @@
             }
         }
 
+        vm.changeTab = function(tab){
+            vm.jobFilters.graphViewDetail.tab = tab;
+        };
+
         vm.changeGraph = function (workflow) {
-            if (vm.selectedWorkflow !== workflow.name) {
-                vm.selectedWorkflow = workflow.name;
+            if (workflow) {
+                if (vm.selectedWorkflow !== workflow.name) {
+                    vm.selectedWorkflow = workflow.name;
+                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                    createWorkflowDiagram(workflow.jobs, false, 0);
+                    vm.getEvents(null);
+                }
+            } else {
+                let jobs = [];
+                vm.selectedWorkflow = 'ALL';
+                for (let x = 0; x < vm.workflows.length; x++) {
+                    jobs = jobs.concat(vm.workflows[x].jobs)
+                }
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(workflow.jobs, false,0);
-                vm.getEvents(null);
+                createWorkflowDiagram(jobs, false, 0);
             }
+
         };
 
         vm.compactView = function (workflow) {
-            vm.jobFilters.isWorkflowCompact = !vm.jobFilters.isWorkflowCompact;
+
+            vm.jobFilters.graphViewDetail.isWorkflowCompact = !vm.jobFilters.graphViewDetail.isWorkflowCompact;
+            let _jobs = [];
             for (let x = 0; x < vm.workflows.length; x++) {
-                if (workflow === vm.workflows[x].name) {
+                if (workflow === 'ALL') {
+                    for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
+                        delete vm.workflows[x].jobs[i]['jId'];
+                    }
+                    _jobs = _jobs.concat(vm.workflows[x].jobs)
+                } else if (workflow === vm.workflows[x].name) {
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
                     }
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(vm.workflows[x].jobs, false,0);
+                    createWorkflowDiagram(vm.workflows[x].jobs, false, 0);
                     break;
                 }
             }
+            if (_jobs.length > 0) {
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
+                createWorkflowDiagram(_jobs, false, 0);
+            }
+
         };
 
         vm.resetWorkflow = function (workflow, job) {
@@ -8704,14 +8734,14 @@
         };
 
         vm.getEvents = function (cell) {
-            if (!vm.filteredByWorkflow) {
+            if (!vm.filteredByWorkflow && vm.selectedWorkflow != 'ALL') {
                 vm.filteredByWorkflow = vm.selectedWorkflow;
             }
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
+            let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
             if (cell) {
                 obj.outConditionId = cell.getAttribute('_id');
             } else {
-                if (vm.eventFilter === 'ALL') {
+                if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL') {
                     delete obj['workflow'];
                 } else {
                     for (let i = 0; i < vm.workflows.length; i++) {
@@ -8734,8 +8764,8 @@
                 vm.filteredByWorkflow = workflow;
                 obj.workflow = vm.filteredByWorkflow;
             } else {
-                vm.eventFilter = vm.eventFilter === 'ALL' ? 'EXIST' : "ALL";
-                if (vm.eventFilter !== 'ALL') {
+                vm.jobFilters.graphViewDetail.eventFilter = vm.jobFilters.graphViewDetail.eventFilter === 'ALL' ? 'EXIST' : "ALL";
+                if (vm.jobFilters.graphViewDetail.eventFilter !== 'ALL') {
                     obj.workflow = vm.filteredByWorkflow;
                     for (let i = 0; i < vm.workflows.length; i++) {
                         if (vm.workflows[i].name == workflow) {
@@ -8753,7 +8783,7 @@
         };
 
         function checkEventFilter(){
-            if (vm.eventFilter === 'ALL' && vm.eventList.length > 0) {
+            if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL' && vm.eventList.length > 0) {
                 let arr = [];
                 for (let i = 0; i < vm.eventList.length; i++) {
                     let p =  vm.eventList[i].path === '/' ?  vm.eventList[i].path :  vm.eventList[i].path + '/';
@@ -8845,7 +8875,7 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
+            let obj = {masterId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
@@ -8880,7 +8910,7 @@
                 for (let i = 0; i < len; i++) {
                     let obj = {
                         'masterId': $scope.schedulerIds.selected,
-                        'workflow': vm.selectedWorkflow,
+                        'workflow': vm.eventList[i].workflow,
                         'event': vm.eventList[i].event,
                         'outConditionId': vm.eventList[i].outConditionId
                     };
@@ -8896,7 +8926,7 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow};
+            let obj = {masterId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
             obj.event = cell.getAttribute('actual');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
@@ -9097,12 +9127,13 @@
         /**
          * Function to create dom element
          */
-        function getCellNode(name, label, actual) {
+        function getCellNode(name, label, actual, workflow) {
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
             _node.setAttribute('label', label);
             _node.setAttribute('actual', actual);
+            _node.setAttribute('workflow', workflow);
             return _node;
         }
 

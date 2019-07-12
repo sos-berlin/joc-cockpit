@@ -2594,7 +2594,7 @@
                     includedDates.push(planData);
                     vm.planItems.push(planData);
                 } else {
-                    for (var i = 0; i < vm.planItems.length; i++) {
+                    for (let i = 0; i < vm.planItems.length; i++) {
                         if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                             isFound = true;
                             if (vm.planItems[i].color != 'orange') {
@@ -2612,7 +2612,7 @@
                         vm.planItems.push(planData);
                     } else {
                         if (includedDates.length > 0) {
-                            for (var i = 0; i < includedDates.length; i++) {
+                            for (let i = 0; i < includedDates.length; i++) {
                                 if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                                     includedDates.splice(i, 1);
                                     break;
@@ -2627,7 +2627,7 @@
 
                 if (!flag) {
                     if (excludedDates.length > 0) {
-                        for (var i = 0; i < excludedDates.length; i++) {
+                        for (let i = 0; i < excludedDates.length; i++) {
                             if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                                 excludedDates.splice(i, 1);
                                 break;
@@ -2635,7 +2635,7 @@
                         }
                     }
                 } else {
-                    for (var i = 0; i < excludedDates.length; i++) {
+                    for (let i = 0; i < excludedDates.length; i++) {
                         if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                             flg = true;
                             break;
@@ -2652,7 +2652,7 @@
                     excludedDates.push(planData);
                     vm.planItems.push(planData);
                 } else {
-                    for (var i = 0; i < vm.planItems.length; i++) {
+                    for (let i = 0; i < vm.planItems.length; i++) {
                         if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                             isFound = true;
                             if (vm.planItems[i].color != 'orange') {
@@ -2670,7 +2670,7 @@
                         vm.planItems.push(planData);
                     } else {
                         if (excludedDates.length > 0) {
-                            for (var i = 0; i < excludedDates.length; i++) {
+                            for (let i = 0; i < excludedDates.length; i++) {
                                 if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                                     excludedDates.splice(i, 1);
                                     break;
@@ -2681,7 +2681,7 @@
                 }
                 if (!flag) {
                     if (includedDates.length > 0) {
-                        for (var i = 0; i < includedDates.length; i++) {
+                        for (let i = 0; i < includedDates.length; i++) {
                             if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                                 includedDates.splice(i, 1);
                                 break;
@@ -2689,7 +2689,7 @@
                         }
                     }
                 } else {
-                    for (var i = 0; i < includedDates.length; i++) {
+                    for (let i = 0; i < includedDates.length; i++) {
                         if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                             flg = true;
                             break;
@@ -11018,6 +11018,7 @@
             for (let i = 0; i < vm.runtimeList.length; i++) {
                 if (vm.runtimeList[i] == data) {
                     vm.runtimeList.splice(i, 1);
+                    break;
                 }
             }
 
@@ -13344,15 +13345,17 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: vm.filter.type == 'WORKING_DAYS' ? ['WORKINGDAYSCALENDAR'] : ['NONWORKINGDAYSCALENDAR']
+                types: vm.filter.type === 'WORKING_DAYS' ? ['WORKINGDAYSCALENDAR'] : ['NONWORKINGDAYSCALENDAR']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
-                angular.forEach(vm.filterTree1, function (value) {
-                    value.expanded = true;
-                    if (value.folders) {
-                        value.folders = orderBy(value.folders, 'name');
+                setTimeout(function () {
+                    if (vm.filterTree1 && vm.filterTree1.length > 0) {
+                        if (vm.filterTree1[0].folders && vm.filterTree1[0].folders.length > 0) {
+                            vm.filterTree1[0].folders = orderBy(vm.filterTree1[0].folders, 'name');
+                        }
+                        vm.treeExpand(vm.filterTree1[0]);
                     }
-                });
+                }, 100);
             }, function () {
             });
         }
@@ -13444,7 +13447,7 @@
         };
 
         function getDateFormat() {
-            var dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
+            let dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
             if (dataFormat.match('HH:mm')) {
                 dataFormat = dataFormat.replace('HH:mm', '');
             } else if (dataFormat.match('hh:mm')) {
@@ -13518,15 +13521,15 @@
                 vm.editor.create = false;
                 vm.isRuntimeEdit = true;
                 vm.frequency = angular.copy(vm.temp);
-                for (var i = 0; i < vm.calendar.frequencyList.length; i++) {
+                for (let i = 0; i < vm.calendar.frequencyList.length; i++) {
                     if (vm.calendar.frequencyList[i] == vm.temp || angular.equals(vm.temp, vm.calendar.frequencyList[i])) {
                         if (vm.calendar.frequencyList[i].tab == 'monthDays') {
-                            if (vm.calendar.frequencyList[i].isUltimos == 'months')
+                            if (vm.calendar.frequencyList[i].isUltimos === 'months')
                                 vm.frequency.selectedMonths = angular.copy(vm.calendar.frequencyList[i].selectedMonths);
                             else
                                 vm.frequency.selectedMonthsU = angular.copy(vm.calendar.frequencyList[i].selectedMonthsU);
 
-                            if (vm.calendar.frequencyList[i].isUltimos == 'months') {
+                            if (vm.calendar.frequencyList[i].isUltimos === 'months') {
                                 selectedMonths = [];
                                 angular.forEach(vm.calendar.frequencyList[i].selectedMonths, function (val) {
                                     vm.selectMonthDays(val);
@@ -13537,7 +13540,7 @@
                                     vm.selectMonthDaysU(val);
                                 });
                             }
-                        } else if (vm.calendar.frequencyList[i].tab == 'specificDays') {
+                        } else if (vm.calendar.frequencyList[i].tab === 'specificDays') {
                             angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
                                 vm.tempItems.push({plannedStartTime: date});
                             });
@@ -13861,8 +13864,8 @@
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
             vm.isRuntimeEdit = true;
-            if (vm.frequency.tab == 'monthDays') {
-                if (vm.frequency.isUltimos == 'months') {
+            if (vm.frequency.tab === 'monthDays') {
+                if (vm.frequency.isUltimos === 'months') {
                     selectedMonths = [];
                     angular.forEach(data.selectedMonths, function (val) {
                         vm.selectMonthDays(val);
@@ -13873,6 +13876,11 @@
                         vm.selectMonthDaysU(val);
                     });
                 }
+            } else if (vm.frequency.tab === 'specificDays') {
+                vm.tempItems = [];
+                angular.forEach(vm.frequency.dates, function (date) {
+                    vm.tempItems.push({plannedStartTime: date});
+                });
             }
         };
 
@@ -13973,7 +13981,7 @@
                         plannedStartTime: date
                     };
                     var flag = false;
-                    for (let i = 0; i < vm.tempItems.length; i++) {
+                    for (var i = 0; i < vm.tempItems.length; i++) {
                         if ((new Date(vm.tempItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
                             flag = true;
                             break;
