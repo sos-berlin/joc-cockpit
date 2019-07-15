@@ -3741,7 +3741,10 @@
                 }
                 data.jobs = result.jobs;
                 vm.allJobs = result.jobs;
-                vm.noReload = false;
+                if(vm.noReload) {
+                    vm.noReload = false;
+                    $scope.$broadcast('reloadWorkflow');
+                }
                 getFilteredData();
                 vm.loading = false;
                 vm.isLoaded = true;
@@ -8158,7 +8161,7 @@
             });
         }
 
-        function recursivelyConnectJobs(reload, checkScroll) {
+        function recursivelyConnectJobs(reload, checkScroll, cb) {
             vm.workflows = [];
             let jobPaths = [];
             angular.forEach(vm.allJobs, function (job) {
@@ -8265,14 +8268,18 @@
                             }
                         }
                         vm.getEvents(null);
+                        cb();
                     }, function () {
                         vm.isWorkflowLoaded = true;
+                        cb();
                     });
                 }, function (err) {
                     vm.isWorkflowLoaded = true;
+                    cb();
                 });
             } else {
                 vm.isWorkflowLoaded = true;
+                cb();
             }
         }
 
@@ -8586,16 +8593,17 @@
         };
 
         vm.treeHandler = function (data) {
-            let wf = vm.workflows[0];
-            let p = wf.path === '/' ? '/' : wf.path + '/';
-            if(data.path !== p+wf.name) {
-                $rootScope.$broadcast('switchPath', {path: data.path});
-                t1 = $timeout(function () {
-                    vm.selectedWorkflow = null;
-                    recursivelyConnectJobs(true, false);
-                }, 1000);
-            }else{
-                vm.navigateToEvent(data.evt);
+            if (!data.folders || data.type) {
+                let wf = vm.workflows[0];
+                let p = wf.path === '/' ? '/' : wf.path + '/';
+                if (data.path !== p + wf.name && vm.selectedWorkflow !== 'ALL') {
+                    vm.reloadNewWorkflow = data.evt;
+                    $rootScope.$broadcast('switchPath', {path: data.path});
+                } else {
+                    if(!data.type){
+                        vm.navigateToEvent(data.evt);
+                    }
+                }
             }
         };
 
@@ -8768,8 +8776,10 @@
                 if (vm.jobFilters.graphViewDetail.eventFilter !== 'ALL') {
                     obj.workflow = vm.filteredByWorkflow;
                     for (let i = 0; i < vm.workflows.length; i++) {
-                        if (vm.workflows[i].name == workflow) {
+                        if (vm.workflows[i].name === vm.filteredByWorkflow || vm.workflows[i].name === vm.selectedWorkflow) {
                             obj.path = vm.workflows[i].path;
+                            obj.workflow = vm.workflows[i].name;
+                            vm.filteredByWorkflow = vm.workflows[i].name;
                             break;
                         }
                     }
@@ -8827,14 +8837,14 @@
                             flag = false;
                             index = j;
                         } else {
-                            if (arr.length == 0) {
+                            if (arr.length === 0) {
                                 arr.push(obj);
                             } else if (arr.length > 0) {
                                 recursiveUpdate(arr[0], obj);
                             }
                         }
                     } else {
-                        if (arr.length == 0) {
+                        if (arr.length === 0) {
                             arr.push(obj);
                         } else if (arr.length > 0) {
                             recursiveUpdate(arr[0], obj);
@@ -9002,10 +9012,11 @@
                                     masterId: $scope.schedulerIds.selected,
                                     jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]
                                 }).then(function (res) {
+
+                                    if (res.jobsInconditions && res.jobsInconditions.length > 0) {
+                                        vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
+                                    }
                                     if (!flg) {
-                                        if (res.jobsInconditions && res.jobsInconditions.length > 0) {
-                                            vm.jobs[i].inconditions = res.jobsInconditions[0].inconditions;
-                                        }
                                         updateJobs();
                                     }
                                 });
@@ -9017,23 +9028,12 @@
                         for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
                             if (vm.jobs[i].outconditions[j].vertexId == cell.id) {
                                 vm.jobs[i].outconditions[j].conditionExpression.expression = vm.expression.expression;
-                                for (let m = 0; m < vm.jobs[i].outconditions[j].outconditionEvents.length; m++) {
-                                    if (vm.jobs[i].outconditions[j].outconditionEvents[m].command === 'create') {
-                                        for (let n = 0; n < vm.expression.events.length; n++) {
-                                            if (vm.jobs[i].outconditions[j].outconditionEvents[m].event === vm.expression.events[n].event) {
-                                                vm.expression.events.splice(n, 1);
-                                                break;
-                                            }
-                                        }
-
+                                for (let n = 0; n < vm.expression.events.length; n++) {
+                                    if(!vm.expression.events[n].command) {
+                                        vm.expression.events[n].command = 'create';
                                     }
                                 }
-                                for (let n = 0; n < vm.expression.events.length; n++) {
-                                    vm.expression.events[n].command = 'create';
-                                }
-
-                                vm.jobs[i].outconditions[j].outconditionEvents = vm.jobs[i].outconditions[j].outconditionEvents.concat(vm.expression.events);
-
+                                vm.jobs[i].outconditions[j].outconditionEvents = vm.expression.events;
                                 ConditionService.updateOutCondition({
                                     masterId: $scope.schedulerIds.selected,
                                     jobsOutconditions: [{job: vm.jobs[i].path, outconditions: vm.jobs[i].outconditions}]
@@ -9077,7 +9077,16 @@
         };
 
         $scope.$on('reloadWorkflow', function () {
-            updateWorkflowDiagram(vm.jobs);
+            if (vm.reloadNewWorkflow) {
+                let evt = angular.copy(vm.reloadNewWorkflow);
+                vm.selectedWorkflow = null;
+                vm.reloadNewWorkflow = null;
+                recursivelyConnectJobs(true, false, function () {
+                    vm.navigateToEvent(evt);
+                });
+            } else {
+                updateWorkflowDiagram(vm.jobs);
+            }
         });
 
         /**
@@ -9263,20 +9272,18 @@
                 let img;
                 if (state.cell && state.cell.value.tagName !== 'Job' && state.cell.value.tagName !== 'Box' && state.cell.value.tagName !== 'Event' && state.cell.value.tagName !== 'Connection') {
                     // Edit
-                   // if (!state.cell.getAttribute('isConsumed') || state.cell.getAttribute('isConsumed') == 'false') {
-                        img = mxUtils.createImage('images/edit.svg');
-                        img.setAttribute('title', gettextCatalog.getString('button.updateExpression'));
-                        img.style.left = (state.x + state.width - 6) + 'px';
-                        img.style.top = (state.y - 2) + 'px';
+                    img = mxUtils.createImage('images/edit.svg');
+                    img.setAttribute('title', gettextCatalog.getString('button.updateExpression'));
+                    img.style.left = (state.x + state.width - 6) + 'px';
+                    img.style.top = (state.y - 2) + 'px';
 
-                        mxEvent.addListener(img, 'click',
-                            mxUtils.bind(this, function (evt) {
-                                vm.openModel(state.cell);
-                                mxEvent.consume(evt);
-                                this.destroy();
-                            })
-                        );
-                   // }
+                    mxEvent.addListener(img, 'click',
+                        mxUtils.bind(this, function (evt) {
+                            vm.openModel(state.cell);
+                            mxEvent.consume(evt);
+                            this.destroy();
+                        })
+                    );
 
                 } else if (state.cell.value.tagName === 'Event') {
                     if (state.cell.getAttribute('isExist') == 'true') {

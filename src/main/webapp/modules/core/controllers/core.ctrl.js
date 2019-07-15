@@ -14268,8 +14268,8 @@
         };
 
         vm.save3 = function (form) {
-           vm.condition.conditionExpression.expression = vm.expression.expression;
-           $('#expression-editor').modal('hide');
+            vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression);
+            $('#expression-editor').modal('hide');
             if (form) {
                 form.$setPristine();
                 form.$setUntouched();
@@ -14289,7 +14289,7 @@
         vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
         let d = new Date();
         let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
-        vm.functions.push('['+d.getFullYear()+'.'+day+']');
+        vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
         vm._eventExample = 'event:name_of_event';
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
@@ -14304,26 +14304,33 @@
                     vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
                 } else if (vm.tmp) {
                     vm.expression.expression = vm.tmp + ' ' + operator + ' ';
+                } else{
+                    vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
                 }
             } else if (func) {
                 vm.tmp = null;
                 if (!isFunction) {
                     isFunction = true;
-                    vm.tmpExp = vm.expression.expression;
-
-                    if(operator === 'function'){
+                    if (operator !== 'function') {
+                        let arr = vm.expression.expression.trim().split(' '), opt = ' ';
+                        if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
+                            vm.operator = 'and';
+                            opt = ' and ';
+                        }
+                        vm.tmpExp = vm.expression.expression + opt;
+                        vm.expression.expression = vm.expression.expression + opt + func + ':';
+                    } else {
+                        vm.tmpExp = vm.expression.expression;
                         vm.expression.type = 'event';
-                        vm._eventExample = 'event:name_of_event' + func + ',' +'event:workflow.name_of_event' + func;
+                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
                         vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
-                    }else{
-                        vm.expression.expression = vm.expression.expression + ' ' + func + ':';
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
-                    if(operator === 'function'){
+                    if (operator === 'function') {
                         vm.expression.type = 'event';
-                        vm._eventExample = 'event:name_of_event' + func + ',' +'event:workflow.name_of_event' + func;
+                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
                         vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
-                    }else{
+                    } else {
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
                 }
@@ -14408,7 +14415,7 @@
             vm.object = {};
         };
 
-        vm.getSuggestion = function($event){
+        vm.getSuggestion = function ($event, form) {
             let key = $event.keyCode || $event.which;
             if (key === 91) {
                 let text = $event.key.match(/[a-zA-Z0-9]*/)[0];
@@ -14421,6 +14428,23 @@
                 }
             } else if (key === 93 || key === 13 || key === 8 || key === 32) {
                 $('#event-suggestion').css({display: 'none', opacity: 0});
+            }
+            let arr = $event.target.value.split(' ');
+            if (arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not')) {
+                vm.operator = arr[arr.length - 1];
+                vm.tmp = $event.target.value.substring(0, $event.target.value.lastIndexOf(vm.operator));
+            } else if (arr && arr.length > 1) {
+                for (let i = 0; i < arr.length; i++) {
+                    if (i % 2 != 0) {
+                        if ((arr[i] === 'or' || arr[i] === 'and' || arr[i] === 'not')) {
+                            form.$invalid = false;
+                            form.expression.$invalid = false;
+                        } else {
+                            form.$invalid = true;
+                            form.expression.$invalid = true;
+                        }
+                    }
+                }
             }
         };
 
