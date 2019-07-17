@@ -65,10 +65,10 @@
                                             <i class="fa fa-times"></i></a>
                                     </td>
                                     <td>
-                                        <div ng-repeat="commands in incondition.inconditionCommands track by $index">
+                                        <div ng-repeat="commands in incondition.inconditionCommands track by $index" ng-if="commands.command">
                                             <a ng-click="editCommand(commands, $index);$event.stopPropagation()">{{commands.command}}
                                                 : {{commands.commandParam}}</a>
-                                            <a class="text-xs text-hover-primary m-l-sm"
+                                            <a  class="text-xs text-hover-primary m-l-sm"
                                                ng-click="editCommand(commands, incondition, $index);$event.stopPropagation()">
                                                 <i class="fa fa-pencil"></i></a>
                                             <a class="text-xs text-hover-color m-l-sm"
@@ -91,7 +91,7 @@
                                             <i class="fa fa-times"></i></a>
                                     </td>
                                     <td>
-                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'create'">
+                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'create' && events.event">
                                             <a ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">{{events.event}}</a>
                                             <a class="text-xs text-hover-primary m-l-sm"
                                                ng-click="editEvent(events, outcondition, $index, 'create');$event.stopPropagation()">
@@ -105,7 +105,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'delete'">
+                                        <div ng-repeat="events in outcondition.outconditionEvents track by $index" ng-if="events.command === 'delete' && events.event">
                                             <a ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">{{events.event}}</a>
                                             <a class="text-xs text-hover-primary m-l-sm"
                                                ng-click="editEvent(events, outcondition, $index, 'delete');$event.stopPropagation()">
@@ -274,7 +274,7 @@
         </div>
         <div class="modal-footer text-left">
             <div ng-if="!condition">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.outconditions.length > 0 && _job.outconditions[0].outconditionEvents.length ==0)" translate>
                     button.submit
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel

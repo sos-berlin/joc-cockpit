@@ -180,7 +180,7 @@
                                         <span translate> label.category</span>
                                         <span class="text-primary" ng-bind="calendarFilters.filter.category"></span>
                                     </button>
-                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right" ng-if="categories.length > 0">
                                         <a class="dropdown-item" ng-model="calendarFilters.filter.category" ng-click="loadCalendar()"
                                            ng-repeat="category in categories" ng-if="category" uib-btn-radio="category"
                                            ng-class="{'btn-primary': calendarFilters.filter.category==category}" >

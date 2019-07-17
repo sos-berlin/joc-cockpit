@@ -14017,8 +14017,8 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobChainService', 'orderByFilter'];
-    function EditConditionDialogCtrl($scope, $uibModalInstance, JobChainService, orderBy) {
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance, JobChainService, orderBy, gettextCatalog, toasty) {
         const vm = $scope;
         vm.editor = {
             type: 'Incondition',
@@ -14046,9 +14046,30 @@
         $scope.ok = function () {
             for (let i = 0; i < vm._job.inconditions.length; i++) {
                 vm._job.inconditions[i].workflow = vm.editor.workflow;
+                for (let j = 0; j < vm._job.inconditions[i].inconditionCommands.length; j++) {
+                    if(!vm._job.inconditions[i].inconditionCommands[j].command || vm._job.inconditions[i].inconditionCommands[j].command == ''){
+                        vm._job.inconditions[i].inconditionCommands[j].command = "start_job";
+                        vm._job.inconditions[i].inconditionCommands[j].commandParam = "now";
+                    }
+                }
+                if(vm._job.inconditions[i].inconditionCommands.length === 0){
+                    vm._job.inconditions[i].inconditionCommands.push({command : "start_job", commandParam : "now", id : 0});
+                }
             }
             for (let i = 0; i < vm._job.outconditions.length; i++) {
                 vm._job.outconditions[i].workflow = vm.editor.workflow;
+                for (let j = 0; j < vm._job.outconditions[i].outconditionEvents.length; j++) {
+                    if (!vm._job.outconditions[i].outconditionEvents[j].event || vm._job.outconditions[i].outconditionEvents[j].event == '') {
+                        vm._job.outconditions[i].outconditionEvents.splice(j, 1);
+                    }
+                }
+                if (vm._job.outconditions[i].outconditionEvents.length === 0) {
+                    toasty.warning({
+                        title: gettextCatalog.getString('message.outconditionWarning'),
+                        timeout: 3000
+                    });
+                    return;
+                }
             }
             $uibModalInstance.close('ok');
         };

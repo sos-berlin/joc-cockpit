@@ -1447,6 +1447,7 @@
   "message.resetWorkflow": "Are you sure you want to reset this Workflow?",
   "message.resetLayout": "Are you sure you want to reset current Dashboard layout?",
   "message.deleteAllEvents": "Are you sure you want to delete all the listed Events?",
+  "message.outconditionWarning": "Out condition must have atleast one event",
   "tooltip.zoomIn": "Zoom In",
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",
