@@ -14307,16 +14307,42 @@
         };
         let isFunction = false;
 
-        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
+        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]', '[prev]', '[prevSuccessful]', '[prevError]'];
+        vm.jobFunctions =  vm.jobChainFunctions = ['lastCompletedRunEndedSuccessful',
+            'lastCompletedRunEndedWithError',
+            'lastCompletedRunEndedTodaySuccessful',
+            'lastCompletedRunEndedTodayWithError',
+            'lastCompletedIsEndedBefore',
+            'lastCompletedSuccessulIsEndedBefore',
+            'lastCompletedWithErrorIsEndedBefore',
+            'lastCompletedIsStartedBefore',
+            'lastCompletedSuccessfulIsStartedBefore',
+            'lastCompletedWithErrorIsStartedBefore',
+            'isStartedToday',
+            'isStartedTodayCompletedSuccessful',
+            'isStartedTodayCompletedWithError',
+            'isStartedTodayCompleted',
+            'isCompletedToday',
+            'isCompletedTodaySuccessfully',
+            'isCompletedTodayWithError',
+            'isCompletedAfter',
+            'isCompletedWithErrorAfter',
+            'isCompletedSuccessfulAfter',
+            'isStartedAfter',
+            'isStartedWithErrorAfter',
+            'isStartedSuccessfulAfter'];
         let d = new Date();
         let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
         vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
         vm._eventExample = 'event:name_of_event';
+        vm._jobExample = 'job:name_of_job';
+        vm._jobchainExample = 'jobchain:name_of_jobchain';
+
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
             }
-            if (vm.expression.expression && vm.expression.expression != ' ' && operator && operator !== 'function') {
+            if (vm.expression.expression && vm.expression.expression != ' ' && operator && !operator.match('function')) {
                 isFunction = false;
                 vm.tmpExp = null;
                 if (!vm.operator) {
@@ -14332,7 +14358,7 @@
                 vm.tmp = null;
                 if (!isFunction) {
                     isFunction = true;
-                    if (operator !== 'function') {
+                    if (!operator.match('function')) {
                         let arr = vm.expression.expression.trim().split(' '), opt = ' ';
                         if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
                             vm.operator = 'and';
@@ -14342,16 +14368,34 @@
                         vm.expression.expression = vm.expression.expression + opt + func + ':';
                     } else {
                         vm.tmpExp = vm.expression.expression;
-                        vm.expression.type = 'event';
-                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
-                        vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
+                        if(operator === 'function') {
+                            vm.expression.type = 'event';
+                            vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
+                            vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
+                        } else  if(operator === 'job_function') {
+                            vm.expression.type = 'job';
+                            vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
+                            vm.expression.expression = vm.expression.expression + ' job:' + func;
+                        }else  if(operator === 'jobchain_function') {
+                            vm.expression.type = 'jobchain';
+                            vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobchain.' + func;
+                            vm.expression.expression = vm.expression.expression + ' jobchain:' + func;
+                        }
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
                     if (operator === 'function') {
                         vm.expression.type = 'event';
                         vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
                         vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
-                    } else {
+                    } else  if(operator === 'job_function') {
+                        vm.expression.type = 'job';
+                        vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
+                        vm.expression.expression = vm.tmpExp + ' job:' + func;
+                    }else  if(operator === 'jobchain_function') {
+                        vm.expression.type = 'jobchain';
+                        vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobchain.' + func;
+                        vm.expression.expression = vm.tmpExp + ' jobchain:' + func;
+                    }else {
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
                 }
@@ -14438,8 +14482,8 @@
 
         vm.getSuggestion = function ($event, form) {
             let key = $event.keyCode || $event.which;
-            if (key === 91) {
-                let text = $event.key.match(/[a-zA-Z0-9]*/)[0];
+            if (key == 91) {
+                let text = $event.target.value.match(/[a-zA-Z0-9]*/)[0];
                 if (text) {
                     $('#event-suggestion').css({
                         display: 'inline-block',
@@ -14447,7 +14491,7 @@
                         left: $event.target.value.length * 3 + 'px'
                     });
                 }
-            } else if (key === 93 || key === 13 || key === 8 || key === 32) {
+            } else if (key == 93 || key == 13 || key == 8 || key == 32) {
                 $('#event-suggestion').css({display: 'none', opacity: 0});
             }
             let arr = $event.target.value.split(' ');

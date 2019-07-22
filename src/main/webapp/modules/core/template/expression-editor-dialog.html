@@ -58,6 +58,26 @@
                                     <div class="m-t-xs">
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist')">fileexist</a>
                                     </div>
+                                    <div>
+                                        <i ng-if="expression.jobOpen" ng-click="expression.jobOpen = false" class="fa fa-angle-down m-r-sm"></i>
+                                        <i ng-if="!expression.jobOpen" ng-click="expression.jobOpen = true" class="fa fa-angle-right m-r-sm"></i>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'job')">job</a>
+                                        <ul class="m-t-xs m-b-0" ng-if="expression.jobOpen">
+                                            <li ng-repeat="func in jobFunctions">
+                                                <a class="text-hover-primary"  ng-click="generateExpression('job_function', func)">{{func}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <i ng-if="expression.jobChainOpen" ng-click="expression.jobChainOpen = false" class="fa fa-angle-down m-r-sm"></i>
+                                        <i ng-if="!expression.jobChainOpen" ng-click="expression.jobChainOpen = true" class="fa fa-angle-right m-r-sm"></i>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
+                                        <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
+                                            <li ng-repeat="func in jobChainFunctions">
+                                                <a class="text-hover-primary"  ng-click="generateExpression('jobchain_function', func)">{{func}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6" >
@@ -96,6 +116,26 @@
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
                                             <div class="text-muted"> (fileexist:test.txt)</div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="expression.type === 'job'">
+                                        <label class="_600">job</label>
+                                        <p class="text-sm">
+                                            The job is specified by job:name_of_job
+                                        </p>
+                                        <div class="text-sm p-a-sm syntax-box">
+                                            <div class="m-t-sm" translate>label.example</div>
+                                            <div class="text-muted">{{_eventExample}}</div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="expression.type === 'jobchain'">
+                                        <label class="_600">jobchain</label>
+                                        <p class="text-sm">
+                                            The jobchain is specified by jobchain:name_of_jobchain
+                                        </p>
+                                        <div class="text-sm p-a-sm syntax-box">
+                                            <div class="m-t-sm" translate>label.example</div>
+                                            <div class="text-muted">{{_eventExample}}</div>
                                         </div>
                                     </div>
                                 </div>
