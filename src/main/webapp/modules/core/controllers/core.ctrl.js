@@ -14017,8 +14017,8 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
-    function EditConditionDialogCtrl($scope, $uibModalInstance, JobChainService, orderBy, gettextCatalog, toasty) {
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobService', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance, JobService, JobChainService, orderBy, gettextCatalog, toasty) {
         const vm = $scope;
         vm.editor = {
             type: 'Incondition',
@@ -14041,34 +14041,52 @@
             }
         }
 
-        init();
-
-        $scope.ok = function () {
-            for (let i = 0; i < vm._job.inconditions.length; i++) {
-                vm._job.inconditions[i].workflow = vm.editor.workflow;
-                for (let j = 0; j < vm._job.inconditions[i].inconditionCommands.length; j++) {
-                    if(!vm._job.inconditions[i].inconditionCommands[j].command || vm._job.inconditions[i].inconditionCommands[j].command == ''){
-                        vm._job.inconditions[i].inconditionCommands[j].command = "start_job";
-                        vm._job.inconditions[i].inconditionCommands[j].commandParam = "now";
+        if(vm._job) {
+            init();
+        } else if(vm._expression && vm._expression.events){
+            let arr = [];
+            if (vm._expression.events.length > 0) {
+                for (let i = 0; i < vm._expression.events.length; i++) {
+                    if (vm._expression.events[i].command === 'delete') {
+                        arr.push(vm._expression.events[i]);
                     }
-                }
-                if(vm._job.inconditions[i].inconditionCommands.length === 0){
-                    vm._job.inconditions[i].inconditionCommands.push({command : "start_job", commandParam : "now", id : 0});
                 }
             }
-            for (let i = 0; i < vm._job.outconditions.length; i++) {
-                vm._job.outconditions[i].workflow = vm.editor.workflow;
-                for (let j = 0; j < vm._job.outconditions[i].outconditionEvents.length; j++) {
-                    if (!vm._job.outconditions[i].outconditionEvents[j].event || vm._job.outconditions[i].outconditionEvents[j].event == '') {
-                        vm._job.outconditions[i].outconditionEvents.splice(j, 1);
+            vm._expression.deleteEvents = arr;
+        }
+
+        $scope.ok = function () {
+            if(vm._job) {
+                for (let i = 0; i < vm._job.inconditions.length; i++) {
+                    vm._job.inconditions[i].workflow = vm.editor.workflow;
+                    for (let j = 0; j < vm._job.inconditions[i].inconditionCommands.length; j++) {
+                        if (!vm._job.inconditions[i].inconditionCommands[j].command || vm._job.inconditions[i].inconditionCommands[j].command == '') {
+                            vm._job.inconditions[i].inconditionCommands[j].command = "start_job";
+                            vm._job.inconditions[i].inconditionCommands[j].commandParam = "now";
+                        }
+                    }
+                    if (vm._job.inconditions[i].inconditionCommands.length === 0) {
+                        vm._job.inconditions[i].inconditionCommands.push({
+                            command: "start_job",
+                            commandParam: "now",
+                            id: 0
+                        });
                     }
                 }
-                if (vm._job.outconditions[i].outconditionEvents.length === 0) {
-                    toasty.warning({
-                        title: gettextCatalog.getString('message.outconditionWarning'),
-                        timeout: 3000
-                    });
-                    return;
+                for (let i = 0; i < vm._job.outconditions.length; i++) {
+                    vm._job.outconditions[i].workflow = vm.editor.workflow;
+                    for (let j = 0; j < vm._job.outconditions[i].outconditionEvents.length; j++) {
+                        if (!vm._job.outconditions[i].outconditionEvents[j].event || vm._job.outconditions[i].outconditionEvents[j].event == '') {
+                            vm._job.outconditions[i].outconditionEvents.splice(j, 1);
+                        }
+                    }
+                    if (vm._job.outconditions[i].outconditionEvents.length === 0) {
+                        toasty.warning({
+                            title: gettextCatalog.getString('message.outconditionWarning'),
+                            timeout: 3000
+                        });
+                        return;
+                    }
                 }
             }
             $uibModalInstance.close('ok');
@@ -14140,11 +14158,19 @@
                 commandParam: '',
                 id: 0
             };
-            vm.condition.inconditionCommands.push(param);
+            if(vm.condition) {
+                vm.condition.inconditionCommands.push(param);
+            }else if(vm._expression){
+                vm._expression.commands.push(param);
+            }
         };
 
         vm.removeInconditionCommands = function (index) {
-            vm.condition.inconditionCommands.splice(index, 1);
+            if (vm.condition) {
+                vm.condition.inconditionCommands.splice(index, 1);
+            } else if (vm._expression) {
+                vm._expression.commands.splice(index, 1);
+            }
         };
 
         vm.addCommand = function (incondition) {
@@ -14174,7 +14200,11 @@
                 command: type,
                 id: 0
             };
-            vm.condition.outconditionEvents.push(param);
+            if(vm.condition) {
+                vm.condition.outconditionEvents.push(param);
+            }else if(vm._expression){
+                vm._expression.events.push(param);
+            }
         };
 
         vm.removeOutconditionEvents = function (condition) {
@@ -14182,6 +14212,13 @@
                 for (let i = 0; vm.condition.outconditionEvents.length; i++) {
                     if (angular.equals(vm.condition.outconditionEvents[i], condition)) {
                         vm.condition.outconditionEvents.splice(i, 1);
+                        break;
+                    }
+                }
+            }else if(vm._expression && vm._expression.events){
+                for (let i = 0; vm._expression.events.length; i++) {
+                    if (angular.equals(vm._expression.events[i], condition)) {
+                        vm._expression.events.splice(i, 1);
                         break;
                     }
                 }
@@ -14281,15 +14318,24 @@
 
         vm.expressionEditor = function () {
             vm.expression = {type: 'returncode'};
-            if (!vm.condition.conditionExpression) {
+            if (vm.condition && !vm.condition.conditionExpression) {
                 vm.condition.conditionExpression = {expression: ''};
+                vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
+            }else if(vm._expression){
+                vm.expression.expression = angular.copy(vm._expression.expression);
             }
-            vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
+
             $('#expression-editor').modal('show');
+            $('#event-suggestion').css({display: 'none', opacity: 0});
         };
 
+
         vm.save3 = function (form) {
-            vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression);
+            if(vm.condition) {
+                vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression);
+            } else if(vm._expression){
+                vm._expression.expression = angular.copy(vm.expression.expression);
+            }
             $('#expression-editor').modal('hide');
             if (form) {
                 form.$setPristine();
@@ -14298,8 +14344,9 @@
         };
 
         vm.close3 = function (form) {
-            vm.expression ={};
-           $('#expression-editor').modal('hide');
+            vm.expression = {};
+            $('#event-suggestion').css({display: 'none', opacity: 0});
+            $('#expression-editor').modal('hide');
             if (form) {
                 form.$setPristine();
                 form.$setUntouched();
@@ -14336,11 +14383,16 @@
         vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
         vm._eventExample = 'event:name_of_event';
         vm._jobExample = 'job:name_of_job';
-        vm._jobchainExample = 'jobchain:name_of_jobchain';
+        vm._jobchainExample = 'job_chain:name_of_job_chain';
 
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
+                if(vm.expression.type == 'event' || vm.expression.type == 'returncode'){
+                    vm.expression.showIcon = false;
+                } else{
+                    vm.expression.showIcon = true;
+                }
             }
             if (vm.expression.expression && vm.expression.expression != ' ' && operator && !operator.match('function')) {
                 isFunction = false;
@@ -14354,11 +14406,12 @@
                 } else{
                     vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
                 }
+                vm.expression.showIcon = false;
             } else if (func) {
                 vm.tmp = null;
                 if (!isFunction) {
                     isFunction = true;
-                    if (!operator.match('function')) {
+                    if (operator && !operator.match('function')) {
                         let arr = vm.expression.expression.trim().split(' '), opt = ' ';
                         if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
                             vm.operator = 'and';
@@ -14366,35 +14419,42 @@
                         }
                         vm.tmpExp = vm.expression.expression + opt;
                         vm.expression.expression = vm.expression.expression + opt + func + ':';
+                        vm.expression.showIcon = false;
                     } else {
                         vm.tmpExp = vm.expression.expression;
                         if(operator === 'function') {
                             vm.expression.type = 'event';
+                            vm.expression.showIcon = false;
                             vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
                             vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
                         } else  if(operator === 'job_function') {
+                            vm.expression.showIcon = true;
                             vm.expression.type = 'job';
                             vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
                             vm.expression.expression = vm.expression.expression + ' job:' + func;
-                        }else  if(operator === 'jobchain_function') {
-                            vm.expression.type = 'jobchain';
-                            vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobchain.' + func;
-                            vm.expression.expression = vm.expression.expression + ' jobchain:' + func;
+                        }else  if(operator === 'job_chain_function') {
+                            vm.expression.showIcon = true;
+                            vm.expression.type = 'job_chain';
+                            vm._jobchainExample = 'job_chain:' + func + ', ' + 'job_chain:name_of_job_chain.' + func;
+                            vm.expression.expression = vm.expression.expression + ' job_chain:' + func;
                         }
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
                     if (operator === 'function') {
+                        vm.expression.showIcon = false;
                         vm.expression.type = 'event';
                         vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
                         vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
                     } else  if(operator === 'job_function') {
                         vm.expression.type = 'job';
+                        vm.expression.showIcon = true;
                         vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
                         vm.expression.expression = vm.tmpExp + ' job:' + func;
-                    }else  if(operator === 'jobchain_function') {
-                        vm.expression.type = 'jobchain';
-                        vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobchain.' + func;
-                        vm.expression.expression = vm.tmpExp + ' jobchain:' + func;
+                    }else  if(operator === 'job_chain_function') {
+                        vm.expression.type = 'job_chain';
+                        vm.expression.showIcon = true;
+                        vm._jobchainExample = 'job_chain:' + func + ', ' + 'job_chain:name_of_job_chain.' + func;
+                        vm.expression.expression = vm.tmpExp + ' job_chain:' + func;
                     }else {
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
@@ -14402,20 +14462,61 @@
             }
         };
 
-        vm.validateExpression = function () {
-            vm.operator = undefined;
-            vm.tmp = null;
-            vm.tmpExp = null;
+        vm.getTreeStructure = function () {
+            if (vm.expression.type == 'job' || vm.expression.type == 'job_chain') {
+                $('#objectModal').modal('show');
+                JobChainService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: [vm.expression.type == 'job' ? 'JOB' : 'JOBCHAIN']
+                }).then(function (res) {
+                    vm.tree1 = res.folders;
+                    angular.forEach(vm.tree1, function (value) {
+                        value.expanded = true;
+                        if (value.folders) {
+                            value.folders = orderBy(value.folders, 'name');
+                        }
+                    });
+                }, function (err) {
+                    $('#objectModal').modal('hide');
+                });
+            }
+        };
+
+        vm.validateExpression = function (form) {
+            let str = '';
+            if (vm.expression && vm.expression.expression) {
+                str = vm.expression.expression;
+            } else if(vm._expression){
+                str = vm._expression.expression;
+            }else {
+                str = vm.condition.conditionExpressionon.expression;
+            }
+            let arr = str.split(' ');
+            if (arr.length > 0) {
+                if (arr[arr.length - 1].match(/and/) || arr[arr.length - 1].match(/or/) || arr[arr.length - 1].match(/not/)) {
+                    form.$invalid = true;
+                    form.expression.$invalid = true;
+                }
+            }
         };
 
         vm.selectCommand = function (command, index) {
-            if(index || index == 0) {
-                if (command === 'start_job') {
-                    vm.condition.inconditionCommands[index].commandParam = 'now';
-                } else {
-                    vm.condition.inconditionCommands[index].commandParam = '';
+            if (index || index == 0) {
+                if(vm.condition) {
+                    if (command === 'start_job') {
+                        vm.condition.inconditionCommands[index].commandParam = 'now';
+                    } else {
+                        vm.condition.inconditionCommands[index].commandParam = '';
+                    }
+                } else if(vm._expression){
+                    if (command === 'start_job') {
+                        vm._expression.commands[index].commandParam = 'now';
+                    } else {
+                        vm._expression.commands[index].commandParam = '';
+                    }
                 }
-            }else{
+            } else {
                 if (command === 'start_job') {
                     vm.command.commandParam = 'now';
                 } else {
@@ -14450,6 +14551,17 @@
         vm.treeHandler = function (data) {
             data.expanded = !data.expanded;
             if (data.expanded) {
+                if(vm.expression && vm.expression.type && vm.expression.type == 'job') {
+                    data.jobChains = [];
+                    let obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.compact = true;
+                    obj.folders = [{folder: data.path, recursive: false}];
+                    JobService.getJobsP(obj).then(function (result) {
+                        data.jobs = result.jobs;
+                    });
+                    return;
+                }
                 data.jobChains = [];
                 let obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
@@ -14475,9 +14587,25 @@
             }
         });
 
-        vm.addObjectPath = function(){
-            vm._inconditionCommands.commandParam = vm.object.jobs[0];
-            vm.object = {};
+        vm.addObjectPath = function () {
+            if (vm.expression && vm.expression.expression) {
+                let arr = vm.expression.expression.split(' ');
+                let str ='';
+                for(let i =0; i < arr.length -1; i++){
+                    str = str + arr[i] +' ';
+                }
+                if(arr.length > 0) {
+                    let exp =  arr[arr.length - 1];
+                    exp = exp.replace(':', ':'+vm.object.jobs[0]+'.')
+                    str = str + ' ' +exp;
+                }
+                if(str != '') {
+                    vm.expression.expression = str;
+                }
+            } else {
+                vm._inconditionCommands.commandParam = vm.object.jobs[0];
+                vm.object = {};
+            }
         };
 
         vm.getSuggestion = function ($event, form) {
@@ -14486,9 +14614,11 @@
                 let text = $event.target.value.match(/[a-zA-Z0-9]*/)[0];
                 if (text) {
                     $('#event-suggestion').css({
+                        'z-index': 9999999,
                         display: 'inline-block',
                         opacity: 1,
-                        left: $event.target.value.length * 3 + 'px'
+                        left: $event.target.value.length * 3 + 'px',
+                        top: (vm.expression && vm.expression.expression) ? 0 : '33px'
                     });
                 }
             } else if (key == 93 || key == 13 || key == 8 || key == 32) {
@@ -14504,18 +14634,22 @@
                         if ((arr[i] === 'or' || arr[i] === 'and' || arr[i] === 'not')) {
                             form.$invalid = false;
                             form.expression.$invalid = false;
-                        } else {
-                            form.$invalid = true;
-                            form.expression.$invalid = true;
+                            break;
                         }
                     }
                 }
             }
         };
 
-        vm.addSuggestion = function(value){
-            vm.condition.conditionExpression.expression = vm.condition.conditionExpression.expression + value.substring(1);
-            $('#event-suggestion').css({display: 'none',opacity: 0});
+        vm.addSuggestion = function (value) {
+            if (vm.expression) {
+                vm.expression.expression = vm.expression.expression + value.substring(1);
+            }else if (vm._expression) {
+                vm._expression.expression = vm._expression.expression + value.substring(1);
+            } else {
+                vm.condition.conditionExpression.expression = vm.condition.conditionExpression.expression + value.substring(1);
+            }
+            $('#event-suggestion').css({display: 'none', opacity: 0});
         };
 
         $scope.$on('$destroy', function () {

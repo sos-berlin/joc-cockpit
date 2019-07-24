@@ -17,7 +17,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12" ng-class="{ 'has-error' : form3.expression.$invalid && form3.expression.$dirty }">
-                                <textarea rows="3" class="form-control" ng-model="expression.expression" placeholder="returncode:x, event:event, fileexist:filename" autofocus
+                                <textarea rows="3" class="form-control" ng-model="expression.expression" ng-blur="validateExpression(form3)" placeholder="returncode:x, event:event, fileexist:filename" autofocus
                                           ng-keypress="getSuggestion($event, form3)" name="expression"></textarea>
                             </div>
                         </div>
@@ -35,6 +35,9 @@
                                                 class="btn btn-sm btn-grey m-l-xs"> NOT
                                         </button>
                                     </div>
+                                </div>
+                                <div ng-if="expression.showIcon" class="text-right m-b-xs" style="margin-top: -25px;">
+                                    <a class="cursor text" ng-click="getTreeStructure()"><i class="fa fa-folder fa-lg"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -71,10 +74,10 @@
                                     <div>
                                         <i ng-if="expression.jobChainOpen" ng-click="expression.jobChainOpen = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.jobChainOpen" ng-click="expression.jobChainOpen = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'job_chain')">job_chain</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
                                             <li ng-repeat="func in jobChainFunctions">
-                                                <a class="text-hover-primary"  ng-click="generateExpression('jobchain_function', func)">{{func}}</a>
+                                                <a class="text-hover-primary"  ng-click="generateExpression('job_chain_function', func)">{{func}}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -125,17 +128,17 @@
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
-                                            <div class="text-muted">{{_eventExample}}</div>
+                                            <div class="text-muted">{{_jobExample}}</div>
                                         </div>
                                     </div>
-                                    <div ng-if="expression.type === 'jobchain'">
+                                    <div ng-if="expression.type === 'job_chain'">
                                         <label class="_600">jobchain</label>
                                         <p class="text-sm">
-                                            The jobchain is specified by jobchain:name_of_jobchain
+                                            The jobchain is specified by job_chain:name_of_job_chain
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
-                                            <div class="text-muted">{{_eventExample}}</div>
+                                            <div class="text-muted">{{_jobchainExample}}</div>
                                         </div>
                                     </div>
                                 </div>

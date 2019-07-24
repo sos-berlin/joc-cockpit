@@ -8629,6 +8629,10 @@
                     } else {
                         _label = _label + ex[x].trim() + ' ';
                     }
+                    let s = mxUtils.getSizeForString(conditions.expression, 12);
+                    if (s.width > 300 && (x + 1) % 2===0){
+                        _label = _label + '</br>';
+                    }
                 }
             }
             return _label;
@@ -8636,27 +8640,27 @@
 
         vm.openModel = function (cell) {
             let label = cell.getAttribute('actual');
-            vm.expression = {};
-            vm.expression.label = cell.value.tagName;
-            vm.expression.expression = label;
-            vm.expression.commands = [];
-            vm.expression.events = [];
+            vm._expression = {};
+            vm._expression.label = cell.value.tagName;
+            vm._expression.expression = label;
+            vm._expression.commands = [];
+            vm._expression.events = [];
 
             for (let i = 0; i < cell.edges.length; i++) {
-                if (vm.expression.label === 'InCondition') {
+                if (vm._expression.label === 'InCondition') {
                     if (cell.edges[i].source.id === cell.id) {
-                        vm.expression.job = cell.edges[i].target.getAttribute('actual');
+                        vm._expression.job = cell.edges[i].target.getAttribute('actual');
                         let commands = cell.edges[i].source.getAttribute('commands');
                         if (commands) {
-                            vm.expression.commands = JSON.parse(commands) || [];
+                            vm._expression.commands = JSON.parse(commands) || [];
                         }
                         break;
                     }
-                } else if (vm.expression.label === 'OutCondition') {
+                } else if (vm._expression.label === 'OutCondition') {
                     if (cell.edges[i].target.id === cell.id) {
-                        vm.expression.job = cell.edges[i].source.getAttribute('actual');
+                        vm._expression.job = cell.edges[i].source.getAttribute('actual');
                     } else {
-                        vm.expression.events.push({
+                        vm._expression.events.push({
                             event: cell.edges[i].target.getAttribute('actual'),
                             command: 'create'
                         });
@@ -8665,12 +8669,13 @@
             }
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/workflow-event-dialog.html',
-                controller: 'DialogCtrl',
+                controller: 'EditConditionDialogCtrl',
                 scope: vm,
+                size:'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if (vm.expression !== label) {
+                if (vm._expression !== label) {
                     updateExpression(cell);
                 }
             }, function () {
@@ -8678,68 +8683,8 @@
             });
         };
 
-        let isFunction = false, t1;
-        vm.generateExpression = function (operator, func) {
-            if (vm.expression.expression && vm.expression.expression != ' ' && operator) {
-                isFunction = false;
-                vm.tmpExp = null;
-                if (!vm.operator) {
-                    vm.operator = operator;
-                    vm.tmp = vm.expression.expression;
-                    vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
-                } else if (vm.tmp) {
-                    vm.expression.expression = vm.tmp + ' ' + operator + ' ';
-                }
-            } else if (func) {
-                vm.tmp = null;
-                if (!isFunction) {
-                    isFunction = true;
-                    vm.tmpExp = vm.expression.expression;
-                    vm.expression.expression = vm.expression.expression + ' ' + func + ':';
-                } else if (vm.tmpExp || vm.tmpExp == '') {
-                    vm.expression.expression = vm.tmpExp + ' ' + func + ':';
-                }
-            }
-        };
+        let t1;
 
-        vm.validateExpression = function () {
-            vm.operator = undefined;
-            vm.tmp = null;
-            vm.tmpExp = null;
-        };
-
-        vm.addEvent = function (expression) {
-            let param = {
-                event: '',
-                id: 0
-            };
-            expression.events.push(param);
-        };
-
-        vm.removeEvent = function (events, index) {
-            events.splice(index, 1);
-        };
-
-        vm.addCommand = function (expression) {
-            let param = {
-                command: '',
-                commandParam: '',
-                id: 0
-            };
-            expression.commands.push(param);
-        };
-
-        vm.removeCommand = function (commands, index) {
-            commands.splice(index, 1);
-        };
-
-        vm.selectCommand = function (commands, command, index) {
-            if (command === 'start_job') {
-                commands[index].commandParam = 'now';
-            } else {
-                commands[index].commandParam = '';
-            }
-        };
 
         vm.getEvents = function (cell) {
             if (!vm.filteredByWorkflow && vm.selectedWorkflow != 'ALL') {
@@ -8785,7 +8730,6 @@
                     }
                 }
             }
-
             ConditionService.getEvents(obj).then(function (res) {
                 vm.eventList = res.conditionEvents;
                 checkEventFilter();
@@ -8907,7 +8851,6 @@
         };
 
         vm.removeAllEventFromWorkflow = function () {
-
             vm.deleteAllEvents = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -8948,6 +8891,7 @@
                 }
             }
             ConditionService.deleteEvent(obj).then(function () {
+                if(job)
                 updateSingleJob(job);
             });
         };
@@ -8990,24 +8934,24 @@
 
         function updateExpression(cell) {
             for (let i = 0; i < vm.jobs.length; i++) {
-                if (vm.expression.job === vm.jobs[i].path) {
-                    if (vm.expression.label === 'InCondition') {
+                if (vm._expression.job === vm.jobs[i].path) {
+                    if (vm._expression.label === 'InCondition') {
                         for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
                             if (vm.jobs[i].inconditions[j].vertexId == cell.id) {
-                                let flg = vm.jobs[i].inconditions[j].conditionExpression.expression == vm.expression.expression;
+                                let flg = vm.jobs[i].inconditions[j].conditionExpression.expression == vm._expression.expression;
                                 if (!flg) {
-                                    vm.jobs[i].inconditions[j].conditionExpression.expression = vm.expression.expression;
+                                    vm.jobs[i].inconditions[j].conditionExpression.expression = vm._expression.expression;
                                 }
 
                                 for (let m = 0; m < vm.jobs[i].inconditions[j].inconditionCommands.length; m++) {
-                                    for (let n = 0; n < vm.expression.commands.length; n++) {
-                                        if (vm.jobs[i].inconditions[j].inconditionCommands[m].command === vm.expression.commands[n].command && vm.jobs[i].inconditions[j].inconditionCommands[m].commandParam === vm.expression.commands[n].commandParam) {
-                                            vm.expression.commands[n].id = vm.jobs[i].inconditions[j].inconditionCommands[m].id;
+                                    for (let n = 0; n < vm._expression.commands.length; n++) {
+                                        if (vm.jobs[i].inconditions[j].inconditionCommands[m].command === vm._expression.commands[n].command && vm.jobs[i].inconditions[j].inconditionCommands[m].commandParam === vm._expression.commands[n].commandParam) {
+                                            vm._expression.commands[n].id = vm.jobs[i].inconditions[j].inconditionCommands[m].id;
                                             break;
                                         }
                                     }
                                 }
-                                vm.jobs[i].inconditions[j].inconditionCommands = vm.expression.commands;
+                                vm.jobs[i].inconditions[j].inconditionCommands = vm._expression.commands;
                                 ConditionService.updateInCondition({
                                     masterId: $scope.schedulerIds.selected,
                                     jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]
@@ -9024,16 +8968,16 @@
 
                             }
                         }
-                    } else if (vm.expression.label === 'OutCondition') {
+                    } else if (vm._expression.label === 'OutCondition') {
                         for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
                             if (vm.jobs[i].outconditions[j].vertexId == cell.id) {
-                                vm.jobs[i].outconditions[j].conditionExpression.expression = vm.expression.expression;
-                                for (let n = 0; n < vm.expression.events.length; n++) {
-                                    if(!vm.expression.events[n].command) {
-                                        vm.expression.events[n].command = 'create';
+                                vm.jobs[i].outconditions[j].conditionExpression.expression = vm._expression.expression;
+                                for (let n = 0; n < vm._expression.events.length; n++) {
+                                    if(!vm._expression.events[n].command) {
+                                        vm._expression.events[n].command = 'create';
                                     }
                                 }
-                                vm.jobs[i].outconditions[j].outconditionEvents = vm.expression.events;
+                                vm.jobs[i].outconditions[j].outconditionEvents = vm._expression.events;
                                 ConditionService.updateOutCondition({
                                     masterId: $scope.schedulerIds.selected,
                                     jobsOutconditions: [{job: vm.jobs[i].path, outconditions: vm.jobs[i].outconditions}]
@@ -9164,7 +9108,21 @@
                 h = size.height + 50;
             } else if (style === 'condition' || style === 'condition1' || style === 'condition2') {
                 h = size.height + 30;
+                let arr = text.split(/\s*(\(|\)|and|or)/);
+                let _maxTextSize = 0
+                for (let i = 0; i < arr.length; i++) {
+                    let x = mxUtils.getSizeForString(arr[i], 12);
+                    if (x.width > _maxTextSize) {
+                        _maxTextSize = x.width;
+                    }
+                }
+
+                if (w > 300) {
+                    h = h * Math.round(w / 300);
+                    w = _maxTextSize + 66;
+                }
             }
+
             return vm.editor.graph.insertVertex(parent, null, _node, 0, 0, w, h, style);
         }
 
@@ -9193,6 +9151,7 @@
 
             // Enables snapping waypoints to terminals
             mxEdgeHandler.prototype.snapToTerminals = true;
+            mxCellEditor.prototype.autoSize = true;
             graph.setAutoSizeCells(true);
             graph.setCellsResizable(true);
             graph.setConnectable(false);
@@ -9506,31 +9465,7 @@
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
         });
-
-        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]'];
-        let d = new Date();
-        let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
-        vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
-        vm.getSuggestion = function ($event) {
-            let key = $event.keyCode || $event.which;
-            if (key === 91) {
-                $('#event-suggestion').css({
-                    display: 'inline-block',
-                    opacity: 1,
-                    left: $event.target.value.length * 3 + 'px'
-                });
-            } else if (key === 93 || key === 13 || key === 8) {
-                $('#event-suggestion').css({display: 'none', opacity: 0});
-            }
-        };
-
-        vm.addSuggestion = function (value) {
-            if (vm.expression && vm.expression.expression) {
-                vm.expression.expression = vm.expression.expression + value.substring(1);
-            }
-            $('#event-suggestion').css({display: 'none', opacity: 0});
-        };
-
+        
         $scope.$on('$destroy', function () {
             if (t1) {
                 $timeout.cancel(t1);

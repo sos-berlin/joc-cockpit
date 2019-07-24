@@ -5,7 +5,7 @@
         </button>
         <h4 class="modal-title"><span translate>label.conditionEditor</span> : {{_job.path}}</h4>
     </div>
-    <form name="form" role="form" ng-submit="ok()" novalidate>
+    <form name="form" role="form" ng-submit="ok(form)" novalidate>
         <div class="modal-body p-a" style="min-height: 400px;max-height: 650px; overflow: auto">
             <div ng-if="!condition">
                 <div class="row m-b" >
@@ -164,7 +164,7 @@
                         <i class="fa fa-pencil m-l-sm text-hover-primary" ng-click="expressionEditor()"></i>
                     </div>
                     <div class="col-md-10 m-b-sm" ng-class="{ 'has-error' : form.expression.$invalid && form.expression.$dirty }">
-                        <textarea rows="3" class="form-control" ng-keypress="getSuggestion($event, form)" name="expression" placeholder="returncode:x, event:event, fileexist:filename"
+                        <textarea rows="3" class="form-control" ng-keypress="getSuggestion($event, form)" ng-blur="validateExpression(form)" name="expression" placeholder="returncode:x, event:event, fileexist:filename"
                                   ng-model="condition.conditionExpression.expression"></textarea>
                         <div class="dropdown-menu dropdown dropdown-more" id="event-suggestion">
                             <a class="dropdown-item" ng-click="addSuggestion(func)" ng-repeat="func in functions">{{func}}</a>
@@ -297,7 +297,7 @@
 <div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body p-a" style="min-height: 395px;max-height: 550px; overflow: auto">
+            <div class="modal-body p-a" style="min-height: 350px;max-height: 440px; overflow: auto">
                 <div>
                     <a class="text" ng-click="filter_tree1.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
