@@ -14043,16 +14043,6 @@
 
         if(vm._job) {
             init();
-        } else if(vm._expression && vm._expression.events){
-            let arr = [];
-            if (vm._expression.events.length > 0) {
-                for (let i = 0; i < vm._expression.events.length; i++) {
-                    if (vm._expression.events[i].command === 'delete') {
-                        arr.push(vm._expression.events[i]);
-                    }
-                }
-            }
-            vm._expression.deleteEvents = arr;
         }
 
         $scope.ok = function () {
@@ -14318,10 +14308,12 @@
 
         vm.expressionEditor = function () {
             vm.expression = {type: 'returncode'};
-            if (vm.condition && !vm.condition.conditionExpression) {
-                vm.condition.conditionExpression = {expression: ''};
+            if (vm.condition) {
+                if (!vm.condition.conditionExpression) {
+                    vm.condition.conditionExpression = {expression: ''};
+                }
                 vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
-            }else if(vm._expression){
+            } else if (vm._expression) {
                 vm.expression.expression = angular.copy(vm._expression.expression);
             }
 
@@ -14379,18 +14371,17 @@
             'isStartedWithErrorAfter',
             'isStartedSuccessfulAfter'];
         let d = new Date();
-        let day = Math.ceil((new Date(d.getTime()) - new Date(d.getFullYear(), 0, 1) + 1) / 86400000);
-        vm.functions.push('[' + d.getFullYear() + '.' + day + ']');
+        vm.functions.push('[' + (d.getMonth() + 1) + '.' + d.getDate() + ']');
         vm._eventExample = 'event:name_of_event';
         vm._jobExample = 'job:name_of_job';
-        vm._jobchainExample = 'job_chain:name_of_job_chain';
+        vm._jobchainExample = 'jobChain:name_of_jobChain';
 
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
-                if(vm.expression.type == 'event' || vm.expression.type == 'returncode'){
+                if (vm.expression.type == 'event' || vm.expression.type == 'returncode') {
                     vm.expression.showIcon = false;
-                } else{
+                } else {
                     vm.expression.showIcon = true;
                 }
             }
@@ -14432,11 +14423,13 @@
                             vm.expression.type = 'job';
                             vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
                             vm.expression.expression = vm.expression.expression + ' job:' + func;
-                        }else  if(operator === 'job_chain_function') {
+                        }else  if(operator === 'jobChain_function') {
                             vm.expression.showIcon = true;
-                            vm.expression.type = 'job_chain';
-                            vm._jobchainExample = 'job_chain:' + func + ', ' + 'job_chain:name_of_job_chain.' + func;
-                            vm.expression.expression = vm.expression.expression + ' job_chain:' + func;
+                            vm.expression.type = 'jobChain';
+                            vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
+                            vm.expression.expression = vm.expression.expression + ' jobChain:' + func;
+                        }else{
+                            vm.expression.expression = vm.expression.expression + func+ ':';
                         }
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
@@ -14450,11 +14443,11 @@
                         vm.expression.showIcon = true;
                         vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
                         vm.expression.expression = vm.tmpExp + ' job:' + func;
-                    }else  if(operator === 'job_chain_function') {
-                        vm.expression.type = 'job_chain';
+                    }else  if(operator === 'jobChain_function') {
+                        vm.expression.type = 'jobChain';
                         vm.expression.showIcon = true;
-                        vm._jobchainExample = 'job_chain:' + func + ', ' + 'job_chain:name_of_job_chain.' + func;
-                        vm.expression.expression = vm.tmpExp + ' job_chain:' + func;
+                        vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
+                        vm.expression.expression = vm.tmpExp + ' jobChain:' + func;
                     }else {
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
@@ -14463,7 +14456,7 @@
         };
 
         vm.getTreeStructure = function () {
-            if (vm.expression.type == 'job' || vm.expression.type == 'job_chain') {
+            if (vm.expression.type == 'job' || vm.expression.type == 'jobChain') {
                 $('#objectModal').modal('show');
                 JobChainService.tree({
                     jobschedulerId: vm.schedulerIds.selected,
@@ -14487,10 +14480,10 @@
             let str = '';
             if (vm.expression && vm.expression.expression) {
                 str = vm.expression.expression;
-            } else if(vm._expression){
+            } else if (vm.condition && vm.condition.conditionExpression) {
+                str = vm.condition.conditionExpression.expression;
+            } else if (vm._expression) {
                 str = vm._expression.expression;
-            }else {
-                str = vm.condition.conditionExpressionon.expression;
             }
             let arr = str.split(' ');
             if (arr.length > 0) {
@@ -14602,10 +14595,10 @@
                 if(str != '') {
                     vm.expression.expression = str;
                 }
-            } else {
+            } else if(vm._inconditionCommands){
                 vm._inconditionCommands.commandParam = vm.object.jobs[0];
-                vm.object = {};
             }
+            vm.object = {};
         };
 
         vm.getSuggestion = function ($event, form) {
@@ -14617,8 +14610,8 @@
                         'z-index': 9999999,
                         display: 'inline-block',
                         opacity: 1,
-                        left: $event.target.value.length * 3 + 'px',
-                        top: (vm.expression && vm.expression.expression) ? 0 : '33px'
+                        left: (vm.expression && vm.expression.expression) ? '60px' : $event.target.value.length * 3 + 'px',
+                        top: (vm.expression && vm.expression.expression) ? '-30px' : '33px'
                     });
                 }
             } else if (key == 93 || key == 13 || key == 8 || key == 32) {

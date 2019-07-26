@@ -3,9 +3,9 @@
         resize: none;
     }
 </style>
-<div class="modal fade" id="expression-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1)">
+<div class="modal fade" id="expression-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1); overflow: visible;">
     <div class="modal-dialog box-shadow modal-lg" style="margin-top: 12px">
-        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18); margin-left: 20px; margin-right: 20px">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18); margin-left: 20px; margin-right: 20px;">
             <div class="modal-body p-a p-l-md p-r-md">
                 <form name="form3" ng-submit="save3(form3)" novalidate>
                     <div>
@@ -36,8 +36,8 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div ng-if="expression.showIcon" class="text-right m-b-xs" style="margin-top: -25px;">
-                                    <a class="cursor text" ng-click="getTreeStructure()"><i class="fa fa-folder fa-lg"></i></a>
+                                <div ng-if="expression.showIcon" class="text-right" style="margin-top: -22px; margin-bottom: 3px">
+                                    <a class="cursor text" ng-click="getTreeStructure()"><i class="fa fa-folder text-md m-r-xs"></i> <span translate>Select Job/JobChain from tree</span></a>
                                 </div>
                             </div>
                         </div>
@@ -49,6 +49,9 @@
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'returncode')">returncode</a>
                                     </div>
                                     <div class="m-t-xs">
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist')">fileexist</a>
+                                    </div>
+                                    <div class="m-t-xs">
                                         <i ng-if="expression.open" ng-click="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.open" ng-click="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'event')">event</a>
@@ -57,9 +60,6 @@
                                               <a class="text-hover-primary"  ng-click="generateExpression('function', func)">{{func}}</a>
                                             </li>
                                         </ul>
-                                    </div>
-                                    <div class="m-t-xs">
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist')">fileexist</a>
                                     </div>
                                     <div>
                                         <i ng-if="expression.jobOpen" ng-click="expression.jobOpen = false" class="fa fa-angle-down m-r-sm"></i>
@@ -74,7 +74,7 @@
                                     <div>
                                         <i ng-if="expression.jobChainOpen" ng-click="expression.jobChainOpen = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.jobChainOpen" ng-click="expression.jobChainOpen = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'job_chain')">job_chain</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
                                             <li ng-repeat="func in jobChainFunctions">
                                                 <a class="text-hover-primary"  ng-click="generateExpression('job_chain_function', func)">{{func}}</a>
@@ -87,7 +87,7 @@
                                 <div><span translate>label.description</span>:</div>
                                 <div class="b-a p-a" style="height: 204px;overflow: auto">
                                     <div ng-if="expression.type === 'returncode'">
-                                        <label class="_600">returnCode</label>
+                                        <label class="_600">returncode</label>
                                         <p class="text-sm">
                                             Returncode of the last job run
                                         </p>
@@ -131,10 +131,10 @@
                                             <div class="text-muted">{{_jobExample}}</div>
                                         </div>
                                     </div>
-                                    <div ng-if="expression.type === 'job_chain'">
-                                        <label class="_600">jobchain</label>
+                                    <div ng-if="expression.type === 'jobChain'">
+                                        <label class="_600">jobChain</label>
                                         <p class="text-sm">
-                                            The jobchain is specified by job_chain:name_of_job_chain
+                                            The jobChain is specified by jobChain:name_of_job_chain
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>

@@ -9,14 +9,8 @@
         <div class="modal-body p-a" style="min-height: 400px;max-height: 650px; overflow: auto">
             <div ng-if="!condition">
                 <div class="row m-b" >
-                    <div class="col-sm-2 form-control-label" translate>label.workflow</div>
-                    <div class="col-sm-2 p-l-0 p-r-0">
-                        <div class="default-path">
-                            {{_job.path1}}
-                            <span ng-if="_job.path1 != '/'">/</span>
-                        </div>
-                    </div>
-                    <div class="col-sm-8 pad-left-0" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
+                    <div class="col-sm-3 form-control-label" translate>label.workflow</div>
+                    <div class="col-sm-9" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
                         <input type="text" required class="form-control"
                                placeholder="{{'placeholder.enterWorkflow' | translate}}" name="workflow"
                                ng-model="editor.workflow">
@@ -181,15 +175,14 @@
                         <div class="col-sm-5 m-b-sm">
                             <select class="form-control" name="command{{$index}}" ng-change="selectCommand(inconditionCommand.command, $index)" ng-model="inconditionCommand.command">
                                 <option value="" translate>label.chooseCommand</option>
-                                <option value="start_job">start_job</option>
-                                <option value="show_log">show_log</option>
-                                <option value="add_order">add_order</option>
+                                <option value="startJob" translate>label.start_job</option>
+                                <option value="writeLog" translate>label.write_log</option>
                             </select>
                         </div>
                         <div class="col-sm-5 m-b-sm" ng-class="{ 'has-error' : form.atTime.$invalid && form.atTime.$dirty }">
-                            <input ng-if="inconditionCommand.command !== 'start_job'" type="text" class="form-control" name="commandParam{{$index}}"
+                            <input ng-if="inconditionCommand.command !== 'startJob'" type="text" class="form-control" name="commandParam{{$index}}"
                                    ng-model="inconditionCommand.commandParam">
-                            <input ng-if="inconditionCommand.command == 'start_job'" valid-date-regex ng-required="inconditionCommand.command == 'start_job'" type="text" class="form-control" name="atTime"
+                            <input ng-if="inconditionCommand.command == 'startJob'" valid-date-regex ng-required="inconditionCommand.command == 'startJob'" type="text" class="form-control" name="atTime"
                                    ng-model="inconditionCommand.commandParam" placeholder="{{'placeholder.enterStartTime' | translate}}">
                             <div class="help-block text-danger" ng-messages="form.atTime.$error">
                                 <div ng-message="invalid" translate>message.invalid</div>
@@ -294,10 +287,10 @@
 </div>
 <div ui-include="'modules/core/template/expression-editor-dialog.html'"></div>
 <div ui-include="'modules/core/template/command-editor-dialog.html'"></div>
-<div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+<div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="overflow: visible">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body p-a" style="min-height: 350px;max-height: 440px; overflow: auto">
+            <div class="modal-body p-a" style="min-height: 350px;max-height: 450px; overflow: auto">
                 <div>
                     <a class="text" ng-click="filter_tree1.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>

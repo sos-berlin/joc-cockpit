@@ -12,7 +12,6 @@
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService", "$filter"];
-
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
                           DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService, $filter) {
         const vm = $scope;
@@ -3303,10 +3302,11 @@
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter", "ConditionService"];
-
     function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter, ConditionService) {
         const vm = $scope;
-        vm.jobFilters = CoreService.getJobTab();
+        vm.isConditionTab = $location.path() === '/conditions';
+
+        vm.jobFilters = vm.isConditionTab ? CoreService.getConditionTab() : CoreService.getJobTab();
         vm.jobFilters.isCompact = vm.userPreferences.isJobCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobCompact;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.showTask = vm.userPreferences.showTasks;
@@ -3343,7 +3343,7 @@
 
         resizeSidePanel();
 
-        if (vm.jobFilters.selectedView) {
+        if (vm.jobFilters.selectedView && !vm.isConditionTab) {
             vm.savedJobFilter.selected = vm.savedJobFilter.selected || vm.savedJobFilter.favorite;
         } else {
             vm.savedJobFilter.selected = undefined;
@@ -3363,7 +3363,8 @@
             if (!vm.savedJobFilter.selected) {
                 initTree();
             }
-            checkSharedFilters();
+            if(!vm.isConditionTab)
+                checkSharedFilters();
         }
 
         function mergePermanentAndVolatile(sour, dest) {
@@ -3651,6 +3652,9 @@
                 }
             }
 
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.getJobsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobs.length; i++) {
                     result.jobs[i].path1 = data.path;
@@ -3735,6 +3739,9 @@
                 }
             }
 
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.getJobsP(obj).then(function (result) {
                 for (let i = 0; i < result.jobs.length; i++) {
                     result.jobs[i].path1 = data.path;
@@ -4014,6 +4021,9 @@
                 return;
             }
             obj.compactView = vm.jobFilters.isCompact;
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.get(obj).then(function (res) {
                 if (res.jobs.length > 0) {
                     for (let x = 0; x < vm.allJobs.length; x++) {
@@ -4046,6 +4056,7 @@
             delete obj['folders'];
             delete obj['states'];
             obj.jobs = arr;
+
             JobService.getJobsP(obj).then(function (res) {
                 for (let m = 0; m < vm.allJobs.length; m++) {
                     for (let i = 0; i < res.jobs.length; i++) {
@@ -4144,6 +4155,9 @@
                 }
             }
 
+            if(vm.isConditionTab){
+                obj1.isOrderJob = false;
+            }
             JobService.getJobsP(obj1).then(function (result) {
                 for (let i = 0; i < result.jobs.length; i++) {
                     result.jobs[i].path1 = result.jobs[i].path.substring(0, result.jobs[i].path.lastIndexOf('/')) || result.jobs[i].path.substring(0, result.jobs[i].path.lastIndexOf('/') + 1);
@@ -4393,6 +4407,9 @@
                 obj.states = vm.jobFilter.state;
             }
             obj.compactView = vm.jobFilters.isCompact;
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.get(obj).then(function (res) {
                 let data = [];
                 if (allJobs && allJobs.length > 0) {
@@ -4455,6 +4472,9 @@
                 }
             }
             vm.folderPath = '/';
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.getJobsP(obj).then(function (result) {
                 searchV(obj, result.jobs);
             }, function () {
@@ -4829,6 +4849,9 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.getJobsP(obj).then(function (res) {
                 value = _.merge(value, res.job);
                 obj.compactView = vm.jobFilters.isCompact;
@@ -4912,7 +4935,9 @@
                 obj.jobs.push({job: value.path});
             });
             vm.isLoaded = true;
-
+            if(vm.isConditionTab){
+                obj.isOrderJob = false;
+            }
             JobService.getJobsP(obj).then(function (res) {
                 vm.isLoaded = false;
                 for (let m = 0; m < vm.allJobs.length; m++) {
@@ -6074,11 +6099,11 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.updateInCondition({
-                    masterId: $scope.schedulerIds.selected,
+                    jobSchedulerId: $scope.schedulerIds.selected,
                     jobsInconditions: [{job: vm._job.path, inconditions : vm._job.inconditions}]
                 });
                 ConditionService.updateOutCondition({
-                    masterId: $scope.schedulerIds.selected,
+                    jobSchedulerId: $scope.schedulerIds.selected,
                     jobsOutconditions: [{job: vm._job.path, outconditions : vm._job.outconditions}]
                 });
             }, function () {
@@ -6096,7 +6121,7 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.resetWorkflow({
-                    "masterId": $scope.schedulerIds.selected,
+                    "jobSchedulerId": $scope.schedulerIds.selected,
                     "job": job,
                     "workflow": workflow
                 }).then(function (res) {
@@ -6183,6 +6208,9 @@
                                     obj.jobs = [];
                                     obj.jobs.push({job: path[0]});
                                     obj.compactView = vm.jobFilters.isCompact;
+                                    if(vm.isConditionTab){
+                                        obj.isOrderJob = false;
+                                    }
                                     JobService.get(obj).then(function (res) {
                                         if (res.jobs && res.jobs.length > 0) {
                                             var flag = false;
@@ -6370,6 +6398,10 @@
                     vm.changeStatus();
                 } else {
                     getFilteredData();
+                }
+                if(newValue !== 'grid' && newValue !== 'list'){
+                    vm.showSearchPanel = false;
+                    vm.jobFilter = {};
                 }
             }
         });
@@ -8087,7 +8119,7 @@
 
     function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
         const vm = $scope;
-        vm.jobFilters = CoreService.getJobTab();
+        vm.jobFilters = CoreService.getConditionTab();
         vm.configXml = './mxgraph/config/diagrameditor.xml';
         vm.isWorkflowLoaded = false;
         vm.editor = {};
@@ -8194,13 +8226,12 @@
 
                                 let x = {
                                     name: wf,
-                                    path: _job.path1,
                                     jobs: [_job]
                                 };
                                 let _tempWorkflow;
                                 let _conditions = [];
                                 for (let i = 0; i < vm.workflows.length; i++) {
-                                    if (vm.workflows[i].name === x.name && vm.workflows[i].path === x.path) {
+                                    if (vm.workflows[i].name === x.name) {
                                         _conditions = vm.workflows[i].jobs;
                                         _tempWorkflow = vm.workflows[i];
                                         break;
@@ -8338,6 +8369,7 @@
                             let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
                             let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].workflow);
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
+                            _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
 
                             let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, 'condition2');
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
@@ -8361,7 +8393,7 @@
                         }
 
                         if (jobs[i].outconditions.length > 0) {
-                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), jobs[i].name, 'circle');
+                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', '');
                             vertexes.push(out);
                             for (let m = 0; m < events.length; m++) {
                                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
@@ -8578,7 +8610,7 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.resetWorkflow({
-                    "masterId": $scope.schedulerIds.selected,
+                    "jobSchedulerId": $scope.schedulerIds.selected,
                     "job": job,
                     "workflow": workflow
                 }).then(function (res) {
@@ -8660,10 +8692,11 @@
                     if (cell.edges[i].target.id === cell.id) {
                         vm._expression.job = cell.edges[i].source.getAttribute('actual');
                     } else {
-                        vm._expression.events.push({
-                            event: cell.edges[i].target.getAttribute('actual'),
-                            command: 'create'
-                        });
+                        let events = cell.edges[i].source.getAttribute('events');
+                        if (events) {
+                            vm._expression.events = JSON.parse(events) || [];
+                        }
+
                     }
                 }
             }
@@ -8690,7 +8723,7 @@
             if (!vm.filteredByWorkflow && vm.selectedWorkflow != 'ALL') {
                 vm.filteredByWorkflow = vm.selectedWorkflow;
             }
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
             if (cell) {
                 obj.outConditionId = cell.getAttribute('_id');
             } else {
@@ -8712,7 +8745,7 @@
         };
 
         vm.changeEvents = function (workflow) {
-            let obj = {masterId: $scope.schedulerIds.selected};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected};
             if (workflow) {
                 vm.filteredByWorkflow = workflow;
                 obj.workflow = vm.filteredByWorkflow;
@@ -8829,7 +8862,7 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
@@ -8862,7 +8895,7 @@
                 let len = vm.eventList.length;
                 for (let i = 0; i < len; i++) {
                     let obj = {
-                        'masterId': $scope.schedulerIds.selected,
+                        'jobSchedulerId': $scope.schedulerIds.selected,
                         'workflow': vm.eventList[i].workflow,
                         'event': vm.eventList[i].event,
                         'outConditionId': vm.eventList[i].outConditionId
@@ -8879,7 +8912,7 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
-            let obj = {masterId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
             obj.event = cell.getAttribute('actual');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
@@ -8897,14 +8930,14 @@
         };
 
         vm.startConditionResolver = function () {
-            ConditionService.startConditionResolver({"masterId": $scope.schedulerIds.selected}).then(function (res) {
+            ConditionService.startConditionResolver({"jobSchedulerId": $scope.schedulerIds.selected}).then(function (res) {
                 console.log(res);
             });
         };
 
         vm.resetJob = function (cell) {
             ConditionService.resetWorkflow({
-                "masterId": $scope.schedulerIds.selected,
+                "jobSchedulerId": $scope.schedulerIds.selected,
                 "job": cell.getAttribute('actual'),
                 "workflow": ''
             }).then(function (res) {
@@ -8953,7 +8986,7 @@
                                 }
                                 vm.jobs[i].inconditions[j].inconditionCommands = vm._expression.commands;
                                 ConditionService.updateInCondition({
-                                    masterId: $scope.schedulerIds.selected,
+                                    jobSchedulerId: $scope.schedulerIds.selected,
                                     jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]
                                 }).then(function (res) {
 
@@ -8979,7 +9012,7 @@
                                 }
                                 vm.jobs[i].outconditions[j].outconditionEvents = vm._expression.events;
                                 ConditionService.updateOutCondition({
-                                    masterId: $scope.schedulerIds.selected,
+                                    jobSchedulerId: $scope.schedulerIds.selected,
                                     jobsOutconditions: [{job: vm.jobs[i].path, outconditions: vm.jobs[i].outconditions}]
                                 }).then(function (res) {
                                     if (res.jobsOutconditions && res.jobsOutconditions.length > 0) {
@@ -9094,32 +9127,31 @@
          * Function to create vertex
          */
         function createVertex(parent, _node, text, style) {
-            let size = mxUtils.getSizeForString(text, 12);
-            let w = (size.width + 66);
-            let h = (size.height + 20);
-            if (style === 'circle') {
-                w = size.width + 16 < 60 ? 60 : size.width + 16;
-                if (w > 100) {
-                    h = w / 2;
-                } else {
-                    h = w - 3;
-                }
-            } else if (style === 'event' || style === 'event1' || style === 'event2') {
-                h = size.height + 50;
-            } else if (style === 'condition' || style === 'condition1' || style === 'condition2') {
-                h = size.height + 30;
-                let arr = text.split(/\s*(\(|\)|and|or)/);
-                let _maxTextSize = 0
-                for (let i = 0; i < arr.length; i++) {
-                    let x = mxUtils.getSizeForString(arr[i], 12);
-                    if (x.width > _maxTextSize) {
-                        _maxTextSize = x.width;
-                    }
-                }
 
-                if (w > 300) {
-                    h = h * Math.round(w / 300);
-                    w = _maxTextSize + 66;
+            let w = 50;
+            let h = 12;
+            if (text) {
+                let size = mxUtils.getSizeForString(text, 12);
+                w = (size.width + 66);
+                h = (size.height + 20);
+
+                if (style === 'event' || style === 'event1' || style === 'event2') {
+                    h = size.height + 50;
+                } else if (style === 'condition' || style === 'condition1' || style === 'condition2') {
+                    h = size.height + 30;
+                    let arr = text.split(/\s*(\(|\)|and|or)/);
+                    let _maxTextSize = 0;
+                    for (let i = 0; i < arr.length; i++) {
+                        let x = mxUtils.getSizeForString(arr[i], 12);
+                        if (x.width > _maxTextSize) {
+                            _maxTextSize = x.width;
+                        }
+                    }
+
+                    if (w > 300) {
+                        h = h * Math.round(w / 300);
+                        w = _maxTextSize + 66;
+                    }
                 }
             }
 
@@ -9187,6 +9219,9 @@
              * @param cell
              */
             graph.convertValueToString = function (cell) {
+                if (cell.value.tagName === 'Connection' || cell.value.tagName === 'Box') {
+                    return '';
+                }
                 return cell.getAttribute('label');
             };
 

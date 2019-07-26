@@ -35,7 +35,19 @@
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
         tabs._job.showTaskPanel = undefined;
-        tabs._job.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
+
+        tabs._condition = {};
+        tabs._condition.filter = {};
+        tabs._condition.filter.state = 'ALL';
+        tabs._condition.filter.type = 'ALL';
+        tabs._condition.filter.sortBy = 'name';
+        tabs._condition.reverse = false;
+        tabs._condition.searchText = '';
+        tabs._condition.currentPage = '1';
+        tabs._condition.expand_to = [];
+        tabs._condition.selectedView = true;
+        tabs._condition.showTaskPanel = undefined;
+        tabs._condition.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
 
         tabs._jobDetail = {};
         tabs._jobDetail.filter = {};
@@ -234,7 +246,19 @@
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
         tempTabs._job.showTaskPanel = undefined;
-        tempTabs._job.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
+
+        tempTabs._condition = {};
+        tempTabs._condition.filter = {};
+        tempTabs._condition.filter.state = 'ALL';
+        tempTabs._condition.filter.type = 'ALL';
+        tempTabs._condition.filter.sortBy = 'name';
+        tempTabs._condition.reverse = false;
+        tempTabs._condition.searchText = '';
+        tempTabs._condition.currentPage = '1';
+        tempTabs._condition.expand_to = [];
+        tempTabs._condition.selectedView = true;
+        tempTabs._condition.showTaskPanel = undefined;
+        tempTabs._condition.graphViewDetail = {tab: 'workflow', eventFilter: 'EXIST', isWorkflowCompact: false };
 
         tempTabs._jobDetail = {};
         tempTabs._jobDetail.filter = {};
@@ -480,6 +504,9 @@
             },
             getJobTab: function () {
                 return tabs._job;
+            },
+            getConditionTab: function () {
+                return tabs._condition;
             },
             getJobDetailTab: function () {
                 return tabs._jobDetail;

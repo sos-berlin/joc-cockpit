@@ -1439,6 +1439,8 @@
   "label.functions": "Functions",
   "label.description": "Description",
   "label.example": "Example",
+  "label.start_job": "startJob",
+  "label.write_log": "writeLog",
   "label.allWorkflows": "All Workflows",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
@@ -1459,6 +1461,7 @@
   "placeholder.enterWorkflow": "Enter Workflow",
   "InCondition": "In-Condition",
   "OutCondition": "Out-Condition",
-  "Event": "Event"
+  "Event": "Event",
+  "breadcrumb.conditions" : "Conditions"
 }
 
