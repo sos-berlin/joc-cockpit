@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!workflow && !_dashboard && !entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
+            <span ng-if="!jobStream && !_dashboard && !entry && !calendar && !calendarArr && !document && !documentArr  && (!importCalendars || importCalendars.length==0) && (!_profiles  || _profiles.length==0)">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}} {{profile.account}} {{processClassObject.path}}?
             </span>
             <span ng-if="calendar && !calendar.delete && (!importCalendars || importCalendars.length==0)">
@@ -30,9 +30,9 @@
                  <span class="text-capitalize" translate>label.delete</span>
                  {{entry.entryName}}?
             </span>
-            <span ng-if="workflow">
+            <span ng-if="jobStream">
                  <span class="text-capitalize" translate>label.reset</span>
-                 {{workflow}}?
+                 {{jobStream}}?
             </span>
             <span ng-if="_dashboard">
                  <span translate>button.resetLayout</span>?
@@ -43,7 +43,7 @@
         <div class="form-group row">
             <div class="col-sm-12 text-center m-t">
                 <span ng-if="deleteAllEvents" translate class="text">message.deleteAllEvents</span>
-                <span ng-if="workflow" translate class="text">message.resetWorkflow</span>
+                <span ng-if="jobStream" translate class="text">message.resetJobStream</span>
                 <span ng-if="_dashboard" translate class="text">message.resetLayout</span>
                 <span ng-if="profile" translate class="text">message.deleteProfiles</span>
                 <span ng-if="entry" translate class="text">message.deleteMainSection</span>
@@ -244,8 +244,8 @@
     </div>
     <div class="modal-footer text-left">
         <button type="submit" class="btn btn-primary btn-sm" ng-click="ok()">
-            <span ng-if="(!calendar || calendar.delete) && !importCalendars && !workflow && !_dashboard" translate>button.delete</span>
-            <span ng-if="!deleteAllEvents && workflow || _dashboard || (calendar && !calendar.delete) || importCalendars" translate>button.confirm</span>
+            <span ng-if="(!calendar || calendar.delete) && !importCalendars && !jobStream && !_dashboard" translate>button.delete</span>
+            <span ng-if="!deleteAllEvents && jobStream || _dashboard || (calendar && !calendar.delete) || importCalendars" translate>button.confirm</span>
         </button>
         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
     </div>

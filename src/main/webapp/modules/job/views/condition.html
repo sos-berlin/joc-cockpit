@@ -96,7 +96,7 @@
                         <toggle-view></toggle-view>
                     </div>
                     <div ng-if="object.jobs.length>0">
-                        <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="assignWorkflow()" translate>button.assignWorkflow</button>-->
+                        <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="assignWorkflow()" translate>button.assignJobStream</button>-->
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.execute.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.execute.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.execute.unstop" ng-click="unStopAll()" translate>button.unstop</button>
@@ -116,6 +116,19 @@
             <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
+            <div>
+                <div class="dropdown m-b">
+                    <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} :
+                        <span class="text-primary" ng-bind="jobFilters.graphViewDetail.jobStream"></span></a>
+                    <div class="dropdown-menu dropdown-more dropdown-ac">
+                        <a class="dropdown-item {{jobFilters.graphViewDetail.jobStream == jobStream ? 'orange' :''}}"
+                           ng-click="changeWorkflowPath(jobStream)"
+                           ng-repeat="jobStream in jobStreams">
+                            <span>{{jobStream}}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div>
                 <a class="text" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                     <i class="fa fa-angle-double-down fa-lg"></i>
@@ -707,7 +720,7 @@
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'workflow' }" ng-click="changeTab('workflow')" href data-toggle="tab" data-target="#tab12" translate>label.workflows</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }" ng-click="changeTab('jobStream')" href data-toggle="tab" data-target="#tab12" translate>label.jobStreams</a>
                                               </li>
                                               <li class="nav-item" >
                                                   <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
@@ -715,16 +728,16 @@
                                           </ul>
                                         </div>
                                          <div class="tab-content p-a" >
-                                             <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'workflow' }">
+                                             <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div>
                                                      <div ng-if="workflows.length > 0" class="block-ellipsis m-b" ng-class="{'text-primary _600' : selectedWorkflow == 'ALL'}" style="width: 100%">
                                                          <div>
-                                                             <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allWorkflows</span></a>
+                                                             <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="workflow in workflows | orderBy: 'name'" class="block-ellipsis w-full" ng-class="{'text-primary _600' : selectedWorkflow == workflow.name}">
+                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name'" class="block-ellipsis w-full" ng-class="{'text-primary _600' : selectedWorkflow == jobStream.name}">
                                                          <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
-                                                         <a class="text-hover-primary " ng-click="changeGraph(workflow)"><span>{{workflow.name}}</span></a>
+                                                         <a class="text-hover-primary " ng-click="changeGraph(jobStream)"><span>{{jobStream.name}}</span></a>
                                                     </div>
                                                  </div>
                                              </div>
@@ -750,12 +763,12 @@
                                                          </div>
                                                          <div class="dropdown m-b">
                                                              <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} : <span class="text-primary"
-                                                                                       ng-bind="filteredByWorkflow.substring(filteredByWorkflow.lastIndexOf('/')+1)"></span></a>
+                                                                                       ng-bind="filteredByWorkflow"></span></a>
                                                              <div class="dropdown-menu dropdown-more dropdown-ac">
-                                                                 <a class="dropdown-item {{filteredByWorkflow == workflow.name ? 'orange' :''}}"
-                                                                    ng-click="changeEvents(workflow.name)"
-                                                                    ng-repeat="workflow in workflows | orderBy:'name'">
-                                                                     <span>{{workflow.name}}</span>
+                                                                 <a class="dropdown-item {{filteredByWorkflow == jobStream.name ? 'orange' :''}}"
+                                                                    ng-click="changeEvents(jobStream.name)"
+                                                                    ng-repeat="jobStream in workflows | orderBy:'name'">
+                                                                     <span>{{jobStream.name}}</span>
                                                                  </a>
                                                              </div>
                                                          </div>
@@ -793,7 +806,7 @@
                                     </div>
                                     <div class="col-md-12 m-t">
                                         <button type="button" class="btn btn-sm btn-grey btn-block" ng-click="resetWorkflow(selectedWorkflow, '')" translate>
-                                            button.resetWorkflow
+                                            button.resetJobStream
                                         </button>
                                     </div>
                                 </div>

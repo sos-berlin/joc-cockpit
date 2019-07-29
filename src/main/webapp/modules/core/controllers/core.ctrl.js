@@ -14029,13 +14029,13 @@
         function init() {
             if (vm._job.inconditions && vm._job.inconditions.length > 0) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
-                    vm.editor.workflow = vm._job.inconditions[i].workflow;
+                    vm.editor.jobStream = vm._job.inconditions[i].jobStream;
                     break;
                 }
             }
-            if (!vm.editor.workflow && vm._job.outconditions && vm._job.outconditions.length > 0) {
+            if (!vm.editor.jobStream && vm._job.outconditions && vm._job.outconditions.length > 0) {
                 for (let i = 0; i < vm._job.outconditions.length; i++) {
-                    vm.editor.workflow = vm._job.outconditions[i].workflow;
+                    vm.editor.jobStream = vm._job.outconditions[i].jobStream;
                     break;
                 }
             }
@@ -14048,23 +14048,23 @@
         $scope.ok = function () {
             if(vm._job) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
-                    vm._job.inconditions[i].workflow = vm.editor.workflow;
+                    vm._job.inconditions[i].jobStream = vm.editor.jobStream;
                     for (let j = 0; j < vm._job.inconditions[i].inconditionCommands.length; j++) {
                         if (!vm._job.inconditions[i].inconditionCommands[j].command || vm._job.inconditions[i].inconditionCommands[j].command == '') {
-                            vm._job.inconditions[i].inconditionCommands[j].command = "start_job";
+                            vm._job.inconditions[i].inconditionCommands[j].command = "startjob";
                             vm._job.inconditions[i].inconditionCommands[j].commandParam = "now";
                         }
                     }
                     if (vm._job.inconditions[i].inconditionCommands.length === 0) {
                         vm._job.inconditions[i].inconditionCommands.push({
-                            command: "start_job",
+                            command: "startjob",
                             commandParam: "now",
                             id: 0
                         });
                     }
                 }
                 for (let i = 0; i < vm._job.outconditions.length; i++) {
-                    vm._job.outconditions[i].workflow = vm.editor.workflow;
+                    vm._job.outconditions[i].jobStream = vm.editor.jobStream;
                     for (let j = 0; j < vm._job.outconditions[i].outconditionEvents.length; j++) {
                         if (!vm._job.outconditions[i].outconditionEvents[j].event || vm._job.outconditions[i].outconditionEvents[j].event == '') {
                             vm._job.outconditions[i].outconditionEvents.splice(j, 1);
@@ -14379,7 +14379,7 @@
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
-                if (vm.expression.type == 'event' || vm.expression.type == 'returncode') {
+                if (vm.expression.type === 'event' || vm.expression.type === 'returncode' || vm.expression.type === 'fileexist') {
                     vm.expression.showIcon = false;
                 } else {
                     vm.expression.showIcon = true;
@@ -14416,7 +14416,7 @@
                         if(operator === 'function') {
                             vm.expression.type = 'event';
                             vm.expression.showIcon = false;
-                            vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
+                            vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
                             vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
                         } else  if(operator === 'job_function') {
                             vm.expression.showIcon = true;
@@ -14436,7 +14436,7 @@
                     if (operator === 'function') {
                         vm.expression.showIcon = false;
                         vm.expression.type = 'event';
-                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:workflow.name_of_event' + func;
+                        vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
                         vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
                     } else  if(operator === 'job_function') {
                         vm.expression.type = 'job';
@@ -14497,20 +14497,20 @@
         vm.selectCommand = function (command, index) {
             if (index || index == 0) {
                 if(vm.condition) {
-                    if (command === 'start_job') {
+                    if (command === 'startjob') {
                         vm.condition.inconditionCommands[index].commandParam = 'now';
                     } else {
                         vm.condition.inconditionCommands[index].commandParam = '';
                     }
                 } else if(vm._expression){
-                    if (command === 'start_job') {
+                    if (command === 'startjob') {
                         vm._expression.commands[index].commandParam = 'now';
                     } else {
                         vm._expression.commands[index].commandParam = '';
                     }
                 }
             } else {
-                if (command === 'start_job') {
+                if (command === 'startjob') {
                     vm.command.commandParam = 'now';
                 } else {
                     vm.command.commandParam = '';

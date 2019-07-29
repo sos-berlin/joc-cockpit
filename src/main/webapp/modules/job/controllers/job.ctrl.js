@@ -3360,11 +3360,14 @@
             vm.checkSchedulerId();
             getJobByPath($location.search().path);
         } else {
-            if (!vm.savedJobFilter.selected) {
+            if (!vm.savedJobFilter.selected && !vm.isConditionTab) {
                 initTree();
             }
-            if(!vm.isConditionTab)
+            if(!vm.isConditionTab) {
                 checkSharedFilters();
+            }else{
+                initWorkflowTree();
+            }
         }
 
         function mergePermanentAndVolatile(sour, dest) {
@@ -3563,6 +3566,114 @@
                 vm.isLoading = true;
             });
         }
+
+        function initWorkflowTree() {
+            vm.reloadState = 'no';
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
+            if(vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
+                obj.jobStream = vm.jobFilters.graphViewDetail.jobStream
+            }
+            ConditionService.workflowTree(obj).then(function (res1) {
+                vm.jobStreams = ['test','W1', 'Workflow_1'];
+                let folders = filterTreeData(res1.jobStreamFolders);
+                console.log(folders);
+                if(folders) {
+                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                        vm.tree = angular.copy(folders);
+                        filteredTreeData();
+                    } else {
+                        vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
+                        vm.tree = vm.jobFilters.expand_to;
+                        vm.jobFilters.expand_to = [];
+                        vm.changeStatus();
+                    }
+                }
+                vm.isLoading = true;
+
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+
+        function filterTreeData(list) {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i] === '/') {
+                    list.splice(i, 1);
+                    break;
+                }
+            }
+            if(list.length === 0){
+                return [{name: '', path: '/'}];
+            }
+            let folders = [];
+            for (let i = 0; i < list.length; i++) {
+                let nodes = list[i].split('/');
+                let arr = [];
+                let flag = true, index = 0;
+                for (let j = 0; j < nodes.length; j++) {
+                    let obj = {};
+                    obj.name = nodes[j];
+                    obj.path = nodes[j] ? list[i] : '/';
+                    if (j < nodes.length - 1) {
+                        obj.folders = [];
+                    }
+                    if (folders[0] && folders[0][j]) {
+                        if (folders[0][j].name == nodes[j]) {
+                            flag = false;
+                            index = j;
+                        } else {
+                            if (arr.length === 0) {
+                                arr.push(obj);
+                            } else if (arr.length > 0) {
+                                recursiveUpdate(arr[0], obj);
+                            }
+                        }
+                    } else {
+                        if (arr.length === 0) {
+                            arr.push(obj);
+                        } else if (arr.length > 0) {
+                            recursiveUpdate(arr[0], obj);
+                        }
+                    }
+                }
+                if (flag) {
+                    folders.push(arr);
+                } else {
+                    recursiveUpdate1(folders[0][index], arr);
+                }
+            }
+
+            return folders[0];
+        }
+
+        function recursiveUpdate(arr, obj) {
+            if (arr.folders.length === 0) {
+                arr.folders.push(obj);
+            } else {
+                recursiveUpdate(arr.folders[0], obj);
+            }
+        }
+
+        function recursiveUpdate1(data, arr) {
+            let flag = true;
+            if (arr[0].folders) {
+                for (let y = 0; y < data.folders.length; y++) {
+                    if (arr[0].name === data.folders[y].name) {
+                        flag = false;
+                        recursiveUpdate1(data.folders[y], arr[0].folders);
+                    }
+                }
+            }
+            if (flag) {
+                data.folders.push(arr[0]);
+            }
+        }
+
+        vm.changeWorkflowPath = function(path){
+            console.log('changeWorkflowPath');
+            vm.jobFilters.graphViewDetail.jobStream = path;
+            initWorkflowTree()
+        };
 
         vm.$on('reloadObject', function () {
             navFullTree();
@@ -6111,8 +6222,8 @@
             });
         }
 
-        vm.resetWorkflow = function (workflow, job) {
-            vm.workflow = workflow;
+        vm.resetWorkflow = function (jobStream, job) {
+            vm.jobStream = jobStream;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
                 controller: 'DialogCtrl1',
@@ -6123,7 +6234,7 @@
                 ConditionService.resetWorkflow({
                     "jobSchedulerId": $scope.schedulerIds.selected,
                     "job": job,
-                    "workflow": workflow
+                    "jobStream": jobStream
                 }).then(function (res) {
                     console.log(res);
                 }, function () {
@@ -8139,6 +8250,7 @@
             createEditor();
 
             let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 38) + 'px)';
+            $('#graph').css({opacity:1});
             $('#graph').slimscroll({height: ht});
             const panel = $('.property-panel');
             $('.sidebar-open', panel).click(function () {
@@ -8164,6 +8276,7 @@
                 //makeCenter(vm.editor.graph);
             });
             setTimeout(function () {
+
                 $('#outlineContainer').css({opacity: 1});
                 if (window.innerWidth > 1024) {
                     $('.sidebar-open').click();
@@ -8211,7 +8324,7 @@
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
                         for (let i = 0; i < len; i++) {
-                            let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].workflow : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].workflow : '';
+                            let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].jobStream : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].jobStream : '';
                             if (wf) {
                                 vm.flag = true;
                                 let _job = {};
@@ -8349,7 +8462,7 @@
                     if (!vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                         for (let x = 0; x < jobs[i].inconditions.length; x++) {
                             let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
-                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].workflow);
+                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].jobStream);
                             _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
@@ -8367,7 +8480,7 @@
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
                             let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
-                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].workflow);
+                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].jobStream);
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
                             _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
 
@@ -8377,7 +8490,7 @@
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
                                     if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
-                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].workflow);
+                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].jobStream);
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow : jobs[i].outconditions[x].outconditionEvents[z].exists;
                                         _node.setAttribute('isExist', flg);
                                         let style = jobs[i].outconditions[x].outconditionEvents[z].existsInWorkflow ? 'event1' : jobs[i].outconditions[x].outconditionEvents[z].exists ? 'event2' : 'event';
@@ -8554,12 +8667,12 @@
             vm.jobFilters.graphViewDetail.tab = tab;
         };
 
-        vm.changeGraph = function (workflow) {
-            if (workflow) {
-                if (vm.selectedWorkflow !== workflow.name) {
-                    vm.selectedWorkflow = workflow.name;
+        vm.changeGraph = function (jobStream) {
+            if (jobStream) {
+                if (vm.selectedWorkflow !== jobStream.name) {
+                    vm.selectedWorkflow = jobStream.name;
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(workflow.jobs, false, 0);
+                    createWorkflowDiagram(jobStream.jobs, false, 0);
                     vm.getEvents(null);
                 }
             } else {
@@ -8574,17 +8687,17 @@
 
         };
 
-        vm.compactView = function (workflow) {
+        vm.compactView = function (jobStream) {
 
             vm.jobFilters.graphViewDetail.isWorkflowCompact = !vm.jobFilters.graphViewDetail.isWorkflowCompact;
             let _jobs = [];
             for (let x = 0; x < vm.workflows.length; x++) {
-                if (workflow === 'ALL') {
+                if (jobStream === 'ALL') {
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
                     }
                     _jobs = _jobs.concat(vm.workflows[x].jobs)
-                } else if (workflow === vm.workflows[x].name) {
+                } else if (jobStream === vm.workflows[x].name) {
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
                     }
@@ -8600,8 +8713,8 @@
 
         };
 
-        vm.resetWorkflow = function (workflow, job) {
-            vm.workflow = workflow;
+        vm.resetWorkflow = function (jobStream, job) {
+            vm.jobStream = jobStream;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
                 controller: 'DialogCtrl1',
@@ -8612,7 +8725,7 @@
                 ConditionService.resetWorkflow({
                     "jobSchedulerId": $scope.schedulerIds.selected,
                     "job": job,
-                    "workflow": workflow
+                    "jobStream": jobStream
                 }).then(function (res) {
                     vm.isUpdated = false;
                     recursivelyConnectJobs(true, false);
@@ -8723,12 +8836,12 @@
             if (!vm.filteredByWorkflow && vm.selectedWorkflow != 'ALL') {
                 vm.filteredByWorkflow = vm.selectedWorkflow;
             }
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
             if (cell) {
                 obj.outConditionId = cell.getAttribute('_id');
             } else {
                 if (vm.jobFilters.graphViewDetail.eventFilter === 'ALL') {
-                    delete obj['workflow'];
+                    delete obj['jobStream'];
                 } else {
                     for (let i = 0; i < vm.workflows.length; i++) {
                         if (vm.workflows[i].name == vm.selectedWorkflow) {
@@ -8744,19 +8857,19 @@
             });
         };
 
-        vm.changeEvents = function (workflow) {
+        vm.changeEvents = function (jobStream) {
             let obj = {jobSchedulerId: $scope.schedulerIds.selected};
-            if (workflow) {
-                vm.filteredByWorkflow = workflow;
-                obj.workflow = vm.filteredByWorkflow;
+            if (jobStream) {
+                vm.filteredByWorkflow = jobStream;
+                obj.jobStream = vm.filteredByWorkflow;
             } else {
                 vm.jobFilters.graphViewDetail.eventFilter = vm.jobFilters.graphViewDetail.eventFilter === 'ALL' ? 'EXIST' : "ALL";
                 if (vm.jobFilters.graphViewDetail.eventFilter !== 'ALL') {
-                    obj.workflow = vm.filteredByWorkflow;
+                    obj.jobStream = vm.filteredByWorkflow;
                     for (let i = 0; i < vm.workflows.length; i++) {
                         if (vm.workflows[i].name === vm.filteredByWorkflow || vm.workflows[i].name === vm.selectedWorkflow) {
                             obj.path = vm.workflows[i].path;
-                            obj.workflow = vm.workflows[i].name;
+                            obj.jobStream = vm.workflows[i].name;
                             vm.filteredByWorkflow = vm.workflows[i].name;
                             break;
                         }
@@ -8774,7 +8887,7 @@
                 let arr = [];
                 for (let i = 0; i < vm.eventList.length; i++) {
                     let p =  vm.eventList[i].path === '/' ?  vm.eventList[i].path :  vm.eventList[i].path + '/';
-                    let path =  p + vm.eventList[i].workflow;
+                    let path =  p + vm.eventList[i].jobStream;
                     if (arr.indexOf(path) === -1) {
                         arr.push(path);
                     }
@@ -8802,7 +8915,7 @@
                         obj.type = 'WORKFLOW';
                         obj.events = [];
                         for (let m = 0; m < vm.eventList.length; m++) {
-                            let p =  vm.eventList[m].path === '/' ?  '/' + vm.eventList[m].workflow :  vm.eventList[m].path + '/' + vm.eventList[m].workflow;
+                            let p =  vm.eventList[m].path === '/' ?  '/' + vm.eventList[m].jobStream :  vm.eventList[m].path + '/' + vm.eventList[m].jobStream;
                             if (list[i] == p) {
                                 obj.events.push(vm.eventList[m].event);
                             }
@@ -8862,7 +8975,7 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
@@ -8896,7 +9009,7 @@
                 for (let i = 0; i < len; i++) {
                     let obj = {
                         'jobSchedulerId': $scope.schedulerIds.selected,
-                        'workflow': vm.eventList[i].workflow,
+                        'jobStream': vm.eventList[i].jobStream,
                         'event': vm.eventList[i].event,
                         'outConditionId': vm.eventList[i].outConditionId
                     };
@@ -8912,7 +9025,7 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, workflow: cell.getAttribute('workflow')};
+            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             obj.event = cell.getAttribute('actual');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
@@ -8939,7 +9052,7 @@
             ConditionService.resetWorkflow({
                 "jobSchedulerId": $scope.schedulerIds.selected,
                 "job": cell.getAttribute('actual'),
-                "workflow": ''
+                "jobStream": ''
             }).then(function (res) {
                 updateSingleJob(cell.getAttribute('actual'));
             })
@@ -9075,6 +9188,7 @@
                 if (!mxClient.isBrowserSupported()) {
                     mxUtils.error('Browser is not supported!', 200, false);
                 } else {
+
                     const node = mxUtils.load(vm.configXml).getDocumentElement();
                     editor = new mxEditor(node);
                     vm.editor = editor;
@@ -9084,6 +9198,7 @@
                     outln.style['background'] = '#FFFFFF';
                     new mxOutline(editor.graph, outln);
                     editor.graph.allowAutoPanning = true;
+
                 }
             } catch (e) {
                 // Shows an error message if the editor cannot start
@@ -9113,13 +9228,13 @@
         /**
          * Function to create dom element
          */
-        function getCellNode(name, label, actual, workflow) {
+        function getCellNode(name, label, actual, jobStream) {
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
             _node.setAttribute('label', label);
             _node.setAttribute('actual', actual);
-            _node.setAttribute('workflow', workflow);
+            _node.setAttribute('jobStream', jobStream);
             return _node;
         }
 

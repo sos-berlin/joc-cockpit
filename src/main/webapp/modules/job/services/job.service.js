@@ -490,6 +490,16 @@
     ConditionService.$inject = ["$resource", "$q"];
     function ConditionService($resource, $q) {
         return {
+            workflowTree: function (filter) {
+                var deferred = $q.defer();
+                var Conditions = $resource('conditions/jobstream_folders');
+                Conditions.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             inCondition: function (filters) {
                 var deferred = $q.defer();
                 var Condition = $resource('conditions/in_conditions');
@@ -532,7 +542,7 @@
             },
             resetWorkflow: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/resetworkflow');
+                var Condition = $resource('conditions/resetJobStream');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

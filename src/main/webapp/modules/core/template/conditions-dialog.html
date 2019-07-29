@@ -9,13 +9,13 @@
         <div class="modal-body p-a" style="min-height: 400px;max-height: 650px; overflow: auto">
             <div ng-if="!condition">
                 <div class="row m-b" >
-                    <div class="col-sm-3 form-control-label" translate>label.workflow</div>
-                    <div class="col-sm-9" ng-class="{ 'has-error' : form.workflow.$invalid && form.workflow.$dirty }">
+                    <div class="col-sm-3 form-control-label" translate>label.jobStream</div>
+                    <div class="col-sm-9" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
                         <input type="text" required class="form-control"
-                               placeholder="{{'placeholder.enterWorkflow' | translate}}" name="workflow"
-                               ng-model="editor.workflow">
-                        <div class="help-block text-danger" ng-if="form.workflow.$dirty"
-                             ng-messages="form.workflow.$error">
+                               placeholder="{{'placeholder.enterJobStream' | translate}}" name="jobStream"
+                               ng-model="editor.jobStream">
+                        <div class="help-block text-danger" ng-if="form.jobStream.$dirty"
+                             ng-messages="form.jobStream.$error">
                             <div ng-message="required" translate>message.requiredError</div>
                         </div>
                     </div>
@@ -175,14 +175,14 @@
                         <div class="col-sm-5 m-b-sm">
                             <select class="form-control" name="command{{$index}}" ng-change="selectCommand(inconditionCommand.command, $index)" ng-model="inconditionCommand.command">
                                 <option value="" translate>label.chooseCommand</option>
-                                <option value="startJob" translate>label.start_job</option>
-                                <option value="writeLog" translate>label.write_log</option>
+                                <option value="startjob" translate>label.start_job</option>
+                                <option value="writelog" translate>label.write_log</option>
                             </select>
                         </div>
                         <div class="col-sm-5 m-b-sm" ng-class="{ 'has-error' : form.atTime.$invalid && form.atTime.$dirty }">
-                            <input ng-if="inconditionCommand.command !== 'startJob'" type="text" class="form-control" name="commandParam{{$index}}"
+                            <input ng-if="inconditionCommand.command !== 'startjob'" type="text" class="form-control" name="commandParam{{$index}}"
                                    ng-model="inconditionCommand.commandParam">
-                            <input ng-if="inconditionCommand.command == 'startJob'" valid-date-regex ng-required="inconditionCommand.command == 'startJob'" type="text" class="form-control" name="atTime"
+                            <input ng-if="inconditionCommand.command == 'startjob'" valid-date-regex ng-required="inconditionCommand.command == 'startjob'" type="text" class="form-control" name="atTime"
                                    ng-model="inconditionCommand.commandParam" placeholder="{{'placeholder.enterStartTime' | translate}}">
                             <div class="help-block text-danger" ng-messages="form.atTime.$error">
                                 <div ng-message="invalid" translate>message.invalid</div>

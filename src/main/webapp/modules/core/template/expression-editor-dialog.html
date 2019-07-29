@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div ng-if="expression.showIcon" class="text-right" style="margin-top: -22px; margin-bottom: 3px">
-                                    <a class="cursor text" ng-click="getTreeStructure()"><i class="fa fa-folder text-md m-r-xs"></i> <span translate>Select Job/JobChain from tree</span></a>
+                                    <a class="cursor" ng-click="getTreeStructure()"><i class="fa fa-folder text-md m-r-xs"></i> <span translate>label.selectJobJobChainFromTree</span></a>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                                         <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
                                             <li ng-repeat="func in jobChainFunctions">
-                                                <a class="text-hover-primary"  ng-click="generateExpression('job_chain_function', func)">{{func}}</a>
+                                                <a class="text-hover-primary"  ng-click="generateExpression('jobChain_function', func)">{{func}}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -88,23 +88,23 @@
                                 <div class="b-a p-a" style="height: 204px;overflow: auto">
                                     <div ng-if="expression.type === 'returncode'">
                                         <label class="_600">returncode</label>
-                                        <p class="text-sm">
-                                            Returncode of the last job run
+                                        <p class="text-sm" translate>
+                                            message.returncodeOfTheLastJobRun
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
-                                            <div translate>The returncode can be specified</div>
+                                            <div translate>message.returncodeSpecified</div>
                                             <div class="m-t-sm" translate>label.example</div>
                                             <div class="text-muted">returncode:-2, returncode: 1-7, returncode: 5-, returncode: -5,6,7,10-20</div>
                                         </div>
                                     </div>
                                     <div ng-if="expression.type === 'event'">
                                         <label class="_600">event</label>
-                                        <p class="text-sm m-b-sm">
-                                            The event is specified by event:name_of_event
+                                        <p class="text-sm m-b-sm" translate>
+                                            message.eventSpecifiedByNameOfEvent
                                         </p>
                                         <ul style="margin-left: -10px">
-                                            <li>event: is optional</li>
-                                            <li>name_of_event can also have the name of a workflow that created the event.</li>
+                                            <li translate>message.eventIsOptional</li>
+                                            <li translate>message.nameOfEventAlsoHaveJobStreamCreatedEvent</li>
                                         </ul>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
@@ -113,8 +113,8 @@
                                     </div>
                                     <div ng-if="expression.type === 'fileexist'">
                                         <label class="_600">fileexist</label>
-                                        <p class="text-sm">
-                                            does a file exist?
+                                        <p class="text-sm" translate>
+                                            message.doesFileExist
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
@@ -123,8 +123,8 @@
                                     </div>
                                     <div ng-if="expression.type === 'job'">
                                         <label class="_600">job</label>
-                                        <p class="text-sm">
-                                            The job is specified by job:name_of_job
+                                        <p class="text-sm" translate>
+                                            message.jobIsSpecifiedByJob
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>
@@ -133,8 +133,8 @@
                                     </div>
                                     <div ng-if="expression.type === 'jobChain'">
                                         <label class="_600">jobChain</label>
-                                        <p class="text-sm">
-                                            The jobChain is specified by jobChain:name_of_job_chain
+                                        <p class="text-sm" translate>
+                                            message.jobChainIsSpecifiedByJobChain
                                         </p>
                                         <div class="text-sm p-a-sm syntax-box">
                                             <div class="m-t-sm" translate>label.example</div>

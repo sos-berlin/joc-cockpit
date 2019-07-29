@@ -90,7 +90,6 @@
                         <toggle-view></toggle-view>
                     </div>
                     <div ng-if="object.jobs.length>0">
-                        <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="assignWorkflow()" translate>button.assignWorkflow</button>-->
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.execute.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.execute.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.execute.unstop" ng-click="unStopAll()" translate>button.unstop</button>
