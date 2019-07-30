@@ -1442,6 +1442,7 @@
   "label.start_job": "startJob",
   "label.write_log": "writeLog",
   "label.allJobStreams": "All Job Streams",
+  "label.reference": "Reference",
   "label.selectJobJobChainFromTree": "Select Job/JobChain from tree",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",

@@ -3573,22 +3573,47 @@
             if(vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
                 obj.jobStream = vm.jobFilters.graphViewDetail.jobStream
             }
-            ConditionService.workflowTree(obj).then(function (res1) {
-                vm.jobStreams = ['test','W1', 'Workflow_1'];
-                let folders = filterTreeData(res1.jobStreamFolders);
-                console.log(folders);
-                if(folders) {
-                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
-                        vm.tree = angular.copy(folders);
-                        filteredTreeData();
-                    } else {
-                        vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
-                        vm.tree = vm.jobFilters.expand_to;
-                        vm.jobFilters.expand_to = [];
-                        vm.changeStatus();
+            JobService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ['JOB']
+            }).then(function (res) {
+                ConditionService.workflowTree(obj).then(function (res1) {
+                    vm.jobStreams = ['ALL'];
+                    if(res1.jobStreamFolders && res1.jobStreamFolders.length > 0){
+                        for(let i =0; i < res1.jobStreamFolders.length; i++){
+                            vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
+                        }
                     }
-                }
-                vm.isLoading = true;
+
+                    if (vm.jobFilters.graphViewDetail.jobStream !== 'ALL' && res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
+
+                        let folders = filterTreeData(res1.jobStreamFolders[0].folders, vm.jobFilters.graphViewDetail.jobStream);
+                        console.log(folders);
+                        if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                            vm.tree = angular.copy(folders);
+                            filteredTreeData();
+                        } else {
+                            vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
+                            vm.tree = vm.jobFilters.expand_to;
+                            vm.jobFilters.expand_to = [];
+                            vm.changeStatus();
+                        }
+                        vm._tempTree = angular.copy(res.folders);
+                    }else{
+                        if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                            vm.tree = angular.copy(res.folders);
+                            vm._tempTree = angular.copy(res.folders);
+                            filteredTreeData();
+                        } else {
+                            vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobFilters.expand_to);
+                            vm.tree = vm.jobFilters.expand_to;
+                            vm.jobFilters.expand_to = [];
+                            vm.changeStatus();
+                        }
+                    }
+                    vm.isLoading = true;
+                });
 
             }, function () {
                 vm.isLoading = true;
@@ -3603,9 +3628,13 @@
                 }
             }
             if(list.length === 0){
-                return [{name: '', path: '/'}];
+                let obj = {name: '', path: '/'};
+                obj.selected1 = true;
+                vm.allJobs = [];
+                checkExpand(obj);
+                return [obj];
             }
-            let folders = [];
+            let folders = [], isCalled = false;
             for (let i = 0; i < list.length; i++) {
                 let nodes = list[i].split('/');
                 let arr = [];
@@ -3614,8 +3643,15 @@
                     let obj = {};
                     obj.name = nodes[j];
                     obj.path = nodes[j] ? list[i] : '/';
+                    obj.expanded = true;
+
                     if (j < nodes.length - 1) {
                         obj.folders = [];
+                    }else if(!isCalled){
+                        isCalled = true;
+                        obj.selected1 = true;
+                        vm.allJobs = [];
+                        checkExpand(obj);
                     }
                     if (folders[0] && folders[0][j]) {
                         if (folders[0][j].name == nodes[j]) {
@@ -3641,6 +3677,8 @@
                 } else {
                     recursiveUpdate1(folders[0][index], arr);
                 }
+
+
             }
 
             return folders[0];
@@ -3669,10 +3707,47 @@
             }
         }
 
-        vm.changeWorkflowPath = function(path){
-            console.log('changeWorkflowPath');
-            vm.jobFilters.graphViewDetail.jobStream = path;
-            initWorkflowTree()
+        vm.changeWorkflowPath = function(path) {
+            console.log('changeWorkflowPath', path);
+            if(path !== 'ALL') {
+                vm.isLoading = false;
+                vm.jobFilters.graphViewDetail.jobStream = path;
+                let obj = {
+                    jobschedulerId: vm.schedulerIds.selected,
+                    jobStream: vm.jobFilters.graphViewDetail.jobStream
+                };
+
+                ConditionService.workflowTree(obj).then(function (res1) {
+                    let jobStreamFolders = [];
+                    if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
+                        for (let i = 0; i < res1.jobStreamFolders.length; i++) {
+                            if (res1.jobStreamFolders[i].jobStream === path) {
+                                jobStreamFolders = res1.jobStreamFolders[i].folders;
+                                break;
+                            }
+                        }
+                    }
+                    let folders = filterTreeData(jobStreamFolders);
+                    console.log(folders);
+
+                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                        vm.tree = angular.copy(folders);
+                    } else {
+                        vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
+                        vm.tree = vm.jobFilters.expand_to;
+                        vm.jobFilters.expand_to = [];
+                        vm.changeStatus();
+                    }
+
+                    vm.isLoading = true;
+                }, function () {
+                    vm.isLoading = true;
+                });
+            } else{
+                console.log('DO Something....', vm._tempTree)
+                vm.tree = angular.copy(vm._tempTree);
+                filteredTreeData();
+            }
         };
 
         vm.$on('reloadObject', function () {
@@ -6210,11 +6285,11 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.updateInCondition({
-                    jobSchedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: $scope.schedulerIds.selected,
                     jobsInconditions: [{job: vm._job.path, inconditions : vm._job.inconditions}]
                 });
                 ConditionService.updateOutCondition({
-                    jobSchedulerId: $scope.schedulerIds.selected,
+                    jobschedulerId: $scope.schedulerIds.selected,
                     jobsOutconditions: [{job: vm._job.path, outconditions : vm._job.outconditions}]
                 });
             }, function () {
@@ -6232,7 +6307,7 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.resetWorkflow({
-                    "jobSchedulerId": $scope.schedulerIds.selected,
+                    "jobschedulerId": $scope.schedulerIds.selected,
                     "job": job,
                     "jobStream": jobStream
                 }).then(function (res) {
@@ -8723,7 +8798,7 @@
             });
             modalInstance.result.then(function () {
                 ConditionService.resetWorkflow({
-                    "jobSchedulerId": $scope.schedulerIds.selected,
+                    "jobschedulerId": $scope.schedulerIds.selected,
                     "job": job,
                     "jobStream": jobStream
                 }).then(function (res) {
@@ -8836,7 +8911,7 @@
             if (!vm.filteredByWorkflow && vm.selectedWorkflow != 'ALL') {
                 vm.filteredByWorkflow = vm.selectedWorkflow;
             }
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
+            let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: vm.selectedWorkflow !== 'ALL' ? vm.selectedWorkflow : ''};
             if (cell) {
                 obj.outConditionId = cell.getAttribute('_id');
             } else {
@@ -8858,7 +8933,7 @@
         };
 
         vm.changeEvents = function (jobStream) {
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected};
+            let obj = {jobschedulerId: $scope.schedulerIds.selected};
             if (jobStream) {
                 vm.filteredByWorkflow = jobStream;
                 obj.jobStream = vm.filteredByWorkflow;
@@ -8975,7 +9050,7 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
+            let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
@@ -9008,7 +9083,7 @@
                 let len = vm.eventList.length;
                 for (let i = 0; i < len; i++) {
                     let obj = {
-                        'jobSchedulerId': $scope.schedulerIds.selected,
+                        'jobschedulerId': $scope.schedulerIds.selected,
                         'jobStream': vm.eventList[i].jobStream,
                         'event': vm.eventList[i].event,
                         'outConditionId': vm.eventList[i].outConditionId
@@ -9025,7 +9100,7 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
-            let obj = {jobSchedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
+            let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             obj.event = cell.getAttribute('actual');
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
@@ -9043,14 +9118,14 @@
         };
 
         vm.startConditionResolver = function () {
-            ConditionService.startConditionResolver({"jobSchedulerId": $scope.schedulerIds.selected}).then(function (res) {
+            ConditionService.startConditionResolver({"jobschedulerId": $scope.schedulerIds.selected}).then(function (res) {
                 console.log(res);
             });
         };
 
         vm.resetJob = function (cell) {
             ConditionService.resetWorkflow({
-                "jobSchedulerId": $scope.schedulerIds.selected,
+                "jobschedulerId": $scope.schedulerIds.selected,
                 "job": cell.getAttribute('actual'),
                 "jobStream": ''
             }).then(function (res) {
@@ -9099,7 +9174,7 @@
                                 }
                                 vm.jobs[i].inconditions[j].inconditionCommands = vm._expression.commands;
                                 ConditionService.updateInCondition({
-                                    jobSchedulerId: $scope.schedulerIds.selected,
+                                    jobschedulerId: $scope.schedulerIds.selected,
                                     jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]
                                 }).then(function (res) {
 
@@ -9125,7 +9200,7 @@
                                 }
                                 vm.jobs[i].outconditions[j].outconditionEvents = vm._expression.events;
                                 ConditionService.updateOutCondition({
-                                    jobSchedulerId: $scope.schedulerIds.selected,
+                                    jobschedulerId: $scope.schedulerIds.selected,
                                     jobsOutconditions: [{job: vm.jobs[i].path, outconditions: vm.jobs[i].outconditions}]
                                 }).then(function (res) {
                                     if (res.jobsOutconditions && res.jobsOutconditions.length > 0) {
