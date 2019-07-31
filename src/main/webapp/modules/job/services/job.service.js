@@ -542,7 +542,7 @@
             },
             resetWorkflow: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/resetJobStream');
+                var Condition = $resource('conditions/resetjobStream');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

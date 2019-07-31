@@ -1436,6 +1436,7 @@
   "label.createEvent": "Create Event",
   "label.deleteEvent": "Delete Event",
   "label.filterBy": "Filter By",
+  "label.filterByJobstream": "Filter By Job Stream",
   "label.functions": "Functions",
   "label.description": "Description",
   "label.example": "Example",

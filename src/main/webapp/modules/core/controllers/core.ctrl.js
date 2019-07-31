@@ -14347,7 +14347,8 @@
         let isFunction = false;
 
         vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]', '[prev]', '[prevSuccessful]', '[prevError]'];
-        vm.jobFunctions =  vm.jobChainFunctions = ['lastCompletedRunEndedSuccessful',
+        vm.jobFunctions =  vm.jobChainFunctions = ['returncode',
+            'lastCompletedRunEndedSuccessful',
             'lastCompletedRunEndedWithError',
             'lastCompletedRunEndedTodaySuccessful',
             'lastCompletedRunEndedTodayWithError',

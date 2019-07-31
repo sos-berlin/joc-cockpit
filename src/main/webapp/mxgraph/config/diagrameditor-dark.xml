@@ -59,8 +59,7 @@
         <add as="elbow" value="vertical"/>
       </add>
       <add as="event">
-        <add as="shape" value="rhombus"/>
-        <add as="perimeter" value="rhombusPerimeter"/>
+        <add as="shape" value="hexagon"/>
         <add as="align" value="center"/>
         <add as="strokeColor" value="#666"/>
         <add as="gradientColor" value="none"/>
@@ -74,20 +73,20 @@
         <add as="gradientColor" value="#666"/>
       </add>
       <add as="circle">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="shape" value="sumEllipse"/>
         <add as="align" value="center"/>
         <add as="strokeColor" value="#666"/>
         <add as="gradientColor" value="none"/>
       </add>
       <add as="job">
-        <add as="shape" value="ellipse"/>
-        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="shape" value="rectangle"/>
+        <add as="perimeter" value="rectanglePerimeter"/>
         <add as="strokeColor" value="#666"/>
-        <add as="fillColor" value="#90C7F5"/>
+        <add as="fillColor" value="#1d1d1c"/>
+        <add as="gradientColor" value="#393937"/>
       </add>
       <add as="condition">
-        <add as="shape" value="offPageConnector"/>
+        <add as="shape" value="Parallelogram"/>
         <add as="strokeColor" value="#666"/>
         <add as="direction" value="west"/>
         <add as="fillColor" value="#FFCF8A"/>
@@ -96,8 +95,7 @@
         <add as="fillColor" value="#999"/>
         <add as="opacity" value="70"/>
       </add>
-      <add as="condition2">
-        <add as="shape" value="offPageConnector"/>
+      <add as="condition2" extend="condition">
         <add as="fillColor" value="#FFFFCC"/>
       </add>
     </mxStylesheet>

@@ -3620,6 +3620,17 @@
             });
         }
 
+        vm.updateJobStreamFolders = function(){
+            ConditionService.workflowTree({jobschedulerId: vm.schedulerIds.selected}).then(function (res1) {
+                vm.jobStreams = ['ALL'];
+                if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
+                    for (let i = 0; i < res1.jobStreamFolders.length; i++) {
+                        vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
+                    }
+                }
+            });
+        };
+
         function filterTreeData(list) {
             for (let i = 0; i < list.length; i++) {
                 if (list[i] === '/') {
@@ -4366,7 +4377,11 @@
         };
 
         vm.load = function () {
-            initTree();
+            if (vm.isConditionTab) {
+                initWorkflowTree();
+            } else {
+                initTree();
+            }
         };
 
         /**--------------- Checkbox functions -------------*/
@@ -6292,6 +6307,7 @@
                     jobschedulerId: $scope.schedulerIds.selected,
                     jobsOutconditions: [{job: vm._job.path, outconditions : vm._job.outconditions}]
                 });
+                vm.updateJobStreamFolders();
             }, function () {
                 vm._job = null;
             });
@@ -8414,6 +8430,7 @@
 
                                 let x = {
                                     name: wf,
+                                    path: _job.path1,
                                     jobs: [_job]
                                 };
                                 let _tempWorkflow;
@@ -8517,6 +8534,7 @@
             for (let i = 0; i < jobs.length; i++) {
                 jobs[i].jId = undefined;
             }
+            let matchedEvents = [];
             try {
                 for (let i = 0; i < jobs.length; i++) {
                     let events = [];
@@ -8525,10 +8543,11 @@
                     }
                     let v1;
                     if (!jobs[i].jId) {
-                        let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[i].state.severity) + '"></i> ' + jobs[i].name + ' </span>';
-                        let _node = getCellNode('Job', lb, jobs[i].path, '');
+                        let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
                         _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
-                        v1 = createVertex(parent, _node, jobs[i].name, 'job');
+                        let style = 'job';
+                            style += ';strokeColor='+vm.colorFunction(jobs[i].state.severity);
+                        v1 = createVertex(parent, _node, jobs[i].name, style);
                         jobs[i].jId = v1.id;
                     } else {
                         v1 = graph.getModel().getCell(jobs[i].jId)
@@ -8539,18 +8558,21 @@
                             let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
                             let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].jobStream);
                             _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
+                            _node.setAttribute('outconditions', JSON.stringify(jobs[i].inconditions[x].outconditions));
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
                             }
                             let style = jobs[i].inconditions[x].consumed ? 'condition1' : 'condition';
+
+                            if(jobs[i].inconditions[x].conditionExpression.value) {
+                                style += ';strokeColor=green';
+                            }else{
+                                style += ';strokeColor=#dc143c';
+                            }
                             let conditionVertex = createVertex(parent, _node, jobs[i].inconditions[x].conditionExpression.expression, style);
                             jobs[i].inconditions[x].vertexId = conditionVertex.id;
 
                             graph.insertEdge(parent, null, getCellNode('Connection', 'In', ''), conditionVertex, v1);
-
-                            let img = jobs[i].inconditions[x].conditionExpression.value ? './mxgraph/images/green-bar.svg' : './mxgraph/images/red-bar.svg';
-                            let overlay = new mxCellOverlay(new mxImage(img, conditionVertex.geometry.width, 6), '', 'center', 'bottom');
-                            graph.addCellOverlay(conditionVertex, overlay);
                         }
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
@@ -8559,7 +8581,13 @@
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
                             _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
 
-                            let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, 'condition2');
+                            let style = 'condition2';
+                            if(jobs[i].outconditions[x].conditionExpression.value) {
+                                style += ';strokeColor=green';
+                            }else{
+                                style += ';strokeColor=#dc143c';
+                            }
+                            let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, style);
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
                             graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex, '');
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
@@ -8575,13 +8603,10 @@
                                     }
                                 }
                             }
-                            let img = jobs[i].outconditions[x].conditionExpression.value ? './mxgraph/images/green-bar.svg' : './mxgraph/images/red-bar.svg';
-                            let overlay = new mxCellOverlay(new mxImage(img, conditionVertex.geometry.width, 6), '', 'center', 'top');
-                            graph.addCellOverlay(conditionVertex, overlay);
                         }
 
                         if (jobs[i].outconditions.length > 0) {
-                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', '');
+                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
                             vertexes.push(out);
                             for (let m = 0; m < events.length; m++) {
                                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
@@ -8601,10 +8626,12 @@
                                                         if (!jobs[m].state) {
                                                             jobs[m].state = {};
                                                         }
-                                                        let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[m].state.severity) + '"></i> ' + jobs[m].name + ' </span>';
-                                                        let _node = getCellNode('Job', lb, jobs[m].path, '');
+                                                        let _node = getCellNode('Job', jobs[m].name, jobs[m].path, '');
                                                         _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
-                                                        let v2 = createVertex(parent, _node, jobs[i].name, 'job');
+                                                        let style = 'job';
+                                                        style += ';strokeColor='+vm.colorFunction(jobs[m].state.severity);
+
+                                                        let v2 = createVertex(parent, _node, jobs[i].name, style);
                                                         jobs[m].jId = v2.id;
                                                         graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
                                                     } else {
@@ -8636,6 +8663,9 @@
                                     for (let x = 0; x < jobs[m].inconditions.length; x++) {
                                         if (jobs[m].inconditions[x].conditionExpression.expression.match(events[b].getAttribute('label')) ||
                                             jobs[m].inconditions[x].conditionExpression.expression.indexOf(events[b].getAttribute('label')) > -1) {
+                                            if(matchedEvents.indexOf(events[b].id) === -1) {
+                                                matchedEvents.push(events[b].id);
+                                            }
                                             for (let y = 0; y < events[b].edges.length; y++) {
                                                 if (events[b].edges[y].source.id === events[b].id) {
                                                     if (!jobs[m].inconditions[x].boxId) {
@@ -8672,7 +8702,15 @@
                     if (graph.getOutgoingEdges(vertexes[i]) && graph.getOutgoingEdges(vertexes[i]).length === 0) {
                         graph.removeCells([vertexes[i]], true);
                     }
+
+                    let inComingEdges = graph.getIncomingEdges(vertexes[i]);
+                    for(let j =0; j < inComingEdges.length; j++) {
+                        if (matchedEvents.indexOf(inComingEdges[j].source.id) == -1) {
+                            graph.getModel().remove( inComingEdges[j]);
+                        }
+                    }
                 }
+
                 if (reload) {
                     makeCenter(graph);
                 }
@@ -8705,10 +8743,6 @@
                     if (vertices[i].value.tagName === 'Job') {
                         for (let j = 0; j < jobs.length; j++) {
                             if (vertices[i].getAttribute('actual') === jobs[j].path) {
-                                let lb = '<span><i class="text-xs fa fa-circle ' + vm.colorFunction(jobs[j].state.severity) + '"></i> ' + jobs[j].name + ' </span>';
-                                const edit = new mxCellAttributeChange(
-                                    vertices[i], 'label', lb);
-                                graph.getModel().execute(edit);
                                 const edit2 = new mxCellAttributeChange(
                                     vertices[i], 'status', jobs[j].state._text);
                                 graph.getModel().execute(edit2);
@@ -8812,6 +8846,18 @@
             });
         };
 
+        vm.switchGraph = function (condition, jobStream) {
+            let wf = vm.workflows[0];
+            let p = wf.path === '/' ? '/' : wf.path + '/';
+            let path = condition.job.substring(0, condition.job.lastIndexOf('/')) +'/' +jobStream;
+            vm.jobFilters.graphViewDetail.tab = 'jobStream';
+            if (path !== p + wf.name && vm.selectedWorkflow !== 'ALL') {
+                $rootScope.$broadcast('switchPath', {path: path});
+            }else {
+                vm.changeGraph(jobStream);
+            }
+        };
+
         vm.treeHandler = function (data) {
             if (!data.folders || data.type) {
                 let wf = vm.workflows[0];
@@ -8849,10 +8895,10 @@
                     } else {
                         _label = _label + ex[x].trim() + ' ';
                     }
-                    let s = mxUtils.getSizeForString(conditions.expression, 12);
-                    if (s.width > 300 && (x + 1) % 2===0){
-                        _label = _label + '</br>';
-                    }
+                   // let s = mxUtils.getSizeForString(conditions.expression, 12);
+                   // if (s.width > 300 && (x + 1) % 2===0){
+                   //     _label = _label + '</br>';
+                   // }
                 }
             }
             return _label;
@@ -9322,11 +9368,12 @@
             let h = 12;
             if (text) {
                 let size = mxUtils.getSizeForString(text, 12);
-                w = (size.width + 66);
-                h = (size.height + 20);
+                w = 180;
+                h = 50;
 
-                if (style === 'event' || style === 'event1' || style === 'event2') {
-                    h = size.height + 50;
+/*                if (style === 'event' || style === 'event1' || style === 'event2') {
+                    h = 50;
+                    w = 160;
                 } else if (style === 'condition' || style === 'condition1' || style === 'condition2') {
                     h = size.height + 30;
                     let arr = text.split(/\s*(\(|\)|and|or)/);
@@ -9341,9 +9388,23 @@
                     if (w > 300) {
                         h = h * Math.round(w / 300);
                         w = _maxTextSize + 66;
+                    }else if(w < 160){
+                        w = 160;
                     }
+                } else{
+                    w = 160;
+                    h = 45;
+                }*/
+                if (style === 'job') {
+                    h = 44;
+                }
+            }else{
+                if(style === 'circle'){
+                    h = 48;
+                    w = 50;
                 }
             }
+
 
             return vm.editor.graph.insertVertex(parent, null, _node, 0, 0, w, h, style);
         }
@@ -9385,24 +9446,50 @@
             graph.extendParents = false;
 
             // Off page connector
-            function OffPageConnectorShape() {
+            function Parallelogram() {
                 mxActor.call(this);
             }
 
-            mxUtils.extend(OffPageConnectorShape, mxActor);
-            OffPageConnectorShape.prototype.size = 3 / 8;
-            OffPageConnectorShape.prototype.isRoundable = function () {
+            mxUtils.extend(Parallelogram, mxActor);
+            Parallelogram.prototype.size = .18;
+            Parallelogram.prototype.isRoundable = function () {
                 return true;
             };
-            OffPageConnectorShape.prototype.redrawPath = function (c, x, y, w, h) {
-                let s = h * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
+            Parallelogram.prototype.redrawPath = function (c, x, y, w, h) {
+                var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
                 let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
-                this.addPoints(c, [new mxPoint(0, 0), new mxPoint(w, 0), new mxPoint(w, h - s), new mxPoint(w / 2, h),
-                    new mxPoint(0, h - s)], this.isRounded, arcSize, true);
+                this.addPoints(c, [new mxPoint(0, h), new mxPoint(dx, 0), new mxPoint(w, 0), new mxPoint(w - dx, h)], this.isRounded, arcSize, true);
                 c.end();
             };
 
-            mxCellRenderer.registerShape('offPageConnector', OffPageConnectorShape);
+            // SumEllipseShape
+            function SumEllipseShape()
+            {
+                mxEllipse.call(this);
+            };
+            mxUtils.extend(SumEllipseShape, mxEllipse);
+            SumEllipseShape.prototype.paintVertexShape = function(c, x, y, w, h)
+            {
+                mxEllipse.prototype.paintVertexShape.apply(this, arguments);
+                var s2 = 0.145;
+
+                c.setShadow(false);
+                c.begin();
+                c.moveTo(x + w * s2, y + h * s2);
+                c.lineTo(x + w * (1 - s2), y + h * (1 - s2));
+                c.end();
+                c.stroke();
+
+                c.begin();
+                c.moveTo(x + w * (1 - s2), y + h * s2);
+                c.lineTo(x + w * s2, y + h * (1 - s2));
+                c.end();
+                c.stroke();
+            };
+
+            mxCellRenderer.registerShape('sumEllipse', SumEllipseShape);
+
+            mxCellRenderer.registerShape('Parallelogram', Parallelogram);
 
             /**
              * Overrides method to provide a cell label in the display
@@ -9412,7 +9499,7 @@
                 if (cell.value.tagName === 'Connection' || cell.value.tagName === 'Box') {
                     return '';
                 }
-                return cell.getAttribute('label');
+                return '<div class="block-ellipsis-job" style="width:142px">'+cell.getAttribute('label')+'</div>';
             };
 
             graph.getTooltipForCell = function (cell) {
@@ -9449,6 +9536,22 @@
                 // Disables any default behaviour for the double click
                 mxEvent.consume(evt);
             };
+
+            /**
+             * Function: handle a click event
+             */
+            graph.addListener(mxEvent.CLICK, function (sender, evt) {
+                let cell = evt.getProperty('cell'); // cell may be null
+                if (cell != null && cell.value && cell.value.tagName === 'InCondition') {
+                    vm.jobFilters.graphViewDetail.tab = 'reference';
+                    vm._outconditionReference =  JSON.parse(cell.getAttribute('outconditions'));
+                    console.log(vm._outconditionReference);
+                    evt.consume();
+                }
+            });
+
+
+
 
             // Shows a "modal" window when clicking on img.
             function mxIconSet(state) {
@@ -9490,7 +9593,7 @@
                         // add
                         img = mxUtils.createImage('images/add.png');
                         img.setAttribute('title', gettextCatalog.getString('button.addEvent'));
-                        img.style.left = (state.x - 3) + 'px';
+                        img.style.left = (state.x - 5) + 'px';
                         img.style.top = (state.y + (state.height / 2) + 1) + 'px';
 
                         mxEvent.addListener(img, 'click',
@@ -9538,6 +9641,26 @@
 
                 this.images = null;
             };
+
+            /**
+             * Function: getCursorForCell
+             *
+             * Returns the cursor value to be used for the CSS of the shape for the
+             * given cell. This implementation returns null.
+             *
+             * Parameters:
+             *
+             * cell - <mxCell> whose cursor should be returned.
+             */
+            graph.getCursorForCell = function(cell)
+            {
+                if(cell && cell.value && cell.value.tagName === 'InCondition') {
+                    return 'pointer';
+                }else {
+                    return null;
+                }
+            };
+
 
             // Defines the tolerance before removing the icons
             var iconTolerance = 20;

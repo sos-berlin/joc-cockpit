@@ -118,7 +118,7 @@
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
             <div>
                 <div class="dropdown m-b">
-                    <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterBy' | translate}} :
+                    <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterByJobstream' | translate}} :
                         <span class="text-primary" ng-bind="jobFilters.graphViewDetail.jobStream"></span></a>
                     <div class="dropdown-menu dropdown-more dropdown-ac">
                         <a class="dropdown-item {{jobFilters.graphViewDetail.jobStream == jobStream ? 'orange' :''}}"
@@ -726,20 +726,19 @@
                                                   <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
                                               </li>
                                               <li class="nav-item" >
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }" ng-click="changeTab('reference')" href data-toggle="tab" data-target="#tab14" translate>label.reference</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference', 'disable-link':jobFilters.graphViewDetail.tab !== 'reference' }" href data-toggle="tab" data-target="#tab14" translate>label.reference</a>
                                               </li>
-
                                           </ul>
                                         </div>
                                          <div class="tab-content p-a" >
                                              <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div>
-                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" ng-class="{'text-primary _600' : selectedWorkflow == 'ALL'}" style="width: 100%">
+                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedWorkflow == 'ALL'}">
                                                          <div>
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name'" class="block-ellipsis w-full" ng-class="{'text-primary _600' : selectedWorkflow == jobStream.name}">
+                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%" ng-class="{'text-primary _600' : selectedWorkflow == jobStream.name}">
                                                          <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
                                                          <a class="text-hover-primary " ng-click="changeGraph(jobStream)"><span>{{jobStream.name}}</span></a>
                                                     </div>
@@ -793,6 +792,21 @@
                                                      </div>
                                                      <div ng-if="eventList.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                                          message.noEventsFound
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                             <div class="tab-pane animated fadeIn" id="tab14" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }">
+                                                 <div>
+
+                                                     <div ng-repeat="condition in _outconditionReference | orderBy: 'name'" class="block-ellipsis m-b" style="width: 100%">
+                                                       <!--  <a class="text-hover-primary " ng-click="changeGraph(condition)"><span>{{condition.job}}</span></a>-->
+                                                         <div class="block-ellipsis m-b-xs" style="width: 100%;">
+                                                             <span translate>label.jobStreams</span>:
+                                                             <span>{{condition.job}}</span>
+                                                         </div>
+                                                         <div ng-repeat="outcondition in condition.outconditions" class="block-ellipsis" style="width: 100%">
+                                                             <a class="text-hover-primary m-l" ng-click="switchGraph(condition, outcondition.jobStream)"><span>{{outcondition.jobStream}}</span></a>
+                                                         </div>
                                                      </div>
                                                  </div>
                                              </div>
