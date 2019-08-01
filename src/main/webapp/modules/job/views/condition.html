@@ -797,15 +797,17 @@
                                              </div>
                                              <div class="tab-pane animated fadeIn" id="tab14" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }">
                                                  <div>
-
                                                      <div ng-repeat="condition in _outconditionReference | orderBy: 'name'" class="block-ellipsis m-b" style="width: 100%">
-                                                       <!--  <a class="text-hover-primary " ng-click="changeGraph(condition)"><span>{{condition.job}}</span></a>-->
                                                          <div class="block-ellipsis m-b-xs" style="width: 100%;">
-                                                             <span translate>label.jobStreams</span>:
-                                                             <span>{{condition.job}}</span>
+                                                             <span class="fa fa-circle m-r-sm" style="font-size: 10px"></span>
+                                                             <span translate>label.jobStream</span>:
+                                                             <span class="text-dark">{{condition.jobStream}}</span>
+                                                             <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
+                                                             <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
                                                          </div>
-                                                         <div ng-repeat="outcondition in condition.outconditions" class="block-ellipsis" style="width: 100%">
-                                                             <a class="text-hover-primary m-l" ng-click="switchGraph(condition, outcondition.jobStream)"><span>{{outcondition.jobStream}}</span></a>
+                                                         <div ng-repeat="job in condition.jobs" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
+                                                             <span class="fa fa-circle-o m-l-md m-r-sm" style="font-size: 9px"></span>
+                                                             <a class="text-hover-primary" ng-click="switchGraph(condition, job)"><span>{{job.job}}</span></a>
                                                          </div>
                                                      </div>
                                                  </div>

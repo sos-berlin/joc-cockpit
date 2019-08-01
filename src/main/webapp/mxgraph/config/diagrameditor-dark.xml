@@ -32,7 +32,8 @@
         <add as="verticalAlign" value="middle"/>
         <add as="strokeColor" value="#fafafa"/>
         <add as="fontColor" value="#fafafa"/>
-        <add as="gradientColor" value="#666"/>
+        <add as="gradientColor" value="#333"/>
+        <add as="strokeWidth" value="2"/>
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
@@ -46,57 +47,38 @@
         <add as="endArrow" value="classic"/>
       </add>
        <add as="swimlane">
-        <add as="shape" value="swimlane"/>
-        <add as="shadow" value="0"/>
-        <add as="startSize" value="23"/>
-        <add as="align" value="center"/>
-        <add as="verticalAlign" value="top"/>
-        <add as="spacingTop" value="8"/>
-         <add as="fontColor" value="white"/>
-         <add as="separatorColor" value="#c0c0c0"/>
-      </add>
-      <add as="verticalEdge">
-        <add as="elbow" value="vertical"/>
+         <add as="shape" value="connector"/>
+         <add as="align" value="center"/>
+         <add as="verticalAlign" value="center"/>
+         <add as="rounded" value="1"/>
+         <add as="strokeColor" value="white"/>
+         <add as="edgeStyle" value="straightConnector"/>
+         <add as="endArrow" value="classic"/>
       </add>
       <add as="event">
         <add as="shape" value="hexagon"/>
         <add as="align" value="center"/>
-        <add as="strokeColor" value="#666"/>
-        <add as="gradientColor" value="none"/>
-      </add>
-      <add as="event1" extend="event">
-        <add as="fillColor" value="#CDEB8B"/>
-        <add as="gradientColor" value="#666"/>
-      </add>
-      <add as="event2" extend="event">
-        <add as="fillColor" value="#ebf7d0"/>
-        <add as="gradientColor" value="#666"/>
+        <add as="fillColor" value="#EBFFEC"/>
       </add>
       <add as="circle">
         <add as="shape" value="sumEllipse"/>
         <add as="align" value="center"/>
-        <add as="strokeColor" value="#666"/>
-        <add as="gradientColor" value="none"/>
       </add>
       <add as="job">
         <add as="shape" value="rectangle"/>
         <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="strokeColor" value="#666"/>
         <add as="fillColor" value="#1d1d1c"/>
-        <add as="gradientColor" value="#393937"/>
       </add>
       <add as="condition">
         <add as="shape" value="Parallelogram"/>
-        <add as="strokeColor" value="#666"/>
-        <add as="direction" value="west"/>
-        <add as="fillColor" value="#FFCF8A"/>
+        <add as="fillColor" value="#FFEAA3"/>
       </add>
       <add as="condition1" extend="condition">
         <add as="fillColor" value="#999"/>
         <add as="opacity" value="70"/>
       </add>
       <add as="condition2" extend="condition">
-        <add as="fillColor" value="#FFFFCC"/>
+        <add as="fillColor" value="#FEFFD9"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

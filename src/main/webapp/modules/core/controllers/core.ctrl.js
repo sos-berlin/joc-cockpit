@@ -14114,7 +14114,7 @@
             if (!vm.condition) {
                 vm.strCondition = 'create';
                 if (vm.editor.type === 'Incondition') {
-                    vm.condition = {inconditionCommands: []};
+                    vm.condition = {inconditionCommands: [], markExpression: true};
                     vm.addInconditionCommands();
                 } else {
                     vm.condition = {outconditionEvents: [], outconditionDeleteEvents: []};
@@ -14488,7 +14488,7 @@
             }
             let arr = str.split(' ');
             if (arr.length > 0) {
-                if (arr[arr.length - 1].match(/and/) || arr[arr.length - 1].match(/or/) || arr[arr.length - 1].match(/not/)) {
+                if (arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'not') {
                     form.$invalid = true;
                     form.expression.$invalid = true;
                 }

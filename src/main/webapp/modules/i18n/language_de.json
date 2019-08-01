@@ -1436,6 +1436,7 @@
   "label.createEvent": "Create Event",
   "label.deleteEvent": "Delete Event",
   "label.filterBy": "Filter By",
+  "label.filterByJobstream": "Filter By Job Stream",
   "label.functions": "Functions",
   "label.description": "Description",
   "label.example": "Example",
@@ -1444,6 +1445,7 @@
   "label.allJobStreams": "All Job Streams",
   "label.reference": "Reference",
   "label.selectJobJobChainFromTree": "Select Job/JobChain from tree",
+  "label.markExpression": "Mark Expression",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
   "message.noOutconditionFound": "No Outconditions found",
@@ -1474,4 +1476,3 @@
   "Event": "Event",
   "breadcrumb.conditions" : "Conditions"
 }
-
