@@ -8605,10 +8605,10 @@
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream ? true : jobs[i].outconditions[x].outconditionEvents[z].exists;
                                         _node.setAttribute('isExist', flg);
                                         let style = 'event';
-                                        if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                            style += ';strokeWidth=2;strokeColor=#66FF66;dashed=1';
-                                        } else if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
+                                        if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
                                             style += ';strokeWidth=2;strokeColor=#66FF66;';
+                                        } else if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
+                                            style += ';strokeWidth=2;strokeColor=#66FF66;dashed=1';
                                         }
                                         let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
                                         events.push(e1);
@@ -9120,13 +9120,14 @@
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
-                } else {
-                    job = cell.edges[i].target.getAttribute('actual');
+                    job = cell.edges[i].source.getAttribute('job');
                 }
             }
             obj.event = cell.getAttribute('label');
             ConditionService.addEvent(obj).then(function () {
-                updateSingleJob(job);
+                if(job) {
+                    updateSingleJob(job);
+                }
             }, function (err) {
                 toasty.error({
                     title: err.data.error.code,
@@ -9171,14 +9172,12 @@
             for (let i = 0; i < cell.edges.length; i++) {
                 if (cell.edges[i].target.id === cell.id) {
                     obj.outConditionId = cell.edges[i].source.getAttribute('_id');
-
-                } else {
-                    job = cell.edges[i].target.getAttribute('actual');
+                    job = cell.edges[i].source.getAttribute('job');
                 }
             }
             ConditionService.deleteEvent(obj).then(function () {
-                if(job)
-                updateSingleJob(job);
+                if (job)
+                    updateSingleJob(job);
             });
         };
 
