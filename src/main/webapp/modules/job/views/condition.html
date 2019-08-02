@@ -722,7 +722,7 @@
                                               <li class="nav-item" >
                                                   <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }" ng-click="changeTab('jobStream')" href data-toggle="tab" data-target="#tab12" translate>label.jobStreams</a>
                                               </li>
-                                              <li class="nav-item" >
+                                              <li class="nav-item" ng-if="permission.Condition.view.eventlist">
                                                   <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
                                               </li>
                                               <li class="nav-item" >

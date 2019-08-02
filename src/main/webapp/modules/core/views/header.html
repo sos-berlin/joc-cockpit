@@ -223,6 +223,15 @@
                     </span>
                 </a>
             </li>
+            <li class="nav-item" ng-if="(showViews && showViews.conditions != undefined) ? showViews.conditions : permission.Condition.view.status">
+                <a class="nav-link" ui-sref="app.conditions" ui-sref-active="active">
+                    <span class="nav-text">
+                        <img ng-if="userPreferences.theme !== 'lighter'" ng-hide="userPreferences.theme === 'light' && userPreferences.headerColor === 'header-yellow'" src="images/conditions-lt.svg" width="17.5px"/>
+                        <img ng-if="userPreferences.theme === '' || userPreferences.theme === 'lighter' ||  (userPreferences.theme === 'light' && userPreferences.headerColor === 'header-yellow') " src="images/conditions.svg" width="17.5px"/>
+                        <span class="font11 text-white text-u-c _600" translate>label.jobStreams</span>
+                    </span>
+                </a>
+            </li>
             <li class="nav-item" ng-if="(showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : permission.YADE.view.status">
                 <a class="nav-link" ui-sref="app.yade" ui-sref-active="active">
                     <span class="nav-text ">
@@ -260,15 +269,6 @@
                     <span class="nav-text">
                         <i class="fa fa-file-text-o text-white "></i>
                         <span class="font11 text-white text-u-c _600" translate>label.auditLog</span>
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" ng-if="(showViews && showViews.conditions != undefined) ? showViews.conditions : permission.Condition.view.status">
-                <a class="nav-link" ui-sref="app.conditions" ui-sref-active="active">
-                    <span class="nav-text">
-                        <img ng-if="userPreferences.theme === 'light' || userPreferences.theme === 'lighter'" src="images/conditions-lt.svg" width="17.5px"/>
-                        <img ng-if="userPreferences.theme !== 'light' && userPreferences.theme !== 'lighter'" src="images/conditions.svg" width="17.5px"/>
-                        <span class="font11 text-white text-u-c _600" translate>label.conditions</span>
                     </span>
                 </a>
             </li>

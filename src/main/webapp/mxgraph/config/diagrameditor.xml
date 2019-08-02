@@ -32,7 +32,7 @@
         <add as="verticalAlign" value="middle"/>
         <add as="strokeColor" value="#999"/>
         <add as="gradientColor" value="none"/>
-        <add as="strokeWidth" value="2"/>
+        <add as="strokeWidth" value="1"/>
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
@@ -53,6 +53,9 @@
         <add as="fontColor" value="white"/>
         <add as="separatorColor" value="#c0c0c0"/>
       </add>
+      <add as="verticalEdge">
+        <add as="elbow" value="vertical"/>
+      </add>
       <add as="event">
         <add as="shape" value="hexagon"/>
         <add as="align" value="center"/>
@@ -70,9 +73,6 @@
       <add as="condition">
         <add as="shape" value="Parallelogram"/>
         <add as="fillColor" value="#FFEAA3"/>
-      </add>
-      <add as="condition1" extend="condition">
-        <add as="fillColor" value="#E9E9E9"/>
       </add>
       <add as="condition2" extend="condition">
         <add as="fillColor" value="#FEFFD9"/>

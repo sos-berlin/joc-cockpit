@@ -202,11 +202,11 @@
         vm.changeTheme = function (theme) {
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;
-
             configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
+            $rootScope.$broadcast('reloadPreferences');
         };
 
         vm.changeConfiguration = function (reload) {

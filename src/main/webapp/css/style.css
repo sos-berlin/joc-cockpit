@@ -4532,11 +4532,17 @@ svg text {
     margin: 10px;
     width: 97%;
     height: 250px;
-    text-align: center
+    text-align: center;
+    background: transparent;
 }
 
 .drop-box-full {
     border: 2px dashed #ccc
+}
+.drop-box-full i {
+    position: relative;
+    top: 25px;
+    font-size: 110px;
 }
 
 .drop-box-full:hover {

@@ -14017,8 +14017,8 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobService', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
-    function EditConditionDialogCtrl($scope, $uibModalInstance, JobService, JobChainService, orderBy, gettextCatalog, toasty) {
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobService', 'ConditionService', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
+    function EditConditionDialogCtrl($scope, $uibModalInstance, JobService, ConditionService, JobChainService, orderBy, gettextCatalog, toasty) {
         const vm = $scope;
         vm.editor = {
             type: 'Incondition',
@@ -14038,6 +14038,23 @@
                     vm.editor.jobStream = vm._job.outconditions[i].jobStream;
                     break;
                 }
+            }
+
+            vm.jobStreams = [];
+            if(!vm.editor.jobStream || vm.editor.jobStream === ''){
+                ConditionService.workflowTree({jobschedulerId : vm.schedulerIds.selected}).then(function(res){
+                    console.log(res.jobStreamFolders)
+                    if(res.jobStreamFolders){
+                        for(let i =0; i < res.jobStreamFolders.length; i++){
+                            vm.jobStreams.push(res.jobStreamFolders[i].jobStream);
+
+                            if(res.jobStreamFolders[i].folders.indexOf(vm._job.path1) > -1){
+                                console.log(res.jobStreamFolders[i].folders, '>>>>>', vm._job.path1)
+                                vm.editor.jobStream = res.jobStreamFolders[i].jobStream;
+                            }
+                        }
+                    }
+                })
             }
         }
 
@@ -14115,7 +14132,7 @@
                 vm.strCondition = 'create';
                 if (vm.editor.type === 'Incondition') {
                     vm.condition = {inconditionCommands: [], markExpression: true};
-                    vm.addInconditionCommands();
+                    vm.addInconditionCommands(true);
                 } else {
                     vm.condition = {outconditionEvents: [], outconditionDeleteEvents: []};
                     vm.addOutconditionEvents('create');
@@ -14142,10 +14159,10 @@
             vm._job.outconditions.splice(index, 1);
         };
 
-        vm.addInconditionCommands = function () {
+        vm.addInconditionCommands = function (flag) {
             let param = {
-                command: '',
-                commandParam: '',
+                command: flag ? 'startjob' : '',
+                commandParam: flag ? 'now' : '',
                 id: 0
             };
             if(vm.condition) {

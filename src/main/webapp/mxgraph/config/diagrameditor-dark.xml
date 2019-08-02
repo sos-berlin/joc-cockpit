@@ -32,8 +32,8 @@
         <add as="verticalAlign" value="middle"/>
         <add as="strokeColor" value="#fafafa"/>
         <add as="fontColor" value="#fafafa"/>
-        <add as="gradientColor" value="#333"/>
-        <add as="strokeWidth" value="2"/>
+        <add as="gradientColor" value="none"/>
+        <add as="strokeWidth" value="1"/>
       </add>
       <add as="defaultEdge">
         <add as="shape" value="connector"/>
@@ -58,7 +58,7 @@
       <add as="event">
         <add as="shape" value="hexagon"/>
         <add as="align" value="center"/>
-        <add as="fillColor" value="#EBFFEC"/>
+        <add as="fillColor" value="#49914c"/>
       </add>
       <add as="circle">
         <add as="shape" value="sumEllipse"/>
@@ -71,14 +71,10 @@
       </add>
       <add as="condition">
         <add as="shape" value="Parallelogram"/>
-        <add as="fillColor" value="#FFEAA3"/>
-      </add>
-      <add as="condition1" extend="condition">
-        <add as="fillColor" value="#999"/>
-        <add as="opacity" value="70"/>
+        <add as="fillColor" value="#c2990a"/>
       </add>
       <add as="condition2" extend="condition">
-        <add as="fillColor" value="#FEFFD9"/>
+        <add as="fillColor" value="#bdc20c"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

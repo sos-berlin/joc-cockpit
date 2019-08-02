@@ -1446,6 +1446,7 @@
   "label.reference": "Reference",
   "label.selectJobJobChainFromTree": "Select Job/JobChain from tree",
   "label.markExpression": "Mark Expression",
+  "label.chooseJobStreams": "Choose Job Streams",
   "message.noConditionFound": "No Conditions found",
   "message.noInconditionFound": "No Inconditions found",
   "message.noOutconditionFound": "No Outconditions found",

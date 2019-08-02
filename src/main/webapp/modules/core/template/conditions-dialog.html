@@ -11,9 +11,15 @@
                 <div class="row m-b" >
                     <div class="col-sm-3 form-control-label" translate>label.jobStream</div>
                     <div class="col-sm-9" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
-                        <input type="text" required class="form-control"
-                               placeholder="{{'placeholder.enterJobStream' | translate}}" name="jobStream"
-                               ng-model="editor.jobStream">
+                        <select class="form-control" style="border: none; height: 30px" ng-model="editor.jobStream"
+                                ng-options="jobStream as jobStream for jobStream in jobStreams">
+                            <option value="" translate>label.chooseJobStreams</option>
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -15px; top:-30px">
+                            <input class="form-control" type="text" required name="jobStream"
+                                   placeholder="{{'placeholder.enterJobStream' | translate}}"
+                                   ng-model="editor.jobStream">
+                        </div>
                         <div class="help-block text-danger" ng-if="form.jobStream.$dirty"
                              ng-messages="form.jobStream.$error">
                             <div ng-message="required" translate>message.requiredError</div>
