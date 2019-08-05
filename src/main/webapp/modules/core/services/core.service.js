@@ -47,7 +47,7 @@
         tabs._condition.expand_to = [];
         tabs._condition.selectedView = true;
         tabs._condition.showTaskPanel = undefined;
-        tabs._condition.graphViewDetail = {jobStream : 'ALL',tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: false };
+        tabs._condition.graphViewDetail = {jobStream : 'ALL',tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
 
         tabs._jobDetail = {};
         tabs._jobDetail.filter = {};
@@ -258,7 +258,7 @@
         tempTabs._condition.expand_to = [];
         tempTabs._condition.selectedView = true;
         tempTabs._condition.showTaskPanel = undefined;
-        tempTabs._condition.graphViewDetail = {jobStream : 'ALL', tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: false };
+        tempTabs._condition.graphViewDetail = {jobStream : 'ALL', tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
 
         tempTabs._jobDetail = {};
         tempTabs._jobDetail.filter = {};

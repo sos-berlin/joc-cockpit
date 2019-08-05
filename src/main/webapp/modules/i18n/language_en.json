@@ -1405,7 +1405,7 @@
   "button.updateExpression": "Update Expression",
   "button.showAllEvents": "All Events",
   "button.showFilteredEvents": "Filtered Events",
-  "button.detailedView": "Detailed View",
+  "button.detailView": "Detail View",
   "button.resolveConditions": "Resolve Conditions",
   "label.conditionEditor": "Conditions Editor",
   "label.inconditionCommands": "Incondition Commands",

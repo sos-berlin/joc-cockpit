@@ -702,6 +702,13 @@
                                         <div id="graph"></div>
                                         <!-- Creates a container for the outline -->
                                         <div id="outlineContainer"></div>
+                                        <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown hide" style="position: absolute" ng-class="{'show':selectedNode}">
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="resetJob(selectedNode.cell);" translate>button.resetJob</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="editConditions(selectedNode.job)" translate>button.editConditions</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition'" ng-click="openModel(selectedNode.cell)" translate>button.updateExpression</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true'" ng-click="addEventFromWorkflow(selectedNode.cell)" translate>button.addEvent</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true'" ng-click="removeEventFromWorkflow(selectedNode.cell)" translate>button.deleteEvent</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -818,10 +825,10 @@
                                 <div class="b-t p-t-md pos-abt p-b-md w-full" style="bottom: 4px;">
                                     <div class="col-md-12">
                                         <div class="col-md-6 p-l-0 p-r-0">
-                                            <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis" ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>button.detailedView</button>
+                                          <button type="button" class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis" ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)" translate>button.compactView</button>
                                         </div>
                                         <div class="col-md-6 p-l-0 p-r-0">
-                                          <button  class="btn btn-grey btn-sm btn btn-grey btn-block button-group-ellipsis" ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)" translate>button.compactView</button>
+                                            <button type="button" class="btn btn-sm btn-grey btn-block button-group-ellipsis" ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)" translate>button.detailView</button>
                                         </div>
                                     </div>
                                     <div class="col-md-12 m-t">

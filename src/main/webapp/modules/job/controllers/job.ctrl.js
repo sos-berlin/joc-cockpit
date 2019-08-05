@@ -8554,6 +8554,7 @@
                         let style = 'job';
                         style += ';strokeWidth=2;strokeColor=' + vm.colorFunction(jobs[i].state.severity);
                         v1 = createVertex(parent, _node, jobs[i].name, style);
+                        addOverlays(graph, v1);
                         jobs[i].jId = v1.id;
                     } else {
                         v1 = graph.getModel().getCell(jobs[i].jId)
@@ -8569,40 +8570,44 @@
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
                             }
-                            let style = 'condition';
+                            let style = jobs[i].inconditions[x].consumed ? 'condition1' : 'condition';
 
                             if (jobs[i].inconditions[x].conditionExpression.value) {
                                 style += ';strokeColor=#66FF66;strokeWidth=2';
                             }
 
-                            if (jobs[i].inconditions[x].consumed) {
-                                style += ';strokeWidth=2;dashed=1';
-                            }
-
                             let conditionVertex = createVertex(parent, _node, jobs[i].inconditions[x].conditionExpression.expression, style);
+                            addOverlays(graph, conditionVertex);
                             jobs[i].inconditions[x].vertexId = conditionVertex.id;
 
                             graph.insertEdge(parent, null, getCellNode('Connection', 'In', ''), conditionVertex, v1);
+                        }
+
+                        let out = null;
+                        if (jobs[i].outconditions.length > 0) {
+                            out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
+                            vertexes.push(out);
                         }
 
                         for (let x = 0; x < jobs[i].outconditions.length; x++) {
                             let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
                             let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].jobStream);
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
+                            _node.setAttribute('job', jobs[i].path);
                             _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
-
                             let style = 'condition2';
                             if (jobs[i].outconditions[x].conditionExpression.value) {
                                 style += ';strokeColor=#66FF66;strokeWidth=2';
                             }
                             let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, style);
+                            addOverlays(graph, conditionVertex);
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
                             graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex, '');
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
                                     if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
                                         let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].jobStream);
-                                        let flg = jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream ? true : jobs[i].outconditions[x].outconditionEvents[z].exists;
+                                        let flg = jobs[i].outconditions[x].outconditionEvents[z].exists ? true : jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream;
                                         _node.setAttribute('isExist', flg);
                                         let style = 'event';
                                         if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
@@ -8611,6 +8616,7 @@
                                             style += ';strokeWidth=2;strokeColor=#66FF66;dashed=1';
                                         }
                                         let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
+                                        addOverlays(graph, e1);
                                         events.push(e1);
                                         graph.insertEdge(parent, null, getCellNode('Connection', '', ''), conditionVertex, e1);
                                     }
@@ -8618,9 +8624,7 @@
                             }
                         }
 
-                        if (jobs[i].outconditions.length > 0) {
-                            let out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
-                            vertexes.push(out);
+                        if (out) {
                             for (let m = 0; m < events.length; m++) {
                                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
                             }
@@ -8645,6 +8649,7 @@
                                                         style += ';strokeWidth=2;strokeColor=' + vm.colorFunction(jobs[m].state.severity);
 
                                                         let v2 = createVertex(parent, _node, jobs[i].name, style);
+                                                        addOverlays(graph, v2);
                                                         jobs[m].jId = v2.id;
                                                         graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
                                                     } else {
@@ -8862,14 +8867,16 @@
             let wf = vm.workflows[0];
             let p = wf.path === '/' ? '/' : wf.path + '/';
             let path = job.job.substring(0, job.job.lastIndexOf('/')) + '/' + condition.jobStream;
-            vm.jobFilters.graphViewDetail.tab = 'jobStream';
-
 
             if (path !== p + wf.name && vm.selectedWorkflow !== 'ALL') {
+                vm.jobFilters.graphViewDetail.tab = 'jobStream';
                 vm.reloadNewWorkflow = condition.jobStream;
                 $rootScope.$broadcast('switchPath', {path: path});
             } else {
-                vm.changeGraph(condition.jobStream);
+                if(condition.jobStream !== vm.selectedWorkflow) {
+                    vm.jobFilters.graphViewDetail.tab = 'jobStream';
+                    vm.changeGraph(condition.jobStream);
+                }
             }
         };
 
@@ -8900,15 +8907,33 @@
          * @param conditions
          */
         function parseExpression(conditions) {
-            let ex = conditions.expression.split(/\s+(\(|\)|and|or|not)\s+/);
-            let val = conditions.validatedExpression.split(/\s*(\(|\)|&&|!|\|\|)\s*/);
+            let ex = conditions.expression.split(/\s+(and not|and|not|or)\s+/);
+            let expArr = [], resultArr = [];
+            for (let i = 0; i < ex.length; i++) {
+                if (ex[i].match('and not') || ex[i].match('or not')) {
+                    expArr = expArr.concat(ex[i].split(' '))
+                } else {
+                    expArr.push(ex[i])
+                }
+            }
+
+            let val = conditions.validatedExpression.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
+            for (let i = 0; i < val.length; i++) {
+                let x = val[i].trim();
+                if (x.match('! ')) {
+                    resultArr = resultArr.concat(val[i].split(' '))
+                } else if (x && x != '(' && x != ')') {
+                    resultArr.push(val[i])
+                }
+            }
+
             let _label = '';
-            for (let x = 0; x < ex.length; x++) {
-                if (ex[x]) {
-                    if (val[x] && val[x].trim() == 'true') {
-                        _label = _label + '<span class="text-check">' + ex[x].trim() + '</span> ';
+            for (let x = 0; x < expArr.length; x++) {
+                if (expArr[x]) {
+                    if (val[x] && resultArr[x].trim() == 'true') {
+                        _label = _label + '<span class="text-check">' + expArr[x].trim() + '</span> ';
                     } else {
-                        _label = _label + ex[x].trim() + ' ';
+                        _label = _label + expArr[x].trim() + ' ';
                     }
                 }
             }
@@ -8916,6 +8941,7 @@
         }
 
         vm.openModel = function (cell) {
+            vm.selectedNode = null;
             let label = cell.getAttribute('actual');
             vm._expression = {};
             vm._expression.label = cell.value.tagName;
@@ -9115,6 +9141,7 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
+            vm.selectedNode = null;
             let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             let job = '';
             for (let i = 0; i < cell.edges.length; i++) {
@@ -9166,6 +9193,7 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
+            vm.selectedNode = null;
             let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
             obj.event = cell.getAttribute('actual');
             let job = '';
@@ -9188,6 +9216,7 @@
         };
 
         vm.resetJob = function (cell) {
+            vm.selectedNode = null;
             ConditionService.resetWorkflow({
                 "jobschedulerId": $scope.schedulerIds.selected,
                 "job": cell.getAttribute('actual'),
@@ -9369,8 +9398,8 @@
          * Function to create vertex
          */
         function createVertex(parent, _node, text, style) {
-            let w = 50;
-            let h = 48;
+            let w = 22;
+            let h = 22;
             if (text) {
                 w = 180;
                 h = 50;
@@ -9394,7 +9423,7 @@
             mxGraph.prototype.allowDanglingEdges = false;
             mxGraph.prototype.cellsLocked = true;
             mxGraph.prototype.foldingEnabled = true;
-            mxHierarchicalLayout.prototype.interRankCellSpacing = 50;
+            mxHierarchicalLayout.prototype.interRankCellSpacing = 40;
             mxTooltipHandler.prototype.delay = 0;
             mxConstants.VERTEX_SELECTION_COLOR = null;
             mxConstants.EDGE_SELECTION_COLOR = null;
@@ -9415,7 +9444,7 @@
             graph.extendParentsOnAdd = false;
             graph.extendParents = false;
 
-            // Off page connector
+            // Parallelogram
             function Parallelogram() {
                 mxActor.call(this);
             }
@@ -9429,6 +9458,23 @@
                 var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
                 let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
                 this.addPoints(c, [new mxPoint(0, h), new mxPoint(dx, 0), new mxPoint(w, 0), new mxPoint(w - dx, h)], this.isRounded, arcSize, true);
+                c.end();
+            };
+
+            // Parallelogram2
+            function Parallelogram2() {
+                mxActor.call(this);
+            }
+
+            mxUtils.extend(Parallelogram2, mxActor);
+            Parallelogram2.prototype.size = .18;
+            Parallelogram2.prototype.isRoundable = function () {
+                return true;
+            };
+            Parallelogram2.prototype.redrawPath = function (c, x, y, w, h) {
+                var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
+                let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
+                this.addPoints(c, [new mxPoint(0, 0), new mxPoint(dx, h), new mxPoint(w, h), new mxPoint(w -dx, 0)], this.isRounded, arcSize, true);
                 c.end();
             };
 
@@ -9456,8 +9502,8 @@
             };
 
             mxCellRenderer.registerShape('sumEllipse', SumEllipseShape);
-
             mxCellRenderer.registerShape('Parallelogram', Parallelogram);
+            mxCellRenderer.registerShape('Parallelogram2', Parallelogram2);
 
             /**
              * Overrides method to provide a cell label in the display
@@ -9529,97 +9575,8 @@
                     }
                     evt.consume();
                 }
+                vm.selectedNode = null;
             });
-
-            // Shows a "modal" window when clicking on img.
-            function mxIconSet(state) {
-                this.images = [];
-                let img;
-                if (state.cell && state.cell.value.tagName !== 'Job' && state.cell.value.tagName !== 'Box' && state.cell.value.tagName !== 'Event' && state.cell.value.tagName !== 'Connection') {
-                    if(vm.permission.Condition.change.changes) {
-                        img = mxUtils.createImage('images/edit.svg');
-                        img.setAttribute('title', gettextCatalog.getString('button.updateExpression'));
-                        img.style.left = (state.x + state.width - 6) + 'px';
-                        img.style.top = (state.y - 2) + 'px';
-                        mxEvent.addListener(img, 'click',
-                            mxUtils.bind(this, function (evt) {
-                                vm.openModel(state.cell);
-                                mxEvent.consume(evt);
-                                this.destroy();
-                            })
-                        );
-                    }
-
-                } else if (state.cell.value.tagName === 'Event') {
-                    if(vm.permission.Condition.change.events.remove) {
-                        if (state.cell.getAttribute('isExist') == 'true') {
-                            img = mxUtils.createImage('images/delete.svg');
-                            img.setAttribute('title', gettextCatalog.getString('button.deleteEvent'));
-                            img.style.left = (state.x + state.width - 2) + 'px';
-                            img.style.top = (state.y + (state.height / 2) + 2) + 'px';
-                            mxEvent.addListener(img, 'click',
-                                mxUtils.bind(this, function (evt) {
-                                    vm.removeEventFromWorkflow(state.cell);
-                                    mxEvent.consume(evt);
-                                    this.destroy();
-                                })
-                            );
-                        }
-                    }
-
-                    if(vm.permission.Condition.change.events.add) {
-                        if (state.cell.getAttribute('isExist') == 'false') {
-                            img = mxUtils.createImage('images/check.svg');
-                            img.setAttribute('title', gettextCatalog.getString('button.addEvent'));
-                            img.style.left = (state.x - 5) + 'px';
-                            img.style.top = (state.y + (state.height / 2) + 1) + 'px';
-                            img.style.width = '18px';
-                            img.style.height = '18px';
-                            mxEvent.addListener(img, 'click',
-                                mxUtils.bind(this, function (evt) {
-                                    vm.addEventFromWorkflow(state.cell);
-                                    mxEvent.consume(evt);
-                                    this.destroy();
-                                })
-                            );
-
-                        }
-                    }
-                } else if (state.cell.value.tagName === 'Job') {
-                    img = mxUtils.createImage('images/reset.svg');
-                    img.setAttribute('title', gettextCatalog.getString('button.resetJob'));
-                    img.style.left = (state.x + state.width - 6) + 'px';
-                    img.style.top = (state.y - 2) + 'px';
-                    mxEvent.addListener(img, 'click',
-                        mxUtils.bind(this, function (evt) {
-                            vm.resetJob(state.cell);
-                            mxEvent.consume(evt);
-                            this.destroy();
-                        })
-                    );
-                }
-
-                if (img) {
-                    img.style.position = 'absolute';
-                    img.style.cursor = 'pointer';
-                    if (img.style.width == '') {
-                        img.style.width = '16px';
-                        img.style.height = '16px';
-                    }
-                    state.view.graph.container.appendChild(img);
-                    this.images.push(img);
-                }
-            }
-
-            mxIconSet.prototype.destroy = function () {
-                if (this.images != null) {
-                    for (let i = 0; i < this.images.length; i++) {
-                        let img = this.images[i];
-                        img.parentNode.removeChild(img);
-                    }
-                }
-                this.images = null;
-            };
 
             /**
              * Function: getCursorForCell
@@ -9639,92 +9596,59 @@
                 }
             };
 
-            // Defines the tolerance before removing the icons
-            var iconTolerance = 20;
+        }
 
-            // Shows icons if the mouse is over a cell
-            graph.addMouseListener({
-                    currentState: null,
-                    currentIconSet: null,
-                    mouseDown: function (sender, me) {
-                        // Hides icons on mouse down
-                        if (this.currentState != null) {
-                            this.dragLeave(me.getEvent(), this.currentState);
-                            this.currentState = null;
-                        }
-                    },
-                    mouseMove: function (sender, me) {
-                        if (this.currentState != null && (me.getState() == this.currentState ||
-                            me.getState() == null)) {
-                            let tol = iconTolerance;
-                            let tmp = new mxRectangle(me.getGraphX() - tol,
-                                me.getGraphY() - tol, 2 * tol, 2 * tol);
+        /**
+         * Function : addOverlays
+         *
+         * Add (...) icon to show action menu
+         * @param graph
+         * @param cell
+         */
+        function addOverlays (graph, cell)  {
+            let self = this;
+            let overlay = new mxCellOverlay(
+                new mxImage('../images/menu.svg', 18, 18), ""
+            );
+            overlay.cursor = "pointer";
+            overlay.align = mxConstants.ALIGN_TOP;
+            overlay.verticalAlign = mxConstants.ALIGN_TOP;
+            overlay.addListener(
+                mxEvent.CLICK,
+                mxUtils.bind(this, function (sender, evt) {
+                    //let cell = evt.getProperty('cell');
+                    let events = evt.getProperty('event');
+                    let x = events.layerX;
+                    let y = events.layerY;
+                    vm.selectedNode = {type:cell.value.tagName, cell:cell};
+                    if(vm.selectedNode.type === 'Event'){
+                        vm.selectedNode.isExist = cell.getAttribute('isExist');
+                    } else if(vm.selectedNode.type === 'Job'){
 
-                            if (mxUtils.intersects(tmp, this.currentState)) {
-                                return;
+                        for(let i =0; i < vm.jobs.length; i++){
+                            if(vm.jobs[i].path == cell.getAttribute('actual')){
+                                vm.selectedNode.job = vm.jobs[i];
+                                break;
                             }
-                        }
-
-                        let tmp = graph.view.getState(me.getCell());
-                        // Ignores everything but vertices
-                        if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
-                            tmp = null;
-                        }
-                        if (tmp != this.currentState) {
-                            if (this.currentState != null) {
-                                this.dragLeave(me.getEvent(), this.currentState);
-                            }
-                            this.currentState = tmp;
-                            if (this.currentState != null) {
-                                this.dragEnter(me.getEvent(), this.currentState);
-                            }
-                        }
-                    },
-                    mouseUp: function (sender, me) {
-                    },
-                    dragEnter: function (evt, state) {
-                        if (this.currentIconSet == null) {
-                            this.currentIconSet = new mxIconSet(state);
-                        }
-                    },
-                    dragLeave: function (evt, state) {
-                        if (this.currentIconSet != null) {
-                            this.currentIconSet.destroy();
-                            this.currentIconSet = null;
                         }
                     }
-                });
-
-            mxCellOverlay.prototype.getBounds = function (state) {
-                let isEdge = state.view.graph.getModel().isEdge(state.cell);
-                let s = state.view.scale;
-                let pt = null;
-                let w = this.image.width;
-                let h = this.image.height;
-                if (!isEdge) {
-                    pt = new mxPoint();
-                    if (this.align == mxConstants.ALIGN_LEFT) {
-                        pt.x = state.x;
-                    } else if (this.align == mxConstants.ALIGN_CENTER) {
-                        pt.x = state.x + state.width / 2;
-                    } else {
-                        pt.x = state.x + state.width;
-                    }
-                    if (this.verticalAlign == mxConstants.ALIGN_TOP) {
-                        pt.y = state.y;
-                    } else if (this.verticalAlign == mxConstants.ALIGN_MIDDLE) {
-                        pt.y = state.y + state.height / 2;
-                    } else {
-                        pt.y = state.y + state.height;
+                    let $menu = document.getElementById('actionMenu');
+                    $menu.style.left = (x) + "px";
+                    $menu.style.top = (y + 2) + "px";
+                })
+            );
+            graph.addCellOverlay(cell, overlay);
+            overlay.getBounds = function (state) {
+                let bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+                if (!state.view.graph.getModel().isEdge(state.cell)  ) {
+                    bounds.x = bounds.x - 13;
+                    if(cell.value.tagName == 'InCondition' || cell.value.tagName == 'OutCondition'){
+                        bounds.y = bounds.y + 10;
+                    }else{
+                        bounds.y = bounds.y + 16;
                     }
                 }
-                if (state.cell && state.cell.value.tagName === 'OutCondition') {
-                    return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s),
-                        Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) + 3, w * s, h * s);
-                } else {
-                    return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s),
-                        Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s) - 3, w * s, h * s);
-                }
+                return bounds;
             };
         }
 
@@ -9736,18 +9660,17 @@
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {
                         updateSingleJob(vm.events[0].eventSnapshots[m].path);
-                    } else if(vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId){
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
                         let flag = false;
-                        for(let i =0; i < vm.allJobs.length; i++) {
-                            if(vm.allJobs[i].path === vm.events[0].eventSnapshots[m].path){
-                               
+                        for (let i = 0; i < vm.allJobs.length; i++) {
+                            if (vm.allJobs[i].path === vm.events[0].eventSnapshots[m].path) {
                                 flag = true;
                                 break;
                             }
                         }
                         if (flag) {
                             t1 = $timeout(function () {
-                                
+
                                 recursivelyConnectJobs(true, true);
                             }, 200);
                             break;
@@ -9759,7 +9682,6 @@
 
 
         /** -------------------- Actions ------------------- */
-
 
         $scope.$on('startConditionResolver', function () {
             vm.startConditionResolver();
@@ -9790,7 +9712,7 @@
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
         });
-        
+
         $scope.$on('$destroy', function () {
             if (t1) {
                 $timeout.cancel(t1);

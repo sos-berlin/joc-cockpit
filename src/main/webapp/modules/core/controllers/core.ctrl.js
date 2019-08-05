@@ -14134,8 +14134,8 @@
                     vm.condition = {inconditionCommands: [], markExpression: true};
                     vm.addInconditionCommands(true);
                 } else {
-                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: []};
-                    vm.addOutconditionEvents('create');
+                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: [], conditionExpression : {expression : 'returncode:0'}};
+                    vm.addOutconditionEvents('create', vm._job.name);
                 }
             } else {
                 let arr = [];
@@ -14201,9 +14201,9 @@
             commands.splice(index, 1);
         };
 
-        vm.addOutconditionEvents = function (type) {
+        vm.addOutconditionEvents = function (type, name) {
             let param = {
-                event: '',
+                event: name ? name : '',
                 command: type,
                 id: 0
             };
@@ -14607,7 +14607,7 @@
                 }
                 if(arr.length > 0) {
                     let exp =  arr[arr.length - 1];
-                    exp = exp.replace(':', ':'+vm.object.jobs[0]+'.')
+                    exp = exp.replace(':', ':'+vm.object.jobs[0]+'.');
                     str = str + ' ' +exp;
                 }
                 if(str != '') {
@@ -14642,9 +14642,9 @@
             } else if (arr && arr.length > 1) {
                 for (let i = 0; i < arr.length; i++) {
                     if (i % 2 != 0) {
-                        if ((arr[i] === 'or' || arr[i] === 'and' || arr[i] === 'not')) {
-                            form.$invalid = false;
-                            form.expression.$invalid = false;
+                        if ((arr[i] === 'or' || arr[i] === 'and')) {
+                            form.$invalid = true;
+                            form.expression.$invalid = true;
                             break;
                         }
                     }
