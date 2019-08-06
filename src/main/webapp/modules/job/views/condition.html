@@ -703,11 +703,11 @@
                                         <!-- Creates a container for the outline -->
                                         <div id="outlineContainer"></div>
                                         <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more list-dropdown hide" style="position: absolute" ng-class="{'show':selectedNode}">
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="resetJob(selectedNode.cell);" translate>button.resetJob</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="editConditions(selectedNode.job)" translate>button.editConditions</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition'" ng-click="openModel(selectedNode.cell)" translate>button.updateExpression</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true'" ng-click="addEventFromWorkflow(selectedNode.cell)" translate>button.addEvent</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true'" ng-click="removeEventFromWorkflow(selectedNode.cell)" translate>button.deleteEvent</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="resetJob(selectedNode.cell);closeMenu()" translate>button.resetJob</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="editConditions(selectedNode.job);closeMenu()" translate>button.editConditions</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition'" ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true'" ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true'" ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
                                         </div>
                                     </div>
                                 </div>
@@ -841,7 +841,8 @@
                         </div>
 
                         <div class="text-center m-t-md text-md" ng-if="!flag && isWorkflowLoaded">
-                            <span translate>message.noConditionFound</span>
+                            <span translate>message.noConditionFound</span>.
+                            <a class="text-hover-primary text-u-l" ng-click="createJobStream()" translate>message.clickHereToADD</a>
                         </div>
                         <div ng-if="!isWorkflowLoaded || !isUpdated" class="loading-img1"></div>
                     </div>

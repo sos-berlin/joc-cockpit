@@ -1420,7 +1420,7 @@
   "label.listOfEvents": "List of Events",
   "label.listOfCreateEvents": "List of Create Events",
   "label.listOfDeleteEvents": "List of Delete Events",
-  "label.assignAJobStream": "Assign job stream",
+  "label.createJobStream": "Create Job Stream",
   "label.expressionEditor": "Expression Editor",
   "label.addExpression": "Add Expression",
   "label.viewGraph": "view graph",
