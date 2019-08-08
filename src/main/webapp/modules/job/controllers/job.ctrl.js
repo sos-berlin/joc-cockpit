@@ -6263,35 +6263,34 @@
             return scrTree;
         };
 
-        vm.editConditions = function (job) {
+        vm.editConditions = function (job, name, cb) {
             vm._job = angular.copy(job);
             ConditionService.inCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobs: [{job : job.path}]
+                jobs: [{job: job.path}]
             }).then(function (res) {
-                if(res.jobsInconditions && res.jobsInconditions.length > 0 ) {
+                if (res.jobsInconditions && res.jobsInconditions.length > 0) {
                     vm._job.inconditions = res.jobsInconditions[0].inconditions;
                     if (vm._job.inconditions && vm._job.inconditions.length > 0) {
-                        openDialog();
+                        openDialog(name, cb);
                     }
                 }
                 ConditionService.outCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    jobs: [{job : job.path}]
+                    jobs: [{job: job.path}]
                 }).then(function (result) {
-                    if(result.jobsOutconditions && result.jobsOutconditions.length > 0 ) {
+                    if (result.jobsOutconditions && result.jobsOutconditions.length > 0) {
                         vm._job.outconditions = result.jobsOutconditions[0].outconditions;
                         if (vm._job.inconditions && vm._job.inconditions.length === 0) {
-                            openDialog();
+                            openDialog(name, cb);
                         }
                     }
                 });
-
-
             })
         };
 
-        function openDialog() {
+        function openDialog(name, cb) {
+            vm._jobStreamName = name;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/conditions-dialog.html',
                 controller: 'EditConditionDialogCtrl',
@@ -6302,15 +6301,21 @@
             modalInstance.result.then(function () {
                 ConditionService.updateInCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    jobsInconditions: [{job: vm._job.path, inconditions : vm._job.inconditions}]
+                    jobsInconditions: [{job: vm._job.path, inconditions: vm._job.inconditions}]
                 });
                 ConditionService.updateOutCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
-                    jobsOutconditions: [{job: vm._job.path, outconditions : vm._job.outconditions}]
+                    jobsOutconditions: [{job: vm._job.path, outconditions: vm._job.outconditions}]
                 });
                 vm.updateJobStreamFolders();
+                if (cb) {
+                    cb();
+                }
             }, function () {
                 vm._job = null;
+                if (cb) {
+                    cb('cancel');
+                }
             });
         }
 
@@ -6411,7 +6416,7 @@
                                     obj.jobs = [];
                                     obj.jobs.push({job: path[0]});
                                     obj.compactView = vm.jobFilters.isCompact;
-                                    if(vm.isConditionTab){
+                                    if (vm.isConditionTab) {
                                         obj.isOrderJob = false;
                                     }
                                     JobService.get(obj).then(function (res) {
@@ -8336,14 +8341,34 @@
             if (sessionStorage.preferences) {
                 vm.preferences = JSON.parse(sessionStorage.preferences) || {};
             }
-            if (!(vm.preferences.theme === 'light' || vm.preferences.theme === 'lighter' || !vm.preferences.theme)) {
-                vm.configXml = './mxgraph/config/diagrameditor-dark.xml';
-            }
             createEditor();
 
             let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 38) + 'px)';
-            $('#graph').css({opacity:1});
-            $('#graph').slimscroll({height: ht});
+
+            let dom = $('#graph');
+            dom.css({opacity: 1});
+            dom.slimscroll({height: ht});
+            dom.on('drop', function (event) {
+                vm.dropTarget = window.selectedJob;
+                let flag = true;
+                if (vm.jobs && vm.jobs.length) {
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        if (vm.jobs[i].path == vm.dropTarget) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
+                    createJobNode(vm.dropTarget, event)
+                } else {
+                    toasty.warning({
+                        title: vm.dropTarget + ' is alreadyExist!',
+                        timeout: 3000
+                    });
+                }
+                event.preventDefault();
+            });
             const panel = $('.property-panel');
             $('.sidebar-open', panel).click(function () {
                 $('.sidebar').css({'width': '296px', opacity: 1});
@@ -8351,7 +8376,7 @@
                 if (window.innerWidth > 1024) {
                     $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
-                }else {
+                } else {
                     $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
@@ -8372,6 +8397,18 @@
                 $('#outlineContainer').css({opacity: 1});
                 if (window.innerWidth > 1024) {
                     $('.sidebar-open').click();
+                }
+                // Creates new toolbar without event processing
+                let toolbar = document.getElementById('toolbarContainer');
+                $('#toolbarContainer').css({'max-height': ht});
+                for (let i = 0; i < vm.allJobs.length; i++) {
+                    let div = document.createElement('div');
+                    div.innerHTML = vm.allJobs[i].name;
+                    div.setAttribute('title', vm.allJobs[i].name);
+                    div.setAttribute('id', vm.allJobs[i].path);
+                    div.setAttribute('draggable', 'true');
+                    div.setAttribute('ondragstart', 'drag(event)');
+                    toolbar.appendChild(div);
                 }
             }, 100);
             recursivelyConnectJobs(false, false);
@@ -8397,6 +8434,7 @@
                 }
             });
         }
+
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
@@ -8508,18 +8546,26 @@
                             }
                         }
                         vm.getEvents(null);
-                        cb();
+                        if (cb) {
+                            cb();
+                        }
                     }, function () {
                         vm.isWorkflowLoaded = true;
-                        cb();
+                        if (cb) {
+                            cb();
+                        }
                     });
                 }, function (err) {
                     vm.isWorkflowLoaded = true;
-                    cb();
+                    if (cb) {
+                        cb();
+                    }
                 });
             } else {
                 vm.isWorkflowLoaded = true;
-                cb();
+                if (cb) {
+                    cb();
+                }
             }
         }
 
@@ -8527,6 +8573,35 @@
             init();
         } else {
             vm.isWorkflowLoaded = true;
+        }
+
+        function createJobNode(job, event) {
+            const graph = vm.editor.graph;
+            let name = job.substring(job.lastIndexOf('/'));
+            let _node = getCellNode('Job', name, job, '');
+            _node.setAttribute('status', '');
+            let style = 'job', x = 0;
+            if (graph.getChildVertices(graph.getDefaultParent()).length === 0) {
+                x = event.offsetX;
+            }
+            let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, x, event.offsetY, 180, 50, style);
+
+            for (let i = 0; i < vm.allJobs.length; i++) {
+                if (vm.allJobs[i].path === job) {
+                    vm.editConditions(vm.allJobs[i], vm._jobStream.name, function (res) {
+                        if (res) {
+                            graph.removeCells([v1]);
+                        } else {
+                            recursivelyConnectJobs(true, false, function () {
+                                vm._jobStream = {};
+                                vm.actual();
+                            });
+
+                        }
+                    });
+                    break;
+                }
+            }
         }
 
         function createWorkflowDiagram(jobs, reload, scrollValue) {
@@ -8637,7 +8712,7 @@
                                                     if (!jobs[i].connections) {
                                                         jobs[i].connections = [];
                                                     }
-                                                    if(jobs[i].connections.indexOf(jobs[m].path) === -1) {
+                                                    if (jobs[i].connections.indexOf(jobs[m].path) === -1) {
                                                         jobs[i].connections.push(jobs[m].path);
                                                     }
                                                     if (!jobs[m].jId) {
@@ -8703,7 +8778,7 @@
                         }
                     }
 
-                    if(jobs[i].isExpanded && vm.jobFilters.graphViewDetail.isWorkflowCompact){
+                    if (jobs[i].isExpanded && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                         expandJobNode(graph, jobs[i], true);
                     }
                 }
@@ -8856,6 +8931,10 @@
                 }
             }
 
+            if (graph.getOutgoingEdges(out) && graph.getOutgoingEdges(out).length === 0) {
+                graph.removeCells([out], true);
+            }
+
             if (!flag) {
                 executeLayout(graph);
             }
@@ -8918,7 +8997,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                console.log('>>>>>>>>', vm._jobStream.name)
+                vm.flag = true;
             }, function () {
                 vm._jobStream.name = name;
             })
@@ -9548,10 +9627,12 @@
             mxConstants.VERTEX_SELECTION_COLOR = null;
             mxConstants.EDGE_SELECTION_COLOR = null;
 
+            let style = graph.getStylesheet().getDefaultVertexStyle();
             if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
-                let style = graph.getStylesheet().getDefaultEdgeStyle();
                 style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
             }
+            style[mxConstants.STYLE_FILLCOLOR] = vm.preferences.theme === 'dark' ? '#333332' : vm.preferences.theme === 'grey' ? '#717a86' :
+                vm.preferences.theme === 'blue' ? '#32465a' : vm.preferences.theme === 'blue-lt' ? '#46525f' : vm.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
 
             // Enables snapping waypoints to terminals
             mxEdgeHandler.prototype.snapToTerminals = true;
@@ -9563,6 +9644,7 @@
             graph.constrainChildren = false;
             graph.extendParentsOnAdd = false;
             graph.extendParents = false;
+
 
             // Parallelogram
             function Parallelogram() {
@@ -9594,7 +9676,7 @@
             Parallelogram2.prototype.redrawPath = function (c, x, y, w, h) {
                 var dx = w * Math.max(0, Math.min(1, parseFloat(mxUtils.getValue(this.style, 'size', this.size))));
                 let arcSize = mxUtils.getValue(this.style, mxConstants.STYLE_ARCSIZE, mxConstants.LINE_ARCSIZE) / 2;
-                this.addPoints(c, [new mxPoint(0, 0), new mxPoint(dx, h), new mxPoint(w, h), new mxPoint(w -dx, 0)], this.isRounded, arcSize, true);
+                this.addPoints(c, [new mxPoint(0, 0), new mxPoint(dx, h), new mxPoint(w, h), new mxPoint(w - dx, 0)], this.isRounded, arcSize, true);
                 c.end();
             };
 
@@ -9715,20 +9797,24 @@
             function mxIconSet(state) {
                 this.images = [];
                 let img;
-                if (state.cell && state.cell.value.tagName === 'Job' || state.cell.value.tagName === 'Event' || state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition') {
-                    // if(vm.permission.Condition.change.changes) {
+                if (state.cell && state.cell.value.tagName === 'Job' || (state.cell.value.tagName === 'Event' && (vm.permission.Condition.change.events.add || vm.permission.Condition.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.Condition.change.conditions)) {
                     img = mxUtils.createImage('images/menu.svg');
-                    img.style.left = (state.x - 8) + 'px';
-                    img.style.top = (state.y + 2) + 'px';
+                    let x = state.x - 8, y = state.y + 2;
+                    if (state.cell.value.tagName === 'Event') {
+                        x += (state.width * .222);
+                    } else if (state.cell.value.tagName === 'OutCondition') {
+                        x += (state.width * .167);
+                    }
+                    img.style.left = x + 'px';
+                    img.style.top = y + 'px';
                     mxEvent.addListener(img, 'click',
                         mxUtils.bind(this, function (evt) {
-                            let x = state.x;
-                            let y = state.y;
+                            let _x = x + 10;
+                            let _y = y + 10 - $('#graph').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
                             } else if (vm.selectedNode.type === 'Job') {
-
                                 for (let i = 0; i < vm.jobs.length; i++) {
                                     if (vm.jobs[i].path == state.cell.getAttribute('actual')) {
                                         vm.selectedNode.job = vm.jobs[i];
@@ -9736,19 +9822,19 @@
                                     }
                                 }
                             }
+
                             let $menu = document.getElementById('actionMenu');
-                            $menu.style.left = (x + 2) + "px";
-                            $menu.style.top = (y + 12) + "px";
+                            $menu.style.left = _x + "px";
+                            $menu.style.top = _y + "px";
                             this.destroy();
                         })
                     );
-                    //}
                 }
                 if (img) {
                     img.style.position = 'absolute';
                     img.style.cursor = 'pointer';
-                    img.style.width = '18px';
-                    img.style.height = '18px';
+                    img.style.width = (18 * state.shape.scale) + 'px';
+                    img.style.height = (18 * state.shape.scale) + 'px';
                     state.view.graph.container.appendChild(img);
                     this.images.push(img);
                 }
@@ -9871,7 +9957,7 @@
 
         /** -------------------- Actions ------------------- */
 
-        vm.closeMenu = function () {
+        $scope.closeMenu = function () {
             vm.selectedNode = null;
         };
 

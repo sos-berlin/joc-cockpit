@@ -59,28 +59,26 @@
       <add as="event">
         <add as="shape" value="hexagon"/>
         <add as="align" value="center"/>
-        <add as="fillColor" value="#f5f7fb"/>
       </add>
       <add as="circle">
         <add as="shape" value="sumEllipse"/>
         <add as="align" value="center"/>
+        <add as="fillColor" value="none"/>
+        <add as="opacity" value="80"/>
       </add>
       <add as="job">
         <add as="shape" value="rectangle"/>
         <add as="perimeter" value="rectanglePerimeter"/>
-        <add as="fillColor" value="#f5f7fb"/>
       </add>
       <add as="condition">
-        <add as="shape" value="Parallelogram"/>
-        <add as="fillColor" value="#f5f7fb"/>
+        <add as="shape" value="Parallelogram2"/>
       </add>
       <add as="condition1">
         <add as="shape" value="Parallelogram2"/>
         <add as="fillColor" value="none"/>
       </add>
       <add as="condition2">
-        <add as="shape" value="Parallelogram2"/>
-        <add as="fillColor" value="#f5f7fb"/>
+        <add as="shape" value="Parallelogram"/>
       </add>
     </mxStylesheet>
     <mxGraphModel as="model">

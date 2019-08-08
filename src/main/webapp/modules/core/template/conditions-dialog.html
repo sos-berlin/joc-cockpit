@@ -11,12 +11,12 @@
                 <div class="row m-b" >
                     <div class="col-sm-3 form-control-label" translate>label.jobStream</div>
                     <div class="col-sm-9" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
-                        <select class="form-control" style="border: none; height: 30px" ng-model="editor.jobStream"
+                        <select class="form-control" style="border: none; height: 30px" ng-model="editor.jobStream" ng-disabled="_jobStreamName"
                                 ng-options="jobStream as jobStream for jobStream in jobStreams">
                             <option value="" translate>label.chooseJobStreams</option>
                         </select>
                         <div class="input-dropdown" style="margin-bottom: -15px; top:-30px">
-                            <input class="form-control" type="text" required name="jobStream"
+                            <input class="form-control" type="text" required name="jobStream" ng-disabled="_jobStreamName"
                                    placeholder="{{'placeholder.enterJobStream' | translate}}"
                                    ng-model="editor.jobStream">
                         </div>
@@ -174,7 +174,6 @@
                 <div ng-if="editor.type=='Incondition'">
                     <div class="form-group row">
                         <label class="col-sm-3" translate>label.markExpression</label>
-
                         <div class="col-sm-8">
                             <label class="md-check">
                                 <input type="checkbox" ng-model="condition.markExpression">

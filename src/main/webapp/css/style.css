@@ -5157,3 +5157,24 @@ input:-webkit-autofill {
 .vertex-text2 span.text-check{
     color: #73cd73 !important;
 }
+#toolbarContainer{
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+#toolbarContainer div{
+     font-size: 12px;
+     padding: 6px 4px;
+     overflow: hidden;
+     white-space: normal;
+     text-overflow: ellipsis;
+     border: 1px solid grey;
+     margin: 6px 4px;
+ }
+
+#toolbarContainer div:hover{
+    background: #f5f7fa;
+    cursor: pointer;
+}

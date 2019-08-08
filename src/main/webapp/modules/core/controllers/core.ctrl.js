@@ -14056,6 +14056,9 @@
                     }
                 })
             }
+            if(vm._jobStreamName){
+                vm.editor.jobStream = vm._jobStreamName;
+            }
         }
 
         if(vm._job) {
