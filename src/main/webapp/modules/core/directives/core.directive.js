@@ -262,7 +262,6 @@
                     dailyPlan: view,
                     jobChain: view,
                     job: view,
-                    condition: view,
                     order: view,
                     agent: view,
                     lock: view,
@@ -286,9 +285,6 @@
                     t.pageView = views.jobChain;
                 } else if (l.path() == '/jobs') {
                     t.pageView = views.job;
-                }else if (l.path() == '/conditions') {
-                    t.pageView = views.condition;
-                    t.path='/conditions';
                 } else if (l.path() == '/orders') {
                     t.pageView = views.order;
                 } else if (l.path().match('/resources/agent_clusters')) {
@@ -321,8 +317,6 @@
                         views.jobChain = t.pageView;
                     } else if (l.path() == '/jobs') {
                         views.job = t.pageView;
-                    }else if (l.path() == '/conditions') {
-                        views.condition = t.pageView;
                     } else if (l.path() == '/orders') {
                         views.order = t.pageView;
                     } else if (l.path().match('/resources/agent_clusters')) {

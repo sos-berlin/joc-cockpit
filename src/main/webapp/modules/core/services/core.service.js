@@ -36,19 +36,6 @@
         tabs._job.selectedView = true;
         tabs._job.showTaskPanel = undefined;
 
-        tabs._condition = {};
-        tabs._condition.filter = {};
-        tabs._condition.filter.state = 'ALL';
-        tabs._condition.filter.type = 'ALL';
-        tabs._condition.filter.sortBy = 'name';
-        tabs._condition.reverse = false;
-        tabs._condition.searchText = '';
-        tabs._condition.currentPage = '1';
-        tabs._condition.expand_to = [];
-        tabs._condition.selectedView = true;
-        tabs._condition.showTaskPanel = undefined;
-        tabs._condition.graphViewDetail = {jobStream : 'ALL',tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
-
         tabs._jobDetail = {};
         tabs._jobDetail.filter = {};
         tabs._jobDetail.filter.state = 'ALL';
@@ -246,19 +233,6 @@
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
         tempTabs._job.showTaskPanel = undefined;
-
-        tempTabs._condition = {};
-        tempTabs._condition.filter = {};
-        tempTabs._condition.filter.state = 'ALL';
-        tempTabs._condition.filter.type = 'ALL';
-        tempTabs._condition.filter.sortBy = 'name';
-        tempTabs._condition.reverse = false;
-        tempTabs._condition.searchText = '';
-        tempTabs._condition.currentPage = '1';
-        tempTabs._condition.expand_to = [];
-        tempTabs._condition.selectedView = true;
-        tempTabs._condition.showTaskPanel = undefined;
-        tempTabs._condition.graphViewDetail = {jobStream : 'ALL', tab: 'jobStream', eventFilter: 'EXIST', isWorkflowCompact: true };
 
         tempTabs._jobDetail = {};
         tempTabs._jobDetail.filter = {};
@@ -504,9 +478,6 @@
             },
             getJobTab: function () {
                 return tabs._job;
-            },
-            getConditionTab: function () {
-                return tabs._condition;
             },
             getJobDetailTab: function () {
                 return tabs._jobDetail;

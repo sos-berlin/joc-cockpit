@@ -1367,7 +1367,17 @@
 
                     vm.$on('reloadJobChain', function () {
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
-                        vm.jobChainData = angular.copy(vm.jobChain);
+                        let list = angular.copy(vm.jobChain);
+                        for(let i =0; i < vm.jobChainData.nodes.length; i++) {
+                            for (let j = 0; j < list.nodes.length; j++) {
+                                if(list.nodes[j].name === vm.jobChainData.nodes[i].name){
+                                    vm.jobChainData.nodes[i] = list.nodes[j];
+                                    list.nodes.splice(j,1);
+                                    break;
+                                }
+
+                            }
+                        }
                         getInfo(0);
                         updateJobChain();
                     });

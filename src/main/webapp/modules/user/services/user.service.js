@@ -280,16 +280,6 @@
                             }
                         }
                         break;
-                    case 'Condition':
-                        if (showViews.conditions !== undefined) {
-                            if (showViews.conditions)
-                                ifPermissionPassed = true;
-                        } else {
-                            if (this.permissionModel.permission.Condition && this.permissionModel.permission.Condition.view.status) {
-                                ifPermissionPassed = true;
-                            }
-                        }
-                        break;
                     case 'Order':
                         if (showViews.orders !== undefined) {
                             if (showViews.orders)
@@ -362,9 +352,7 @@
                             $location.path('/job_chains');
                         } else if (showViews.jobs) {
                             $location.path('/jobs');
-                        } else if (showViews.conditions) {
-                            $location.path('/conditions');
-                        }else if (showViews.orders) {
+                        } else if (showViews.orders) {
                             $location.path('/orders');
                         } else if (showViews.history) {
                             $location.path('/history');
@@ -373,8 +361,6 @@
                         } else if (showViews.auditLog) {
                             $location.path('/audit_log');
                         } else if (showViews.fileTransfers) {
-                            $location.path('/file_transfers');
-                        }else if (showViews.fileTransfers) {
                             $location.path('/file_transfers');
                         } else {
                             $location.path('/user/profile');

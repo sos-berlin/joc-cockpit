@@ -425,16 +425,6 @@
             url: "/profiles",
             templateUrl: "modules/user/views/profiles.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.profiles' | translate}}", parent: "app.users.user"}
-        }).state("app.conditions", {
-            url: "/conditions",
-            templateUrl: "modules/job/views/condition.html",
-            controller: "JobCtrl",
-            resolve: {
-                permission: function(authorizationService) {
-                    return authorizationService.permissionCheck('Condition');
-                }
-            },
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.conditions' | translate}}"}
         })
 
     }

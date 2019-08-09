@@ -8,8 +8,7 @@
     angular.module('app')
         .service('JobChainService', JobChainService)
         .service('JobService', JobService)
-        .service('TaskService', TaskService)
-        .service('ConditionService', ConditionService);
+        .service('TaskService', TaskService);
 
     JobChainService.$inject = ["$resource", "$q","$window"];
     function JobChainService($resource, $q,$window) {
@@ -484,110 +483,6 @@
                 return deferred.promise;
             }
 
-        }
-    }
-
-    ConditionService.$inject = ["$resource", "$q"];
-    function ConditionService($resource, $q) {
-        return {
-            workflowTree: function (filter) {
-                var deferred = $q.defer();
-                var Conditions = $resource('conditions/jobstream_folders');
-                Conditions.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            inCondition: function (filters) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/in_conditions');
-                Condition.save(filters, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            outCondition: function (tasks) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/out_conditions');
-                Condition.save(tasks, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            updateInCondition: function (tasks) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/edit/in_condition');
-                Condition.save(tasks, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            updateOutCondition: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/edit/out_condition');
-                Condition.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            resetWorkflow: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/resetjobstream');
-                Condition.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },startConditionResolver: function (filter) {
-                var deferred = $q.defer();
-                var Condition = $resource('conditions/start_condition_resolver');
-                Condition.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-             getEvents: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('conditions/eventlist');
-                Event.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            addEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('conditions/event/add');
-                Event.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            }, deleteEvent: function (filter) {
-                var deferred = $q.defer();
-                var Event = $resource('conditions/event/delete');
-                Event.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            }
         }
     }
 

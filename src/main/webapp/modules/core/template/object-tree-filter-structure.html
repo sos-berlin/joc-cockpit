@@ -16,10 +16,9 @@
                         <td style="white-space: nowrap">
                             <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
                                 <span>
-                                    <i ng-if="!row.branch.expanded && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
+                                    <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
                                     <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open"></i>
-                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0 && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
-                                    <i ng-if="row.branch.type == 'WORKFLOW'" class="fa fa-sitemap"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0" class="fa fa-folder"></i>
                                     {{row.branch[expandingProperty.field] || '/' }}
                                 </span>
                             </span>
@@ -43,7 +42,7 @@
                                         <input type="checkbox" data-checklist-model="object.orders"
                                                data-checklist-value="order"><i class="primary"></i>
                                       </label>
-                                      <i class="icon-orders-icon" style="position:relative;top: 2px"></i>
+                                      <img class="order_img" src="images/order1.png" width="13" height="14">
                                       <span>{{order.orderId}}</span> <span ng-if="order.title" class="text-sm text-muted">&nbsp;-&nbsp;{{order.title}}</span>
                                   </div>
                             </div>
@@ -53,8 +52,7 @@
                                         <input type="checkbox" data-checklist-model="object.jobs"
                                                data-checklist-value="job.path"><i class="primary"></i>
                                     </label>
-                                    <i ng-if="job.numOfNodes > -1" class="fa fa-chain"></i>
-                                    <i ng-if="!job.numOfNodes" class="icon-jobs-icon" style="position:relative;top: 2px"></i>
+                                    <img class="job_img" src="images/job1.png" width="15" height="15" style="margin-top: -2px">
                                     <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
                                  </span>
                             </div>
@@ -72,16 +70,6 @@
                                 <span class="cursor" ng-click="on_user_click({document:document.path})">
                                     <i class="fa fa-file text-sm" style="margin-top: -2px"></i>
                                     <span>{{document.name}}</span>  <span ng-if="document.title" class="text-sm text-muted">&nbsp;-&nbsp;{{document.title}}</span>
-                                 </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr ng-if="row.branch.type == 'WORKFLOW' && row.branch.events.length>0">
-                        <td></td>
-                        <td>
-                            <div class="p-l-md p-t-xxs" ng-repeat="evt in row.branch.events">
-                                <span class="text-muted text-hover-primary" ng-click="on_user_click({evt:evt, path:row.branch['path']})">
-                                    <span>{{evt}}</span>
                                  </span>
                             </div>
                         </td>
