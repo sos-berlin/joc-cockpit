@@ -3641,14 +3641,24 @@
             });
         };
 
+        vm.$on('reloadTree', function(evt, data){
+            if(vm.jobFilters.graphViewDetail.jobStream === data.oldName){
+                vm.jobFilters.graphViewDetail.jobStream = data.newName;
+            }
+            vm.updateJobStreamFolders();
+        });
+
         function filterTreeData(list) {
-            for (let i = 0; i < list.length; i++) {
-                if (list[i] === '/') {
-                    list.splice(i, 1);
-                    break;
+            let _tempArr = [];
+            list= list.sort();
+            for (let i = list.length - 1; i >= 0; i--) {
+                  if (_tempArr.length == 0) {
+                        _tempArr.push(list[i]);
+                    } else if(!_tempArr[_tempArr.length - 1].match(list[i])){
+                        _tempArr.push(list[i]);
                 }
             }
-            if (list.length === 0) {
+            if (_tempArr.length === 0) {
                 let obj = {name: '', path: '/'};
                 obj.selected1 = true;
                 vm.allJobs = [];
@@ -3656,14 +3666,15 @@
                 return [obj];
             }
             let folders = [], isCalled = false;
-            for (let i = 0; i < list.length; i++) {
-                let nodes = list[i].split('/');
+            for (let i = 0; i < _tempArr.length; i++) {
+                let nodes = _tempArr[i].split('/');
                 let arr = [];
                 let flag = true, index = 0;
+
                 for (let j = 0; j < nodes.length; j++) {
                     let obj = {};
                     obj.name = nodes[j];
-                    obj.path = nodes[j] ? list[i].substring(0, list[i].lastIndexOf(nodes[j]) + nodes[j].length) : '/';
+                    obj.path = nodes[j] ? _tempArr[i].substring(0, _tempArr[i].lastIndexOf(nodes[j]) + nodes[j].length) : '/';
                     obj.expanded = true;
 
                     if (j < nodes.length - 1) {
@@ -3757,6 +3768,7 @@
                         }
                     }
                     let folders = filterTreeData(jobStreamFolders);
+
                     if (vm.isEmpty(vm.jobFilters.expand_to)) {
                         vm.tree = angular.copy(folders);
                     } else {
@@ -3783,7 +3795,7 @@
 
         vm.noReload = false;
 
-        $scope.$on('switchPath', function($event, path){
+        $scope.$on('switchPath', function ($event, path) {
             let p = path.path;
 
             p = p.substring(0, p.lastIndexOf('/')) || '/';
@@ -3791,7 +3803,7 @@
                 if (value.path != p) {
                     value.expanded = true;
                     recursive(value, p);
-                }else{
+                } else {
                     vm.noReload = true;
                     vm.treeHandler(value);
                 }
@@ -3864,7 +3876,7 @@
                 }
             }
 
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.getJobsP(obj).then(function (result) {
@@ -3951,7 +3963,7 @@
                 }
             }
 
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.getJobsP(obj).then(function (result) {
@@ -3960,7 +3972,7 @@
                 }
                 data.jobs = result.jobs;
                 vm.allJobs = result.jobs;
-                if(vm.noReload) {
+                if (vm.noReload) {
                     vm.noReload = false;
                     $scope.$broadcast('reloadWorkflow');
                 }
@@ -4233,7 +4245,7 @@
                 return;
             }
             obj.compactView = vm.jobFilters.isCompact;
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.get(obj).then(function (res) {
@@ -4367,7 +4379,7 @@
                 }
             }
 
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj1.isOrderJob = false;
             }
             JobService.getJobsP(obj1).then(function (result) {
@@ -4623,7 +4635,7 @@
                 obj.states = vm.jobFilter.state;
             }
             obj.compactView = vm.jobFilters.isCompact;
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.get(obj).then(function (res) {
@@ -4688,7 +4700,7 @@
                 }
             }
             vm.folderPath = '/';
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.getJobsP(obj).then(function (result) {
@@ -5065,7 +5077,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.getJobsP(obj).then(function (res) {
@@ -6319,30 +6331,6 @@
             });
         }
 
-        vm.resetWorkflow = function (jobStream, job) {
-            vm.jobStream = jobStream;
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/confirm-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                ConditionService.resetWorkflow({
-                    "jobschedulerId": $scope.schedulerIds.selected,
-                    "job": job,
-                    "jobStream": jobStream
-                }).then(function (res) {
-                    console.log(res);
-                }, function () {
-
-                })
-            }, function () {
-
-            });
-
-        };
-
         function checkCurrentSelectedFolders(job) {
             job.path1 = job.path.substring(0, job.path.lastIndexOf('/')) || job.path.substring(0, job.path.lastIndexOf('/') + 1);
             for (let i = 0; i < vm.tree.length; i++) {
@@ -6654,8 +6642,19 @@
             }
         });
 
-        vm.startConditionResolver = function(){
+        vm.startConditionResolver = function () {
             vm.$broadcast('startConditionResolver');
+        };
+
+        vm.createJobStream = function () {
+            vm.$broadcast('createJobStream');
+        };
+
+        vm.resetWorkflow = function () {
+            vm.$broadcast('resetWorkflow');
+        };
+        vm.compactView= function () {
+            vm.$broadcast('compactView');
         };
 
         vm.zoomIn = function () {
@@ -8343,7 +8342,7 @@
             }
             createEditor();
 
-            let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 38) + 'px)';
+            let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 30) + 'px)';
 
             let dom = $('#graph');
             dom.css({opacity: 1});
@@ -8361,11 +8360,6 @@
                 }
                 if (flag) {
                     createJobNode(vm.dropTarget, event)
-                } else {
-                    toasty.warning({
-                        title: vm.dropTarget + ' is alreadyExist!',
-                        timeout: 3000
-                    });
                 }
                 event.preventDefault();
             });
@@ -8401,15 +8395,17 @@
                 // Creates new toolbar without event processing
                 let toolbar = document.getElementById('toolbarContainer');
                 $('#toolbarContainer').css({'max-height': ht});
-                for (let i = 0; i < vm.allJobs.length; i++) {
+                let _jobs = orderBy(vm.allJobs, 'name');
+                for (let i = 0; i < _jobs.length; i++) {
                     let div = document.createElement('div');
-                    div.innerHTML = vm.allJobs[i].name;
-                    div.setAttribute('title', vm.allJobs[i].name);
-                    div.setAttribute('id', vm.allJobs[i].path);
+                    div.innerHTML = _jobs[i].name;
+                    div.setAttribute('title', _jobs[i].name);
+                    div.setAttribute('id', _jobs[i].path);
                     div.setAttribute('draggable', 'true');
                     div.setAttribute('ondragstart', 'drag(event)');
                     toolbar.appendChild(div);
                 }
+
             }, 100);
             recursivelyConnectJobs(false, false);
 
@@ -8521,7 +8517,7 @@
                         vm.isWorkflowLoaded = true;
                         vm.isUpdated = true;
                         let scrollTop = 0;
-                        if(checkScroll) {
+                        if (checkScroll) {
                             let element = document.getElementById("graph");
                             scrollTop = element.scrollTop;
                         }
@@ -8532,16 +8528,16 @@
                             vm.selectedWorkflow = vm.workflows[0].name;
                             createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                         } else {
-                            let _jobs =[];
+                            let _jobs = [];
                             for (let x = 0; x < vm.workflows.length; x++) {
-                                if(vm.selectedWorkflow === 'ALL'){
+                                if (vm.selectedWorkflow === 'ALL') {
                                     _jobs = _jobs.concat(vm.workflows[x].jobs);
                                 } else if (vm.selectedWorkflow === vm.workflows[x].name) {
                                     createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollTop);
                                     break;
                                 }
                             }
-                            if(_jobs.length > 0){
+                            if (_jobs.length > 0) {
                                 createWorkflowDiagram(_jobs, !reload, scrollTop);
                             }
                         }
@@ -8777,12 +8773,9 @@
                             }
                         }
                     }
-
-                    if (jobs[i].isExpanded && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
-                        expandJobNode(graph, jobs[i], true);
-                    }
                 }
 
+                vm.jobs = jobs;
                 for (let i = 0; i < jobs.length; i++) {
                     for (let j = 0; j < jobs[i].inconditions.length; j++) {
                         if (jobs[i].inconditions[j].boxId && jobs[i].inconditions[j].boxId.length > 0) {
@@ -8791,6 +8784,10 @@
                             }
                             delete jobs[i].inconditions[j]['boxId'];
                         }
+                    }
+
+                    if (jobs[i].isExpanded && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
+                        expandJobNode(graph, jobs[i], true);
                     }
                 }
 
@@ -8822,6 +8819,23 @@
             }, 100);
             let element = document.getElementById("graph");
             element.scrollTop = scrollValue;
+
+
+            if (vm.jobs && vm.jobs.length) {
+                let list = $('#toolbarContainer').find('div');
+                for (let i = 0; i < list.length; i++) {
+                    list[i].className = '';
+                    list[i].draggable = true;
+                    for (let j = 0; j < vm.jobs.length; j++) {
+                        if (vm.jobs[j].path === list[i].id) {
+                            list[i].className = 'disabled';
+                            list[i].draggable = false;
+                            break;
+                        }
+                    }
+                }
+
+            }
         }
 
         function expandJobNode(graph, job, flag) {
@@ -9049,7 +9063,7 @@
 
         };
 
-        vm.resetWorkflow = function (jobStream, job) {
+        vm.resetWorkflow = function (jobStream) {
             vm.jobStream = jobStream;
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -9060,7 +9074,6 @@
             modalInstance.result.then(function () {
                 ConditionService.resetWorkflow({
                     "jobschedulerId": $scope.schedulerIds.selected,
-                    "job": job,
                     "jobStream": jobStream
                 }).then(function (res) {
                     vm.isUpdated = false;
@@ -9073,6 +9086,88 @@
             });
         };
 
+        vm.updateWorkflow = function (jobStream) {
+            vm._jobStream = angular.copy(jobStream);
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/create-job-stream-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                if(vm.selectedWorkflow === jobStream.name){
+                    vm.selectedWorkflow = vm._jobStream.name;
+                }
+                if (vm._jobStream.name !== jobStream.name) {
+                    let inObj = [], outObj = [], flag = true;
+                    for (let i = 0; i < jobStream.jobs.length; i++) {
+                        for (let j = 0; j < jobStream.jobs[i].inconditions.length; j++) {
+                            jobStream.jobs[i].inconditions[j].jobStream = vm._jobStream.name;
+                        }
+                        for (let j = 0; j < jobStream.jobs[i].outconditions.length; j++) {
+                            jobStream.jobs[i].outconditions[j].jobStream = vm._jobStream.name;
+                        }
+                        inObj.push({job: jobStream.jobs[i].path, inconditions: jobStream.jobs[i].inconditions});
+                        outObj.push({job: jobStream.jobs[i].path, outconditions: jobStream.jobs[i].outconditions});
+                    }
+                    ConditionService.updateInCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        jobsInconditions: inObj
+                    }).then(function () {
+                        $rootScope.$broadcast('reloadTree', {oldName : jobStream.name, newName : vm._jobStream.name});
+                        if(flag){
+                            flag = false;
+                            recursivelyConnectJobs(true, false);
+                        }
+                    });
+                    ConditionService.updateOutCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        jobsOutconditions: outObj
+                    }).then(function () {
+                        if(flag){
+                            flag = false;
+                            recursivelyConnectJobs(true, false);
+                        }
+                    })
+                }
+            }, function () {
+
+            })
+        };
+
+        vm.removeWorkflow = function (jobStream, index) {
+            vm.workflows.splice(index, 1);
+            let inObj = [], outObj = [], flag = true;
+            for (let i = 0; i < jobStream.jobs.length; i++) {
+                inObj.push({job: jobStream.jobs[i].path, inconditions: []});
+                outObj.push({job: jobStream.jobs[i].path, outconditions: []});
+            }
+            ConditionService.updateInCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobsInconditions: inObj
+            }).then(function () {
+                reset(jobStream, flag);
+                flag = false;
+            });
+            ConditionService.updateOutCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobsOutconditions: outObj
+            }).then(function () {
+                reset(jobStream, flag);
+                flag = false;
+            });
+        };
+
+        function reset(jobStream, flag) {
+            if (jobStream.name === vm.selectedWorkflow && flag) {
+                vm.selectedWorkflow = '';
+                if (vm.workflows.length === 0) {
+                    vm.flag = false;
+                }
+                recursivelyConnectJobs(true, false);
+            }
+        }
+
         vm.switchGraph = function (condition, job) {
             let wf = vm.workflows[0];
             let p = wf.path === '/' ? '/' : wf.path + '/';
@@ -9083,7 +9178,7 @@
                 vm.reloadNewWorkflow = condition.jobStream;
                 $rootScope.$broadcast('switchPath', {path: path});
             } else {
-                if(condition.jobStream !== vm.selectedWorkflow) {
+                if (condition.jobStream !== vm.selectedWorkflow) {
                     vm.jobFilters.graphViewDetail.tab = 'jobStream';
                     vm.changeGraph(condition.jobStream);
                 }
@@ -9574,7 +9669,7 @@
          * Function to centered the flow diagram
          */
         function makeCenter(graph) {
-             t1 = $timeout(function () {
+            t1 = $timeout(function () {
                 graph.zoomActual();
                 graph.center(true, true, 0.5, 0);
             }, 0);
@@ -9718,13 +9813,28 @@
                 return '<div class="vertex-text">' + cell.getAttribute('label') + '</div>';
             };
 
+            graph.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
+                recurse = (recurse != null) ? recurse : true;
+                this.stopEditing(false);
+                this.model.beginUpdate();
+                try {
+                    this.cellsFolded(cells, collapse, recurse, checkFoldable);
+                    this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
+                        'collapse', collapse, 'recurse', recurse, 'cells', cells));
+                } finally {
+                    this.model.endUpdate();
+                }
+                executeLayout(graph);
+                return cells;
+            };
+
             /**
              * Function: getTooltipForCell
              *
              * Returns the string or DOM node to be used as the tooltip for the given
              * cell.
              */
-            graph.getTooltipForCell = function(cell) {
+            graph.getTooltipForCell = function (cell) {
                 let tip = null;
                 if (cell != null && cell.getTooltip != null) {
                     tip = cell.getTooltip();
@@ -9747,10 +9857,13 @@
                 return tip;
             };
 
+            let clickCounter = 0;
+
             // Shows a "modal" window when double clicking a vertex.
             graph.dblClick = function (evt, cell) {
                 // Do not fire a DOUBLE_CLICK event here as mxEditor will
                 // consume the event and start the in-place editor.
+                clickCounter = 0;
                 if (this.isEnabled() &&
                     !mxEvent.isConsumed(evt) &&
                     cell != null) {
@@ -9768,30 +9881,39 @@
             graph.addListener(mxEvent.CLICK, function (sender, evt) {
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    if (cell.value && cell.value.tagName === 'InCondition') {
-                        vm.jobFilters.graphViewDetail.tab = 'reference';
-                        vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
-                    }else if(cell.value && cell.value.tagName === 'OutCondition'){
-                        vm.jobFilters.graphViewDetail.tab = 'reference';
-                        vm._outconditionReference = [];
-                    } else if (cell.value.tagName === 'Job' && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
-                        for (let i = 0; i < vm.jobs.length; i++) {
-                            if (vm.jobs[i].path == cell.getAttribute('actual')) {
-                                vm.jobs[i].isExpanded = !vm.jobs[i].isExpanded;
-                                if(vm.jobs[i].isExpanded) {
-                                    expandJobNode(graph, vm.jobs[i]);
-                                }else{
-                                    updateJobs(true);
-                                }
-                                break;
-                            }
+                    ++clickCounter;
+                    setTimeout(function () {
+                        if (clickCounter === 1) {
+                            handleSingleClick(cell);
                         }
-                    }
+                    }, 200);
                     evt.consume();
                 }
                 vm.selectedNode = null;
             });
 
+            function handleSingleClick(cell) {
+                if (cell.value && cell.value.tagName === 'InCondition') {
+                    vm.jobFilters.graphViewDetail.tab = 'reference';
+                    vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
+                } else if (cell.value && cell.value.tagName === 'OutCondition') {
+                    vm.jobFilters.graphViewDetail.tab = 'reference';
+                    vm._outconditionReference = [];
+                } else if (cell.value.tagName === 'Job' && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
+                    for (let i = 0; i < vm.jobs.length; i++) {
+                        if (vm.jobs[i].path == cell.getAttribute('actual')) {
+                            vm.jobs[i].isExpanded = !vm.jobs[i].isExpanded;
+                            if (vm.jobs[i].isExpanded) {
+                                expandJobNode(graph, vm.jobs[i]);
+                            } else {
+                                updateJobs(true);
+                            }
+                            break;
+                        }
+                    }
+                }
+                clickCounter = 0;
+            }
 
             // Shows a "modal" window when clicking on img.
             function mxIconSet(state) {
@@ -9799,7 +9921,7 @@
                 let img;
                 if (state.cell && state.cell.value.tagName === 'Job' || (state.cell.value.tagName === 'Event' && (vm.permission.Condition.change.events.add || vm.permission.Condition.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.Condition.change.conditions)) {
                     img = mxUtils.createImage('images/menu.svg');
-                    let x = state.x - 8, y = state.y + 2;
+                    let x = state.x - 20, y = state.y + 2;
                     if (state.cell.value.tagName === 'Event') {
                         x += (state.width * .222);
                     } else if (state.cell.value.tagName === 'OutCondition') {
@@ -9809,7 +9931,10 @@
                     img.style.top = y + 'px';
                     mxEvent.addListener(img, 'click',
                         mxUtils.bind(this, function (evt) {
-                            let _x = x + 10;
+                            let _x = x - 120;
+                            if (state.cell.value.tagName === 'Job') {
+                                _x -= 28;
+                            }
                             let _y = y + 10 - $('#graph').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
@@ -9954,15 +10079,26 @@
             }
         });
 
-
         /** -------------------- Actions ------------------- */
-
         $scope.closeMenu = function () {
             vm.selectedNode = null;
         };
 
         $scope.$on('startConditionResolver', function () {
             vm.startConditionResolver();
+        });
+
+        $scope.$on('createJobStream', function () {
+            vm.createJobStream();
+        });
+        $scope.$on('compactView', function () {
+            if(vm.selectedWorkflow)
+                vm.compactView(vm.selectedWorkflow)
+        });
+
+        $scope.$on('resetWorkflow', function () {
+            if(vm.selectedWorkflow)
+                vm.resetWorkflow(vm.selectedWorkflow);
         });
 
         $scope.$on('zoomIn', function () {
@@ -10003,7 +10139,6 @@
             } catch (e) {
                 console.error(e);
             }
-
         });
     }
 })();

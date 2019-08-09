@@ -5172,9 +5172,15 @@ input:-webkit-autofill {
      text-overflow: ellipsis;
      border: 1px solid grey;
      margin: 6px 4px;
+    overflow-y: auto;
  }
 
 #toolbarContainer div:hover{
     background: #f5f7fa;
     cursor: pointer;
+}
+#toolbarContainer div.disabled{
+    background: transparent !important;
+    opacity: .7;
+    cursor: not-allowed !important;
 }
