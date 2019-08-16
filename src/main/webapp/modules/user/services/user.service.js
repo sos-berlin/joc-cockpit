@@ -285,7 +285,7 @@
                             if (showViews.conditions)
                                 ifPermissionPassed = true;
                         } else {
-                            if (this.permissionModel.permission.Condition && this.permissionModel.permission.Condition.view.status) {
+                            if (this.permissionModel.permission.JobStream && this.permissionModel.permission.JobStream.view.status) {
                                 ifPermissionPassed = true;
                             }
                         }
@@ -373,8 +373,6 @@
                         } else if (showViews.auditLog) {
                             $location.path('/audit_log');
                         } else if (showViews.fileTransfers) {
-                            $location.path('/file_transfers');
-                        }else if (showViews.fileTransfers) {
                             $location.path('/file_transfers');
                         } else {
                             $location.path('/user/profile');

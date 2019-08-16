@@ -8375,7 +8375,6 @@
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
                 $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
-                //makeCenter(vm.editor.graph);
             });
 
             $('.sidebar-close', panel).click(function () {
@@ -8384,7 +8383,6 @@
                 $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
                 $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                 $('.sidebar-close').css('right', '-20px');
-                //makeCenter(vm.editor.graph);
             });
             setTimeout(function () {
 
@@ -8640,10 +8638,12 @@
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
                             }
-                            let style = jobs[i].inconditions[x].consumed ? 'condition1' : 'condition';
-
+                            let style = 'condition';
+                            if(jobs[i].inconditions[x].consumed){
+                                style += ';fillColor=none';
+                            }
                             if (jobs[i].inconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=#66FF66;strokeWidth=2';
+                                style += ';strokeColor=green;strokeWidth=2';
                             }
 
                             let conditionVertex = createVertex(parent, _node, jobs[i].inconditions[x].conditionExpression.expression, style);
@@ -8666,7 +8666,7 @@
                             _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
                             let style = 'condition2';
                             if (jobs[i].outconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=#66FF66;strokeWidth=2';
+                                style += ';strokeColor=green;strokeWidth=2';
                             }
                             let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, style);
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
@@ -8679,9 +8679,12 @@
                                         _node.setAttribute('isExist', flg);
                                         let style = 'event';
                                         if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
-                                            style += ';strokeWidth=2;strokeColor=#66FF66;';
+                                            style += ';strokeWidth=2;strokeColor=green;';
                                         } else if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                            style += ';strokeWidth=2;strokeColor=#66FF66;dashed=1';
+                                            style += ';strokeWidth=2;strokeColor=green;dashed=1';
+                                        }
+                                        if(!jobs[i].outconditions[x].outconditionEvents[z].exists && !jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream){
+                                            style += ';fillColor=none';
                                         }
                                         let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
                                         events.push(e1);
@@ -8853,10 +8856,12 @@
                 if (job.inconditions[n].inconditionCommands) {
                     _node.setAttribute('commands', JSON.stringify(job.inconditions[n].inconditionCommands));
                 }
-                let style = job.inconditions[n].consumed ? 'condition1' : 'condition';
-
+                let style = 'condition';
+                if(job.inconditions[n].consumed){
+                    style += ';fillColor=none';
+                }
                 if (job.inconditions[n].conditionExpression.value) {
-                    style += ';strokeColor=#66FF66;strokeWidth=2';
+                    style += ';strokeColor=green;strokeWidth=2';
                 }
 
                 let conditionVertex = createVertex(parent, _node, job.inconditions[n].conditionExpression.expression, style);
@@ -8881,7 +8886,7 @@
                 _node.setAttribute('events', JSON.stringify(job.outconditions[x].outconditionEvents));
                 let style = 'condition2';
                 if (job.outconditions[x].conditionExpression.value) {
-                    style += ';strokeColor=#66FF66;strokeWidth=2';
+                    style += ';strokeColor=green;strokeWidth=2';
                 }
                 let conditionVertex = createVertex(parent, _node, job.outconditions[x].conditionExpression.expression, style);
                 job.outconditions[x].vertexId = conditionVertex.id;
@@ -8896,9 +8901,12 @@
                             _node.setAttribute('isExist', flg);
                             let style = 'event';
                             if (job.outconditions[x].outconditionEvents[z].exists) {
-                                style += ';strokeWidth=2;strokeColor=#66FF66;';
+                                style += ';strokeWidth=2;strokeColor=green';
                             } else if (job.outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                style += ';strokeWidth=2;strokeColor=#66FF66;dashed=1';
+                                style += ';strokeWidth=2;strokeColor=green;dashed=1';
+                            }
+                            if(!job.outconditions[x].outconditionEvents[z].exists && !job.outconditions[x].outconditionEvents[z].existsInJobStream){
+                                style += ';fillColor=none';
                             }
                             let e1 = createVertex(parent, _node, job.outconditions[x].outconditionEvents[z].event, style);
                             events.push(e1);
@@ -8939,7 +8947,7 @@
                 }
                 let inComingEdges = graph.getIncomingEdges(out);
                 for (let j = 0; j < inComingEdges.length; j++) {
-                    if (matchedEvents.indexOf(inComingEdges[j].source.id) == -1) {
+                    if (matchedEvents.indexOf(inComingEdges[j].source.id) === -1) {
                         graph.getModel().remove(inComingEdges[j]);
                     }
                 }
@@ -9316,7 +9324,7 @@
                     }
                 }
             }
-            if (vm.permission.Condition.view.eventlist) {
+            if (vm.permission.JobStream.view.eventlist) {
                 ConditionService.getEvents(obj).then(function (res) {
                     vm.eventList = res.conditionEvents;
                     checkEventFilter();
@@ -9343,7 +9351,7 @@
                     }
                 }
             }
-            if (vm.permission.Condition.view.eventlist) {
+            if (vm.permission.JobStream.view.eventlist) {
                 ConditionService.getEvents(obj).then(function (res) {
                     vm.eventList = res.conditionEvents;
                     checkEventFilter();
@@ -9726,8 +9734,8 @@
             if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
                 style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
             }
-            style[mxConstants.STYLE_FILLCOLOR] = vm.preferences.theme === 'dark' ? '#333332' : vm.preferences.theme === 'grey' ? '#717a86' :
-                vm.preferences.theme === 'blue' ? '#32465a' : vm.preferences.theme === 'blue-lt' ? '#46525f' : vm.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
+            style[mxConstants.STYLE_FILLCOLOR] = vm.preferences.theme === 'dark' ? '#333332' : vm.preferences.theme === 'grey' ? '#535a63' :
+                vm.preferences.theme === 'blue' ? '#344d68' : vm.preferences.theme === 'blue-lt' ? '#4e5c6a' : vm.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
 
             // Enables snapping waypoints to terminals
             mxEdgeHandler.prototype.snapToTerminals = true;
@@ -9867,8 +9875,21 @@
                 if (this.isEnabled() &&
                     !mxEvent.isConsumed(evt) &&
                     cell != null) {
-                    if (cell.value.tagName !== 'Job' && cell.value.tagName !== 'Box' && cell.value.tagName !== 'Event' && cell.value.tagName !== 'Connection') {
+                    if (cell.value.tagName === 'InCondition' || cell.value.tagName === 'OutCondition') {
                         vm.openModel(cell);
+                    }else if(cell.value.tagName === 'Job'){
+                        for (let i = 0; i < vm.allJobs.length; i++) {
+                            if (vm.allJobs[i].path === cell.getAttribute('actual')) {
+                                vm.editConditions(vm.allJobs[i], '', function (res) {
+                                    if (!res) {
+                                        recursivelyConnectJobs(true, false, function () {
+                                            vm.actual();
+                                        });
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
                 }
                 // Disables any default behaviour for the double click
@@ -9919,7 +9940,7 @@
             function mxIconSet(state) {
                 this.images = [];
                 let img;
-                if (state.cell && state.cell.value.tagName === 'Job' || (state.cell.value.tagName === 'Event' && (vm.permission.Condition.change.events.add || vm.permission.Condition.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.Condition.change.conditions)) {
+                if (state.cell && state.cell.value.tagName === 'Job' || (state.cell.value.tagName === 'Event' && (vm.permission.JobStream.change.events.add || vm.permission.JobStream.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.JobStream.change.conditions)) {
                     img = mxUtils.createImage('images/menu.svg');
                     let x = state.x - 20, y = state.y + 2;
                     if (state.cell.value.tagName === 'Event') {
