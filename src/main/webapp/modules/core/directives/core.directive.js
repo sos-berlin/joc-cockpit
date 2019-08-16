@@ -286,9 +286,9 @@
                     t.pageView = views.jobChain;
                 } else if (l.path() == '/jobs') {
                     t.pageView = views.job;
-                }else if (l.path() == '/conditions') {
+                }else if (l.path() == '/job_streams') {
                     t.pageView = views.condition;
-                    t.path='/conditions';
+                    t.path='/job_streams';
                 } else if (l.path() == '/orders') {
                     t.pageView = views.order;
                 } else if (l.path().match('/resources/agent_clusters')) {
@@ -321,7 +321,7 @@
                         views.jobChain = t.pageView;
                     } else if (l.path() == '/jobs') {
                         views.job = t.pageView;
-                    }else if (l.path() == '/conditions') {
+                    }else if (l.path() == '/job_streams') {
                         views.condition = t.pageView;
                     } else if (l.path() == '/orders') {
                         views.order = t.pageView;

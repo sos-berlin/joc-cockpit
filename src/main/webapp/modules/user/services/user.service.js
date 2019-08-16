@@ -363,7 +363,7 @@
                         } else if (showViews.jobs) {
                             $location.path('/jobs');
                         } else if (showViews.conditions) {
-                            $location.path('/conditions');
+                            $location.path('/job_streams');
                         }else if (showViews.orders) {
                             $location.path('/orders');
                         } else if (showViews.history) {

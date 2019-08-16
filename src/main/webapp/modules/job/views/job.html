@@ -123,6 +123,37 @@
             </div>
         </div>
         <div id="rightPanel1">
+            <div class="row m-b m-t-sm">
+                <div class="col-md-12">
+                    <button class="btn btn-sm btn-grey hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="expandDetails()" >
+                        <i class="fa fa-angle-double-down"></i>
+                        <span translate>button.expandDetails</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm hidden-btn-text {{allJobs.length>0 && pageView!='grid' ? '' : 'hide'}}" ng-click="collapseDetails()">
+                        <i class="fa fa-angle-double-up"></i>
+                        <span translate>button.collapseDetails</span>
+                    </button>
+                    <button class="hide btn btn-sm btn-grey m-l-sm m-r-sm hidden-btn-text" ng-class="{'show-block':allJobs.length>0 && pageView!='grid'}" ng-click="resetPanel()">
+                        <i class="fa fa-refresh"></i>
+                        <span translate>button.resetPanel</span>
+                    </button>
+                    <button class="hide btn btn-grey btn-sm hidden-btn-text" ng-class="{'btn-primary': jobFilters.isCompact == true, 'show-block':allJobs.length>0}"
+                            ng-click="toggleCompactView()">
+                        <i class="fa fa-th-list"></i>
+                        <span translate>button.compactView</span>
+                    </button>
+                    <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                        <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                    </button>
+                    <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                        <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                    </button>
+                    <div class="pull-right search-box-field">
+                        <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="jobFilters.searchText" ng-change="searchInResult()">
+                        <i ng-if="jobFilters.searchText" class="fa fa-times search-close" ng-click="jobFilters.searchText = '';searchInResult()"></i>
+                    </div>
+                </div>
+            </div>
             <div class="row" ng-if="showSearchPanel">
                 <div class="col-md-12">
                 <div class="box p-a m-b-xs">

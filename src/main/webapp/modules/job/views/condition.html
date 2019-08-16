@@ -57,44 +57,7 @@
                             </div>
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
-                        <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions' && permission.JobStream.view.graph}">
-                            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-                                <li class="nav-item">
-                                  <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
-                                    <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
-                                  </a>
-                                </li>
-                                <li class="nav-item dropdown-separator">
-                                  <span class="separator"></span>
-                                </li>
-                                <li class="nav-item">
-                                  <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}" ng-click="zoomOut()">
-                                    <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
-                                  </a>
-                                </li>
-                                <li class="nav-item dropdown-separator">
-                                  <span class="separator"></span>
-                                </li>
-                                <li class="nav-item">
-                                  <a class="nav-link" uib-tooltip="{{'tooltip.default' | translate}}" ng-click="actual()">
-                                    <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
-                                  </a>
-                                </li>
-                                <li class="nav-item dropdown-separator">
-                                  <span class="separator"></span>
-                                </li>
-                                <li class="nav-item">
-                                  <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}" ng-click="fit()">
-                                    <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
-                                  </a>
-                                </li>
-                          </ul>
-                        </div>
                         <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions'}">
-                            <div class="btn-group m-l-sm ">
-                                <button  class="btn btn-grey btn-sm btn btn-grey button-group-ellipsis " ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView()" translate>button.compactView</button>
-                                <button type="button" class="btn btn-sm btn-grey button-group-ellipsis " ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView()" translate>button.detailView</button>
-                            </div>
                             <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
@@ -131,7 +94,7 @@
                 <div class="dropdown m-b">
                     <a class="dropdown-toggle b-b p-b-xs" data-toggle="dropdown">{{'label.filterByJobstream' | translate}} :
                         <span class="text-primary" ng-bind="jobFilters.graphViewDetail.jobStream"></span></a>
-                    <div class="dropdown-menu dropdown-more dropdown-ac">
+                    <div class="dropdown-menu dropdown-more dropdown-ac" style="max-height: 350px; overflow: auto">
                         <a class="dropdown-item {{jobFilters.graphViewDetail.jobStream == jobStream ? 'orange' :''}}"
                            ng-click="changeWorkflowPath(jobStream)"
                            ng-repeat="jobStream in jobStreams">
@@ -712,6 +675,52 @@
                             <div class="col-md-11">
                                 <div>
                                     <div class="graph-container" >
+                                        <div class="m-b-sm b-b p-b-sm">
+                                            <button class="btn btn-sm btn btn-grey hidden-btn-text" ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)">
+                                                <i class="fa fa-angle-double-down"></i>
+                                                <span translate>button.expandDetails</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm" ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)">
+                                                <i class="fa fa-angle-double-up"></i>
+                                                <span translate>button.collapseDetails</span>
+                                            </button>
+                                            <div class="inline m-l">
+                                                <span class="text-muted" translate>label.jobStream</span>: <span class="text-primary">{{selectedWorkflow}}</span>
+                                            </div>
+                                            <div class="inline pull-right">
+                                                <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
+                                                            <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item dropdown-separator">
+                                                        <span class="separator"></span>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}" ng-click="zoomOut()">
+                                                            <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item dropdown-separator">
+                                                        <span class="separator"></span>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" uib-tooltip="{{'tooltip.default' | translate}}" ng-click="actual()">
+                                                            <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item dropdown-separator">
+                                                        <span class="separator"></span>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}" ng-click="fit()">
+                                                            <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                         <div id="graph" ondragover="allowDrop(event)"></div>
                                         <!-- Creates a container for the outline -->
                                         <div id="outlineContainer"></div>

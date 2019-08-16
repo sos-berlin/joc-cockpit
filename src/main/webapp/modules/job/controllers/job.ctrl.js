@@ -3306,7 +3306,7 @@
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter", "ConditionService"];
     function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter, ConditionService) {
         const vm = $scope;
-        vm.isConditionTab = $location.path() === '/conditions';
+        vm.isConditionTab = $location.path() === '/job_streams';
 
         vm.jobFilters = vm.isConditionTab ? CoreService.getConditionTab() : CoreService.getJobTab();
         vm.jobFilters.isCompact = vm.userPreferences.isJobCompact == undefined ? vm.userPreferences.isCompact : vm.userPreferences.isJobCompact;
@@ -6653,25 +6653,7 @@
         vm.resetWorkflow = function () {
             vm.$broadcast('resetWorkflow');
         };
-        vm.compactView= function () {
-            vm.$broadcast('compactView');
-        };
 
-        vm.zoomIn = function () {
-            vm.$broadcast('zoomIn');
-        };
-
-        vm.zoomOut = function () {
-            vm.$broadcast('zoomOut');
-        };
-
-        vm.actual = function () {
-            vm.$broadcast('actual');
-        };
-
-        vm.fit = function () {
-            vm.$broadcast('fit');
-        };
 
         $scope.$on('$destroy', function () {
             vm.jobFilters.expand_to = vm.tree;
@@ -6687,7 +6669,6 @@
     }
 
     JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter", "$timeout"];
-
     function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter, $timeout) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
@@ -8275,7 +8256,9 @@
                 }
             }
         }
+
         var t1;
+
         function _updatePanelHeight() {
             t1 = $timeout(function () {
                 let ht = (parseInt($('#jobTableId').height()) + 50);
@@ -8323,7 +8306,6 @@
     }
 
     JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty", "orderByFilter"];
-
     function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
@@ -8342,7 +8324,7 @@
             }
             createEditor();
 
-            let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 30) + 'px)';
+            let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 76) + 'px)';
 
             let dom = $('#graph');
             dom.css({opacity: 1});
@@ -8368,10 +8350,10 @@
                 $('.sidebar').css({'width': '296px', opacity: 1});
                 $('.sidebar-open').css('right', '-20px');
                 if (window.innerWidth > 1024) {
-                    $('#outlineContainer').animate({'right': '306px'}, 'fast', 'linear');
+                    $('#outlineContainer').animate({'right': '309px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
                 } else {
-                    $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+                    $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
                 $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
@@ -8380,7 +8362,7 @@
             $('.sidebar-close', panel).click(function () {
                 $('.sidebar-open').css('right', '0');
                 $('.sidebar').css({'width': '0', opacity: 0});
-                $('#outlineContainer').animate({'right': '10px'}, 'fast', 'linear');
+                $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
                 $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                 $('.sidebar-close').css('right', '-20px');
             });
@@ -8664,6 +8646,7 @@
                             _node.setAttribute('_id', jobs[i].outconditions[x].id);
                             _node.setAttribute('job', jobs[i].path);
                             _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
+                            _node.setAttribute('inconditions', JSON.stringify(jobs[i].outconditions[x].inconditions));
                             let style = 'condition2';
                             if (jobs[i].outconditions[x].conditionExpression.value) {
                                 style += ';strokeColor=green;strokeWidth=2';
@@ -8678,12 +8661,10 @@
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].exists ? true : jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream;
                                         _node.setAttribute('isExist', flg);
                                         let style = 'event';
-                                        if (jobs[i].outconditions[x].outconditionEvents[z].exists) {
-                                            style += ';strokeWidth=2;strokeColor=green;';
-                                        } else if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                            style += ';strokeWidth=2;strokeColor=green;dashed=1';
+                                        if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
+                                            style += ';dashed=1';
                                         }
-                                        if(!jobs[i].outconditions[x].outconditionEvents[z].exists && !jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream){
+                                        if (!jobs[i].outconditions[x].outconditionEvents[z].exists && !jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
                                             style += ';fillColor=none';
                                         }
                                         let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
@@ -8884,6 +8865,7 @@
                 _node.setAttribute('_id', job.outconditions[x].id);
                 _node.setAttribute('job', job.path);
                 _node.setAttribute('events', JSON.stringify(job.outconditions[x].outconditionEvents));
+                _node.setAttribute('inconditions', JSON.stringify(job.outconditions[x].inconditions));
                 let style = 'condition2';
                 if (job.outconditions[x].conditionExpression.value) {
                     style += ';strokeColor=green;strokeWidth=2';
@@ -8900,12 +8882,10 @@
                             let flg = job.outconditions[x].outconditionEvents[z].exists ? true : job.outconditions[x].outconditionEvents[z].existsInJobStream;
                             _node.setAttribute('isExist', flg);
                             let style = 'event';
-                            if (job.outconditions[x].outconditionEvents[z].exists) {
-                                style += ';strokeWidth=2;strokeColor=green';
-                            } else if (job.outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                style += ';strokeWidth=2;strokeColor=green;dashed=1';
+                            if (job.outconditions[x].outconditionEvents[z].existsInJobStream) {
+                                style += ';dashed=1';
                             }
-                            if(!job.outconditions[x].outconditionEvents[z].exists && !job.outconditions[x].outconditionEvents[z].existsInJobStream){
+                            if (!job.outconditions[x].outconditionEvents[z].exists && !job.outconditions[x].outconditionEvents[z].existsInJobStream) {
                                 style += ';fillColor=none';
                             }
                             let e1 = createVertex(parent, _node, job.outconditions[x].outconditionEvents[z].event, style);
@@ -9865,48 +9845,14 @@
                 return tip;
             };
 
-            let clickCounter = 0;
-
-            // Shows a "modal" window when double clicking a vertex.
-            graph.dblClick = function (evt, cell) {
-                // Do not fire a DOUBLE_CLICK event here as mxEditor will
-                // consume the event and start the in-place editor.
-                clickCounter = 0;
-                if (this.isEnabled() &&
-                    !mxEvent.isConsumed(evt) &&
-                    cell != null) {
-                    if (cell.value.tagName === 'InCondition' || cell.value.tagName === 'OutCondition') {
-                        vm.openModel(cell);
-                    }else if(cell.value.tagName === 'Job'){
-                        for (let i = 0; i < vm.allJobs.length; i++) {
-                            if (vm.allJobs[i].path === cell.getAttribute('actual')) {
-                                vm.editConditions(vm.allJobs[i], '', function (res) {
-                                    if (!res) {
-                                        recursivelyConnectJobs(true, false, function () {
-                                            vm.actual();
-                                        });
-                                    }
-                                });
-                                break;
-                            }
-                        }
-                    }
-                }
-                // Disables any default behaviour for the double click
-                mxEvent.consume(evt);
-            };
-
             /**
              * Function: handle a click event
              */
             graph.addListener(mxEvent.CLICK, function (sender, evt) {
                 let cell = evt.getProperty('cell'); // cell may be null
                 if (cell != null) {
-                    ++clickCounter;
                     setTimeout(function () {
-                        if (clickCounter === 1) {
-                            handleSingleClick(cell);
-                        }
+                        handleSingleClick(cell);
                     }, 200);
                     evt.consume();
                 }
@@ -9919,7 +9865,8 @@
                     vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
                 } else if (cell.value && cell.value.tagName === 'OutCondition') {
                     vm.jobFilters.graphViewDetail.tab = 'reference';
-                    vm._outconditionReference = [];
+                    if(cell.getAttribute('inconditions'))
+                    vm._outconditionReference = JSON.parse(cell.getAttribute('inconditions'));
                 } else if (cell.value.tagName === 'Job' && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                     for (let i = 0; i < vm.jobs.length; i++) {
                         if (vm.jobs[i].path == cell.getAttribute('actual')) {
@@ -9933,7 +9880,6 @@
                         }
                     }
                 }
-                clickCounter = 0;
             }
 
             // Shows a "modal" window when clicking on img.
@@ -9956,7 +9902,7 @@
                             if (state.cell.value.tagName === 'Job') {
                                 _x -= 28;
                             }
-                            let _y = y + 10 - $('#graph').scrollTop();
+                            let _y = y + 60 - $('#graph').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
@@ -10112,41 +10058,37 @@
         $scope.$on('createJobStream', function () {
             vm.createJobStream();
         });
-        $scope.$on('compactView', function () {
-            if(vm.selectedWorkflow)
-                vm.compactView(vm.selectedWorkflow)
-        });
 
         $scope.$on('resetWorkflow', function () {
-            if(vm.selectedWorkflow)
+            if (vm.selectedWorkflow)
                 vm.resetWorkflow(vm.selectedWorkflow);
         });
 
-        $scope.$on('zoomIn', function () {
+        vm.zoomIn = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomIn();
             }
-        });
+        };
 
-        $scope.$on('zoomOut', function () {
+        vm.zoomOut = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomOut();
             }
-        });
+        };
 
-        $scope.$on('actual', function () {
+        vm.actual = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomActual();
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
-        });
+        };
 
-        $scope.$on('fit', function () {
+        vm.fit = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.fit();
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
-        });
+        };
 
         $scope.$on('$destroy', function () {
             if (t1) {
