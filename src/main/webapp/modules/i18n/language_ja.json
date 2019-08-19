@@ -1464,6 +1464,8 @@
   "message.doesFileExist": "does a file exist?",
   "message.jobIsSpecifiedByJob": "The job is specified by job:name_of_job",
   "message.jobChainIsSpecifiedByJobChain": "The jobChain is specified by jobChain:name_of_job_chain",
+  "message.deleteJobStreamAndAllJobs": "Are you sure you want to delete Job Stream and all its Jobs?",
+  "message.noJobsWithoutStream": "No Jobs without Stream",
   "tooltip.zoomIn": "Zoom In",
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",
@@ -1476,5 +1478,5 @@
   "InCondition": "In-Condition",
   "OutCondition": "Out-Condition",
   "Event": "Event",
-  "breadcrumb.conditions" : "Conditions"
+  "breadcrumb.jobStream" : "Job Streams"
 }

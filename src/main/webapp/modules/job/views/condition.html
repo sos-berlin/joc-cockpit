@@ -671,7 +671,21 @@
                     <div ng-controller="JobWorkflowCtrl" >
 
                         <div class="row hide m-l-0" ng-class="{'show':flag}">
-                            <div class="col-md-1" id="toolbarContainer"></div>
+                            <div class="col-md-1" id="toolbarContainer">
+                                <ul ng-repeat="(key, value) in allJobs  | groupBy: 'path1' track by $index">
+                                    <li>
+                                        <p class="p-l m-l-xs" uib-tooltip="{{key}}" tooltip-placement="bottom">
+                                            <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>
+                                        <div class="draggable" draggable="true" ondragstart="drag(event)"
+                                             id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                                            {{job.name}}
+                                        </div>
+                                        <div class="text-center" ng-if="key == value[0].path1 && value.length == jobs.length" translate>
+                                            message.noJobsWithoutStream
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="col-md-11">
                                 <div>
                                     <div class="graph-container" >
@@ -766,7 +780,7 @@
                             </div>
                             <div class="sidebar bg-white">
                                 <div>
-                                    <div class="box-body p-a" style="height: 86vh; overflow: auto">
+                                    <div class="box-body p-a" >
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
@@ -858,6 +872,7 @@
                                              </div>
                                              <div class="tab-pane animated fadeIn" id="tab14" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }">
                                                  <div>
+                                                     <div class="block-ellipsis m-b _600" style="width: 100%">{{referenceTabHeading}}</div>
                                                      <div ng-repeat="condition in _outconditionReference | orderBy: 'name'" class="block-ellipsis m-b" style="width: 100%">
                                                          <div class="block-ellipsis m-b-xs" style="width: 100%;">
                                                              <span class="fa fa-circle m-r-sm" style="font-size: 10px"></span>
@@ -867,8 +882,9 @@
                                                              <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
                                                          </div>
                                                          <div ng-repeat="job in condition.jobs" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
-                                                             <span class="fa fa-circle-o m-l-md m-r-sm" style="font-size: 9px"></span>
+                                                             <span class="fa fa-circle-o m-l p-l-xs m-r-xs" style="font-size: 9px"></span>
                                                              <a class="text-hover-primary" ng-click="switchGraph(condition, job)"><span>{{job.job}}</span></a>
+                                                             <div class="text-sm text-muted m-l-lg" ng-repeat="exp in job.expressions">({{exp}})</div>
                                                          </div>
                                                      </div>
                                                  </div>

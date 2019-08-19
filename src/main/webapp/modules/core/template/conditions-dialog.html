@@ -11,7 +11,7 @@
                 <div class="row m-b" >
                     <div class="col-sm-3 form-control-label" translate>label.jobStream</div>
                     <div class="col-sm-9" ng-class="{ 'has-error' : form.jobStream.$invalid && form.jobStream.$dirty }">
-                        <select class="form-control" style="border: none; height: 30px" ng-model="editor.jobStream" ng-disabled="_jobStreamName"
+                        <select class="form-control" style="border: none; height: 30px" ng-model="editor.jobStream" ng-style="{opacity : _jobStreamName ? 0 : 1}"
                                 ng-options="jobStream as jobStream for jobStream in jobStreams">
                             <option value="" translate>label.chooseJobStreams</option>
                         </select>
@@ -282,7 +282,7 @@
         </div>
         <div class="modal-footer text-left">
             <div ng-if="!condition">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.outconditions.length > 0 && _job.outconditions[0].outconditionEvents.length ==0)" translate>
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.inconditions.length === 0 && _job.outconditions.length === 0)" translate>
                     button.submit
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel

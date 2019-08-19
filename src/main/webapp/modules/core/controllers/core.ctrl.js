@@ -14041,22 +14041,20 @@
             }
 
             vm.jobStreams = [];
-            if(!vm.editor.jobStream || vm.editor.jobStream === ''){
-                ConditionService.workflowTree({jobschedulerId : vm.schedulerIds.selected}).then(function(res){
-                    console.log(res.jobStreamFolders)
-                    if(res.jobStreamFolders){
-                        for(let i =0; i < res.jobStreamFolders.length; i++){
-                            vm.jobStreams.push(res.jobStreamFolders[i].jobStream);
-
-                            if(res.jobStreamFolders[i].folders.indexOf(vm._job.path1) > -1){
-                                console.log(res.jobStreamFolders[i].folders, '>>>>>', vm._job.path1)
+            ConditionService.workflowTree({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+                if (res.jobStreamFolders) {
+                    for (let i = 0; i < res.jobStreamFolders.length; i++) {
+                        vm.jobStreams.push(res.jobStreamFolders[i].jobStream);
+                        if ((!vm.editor.jobStream || vm.editor.jobStream === '') && !vm._jobStreamName) {
+                            if (res.jobStreamFolders[i].folders.indexOf(vm._job.path1) > -1) {
                                 vm.editor.jobStream = res.jobStreamFolders[i].jobStream;
                             }
                         }
                     }
-                })
-            }
-            if(vm._jobStreamName){
+                }
+            })
+
+            if (vm._jobStreamName) {
                 vm.editor.jobStream = vm._jobStreamName;
             }
         }

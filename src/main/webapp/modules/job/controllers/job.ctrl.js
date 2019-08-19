@@ -8324,7 +8324,8 @@
             }
             createEditor();
 
-            let ht = 'calc(100vh - ' + Math.round($('.scroll-y').position().top + 76) + 'px)';
+            let top = Math.round($('.scroll-y').position().top + 76);
+            let ht = 'calc(100vh - ' + top + 'px)';
 
             let dom = $('#graph');
             dom.css({opacity: 1});
@@ -8334,7 +8335,7 @@
                 let flag = true;
                 if (vm.jobs && vm.jobs.length) {
                     for (let i = 0; i < vm.jobs.length; i++) {
-                        if (vm.jobs[i].path == vm.dropTarget) {
+                        if (vm.jobs[i].path === vm.dropTarget) {
                             flag = false;
                             break;
                         }
@@ -8345,6 +8346,7 @@
                 }
                 event.preventDefault();
             });
+            $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
             const panel = $('.property-panel');
             $('.sidebar-open', panel).click(function () {
                 $('.sidebar').css({'width': '296px', opacity: 1});
@@ -8367,23 +8369,9 @@
                 $('.sidebar-close').css('right', '-20px');
             });
             setTimeout(function () {
-
                 $('#outlineContainer').css({opacity: 1});
                 if (window.innerWidth > 1024) {
                     $('.sidebar-open').click();
-                }
-                // Creates new toolbar without event processing
-                let toolbar = document.getElementById('toolbarContainer');
-                $('#toolbarContainer').css({'max-height': ht});
-                let _jobs = orderBy(vm.allJobs, 'name');
-                for (let i = 0; i < _jobs.length; i++) {
-                    let div = document.createElement('div');
-                    div.innerHTML = _jobs[i].name;
-                    div.setAttribute('title', _jobs[i].name);
-                    div.setAttribute('id', _jobs[i].path);
-                    div.setAttribute('draggable', 'true');
-                    div.setAttribute('ondragstart', 'drag(event)');
-                    toolbar.appendChild(div);
                 }
 
             }, 100);
@@ -8410,7 +8398,6 @@
                 }
             });
         }
-
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
@@ -8603,8 +8590,9 @@
                         let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
                         _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
                         let style = 'job';
-                        style += ';strokeWidth=2;strokeColor=' + vm.colorFunction(jobs[i].state.severity);
+                        style += ';strokeColor=' + (vm.colorFunction(jobs[i].state.severity) || '#999');
                         v1 = createVertex(parent, _node, jobs[i].name, style);
+                        addOverlays(graph, v1, jobs[i].state._text === 'RUNNING' ? 'green' : jobs[i].state._text === 'PENDING' ? 'yellow' : 'red');
                         jobs[i].jId = v1.id;
                     } else {
                         v1 = graph.getModel().getCell(jobs[i].jId)
@@ -8615,23 +8603,25 @@
                             let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
                             let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].jobStream);
                             _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
+                            _node.setAttribute('job', jobs[i].path);
                             _node.setAttribute('outconditions', JSON.stringify(jobs[i].inconditions[x].outconditions));
                             _node.setAttribute('markExpression', jobs[i].inconditions[x].markExpression);
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
                             }
                             let style = 'condition';
-                            if(jobs[i].inconditions[x].consumed){
+                            if (jobs[i].inconditions[x].consumed) {
                                 style += ';fillColor=none';
                             }
                             if (jobs[i].inconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=green;strokeWidth=2';
+                                style += ';strokeColor=green;';
                             }
 
                             let conditionVertex = createVertex(parent, _node, jobs[i].inconditions[x].conditionExpression.expression, style);
+                            addOverlays(graph, conditionVertex, jobs[i].inconditions[x].conditionExpression.value ? 'green' : '');
                             jobs[i].inconditions[x].vertexId = conditionVertex.id;
 
-                            graph.insertEdge(parent, null, getCellNode('Connection', 'In', ''), conditionVertex, v1);
+                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
                         }
 
                         let out = null;
@@ -8649,11 +8639,12 @@
                             _node.setAttribute('inconditions', JSON.stringify(jobs[i].outconditions[x].inconditions));
                             let style = 'condition2';
                             if (jobs[i].outconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=green;strokeWidth=2';
+                                style += ';strokeColor=green;';
                             }
                             let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, style);
+                            addOverlays(graph, conditionVertex, jobs[i].outconditions[x].conditionExpression.value ? 'green' : '');
                             jobs[i].outconditions[x].vertexId = conditionVertex.id;
-                            graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex, '');
+                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
                             if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                 for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
                                     if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
@@ -8669,7 +8660,7 @@
                                         }
                                         let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
                                         events.push(e1);
-                                        graph.insertEdge(parent, null, getCellNode('Connection', '', ''), conditionVertex, e1);
+                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
                                     }
                                 }
                             }
@@ -8682,6 +8673,7 @@
                         }
                     } else {
                         for (let m = 0; m < jobs.length; m++) {
+
                             if (jobs[i].path !== jobs[m].path) {
                                 for (let n = 0; n < jobs[m].inconditions.length; n++) {
                                     for (let x = 0; x < jobs[i].outconditions.length; x++) {
@@ -8702,9 +8694,10 @@
                                                         let _node = getCellNode('Job', jobs[m].name, jobs[m].path, '');
                                                         _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
                                                         let style = 'job';
-                                                        style += ';strokeWidth=2;strokeColor=' + vm.colorFunction(jobs[m].state.severity);
+                                                        style += ';strokeColor=' + (vm.colorFunction(jobs[m].state.severity) || '#999');
 
                                                         let v2 = createVertex(parent, _node, jobs[i].name, style);
+                                                        addOverlays(graph, v2, jobs[m].state._text === 'RUNNING' ? 'green' : jobs[m].state._text === 'PENDING' ? 'yellow' : 'red');
                                                         jobs[m].jId = v2.id;
                                                         graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
                                                     } else {
@@ -8787,6 +8780,7 @@
                     }
                 }
 
+
                 if (reload) {
                     makeCenter(graph);
                 }
@@ -8806,14 +8800,12 @@
 
 
             if (vm.jobs && vm.jobs.length) {
-                let list = $('#toolbarContainer').find('div');
+                let list = $('#toolbarContainer').find('div.draggable');
                 for (let i = 0; i < list.length; i++) {
-                    list[i].className = '';
-                    list[i].draggable = true;
+                    list[i].className = 'draggable';
                     for (let j = 0; j < vm.jobs.length; j++) {
                         if (vm.jobs[j].path === list[i].id) {
-                            list[i].className = 'disabled';
-                            list[i].draggable = false;
+                            list[i].className = 'hide';
                             break;
                         }
                     }
@@ -8832,22 +8824,24 @@
                 let _label = parseExpression(job.inconditions[n].conditionExpression);
                 let _node = getCellNode('InCondition', _label, job.inconditions[n].conditionExpression.expression, job.inconditions[n].jobStream);
                 _node.setAttribute('isConsumed', job.inconditions[n].consumed);
+                _node.setAttribute('job', job.path);
                 _node.setAttribute('outconditions', JSON.stringify(job.inconditions[n].outconditions));
                 _node.setAttribute('markExpression', job.inconditions[n].markExpression);
                 if (job.inconditions[n].inconditionCommands) {
                     _node.setAttribute('commands', JSON.stringify(job.inconditions[n].inconditionCommands));
                 }
                 let style = 'condition';
-                if(job.inconditions[n].consumed){
+                if (job.inconditions[n].consumed) {
                     style += ';fillColor=none';
                 }
                 if (job.inconditions[n].conditionExpression.value) {
-                    style += ';strokeColor=green;strokeWidth=2';
+                    style += ';strokeColor=green;';
                 }
 
                 let conditionVertex = createVertex(parent, _node, job.inconditions[n].conditionExpression.expression, style);
+                addOverlays(graph, conditionVertex, job.inconditions[n].conditionExpression.value ? 'green' : '');
                 job.inconditions[n].vertexId = conditionVertex.id;
-                graph.insertEdge(parent, null, getCellNode('Connection', 'In', ''), conditionVertex, v1);
+                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
                 if (inEdges.length > 0) {
                     for (let i = 0; i < inEdges.length; i++) {
                         graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), inEdges[i].source, conditionVertex);
@@ -8868,12 +8862,13 @@
                 _node.setAttribute('inconditions', JSON.stringify(job.outconditions[x].inconditions));
                 let style = 'condition2';
                 if (job.outconditions[x].conditionExpression.value) {
-                    style += ';strokeColor=green;strokeWidth=2';
+                    style += ';strokeColor=green;';
                 }
                 let conditionVertex = createVertex(parent, _node, job.outconditions[x].conditionExpression.expression, style);
+                addOverlays(graph, conditionVertex, job.outconditions[x].conditionExpression.value ? 'green' : '');
                 job.outconditions[x].vertexId = conditionVertex.id;
                 if (job.jId) {
-                    graph.insertEdge(parent, null, getCellNode('Connection', 'Out', ''), v1, conditionVertex, '');
+                    graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
                 }
                 if (job.outconditions[x].outconditionEvents.length > 0) {
                     for (let z = 0; z < job.outconditions[x].outconditionEvents.length; z++) {
@@ -8890,7 +8885,7 @@
                             }
                             let e1 = createVertex(parent, _node, job.outconditions[x].outconditionEvents[z].event, style);
                             events.push(e1);
-                            graph.insertEdge(parent, null, getCellNode('Connection', '', ''), conditionVertex, e1);
+                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
                         }
                     }
                 }
@@ -9000,12 +8995,15 @@
             });
             modalInstance.result.then(function () {
                 vm.flag = true;
+                vm.selectedWorkflow = vm._jobStream.name;
+                vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
             }, function () {
                 vm._jobStream.name = name;
             })
         };
 
         vm.changeGraph = function (jobStream) {
+            vm._jobStream = {};
             if (jobStream) {
                 if (vm.selectedWorkflow !== jobStream.name) {
                     vm.selectedWorkflow = jobStream.name;
@@ -9026,7 +9024,6 @@
         };
 
         vm.compactView = function (jobStream) {
-
             vm.jobFilters.graphViewDetail.isWorkflowCompact = !vm.jobFilters.graphViewDetail.isWorkflowCompact;
             let _jobs = [];
             for (let x = 0; x < vm.workflows.length; x++) {
@@ -9124,25 +9121,37 @@
         };
 
         vm.removeWorkflow = function (jobStream, index) {
-            vm.workflows.splice(index, 1);
-            let inObj = [], outObj = [], flag = true;
-            for (let i = 0; i < jobStream.jobs.length; i++) {
-                inObj.push({job: jobStream.jobs[i].path, inconditions: []});
-                outObj.push({job: jobStream.jobs[i].path, outconditions: []});
-            }
-            ConditionService.updateInCondition({
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobsInconditions: inObj
-            }).then(function () {
-                reset(jobStream, flag);
-                flag = false;
+            vm.deleteJobSteam = jobStream;
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                backdrop: 'static'
             });
-            ConditionService.updateOutCondition({
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobsOutconditions: outObj
-            }).then(function () {
-                reset(jobStream, flag);
-                flag = false;
+            modalInstance.result.then(function () {
+                vm.workflows.splice(index, 1);
+                let inObj = [], outObj = [], flag = true;
+                for (let i = 0; i < jobStream.jobs.length; i++) {
+                    inObj.push({job: jobStream.jobs[i].path, inconditions: []});
+                    outObj.push({job: jobStream.jobs[i].path, outconditions: []});
+                }
+                ConditionService.updateInCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobsInconditions: inObj
+                }).then(function () {
+                    reset(jobStream, flag);
+                    flag = false;
+                });
+                ConditionService.updateOutCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobsOutconditions: outObj
+                }).then(function () {
+                    reset(jobStream, flag);
+                    flag = false;
+                });
+                vm.deleteJobSteam = undefined;
+            }, function () {
+                vm.deleteJobSteam = undefined;
             });
         };
 
@@ -9692,6 +9701,38 @@
             return vm.editor.graph.insertVertex(parent, null, _node, 0, 0, w, h, style);
         }
 
+
+        /**
+         * Function : addOverlays
+         *
+         * Add (+) single to connecting arrows
+         * @param graph
+         * @param cell
+         */
+        function addOverlays(graph, cell, color) {
+            let img = color === 'green' ? 'images/green-bar.svg' : color === 'red' ? 'images/red-bar.svg' : color === 'yellow' ? 'images/yellow-bar.svg' : 'images/grey-bar.svg';
+            let w = cell.value.tagName === 'Job' ? 180 : 145;
+            let overlay = new mxCellOverlay(
+                new mxImage(img, w, 4), ""
+            );
+            overlay.cursor = "default";
+            overlay.align = mxConstants.ALIGN_CENTER;
+            graph.addCellOverlay(cell, overlay);
+            overlay.getBounds = function (state) {
+                let bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
+                if (!state.view.graph.getModel().isEdge(state.cell)) {
+                    bounds.y = bounds.y - 2;
+                }
+                if (cell.value.tagName === 'InCondition') {
+                    bounds.x = bounds.x + 15;
+                } else if (cell.value.tagName === 'OutCondition') {
+                    bounds.x = bounds.x - 15;
+                }
+
+                return bounds;
+            };
+        }
+
         /**
          * Function to cverride Mxgraph properties and functions
          */
@@ -9862,10 +9903,11 @@
             function handleSingleClick(cell) {
                 if (cell.value && cell.value.tagName === 'InCondition') {
                     vm.jobFilters.graphViewDetail.tab = 'reference';
+                    vm.referenceTabHeading = 'In-Condition :' + ' ' + cell.getAttribute('actual');
                     vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
                 } else if (cell.value && cell.value.tagName === 'OutCondition') {
                     vm.jobFilters.graphViewDetail.tab = 'reference';
-                    if(cell.getAttribute('inconditions'))
+                    vm.referenceTabHeading = 'Out-Condition :' + ' ' + cell.getAttribute('actual');
                     vm._outconditionReference = JSON.parse(cell.getAttribute('inconditions'));
                 } else if (cell.value.tagName === 'Job' && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                     for (let i = 0; i < vm.jobs.length; i++) {
