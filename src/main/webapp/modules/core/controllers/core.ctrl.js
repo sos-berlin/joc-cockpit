@@ -14150,6 +14150,9 @@
                 vm.condition.outconditionDeleteEvents = arr;
 
             }
+            setTimeout(function(){
+                $('#expression-id').focus();
+            },0)
         };
 
         vm.removeInCondition = function (index) {

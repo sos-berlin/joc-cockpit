@@ -1402,7 +1402,7 @@
   "button.addAnotherOutconditionEvents": "Add Another Outcondition Event",
   "button.resetJob": "Reset Job",
   "button.resetJobStream": "Reset Job Stream",
-  "button.updateExpression": "Update Expression",
+  "button.updateExpression": "Edit Expression",
   "button.showAllEvents": "All Events",
   "button.showFilteredEvents": "Filtered Events",
   "button.detailView": "Detail View",

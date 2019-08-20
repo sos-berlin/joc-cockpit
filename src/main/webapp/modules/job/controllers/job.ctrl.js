@@ -8332,18 +8332,7 @@
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
                 vm.dropTarget = window.selectedJob;
-                let flag = true;
-                if (vm.jobs && vm.jobs.length) {
-                    for (let i = 0; i < vm.jobs.length; i++) {
-                        if (vm.jobs[i].path === vm.dropTarget) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-                if (flag) {
-                    createJobNode(vm.dropTarget, event)
-                }
+                createJobNode(vm.dropTarget, event)
                 event.preventDefault();
             });
             $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
@@ -8392,7 +8381,7 @@
                     } else {
                         const bounds = vm.editor.graph.getGraphBounds();
                         if (bounds.y < 0 && bounds.height > $('#graph').height()) {
-                            vm.editor.graph.center(true, true, 0.5, 0);
+                            vm.editor.graph.center(true, true, 0.5, 0.05);
                         }
                     }
                 }
@@ -8400,6 +8389,11 @@
         }
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
+            vm._allJobs = angular.copy(vm.allJobs);
+            for (let i = 0; i < vm.allJobs.length; i++) {
+                vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
+            }
+            vm._allJobs = orderBy(vm._allJobs, 'path1', false);
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
@@ -8652,7 +8646,7 @@
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].exists ? true : jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream;
                                         _node.setAttribute('isExist', flg);
                                         let style = 'event';
-                                        if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
+                                        if (jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream && !jobs[i].outconditions[x].outconditionEvents[z].exists) {
                                             style += ';dashed=1';
                                         }
                                         if (!jobs[i].outconditions[x].outconditionEvents[z].exists && !jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
@@ -8779,8 +8773,6 @@
                         }
                     }
                 }
-
-
                 if (reload) {
                     makeCenter(graph);
                 }
@@ -8789,29 +8781,133 @@
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
+                if(vm.jobFilters.graphViewDetail.isWorkflowCompact) {
+                    let xmlStr = sortXML(graph);
+                    if (xmlStr) {
+                        let bounds = vm.editor.graph.getGraphBounds();
+                        graph.getModel().beginUpdate();
+                        try {
+                            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+                            const _doc = mxUtils.parseXml(xmlStr);
+                            const dec = new mxCodec(_doc);
+                            const model = dec.decode(_doc.documentElement);
+                            // Merges the response model with the client model
+                            graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+                        } finally {
+                            // Updates the display
+                            graph.getModel().endUpdate();
+
+                        }
+                        vm.editor.graph.view.setTranslate(bounds.x, bounds.y);
+                    }
+                }
+
                 executeLayout(graph);
             }
             vm.jobs = jobs;
             setTimeout(function () {
                 updateWorkflowDiagram(vm.jobs);
             }, 100);
-            let element = document.getElementById("graph");
-            element.scrollTop = scrollValue;
+            if (scrollValue) {
+                let element = document.getElementById("graph");
+                element.scrollTop = scrollValue;
+            }
 
-
-            if (vm.jobs && vm.jobs.length) {
-                let list = $('#toolbarContainer').find('div.draggable');
-                for (let i = 0; i < list.length; i++) {
-                    list[i].className = 'draggable';
-                    for (let j = 0; j < vm.jobs.length; j++) {
-                        if (vm.jobs[j].path === list[i].id) {
-                            list[i].className = 'hide';
-                            break;
+            if (vm.workflows && vm.workflows.length) {
+                for (let x = 0; x < vm.workflows.length; x++) {
+                    for (let j = 0; j < vm.workflows[x].jobs.length; j++) {
+                        for (let i = 0; i < vm._allJobs.length; i++) {
+                            if (vm.workflows[x].jobs[j].path === vm._allJobs[i].path) {
+                                vm._allJobs.splice(i, 1);
+                                break;
+                            }
                         }
                     }
                 }
 
             }
+        }
+
+        function sortXML(graph) {
+            let encoder = new mxCodec();
+            let result = encoder.encode(graph.getModel());
+            let xml = mxUtils.getXml(result);
+            let dom_parser = new DOMParser();
+            var dom_document = dom_parser.parseFromString(xml, 'text/xml');
+            let inCond = dom_document.getElementsByTagName("InCondition");
+            let outCond = dom_document.getElementsByTagName("OutCondition");
+            let box = dom_document.getElementsByTagName("Box");
+            let eventTag = dom_document.getElementsByTagName("Event");
+            let connection = dom_document.getElementsByTagName("Connection");
+
+            let _str = '<mxGraphModel><root><mxCell id="0" /><mxCell id="1" parent="0" />';
+            if (inCond.length > 0 || outCond.length > 0) {
+                let job = dom_document.getElementsByTagName("Job");
+                for (let i = 0; i < job.length; i++) {
+                    for (let j = 0; j < inCond.length; j++) {
+                        if (inCond[j].getAttribute('job') === job[i].getAttribute('actual')) {
+                            _str = _str + inCond[j].outerHTML;
+                        } else {
+                            if (i + 1 < job.length) {
+                                if (inCond[j].getAttribute('job') === job[i + 1].getAttribute('actual')) {
+                                    _str = checkXMLString(_str, job[i].outerHTML);
+                                    for (let x = 0; x < connection.length; x++) {
+                                        if (_str.indexOf(connection[x].outerHTML) === -1 && job[i].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')
+                                            && inCond[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
+                                            _str = _str + connection[x].outerHTML;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    _str = checkXMLString(_str, job[i].outerHTML);
+                    for (let j = 0; j < outCond.length; j++) {
+                        if (outCond[j].getAttribute('job') === job[i].getAttribute('actual')) {
+                            _str = _str + outCond[j].outerHTML;
+                        }
+                    }
+                    for (let j = 0; j < box.length; j++) {
+                        if (box[j].getAttribute('actual') === job[i].getAttribute('actual')) {
+                            _str = _str + box[j].outerHTML;
+                            for (let k = 0; k < inCond.length; k++) {
+                                if (inCond[k].getAttribute('job') === job[i + 1].getAttribute('actual')) {
+                                    for (let x = 0; x < connection.length; x++) {
+                                        if (_str.indexOf(connection[x].outerHTML) === -1 && box[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')
+                                            && inCond[k].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
+                                            _str = _str + connection[x].outerHTML;
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    for (let j = 0; j < connection.length; j++) {
+                        if (connection[j].childNodes[0].getAttribute('source') === job[i].getAttribute('id')) {
+                            _str = checkXMLString(_str, connection[j].outerHTML);
+                        }
+                    }
+                }
+                for (let j = 0; j < eventTag.length; j++) {
+                    _str = _str + eventTag[j].outerHTML;
+                }
+                for (let j = 0; j < connection.length; j++) {
+                    _str = checkXMLString(_str, connection[j].outerHTML);
+                }
+                _str = _str + '</root></mxGraphModel>';
+                return _str;
+            }
+            return '';
+        }
+
+        function checkXMLString(str, text) {
+            if (str.indexOf(text) === -1) {
+                str = str + text;
+            }
+            return str;
         }
 
         function expandJobNode(graph, job, flag) {
@@ -8877,7 +8973,7 @@
                             let flg = job.outconditions[x].outconditionEvents[z].exists ? true : job.outconditions[x].outconditionEvents[z].existsInJobStream;
                             _node.setAttribute('isExist', flg);
                             let style = 'event';
-                            if (job.outconditions[x].outconditionEvents[z].existsInJobStream) {
+                            if (job.outconditions[x].outconditionEvents[z].existsInJobStream && !job.outconditions[x].outconditionEvents[z].exists) {
                                 style += ';dashed=1';
                             }
                             if (!job.outconditions[x].outconditionEvents[z].exists && !job.outconditions[x].outconditionEvents[z].existsInJobStream) {
@@ -8900,8 +8996,8 @@
                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), out, outEdges[j].target);
                 graph.getModel().remove(outEdges[j]);
             }
-            if(job.connections) {
-                if(vm.jobs && vm.jobs.length) {
+            if (job.connections) {
+                if (vm.jobs && vm.jobs.length) {
                     for (let m = 0; m < vm.jobs.length; m++) {
                         for (let j = 0; j < job.connections.length; j++) {
                             if (vm.jobs[m].path == job.connections[j]) {
@@ -9045,7 +9141,6 @@
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                 createWorkflowDiagram(_jobs, false, 0);
             }
-
         };
 
         vm.resetWorkflow = function (jobStream) {
@@ -9258,7 +9353,7 @@
                         if (commands) {
                             vm._expression.commands = JSON.parse(commands) || [];
                         }
-                        vm._expression.markExpression = cell.edges[i].source.getAttribute('markExpression');
+                        vm._expression.markExpression = cell.edges[i].source.getAttribute('markExpression') == 'true';
                         break;
                     }
                 } else if (vm._expression.label === 'OutCondition') {
@@ -9501,9 +9596,7 @@
         };
 
         vm.startConditionResolver = function () {
-            ConditionService.startConditionResolver({"jobschedulerId": $scope.schedulerIds.selected}).then(function (res) {
-                console.log(res);
-            });
+            ConditionService.startConditionResolver({"jobschedulerId": $scope.schedulerIds.selected});
         };
 
         vm.resetJob = function (cell) {
@@ -9668,7 +9761,7 @@
         function makeCenter(graph) {
             t1 = $timeout(function () {
                 graph.zoomActual();
-                graph.center(true, true, 0.5, 0);
+                graph.center(true, true, 0.5, 0.05);
             }, 0);
         }
 
@@ -9718,19 +9811,6 @@
             overlay.cursor = "default";
             overlay.align = mxConstants.ALIGN_CENTER;
             graph.addCellOverlay(cell, overlay);
-            overlay.getBounds = function (state) {
-                let bounds = mxCellOverlay.prototype.getBounds.apply(this, arguments);
-                if (!state.view.graph.getModel().isEdge(state.cell)) {
-                    bounds.y = bounds.y - 2;
-                }
-                if (cell.value.tagName === 'InCondition') {
-                    bounds.x = bounds.x + 15;
-                } else if (cell.value.tagName === 'OutCondition') {
-                    bounds.x = bounds.x - 15;
-                }
-
-                return bounds;
-            };
         }
 
         /**
@@ -9769,6 +9849,12 @@
             graph.extendParentsOnAdd = false;
             graph.extendParents = false;
 
+            // remove overlays from exclude list for mxCellCodec so that overlays are encoded into XML
+            let cellCodec = mxCodecRegistry.getCodec(mxCell);
+            let excludes = cellCodec.exclude;
+            if(excludes.indexOf('overlays') > 0) {
+                excludes.splice(excludes.indexOf('overlays'), 1);
+            }
 
             // Parallelogram
             function Parallelogram() {
@@ -9857,6 +9943,57 @@
                 return cells;
             };
 
+            mxCellOverlay.prototype.getBounds = function (state) {
+                let isEdge = state.view.graph.getModel().isEdge(state.cell);
+                let s = state.view.scale;
+                let pt = null;
+                let w = this.image.width;
+                let h = this.image.height;
+                if (!isEdge) {
+                    pt = new mxPoint();
+                    if (this.align == mxConstants.ALIGN_LEFT) {
+                        pt.x = state.x;
+                    } else if (this.align == mxConstants.ALIGN_CENTER) {
+                        pt.x = state.x + state.width / 2;
+                    } else {
+                        pt.x = state.x + state.width;
+                    }
+                    if (this.verticalAlign == mxConstants.ALIGN_TOP) {
+                        pt.y = state.y;
+                    } else if (this.verticalAlign == mxConstants.ALIGN_MIDDLE) {
+                        pt.y = state.y + state.height / 2;
+                    } else {
+                        pt.y = state.y + state.height;
+                    }
+                } else {
+                    let pts = state.absolutePoints;
+                    if (pts.length % 2 == 1) {
+                        pt = pts[Math.floor(pts.length / 2)];
+                    } else {
+                        let idx = pts.length / 2;
+                        let p0 = pts[idx - 1];
+                        let p1 = pts[idx];
+                        pt = new mxPoint(p0.x + (p1.x - p0.x) / 2,
+                            p0.y + (p1.y - p0.y) / 2);
+                    }
+                }
+
+
+                pt.y = pt.y - 2;
+                if (state.cell.value.tagName === 'InCondition') {
+                    pt.x = pt.x + 15;
+                } else if (state.cell.value.tagName === 'OutCondition') {
+                    pt.x = pt.x - 15;
+                }
+
+
+                if (!pt) {
+                    return;
+                }
+                return new mxRectangle(Math.round(pt.x - (w * this.defaultOverlap - this.offset.x) * s),
+                    Math.round(pt.y - (h * this.defaultOverlap - this.offset.y) * s), w * s, h * s);
+            };
+
             /**
              * Function: getTooltipForCell
              *
@@ -9913,11 +10050,7 @@
                     for (let i = 0; i < vm.jobs.length; i++) {
                         if (vm.jobs[i].path == cell.getAttribute('actual')) {
                             vm.jobs[i].isExpanded = !vm.jobs[i].isExpanded;
-                            if (vm.jobs[i].isExpanded) {
-                                expandJobNode(graph, vm.jobs[i]);
-                            } else {
-                                updateJobs(true);
-                            }
+                            updateJobs(true);
                             break;
                         }
                     }
@@ -10121,14 +10254,14 @@
         vm.actual = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomActual();
-                vm.editor.graph.center(true, true, 0.5, 0);
+                vm.editor.graph.center(true, true, 0.5, 0.05);
             }
         };
 
         vm.fit = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.fit();
-                vm.editor.graph.center(true, true, 0.5, 0);
+                vm.editor.graph.center(true, true, 0.5, 0.05);
             }
         };
 

@@ -672,7 +672,7 @@
 
                         <div class="row hide m-l-0" ng-class="{'show':flag}">
                             <div class="col-md-1" id="toolbarContainer">
-                                <ul ng-repeat="(key, value) in allJobs  | groupBy: 'path1' track by $index">
+                                <ul ng-repeat="(key, value) in _allJobs  | groupBy: 'path1' track by $index">
                                     <li>
                                         <p class="p-l m-l-xs" uib-tooltip="{{key}}" tooltip-placement="bottom">
                                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>
@@ -680,7 +680,14 @@
                                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
                                             {{job.name}}
                                         </div>
-                                        <div class="text-center" ng-if="key == value[0].path1 && value.length == jobs.length" translate>
+
+                                    </li>
+                                </ul>
+                                <ul ng-if="_allJobs.length == 0">
+                                    <li>
+                                        <p class="p-l m-l-xs" uib-tooltip="{{jobs[0].path1}}" tooltip-placement="bottom">
+                                            <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{jobs[0].path1}}</p>
+                                        <div class="text-center"  translate>
                                             message.noJobsWithoutStream
                                         </div>
                                     </li>
