@@ -14039,6 +14039,9 @@
                     break;
                 }
             }
+            if(vm.editor.jobStream){
+                vm.edit = true;
+            }
 
             vm.jobStreams = [];
             ConditionService.workflowTree({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {

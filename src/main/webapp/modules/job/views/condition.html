@@ -749,9 +749,9 @@
                                             <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}" ng-click="start(selectedNode.job);closeMenu()" ng-if="permission.Job.execute.start && selectedNode.type === 'Job'" translate>button.startTask</a>
                                             <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}" ng-click="startAt(selectedNode.job);closeMenu()" ng-if="permission.Job.execute.start && selectedNode.type === 'Job'" translate>button.startTaskat</a>
                                             <a class="dropdown-item bg-hover-color" ng-if="selectedNode.job.state._text !='STOPPED' && permission.Job.execute.stop && selectedNode.type === 'Job'" ng-click="stop(selectedNode.job);closeMenu()" translate>button.stop</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.job.state._text =='STOPPED' && permission.Job.execute.unstop && selectedNode.type === 'Job'" ng-click="unstop(job);closeMenu()" translate>button.unstop</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.job.state._text =='STOPPED' && permission.Job.execute.unstop && selectedNode.type === 'Job'" ng-click="unstop(selectedNode.job);closeMenu()" translate>button.unstop</a>
                                             <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
-                                               ng-if="permission.Job.execute.kill && selectedNode.type === 'Job'" ng-click="killAllTask(job);closeMenu()" translate>button.killAllTasksImmediately</a>
+                                               ng-if="permission.Job.execute.kill && selectedNode.type === 'Job'" ng-click="killAllTask(selectedNode.job);closeMenu()" translate>button.killAllTasksImmediately</a>
                                             <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
                                                ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate && selectedNode.type === 'Job'"
                                                ng-click="terminateAllTask(selectedNode.job);closeMenu()" translate>button.terminateAllTasks</a>
@@ -769,7 +769,7 @@
                                             <a class="dropdown-item {{selectedNode.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation && selectedNode.type === 'Job'" ng-click="showDocumentation('job', selectedNode.job.path);closeMenu()" translate>button.showDocumentation</a>
                                             <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
                                             <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="resetJob(selectedNode.cell);closeMenu()" translate>button.resetJob</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job' && permission.JobStream.change.conditions" ng-click="editConditions(selectedNode.job);closeMenu()" translate>button.editConditions</a>
+                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job' && permission.JobStream.change.conditions" ng-click="editConditions1(selectedNode.job);closeMenu()" translate>button.editConditions</a>
                                             <a class="dropdown-item" ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.events.add" ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
                                             <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.conditions" ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
                                             <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove" ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
@@ -797,7 +797,7 @@
                                                   <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'event' }" ng-click="changeTab('event')" href data-toggle="tab" data-target="#tab13" translate>label.events</a>
                                               </li>
                                               <li class="nav-item" >
-                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference', 'disable-link':jobFilters.graphViewDetail.tab !== 'reference' }" href data-toggle="tab" data-target="#tab14" translate>label.reference</a>
+                                                  <a class="nav-link" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference', 'disable-link':jobFilters.graphViewDetail.tab !== 'reference' && !_outconditionReference }" href data-toggle="tab" data-target="#tab14" translate>label.reference</a>
                                               </li>
                                           </ul>
                                         </div>

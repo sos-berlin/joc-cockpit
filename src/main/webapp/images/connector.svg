@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="no"?>
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+     width="48pt" height="43pt" viewBox="0 0 48 43">
+    <g transform="translate(0,43) scale(0.1,-0.1)"
+       fill="#999" stroke="none" stroke-width="1">
+        <path d="M40 270 l0 -139 90 -61 c50 -33 97 -63 104 -66 8 -3 60 25 115 62
+l102 67 -3 136 -3 136 -202 3 -203 2 0 -140z m370 -8 l0 -108 -47 -35 c-27
+-20 -64 -45 -83 -57 l-36 -21 -45 27 c-25 15 -62 40 -82 56 l-37 28 0 109 0
+109 165 0 165 0 0 -108z"/>
+    </g>
+</svg>

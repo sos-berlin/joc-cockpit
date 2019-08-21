@@ -282,7 +282,7 @@
         </div>
         <div class="modal-footer text-left">
             <div ng-if="!condition">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.inconditions.length === 0 && _job.outconditions.length === 0)" translate>
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || (_job.inconditions.length === 0 && _job.outconditions.length === 0 && !edit)" translate>
                     button.submit
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
