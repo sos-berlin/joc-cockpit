@@ -14138,7 +14138,7 @@
                     vm.condition = {inconditionCommands: [], markExpression: true};
                     vm.addInconditionCommands(true);
                 } else {
-                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: [], conditionExpression : {expression : 'returncode:0'}};
+                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: [], conditionExpression : {expression : 'rc:0'}};
                     vm.addOutconditionEvents('create', vm._job.name);
                 }
             } else {
@@ -14331,7 +14331,7 @@
         };
 
         vm.expressionEditor = function () {
-            vm.expression = {type: 'returncode'};
+            vm.expression = {type: vm.editor.type === 'Incondition' ? 'fileexist' : 'rc' };
             if (vm.condition) {
                 if (!vm.condition.conditionExpression) {
                     vm.condition.conditionExpression = {expression: ''};
@@ -14371,7 +14371,7 @@
         let isFunction = false;
 
         vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]', '[prev]', '[prevSuccessful]', '[prevError]'];
-        vm.jobFunctions =  vm.jobChainFunctions = ['returncode',
+        vm.jobFunctions =  vm.jobChainFunctions = ['rc',
             'lastCompletedRunEndedSuccessful',
             'lastCompletedRunEndedWithError',
             'lastCompletedRunEndedTodaySuccessful',
@@ -14404,7 +14404,7 @@
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
                 vm.expression.type = func;
-                if (vm.expression.type === 'event' || vm.expression.type === 'returncode' || vm.expression.type === 'fileexist') {
+                if (vm.expression.type === 'event' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist') {
                     vm.expression.showIcon = false;
                 } else {
                     vm.expression.showIcon = true;
@@ -14510,7 +14510,8 @@
             } else if (vm._expression) {
                 str = vm._expression.expression;
             }
-            let arr = str.split(' ');
+
+            let arr = str ? str.split(' ') : [];
             if (arr.length > 0) {
                 if (arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'not') {
                     form.$invalid = true;

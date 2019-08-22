@@ -4822,7 +4822,7 @@ i.fa-hand-o-up:hover {
     opacity: 0
 }
 
-#outlineContainer {
+#outlineContainer, #dropContainer {
     z-index: 99;
     position: absolute;
     overflow: hidden;
@@ -4832,7 +4832,19 @@ i.fa-hand-o-up:hover {
     height: 150px;
     opacity: 0
 }
-
+#dropContainer{
+    left:14px;
+    background: transparent;
+    border: 1px dashed #CCCCCC;
+    width: 190px;
+    text-align: center;
+}
+#dropContainer div{
+    text-transform: uppercase;
+    margin: 55px auto;
+    position: relative;
+    width: 120px;
+}
 .flow {
     stroke-dasharray: 8;
     stroke-width: 2;

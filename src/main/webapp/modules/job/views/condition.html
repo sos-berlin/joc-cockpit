@@ -744,6 +744,7 @@
                                         </div>
                                         <div id="graph" ondragover="allowDrop(event)"></div>
                                         <!-- Creates a container for the outline -->
+                                        <div id="dropContainer" class="dropContainer"><div class="dropContainer" translate>message.dropHereToDetach</div></div>
                                         <div id="outlineContainer"></div>
                                         <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide" style="position: absolute" ng-class="{'show':selectedNode}">
                                             <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}" ng-click="start(selectedNode.job);closeMenu()" ng-if="permission.Job.execute.start && selectedNode.type === 'Job'" translate>button.startTask</a>

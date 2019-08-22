@@ -8492,17 +8492,28 @@
                             createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                         } else {
                             let _jobs = [];
+                            let _findWF = false;
                             for (let x = 0; x < vm.workflows.length; x++) {
                                 if (vm.selectedWorkflow === 'ALL') {
                                     _jobs = _jobs.concat(vm.workflows[x].jobs);
+                                    _findWF = true;
                                 } else if (vm.selectedWorkflow === vm.workflows[x].name) {
                                     createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollTop);
+                                    _findWF = true;
                                     break;
                                 }
+                            }
+                            if(!_findWF){
+                                vm.selectedWorkflow = vm.workflows[0].name;
+                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                             }
                             if (_jobs.length > 0) {
                                 createWorkflowDiagram(_jobs, !reload, scrollTop);
                             }
+                        }
+                        if(vm.selectedWorkflow && vm.workflows.length === 0){
+                            vm.selectedWorkflow = null;
+                            vm.flag =false;
                         }
                         vm.getEvents(null);
                         if (cb) {
@@ -8555,7 +8566,6 @@
                                 vm._jobStream = {};
                                 vm.actual();
                             });
-
                         }
                     });
                     break;
@@ -8653,6 +8663,8 @@
                                         let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].jobStream);
                                         let flg = jobs[i].outconditions[x].outconditionEvents[z].exists ? true : jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream;
                                         _node.setAttribute('isExist', flg);
+                                        _node.setAttribute('job', jobs[i].path);
+                                        _node.setAttribute('outconditionId', jobs[i].outconditions[x].id);
                                         let style = 'event';
                                         if (!jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream && jobs[i].outconditions[x].outconditionEvents[z].exists) {
                                             style += ';dashed=1';
@@ -8804,7 +8816,7 @@
                             graph.getModel().endUpdate();
                         }
 
-                        vm.editor.graph.view.setTranslate(bounds.x, bounds.y);
+                        vm.editor.graph.view.setTranslate(bounds.x + 7.5, bounds.y+0.5);
                     }
                 }
 
@@ -8837,21 +8849,29 @@
         function recursiveCheck(i, j, _str, connection, job, inCond, count) {
             let flag = true;
             if (inCond[j].getAttribute('job') === job[count].getAttribute('actual')) {
-                _str = checkXMLString(_str, job[i].outerHTML);
                 for (let a = 0; a < inCond.length; a++) {
                     if (a >= j) {
                         for (let x = 0; x < connection.length; x++) {
                             if (_str.indexOf(connection[x].outerHTML) === -1 && job[i].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')) {
                                 if (inCond[a].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
-                                    _str = _str + connection[x].outerHTML;
-                                    flag = false;
-                                    break;
+                                    if (inCond[a].getAttribute('job') === job[count].getAttribute('actual')) {
+                                        _str = checkXMLString(_str, connection[x].outerHTML);
+                                        flag = false;
+                                        break;
+                                    } else {
+                                        if ((count + 1) < job.length) {
+                                            if (inCond[a].getAttribute('job') === job[count + 1].getAttribute('actual')) {
+                                                _str = checkXMLString(_str, connection[x].outerHTML);
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
             }
             if (flag) {
 
@@ -8895,11 +8915,7 @@
                         }
                     }
                     _str = checkXMLString(_str, job[i].outerHTML);
-                    for (let j = 0; j < outCond.length; j++) {
-                        if (outCond[j].getAttribute('job') === job[i].getAttribute('actual')) {
-                            _str = _str + outCond[j].outerHTML;
-                        }
-                    }
+
                     for (let j = 0; j < box.length; j++) {
                         if (box[j].getAttribute('actual') === job[i].getAttribute('actual')) {
                             _str = _str + box[j].outerHTML;
@@ -8925,6 +8941,9 @@
                         }
                     }
                 }
+                for (let j = 0; j < outCond.length; j++) {
+                    _str = _str + outCond[j].outerHTML;
+                }
                 for (let j = 0; j < eventTag.length; j++) {
                     _str = _str + eventTag[j].outerHTML;
                 }
@@ -8932,7 +8951,6 @@
                     _str = checkXMLString(_str, connection[j].outerHTML);
                 }
                 _str = _str + '</root></mxGraphModel>';
-               
                 return _str;
             }
             return '';
@@ -9025,6 +9043,8 @@
                             let _node = getCellNode('Event', job.outconditions[x].outconditionEvents[z].event, job.outconditions[x].outconditionEvents[z].event, job.outconditions[x].jobStream);
                             let flg = job.outconditions[x].outconditionEvents[z].exists ? true : job.outconditions[x].outconditionEvents[z].existsInJobStream;
                             _node.setAttribute('isExist', flg);
+                            _node.setAttribute('job', job.path);
+                            _node.setAttribute('outconditionId', job.outconditions[x].id);
                             let style = 'event';
                             if (!job.outconditions[x].outconditionEvents[z].existsInJobStream && job.outconditions[x].outconditionEvents[z].exists) {
                                 style += ';dashed=1';
@@ -9397,30 +9417,16 @@
             vm._expression.expression = label;
             vm._expression.commands = [];
             vm._expression.events = [];
-
-            for (let i = 0; i < cell.edges.length; i++) {
-                if (vm._expression.label === 'InCondition') {
-                    if (cell.edges[i].source.id === cell.id) {
-                        vm._expression.job = cell.edges[i].target.getAttribute('actual');
-                        let commands = cell.edges[i].source.getAttribute('commands');
-                        if (commands) {
-                            vm._expression.commands = JSON.parse(commands) || [];
-                        }
-                        vm._expression.markExpression = cell.edges[i].source.getAttribute('markExpression') == 'true';
-                        break;
-                    }
-                } else if (vm._expression.label === 'OutCondition') {
-                    if (cell.edges[i].target.id === cell.id) {
-                        vm._expression.job = cell.edges[i].source.getAttribute('actual');
-                    } else {
-                        let events = cell.edges[i].source.getAttribute('events');
-                        if (events) {
-                            vm._expression.events = JSON.parse(events) || [];
-                        }
-
-                    }
-                }
+            vm._expression.job = cell.getAttribute('job');
+            if (vm._expression.label === 'InCondition') {
+                let commands = cell.getAttribute('commands');
+                vm._expression.commands = JSON.parse(commands) || [];
+                vm._expression.markExpression = cell.getAttribute('markExpression') == 'true';
+            } else if (vm._expression.label === 'OutCondition') {
+                let events = cell.getAttribute('events');
+                vm._expression.events = JSON.parse(events) || [];
             }
+
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/workflow-event-dialog.html',
                 controller: 'EditConditionDialogCtrl',
@@ -9589,15 +9595,13 @@
         }
 
         vm.addEventFromWorkflow = function (cell) {
-            let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
-            let job = '';
-            for (let i = 0; i < cell.edges.length; i++) {
-                if (cell.edges[i].target.id === cell.id) {
-                    obj.outConditionId = cell.edges[i].source.getAttribute('_id');
-                    job = cell.edges[i].source.getAttribute('job');
-                }
-            }
-            obj.event = cell.getAttribute('label');
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStream: cell.getAttribute('jobStream'),
+                outConditionId: cell.getAttribute('outconditionId'),
+                event: cell.getAttribute('label')
+            };
+            let job = cell.getAttribute('job');
             ConditionService.addEvent(obj).then(function () {
                 if (job) {
                     updateSingleJob(job);
@@ -9632,15 +9636,13 @@
         };
 
         vm.removeEventFromWorkflow = function (cell) {
-            let obj = {jobschedulerId: $scope.schedulerIds.selected, jobStream: cell.getAttribute('jobStream')};
-            obj.event = cell.getAttribute('actual');
-            let job = '';
-            for (let i = 0; i < cell.edges.length; i++) {
-                if (cell.edges[i].target.id === cell.id) {
-                    obj.outConditionId = cell.edges[i].source.getAttribute('_id');
-                    job = cell.edges[i].source.getAttribute('job');
-                }
-            }
+            let obj = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobStream: cell.getAttribute('jobStream'),
+                outConditionId: cell.getAttribute('outconditionId'),
+                event: cell.getAttribute('label')
+            };
+            let job = cell.getAttribute('job');
             ConditionService.deleteEvent(obj).then(function () {
                 if (job) {
                     updateSingleJob(job);
@@ -9933,7 +9935,6 @@
          */
         function initEditorConf(editor) {
             const graph = editor.graph;
-
             // Alt disables guides
             mxGraphHandler.prototype.guidesEnabled = true;
             mxGraph.prototype.cellsResizable = false;
@@ -10059,9 +10060,9 @@
              * Returns true if the given cell is moveable.
              */
             graph.isCellMovable = function (cell) {
-                if(cell.value) {
+                if (cell.value && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
                     return cell.value.tagName === 'Job';
-                } else{
+                } else {
                     return false;
                 }
             };
@@ -10265,6 +10266,7 @@
 
             // Defines the tolerance before removing the icons
             var iconTolerance = 10;
+            let isJobDraging = false, movedJob = null;
 
             // Shows icons if the mouse is over a cell
             graph.addMouseListener({
@@ -10278,6 +10280,11 @@
                     }
                 },
                 mouseMove: function (sender, me) {
+                    if (me.consumed) {
+                        isJobDraging = true;
+                        movedJob = null;
+                        $('#dropContainer').css({opacity: 1});
+                    }
                     if (this.currentState != null && (me.getState() == this.currentState ||
                         me.getState() == null)) {
                         let tol = iconTolerance;
@@ -10305,6 +10312,10 @@
                     }
                 },
                 mouseUp: function (sender, me) {
+                    if (isJobDraging) {
+                        isJobDraging = false;
+                        detachedJob(me.evt.target, movedJob)
+                    }
                 },
                 dragEnter: function (evt, state) {
                     if (this.currentIconSet == null) {
@@ -10319,7 +10330,134 @@
                 }
             });
 
+            graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
+                if(cells && cells[0]){
+                    movedJob = cells[0];
+                }
+                dx = 0;
+                dy = (dy != null) ? dy : 0;
+                clone = (clone != null) ? clone : false;
+                if (cells != null && (dx != 0 || dy != 0 || clone || target != null)) {
+                    // Removes descendants with ancestors in cells to avoid multiple moving
+                    cells = this.model.getTopmostCells(cells);
+                    if (cells && cells[0] && cells && cells[0].value && cells[0].value.tagName === 'Job') {
+                        dy = 0;
+                    }
+
+                    this.model.beginUpdate();
+                    try {
+                        // Faster cell lookups to remove relative edge labels with selected
+                        // terminals to avoid explicit and implicit move at same time
+                        var dict = new mxDictionary();
+                        for (let i = 0; i < cells.length; i++) {
+                            dict.put(cells[i], true);
+                        }
+
+                        var isSelected = mxUtils.bind(this, function (cell) {
+                            while (cell != null) {
+                                if (dict.get(cell)) {
+                                    return true;
+                                }
+
+                                cell = this.model.getParent(cell);
+                            }
+
+                            return false;
+                        });
+
+                        // Removes relative edge labels with selected terminals
+                        var checked = [];
+
+                        for (var i = 0; i < cells.length; i++) {
+                            var geo = this.getCellGeometry(cells[i]);
+                            var parent = this.model.getParent(cells[i]);
+
+                            if ((geo == null || !geo.relative) || !this.model.isEdge(parent) ||
+                                (!isSelected(this.model.getTerminal(parent, true)) &&
+                                    !isSelected(this.model.getTerminal(parent, false)))) {
+                                checked.push(cells[i]);
+                            }
+                        }
+
+                        cells = checked;
+
+                        if (clone) {
+                            cells = this.cloneCells(cells, this.isCloneInvalidEdges(), mapping);
+
+                            if (target == null) {
+                                target = this.getDefaultParent();
+                            }
+                        }
+
+                        // to avoid forward references in sessions.
+                        // Need to disable allowNegativeCoordinates if target not null to
+                        // allow for temporary negative numbers until cellsAdded is called.
+                        var previous = this.isAllowNegativeCoordinates();
+
+                        if (target != null) {
+                            this.setAllowNegativeCoordinates(true);
+                        }
+
+                        this.cellsMoved(cells, dx, dy, !clone && this.isDisconnectOnMove()
+                            && this.isAllowDanglingEdges(), target == null,
+                            this.isExtendParentsOnMove() && target == null);
+
+                        this.setAllowNegativeCoordinates(previous);
+
+                        if (target != null) {
+                            var index = this.model.getChildCount(target);
+                            this.cellsAdded(cells, target, index, null, null, true);
+                        }
+
+                        // Dispatches a move event
+                        this.fireEvent(new mxEventObject(mxEvent.MOVE_CELLS, 'cells', cells,
+                            'dx', dx, 'dy', dy, 'clone', clone, 'target', target, 'event', evt));
+                    } finally {
+                        this.model.endUpdate();
+                    }
+                }
+                return cells;
+            };
+
         }
+
+        function detachedJob(target, job) {
+            let dom = $('#dropContainer');
+
+            if (target && target.getAttribute('class') == 'dropContainer' && job) {
+                dom.css({'border-color': 'green'});
+                let flag = true;
+                ConditionService.updateInCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobsInconditions: [{job: job.getAttribute('actual'), inconditions: []}]
+                }).then(function (res) {
+                    if (flag) {
+                        flag = false;
+                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        recursivelyConnectJobs(true, true);
+                    }
+                });
+                ConditionService.updateOutCondition({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobsOutconditions: [{job: job.getAttribute('actual'), outconditions: []}]
+                }).then(function () {
+                    if (flag) {
+                        flag = false;
+                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        recursivelyConnectJobs(true, true);
+                    }
+                }, function (err) {
+                    if (flag) {
+                        flag = false;
+                        dom.css({'opacity': 0, 'border-color': '#ccc'});
+                        recursivelyConnectJobs(true, true);
+                    }
+                });
+            } else {
+                dom.css({'opacity': 0});
+            }
+        }
+
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
@@ -10339,7 +10477,6 @@
                         }
                         if (flag) {
                             t1 = $timeout(function () {
-
                                 recursivelyConnectJobs(true, true);
                             }, 200);
                             break;
