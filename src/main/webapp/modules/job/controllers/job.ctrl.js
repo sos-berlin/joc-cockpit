@@ -8391,15 +8391,10 @@
         }
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
-            vm._allJobs = angular.copy(vm.allJobs);
-            for (let i = 0; i < vm.allJobs.length; i++) {
-                vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
-            }
-            vm._allJobs = orderBy(vm._allJobs, 'path1', false);
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
                 vm.jobFilters.graphViewDetail.tab = 'jobStream';
             }
-            vm.workflows = [];
+
             let jobPaths = [];
             angular.forEach(vm.allJobs, function (job) {
                 jobPaths.push({job: job.path});
@@ -8413,6 +8408,12 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobs: jobPaths
                     }).then(function (result) {
+                        vm.workflows = [];
+                        vm._allJobs = angular.copy(vm.allJobs);
+                        for (let i = 0; i < vm.allJobs.length; i++) {
+                            vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
+                        }
+                        vm._allJobs = orderBy(vm._allJobs, 'path1', false);
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
                         for (let i = 0; i < len; i++) {
@@ -8503,7 +8504,7 @@
                                     break;
                                 }
                             }
-                            if(!_findWF){
+                            if(!_findWF && vm.workflows.length > 0){
                                 vm.selectedWorkflow = vm.workflows[0].name;
                                 createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                             }
@@ -8612,6 +8613,7 @@
                             _node.setAttribute('job', jobs[i].path);
                             _node.setAttribute('outconditions', JSON.stringify(jobs[i].inconditions[x].outconditions));
                             _node.setAttribute('markExpression', jobs[i].inconditions[x].markExpression);
+                            _node.setAttribute('_id', jobs[i].inconditions[x].id);
                             if (jobs[i].inconditions[x].inconditionCommands) {
                                 _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
                             }
@@ -8889,6 +8891,42 @@
             return _str;
         }
 
+        function recursiveCheck2(i, j, _str, connection, job, inCond,  box) {
+            let _sources = [], count = i + 1, flag = true;
+            for (let x = 0; x < connection.length; x++) {
+                if (box[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')) {
+                    _sources.push(connection[x]);
+                }
+            }
+            for (let x = 0; x < _sources.length; x++) {
+                if (count < job.length) {
+                    for (let k = 0; k < inCond.length; k++) {
+                        if (_sources[x].childNodes[0].getAttribute('target') === inCond[k].getAttribute('id')) {
+                            if (inCond[k].getAttribute('job') === job[count].getAttribute('actual')) {
+                                _str = checkXMLString(_str, _sources[x].outerHTML);
+                                flag = false;
+                                break;
+                            } else {
+                                if ((count + 1) < job.length) {
+                                    if (inCond[k].getAttribute('job') === job[count + 1].getAttribute('actual')) {
+                                        flag = false;
+                                        _str = checkXMLString(_str, _sources[x].outerHTML);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (flag) {
+                        if (job[count].getAttribute('id') === _sources[x].childNodes[0].getAttribute('target')) {
+                            _str = checkXMLString(_str, _sources[x].outerHTML);
+                        }
+                    }
+                }
+            }
+            return _str;
+        }
+
         function sortXML(graph) {
             let encoder = new mxCodec();
             let result = encoder.encode(graph.getModel());
@@ -8920,16 +8958,7 @@
                         if (box[j].getAttribute('actual') === job[i].getAttribute('actual')) {
                             _str = _str + box[j].outerHTML;
                             if(i + 1 < job.length) {
-                                for (let k = 0; k < inCond.length; k++) {
-                                    if (inCond[k].getAttribute('job') === job[i + 1].getAttribute('actual')) {
-                                        for (let x = 0; x < connection.length; x++) {
-                                            if (_str.indexOf(connection[x].outerHTML) === -1 && box[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')
-                                                && inCond[k].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
-                                                _str = _str + connection[x].outerHTML;
-                                            }
-                                        }
-                                    }
-                                }
+                                _str = recursiveCheck2(i, j, _str, connection, job, inCond, box);
                             }
                             break;
                         }
@@ -8985,6 +9014,7 @@
                 let _label = parseExpression(job.inconditions[n].conditionExpression);
                 let _node = getCellNode('InCondition', _label, job.inconditions[n].conditionExpression.expression, job.inconditions[n].jobStream);
                 _node.setAttribute('isConsumed', job.inconditions[n].consumed);
+                _node.setAttribute('_id', job.inconditions[n].id);
                 _node.setAttribute('job', job.path);
                 _node.setAttribute('outconditions', JSON.stringify(job.inconditions[n].outconditions));
                 _node.setAttribute('markExpression', job.inconditions[n].markExpression);
@@ -9689,7 +9719,7 @@
                 if (vm._expression.job === vm.jobs[i].path) {
                     if (vm._expression.label === 'InCondition') {
                         for (let j = 0; j < vm.jobs[i].inconditions.length; j++) {
-                            if (vm.jobs[i].inconditions[j].vertexId == cell.id) {
+                            if (vm.jobs[i].inconditions[j].id == cell.getAttribute('_id')) {
                                 vm.jobs[i].inconditions[j].conditionExpression.expression = vm._expression.expression;
                                 for (let m = 0; m < vm.jobs[i].inconditions[j].inconditionCommands.length; m++) {
                                     for (let n = 0; n < vm._expression.commands.length; n++) {
@@ -9713,7 +9743,7 @@
                         }
                     } else if (vm._expression.label === 'OutCondition') {
                         for (let j = 0; j < vm.jobs[i].outconditions.length; j++) {
-                            if (vm.jobs[i].outconditions[j].vertexId == cell.id) {
+                            if (vm.jobs[i].outconditions[j].id == cell.getAttribute('_id')) {
                                 vm.jobs[i].outconditions[j].conditionExpression.expression = vm._expression.expression;
                                 for (let n = 0; n < vm._expression.events.length; n++) {
                                     if (!vm._expression.events[n].command) {
@@ -9783,7 +9813,7 @@
                     });
                 }
             });
-        }
+        };
 
         /**
          * Constructs a new application (returns an mxEditor instance)
@@ -9898,10 +9928,11 @@
             );
             overlay.cursor = "pointer";
             graph.addCellOverlay(cell, overlay);
-            overlay.addListener(mxEvent.CLICK, mxUtils.bind(this, function (sender, evt) {
+            setTimeout(function () {
+                overlay.addListener(mxEvent.CLICK, function (sender, evt) {
                     handleSingleClick(evt.getProperty('cell'));
-                })
-            );
+                });
+            }, 100)
         }
 
         /**
@@ -9946,6 +9977,7 @@
             mxTooltipHandler.prototype.delay = 0;
             mxConstants.VERTEX_SELECTION_COLOR = null;
             mxConstants.EDGE_SELECTION_COLOR = null;
+            mxConstants.GUIDE_COLOR = null;
 
             let style = graph.getStylesheet().getDefaultVertexStyle();
             if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
