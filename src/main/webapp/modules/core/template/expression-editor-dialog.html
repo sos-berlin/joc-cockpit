@@ -18,7 +18,7 @@
                         <div class="form-group row">
                             <div class="col-sm-12" ng-class="{ 'has-error' : form3.expression.$invalid && form3.expression.$dirty }">
                                 <textarea rows="3" class="form-control" ng-model="expression.expression" ng-blur="validateExpression(form3)" autofocus
-                                          placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}" autofocus
+                                          placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}" required
                                           ng-keypress="getSuggestion($event, form3)" name="expression"></textarea>
                             </div>
                         </div>

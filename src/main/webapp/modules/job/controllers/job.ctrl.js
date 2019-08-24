@@ -8314,7 +8314,7 @@
         vm.configXml = './mxgraph/config/diagrameditor.xml';
         vm.isWorkflowLoaded = false;
         vm.editor = {};
-        vm.workflows = [];
+
         vm.flag = false;
         vm.isUpdated = true;
         vm.eventNodes = [];
@@ -8559,7 +8559,7 @@
 
             for (let i = 0; i < vm.allJobs.length; i++) {
                 if (vm.allJobs[i].path === job) {
-                    vm.editConditions(vm.allJobs[i], vm._jobStream.name, function (res) {
+                    vm.editConditions(vm.allJobs[i], vm._jobStream.name || vm.selectedWorkflow, function (res) {
                         if (res) {
                             graph.removeCells([v1]);
                         } else {
@@ -8996,8 +8996,18 @@
             let flag = false;
             let arr = expression.split(' ');
             for (let k = 0; k < arr.length; k++) {
-                if (arr[k].trim() == event.trim()) {
-                    flag = true;
+                if (arr[k].trim() === event.trim() || arr[k].match('event:') || arr[k].match(/\[(.*?)\]/)) {
+                    if (arr[k].match(/\[(.*?)\]/)) {
+                        if (arr[k].replace(arr[k].match(/\[(.*?)\]/)[0], '') === event.trim()) {
+                            flag = true;
+                        }
+                    } else if (arr[k].trim() === event.trim()) {
+                        flag = true;
+                    } else {
+                        if (arr[k].replace('event:', '').trim() === event.trim()) {
+                            flag = true;
+                        }
+                    }
                     break;
                 }
             }
@@ -9360,6 +9370,8 @@
                 }
                 vm.updateJobStreamFolders();
                 recursivelyConnectJobs(true, false);
+            } else{
+                recursivelyConnectJobs(true, true);
             }
         }
 
@@ -9632,11 +9644,7 @@
                 event: cell.getAttribute('label')
             };
             let job = cell.getAttribute('job');
-            ConditionService.addEvent(obj).then(function () {
-                if (job) {
-                    updateSingleJob(job);
-                }
-            });
+            ConditionService.addEvent(obj);
         };
 
         vm.removeAllEventFromWorkflow = function () {
@@ -9673,11 +9681,7 @@
                 event: cell.getAttribute('label')
             };
             let job = cell.getAttribute('job');
-            ConditionService.deleteEvent(obj).then(function () {
-                if (job) {
-                    updateSingleJob(job);
-                }
-            });
+            ConditionService.deleteEvent(obj);
         };
 
         vm.startConditionResolver = function () {
@@ -10494,7 +10498,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
-                    if (vm.events[0].eventSnapshots[m].eventType === "EventCreated" && !vm.events[0].eventSnapshots[m].eventId) {
+                    if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved") && !vm.events[0].eventSnapshots[m].eventId) {
                         recursivelyConnectJobs(true, true);
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {

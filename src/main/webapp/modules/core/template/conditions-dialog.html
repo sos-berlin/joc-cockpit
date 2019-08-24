@@ -164,7 +164,7 @@
                         <i class="fa fa-pencil m-l-sm text-hover-primary" ng-click="expressionEditor()"></i>
                     </div>
                     <div class="col-md-10 m-b-sm" ng-class="{ 'has-error' : form.expression.$invalid && form.expression.$dirty }">
-                        <textarea id="expression-id" rows="3" class="form-control" ng-keypress="getSuggestion($event, form)" ng-blur="validateExpression(form)" autofocus name="expression"
+                        <textarea id="expression-id" rows="3" class="form-control" ng-keypress="getSuggestion($event, form)" ng-blur="validateExpression(form)" required name="expression"
                                   placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}" ng-model="condition.conditionExpression.expression"></textarea>
                         <div class="dropdown-menu dropdown dropdown-more" id="event-suggestion">
                             <a class="dropdown-item" ng-click="addSuggestion(func)" ng-repeat="func in functions">{{func}}</a>
