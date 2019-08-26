@@ -3304,6 +3304,7 @@
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location", "OrderService", "$filter", "ConditionService"];
+
     function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService, $filter, ConditionService) {
         const vm = $scope;
         vm.isConditionTab = $location.path() === '/job_streams';
@@ -3365,9 +3366,9 @@
             if (!vm.savedJobFilter.selected && !vm.isConditionTab) {
                 initTree();
             }
-            if(!vm.isConditionTab) {
+            if (!vm.isConditionTab) {
                 checkSharedFilters();
-            }else{
+            } else {
                 initWorkflowTree();
             }
         }
@@ -3572,7 +3573,7 @@
         function initWorkflowTree() {
             vm.reloadState = 'no';
             let obj = {jobschedulerId: vm.schedulerIds.selected};
-            if(vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
+            if (vm.jobFilters.graphViewDetail.jobStream !== 'ALL') {
                 obj.jobStream = vm.jobFilters.graphViewDetail.jobStream
             }
             JobService.tree({
@@ -3582,8 +3583,8 @@
             }).then(function (res) {
                 ConditionService.workflowTree(obj).then(function (res1) {
                     vm.jobStreams = ['ALL'];
-                    if(res1.jobStreamFolders && res1.jobStreamFolders.length > 0){
-                        for(let i =0; i < res1.jobStreamFolders.length; i++){
+                    if (res1.jobStreamFolders && res1.jobStreamFolders.length > 0) {
+                        for (let i = 0; i < res1.jobStreamFolders.length; i++) {
                             vm.jobStreams.push(res1.jobStreamFolders[i].jobStream);
                         }
                     }
@@ -3601,6 +3602,7 @@
 
                         if (vm.isEmpty(vm.jobFilters.expand_to)) {
                             vm.tree = angular.copy(folders);
+
                             filteredTreeData();
                         } else {
 
@@ -3622,6 +3624,7 @@
                             vm.changeStatus();
                         }
                     }
+
                     vm.isLoading = true;
                 });
 
@@ -3641,8 +3644,8 @@
             });
         };
 
-        vm.$on('reloadTree', function(evt, data){
-            if(vm.jobFilters.graphViewDetail.jobStream === data.oldName){
+        vm.$on('reloadTree', function (evt, data) {
+            if (vm.jobFilters.graphViewDetail.jobStream === data.oldName) {
                 vm.jobFilters.graphViewDetail.jobStream = data.newName;
             }
             vm.updateJobStreamFolders();
@@ -3650,12 +3653,12 @@
 
         function filterTreeData(list) {
             let _tempArr = [];
-            list= list.sort();
+            list = list.sort();
             for (let i = list.length - 1; i >= 0; i--) {
-                  if (_tempArr.length == 0) {
-                        _tempArr.push(list[i]);
-                    } else if(!_tempArr[_tempArr.length - 1].match(list[i])){
-                        _tempArr.push(list[i]);
+                if (_tempArr.length == 0) {
+                    _tempArr.push(list[i]);
+                } else if (!_tempArr[_tempArr.length - 1].match(list[i])) {
+                    _tempArr.push(list[i]);
                 }
             }
             if (_tempArr.length === 0) {
@@ -5163,7 +5166,7 @@
                 obj.jobs.push({job: value.path});
             });
             vm.isLoaded = true;
-            if(vm.isConditionTab){
+            if (vm.isConditionTab) {
                 obj.isOrderJob = false;
             }
             JobService.getJobsP(obj).then(function (res) {
@@ -6598,7 +6601,7 @@
                 } else {
                     getFilteredData();
                 }
-                if(newValue !== 'grid' && newValue !== 'list'){
+                if (newValue !== 'grid' && newValue !== 'list') {
                     vm.showSearchPanel = false;
                     vm.jobFilter = {};
                 }
@@ -6672,6 +6675,7 @@
     }
 
     JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams", "$filter", "SavedFilter", "$timeout"];
+
     function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal, TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams, $filter, SavedFilter, $timeout) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
@@ -8309,6 +8313,7 @@
     }
 
     JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty", "orderByFilter"];
+
     function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
@@ -8417,6 +8422,7 @@
                         vm._allJobs = orderBy(vm._allJobs, 'path1', false);
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
+
                         for (let i = 0; i < len; i++) {
                             let wf = (mergeData[i].inconditions.length > 0) ? mergeData[i].inconditions[0].jobStream : (mergeData[i].outconditions.length > 0) ? mergeData[i].outconditions[0].jobStream : '';
                             if (wf) {
@@ -8505,7 +8511,7 @@
                                     break;
                                 }
                             }
-                            if(!_findWF && vm.workflows.length > 0){
+                            if (!_findWF && vm.workflows.length > 0) {
                                 vm.selectedWorkflow = vm.workflows[0].name;
                                 createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
                             }
@@ -8513,10 +8519,11 @@
                                 createWorkflowDiagram(_jobs, !reload, scrollTop);
                             }
                         }
-                        if(vm.selectedWorkflow && vm.workflows.length === 0){
+                        if (vm.selectedWorkflow && vm.workflows.length === 0) {
                             vm.selectedWorkflow = null;
-                            vm.flag =false;
+                            vm.flag = false;
                         }
+
                         vm.getEvents(null);
                         if (cb) {
                             cb();
@@ -8606,129 +8613,46 @@
                         v1 = graph.getModel().getCell(jobs[i].jId)
                     }
 
-                    if (!vm.jobFilters.graphViewDetail.isWorkflowCompact) {
-                        for (let x = 0; x < jobs[i].inconditions.length; x++) {
-                            let _label = parseExpression(jobs[i].inconditions[x].conditionExpression);
-                            let _node = getCellNode('InCondition', _label, jobs[i].inconditions[x].conditionExpression.expression, jobs[i].inconditions[x].jobStream);
-                            _node.setAttribute('isConsumed', jobs[i].inconditions[x].consumed);
-                            _node.setAttribute('job', jobs[i].path);
-                            _node.setAttribute('outconditions', JSON.stringify(jobs[i].inconditions[x].outconditions));
-                            _node.setAttribute('markExpression', jobs[i].inconditions[x].markExpression);
-                            _node.setAttribute('_id', jobs[i].inconditions[x].id);
-                            if (jobs[i].inconditions[x].inconditionCommands) {
-                                _node.setAttribute('commands', JSON.stringify(jobs[i].inconditions[x].inconditionCommands));
-                            }
-                            let style = 'condition';
-                            if (jobs[i].inconditions[x].consumed) {
-                                style += ';fillColor=none';
-                            }
-                            if (jobs[i].inconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=green;';
-                            }
 
-                            let conditionVertex = createVertex(parent, _node, jobs[i].inconditions[x].conditionExpression.expression, style);
-                            addOverlays(graph, conditionVertex, jobs[i].inconditions[x].conditionExpression.value ? 'green' : '');
-                            if(jobs[i].inconditions[x].outconditions.length > 1) {
-                                addReferenceIcon(graph, conditionVertex);
-                            }
-                            jobs[i].inconditions[x].vertexId = conditionVertex.id;
+                    for (let m = 0; m < jobs.length; m++) {
 
-                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
-                        }
-
-                        let out = null;
-                        if (jobs[i].outconditions.length > 0) {
-                            out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
-                            vertexes.push(out);
-                        }
-
-                        for (let x = 0; x < jobs[i].outconditions.length; x++) {
-                            let _label = parseExpression(jobs[i].outconditions[x].conditionExpression);
-                            let _node = getCellNode('OutCondition', _label, jobs[i].outconditions[x].conditionExpression.expression, jobs[i].outconditions[x].jobStream);
-                            _node.setAttribute('_id', jobs[i].outconditions[x].id);
-                            _node.setAttribute('job', jobs[i].path);
-                            _node.setAttribute('events', JSON.stringify(jobs[i].outconditions[x].outconditionEvents));
-                            _node.setAttribute('inconditions', JSON.stringify(jobs[i].outconditions[x].inconditions));
-                            let style = 'condition2';
-                            if (jobs[i].outconditions[x].conditionExpression.value) {
-                                style += ';strokeColor=green;';
-                            }
-                            let conditionVertex = createVertex(parent, _node, jobs[i].outconditions[x].conditionExpression.expression, style);
-                            addOverlays(graph, conditionVertex, jobs[i].outconditions[x].conditionExpression.value ? 'green' : '');
-                            if(jobs[i].outconditions[x].inconditions.length > 1) {
-                                addReferenceIcon(graph, conditionVertex);
-                            }
-                            jobs[i].outconditions[x].vertexId = conditionVertex.id;
-                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
-                            if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
-                                for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                    if (jobs[i].outconditions[x].outconditionEvents[z].command === 'create') {
-                                        let _node = getCellNode('Event', jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].outconditionEvents[z].event, jobs[i].outconditions[x].jobStream);
-                                        let flg = jobs[i].outconditions[x].outconditionEvents[z].exists ? true : jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream;
-                                        _node.setAttribute('isExist', flg);
-                                        _node.setAttribute('job', jobs[i].path);
-                                        _node.setAttribute('outconditionId', jobs[i].outconditions[x].id);
-                                        let style = 'event';
-                                        if (!jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream && jobs[i].outconditions[x].outconditionEvents[z].exists) {
-                                            style += ';dashed=1';
-                                        }
-                                        if (!jobs[i].outconditions[x].outconditionEvents[z].exists && !jobs[i].outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                            style += ';fillColor=none';
-                                        }
-                                        let e1 = createVertex(parent, _node, jobs[i].outconditions[x].outconditionEvents[z].event, style);
-                                        events.push(e1);
-                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
-                                    }
-                                }
-                            }
-                        }
-
-                        if (out) {
-                            for (let m = 0; m < events.length; m++) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
-                            }
-                        }
-                    } else {
-                        for (let m = 0; m < jobs.length; m++) {
-
-                            if (jobs[i].path !== jobs[m].path) {
-                                for (let n = 0; n < jobs[m].inconditions.length; n++) {
-                                    for (let x = 0; x < jobs[i].outconditions.length; x++) {
-                                        if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
-                                            for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                                if (matchExpression(jobs[m].inconditions[n].conditionExpression.expression, jobs[i].outconditions[x].outconditionEvents[z].event)) {
-                                                    if (!jobs[i].connections) {
-                                                        jobs[i].connections = [];
+                        if (jobs[i].path !== jobs[m].path) {
+                            for (let n = 0; n < jobs[m].inconditions.length; n++) {
+                                for (let x = 0; x < jobs[i].outconditions.length; x++) {
+                                    if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
+                                        for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
+                                            if (matchExpression(jobs[m].inconditions[n].conditionExpression.expression, jobs[i].outconditions[x].outconditionEvents[z].event)) {
+                                                if (!jobs[i].connections) {
+                                                    jobs[i].connections = [];
+                                                }
+                                                if (jobs[i].connections.indexOf(jobs[m].path) === -1) {
+                                                    jobs[i].connections.push(jobs[m].path);
+                                                }
+                                                if (!jobs[m].jId) {
+                                                    if (!jobs[m].state) {
+                                                        jobs[m].state = {};
                                                     }
-                                                    if (jobs[i].connections.indexOf(jobs[m].path) === -1) {
-                                                        jobs[i].connections.push(jobs[m].path);
-                                                    }
-                                                    if (!jobs[m].jId) {
-                                                        if (!jobs[m].state) {
-                                                            jobs[m].state = {};
-                                                        }
-                                                        let _node = getCellNode('Job', jobs[m].name, jobs[m].path, '');
-                                                        _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
-                                                        let style = 'job';
-                                                        style += ';strokeColor=' + (vm.colorFunction(jobs[m].state.severity) || '#999');
+                                                    let _node = getCellNode('Job', jobs[m].name, jobs[m].path, '');
+                                                    _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
+                                                    let style = 'job';
+                                                    style += ';strokeColor=' + (vm.colorFunction(jobs[m].state.severity) || '#999');
 
-                                                        let v2 = createVertex(parent, _node, jobs[i].name, style);
-                                                        addOverlays(graph, v2, jobs[m].state._text === 'RUNNING' ? 'green' : jobs[m].state._text === 'PENDING' ? 'yellow' : 'red');
-                                                        jobs[m].jId = v2.id;
-                                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
-                                                    } else {
-                                                        let isConnected = false;
-                                                        if (v1.edges) {
-                                                            for (let y = 0; y < v1.edges.length; y++) {
-                                                                if (v1.edges[y].target.id === graph.getModel().getCell(jobs[m].jId).id) {
-                                                                    isConnected = true;
-                                                                    break;
-                                                                }
+                                                    let v2 = createVertex(parent, _node, jobs[i].name, style);
+                                                    addOverlays(graph, v2, jobs[m].state._text === 'RUNNING' ? 'green' : jobs[m].state._text === 'PENDING' ? 'yellow' : 'red');
+                                                    jobs[m].jId = v2.id;
+                                                    graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
+                                                } else {
+                                                    let isConnected = false;
+                                                    if (v1.edges) {
+                                                        for (let y = 0; y < v1.edges.length; y++) {
+                                                            if (v1.edges[y].target.id === graph.getModel().getCell(jobs[m].jId).id) {
+                                                                isConnected = true;
+                                                                break;
                                                             }
                                                         }
-                                                        if (!isConnected) {
-                                                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(jobs[m].jId));
-                                                        }
+                                                    }
+                                                    if (!isConnected) {
+                                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(jobs[m].jId));
                                                     }
                                                 }
                                             }
@@ -8738,6 +8662,7 @@
                             }
                         }
                     }
+
                     if (events.length > 0) {
                         for (let b = 0; b < events.length; b++) {
                             for (let m = 0; m < jobs.length; m++) {
@@ -8778,7 +8703,7 @@
                         }
                     }
 
-                    if (jobs[i].isExpanded && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
+                    if (jobs[i].isExpanded) {
                         expandJobNode(graph, jobs[i], true);
                     }
                 }
@@ -8802,28 +8727,28 @@
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
-                if (vm.jobFilters.graphViewDetail.isWorkflowCompact) {
-                    let xmlStr = sortXML(graph);
-                    if (xmlStr) {
-                        let bounds = vm.editor.graph.getGraphBounds();
-                        graph.getModel().beginUpdate();
-                        try {
-                            graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-                            const _doc = mxUtils.parseXml(xmlStr);
-                            const dec = new mxCodec(_doc);
-                            const model = dec.decode(_doc.documentElement);
-                            // Merges the response model with the client model
-                            graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-                        } finally {
-                            // Updates the display
-                            graph.getModel().endUpdate();
-                        }
-                        let bounds2 = vm.editor.graph.getGraphBounds();
-                        if ((bounds.x - bounds2.x) !== 0) {
-                            vm.editor.graph.view.setTranslate(bounds.x + (bounds.x - bounds2.x), bounds.y + (bounds.y - bounds2.y));
-                        }
+
+                let xmlStr = sortXML(graph);
+                if (xmlStr) {
+                    let bounds = vm.editor.graph.getGraphBounds();
+                    graph.getModel().beginUpdate();
+                    try {
+                        graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
+                        const _doc = mxUtils.parseXml(xmlStr);
+                        const dec = new mxCodec(_doc);
+                        const model = dec.decode(_doc.documentElement);
+                        // Merges the response model with the client model
+                        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
+                    } finally {
+                        // Updates the display
+                        graph.getModel().endUpdate();
+                    }
+                    let bounds2 = vm.editor.graph.getGraphBounds();
+                    if ((bounds.x - bounds2.x) !== 0) {
+                        vm.editor.graph.view.setTranslate(bounds.x + (bounds.x - bounds2.x), bounds.y + (bounds.y - bounds2.y));
                     }
                 }
+
                 executeLayout(graph);
             }
             vm.jobs = jobs;
@@ -8878,7 +8803,6 @@
                 }
             }
             if (flag) {
-
                 for (let x = 0; x < connection.length; x++) {
                     if (_str.indexOf(connection[x].outerHTML) === -1 && job[i].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')
                         && job[count].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
@@ -8893,7 +8817,7 @@
             return _str;
         }
 
-        function recursiveCheck2(i, j, _str, connection, job, inCond,  box) {
+        function recursiveCheck2(i, j, _str, connection, job, inCond, box) {
             let _sources = [], count = i + 1, flag = true;
             for (let x = 0; x < connection.length; x++) {
                 if (box[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')) {
@@ -8950,7 +8874,7 @@
                             _str = _str + inCond[j].outerHTML;
                         } else {
                             if (i + 1 < job.length) {
-                                _str = recursiveCheck(i,j,_str, connection, job, inCond, (i+1));
+                                _str = recursiveCheck(i, j, _str, connection, job, inCond, (i + 1));
                             }
                         }
                     }
@@ -8959,7 +8883,7 @@
                     for (let j = 0; j < box.length; j++) {
                         if (box[j].getAttribute('actual') === job[i].getAttribute('actual')) {
                             _str = _str + box[j].outerHTML;
-                            if(i + 1 < job.length) {
+                            if (i + 1 < job.length) {
                                 _str = recursiveCheck2(i, j, _str, connection, job, inCond, box);
                             }
                             break;
@@ -8998,28 +8922,15 @@
             let flag = false;
             let arr = expression.trim().split(' ');
             event = event.trim();
-
             for (let k = 0; k < arr.length; k++) {
-                if(arr[k].indexOf('(') === 0){
-                    arr[k] = arr[k].replace('(', '');
-                }
-                if(arr[k].lastIndexOf(')') === arr[k].length -1){
-                    arr[k] = arr[k].replace(')', '');
-                }
-                if (arr[k].trim() === event || arr[k].match('event:') || arr[k].match(/\[(.*?)\]/)) {
-
-                    if (arr[k].match(/\[(.*?)\]/)) {
-                        if (arr[k].replace(arr[k].match(/\[(.*?)\]/)[0], '') === event) {
-                            flag = true;
-                        }
-                    } else if (arr[k].trim() === event) {
+                if (arr[k] && arr[k] !== 'or' && arr[k] !== 'and' && arr[k] != 'not') {
+                    let str = arr[k].replace(/\(/g, ' ')
+                    str = str.replace(/\)/g, ' ');
+                    str = str.replace(/\[(.*?)]/, ' ').trim();
+                    if (str === event || str.replace('event:', '').trim() === event || str === event.replace(/\[(.*?)]/, ' ').trim()) {
                         flag = true;
-                    } else {
-                        if (arr[k].replace('event:', '').trim() === event) {
-                            flag = true;
-                        }
+                        break;
                     }
-                    break;
                 }
             }
             return flag;
@@ -9052,7 +8963,7 @@
 
                 let conditionVertex = createVertex(parent, _node, job.inconditions[n].conditionExpression.expression, style);
                 addOverlays(graph, conditionVertex, job.inconditions[n].conditionExpression.value ? 'green' : '');
-                if(job.inconditions[n].outconditions.length > 1) {
+                if (job.inconditions[n].outconditions.length > 1) {
                     addReferenceIcon(graph, conditionVertex);
                 }
                 job.inconditions[n].vertexId = conditionVertex.id;
@@ -9081,7 +8992,7 @@
                 }
                 let conditionVertex = createVertex(parent, _node, job.outconditions[x].conditionExpression.expression, style);
                 addOverlays(graph, conditionVertex, job.outconditions[x].conditionExpression.value ? 'green' : '');
-                if(job.outconditions[x].inconditions.length > 1) {
+                if (job.outconditions[x].inconditions.length > 1) {
                     addReferenceIcon(graph, conditionVertex);
                 }
                 job.outconditions[x].vertexId = conditionVertex.id;
@@ -9242,18 +9153,19 @@
 
         };
 
-        vm.compactView = function (jobStream) {
-            vm.jobFilters.graphViewDetail.isWorkflowCompact = !vm.jobFilters.graphViewDetail.isWorkflowCompact;
+        vm.compactView = function (jobStream, flag) {
             let _jobs = [];
             for (let x = 0; x < vm.workflows.length; x++) {
                 if (jobStream === 'ALL') {
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
+                        vm.workflows[x].jobs[i].isExpanded = flag;
                     }
                     _jobs = _jobs.concat(vm.workflows[x].jobs)
                 } else if (jobStream === vm.workflows[x].name) {
                     for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
                         delete vm.workflows[x].jobs[i]['jId'];
+                        vm.workflows[x].jobs[i].isExpanded = flag;
                     }
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                     createWorkflowDiagram(vm.workflows[x].jobs, false, 0);
@@ -9298,7 +9210,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if(vm.selectedWorkflow === jobStream.name){
+                if (vm.selectedWorkflow === jobStream.name) {
                     vm.selectedWorkflow = vm._jobStream.name;
                 }
                 if (vm._jobStream.name !== jobStream.name) {
@@ -9317,8 +9229,8 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsInconditions: inObj
                     }).then(function () {
-                        $rootScope.$broadcast('reloadTree', {oldName : jobStream.name, newName : vm._jobStream.name});
-                        if(flag){
+                        $rootScope.$broadcast('reloadTree', {oldName: jobStream.name, newName: vm._jobStream.name});
+                        if (flag) {
                             flag = false;
                             recursivelyConnectJobs(true, false);
                         }
@@ -9327,7 +9239,7 @@
                         jobschedulerId: $scope.schedulerIds.selected,
                         jobsOutconditions: outObj
                     }).then(function () {
-                        if(flag){
+                        if (flag) {
                             flag = false;
                             recursivelyConnectJobs(true, false);
                         }
@@ -9381,7 +9293,7 @@
                 }
                 vm.updateJobStreamFolders();
                 recursivelyConnectJobs(true, false);
-            } else{
+            } else {
                 recursivelyConnectJobs(true, true);
             }
         }
@@ -9431,24 +9343,26 @@
          */
         function parseExpression(conditions) {
             let expArr = [], resultArr = [], val = [];
-            if(conditions.expression) {
-                conditions.expression = conditions.expression.trim();
-                let ex = conditions.expression.split(/\s+(and not|and|not|or)\s+/);
+
+            if (conditions.expression) {
+                let _exp = conditions.expression.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+                _exp = _exp.trim();
+                let ex = _exp.split(/\s+(and not|and|not|or)\s+/);
                 for (let i = 0; i < ex.length; i++) {
                     if (ex[i].match('and not') || ex[i].match('or not')) {
                         expArr = expArr.concat(ex[i].split(' '))
-                    } else {
+                    } else if (ex[i] && ex[i] != '(' && ex[i] != ')') {
                         expArr.push(ex[i])
                     }
                 }
-                conditions.validatedExpression = conditions.validatedExpression.trim();
-                val = conditions.validatedExpression.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
+                let _valExp = conditions.validatedExpression.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+                _valExp = _valExp.trim();
+                val = _valExp.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
                 for (let i = 0; i < val.length; i++) {
-                    let x = val[i].trim();
-                    if (x.match('! ')) {
+                    if (val[i].match('! ')) {
                         resultArr = resultArr.concat(val[i].split(' '))
-                    } else if (x && x != '(' && x != ')') {
-                        resultArr.push(val[i])
+                    } else if (val[i] && val[i] != '(' && val[i] != ')') {
+                        resultArr.push(val[i]);
                     }
                 }
             }
@@ -9456,7 +9370,7 @@
             let _label = '';
             for (let x = 0; x < expArr.length; x++) {
                 if (expArr[x]) {
-                    if (val[x] && resultArr[x] &&resultArr[x].trim() == 'true') {
+                    if (resultArr[x] && resultArr[x].trim().match('true')) {
                         _label = _label + '<span class="text-check">' + expArr[x].trim() + '</span> ';
                     } else {
                         _label = _label + expArr[x].trim() + ' ';
@@ -9822,7 +9736,7 @@
             }
         });
 
-        vm.editConditions1 = function(job){
+        vm.editConditions1 = function (job) {
             vm.editConditions(job, null, function (res) {
                 if (!res) {
                     recursivelyConnectJobs(true, false, function () {
@@ -9918,9 +9832,9 @@
          */
         function addOverlays(graph, cell, color) {
             let img = color === 'green' ? 'images/green-bar.svg' : color === 'red' ? 'images/red-bar.svg' : color === 'yellow' ? 'images/yellow-bar.svg' : 'images/grey-bar.svg';
-            if(cell.value.tagName === 'InCondition'){
+            if (cell.value.tagName === 'InCondition') {
                 img = color === 'green' ? 'images/green-right-curve-bar.svg' : 'images/grey-right-curve-bar.svg';
-            } else if(cell.value.tagName === 'OutCondition'){
+            } else if (cell.value.tagName === 'OutCondition') {
                 img = color === 'green' ? 'images/green-left-curve-bar.svg' : 'images/grey-left-curve-bar.svg';
             }
             let w = cell.value.tagName === 'Job' ? 180 : 151;
@@ -9968,7 +9882,7 @@
                 vm.jobFilters.graphViewDetail.tab = 'reference';
                 vm.referenceTabHeading = 'Out-Condition :' + ' ' + cell.getAttribute('actual');
                 vm._outconditionReference = JSON.parse(cell.getAttribute('inconditions'));
-            } else if (cell.value.tagName === 'Job' && vm.jobFilters.graphViewDetail.isWorkflowCompact) {
+            } else if (cell.value.tagName === 'Job') {
                 for (let i = 0; i < vm.jobs.length; i++) {
                     if (vm.jobs[i].path == cell.getAttribute('actual')) {
                         vm.jobs[i].isExpanded = !vm.jobs[i].isExpanded;
@@ -10060,6 +9974,7 @@
             function SumEllipseShape() {
                 mxEllipse.call(this);
             };
+
             mxUtils.extend(SumEllipseShape, mxEllipse);
             SumEllipseShape.prototype.paintVertexShape = function (c, x, y, w, h) {
                 mxEllipse.prototype.paintVertexShape.apply(this, arguments);
@@ -10169,7 +10084,6 @@
                         pt.x = pt.x - (13 * state.shape.scale);
                     }
                 }
-
 
                 if (!pt) {
                     return;
@@ -10292,7 +10206,7 @@
              *@param cell
              */
             graph.getCursorForCell = function (cell) {
-                if (cell && cell.value && (cell.value.tagName === 'InCondition' || cell.value.tagName === 'OutCondition' || (vm.jobFilters.graphViewDetail.isWorkflowCompact && cell.value.tagName === 'Job'))) {
+                if (cell && cell.value && (cell.value.tagName === 'InCondition' || cell.value.tagName === 'OutCondition' || (cell.value.tagName === 'Job'))) {
                     return 'pointer';
                 } else {
                     return null;
@@ -10318,10 +10232,10 @@
                     if (me.consumed) {
                         isJobDraging = true;
                         movedJob = null;
-                        setTimeout(function(){
-                            if(isJobDraging)
+                        setTimeout(function () {
+                            if (isJobDraging)
                                 $('#dropContainer').css({opacity: 1});
-                        },10);
+                        }, 10);
                     }
                     if (this.currentState != null && (me.getState() == this.currentState ||
                         me.getState() == null)) {
@@ -10369,7 +10283,7 @@
             });
 
             graph.moveCells = function (cells, dx, dy, clone, target, evt, mapping) {
-                if(cells && cells[0]){
+                if (cells && cells[0]) {
                     movedJob = cells[0];
                 }
                 dx = 0;

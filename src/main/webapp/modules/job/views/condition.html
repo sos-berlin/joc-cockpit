@@ -697,11 +697,11 @@
                                 <div>
                                     <div class="graph-container" >
                                         <div class="m-b-sm b-b p-b-sm">
-                                            <button class="btn btn-sm btn btn-grey hidden-btn-text" ng-class="{'primary':!jobFilters.graphViewDetail.isWorkflowCompact}" ng-click="compactView(selectedWorkflow)">
+                                            <button class="btn btn-sm btn btn-grey hidden-btn-text" ng-click="compactView(selectedWorkflow, true)">
                                                 <i class="fa fa-angle-double-down"></i>
                                                 <span translate>button.expandDetails</span>
                                             </button>
-                                            <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm" ng-class="{'primary':jobFilters.graphViewDetail.isWorkflowCompact}"  ng-click="compactView(selectedWorkflow)">
+                                            <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm" ng-click="compactView(selectedWorkflow, false)">
                                                 <i class="fa fa-angle-double-up"></i>
                                                 <span translate>button.collapseDetails</span>
                                             </button>

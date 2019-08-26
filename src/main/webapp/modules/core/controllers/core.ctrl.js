@@ -14399,7 +14399,7 @@
         vm.functions.push('[' + (d.getMonth() + 1) + '.' + d.getDate() + ']');
         vm._eventExample = 'event:name_of_event';
         vm._jobExample = 'job:name_of_job';
-        vm._jobchainExample = 'jobChain:name_of_jobChain';
+        vm._jobchainExample = 'jobchain:name_of_jobchain';
 
         vm.generateExpression = function (operator, func) {
             if (func && !operator) {
@@ -14450,9 +14450,9 @@
                             vm.expression.expression = (vm.expression.expression || '') + ' job:' + func;
                         }else  if(operator === 'jobChain_function') {
                             vm.expression.showIcon = true;
-                            vm.expression.type = 'jobChain';
-                            vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
-                            vm.expression.expression = (vm.expression.expression || '') + ' jobChain:' + func;
+                            vm.expression.type = 'jobchain';
+                            vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobChain.' + func;
+                            vm.expression.expression = (vm.expression.expression || '') + ' jobchain:' + func;
                         }else{
                             vm.expression.expression = (vm.expression.expression || '') + ' '+ func+ ':';
                         }
@@ -14469,10 +14469,10 @@
                         vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
                         vm.expression.expression = vm.tmpExp + ' job:' + func;
                     }else  if(operator === 'jobChain_function') {
-                        vm.expression.type = 'jobChain';
+                        vm.expression.type = 'jobchain';
                         vm.expression.showIcon = true;
-                        vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
-                        vm.expression.expression = vm.tmpExp + ' jobChain:' + func;
+                        vm._jobchainExample = 'jobchain:' + func + ', ' + 'jobchain:name_of_jobChain.' + func;
+                        vm.expression.expression = vm.tmpExp + ' jobchain:' + func;
                     }else {
                         vm.expression.expression = vm.tmpExp + ' ' + func + ':';
                     }
@@ -14481,7 +14481,7 @@
         };
 
         vm.getTreeStructure = function () {
-            if (vm.expression.type == 'job' || vm.expression.type == 'jobChain') {
+            if (vm.expression.type == 'job' || vm.expression.type == 'jobchain') {
                 $('#objectModal').modal('show');
                 JobChainService.tree({
                     jobschedulerId: vm.schedulerIds.selected,

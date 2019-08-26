@@ -75,7 +75,7 @@
                                     <div>
                                         <i ng-if="expression.jobChainOpen" ng-click="expression.jobChainOpen = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.jobChainOpen" ng-click="expression.jobChainOpen = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobchain')">jobChain</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
                                             <li ng-repeat="func in jobChainFunctions">
                                                 <a class="text-hover-primary"  ng-click="generateExpression('jobChain_function', func)">{{func}}</a>
@@ -132,7 +132,7 @@
                                             <div class="text-muted">{{_jobExample}}</div>
                                         </div>
                                     </div>
-                                    <div ng-if="expression.type === 'jobChain'">
+                                    <div ng-if="expression.type === 'jobchain'">
                                         <label class="_600">jobChain</label>
                                         <p class="text-sm" translate>
                                             message.jobChainIsSpecifiedByJobChain
