@@ -14336,9 +14336,9 @@
                 if (!vm.condition.conditionExpression) {
                     vm.condition.conditionExpression = {expression: ''};
                 }
-                vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression);
+                vm.expression.expression = angular.copy(vm.condition.conditionExpression.expression || '');
             } else if (vm._expression) {
-                vm.expression.expression = angular.copy(vm._expression.expression);
+                vm.expression.expression = angular.copy(vm._expression.expression || '');
             }
 
             $('#expression-editor').modal('show');
@@ -14348,9 +14348,9 @@
 
         vm.save3 = function (form) {
             if(vm.condition) {
-                vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression);
+                vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression || '');
             } else if(vm._expression){
-                vm._expression.expression = angular.copy(vm.expression.expression);
+                vm._expression.expression = angular.copy(vm.expression.expression || '');
             }
             $('#expression-editor').modal('hide');
             if (form) {
@@ -14413,48 +14413,48 @@
             if (vm.expression.expression && vm.expression.expression != ' ' && operator && !operator.match('function')) {
                 isFunction = false;
                 vm.tmpExp = null;
-                if (!vm.operator) {
-                    vm.operator = operator;
-                    vm.tmp = vm.expression.expression;
-                    vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
-                } else if (vm.tmp) {
-                    vm.expression.expression = vm.tmp + ' ' + operator + ' ';
-                } else{
+                let arr = vm.expression.expression.trim().split(' '), exp = '';
+                if ((arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
+                    for(let m =0; m < arr.length -1;m++){
+                        exp = exp + arr[m] + ' ';
+                    }
+                }
+                if(exp) {
+                    vm.expression.expression = exp + operator + ' ';
+                }else{
                     vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
                 }
                 vm.expression.showIcon = false;
             } else if (func) {
-                vm.tmp = null;
                 if (!isFunction) {
                     isFunction = true;
                     if (operator && !operator.match('function')) {
                         let arr = vm.expression.expression.trim().split(' '), opt = ' ';
                         if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
-                            vm.operator = 'and';
                             opt = ' and ';
                         }
                         vm.tmpExp = vm.expression.expression + opt;
                         vm.expression.expression = vm.expression.expression + opt + func + ':';
                         vm.expression.showIcon = false;
                     } else {
-                        vm.tmpExp = vm.expression.expression;
+                        vm.tmpExp = vm.expression.expression || '';
                         if(operator === 'function') {
                             vm.expression.type = 'event';
                             vm.expression.showIcon = false;
                             vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
-                            vm.expression.expression = vm.expression.expression + ' name_of_event' + func;
+                            vm.expression.expression = (vm.expression.expression || '') + ' name_of_event' + func;
                         } else  if(operator === 'job_function') {
                             vm.expression.showIcon = true;
                             vm.expression.type = 'job';
                             vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
-                            vm.expression.expression = vm.expression.expression + ' job:' + func;
+                            vm.expression.expression = (vm.expression.expression || '') + ' job:' + func;
                         }else  if(operator === 'jobChain_function') {
                             vm.expression.showIcon = true;
                             vm.expression.type = 'jobChain';
                             vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
-                            vm.expression.expression = vm.expression.expression + ' jobChain:' + func;
+                            vm.expression.expression = (vm.expression.expression || '') + ' jobChain:' + func;
                         }else{
-                            vm.expression.expression = vm.expression.expression + func+ ':';
+                            vm.expression.expression = (vm.expression.expression || '') + ' '+ func+ ':';
                         }
                     }
                 } else if (vm.tmpExp || vm.tmpExp == '') {
@@ -14505,12 +14505,14 @@
             let str = '';
             if (vm.expression && vm.expression.expression) {
                 str = vm.expression.expression;
-            } else if (vm.condition && vm.condition.conditionExpression) {
+            } else if (vm.condition && vm.condition.conditionExpression && vm.condition.conditionExpression.expression) {
                 str = vm.condition.conditionExpression.expression;
             } else if (vm._expression) {
                 str = vm._expression.expression;
+            } else {
+                vm.tmpExp = '';
             }
-
+            str = str.trim();
             let arr = str ? str.split(' ') : [];
             if (arr.length > 0) {
                 if (arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'not') {
@@ -14644,10 +14646,7 @@
                 $('#event-suggestion').css({display: 'none', opacity: 0});
             }
             let arr = $event.target.value.split(' ');
-            if (arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not')) {
-                vm.operator = arr[arr.length - 1];
-                vm.tmp = $event.target.value.substring(0, $event.target.value.lastIndexOf(vm.operator));
-            } else if (arr && arr.length > 1) {
+            if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) if (arr && arr.length > 1) {
                 for (let i = 0; i < arr.length; i++) {
                     if (i % 2 != 0) {
                         if ((arr[i] === 'or' || arr[i] === 'and')) {

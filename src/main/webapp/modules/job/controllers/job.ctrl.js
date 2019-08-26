@@ -6314,17 +6314,18 @@
                 ConditionService.updateInCondition({
                     jobschedulerId: $scope.schedulerIds.selected,
                     jobsInconditions: [{job: vm._job.path, inconditions: vm._job.inconditions}]
+                }).then(function () {
+                    ConditionService.updateOutCondition({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        jobsOutconditions: [{job: vm._job.path, outconditions: vm._job.outconditions}]
+                    }).then(function () {
+                        vm.updateJobStreamFolders();
+                        if (cb) {
+                            cb();
+                        }
+                    });
                 });
-                ConditionService.updateOutCondition({
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    jobsOutconditions: [{job: vm._job.path, outconditions: vm._job.outconditions}]
-                });
-                setTimeout(function(){
-                    vm.updateJobStreamFolders();
-                },800);
-                if (cb) {
-                    cb();
-                }
+
             }, function () {
                 vm._job = null;
                 if (cb) {
@@ -8817,11 +8818,12 @@
                             // Updates the display
                             graph.getModel().endUpdate();
                         }
-
-                        vm.editor.graph.view.setTranslate(bounds.x + 7.5, bounds.y+0.5);
+                        let bounds2 = vm.editor.graph.getGraphBounds();
+                        if ((bounds.x - bounds2.x) !== 0) {
+                            vm.editor.graph.view.setTranslate(bounds.x + (bounds.x - bounds2.x), bounds.y + (bounds.y - bounds2.y));
+                        }
                     }
                 }
-
                 executeLayout(graph);
             }
             vm.jobs = jobs;
@@ -8994,17 +8996,26 @@
 
         function matchExpression(expression, event) {
             let flag = false;
-            let arr = expression.split(' ');
+            let arr = expression.trim().split(' ');
+            event = event.trim();
+
             for (let k = 0; k < arr.length; k++) {
-                if (arr[k].trim() === event.trim() || arr[k].match('event:') || arr[k].match(/\[(.*?)\]/)) {
+                if(arr[k].indexOf('(') === 0){
+                    arr[k] = arr[k].replace('(', '');
+                }
+                if(arr[k].lastIndexOf(')') === arr[k].length -1){
+                    arr[k] = arr[k].replace(')', '');
+                }
+                if (arr[k].trim() === event || arr[k].match('event:') || arr[k].match(/\[(.*?)\]/)) {
+
                     if (arr[k].match(/\[(.*?)\]/)) {
-                        if (arr[k].replace(arr[k].match(/\[(.*?)\]/)[0], '') === event.trim()) {
+                        if (arr[k].replace(arr[k].match(/\[(.*?)\]/)[0], '') === event) {
                             flag = true;
                         }
-                    } else if (arr[k].trim() === event.trim()) {
+                    } else if (arr[k].trim() === event) {
                         flag = true;
                     } else {
-                        if (arr[k].replace('event:', '').trim() === event.trim()) {
+                        if (arr[k].replace('event:', '').trim() === event) {
                             flag = true;
                         }
                     }
@@ -9419,30 +9430,33 @@
          * @param conditions
          */
         function parseExpression(conditions) {
-            let ex = conditions.expression.split(/\s+(and not|and|not|or)\s+/);
-            let expArr = [], resultArr = [];
-            for (let i = 0; i < ex.length; i++) {
-                if (ex[i].match('and not') || ex[i].match('or not')) {
-                    expArr = expArr.concat(ex[i].split(' '))
-                } else {
-                    expArr.push(ex[i])
+            let expArr = [], resultArr = [], val = [];
+            if(conditions.expression) {
+                conditions.expression = conditions.expression.trim();
+                let ex = conditions.expression.split(/\s+(and not|and|not|or)\s+/);
+                for (let i = 0; i < ex.length; i++) {
+                    if (ex[i].match('and not') || ex[i].match('or not')) {
+                        expArr = expArr.concat(ex[i].split(' '))
+                    } else {
+                        expArr.push(ex[i])
+                    }
                 }
-            }
-
-            let val = conditions.validatedExpression.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
-            for (let i = 0; i < val.length; i++) {
-                let x = val[i].trim();
-                if (x.match('! ')) {
-                    resultArr = resultArr.concat(val[i].split(' '))
-                } else if (x && x != '(' && x != ')') {
-                    resultArr.push(val[i])
+                conditions.validatedExpression = conditions.validatedExpression.trim();
+                val = conditions.validatedExpression.split(/\s+(\(|\)|&&|!|\|\|)\s+/);
+                for (let i = 0; i < val.length; i++) {
+                    let x = val[i].trim();
+                    if (x.match('! ')) {
+                        resultArr = resultArr.concat(val[i].split(' '))
+                    } else if (x && x != '(' && x != ')') {
+                        resultArr.push(val[i])
+                    }
                 }
             }
 
             let _label = '';
             for (let x = 0; x < expArr.length; x++) {
                 if (expArr[x]) {
-                    if (val[x] && resultArr[x].trim() == 'true') {
+                    if (val[x] && resultArr[x] &&resultArr[x].trim() == 'true') {
                         _label = _label + '<span class="text-check">' + expArr[x].trim() + '</span> ';
                     } else {
                         _label = _label + expArr[x].trim() + ' ';
@@ -10004,7 +10018,7 @@
             // remove overlays from exclude list for mxCellCodec so that overlays are encoded into XML
             let cellCodec = mxCodecRegistry.getCodec(mxCell);
             let excludes = cellCodec.exclude;
-            if(excludes.indexOf('overlays') > 0) {
+            if (excludes.indexOf('overlays') > 0) {
                 excludes.splice(excludes.indexOf('overlays'), 1);
             }
 
@@ -10101,21 +10115,6 @@
                 } else {
                     return false;
                 }
-            };
-
-            graph.foldCells = function (collapse, recurse, cells, checkFoldable, evt) {
-                recurse = (recurse != null) ? recurse : true;
-                this.stopEditing(false);
-                this.model.beginUpdate();
-                try {
-                    this.cellsFolded(cells, collapse, recurse, checkFoldable);
-                    this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
-                        'collapse', collapse, 'recurse', recurse, 'cells', cells));
-                } finally {
-                    this.model.endUpdate();
-                }
-                executeLayout(graph);
-                return cells;
             };
 
             mxCellOverlay.prototype.getBounds = function (state) {
@@ -10319,7 +10318,10 @@
                     if (me.consumed) {
                         isJobDraging = true;
                         movedJob = null;
-                        $('#dropContainer').css({opacity: 1});
+                        setTimeout(function(){
+                            if(isJobDraging)
+                                $('#dropContainer').css({opacity: 1});
+                        },10);
                     }
                     if (this.currentState != null && (me.getState() == this.currentState ||
                         me.getState() == null)) {

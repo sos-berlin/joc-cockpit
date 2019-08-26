@@ -1,5 +1,5 @@
 <div class="box p-a ">
-      <div ng-hide="showMsg" class="box-body p-b-0" ng-repeat="master in masters track by $index" ng-if="getSelectedMaster(master)" ng-init="showPanel= (masterName == master.master || (masterName =='default' && master.master==''))">
+      <div ng-hide="showMsg" class="box-body p-b-0" ng-repeat="master in masters track by $index" ng-if="getSelectedMaster(master)" ng-init="showPanel= (masterName == master.master || (masterName =='default' && master.master=='') || (masterName == undefined && master.master==''))">
           <div class="row">
               <div class="col-sm-12">
                   <div class="btn-group dropdown pull-left m-r-sm">
