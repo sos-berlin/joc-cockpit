@@ -14066,9 +14066,31 @@
             init();
         }
 
+        function checkFileNameWithSpace(exp){
+            if(exp.match(/fileexist/)){
+                let arr = exp.split(' ');
+                let _str = '';
+                for(let i=0; i <arr.length ;i++) {
+                    if(arr[i].match(/fileexist:/)) {
+                        if(i+1 < arr.length && !arr[i].match(/\.[0-9a-z]+$/i) && arr[i + 1].match(/\.[0-9a-z]+$/i)) {
+                            _str = _str + arr[i] + '%20';
+                        } else{
+                            _str = _str + arr[i] + ' ';
+                        }
+                    } else{
+                        _str = _str + arr[i] + ' ';
+                    }
+                }
+                return _str.trim();
+            }else{
+                return exp.trim();
+            }
+        }
+
         $scope.ok = function () {
             if(vm._job) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
+                    vm._job.inconditions[i].conditionExpression.expression = checkFileNameWithSpace(vm._job.inconditions[i].conditionExpression.expression);
                     vm._job.inconditions[i].jobStream = vm.editor.jobStream;
                     for (let j = 0; j < vm._job.inconditions[i].inconditionCommands.length; j++) {
                         if (!vm._job.inconditions[i].inconditionCommands[j].command || vm._job.inconditions[i].inconditionCommands[j].command == '') {
@@ -14085,6 +14107,7 @@
                     }
                 }
                 for (let i = 0; i < vm._job.outconditions.length; i++) {
+                    vm._job.outconditions[i].conditionExpression.expression = checkFileNameWithSpace(vm._job.outconditions[i].conditionExpression.expression);
                     vm._job.outconditions[i].jobStream = vm.editor.jobStream;
                     for (let j = 0; j < vm._job.outconditions[i].outconditionEvents.length; j++) {
                         if (!vm._job.outconditions[i].outconditionEvents[j].event || vm._job.outconditions[i].outconditionEvents[j].event == '') {
@@ -14099,7 +14122,10 @@
                         return;
                     }
                 }
+            }else if(vm._expression && vm._expression.expression){
+                vm._expression.expression = checkFileNameWithSpace(vm._expression.expression);
             }
+
             $uibModalInstance.close('ok');
         };
 
@@ -14129,6 +14155,7 @@
         };
 
         vm.updateCondition = function (condition, index) {
+
             vm.strCondition = 'edit';
             vm._index = index;
             vm.condition = angular.copy(condition);

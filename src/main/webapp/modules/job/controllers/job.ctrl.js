@@ -6648,6 +6648,22 @@
             }
         });
 
+        vm.importJobStream = function () {
+            //vm.$broadcast('importJobStream');
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/import-jobstream-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
+
+            }, function () {
+
+            });
+        };
+
         vm.startConditionResolver = function () {
             vm.$broadcast('startConditionResolver');
         };
@@ -8312,9 +8328,9 @@
         });
     }
 
-    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "gettextCatalog", "$timeout", "toasty", "orderByFilter"];
+    JobWorkflowCtrl.$inject = ["$scope", "$rootScope", "$uibModal", "CoreService", "ConditionService", "AuditLogService", "gettextCatalog", "$timeout", "toasty", "orderByFilter", "FileSaver"];
 
-    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, gettextCatalog, $timeout, toasty, orderBy) {
+    function JobWorkflowCtrl($scope, $rootScope, $uibModal, CoreService, ConditionService, AuditLogService, gettextCatalog, $timeout, toasty, orderBy, FileSaver) {
         const vm = $scope;
         vm.jobFilters = CoreService.getConditionTab();
         vm.configXml = './mxgraph/config/diagrameditor.xml';
@@ -8325,6 +8341,7 @@
         vm.isUpdated = true;
         vm.eventNodes = [];
         vm.tree_handler = {};
+        let isInitiate = true;
 
         function init() {
             if (sessionStorage.preferences) {
@@ -8334,6 +8351,7 @@
 
             let top = Math.round($('.scroll-y').position().top + 76);
             let ht = 'calc(100vh - ' + top + 'px)';
+            $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
             let dom = $('#graph');
             dom.css({opacity: 1});
@@ -8351,11 +8369,15 @@
                 if (window.innerWidth > 1024) {
                     $('#outlineContainer').animate({'right': '309px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
+                    $('#toolbar').animate({'margin-right': '296px'}, 'fast', 'linear');
                 } else {
                     $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+                    $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
                 $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear');
+                $('.scrolltop-btn').css('right', '340px');
+                $('.scrollBottom-btn').css('right', '340px');
             });
 
             $('.sidebar-close', panel).click(function () {
@@ -8363,21 +8385,38 @@
                 $('.sidebar').css({'width': '0', opacity: 0});
                 $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
                 $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
+                $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
                 $('.sidebar-close').css('right', '-20px');
+                $('.scrolltop-btn').css('right', '44px');
+                $('.scrollBottom-btn').css('right', '44px');
             });
+
+            $('.graph-container').scroll(function() {
+                if(isInitiate && $(this).scrollTop() !== 0){
+                    $(this).scrollTop(0);
+                }
+                if($(this).scrollTop() > 220){
+                    $('.scrollBottom-btn').hide();
+                    $('.scrolltop-btn').show();
+                }else{
+                    $('.scrollBottom-btn').show();
+                    $('.scrolltop-btn').hide();
+                }
+                isInitiate = false;
+            });
+
             setTimeout(function () {
                 $('#outlineContainer').css({opacity: 1});
                 if (window.innerWidth > 1024) {
                     $('.sidebar-open').click();
                 }
-
             }, 100);
             recursivelyConnectJobs(false, false);
 
             /**
              * Changes the zoom on mouseWheel events
              */
-            $('.graph-container').bind('mousewheel DOMMouseScroll', function (event) {
+            dom.bind('mousewheel DOMMouseScroll', function (event) {
                 if (vm.editor) {
                     if (event.ctrlKey) {
                         event.preventDefault();
@@ -8388,13 +8427,21 @@
                         }
                     } else {
                         const bounds = vm.editor.graph.getGraphBounds();
-                        if (bounds.y < -0.05 && bounds.height > $('#graph').height()) {
+                        if (bounds.y < -0.05 && bounds.height > dom.height()) {
                             vm.editor.graph.center(true, true, 0.5, -0.02);
                         }
                     }
                 }
             });
         }
+
+        vm.scrollTop = function(){
+            $('.graph-container').animate({'scroll-top': '0'}, 'fast');
+        };
+        vm.scrollBottom = function(){
+            let _dom = $('.graph-container');
+            _dom.animate({'scroll-top': (_dom[0].scrollHeight-  _dom.height()) + 'px'}, 'fast', 'linear');
+        };
 
         function recursivelyConnectJobs(reload, checkScroll, cb) {
             if (vm.jobFilters.graphViewDetail.tab === 'reference') {
@@ -8523,7 +8570,9 @@
                             vm.selectedWorkflow = null;
                             vm.flag = false;
                         }
-
+                        if(vm.selectedWorkflow) {
+                            vm.loadHistory(vm.selectedWorkflow);
+                        }
                         vm.getEvents(null);
                         if (cb) {
                             cb();
@@ -8924,7 +8973,7 @@
             event = event.trim();
             for (let k = 0; k < arr.length; k++) {
                 if (arr[k] && arr[k] !== 'or' && arr[k] !== 'and' && arr[k] != 'not') {
-                    let str = arr[k].replace(/\(/g, ' ')
+                    let str = arr[k].replace(/\(/g, ' ');
                     str = str.replace(/\)/g, ' ');
                     str = str.replace(/\[(.*?)]/, ' ').trim();
                     if (str === event || str.replace('event:', '').trim() === event || str === event.replace(/\[(.*?)]/, ' ').trim()) {
@@ -9070,6 +9119,22 @@
         function updateWorkflowDiagram(jobs) {
             if (!jobs || !vm.editor) return;
 
+            vm.runningTasks = [];
+            vm.taskQueue = [];
+            for (let j = 0; j < jobs.length; j++) {
+                if (jobs[j].runningTasks && jobs[j].runningTasks.length > 0) {
+                    angular.forEach(jobs[j].runningTasks, function(value, index){
+                        jobs[j].runningTasks[index].path = jobs[j].path;
+                    });
+                    vm.runningTasks = vm.runningTasks.concat(jobs[j].runningTasks)
+                }
+                if (jobs[j].taskQueue && jobs[j].taskQueue.length > 0) {
+                    angular.forEach(jobs[j].taskQueue, function(value, index){
+                        jobs[j].taskQueue[index].path = jobs[j].path;
+                    });
+                    vm.taskQueue = vm.taskQueue.concat(jobs[j].taskQueue)
+                }
+            }
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
@@ -9168,13 +9233,13 @@
                         vm.workflows[x].jobs[i].isExpanded = flag;
                     }
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(vm.workflows[x].jobs, false, 0);
+                    createWorkflowDiagram(vm.workflows[x].jobs, true, 0);
                     break;
                 }
             }
             if (_jobs.length > 0) {
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(_jobs, false, 0);
+                createWorkflowDiagram(_jobs, true, 0);
             }
         };
 
@@ -10410,15 +10475,36 @@
             }
         }
 
+        vm.loadHistory = function (jobstream) {
+            let obj = {jobschedulerId : vm.schedulerIds.selected};
+            obj.jobStream = jobstream;
+            obj.limit = vm.userPreferences.maxHistoryPerJobchain;
+            ConditionService.history(obj).then(function (res) {
+                vm.taskHistory = res.history;
+            });
+        };
+
+        vm.loadAuditLogs = function () {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobs = [];
+            for(let i =0; i < vm.jobs.length; i++) {
+                obj.jobs.push({job:  vm.jobs[i].path});
+            }
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
+            AuditLogService.getLogs(obj).then(function (result) {
+                if (result && result.auditLog) {
+                    vm.auditLogs = result.auditLog;
+                }
+            });
+        };
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
                 for (let m = 0; m < vm.events[0].eventSnapshots.length; m++) {
-                    if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved") && !vm.events[0].eventSnapshots[m].eventId) {
+                    if ((vm.events[0].eventSnapshots[m].eventType === "EventCreated" || vm.events[0].eventSnapshots[m].eventType === "EventRemoved" || vm.events[0].eventSnapshots[m].eventType === "InconditionValidated") && !vm.events[0].eventSnapshots[m].eventId) {
                         recursivelyConnectJobs(true, true);
                         break;
-                    } else if (vm.events[0].eventSnapshots[m].eventType === "InconditionValidated" && !vm.events[0].eventSnapshots[m].eventId) {
-                        updateSingleJob(vm.events[0].eventSnapshots[m].path);
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
                         let flag = false;
                         for (let i = 0; i < vm.allJobs.length; i++) {
@@ -10480,6 +10566,33 @@
                 vm.editor.graph.fit();
                 vm.editor.graph.center(true, true, 0.5, 0);
             }
+        };
+
+        $scope.$on('importJobStream', function (evt, res) {
+          console.log(res)
+        });
+
+        vm.exportJobStream = function() {
+            let jobStreams = [];
+            for(let i =0; i < vm.workflows.length; i++){
+                let obj = {
+                    jobSteam : vm.workflows[i].name,
+                    jobs: []
+                };
+                for(let j =0; j < vm.workflows[i].jobs.length; j++){
+                    obj.jobs.push({job:vm.workflows[i].jobs[j].path, inconditions : vm.workflows[i].jobs[j].inconditions, outconditions : vm.workflows[i].jobs[j].outconditions})
+                }
+                jobStreams.push(obj);
+            }
+
+            var name = 'jobstream' + '.json';
+            var fileType = 'application/octet-stream';
+            var data = jobStreams;
+            if (typeof data === 'object') {
+                data = JSON.stringify(data, undefined, 2);
+            }
+            var blob = new Blob([data], {type: fileType});
+            FileSaver.saveAs(blob, name);
         };
 
         $scope.$on('$destroy', function () {

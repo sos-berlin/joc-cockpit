@@ -61,6 +61,10 @@
                             <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
+                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm hidden-btn-text" ng-click="importJobStream()">
+                                <i class="fa fa-upload"></i>
+                                <span translate>button.importJobStream</span>
+                            </button>
                             <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="resetWorkflow()"><i class="fa fa-refresh"></i>
                                 <span class="hidden-sm-down" translate>button.reset</span>
                             </button>
@@ -694,87 +698,434 @@
                                 </ul>
                             </div>
                             <div class="col-md-11">
-                                <div>
-                                    <div class="graph-container" >
-                                        <div class="m-b-sm b-b p-b-sm">
-                                            <button class="btn btn-sm btn btn-grey hidden-btn-text" ng-click="compactView(selectedWorkflow, true)">
-                                                <i class="fa fa-angle-double-down"></i>
-                                                <span translate>button.expandDetails</span>
-                                            </button>
-                                            <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm" ng-click="compactView(selectedWorkflow, false)">
-                                                <i class="fa fa-angle-double-up"></i>
-                                                <span translate>button.collapseDetails</span>
-                                            </button>
-                                            <div class="inline m-l">
-                                                <span class="text-muted" translate>label.jobStream</span>: <span class="text-primary">{{selectedWorkflow}}</span>
-                                            </div>
-                                            <div class="inline pull-right">
-                                                <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}" ng-click="zoomIn()">
-                                                            <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item dropdown-separator">
-                                                        <span class="separator"></span>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}" ng-click="zoomOut()">
-                                                            <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item dropdown-separator">
-                                                        <span class="separator"></span>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" uib-tooltip="{{'tooltip.default' | translate}}" ng-click="actual()">
-                                                            <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item dropdown-separator">
-                                                        <span class="separator"></span>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}" ng-click="fit()">
-                                                            <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                <div id="toolbar">
+                                    <div class="m-b-sm b-b p-b-sm">
+                                        <button class="btn btn-sm btn btn-grey hidden-btn-text"
+                                                ng-click="compactView(selectedWorkflow, true)">
+                                            <i class="fa fa-angle-double-down"></i>
+                                            <span translate>button.expandDetails</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm"
+                                                ng-click="compactView(selectedWorkflow, false)">
+                                            <i class="fa fa-angle-double-up"></i>
+                                            <span translate>button.collapseDetails</span>
+                                        </button>
+                                        <div class="inline m-l">
+                                            <span class="text-muted" translate>label.jobStream</span>: <span
+                                                class="text-primary">{{selectedWorkflow}}</span>
+                                        </div>
+                                        <div class="inline pull-right">
+                                            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                                <li class="nav-item">
+                                                    <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}"
+                                                       ng-click="zoomIn()">
+                                                        <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item dropdown-separator">
+                                                    <span class="separator"></span>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}"
+                                                       ng-click="zoomOut()">
+                                                        <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item dropdown-separator">
+                                                    <span class="separator"></span>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" uib-tooltip="{{'tooltip.default' | translate}}"
+                                                       ng-click="actual()">
+                                                        <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item dropdown-separator">
+                                                    <span class="separator"></span>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}"
+                                                       ng-click="fit()">
+                                                        <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item dropdown-separator">
+                                                    <span class="separator"></span>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" uib-tooltip="{{'button.exportJobStreams' | translate}}"
+                                                       ng-click="exportJobStream()">
+                                                        <span class="nav-text"> <i class="fa fa-download" style="opacity: .8"></i></span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="graph-container">
+                                    <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
+                                    <div id="dropContainer" class="dropContainer">
+                                        <div class="dropContainer" translate>message.dropHereToDetach</div>
+                                    </div>
+                                    <div id="outlineContainer"></div>
+                                    <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
+                                         style="position: absolute" ng-class="{'show':selectedNode}">
+                                        <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
+                                           ng-click="start(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
+                                           translate>button.startTask</a>
+                                        <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
+                                           ng-click="startAt(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
+                                           translate>button.startTaskat</a>
+                                        <a class="dropdown-item bg-hover-color"
+                                           ng-if="selectedNode.job.state._text !='STOPPED' && permission.Job.execute.stop && selectedNode.type === 'Job'"
+                                           ng-click="stop(selectedNode.job);closeMenu()" translate>button.stop</a>
+                                        <a class="dropdown-item"
+                                           ng-if="selectedNode.job.state._text =='STOPPED' && permission.Job.execute.unstop && selectedNode.type === 'Job'"
+                                           ng-click="unstop(selectedNode.job);closeMenu()" translate>button.unstop</a>
+                                        <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-if="permission.Job.execute.kill && selectedNode.type === 'Job'"
+                                           ng-click="killAllTask(selectedNode.job);closeMenu()" translate>button.killAllTasksImmediately</a>
+                                        <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate && selectedNode.type === 'Job'"
+                                           ng-click="terminateAllTask(selectedNode.job);closeMenu()" translate>button.terminateAllTasks</a>
+                                        <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate && selectedNode.type === 'Job'"
+                                           ng-click="terminateTaskWithTimeout(selectedNode.job,null,null);closeMenu()"
+                                           translate>button.terminateAllTasksWithTimeout</a>
+                                        <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
+                                        <a class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-click="setRunTime(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.change.runTime && selectedNode.type === 'Job'"><span
+                                                translate>button.setRunTime</span></a>
+                                        <a class="dropdown-item"
+                                           ng-if="permission.DailyPlan.view.status && selectedNode.type === 'Job'"
+                                           ng-click="viewCalendar(selectedNode.job);closeMenu()" translate>button.showDailyPlan</a>
+                                        <a class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-click="showAssignedCalendar(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Calendar.view.status && selectedNode.type === 'Job'"
+                                           translate>button.showAssignedCalendar</a>
+                                        <a ng-click="showConfiguration('job',selectedNode.job.path,selectedNode.job.name);closeMenu()"
+                                           class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
+                                           ng-if="permission.Job.view.configuration && selectedNode.type === 'Job'"
+                                           translate>button.showConfiguration</a>
+                                        <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
+                                        <a class="dropdown-item"
+                                           ng-click="assignedDocument(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.assignDocumentation && selectedNode.type === 'Job'"
+                                           translate>button.assignedDocumentation</a>
+                                        <a class="dropdown-item"
+                                           ng-click="unassignedDocument(selectedNode.job);closeMenu()"
+                                           ng-if="permission.Job.assignDocumentation && selectedNode.job.documentation && selectedNode.type === 'Job'"
+                                           translate>button.unassignedDocumentation</a>
+                                        <a class="dropdown-item {{selectedNode.job.documentation ? '': 'disable-link'}}"
+                                           ng-if="permission.Job.view.documentation && selectedNode.type === 'Job'"
+                                           ng-click="showDocumentation('job', selectedNode.job.path);closeMenu()"
+                                           translate>button.showDocumentation</a>
+                                        <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
+                                        <a class="dropdown-item" ng-if="selectedNode.type === 'Job'"
+                                           ng-click="resetJob(selectedNode.cell);closeMenu()"
+                                           translate>button.resetJob</a>
+                                        <a class="dropdown-item"
+                                           ng-if="selectedNode.type === 'Job' && permission.JobStream.change.conditions"
+                                           ng-click="editConditions1(selectedNode.job);closeMenu()" translate>button.editConditions</a>
+                                        <a class="dropdown-item"
+                                           ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.events.add"
+                                           ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
+                                        <a class="dropdown-item"
+                                           ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.conditions"
+                                           ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
+                                        <a class="dropdown-item"
+                                           ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove"
+                                           ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
+                                    </div>
+                                    <div class="m-t">
+                                        <div class="box white">
+                                            <div class="box-body p-t b-t">
+                                                <div class="b-b">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" href
+                                                               data-toggle="tab" data-target="#tab1_1" translate>label.taskHistory</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" href data-toggle="tab"
+                                                               data-target="#tab1_2" translate>label.taskQueue</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" href data-toggle="tab"
+                                                               data-target="#tab1_3" translate>label.runningTask</a>
+                                                        </li>
+                                                        <li class="nav-item" ng-if="permission.AuditLog.view.status">
+                                                            <a class="nav-link" href data-toggle="tab" ng-click="loadAuditLogs()"
+                                                               data-target="#tab1_4" translate>label.auditLog</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-content p-a">
+                                                    <div class="tab-pane animated fadeIn active" id="tab1_1">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered ">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th translate>label.taskId</th>
+                                                                        <th translate>label.status</th>
+                                                                        <th translate>label.started</th>
+                                                                        <th translate>label.ended</th>
+                                                                        <th translate>label.duration</th>
+                                                                        <th translate>label.exitCode</th>
+                                                                        <th translate>label.errorCode</th>
+                                                                        <th class="error-text" translate>
+                                                                            label.errorText
+                                                                        </th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true"
+                                                                        class="cursor"
+                                                                        ng-click="showLogWindow(null,task)"
+                                                                        title="Show logs">
+                                                                        <td nowrap>
+                                                                            <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
+                                                                               ng-click="downloadLog(task);$event.stopPropagation()"></i>
+                                                                            <span ng-bind="task.taskId"></span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="label" ng-if="task.state._text"
+                                                                                  ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
+                                                                        </td>
+                                                                        <td>{{task.startTime | stringToDate}}</td>
+                                                                        <td>{{task.endTime | stringToDate}}</td>
+                                                                        <td>{{task.startTime | duration:task.endTime}}
+                                                                        </td>
+                                                                        <td>{{task.exitCode}}</td>
+                                                                        <td>{{task.error.code}}</td>
+                                                                        <td class="text-danger">{{task.error.message}}
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="taskHistory.length==0"
+                                                                     class="text-center m-t m-b h6 text-uppercase"
+                                                                     translate>
+                                                                    message.noJobHistoryFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane animated fadeIn " id="tab1_2">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered ">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th class="menu"
+                                                                            ng-if="permission.Job.execute.kill"
+                                                                            translate>label.action
+                                                                        </th>
+                                                                        <th translate>label.taskId</th>
+                                                                        <th translate>label.enqueued</th>
+                                                                        <th translate>label.plannedStart</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr ng-repeat="task in taskQueue">
+                                                                        <td ng-if="permission.Job.execute.kill">
+                                                                            <div class="btn-group dropdown">
+                                                                                <button type="button" class="btn-drop more-option-h"
+                                                                                        dropdown data-toggle="dropdown">
+                                                                                    <i class="fa fa-ellipsis-h"></i>
+                                                                                </button>
+                                                                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                                                                    <a class="dropdown-item bg-hover-color" ng-click="killTask(task,task.path)"
+                                                                                       translate>button.delete</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>{{task.taskId}}</td>
+                                                                        <td>{{task.enqueued | stringToDate}}</td>
+                                                                        <td>{{task.plannedStart | stringToDate}}</td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="taskQueue==0" class="text-center m-t m-b h6 text-uppercase"
+                                                                     translate>
+                                                                    message.noEnqueuedTasksFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane animated fadeIn" id="tab1_3">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered ">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th class="menu"><span translate>label.action</span></th>
+                                                                        <th translate>label.pid</th>
+                                                                        <th translate>label.taskId</th>
+                                                                        <th translate>label.cause</th>
+                                                                        <th translate>label.processSteps</th>
+                                                                        <th translate>label.runningSince</th>
+                                                                        <th translate>label.enqueuedAt</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr ng-repeat="task in runningTasks"
+                                                                        class="cursor">
+                                                                        <td ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                                                            <div class="btn-group dropdown">
+                                                                                <button type="button" class="btn-drop more-option-h"
+                                                                                        dropdown data-toggle="dropdown">
+                                                                                    <i class="fa fa-ellipsis-h"></i>
+                                                                                </button>
+                                                                                <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
+                                                                                     role="menu">
+                                                                                    <a class="dropdown-item"
+                                                                                       ng-if="permission.Job.view.taskLog"
+                                                                                       ng-click="showLogWindow(null,task,task.path)"
+                                                                                       translate>button.viewLog</a>
+                                                                                    <a class="dropdown-item"
+                                                                                       ng-if="permission.Job.execute.endAllTasks"
+                                                                                       ng-click="end(task,task.path)"
+                                                                                       translate>button.end</a>
+                                                                                    <a class="dropdown-item bg-hover-color"
+                                                                                       ng-if="permission.Job.execute.kill"
+                                                                                       ng-click="killTask(task,task.path)"
+                                                                                       translate>button.killImmediately</a>
+                                                                                    <a class="dropdown-item bg-hover-color"
+                                                                                       ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
+                                                                                       ng-click="terminateTask(task,task.path)"
+                                                                                       translate>button.terminate</a>
+                                                                                    <a class="dropdown-item bg-hover-color"
+                                                                                       ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
+                                                                                       ng-click="terminateTaskWithTimeout(null,task,task.path)"
+                                                                                       translate>button.terminateWithTimeout</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task.pid}}
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task.taskId}}
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task._cause | translate}}
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task.steps}}
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task.startedAt | stringToDate}} <span class="text-success">(<span
+                                                                                time="{{task.startedAt}}"></span>)</span>
+                                                                        </td>
+                                                                        <td ng-click="showLogWindow(null,task,task.path)">
+                                                                            {{task.enqueued | stringToDate}} <span
+                                                                                class="text-success">(<span time="{{task.enqueued}}"></span>)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="runningTasks.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                                    message.noRunningTasksFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane animated fadeIn" id="tab1_4">
+                                                        <div class="row">
+                                                            <div class="table-responsive" resizable
+                                                                 r-directions="['bottom']" r-height="250">
+                                                                <table class="table table-hover table-bordered audit-table">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th translate>label.created</th>
+                                                                        <th translate>label.account</th>
+                                                                        <th translate>label.request</th>
+                                                                        <th translate>label.comment</th>
+                                                                        <th translate>label.timeSpend</th>
+                                                                        <th translate>label.ticketLink</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                                    <tr>
+                                                                        <td class="p-l-0">
+                                                                            <span class="show-in-single-line">
+                                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore p-l-xs p-r-xs"
+                                                                                   ng-if="!auditLog.show"
+                                                                                   ng-click="auditLog.show =true"></i>
+                                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore p-l-xs p-r-xs"
+                                                                                   ng-if="auditLog.show"
+                                                                                   ng-click="auditLog.show =false"></i>
+                                                                                <span ng-bind="auditLog.created | stringToDate"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td><span ng-bind="auditLog.account"></span>
+                                                                        </td>
+                                                                        <td><span ng-bind="auditLog.request"></span>
+                                                                        </td>
+                                                                        <td><span ng-bind="auditLog.comment"></span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span ng-if="auditLog.timeSpent">
+                                                                                <span ng-bind="auditLog.timeSpent"></span>
+                                                                                <span>m</span>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td><a href="{{auditLog.ticketLink}}"
+                                                                               class="text-hover-primary"
+                                                                               target="_blank"
+                                                                               ng-bind="auditLog.ticketLink"></a></td>
+                                                                    </tr>
+                                                                    <tr class="tableexport-ignore"
+                                                                        ng-show="auditLog.show">
+                                                                        <td colspan="6" class="p-a-0">
+                                                                            <table class="table m-a-0">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th translate>label.parameters</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                <tr>
+                                                                                    <td><span
+                                                                                            ng-bind="auditLog.parameters"></span>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div ng-if="auditLogs.length==0"
+                                                                     class="text-center m-t-md h6 text-uppercase"
+                                                                     translate>
+                                                                    message.noAuditLogFound
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div id="graph" ondragover="allowDrop(event)"></div>
-                                        <!-- Creates a container for the outline -->
-                                        <div id="dropContainer" class="dropContainer"><div class="dropContainer" translate>message.dropHereToDetach</div></div>
-                                        <div id="outlineContainer"></div>
-                                        <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide" style="position: absolute" ng-class="{'show':selectedNode}">
-                                            <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}" ng-click="start(selectedNode.job);closeMenu()" ng-if="permission.Job.execute.start && selectedNode.type === 'Job'" translate>button.startTask</a>
-                                            <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}" ng-click="startAt(selectedNode.job);closeMenu()" ng-if="permission.Job.execute.start && selectedNode.type === 'Job'" translate>button.startTaskat</a>
-                                            <a class="dropdown-item bg-hover-color" ng-if="selectedNode.job.state._text !='STOPPED' && permission.Job.execute.stop && selectedNode.type === 'Job'" ng-click="stop(selectedNode.job);closeMenu()" translate>button.stop</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.job.state._text =='STOPPED' && permission.Job.execute.unstop && selectedNode.type === 'Job'" ng-click="unstop(selectedNode.job);closeMenu()" translate>button.unstop</a>
-                                            <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
-                                               ng-if="permission.Job.execute.kill && selectedNode.type === 'Job'" ng-click="killAllTask(selectedNode.job);closeMenu()" translate>button.killAllTasksImmediately</a>
-                                            <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
-                                               ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate && selectedNode.type === 'Job'"
-                                               ng-click="terminateAllTask(selectedNode.job);closeMenu()" translate>button.terminateAllTasks</a>
-                                            <a class="dropdown-item bg-hover-color {{selectedNode.job.state._text != 'RUNNING' || selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}"
-                                               ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate && selectedNode.type === 'Job'"
-                                               ng-click="terminateTaskWithTimeout(selectedNode.job,null,null);closeMenu()" translate>button.terminateAllTasksWithTimeout</a>
-                                            <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
-                                            <a class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="setRunTime(selectedNode.job);closeMenu()" ng-if="permission.Job.change.runTime && selectedNode.type === 'Job'"><span translate>button.setRunTime</span></a>
-                                            <a class="dropdown-item" ng-if="permission.DailyPlan.view.status && selectedNode.type === 'Job'" ng-click="viewCalendar(selectedNode.job);closeMenu()" translate>button.showDailyPlan</a>
-                                            <a class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-click="showAssignedCalendar(selectedNode.job);closeMenu()" ng-if="permission.Calendar.view.status && selectedNode.type === 'Job'" translate>button.showAssignedCalendar</a>
-                                            <a ng-click="showConfiguration('job',selectedNode.job.path,selectedNode.job.name);closeMenu()" class="dropdown-item {{selectedNode.job.configurationStatus.severity==2 ? 'disable-link' :''}}" ng-if="permission.Job.view.configuration && selectedNode.type === 'Job'" translate>button.showConfiguration</a>
-                                            <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
-                                            <a class="dropdown-item" ng-click="assignedDocument(selectedNode.job);closeMenu()" ng-if="permission.Job.assignDocumentation && selectedNode.type === 'Job'" translate>button.assignedDocumentation</a>
-                                            <a class="dropdown-item" ng-click="unassignedDocument(selectedNode.job);closeMenu()" ng-if="permission.Job.assignDocumentation && selectedNode.job.documentation && selectedNode.type === 'Job'" translate>button.unassignedDocumentation</a>
-                                            <a class="dropdown-item {{selectedNode.job.documentation ? '': 'disable-link'}}" ng-if="permission.Job.view.documentation && selectedNode.type === 'Job'" ng-click="showDocumentation('job', selectedNode.job.path);closeMenu()" translate>button.showDocumentation</a>
-                                            <div class="dropdown-divider" ng-if="selectedNode.type === 'Job'"></div>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job'" ng-click="resetJob(selectedNode.cell);closeMenu()" translate>button.resetJob</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Job' && permission.JobStream.change.conditions" ng-click="editConditions1(selectedNode.job);closeMenu()" translate>button.editConditions</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'InCondition' || selectedNode.type === 'OutCondition' && permission.JobStream.change.events.add" ng-click="openModel(selectedNode.cell);closeMenu()" translate>button.updateExpression</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist !='true' && permission.JobStream.change.conditions" ng-click="addEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.addEvent</a>
-                                            <a class="dropdown-item" ng-if="selectedNode.type === 'Event' && selectedNode.isExist =='true' && permission.JobStream.change.events.remove" ng-click="removeEventFromWorkflow(selectedNode.cell);closeMenu()" translate>button.deleteEvent</a>
-                                        </div>
+                                    </div>
+                                    <div class="scrolltop-btn">
+                                        <a href ng-click="scrollTop()">
+                                            <i class="fa fa-angle-up"></i>
+                                        </a>
+                                    </div>
+                                    <div class="scrollBottom-btn" >
+                                        <a href ng-click="scrollBottom()" uib-tooltip="{{'button.showHistory' | translate}}">
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -788,7 +1139,7 @@
                             </div>
                             <div class="sidebar bg-white">
                                 <div>
-                                    <div class="box-body p-a" >
+                                    <div class="box-body p-a p-t-md" >
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
@@ -1270,4 +1621,5 @@
         ev.dataTransfer.setData("data", ev.target.id);
         window.selectedJob = ev.target.id;
     }
+
 </script>
