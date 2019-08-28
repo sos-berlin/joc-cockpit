@@ -119,7 +119,13 @@
             resolve: {
                 permission: function(authorizationService) {
                     return authorizationService.permissionCheck('Job');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}"}
         }).state("app.job", {
@@ -127,9 +133,15 @@
             templateUrl: "modules/job/views/job-info.html",
             controller: "JobCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Job');
-                }
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}", parent: "app.jobs"}
         }).state("app.jobsOverview", {
@@ -425,18 +437,23 @@
             url: "/profiles",
             templateUrl: "modules/user/views/profiles.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.profiles' | translate}}", parent: "app.users.user"}
-        }).state("app.conditions", {
+        }).state("app.jobstreams", {
             url: "/job_streams",
             templateUrl: "modules/job/views/condition.html",
             controller: "JobCtrl",
             resolve: {
-                permission: function(authorizationService) {
-                    return authorizationService.permissionCheck('Condition');
-                }
+                permission: function (authorizationService) {
+                    return authorizationService.permissionCheck('JobStream');
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js"]
+                    }])
+                }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobStream' | translate}}"}
         })
-
     }
 
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]

@@ -8,8 +8,22 @@
     <div class="modal-body p-a" style="min-height: 240px">
         <form name="form1" ng-submit="ok()" novalidate >
             <div ng-hide="fileLoading">
+                <div ng-if="uploader.queue.length>0" class="form-group row" ng-class="{ 'has-error' : form1.path.$invalid && form1.path.$dirty }">
+                    <label class="col-sm-3 form-control-label" translate>label.path</label>
+                    <div class="col-sm-9">
+                        <input type="text" required class="form-control" placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}" name="path"
+                               ng-model="importJobstreamObj.path">
+                        <div class="help-block text-danger" ng-if="form1.path.$dirty" ng-messages="form1.path.$error">
+                            <div ng-message="required" translate>message.requiredError</div>
+                        </div>
+                        <div style="position: absolute; right: 25px;margin-top:6px;top:0">
+                            <a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="table-responsive" ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">
-                    <table class="table table-hover table-bordered  " >
+                    <table class="table table-hover table-bordered" >
                         <thead>
                             <tr>
                                 <th width="30">
@@ -17,7 +31,8 @@
                                         <input type="checkbox" ng-model="checkImportJobstream.checkbox" ng-change="checkImportJobstreamFn()"><i class="primary"></i>
                                     </label>
                                 </th>
-                                <th><span translate>label.name</span></th>
+                                <th><span translate>label.jobName</span></th>
+                                <th><span translate>label.jobStream</span></th>
                             </tr>
                         </thead>
                         <tbody ng-repeat="jobstream in fileContentJobStreams">
@@ -28,9 +43,8 @@
                                                data-checklist-value="jobstream"><i class="primary"></i>
                                     </label>
                                 </td>
-                                <td>
-
-                                </td>
+                                <td>{{jobstream.job}}</td>
+                                <td>{{jobstream.jobStream}}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -280,7 +280,7 @@
                             }
                         }
                         break;
-                    case 'Condition':
+                    case 'JobStream':
                         if (showViews.conditions !== undefined) {
                             if (showViews.conditions)
                                 ifPermissionPassed = true;

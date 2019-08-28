@@ -262,7 +262,7 @@
                     dailyPlan: view,
                     jobChain: view,
                     job: view,
-                    condition: view,
+                    jobStream: view,
                     order: view,
                     agent: view,
                     lock: view,
@@ -275,6 +275,7 @@
                     jobOverView: view,
                     permission: view
                 };
+
                 if (!e.localStorage.views) {
                     e.localStorage.views = JSON.stringify(views);
                 } else {
@@ -287,7 +288,7 @@
                 } else if (l.path() == '/jobs') {
                     t.pageView = views.job;
                 }else if (l.path() == '/job_streams') {
-                    t.pageView = views.condition;
+                    t.pageView = views.jobStream || 'list';
                     t.path='/job_streams';
                 } else if (l.path() == '/orders') {
                     t.pageView = views.order;
@@ -322,7 +323,7 @@
                     } else if (l.path() == '/jobs') {
                         views.job = t.pageView;
                     }else if (l.path() == '/job_streams') {
-                        views.condition = t.pageView;
+                        views.jobStream = t.pageView;
                     } else if (l.path() == '/orders') {
                         views.order = t.pageView;
                     } else if (l.path().match('/resources/agent_clusters')) {

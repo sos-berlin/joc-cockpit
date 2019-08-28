@@ -1408,6 +1408,9 @@
   "button.detailView": "Detail View",
   "button.resolveConditions": "Resolve Conditions",
   "button.addJobStream": "Add Job Stream",
+  "button.dropJobStreamFileToUpload": "DROP JOB STREAM FILES (.json) TO UPLOAD",
+  "button.importJobStream": "Import Job Stream",
+  "label.importJobStream": "Import Job Stream",
   "label.conditionEditor": "Conditions Editor",
   "label.inconditionCommands": "In Condition Commands",
   "label.validatedExpression": "Validated Expression",
@@ -1467,6 +1470,7 @@
   "message.deleteJobStreamAndAllJobs": "Are you sure you want to delete Job Stream and all its Jobs?",
   "message.noJobsWithoutStream": "No Jobs without Stream",
   "message.dropHereToDetach": "Drop here to detached",
+  "message.notValidJobStreamFile": "Not a valid Job Stream file",
   "tooltip.zoomIn": "Zoom In",
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",
@@ -1479,5 +1483,5 @@
   "InCondition": "In Condition",
   "OutCondition": "Out Condition",
   "Event": "Event",
-  "breadcrumb.jobStream" : "Job Streams"
+  "breadcrumb.jobStream": "Job Streams"
 }

@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobs.length>0 || !schedulerIds.selected}">
-                        <div class="inline" ng-if="pageView != 'in-out-conditions'">
+                        <div class="inline" ng-if="pageView && pageView != 'in-out-conditions'">
                             <div class="btn-group m-l-sm hidden-btn-group">
                                 <button class="btn btn-grey btn-sm button-group-ellipsis {{jobFilters.filter.state=='ALL' ? 'btn-primary':'' }}" ng-model="jobFilters.filter.state"
                                         uib-btn-radio="'ALL'" ng-click="changeStatus()" translate>button.allJobs
@@ -58,10 +58,10 @@
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
                         <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions'}">
-                            <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
+                            <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
-                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm hidden-btn-text" ng-click="importJobStream()">
+                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="importJobStream()">
                                 <i class="fa fa-upload"></i>
                                 <span translate>button.importJobStream</span>
                             </button>
@@ -673,7 +673,6 @@
                 </div>
                 <div ng-if="pageView=='in-out-conditions' && (allJobs.length > 0 || noReload) && permission.JobStream.view.graph">
                     <div ng-controller="JobWorkflowCtrl" >
-
                         <div class="row hide m-l-0" ng-class="{'show':flag}">
                             <div class="col-md-1" id="toolbarContainer">
                                 <ul ng-repeat="(key, value) in _allJobs  | groupBy: 'path1' track by $index">
@@ -684,7 +683,6 @@
                                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
                                             {{job.name}}
                                         </div>
-
                                     </li>
                                 </ul>
                                 <ul ng-if="_allJobs.length == 0">
@@ -700,21 +698,21 @@
                             <div class="col-md-11">
                                 <div id="toolbar">
                                     <div class="m-b-sm b-b p-b-sm">
-                                        <button class="btn btn-sm btn btn-grey hidden-btn-text"
-                                                ng-click="compactView(selectedWorkflow, true)">
+                                        <button class="btn btn-sm btn btn-grey"
+                                                ng-click="compactView(selectedJobStream, true)">
                                             <i class="fa fa-angle-double-down"></i>
-                                            <span translate>button.expandDetails</span>
+                                            <span class="toolBtn" translate>button.expandDetails</span>
                                         </button>
-                                        <button class="btn btn-sm btn-grey hidden-btn-text m-l-sm"
-                                                ng-click="compactView(selectedWorkflow, false)">
+                                        <button class="btn btn-sm btn-grey  m-l-sm"
+                                                ng-click="compactView(selectedJobStream, false)">
                                             <i class="fa fa-angle-double-up"></i>
-                                            <span translate>button.collapseDetails</span>
+                                            <span class="toolBtn" translate>button.collapseDetails</span>
                                         </button>
                                         <div class="inline m-l">
-                                            <span class="text-muted" translate>label.jobStream</span>: <span
-                                                class="text-primary">{{selectedWorkflow}}</span>
+                                            <span class="text-muted" translate>label.jobStream</span>:
+                                            <span class="text-primary">{{selectedJobStream}}</span>
                                         </div>
-                                        <div class="inline pull-right">
+                                        <div id="tools" class="inline pull-right">
                                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                                 <li class="nav-item">
                                                     <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}"
@@ -753,7 +751,7 @@
                                                     <span class="separator"></span>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link" uib-tooltip="{{'button.exportJobStreams' | translate}}"
+                                                    <a class="nav-link" uib-tooltip="{{'button.export' | translate}}"
                                                        ng-click="exportJobStream()">
                                                         <span class="nav-text"> <i class="fa fa-download" style="opacity: .8"></i></span>
                                                     </a>
@@ -872,6 +870,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th translate>label.taskId</th>
+                                                                        <th translate>label.job</th>
                                                                         <th translate>label.status</th>
                                                                         <th translate>label.started</th>
                                                                         <th translate>label.ended</th>
@@ -885,14 +884,14 @@
                                                                     </thead>
                                                                     <tbody>
                                                                     <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true"
-                                                                        class="cursor"
-                                                                        ng-click="showLogWindow(null,task)"
+                                                                        class="cursor" ng-click="showLogWindow(null,task)"
                                                                         title="Show logs">
                                                                         <td nowrap>
                                                                             <i class="cursor fa fa-download tableexport-ignore text-hover-primary p-r-xs"
                                                                                ng-click="downloadLog(task);$event.stopPropagation()"></i>
                                                                             <span ng-bind="task.taskId"></span>
                                                                         </td>
+                                                                        <td>{{task.job.substring(task.job.lastIndexOf('/')+1)}}</td>
                                                                         <td>
                                                                             <span class="label" ng-if="task.state._text"
                                                                                   ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span>
@@ -906,13 +905,10 @@
                                                                         <td class="text-danger">{{task.error.message}}
                                                                         </td>
                                                                     </tr>
-
                                                                     </tbody>
                                                                 </table>
-                                                                <div ng-if="taskHistory.length==0"
-                                                                     class="text-center m-t m-b h6 text-uppercase"
-                                                                     translate>
-                                                                    message.noJobHistoryFound
+                                                                <div ng-if="taskHistory.length==0" class="text-center m-t m-b h6 text-uppercase"
+                                                                     translate>message.noJobHistoryFound
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -924,10 +920,10 @@
                                                                 <table class="table table-hover table-bordered ">
                                                                     <thead>
                                                                     <tr>
-                                                                        <th class="menu"
-                                                                            ng-if="permission.Job.execute.kill"
+                                                                        <th class="menu" ng-if="permission.Job.execute.kill"
                                                                             translate>label.action
                                                                         </th>
+                                                                        <th translate>label.job</th>
                                                                         <th translate>label.taskId</th>
                                                                         <th translate>label.enqueued</th>
                                                                         <th translate>label.plannedStart</th>
@@ -947,6 +943,7 @@
                                                                                 </div>
                                                                             </div>
                                                                         </td>
+                                                                        <td>{{task.path.substring(task.path.lastIndexOf('/')+1)}}</td>
                                                                         <td>{{task.taskId}}</td>
                                                                         <td>{{task.enqueued | stringToDate}}</td>
                                                                         <td>{{task.plannedStart | stringToDate}}</td>
@@ -968,6 +965,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th class="menu"><span translate>label.action</span></th>
+                                                                        <th translate>label.job</th>
                                                                         <th translate>label.pid</th>
                                                                         <th translate>label.taskId</th>
                                                                         <th translate>label.cause</th>
@@ -987,29 +985,21 @@
                                                                                 </button>
                                                                                 <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown"
                                                                                      role="menu">
-                                                                                    <a class="dropdown-item"
-                                                                                       ng-if="permission.Job.view.taskLog"
-                                                                                       ng-click="showLogWindow(null,task,task.path)"
-                                                                                       translate>button.viewLog</a>
-                                                                                    <a class="dropdown-item"
-                                                                                       ng-if="permission.Job.execute.endAllTasks"
-                                                                                       ng-click="end(task,task.path)"
-                                                                                       translate>button.end</a>
-                                                                                    <a class="dropdown-item bg-hover-color"
-                                                                                       ng-if="permission.Job.execute.kill"
-                                                                                       ng-click="killTask(task,task.path)"
-                                                                                       translate>button.killImmediately</a>
+                                                                                    <a class="dropdown-item" ng-if="permission.Job.view.taskLog"
+                                                                                       ng-click="showLogWindow(null,task,task.path)" translate>button.viewLog</a>
+                                                                                    <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks"
+                                                                                       ng-click="end(task,task.path)" translate>button.end</a>
+                                                                                    <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill"
+                                                                                       ng-click="killTask(task,task.path)" translate>button.killImmediately</a>
                                                                                     <a class="dropdown-item bg-hover-color"
                                                                                        ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
-                                                                                       ng-click="terminateTask(task,task.path)"
-                                                                                       translate>button.terminate</a>
-                                                                                    <a class="dropdown-item bg-hover-color"
-                                                                                       ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
-                                                                                       ng-click="terminateTaskWithTimeout(null,task,task.path)"
-                                                                                       translate>button.terminateWithTimeout</a>
+                                                                                       ng-click="terminateTask(task,task.path)" translate>button.terminate</a>
+                                                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate"
+                                                                                       ng-click="terminateTaskWithTimeout(null,task,task.path)" translate>button.terminateWithTimeout</a>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
+                                                                        <td>{{task.path.substring(task.path.lastIndexOf('/')+1)}}</td>
                                                                         <td ng-click="showLogWindow(null,task,task.path)">
                                                                             {{task.pid}}
                                                                         </td>
@@ -1047,6 +1037,7 @@
                                                                     <thead>
                                                                     <tr>
                                                                         <th translate>label.created</th>
+                                                                        <th translate>label.job</th>
                                                                         <th translate>label.account</th>
                                                                         <th translate>label.request</th>
                                                                         <th translate>label.comment</th>
@@ -1067,6 +1058,7 @@
                                                                                 <span ng-bind="auditLog.created | stringToDate"></span>
                                                                             </span>
                                                                         </td>
+                                                                        <td>{{auditLog.job.substring(auditLog.job.lastIndexOf('/')+1)}}</td>
                                                                         <td><span ng-bind="auditLog.account"></span>
                                                                         </td>
                                                                         <td><span ng-bind="auditLog.request"></span>
@@ -1079,10 +1071,8 @@
                                                                                 <span>m</span>
                                                                             </span>
                                                                         </td>
-                                                                        <td><a href="{{auditLog.ticketLink}}"
-                                                                               class="text-hover-primary"
-                                                                               target="_blank"
-                                                                               ng-bind="auditLog.ticketLink"></a></td>
+                                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
+                                                                               target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                                     </tr>
                                                                     <tr class="tableexport-ignore"
                                                                         ng-show="auditLog.show">
@@ -1095,9 +1085,7 @@
                                                                                 </thead>
                                                                                 <tbody>
                                                                                 <tr>
-                                                                                    <td><span
-                                                                                            ng-bind="auditLog.parameters"></span>
-                                                                                    </td>
+                                                                                    <td><span ng-bind="auditLog.parameters"></span></td>
                                                                                 </tr>
                                                                                 </tbody>
                                                                             </table>
@@ -1105,10 +1093,8 @@
                                                                     </tr>
                                                                     </tbody>
                                                                 </table>
-                                                                <div ng-if="auditLogs.length==0"
-                                                                     class="text-center m-t-md h6 text-uppercase"
-                                                                     translate>
-                                                                    message.noAuditLogFound
+                                                                <div ng-if="auditLogs.length==0" class="text-center m-t-md h6 text-uppercase"
+                                                                     translate>message.noAuditLogFound
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1123,7 +1109,7 @@
                                         </a>
                                     </div>
                                     <div class="scrollBottom-btn" >
-                                        <a href ng-click="scrollBottom()" uib-tooltip="{{'button.showHistory' | translate}}">
+                                        <a href ng-click="scrollBottom()" tooltip-placement="left" uib-tooltip="{{'button.showHistory' | translate}}">
                                             <i class="fa fa-angle-down"></i>
                                         </a>
                                     </div>
@@ -1156,13 +1142,13 @@
                                          <div class="tab-content p-a" >
                                              <div class="tab-pane animated fadeIn" id="tab12" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'jobStream' }">
                                                  <div>
-                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedWorkflow == 'ALL'}">
+                                                     <div ng-if="workflows.length > 0" class="block-ellipsis m-b" style="width: 100%" ng-class="{'text-primary _600' : selectedJobStream == 'ALL'}">
                                                          <div>
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
                                                      <div ng-repeat="jobStream in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%">
-                                                         <a class="text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedWorkflow == jobStream.name}" ng-click="changeGraph(jobStream)">
+                                                         <a class="text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
                                                              <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
                                                              <span>{{jobStream.name}}</span>
                                                          </a>
@@ -1254,11 +1240,11 @@
                             </div>
                         </div>
 
-                        <div class="text-center m-t-md text-md" ng-if="!flag && isWorkflowLoaded">
+                        <div class="text-center m-t-md text-md" ng-if="!flag && isJobStreamLoaded">
                             <span translate>message.noJobStreamsFound</span>.
                             <a class="text-hover-primary text-u-l" ng-click="createJobStream()" translate>message.clickHereToADD</a>
                         </div>
-                        <div ng-if="!isWorkflowLoaded || !isUpdated" class="loading-img1"></div>
+                        <div ng-if="!isJobStreamLoaded || !isUpdated" class="loading-img1"></div>
                     </div>
                 </div>
             </div>
@@ -1586,10 +1572,12 @@
                     <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
                     </a>
+
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
                             object="object"
+                            importJobStreamObj="importJobStreamObj"
                             icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"
@@ -1601,7 +1589,7 @@
                 </div>
             </div>
             <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" ng-if="jobFilter && !object.importJobStreamObj" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>
