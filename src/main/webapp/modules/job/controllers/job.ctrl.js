@@ -6687,15 +6687,6 @@
             }
         };
 
-        uploader.onCompleteItem = function (fileItem, response, status, headers) {
-            if (status == '200') {
-                if(uploader.queue && uploader.queue.length>0) {
-                    uploader.queue[0].remove();
-                }
-                console.log('Todo')
-            }
-        };
-
         vm.checkImportJobstreamFn = function(){
             if (vm.fileContentJobStreams && vm.checkImportJobstream.checkbox && vm.fileContentJobStreams.length > 0) {
                 vm.importJobstreamObj.jobstreams = angular.copy(vm.fileContentJobStreams);
@@ -6788,9 +6779,7 @@
                         jobsOutconditions: outObj
                     }).then(function () {
                         vm.updateJobStreamFolders();
-                        console.log(vm.folderPath, inObj[0].job, outObj)
                         if((inObj.length > 0 && inObj[0].job.match(vm.folderPath)) || (outObj.length > 0 && outObj[0].job.match(vm.folderPath))){
-                            console.log('if...')
                             vm.$broadcast('importJobStream');
                         }
 
@@ -8478,7 +8467,7 @@
         vm.isUpdated = true;
         vm.eventNodes = [];
         vm.tree_handler = {};
-        let isInitiate = true, timer = null;
+        let isInitiate = true, timer = null, ht = 0, maxScrollHt =0;
 
         function checkToolbarWidth() {
             let tbWidth = $('#toolbar').width();
@@ -8508,7 +8497,7 @@
             createEditor();
 
             let top = Math.round($('.scroll-y').position().top + 76);
-            let ht = 'calc(100vh - ' + top + 'px)';
+            ht = 'calc(100vh - ' + top + 'px)';
             $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
             let dom = $('#graph');
@@ -8556,18 +8545,20 @@
                 if (isInitiate && $(this).scrollTop() !== 0) {
                     $(this).scrollTop(0);
                 }
-                if ($(this).scrollTop() > 220) {
+                if ($(this).scrollTop() > 10) {
                     $('.scrollBottom-btn').hide();
                     $('.scrolltop-btn').show();
                 } else {
                     $('.scrollBottom-btn').show();
                     $('.scrolltop-btn').hide();
                 }
+
                 isInitiate = false;
             });
 
             $(window).resize(function () {
                 checkToolbarWidth();
+                maxScrollHt = $('.graph-container')[0].scrollHeight;
             });
 
             setTimeout(function () {
@@ -8602,12 +8593,26 @@
             });
         }
 
+        let isScrollToTop = true;
         vm.scrollTop = function(){
+            isScrollToTop = true;
+            $('#graph').slimscroll({height: ht});
             $('.graph-container').animate({'scroll-top': '0'}, 'fast');
         };
         vm.scrollBottom = function(){
-            let _dom = $('.graph-container');
-            _dom.animate({'scroll-top': (_dom[0].scrollHeight-  _dom.height()) + 'px'}, 'fast', 'linear');
+            if(isScrollToTop) {
+                isScrollToTop = false;
+                let dom = $('#graph');
+                let _dom = $('.graph-container');
+                if(maxScrollHt == 0){
+                    maxScrollHt = _dom[0].scrollHeight;
+                }
+                let _ht = $('#history-panel').height() || 250;
+                dom.slimscroll({height: (dom.height() - _ht) + 'px'});
+                _dom.animate({'scroll-top': (maxScrollHt - _dom.height()) + 'px'}, 'fast', 'linear');
+            } else{
+                vm.scrollTop();
+            }
         };
 
 
@@ -8744,7 +8749,7 @@
                             vm.selectedJobStream = null;
                             vm.flag = false;
                         }
-                        if(vm.selectedJobStream) {
+                        if(vm.selectedJobStream && vm.selectedJobStream !==  'ALL') {
                             vm.loadHistory(vm.selectedJobStream);
                         }
                         vm.getEvents(null);
@@ -8920,7 +8925,6 @@
                         }
                     }
                     if (jobs[i].isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && jobs[i].isExpanded === undefined)) {
-                        console.log('isExpanded', jobs[i].isExpanded)
                         expandJobNode(graph, jobs[i], true);
                     }
                 }
@@ -10389,7 +10393,7 @@
                             if (state.cell.value.tagName === 'Job') {
                                 _x -= 28;
                             }
-                            let _y = y + 60 - $('#graph').scrollTop();
+                            let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
@@ -10688,6 +10692,14 @@
                             }, 200);
                             break;
                         }
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId) {
+                        if(vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
+                            vm.loadHistory(vm.selectedJobStream);
+                        }
+                    }  else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
+                        if (vm.permission.AuditLog.view.status && vm.auditLogs) {
+                            vm.loadAuditLogs();
+                        }
                     }
                 }
             }
@@ -10737,8 +10749,7 @@
             }
         };
 
-        $scope.$on('importJobStream', function (evt, res) {
-            
+        $scope.$on('importJobStream', function () {
             recursivelyConnectJobs(true, true);
         });
 
@@ -10755,13 +10766,13 @@
                 jobStreams.push(obj);
             }
 
-            var name = 'jobstream' + '.json';
-            var fileType = 'application/octet-stream';
-            var data = jobStreams;
+            let name = 'jobstream' + '.json';
+            let fileType = 'application/octet-stream';
+            let data = jobStreams;
             if (typeof data === 'object') {
                 data = JSON.stringify(data, undefined, 2);
             }
-            var blob = new Blob([data], {type: fileType});
+            let blob = new Blob([data], {type: fileType});
             FileSaver.saveAs(blob, name);
         };
 
