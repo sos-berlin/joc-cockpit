@@ -492,7 +492,7 @@
         return {
             workflowTree: function (filter) {
                 var deferred = $q.defer();
-                var Conditions = $resource('conditions/jobstream_folders');
+                var Conditions = $resource('jobstreams/jobstream_folders');
                 Conditions.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -502,7 +502,7 @@
             },
             inCondition: function (filters) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/in_conditions');
+                var Condition = $resource('jobstreams/in_conditions');
                 Condition.save(filters, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -512,7 +512,7 @@
             },
             outCondition: function (tasks) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/out_conditions');
+                var Condition = $resource('jobstreams/out_conditions');
                 Condition.save(tasks, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -522,7 +522,7 @@
             },
             updateInCondition: function (tasks) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/edit/in_condition');
+                var Condition = $resource('jobstreams/edit/in_condition');
                 Condition.save(tasks, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -532,7 +532,7 @@
             },
             updateOutCondition: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/edit/out_condition');
+                var Condition = $resource('jobstreams/edit/out_condition');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -542,16 +542,16 @@
             },
             resetWorkflow: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/resetjobstream');
+                var Condition = $resource('jobstreams/resetjobstream');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            },startConditionResolver: function (filter) {
+            }, startConditionResolver: function (filter) {
                 var deferred = $q.defer();
-                var Condition = $resource('conditions/start_condition_resolver');
+                var Condition = $resource('jobstreams/start_condition_resolver');
                 Condition.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -559,9 +559,9 @@
                 });
                 return deferred.promise;
             },
-             getEvents: function (filter) {
+            getEvents: function (filter) {
                 var deferred = $q.defer();
-                var Event = $resource('conditions/eventlist');
+                var Event = $resource('jobstreams/eventlist');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -571,7 +571,7 @@
             },
             addEvent: function (filter) {
                 var deferred = $q.defer();
-                var Event = $resource('conditions/event/add');
+                var Event = $resource('jobstreams/event/add');
                 Event.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -580,8 +580,18 @@
                 return deferred.promise;
             }, deleteEvent: function (filter) {
                 var deferred = $q.defer();
-                var Event = $resource('conditions/event/delete');
+                var Event = $resource('jobstreams/event/delete');
                 Event.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            history: function (filter) {
+                var deferred = $q.defer();
+                var History = $resource('jobstreams/history');
+                History.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

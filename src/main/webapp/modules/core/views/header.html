@@ -223,7 +223,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item" ng-if="(showViews && showViews.conditions != undefined) ? showViews.conditions : permission.Condition.view.status">
+            <li class="nav-item" ng-if="(showViews && showViews.conditions != undefined) ? showViews.conditions : permission.JobStream.view.status">
                 <a class="nav-link" ui-sref="app.conditions" ui-sref-active="active">
                     <span class="nav-text">
                         <img ng-if="userPreferences.theme !== 'lighter'" ng-hide="userPreferences.theme === 'light' && userPreferences.headerColor === 'header-yellow'" src="images/conditions-lt.svg" width="17.5px"/>

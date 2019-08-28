@@ -426,7 +426,7 @@
             templateUrl: "modules/user/views/profiles.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.profiles' | translate}}", parent: "app.users.user"}
         }).state("app.conditions", {
-            url: "/conditions",
+            url: "/job_streams",
             templateUrl: "modules/job/views/condition.html",
             controller: "JobCtrl",
             resolve: {
@@ -434,7 +434,7 @@
                     return authorizationService.permissionCheck('Condition');
                 }
             },
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.conditions' | translate}}"}
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.jobStream' | translate}}"}
         })
 
     }

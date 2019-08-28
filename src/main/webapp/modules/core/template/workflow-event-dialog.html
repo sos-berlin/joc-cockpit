@@ -13,7 +13,7 @@
                     <i class="fa fa-pencil m-l-sm text-hover-primary" ng-click="expressionEditor()"></i>
                 </div>
                 <div class="col-sm-10" ng-class="{ 'has-error' : form.expression.$invalid && form.expression.$dirty }">
-                    <textarea rows="5" class="form-control" required ng-model="_expression.expression" placeholder="returncode:x, event:event, fileexist:filename" autofocus
+                    <textarea rows="5" class="form-control" required ng-model="_expression.expression" placeholder="rc:x, event:event, fileexist:filename" autofocus
                               ng-blur="validateExpression(form)" ng-keypress="getSuggestion($event, form)"  name="expression"></textarea>
            	        <div class="dropdown-menu dropdown dropdown-more" id="event-suggestion">
                         <a class="dropdown-item" ng-click="addSuggestion(func)" ng-repeat="func in functions">{{func}}</a>
@@ -72,22 +72,57 @@
                 <div class="form-group row">
                     <div class="col-md-10 _600" translate>label.eventList</div>
                 </div>
-                <div class="form-group row m-b-0" ng-repeat="event in _expression.events;" ng-if="event.command == 'create'">
+                <div class="form-group row m-b-0" >
                     <div class="col-sm-10 m-b-sm" ng-if="$index==0" translate>label.event</div>
-                    <div class="col-sm-10 m-b-sm">
-                        <input type="text" class="form-control" name="event{{$index}}" ng-model="event.event">
+                    <div class="col-sm-10 m-b">
+                        <div class="b-b">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" ng-class="{active: editor.eventType=='create'}" ng-click="editor.eventType = 'create'"
+                                       href data-toggle="tab" data-target="#tab12" translate>tab.createEvent</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" ng-class="{active: editor.eventType=='delete'}" ng-click="editor.eventType = 'delete'"
+                                       href data-toggle="tab" data-target="#tab22" translate>tab.deleteEvent</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-sm-1 p-l-0">
-                        <a><i ng-click="removeOutconditionEvents(event)"
-                              class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    <div ng-if="editor.eventType=='create'">
+                        <div ng-repeat="outconditionEvent in _expression.events;" ng-if="outconditionEvent.command == 'create'">
+                            <div class="col-sm-10 m-b-sm">
+                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                            </div>
+                            <div class="col-sm-1 p-l-0">
+                                <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="editor.eventType=='delete'">
+                        <div ng-repeat="outconditionEvent in _expression.events;"  ng-if="outconditionEvent.command == 'delete'">
+                            <div class="col-sm-10 m-b-sm">
+                                <input type="text" class="form-control" name="event{{$index}}" ng-model="outconditionEvent.event">
+                            </div>
+                            <div class="col-sm-1 p-l-0">
+                                <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" ng-if="editor.eventType=='create'">
                     <div class="col-sm-10">
                         <a class="text-u-l" ng-if="_expression.events.length>0"
                            ng-click="addOutconditionEvents('create')" translate>button.addAnotherOutconditionEvents</a>
                         <a class="text-u-l" ng-if="_expression.events.length==0"
                            ng-click="addOutconditionEvents('create')" translate>button.addOutconditionEvents</a>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="editor.eventType=='delete'">
+                    <div class="col-sm-10">
+                        <a class="text-u-l" ng-if="_expression.events.length>0"
+                           ng-click="addOutconditionEvents('delete')" translate>button.addAnotherOutconditionEvents</a>
+                        <a class="text-u-l" ng-if="_expression.events.length==0"
+                           ng-click="addOutconditionEvents('delete')" translate>button.addOutconditionEvents</a>
                     </div>
                 </div>
             </div>
