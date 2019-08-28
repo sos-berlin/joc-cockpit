@@ -4,7 +4,7 @@
         var l = function (e, r, l, t, a) {
             var s = e.defer();
             if (l.accessTokenId) {
-                if (t.sessionStorage.setItem("$SOS$URL", null), t.sessionStorage.setItem("$SOS$URLPARAMS", {}), t.sessionStorage.$SOS$NAVIGATEOBJ && ("null" != t.sessionStorage.$SOS$NAVIGATEOBJ || null != t.sessionStorage.$SOS$NAVIGATEOBJ))try {
+                if (t.sessionStorage.setItem("$SOS$URL", null), t.sessionStorage.setItem("$SOS$URLPARAMS", {}), t.sessionStorage.$SOS$NAVIGATEOBJ && ("null" != t.sessionStorage.$SOS$NAVIGATEOBJ || null != t.sessionStorage.$SOS$NAVIGATEOBJ)) try {
                     var o = JSON.parse(t.sessionStorage.$SOS$NAVIGATEOBJ);
                     o && ("JOB" == o.tab ? (a.job_expand_to = {
                         name: o.name,
@@ -19,15 +19,15 @@
                 } catch (c) {
                     console.error(c)
                 }
-                if(t.localStorage.$SOS$URLRESET){
+                if (t.localStorage.$SOS$URLRESET) {
                     t.localStorage.removeItem('$SOS$URLRESET');
                 }
                 s.resolve()
             } else {
-                if(t.localStorage.$SOS$URLRESET){
+                if (t.localStorage.$SOS$URLRESET) {
                     t.localStorage.removeItem('$SOS$URL');
                     t.localStorage.removeItem('$SOS$URLPARAMS');
-                }else{
+                } else {
                     t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search());
                 }
                 s.reject("login");
@@ -77,7 +77,7 @@
             templateUrl: "modules/jobscheduler/views/dashboard.html",
             controller: "DashboardCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Dashboard');
                 }
             },
@@ -86,12 +86,12 @@
             url: "/logging",
             templateUrl: "modules/core/views/setting.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.setting' | translate}}"},
-            resolve:{
+            resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                   return $ocLazyLoad.load([{
-                        name:'ngclipboard',
-                        files: ["bower_components/clipboard/dist/clipboard.min.js","bower_components/ngclipboard/dist/ngclipboard.min.js"],
-                        serie:true
+                    return $ocLazyLoad.load([{
+                        name: 'ngclipboard',
+                        files: ["bower_components/clipboard/dist/clipboard.min.js", "bower_components/ngclipboard/dist/ngclipboard.min.js"],
+                        serie: true
                     }]);
                 }]
             }
@@ -101,13 +101,13 @@
             templateUrl: "modules/jobscheduler/views/daily-plan.html",
             controller: "DailyPlanCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('DailyPlan');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
-                        files:["bower_components/angular-gantt/assets/angular-gantt.css","bower_components/angular-gantt/assets/angular-gantt-plugins.css"]
+                        files: ["bower_components/angular-gantt/assets/angular-gantt.css", "bower_components/angular-gantt/assets/angular-gantt-plugins.css"]
                     }]);
                 }]
             },
@@ -117,7 +117,7 @@
             templateUrl: "modules/job/views/job.html",
             controller: "JobCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Job');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
@@ -149,7 +149,7 @@
             templateUrl: "modules/job/views/jobs-overview.html",
             controller: "JobOverviewCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Job');
                 }
             },
@@ -159,7 +159,7 @@
             templateUrl: "modules/job/views/job-chain.html",
             controller: "JobChainCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('JobChain');
                 }
             },
@@ -169,7 +169,7 @@
             templateUrl: "modules/job/views/job-chain-info.html",
             controller: "JobChainCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('JobChain');
                 }
             },
@@ -179,19 +179,19 @@
             templateUrl: "modules/order/views/job-chain-details.html",
             controller: "JobChainDetailsCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('JobChain');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
-                        files: ["bower_components/es6-promise/dist/es6-promise.auto.js", "js/html2canvas.js","js/pdfmake.min.js","js/vfs_fonts.js", "js/canvas-toBlob.js"],
+                        files: ["bower_components/es6-promise/dist/es6-promise.auto.js", "js/html2canvas.js", "js/pdfmake.min.js", "js/vfs_fonts.js", "js/canvas-toBlob.js"],
                         serie: true
-                    },{
+                    }, {
                         insertBefore: '#load_styles_before',
-                        files:["bower_components/angularjs-slider/dist/rzslider.min.css"]
-                    },{
-                        name:'rzModule',
-                        files:["bower_components/angularjs-slider/dist/rzslider.min.js"]
+                        files: ["bower_components/angularjs-slider/dist/rzslider.min.css"]
+                    }, {
+                        name: 'rzModule',
+                        files: ["bower_components/angularjs-slider/dist/rzslider.min.js"]
                     }]);
                 }]
             },
@@ -216,7 +216,7 @@
             templateUrl: "modules/order/views/order.html",
             controller: "OrderCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Order');
                 }
             },
@@ -226,7 +226,7 @@
             templateUrl: "modules/order/views/order-info.html",
             controller: "OrderCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Order');
                 }
             },
@@ -236,7 +236,7 @@
             templateUrl: "modules/order/views/orders-overview.html",
             controller: "OrderOverviewCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Order');
                 }
             },
@@ -261,7 +261,7 @@
             templateUrl: "modules/yade/views/file-transfers.html",
             controller: "YadeCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('File Transfer');
                 }
             },
@@ -271,7 +271,7 @@
             templateUrl: "modules/yade/views/transfer-overview.html",
             controller: "YadeOverviewCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('File Transfer');
                 }
             },
@@ -286,12 +286,12 @@
             templateUrl: "modules/jobscheduler/views/resource.html",
             controller: "ResourceCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('Resource');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                   return $ocLazyLoad.load([{
-                        name:'angularFileUpload',
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js"]
                     }])
                 }]
@@ -358,8 +358,8 @@
                     return authorizationService.permissionCheck('Resource');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                   return $ocLazyLoad.load([{
-                        name:'angularFileUpload',
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js"]
                     }])
                 }]
@@ -374,19 +374,22 @@
                     return authorizationService.permissionCheck('Resource');
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
-                   return $ocLazyLoad.load([{
-                        name:'angularFileUpload',
+                    return $ocLazyLoad.load([{
+                        name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js"]
                     }])
                 }]
             },
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.documentation' | translate}}", parent: "app.resources.documentations"}
+            ncyBreadcrumb: {
+                label: "{{ 'breadcrumb.documentation' | translate}}",
+                parent: "app.resources.documentations"
+            }
         }).state("app.history", {
             url: "/history",
             templateUrl: "modules/order/views/history.html",
             controller: "HistoryCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('History');
                 }
             },
@@ -396,7 +399,7 @@
             templateUrl: "modules/user/views/audit-log.html",
             controller: "AuditLogCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('AuditLog');
                 }
             },
@@ -411,7 +414,7 @@
             templateUrl: "modules/user/views/user-main.html",
             controller: "UsersCtrl",
             resolve: {
-                permission: function(authorizationService) {
+                permission: function (authorizationService) {
                     return authorizationService.permissionCheck('ManageAccount');
                 }
             },
@@ -423,7 +426,7 @@
         }).state("app.users.permission", {
             url: "/permission/:master/:role",
             templateUrl: "modules/user/views/permission.html",
-            controller:"PermissionCtrl",
+            controller: "PermissionCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.permissions' | translate}}", parent: "app.users.master"}
         }).state("app.users.master", {
             url: "/master",
