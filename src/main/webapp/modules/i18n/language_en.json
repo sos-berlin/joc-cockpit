@@ -1406,7 +1406,7 @@
   "button.showAllEvents": "All Events",
   "button.showFilteredEvents": "Filtered Events",
   "button.detailView": "Detail View",
-  "button.resolveConditions": "Resolve Conditions",
+  "button.resolveConditions": "Check Conditions",
   "button.addJobStream": "Add Job Stream",
   "button.exportJobStreams": "Export Job Streams",
   "button.dropJobStreamFileToUpload": "DROP JOB STREAM FILES (.json) TO UPLOAD",

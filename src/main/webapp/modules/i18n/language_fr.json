@@ -1406,7 +1406,7 @@
   "button.showAllEvents": "Tous les Événements",
   "button.showFilteredEvents": "Événements Filtrés",
   "button.detailView": "Vue de Détail",
-  "button.resolveConditions": "Résoudre les Conditions",
+  "button.resolveConditions": "Vérifier les Conditions",
   "button.addJobStream": "Ajouter un Flot de Travaux",
   "button.dropJobStreamFileToUpload": "Glisser-déposer les fichiers Flot de Travaux (.json) pour télécharger",
   "button.importJobStream": "Importer un Flot de Travaux",

@@ -1406,7 +1406,7 @@
   "button.showAllEvents": "Alle Ereignisse",
   "button.showFilteredEvents": "Gefilterte Ereignisse",
   "button.detailView": "Details anzeigen",
-  "button.resolveConditions": "Bedingungen erfüllen",
+  "button.resolveConditions": "Bedingungen prüfen",
   "button.addJobStream": "Job-Folge hinzufügen",
   "button.exportJobStreams": "Job-Folge exportieren",
   "button.dropJobStreamFileToUpload": "Job-Folge Dateien (.json) zum Hochladen ziehen und ablegen",
