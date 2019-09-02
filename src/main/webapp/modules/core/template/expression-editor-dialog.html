@@ -1,6 +1,9 @@
 <style>
-    textarea {
-        resize: none;
+    #cke_1_top{
+        display: none;
+    }
+    #cke_1_contents, .cke_contents, .cke_reset{
+        height: 100px !important;
     }
 </style>
 <div class="modal fade" id="expression-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.1); overflow: visible;">
@@ -17,22 +20,22 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12" ng-class="{ 'has-error' : form3.expression.$invalid && form3.expression.$dirty }">
-                                <textarea rows="3" class="form-control" ng-model="expression.expression" ng-blur="validateExpression(form3)" autofocus
-                                          placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}" required
-                                          ng-keypress="getSuggestion($event, form3)" name="expression"></textarea>
+                                <textarea rows=3" class="form-control" id="expression" autofocus name="expression" required
+                                          placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}"
+                                          data-sample-short></textarea>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12">
                                 <div class="text-center">
                                     <div>
-                                        <button type="button" ng-click="generateExpression('and', null)"
+                                        <button type="button" ng-click="generateExpression('and', null, form3)"
                                                 class="btn btn-sm btn-grey m-l-xs"> AND
                                         </button>
-                                        <button type="button" ng-click="generateExpression('or', null)"
+                                        <button type="button" ng-click="generateExpression('or', null, form3)"
                                                 class="btn btn-sm btn-grey m-l-xs"> OR
                                         </button>
-                                        <button type="button" ng-click="generateExpression('not', null)"
+                                        <button type="button" ng-click="generateExpression('not', null, form3)"
                                                 class="btn btn-sm btn-grey m-l-xs"> NOT
                                         </button>
                                     </div>
@@ -47,38 +50,38 @@
                                 <div><span translate>label.functions</span>:</div>
                                 <div class="b-a p-a" style="height: 204px; overflow: auto">
                                     <div ng-if="editor.type !== 'Incondition'">
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'rc')">rc</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'rc', form3)">rc</a>
                                     </div>
                                     <div class="m-t-xs">
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist')">fileexist</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'fileexist', form3)">fileexist</a>
                                     </div>
                                     <div class="m-t-xs">
                                         <i ng-if="expression.open" ng-click="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.open" ng-click="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'event')">event</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'event', form3)">event</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.open">
                                             <li ng-repeat="func in functions">
-                                              <a class="text-hover-primary"  ng-click="generateExpression('function', func)">{{func}}</a>
+                                              <a class="text-hover-primary"  ng-click="generateExpression('function', func.name, form3)">{{func.name}}</a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div>
                                         <i ng-if="expression.jobOpen" ng-click="expression.jobOpen = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.jobOpen" ng-click="expression.jobOpen = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'job')">job</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'job', form3)">job</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobOpen">
                                             <li ng-repeat="func in jobFunctions">
-                                                <a class="text-hover-primary"  ng-click="generateExpression('job_function', func)">{{func}}</a>
+                                                <a class="text-hover-primary"  ng-click="generateExpression('job_function', func, form3)">{{func}}</a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div>
                                         <i ng-if="expression.jobChainOpen" ng-click="expression.jobChainOpen = false" class="fa fa-angle-down m-r-sm"></i>
                                         <i ng-if="!expression.jobChainOpen" ng-click="expression.jobChainOpen = true" class="fa fa-angle-right m-r-sm"></i>
-                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain')">jobChain</a>
+                                        <a class="text-hover-primary text" ng-click="generateExpression(null,'jobChain', form3)">jobChain</a>
                                         <ul class="m-t-xs m-b-0" ng-if="expression.jobChainOpen">
                                             <li ng-repeat="func in jobChainFunctions">
-                                                <a class="text-hover-primary"  ng-click="generateExpression('jobChain_function', func)">{{func}}</a>
+                                                <a class="text-hover-primary"  ng-click="generateExpression('jobChain_function', func, form3)">{{func}}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -159,4 +162,3 @@
         </div>
     </div>
 </div>
-

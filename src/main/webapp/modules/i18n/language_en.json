@@ -1408,7 +1408,6 @@
   "button.detailView": "Detail View",
   "button.resolveConditions": "Check Conditions",
   "button.addJobStream": "Add Job Stream",
-  "button.exportJobStreams": "Export Job Streams",
   "button.dropJobStreamFileToUpload": "DROP JOB STREAM FILES (.json) TO UPLOAD",
   "button.importJobStream": "Import Job Stream",
   "label.importJobStream": "Import Job Stream",
@@ -1471,6 +1470,7 @@
   "message.deleteJobStreamAndAllJobs": "Are you sure you want to delete the Job Stream and its job dependencies?",
   "message.noJobsWithoutStream": "No Jobs without Job Stream",
   "message.dropHereToDetach": "Drop here to detach",
+  "message.notValidJobStreamFile": "Not a valid Job Stream file",
   "tooltip.zoomIn": "Zoom In",
   "tooltip.zoomOut": "Zoom Out",
   "tooltip.fit": "Fit",
@@ -1483,5 +1483,6 @@
   "InCondition": "In Condition",
   "OutCondition": "Out Condition",
   "Event": "Event",
-  "breadcrumb.jobStream" : "Job Streams"
+  "breadcrumb.jobStream" : "Job Streams",
+  "message.noReferencesFound": "No References found"
 }

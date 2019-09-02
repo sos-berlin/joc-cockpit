@@ -1483,5 +1483,6 @@
   "InCondition": "Condition de Saisie",
   "OutCondition": "Condition de Sortie",
   "Event": "Événement",
-  "breadcrumb.jobStream": "Flots de Travaux"
+  "breadcrumb.jobStream": "Flots de Travaux",
+  "message.noReferencesFound": "No References found"
 }

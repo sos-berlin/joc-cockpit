@@ -1408,7 +1408,6 @@
   "button.detailView": "Details anzeigen",
   "button.resolveConditions": "Bedingungen prüfen",
   "button.addJobStream": "Job-Folge hinzufügen",
-  "button.exportJobStreams": "Job-Folge exportieren",
   "button.dropJobStreamFileToUpload": "Job-Folge Dateien (.json) zum Hochladen ziehen und ablegen",
   "button.importJobStream": "Job-Folge importieren",
   "label.importJobStream": "Job-Folge importieren",
@@ -1471,6 +1470,7 @@
   "message.deleteJobStreamAndAllJobs": "Sind Sie sicher, dass Sie die Job-Folgen und Job-Abhängigkeiten entfernen möchten?",
   "message.noJobsWithoutStream": "Keine Jobs ohne Zuordnung zu Job-Folgen vorhanden",
   "message.dropHereToDetach": "Hierher ziehen um Verbindung zu lösen",
+  "message.notValidJobStreamFile": "Not a valid Job Stream file",
   "tooltip.zoomIn": "Vergrößern",
   "tooltip.zoomOut": "Verkleinern",
   "tooltip.fit": "An Fenstergröße anpassen",
@@ -1483,5 +1483,6 @@
   "InCondition": "Eingangsbedingung",
   "OutCondition": "Ausgangsbedingung",
   "Event": "Ereignis",
-  "breadcrumb.jobStream": "Job-Folge"
+  "breadcrumb.jobStream": "Job-Folge",
+  "message.noReferencesFound": "No References found"
 }

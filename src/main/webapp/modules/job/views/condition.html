@@ -674,7 +674,7 @@
                 <div ng-if="pageView=='in-out-conditions' && (allJobs.length > 0 || noReload) && permission.JobStream.view.graph">
                     <div ng-controller="JobWorkflowCtrl" >
                         <div class="row hide m-l-0" ng-class="{'show':flag}">
-                            <div class="col-md-1" id="toolbarContainer">
+                            <div class="col-md-1 col-sm-12" id="toolbarContainer">
                                 <ul ng-repeat="(key, value) in _allJobs  | groupBy: 'path1' track by $index">
                                     <li>
                                         <p class="p-l m-l-xs" uib-tooltip="{{key}}" tooltip-placement="bottom">
@@ -695,7 +695,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="col-md-11">
+                            <div class="col-md-11 col-sm-12">
                                 <div id="toolbar">
                                     <div class="m-b-sm b-b p-b-sm">
                                         <button class="btn btn-sm btn btn-grey"
@@ -1125,7 +1125,7 @@
                             </div>
                             <div class="sidebar bg-white">
                                 <div>
-                                    <div class="box-body p-a p-t-md" >
+                                    <div class="box-body p-a p-t-md p-r-0" >
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                               <li class="nav-item" >
@@ -1147,7 +1147,7 @@
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name'" class="block-ellipsis" style="width: 100%">
+                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis" style="width: 100%">
                                                          <a class="text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
                                                              <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
                                                              <span>{{jobStream.name}}</span>
@@ -1187,12 +1187,12 @@
                                                              <div class="dropdown-menu dropdown-more dropdown-ac">
                                                                  <a class="dropdown-item {{filteredByWorkflow == jobStream.name ? 'orange' :''}}"
                                                                     ng-click="changeEvents(jobStream.name)"
-                                                                    ng-repeat="jobStream in workflows | orderBy:'name'">
+                                                                    ng-repeat="jobStream in workflows | orderBy:'name' track by $index">
                                                                      <span>{{jobStream.name}}</span>
                                                                  </a>
                                                              </div>
                                                          </div>
-                                                         <div ng-repeat="evt in eventList | orderBy: 'event'" class="block-ellipsis" style="width: 100%">
+                                                         <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%">
                                                              <div ng-if="$index == 0" class="m-b-xs">
                                                                  <span class="text-muted" translate>label.path</span>:
                                                                  <label>{{evt.path}}</label>
@@ -1218,7 +1218,7 @@
                                              <div class="tab-pane animated fadeIn" id="tab14" ng-class="{'active' :jobFilters.graphViewDetail.tab === 'reference' }">
                                                  <div>
                                                      <div class="block-ellipsis m-b _600" style="width: 100%">{{referenceTabHeading}}</div>
-                                                     <div ng-repeat="condition in _outconditionReference | orderBy: 'name'" class="block-ellipsis m-b" style="width: 100%">
+                                                     <div ng-repeat="condition in _outconditionReference | orderBy: 'name' track by $index" class="block-ellipsis m-b" style="width: 100%">
                                                          <div class="block-ellipsis m-b-xs" style="width: 100%;">
                                                              <span class="fa fa-circle m-r-sm" style="font-size: 10px"></span>
                                                              <span translate>label.jobStream</span>:
@@ -1226,11 +1226,14 @@
                                                              <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
                                                              <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i>
                                                          </div>
-                                                         <div ng-repeat="job in condition.jobs" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
+                                                         <div ng-repeat="job in condition.jobs track by $index" ng-show="!showPanel" class="block-ellipsis" style="width: 100%">
                                                              <span class="fa fa-circle-o m-l p-l-xs m-r-xs" style="font-size: 9px"></span>
                                                              <a class="text-hover-primary" ng-click="switchGraph(condition, job)"><span>{{job.job}}</span></a>
-                                                             <div class="text-sm text-muted m-l-lg" ng-repeat="exp in job.expressions">({{exp}})</div>
+                                                             <div class="text-sm text-muted m-l-lg" ng-repeat="exp in job.expressions track by $index">({{exp}})</div>
                                                          </div>
+                                                     </div>
+                                                     <div ng-if="_outconditionReference.length ===0" class="text-center m-t-md m-b h6 text-uppercase" translate>
+                                                         message.noReferencesFound
                                                      </div>
                                                  </div>
                                              </div>

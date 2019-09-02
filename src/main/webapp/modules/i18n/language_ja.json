@@ -1483,5 +1483,6 @@
   "InCondition": "イン・コンディション",
   "OutCondition": "アウト・コンディション",
   "Event": "イベント",
-  "breadcrumb.jobStream" : "ジョブストリーム"
+  "breadcrumb.jobStream" : "ジョブストリーム",
+  "message.noReferencesFound": "No References found"
 }

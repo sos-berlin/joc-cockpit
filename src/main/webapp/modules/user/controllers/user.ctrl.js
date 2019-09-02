@@ -191,6 +191,7 @@
             configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.preferences);
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $rootScope.$broadcast('reloadPreferences');
             UserService.saveConfiguration(configObj);
         };
 
@@ -1292,7 +1293,7 @@
         vm.checkUser = function () {
             vm.isUnique = true;
             angular.forEach(vm.users, function (usr) {
-                if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user === vm.user.user))
+                if (usr.user !== vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user.toUpperCase() === vm.user.user.toUpperCase()))
                     vm.isUnique = false;
             });
         };

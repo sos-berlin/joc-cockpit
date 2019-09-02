@@ -14368,21 +14368,28 @@
                 vm.expression.expression = angular.copy(vm._expression.expression || '');
             }
 
+            $('#expression').val(vm.expression.expression);
             $('#expression-editor').modal('show');
-            $('#event-suggestion').css({display: 'none', opacity: 0});
+            initEditor();
         };
 
 
         vm.save3 = function (form) {
             if(vm.condition) {
-                vm.condition.conditionExpression.expression = angular.copy(vm.expression.expression || '');
+                vm.condition.conditionExpression.expression = angular.copy(vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim() || '');
             } else if(vm._expression){
-                vm._expression.expression = angular.copy(vm.expression.expression || '');
+                vm._expression.expression = angular.copy(vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim() || '');
             }
-            $('#expression-editor').modal('hide');
-            if (form) {
-                form.$setPristine();
-                form.$setUntouched();
+            let isValid = true;
+            if(form){
+                isValid = vm.validateExpression(form);
+            }
+            if(isValid) {
+                $('#expression-editor').modal('hide');
+                if (form) {
+                    form.$setPristine();
+                    form.$setUntouched();
+                }
             }
         };
 
@@ -14397,7 +14404,10 @@
         };
         let isFunction = false;
 
-        vm.functions = ['[*]', '[today]', '[yesterday]', '[yesterday - 2]', '[prev]', '[prevSuccessful]', '[prevError]'];
+        vm.functions = [{id: 1, name: '*'}, {id: 2, name: 'today'}, {id: 3, name: 'yesterday'}, {id: 4, name: 'yesterday - 2'},
+            {id: 5, name: 'prev'}, {id: 6, name: 'prevSuccessful'}, {id: 7, name: 'prevError'}];
+        let d = new Date();
+        vm.functions.push({id: 8, name: (d.getMonth() + 1) + '.' + d.getDate()});
         vm.jobFunctions =  vm.jobChainFunctions = ['rc',
             'lastCompletedRunEndedSuccessful',
             'lastCompletedRunEndedWithError',
@@ -14422,13 +14432,13 @@
             'isStartedAfter',
             'isStartedWithErrorAfter',
             'isStartedSuccessfulAfter'];
-        let d = new Date();
-        vm.functions.push('[' + (d.getMonth() + 1) + '.' + d.getDate() + ']');
+
         vm._eventExample = 'event:name_of_event';
         vm._jobExample = 'job:name_of_job';
         vm._jobchainExample = 'jobChain:name_of_jobChain';
 
-        vm.generateExpression = function (operator, func) {
+        vm.generateExpression = function (operator, func, form) {
+            let setText = '';
             if (func && !operator) {
                 vm.expression.type = func;
                 if (vm.expression.type === 'event' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist') {
@@ -14437,72 +14447,39 @@
                     vm.expression.showIcon = true;
                 }
             }
-            if (vm.expression.expression && vm.expression.expression != ' ' && operator && !operator.match('function')) {
-                isFunction = false;
-                vm.tmpExp = null;
-                let arr = vm.expression.expression.trim().split(' '), exp = '';
-                if ((arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
-                    for(let m =0; m < arr.length -1;m++){
-                        exp = exp + arr[m] + ' ';
-                    }
-                }
-                if(exp) {
-                    vm.expression.expression = exp + operator + ' ';
-                }else{
-                    vm.expression.expression = vm.expression.expression + ' ' + operator + ' ';
-                }
+            if (operator && !operator.match('function')) {
+                setText = operator +' ';
                 vm.expression.showIcon = false;
             } else if (func) {
-                if (!isFunction) {
-                    isFunction = true;
-                    if (operator && !operator.match('function')) {
-                        let arr = vm.expression.expression.trim().split(' '), opt = ' ';
-                        if (!(arr && arr.length > 0 && (arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'not'))) {
-                            opt = ' and ';
-                        }
-                        vm.tmpExp = vm.expression.expression + opt;
-                        vm.expression.expression = vm.expression.expression + opt + func + ':';
-                        vm.expression.showIcon = false;
-                    } else {
-                        vm.tmpExp = vm.expression.expression || '';
-                        if(operator === 'function') {
-                            vm.expression.type = 'event';
-                            vm.expression.showIcon = false;
-                            vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
-                            vm.expression.expression = (vm.expression.expression || '') + ' name_of_event' + func;
-                        } else  if(operator === 'job_function') {
-                            vm.expression.showIcon = true;
-                            vm.expression.type = 'job';
-                            vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
-                            vm.expression.expression = (vm.expression.expression || '') + ' job:' + func;
-                        }else  if(operator === 'jobChain_function') {
-                            vm.expression.showIcon = true;
-                            vm.expression.type = 'jobChain';
-                            vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
-                            vm.expression.expression = (vm.expression.expression || '') + ' jobChain:' + func;
-                        }else{
-                            vm.expression.expression = (vm.expression.expression || '') + ' '+ func+ ':';
-                        }
-                    }
-                } else if (vm.tmpExp || vm.tmpExp == '') {
+                if (operator && !operator.match('function')) {
+                    setText = func;
+                    vm.expression.showIcon = false;
+                } else {
                     if (operator === 'function') {
-                        vm.expression.showIcon = false;
                         vm.expression.type = 'event';
+                        vm.expression.showIcon = false;
                         vm._eventExample = 'event:name_of_event' + func + ', ' + 'event:jobStream.name_of_event' + func;
-                        vm.expression.expression = vm.tmpExp + ' name_of_event' + func;
-                    } else  if(operator === 'job_function') {
+                        setText = 'name_of_event' + func;
+                    } else if (operator === 'job_function') {
+                        vm.expression.showIcon = true;
                         vm.expression.type = 'job';
-                        vm.expression.showIcon = true;
                         vm._jobExample = 'job:' + func + ', ' + 'job:name_of_job.' + func;
-                        vm.expression.expression = vm.tmpExp + ' job:' + func;
-                    }else  if(operator === 'jobChain_function') {
-                        vm.expression.type = 'jobChain';
+                        setText = 'job:' + func;
+                    } else if (operator === 'jobChain_function') {
                         vm.expression.showIcon = true;
+                        vm.expression.type = 'jobChain';
                         vm._jobchainExample = 'jobChain:' + func + ', ' + 'jobChain:name_of_jobChain.' + func;
-                        vm.expression.expression = vm.tmpExp + ' jobChain:' + func;
-                    }else {
-                        vm.expression.expression = vm.tmpExp + ' ' + func + ':';
+                        setText = 'jobChain:' + func;
+                    } else {
+                        setText = func + ':';
                     }
+                }
+            }
+            if(vm.ckEditor) {
+                vm.ckEditor.insertText(setText);
+                vm.expression.expression = vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim();
+                if(form){
+                    vm.validateExpression(form);
                 }
             }
         };
@@ -14536,17 +14513,19 @@
                 str = vm.condition.conditionExpression.expression;
             } else if (vm._expression) {
                 str = vm._expression.expression;
-            } else {
-                vm.tmpExp = '';
             }
             str = str.trim();
             let arr = str ? str.split(' ') : [];
             if (arr.length > 0) {
                 if (arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'not') {
                     form.$invalid = true;
-                    form.expression.$invalid = true;
+                    if(form.expression) {
+                        form.expression.$invalid = true;
+                    }
+                    return false;
                 }
             }
+            return true;
         };
 
         vm.selectCommand = function (command, index) {
@@ -14696,6 +14675,67 @@
             }
             $('#event-suggestion').css({display: 'none', opacity: 0});
         };
+
+
+        function initEditor() {
+            if(!vm.ckEditor) {
+                CKEDITOR.replace('expression', {
+                    plugins: 'autocomplete,textmatch,wysiwygarea',
+                    toolbar: [],
+                    on: {
+                        instanceReady: function (evt) {
+                            var itemTemplate = '<li data-id="{id}">' +
+                                '<div><strong class="item-title">{name}</strong></div>' +
+                                '</li>',
+                                outputTemplate = '[{name}] ';
+                            var autocomplete = new CKEDITOR.plugins.autocomplete(evt.editor, {
+                                textTestCallback: textTestCallback,
+                                dataCallback: dataCallback,
+                                itemTemplate: itemTemplate,
+                                outputTemplate: outputTemplate
+                            });
+
+                            // Override default getHtmlToInsert to enable rich content output.
+                            autocomplete.getHtmlToInsert = function (item) {
+                                console.log('item >>> ', item, this.outputTemplate.output(item));
+                                return this.outputTemplate.output(item);
+                            }
+                        }
+                    }
+                });
+                vm.ckEditor = CKEDITOR.instances['expression'];
+            } else{
+                vm.ckEditor.setData(vm.expression.expression)
+            }
+        }
+
+        function textTestCallback(range) {
+            if (!range.collapsed) {
+                return null;
+            }
+            return CKEDITOR.plugins.textMatch.match(range, matchCallback);
+        }
+
+        function matchCallback(text, offset) {
+            var pattern = /\[{1}([A-z]|\])*$/,
+                match = text.slice(0, offset)
+                    .match(pattern);
+            if (!match) {
+                return null;
+            }
+            return {
+                start: match.index,
+                end: offset
+            };
+        }
+
+        function dataCallback(matchInfo, callback) {
+            var data = vm.functions.filter(function(item) {
+                var itemName = '[' + item.name + ']';
+                return itemName.indexOf(matchInfo.query.toLowerCase()) == 0;
+            });
+            callback(data);
+        }
 
         $scope.$on('$destroy', function () {
             watcher1();

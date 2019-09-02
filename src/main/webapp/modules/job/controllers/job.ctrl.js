@@ -5001,7 +5001,7 @@
         };
 
         vm.getTreeStructure = function () {
-            if(vm.importJobstreamObj && vm.importJobstreamObj.jobstreams){
+            if(vm.importJobstreamObj && vm.importJobstreamObj.jobs){
                 vm.object.importJobStreamObj = {};
             }else{
                 delete vm.object['importJobStreamObj'];
@@ -5025,7 +5025,7 @@
         };
 
         vm.treeExpand = function (data) {
-            if(vm.importJobstreamObj && vm.importJobstreamObj.jobstreams){
+            if(vm.importJobstreamObj && vm.importJobstreamObj.jobs){
                 vm.importJobstreamObj.path = data.path;
                 $('#treeModal').modal('hide');
                 $('.fade-modal').css('opacity', '1');
@@ -6687,18 +6687,41 @@
             }
         };
 
-        vm.checkImportJobstreamFn = function(){
-            if (vm.fileContentJobStreams && vm.checkImportJobstream.checkbox && vm.fileContentJobStreams.length > 0) {
-                vm.importJobstreamObj.jobstreams = angular.copy(vm.fileContentJobStreams);
+        vm.checkImportJobstreamFn = function(key, data) {
+            if ($("#" + key) && $("#" + key).prop('checked')) {
+                for(let i=0; i < data.jobs.length; i++) {
+                    vm.importJobstreamObj.jobs.push(data.jobs[i])
+                }
             } else {
-                vm.importJobstreamObj.jobstreams = [];
+                let _temp = angular.copy(vm.importJobstreamObj.jobs);
+                angular.forEach(_temp, function (job, index) {
+                    for (var x = 0; x < vm.importJobstreamObj.jobs.length; x++) {
+                        if (key == vm.importJobstreamObj.jobs[x].jobStream) {
+                            vm.importJobstreamObj.jobs.splice(x, 1);
+                            break;
+                        }
+                    }
+                });
             }
         };
 
-        var watcher8 = $scope.$watchCollection('importJobstreamObj.jobstreams', function (newNames) {
+        var watcher8 = $scope.$watchCollection('importJobstreamObj.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.checkImportJobstream.checkbox = newNames.length === vm.fileContentJobStreams.length;
-            }else{
+
+                for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
+                    let count = 0;
+                    for (let i = 0; i < newNames.length; i++) {
+                        if (vm.fileContentJobStreams[j].jobStream == newNames[i].jobStream) {
+                            ++count;
+                        }
+                    }
+                    if(count === vm.fileContentJobStreams[j].jobs.length){
+                        $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', true);
+                    }else{
+                        $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', false);
+                    }
+                }
+            } else {
                 vm.checkImportJobstream.checkbox = false;
             }
         });
@@ -6709,14 +6732,11 @@
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].jobStream && data[i].jobs) {
                         for (let j = 0; j < data[i].jobs.length; j++) {
-                            vm.fileContentJobStreams.push({
-                                jobStream: data[i].jobStream, job: data[i].jobs[j].job,
-                                inconditions: data[i].jobs[j].inconditions, outconditions: data[i].jobs[j].outconditions
-                            })
+                            data[i].jobs[j].jobStream =  data[i].jobStream;
                         }
+                        vm.fileContentJobStreams.push(data[i]);
                     }
                 }
-
             }
 
             if (vm.fileContentJobStreams.length === 0) {
@@ -6737,7 +6757,7 @@
         vm.importJobStream = function () {
             vm.fileLoading = false;
             vm.fileContentJobStreams = [];
-            vm.importJobstreamObj = {jobstreams: [], path: '/'};
+            vm.importJobstreamObj = {jobstreams: [], jobs:[], path: '/'};
             vm.checkImportJobstream = {checkbox: false};
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/import-jobstream-dialog.html',
@@ -6760,14 +6780,14 @@
                     }
                 }
 
-                for (let i = 0; i < vm.importJobstreamObj.jobstreams.length; i++) {
+                for (let i = 0; i < vm.importJobstreamObj.jobs.length; i++) {
                     inObj.push({
-                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobstreams[i].job,
-                        inconditions: vm.importJobstreamObj.jobstreams[i].inconditions
+                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobs[i].job,
+                        inconditions: vm.importJobstreamObj.jobs[i].inconditions
                     });
                     outObj.push({
-                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobstreams[i].job,
-                        outconditions: vm.importJobstreamObj.jobstreams[i].outconditions
+                        job: vm.importJobstreamObj.path + vm.importJobstreamObj.jobs[i].job,
+                        outconditions: vm.importJobstreamObj.jobs[i].outconditions
                     })
                 }
                 ConditionService.updateInCondition({
@@ -8474,8 +8494,9 @@
             if (tbWidth > 0) {
                 if (tbWidth < 660) {
                     $('.toolBtn').hide();
-                    $('#outlineContainer').css({'width': '130px', 'height': '120px', 'z-index': 0});
-                    if (tbWidth < 450) {
+                    $('#outlineContainer').css({'width': '130px', 'height': '120px'});
+                    if (tbWidth < 450 && vm.firstClick) {
+                        vm.firstClick = false;
                         $('.sidebar-close').click();
                     }
                 } else {
@@ -8511,23 +8532,22 @@
             $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
             const panel = $('.property-panel');
             $('.sidebar-open', panel).click(function () {
-                $('.sidebar').css({'width': '296px', opacity: 1});
+                $('.sidebar').css({'width': '300px', opacity: 1});
                 $('.sidebar-open').css('right', '-20px');
                 if (window.innerWidth > 1024) {
                     $('#outlineContainer').animate({'right': '309px'}, 'fast', 'linear');
-                    $('.graph-container').animate({'margin-right': '296px'}, 'fast', 'linear');
-                    $('#toolbar').animate({'margin-right': '296px'}, 'fast', 'linear');
+                    $('.graph-container').animate({'margin-right': '300px'}, 'fast', 'linear');
+                    $('#toolbar').animate({'margin-right': '300px'}, 'fast', 'linear');
+                    $('.scrolltop-btn').css('right', '340px');
+                    $('.scrollBottom-btn').css('right', '340px');
                 } else {
-                    $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
+                    $('#outlineContainer').animate({'right': '14px', 'z-index':0}, 'fast', 'linear');
                     $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
                     $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
                 }
-                $('.sidebar-close').animate({right: '296px'}, 'fast', 'linear', function(){
+                $('.sidebar-close').animate({right: '300px'}, 'fast', 'linear', function(){
                     checkToolbarWidth();
                 });
-                $('.scrolltop-btn').css('right', '340px');
-                $('.scrollBottom-btn').css('right', '340px');
-
             });
 
             $('.sidebar-close', panel).click(function () {
@@ -8564,6 +8584,7 @@
             setTimeout(function () {
                 $('#outlineContainer').css({opacity: 1});
                 if (window.innerWidth > 1024) {
+                    vm.firstClick =  true;
                     $('.sidebar-open').click();
                 } else {
                     checkToolbarWidth();
@@ -8808,17 +8829,16 @@
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
-            let vertexes = [];
+
             if (!jobs) {
                 return;
             }
             for (let i = 0; i < jobs.length; i++) {
                 jobs[i].jId = undefined;
             }
-            let matchedEvents = [];
+
             try {
                 for (let i = 0; i < jobs.length; i++) {
-                    let events = [];
                     if (!jobs[i].state) {
                         jobs[i].state = {};
                     }
@@ -8843,7 +8863,7 @@
                                 for (let x = 0; x < jobs[i].outconditions.length; x++) {
                                     if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
                                         for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                            if (matchExpression(jobs[m].inconditions[n].conditionExpression.expression, jobs[i].outconditions[x].outconditionEvents[z].event)) {
+                                            if (matchExpression(jobs[m].inconditions[n].conditionExpression.jobStreamEvents, jobs[i].outconditions[x].outconditionEvents[z].event)) {
                                                 if (!jobs[i].connections) {
                                                     jobs[i].connections = [];
                                                 }
@@ -8884,62 +8904,15 @@
                             }
                         }
                     }
-
-                    if (events.length > 0) {
-                        for (let b = 0; b < events.length; b++) {
-                            for (let m = 0; m < jobs.length; m++) {
-                                if (jobs[i].path !== jobs[m].path) {
-                                    for (let x = 0; x < jobs[m].inconditions.length; x++) {
-                                        if (matchExpression(jobs[m].inconditions[x].conditionExpression.expression, events[b].getAttribute('label'))) {
-                                            if (matchedEvents.indexOf(events[b].id) === -1) {
-                                                matchedEvents.push(events[b].id);
-                                            }
-                                            for (let y = 0; y < events[b].edges.length; y++) {
-                                                if (events[b].edges[y].source.id === events[b].id) {
-                                                    if (!jobs[m].inconditions[x].boxId) {
-                                                        jobs[m].inconditions[x].boxId = [events[b].edges[y].target.id];
-                                                    } else {
-                                                        if (jobs[m].inconditions[x].boxId.indexOf(events[b].edges[y].target.id) === -1) {
-                                                            jobs[m].inconditions[x].boxId.push(events[b].edges[y].target.id);
-                                                        }
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
                 vm.jobs = jobs;
                 for (let i = 0; i < jobs.length; i++) {
-                    for (let j = 0; j < jobs[i].inconditions.length; j++) {
-                        if (jobs[i].inconditions[j].boxId && jobs[i].inconditions[j].boxId.length > 0) {
-                            for (let b = 0; b < jobs[i].inconditions[j].boxId.length; b++) {
-                                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(jobs[i].inconditions[j].boxId[b]), graph.getModel().getCell(jobs[i].inconditions[j].vertexId));
-                            }
-                            delete jobs[i].inconditions[j]['boxId'];
-                        }
-                    }
                     if (jobs[i].isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && jobs[i].isExpanded === undefined)) {
                         expandJobNode(graph, jobs[i], true);
                     }
                 }
 
-                for (let i = 0; i < vertexes.length; i++) {
-                    if (graph.getOutgoingEdges(vertexes[i]) && graph.getOutgoingEdges(vertexes[i]).length === 0) {
-                        graph.removeCells([vertexes[i]], true);
-                    }
-                    let inComingEdges = graph.getIncomingEdges(vertexes[i]);
-                    for (let j = 0; j < inComingEdges.length; j++) {
-                        if (matchedEvents.indexOf(inComingEdges[j].source.id) == -1) {
-                            graph.getModel().remove(inComingEdges[j]);
-                        }
-                    }
-                }
                 if (reload) {
                     makeCenter(graph);
                 }
@@ -9139,22 +9112,8 @@
             return str;
         }
 
-        function matchExpression(expression, event) {
-            let flag = false;
-            let arr = expression.trim().split(' ');
-            event = event.trim();
-            for (let k = 0; k < arr.length; k++) {
-                if (arr[k] && arr[k] !== 'or' && arr[k] !== 'and' && arr[k] != 'not') {
-                    let str = arr[k].replace(/\(/g, ' ');
-                    str = str.replace(/\)/g, ' ');
-                    str = str.replace(/\[(.*?)]/, ' ').trim();
-                    if (str === event || str.replace('event:', '').trim() === event || str === event.replace(/\[(.*?)]/, ' ').trim()) {
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            return flag;
+        function matchExpression(jobStreamEvents, event) {
+            return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
         }
 
         function expandJobNode(graph, job, flag) {
@@ -9184,9 +9143,13 @@
 
                 let conditionVertex = createVertex(parent, _node, job.inconditions[n].conditionExpression.expression, style);
                 addOverlays(graph, conditionVertex, job.inconditions[n].conditionExpression.value ? 'green' : '');
-                if (job.inconditions[n].outconditions.length > 1) {
-                    addReferenceIcon(graph, conditionVertex);
+                for(let i = 0; i < job.inconditions[n].outconditions.length; i++){
+                    if(job.inconditions[n].outconditions[i].jobStream !== job.inconditions[n].jobStream) {
+                        addReferenceIcon(graph, conditionVertex);
+                        break;
+                    }
                 }
+
                 job.inconditions[n].vertexId = conditionVertex.id;
                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
                 if (inEdges.length > 0) {
@@ -9215,6 +9178,12 @@
                 addOverlays(graph, conditionVertex, job.outconditions[x].conditionExpression.value ? 'green' : '');
                 if (job.outconditions[x].inconditions.length > 1) {
                     addReferenceIcon(graph, conditionVertex);
+                }
+                for(let i = 0; i < job.outconditions[x].inconditions.length; i++){
+                    if(job.outconditions[x].inconditions[i].jobStream !== job.outconditions[x].jobStream) {
+                        addReferenceIcon(graph, conditionVertex);
+                        break;
+                    }
                 }
                 job.outconditions[x].vertexId = conditionVertex.id;
                 if (job.jId) {
@@ -9259,7 +9228,7 @@
                             if (vm.jobs[m].path == job.connections[j]) {
                                 for (let b = 0; b < events.length; b++) {
                                     for (let x = 0; x < vm.jobs[m].inconditions.length; x++) {
-                                        if (matchExpression(vm.jobs[m].inconditions[x].conditionExpression.expression, events[b].getAttribute('label'))) {
+                                        if (matchExpression(vm.jobs[m].inconditions[x].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
                                             if (matchedEvents.indexOf(events[b].id) === -1) {
                                                 matchedEvents.push(events[b].id);
                                             }
@@ -10114,11 +10083,11 @@
         function handleSingleClick(cell) {
             if (cell.value && cell.value.tagName === 'InCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
-                vm.referenceTabHeading = 'In-Condition :' + ' ' + cell.getAttribute('actual');
+                vm.referenceTabHeading = gettextCatalog.getString('InCondition') + ' : ' + cell.getAttribute('actual');
                 vm._outconditionReference = JSON.parse(cell.getAttribute('outconditions'));
             } else if (cell.value && cell.value.tagName === 'OutCondition') {
                 vm.jobFilters.graphViewDetail.tab = 'reference';
-                vm.referenceTabHeading = 'Out-Condition :' + ' ' + cell.getAttribute('actual');
+                vm.referenceTabHeading = gettextCatalog.getString('OutCondition') + ' : ' + cell.getAttribute('actual');
                 vm._outconditionReference = JSON.parse(cell.getAttribute('inconditions'));
             } else if (cell.value.tagName === 'Job') {
                 for (let i = 0; i < vm.jobs.length; i++) {
@@ -10392,6 +10361,11 @@
                             let _x = x - 120;
                             if (state.cell.value.tagName === 'Job') {
                                 _x -= 28;
+                                if(vm.userPreferences.locale === 'de'){
+                                    _x -= 40;
+                                } else if(vm.userPreferences.locale === 'fr'){
+                                    _x -= 75;
+                                }
                             }
                             let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
