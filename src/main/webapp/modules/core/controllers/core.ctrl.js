@@ -14682,6 +14682,7 @@
                 CKEDITOR.replace('expression', {
                     plugins: 'autocomplete,textmatch,wysiwygarea',
                     toolbar: [],
+                    bodyClass : vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
                     on: {
                         instanceReady: function (evt) {
                             var itemTemplate = '<li data-id="{id}">' +
@@ -14697,7 +14698,6 @@
 
                             // Override default getHtmlToInsert to enable rich content output.
                             autocomplete.getHtmlToInsert = function (item) {
-                                console.log('item >>> ', item, this.outputTemplate.output(item));
                                 return this.outputTemplate.output(item);
                             }
                         }

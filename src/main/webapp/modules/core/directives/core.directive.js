@@ -477,6 +477,44 @@
         }
     }
 
+    function x() {
+        return {
+            restrict: "A", require: "ngModel", link: function (e, t, i, n) {
+                t.bind("blur", function () {
+                    if( n.$modelValue.match(/,/)) {
+                        let flag = false;
+                        let arr = n.$modelValue.split(',');
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i].match(/at\s*=/)) {
+                                let firstStr = arr[i].replace(/at\s*=/, '');
+                                flag = firstStr && (!firstStr || /^\s*$/i.test(firstStr) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(firstStr)
+                                    || /^\s*(now)\s*$/i.test(firstStr) || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9])\s*$/i.test(firstStr)
+                                    || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(firstStr));
+                                arr[i] = flag.toString();
+                            } else  {
+                                flag = /^\s*(force\s*=)\s*?(?:yes|no)\s*$/i.test(arr[i]);
+                                arr[i] = flag.toString();
+                            }
+
+                        }
+                        arr.indexOf('false') === -1 ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1)
+                    } else if (n.$modelValue.match(/at\s*=/)){
+                        let firstStr = n.$modelValue.replace(/at\s*=/, '');
+                        firstStr && (!firstStr || /^\s*$/i.test(firstStr) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(firstStr)
+                            || /^\s*(now)\s*$/i.test(firstStr) || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9])\s*$/i.test(firstStr)
+                            || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(firstStr) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1));
+                    } else {
+                        n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(n.$modelValue)
+                        || /^\s*(now)\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9])\s*$/i.test(n.$modelValue)
+                        || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
+                    }
+                }), t.bind("keyup", function () {
+                    n.$setValidity("invalid", !0)
+                })
+            }
+        }
+    }
+
     function g() {
         return {
             restrict: "A", require: "ngModel", link: function (e, t, i, n) {
@@ -715,7 +753,7 @@
            }]
        };
    }
-    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).constant("defaultAvatarSettings", {
+    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validStartCommandRegex", x).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).constant("defaultAvatarSettings", {
         alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
         textColor: "#ffffff",
         defaultBorder: "border:5px solid white",

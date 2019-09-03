@@ -451,11 +451,35 @@
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         name: 'angularFileUpload',
-                        files: ["js/angular-file-upload.min.js"]
+                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
                     }])
                 }]
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobStream' | translate}}"}
+        }).state("app.configuration", {
+            url: "/configuration",
+            templateUrl: "modules/configuration/views/main.html",
+            controller: "ConfigurationCtrl",
+            resolve: {
+                permission: function (authorizationService) {
+                    return authorizationService.permissionCheck('JobStream');
+                },
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    $ocLazyLoad.load([{
+                        files: ["js/xml-js.min.js", "js/xmldom.js"],
+                        serie: true
+                    }]);
+                }]
+            },
+            ncyBreadcrumb: {label: "{{ 'Configuration' | translate}}"}
+        }).state("app.configuration.joe", {
+            url: "/joe",
+            templateUrl: "modules/configuration/views/joe-editor.html",
+            ncyBreadcrumb: {label: "{{ 'JOE Editor' | translate}}"}
+        }).state("app.configuration.xml", {
+            url: "/xml",
+            templateUrl: "modules/configuration/views/xml-editor.html",
+            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}" , parent: "app.configuration"}
         })
     }
 

@@ -8803,10 +8803,7 @@
             let _node = getCellNode('Job', name, job, '');
             _node.setAttribute('status', '');
             let style = 'job', x = 0;
-            if (graph.getChildVertices(graph.getDefaultParent()).length === 0) {
-                x = event.offsetX;
-            }
-            let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, x, event.offsetY, 180, 50, style);
+            let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, event.offsetX * .3, event.offsetY, 180, 50, style);
 
             for (let i = 0; i < vm.allJobs.length; i++) {
                 if (vm.allJobs[i].path === job) {

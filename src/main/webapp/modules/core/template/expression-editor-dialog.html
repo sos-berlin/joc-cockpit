@@ -1,8 +1,5 @@
 <style>
-    #cke_1_top{
-        display: none;
-    }
-    #cke_1_contents, .cke_contents, .cke_reset{
+    .cke_contents, .cke_reset{
         height: 100px !important;
     }
 </style>
@@ -21,8 +18,7 @@
                         <div class="form-group row">
                             <div class="col-sm-12" ng-class="{ 'has-error' : form3.expression.$invalid && form3.expression.$dirty }">
                                 <textarea rows=3" class="form-control" id="expression" autofocus name="expression" required
-                                          placeholder="{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}"
-                                          data-sample-short></textarea>
+                                          data-sample-short>{{editor.type=='Incondition' ? 'event:event, fileexist:filename' : 'rc:x, event:event, fileexist:filename'}}</textarea>
                             </div>
                         </div>
                         <div class="form-group row">
