@@ -1,31 +1,505 @@
 /**
- * Created by sourabhagrawal on 30/06/16.
+ * Created by sourabhagrawal on 04/09/19.
  */
 (function () {
     'use strict';
     angular
         .module('app')
-        .controller('ConfigurationCtrl', ConfigurationCtrl);
+        .controller('EditorConfigurationCtrl', EditorConfigurationCtrl)
+        .controller('JOEEditorCtrl', JOEEditorCtrl)
+        .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    ConfigurationCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$resource"];
+    EditorConfigurationCtrl.$inject = ["$scope"];
+    function EditorConfigurationCtrl($scope) {
+        function calcHeight() {
+            const dom = $('.scroll-y');
+            let count = 0;
+            if (dom && dom.position()) {
+                function recursiveCheck (){
+                    ++count;
+                    let top = dom.position().top + 19;
+                    const flag = top < 78;
+                    top = top - $(window).scrollTop();
+                    if (top < 96) {
+                        top = 96;
+                    }
+                    $('.sticky').css('top', top);
+                    $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
+                    if (count < 5) {
+                        if (flag) {
+                            recursiveCheck();
+                        } else {
+                            let intval = setInterval(function() {
+                                recursiveCheck();
+                                clearInterval(intval);
+                            }, 150);
+                        }
+                    }
+                }
+                recursiveCheck();
+            }
+        }
 
-    function ConfigurationCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $resource) {
+        $scope.$on("$viewContentLoaded", function () {
+            setTimeout(function() {
+                calcHeight();
+            },100);
+        });
+    }
+
+    JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "$location", "orderByFilter"];
+    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, $location, orderBy) {
         var vm = $scope;
+        vm.tree = [];
+        vm.my_tree = {};
+        vm.expanding_property = {
+            field: "name"
+        };
+
+
+        function init() {
+            EditorService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ["JOB"]
+            }).then(function (res) {
+                vm.tree = res.folders;
+                angular.forEach(vm.tree, function (value) {
+                    value.expanded = true;
+                    if (value.folders) {
+                        value.folders = orderBy(value.folders, 'name');
+                    }
+                });
+
+            }, function () {
+
+            });
+        }
+
+        init();
+
+        function navFullTree() {
+            for (let i = 0; i < vm.tree.length; i++) {
+                vm.tree[i].selected1 = false;
+                vm.tree[i].jobChains = [];
+                if (vm.tree[i].expanded) {
+                    traverseTree1(vm.tree[i]);
+                }
+            }
+        }
+
+        function traverseTree1(data) {
+            for (let i = 0; i < data.folders.length; i++) {
+                data.folders[i].selected1 = false;
+                data.folders[i].jobChains = [];
+                if (data.folders[i].expanded) {
+                    traverseTree1(data.folders[i]);
+                }
+            }
+        }
+
+        vm.treeHandler = function (data) {
+            if (vm.userPreferences.expandOption === 'both')
+                data.expanded = true;
+            navFullTree();
+            data.selected1 = true;
+        };
+        vm.treeHandler1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
+    }
+
+    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http"];
+    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http) {
+        var vm = $scope;
+        vm.tree = [];
+        vm.my_tree = {};
+        vm.expanding_property = {
+            field: "name"
+        };
         vm.counting = 0;
         vm.autoAddCount = 0;
         vm.nodes = [];
         vm.childNode = [];
-        // console.log('>>>>>>>>>>>>>>>>>> ConfigurationCtrl >>>>>>>>>>>>>>>>>>', xpath);
-        $resource("xsd/SystemMonitorNotification_v1.0.xsd").get(function (data) {
-            // console.log(data)
-        });
-        vm.doc = new DOMParser().parseFromString('', 'application/xml');
+        vm.selectedXsd = '';
+        vm.submitXsd = false;
+        vm.isLoading = true;
+        vm.validConfig = false;
+
+        function ngOnInit() {
+            if (sessionStorage.getItem('xsd') !== null) {
+                if (sessionStorage.$SOS$XSD) {
+                    vm.submitXsd = true;
+                    vm.selectedXsd = sessionStorage.$SOS$XSD;
+                }
+                vm.reassignSchema();
+                setTimeout(() => {
+                    createJsonfromXml(sessionStorage.getItem('xsd'));
+                }, 600);
+            } else {
+                if (sessionStorage.$SOS$XSD) {
+                    vm.submitXsd = true;
+                    vm.selectedXsd = sessionStorage.$SOS$XSD;
+                    getInitTree(false);
+                } else {
+                    vm.isLoading = false;
+                }
+            }
+        }
+
+        ngOnInit();
+
+        // getInit tree
+        function getInitTree(check) {
+            if (vm.selectedXsd === 'systemMonitorNotification') {
+                $http.get('xsd/SystemMonitorNotification_v1.0.xsd')
+                    .then(function (data) {
+                        loadTree(data.data, check);
+                    });
+            } else if (vm.selectedXsd === 'yade') {
+                $http.get('xsd/yade_v1.12.xsd')
+                    .then(function (data) {
+                        loadTree(data.data, check);
+                    });
+            } else {
+                $http.get('xsd/' + vm.selectedXsd + '.xsd')
+                    .then(function (data) {
+                        loadTree(data.data, check);
+                    });
+            }
+        }
+
+        function loadTree(xml, check) {
+            vm.doc = new DOMParser().parseFromString(xml, 'application/xml');
+            console.log(vm.doc);
+            getRootNode(vm.doc, check);
+            vm.xsdXML = xml;
+            console.log('.............stop 0.............')
+            xpathFunc();
+            console.log('.............stop 1.............')
+            addKeyRefrencing();
+
+            vm.selectedNode = vm.nodes[0];
+            console.log('.............stop 2.............',vm.nodes)
+            getData(vm.nodes[0]);
+            vm.isLoading = !!check;
+        }
+
+        // submit xsd to open
+        vm.submit = function() {
+            if (vm.selectedXsd !== '') {
+                sessionStorage.$SOS$XSD = vm.selectedXsd;
+                vm.submitXsd = true;
+                getInitTree(false);
+            }
+        };
+
+        vm.reassignSchema = function() {
+            vm.nodes = [];
+            vm.isLoading = true;
+            getInitTree(true);
+        };
+
+        // create json from xml
+        function createJsonfromXml(data) {
+            console.log('createJsonfromXml')
+            let result1 = xml2json(data, {
+                compact: true,
+                spaces: 4,
+                ignoreDeclaration: true,
+                ignoreComment: true,
+                alwaysChildren: true
+            });
+            let rootNode;
+            let r_node;
+            let x = JSON.parse(result1);
+            for (let key in x) {
+                rootNode = key;
+            }
+            let json = createTempJson(x, rootNode);
+            for (let key in json) {
+                r_node = key;
+            }
+            if (vm.nodes[0] && vm.nodes[0].ref === rootNode) {
+                createJsonAccToXsd(json, r_node, vm.nodes[0]);
+            } else {
+                vm.nodes = [{}];
+                createNormalTreeJson(json, r_node, vm.nodes[0], '#');
+            }
+        }
+
+        function createTempJson(editJson, rootNode) {
+            console.log('createTempJson')
+            let temp = {};
+            if (_.isArray(editJson[rootNode])) {
+                for (let i = 0; i < editJson[rootNode].length; i++) {
+                    temp = Object.assign(temp, {[rootNode]: editJson[rootNode][i]});
+                }
+            } else {
+                for (let a in editJson[rootNode]) {
+                    if (a == '_text') {
+                        a = '_cdata';
+                    }
+                    if (a == '_attributes' || a == '_cdata') {
+                        if (temp[rootNode] == undefined) {
+                            temp = Object.assign(temp, {[rootNode]: {[a]: editJson[rootNode][a]}});
+                        } else {
+                            temp[rootNode] = Object.assign(temp[rootNode], {[a]: editJson[rootNode][a]});
+                        }
+                    } else {
+                        if (_.isArray(editJson[rootNode][a])) {
+                            for (let i = 0; i < editJson[rootNode][a].length; i++) {
+                                let x = a + '*' + i;
+                                if (temp[rootNode] == undefined) {
+                                    temp = Object.assign(temp, {[rootNode]: {[x]: {}}});
+                                } else {
+                                    temp[rootNode] = Object.assign(temp[rootNode], {[x]: {}});
+                                }
+                                for (let key in editJson[rootNode][a][i]) {
+                                    createTempJsonRecursion(key, temp[rootNode][x], editJson[rootNode][a][i]);
+                                }
+                            }
+                        } else {
+                            if (temp[rootNode] == undefined) {
+                                temp = Object.assign(temp, {[rootNode]: {[a]: {}}});
+                                for (let key in editJson[rootNode][a]) {
+                                    createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a]);
+                                }
+                            } else {
+                                temp[rootNode] = Object.assign(temp[rootNode], {[a]: {}});
+                                for (let key in editJson[rootNode][a]) {
+                                    createTempJsonRecursion(key, temp[rootNode][a], editJson[rootNode][a]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            vm.isLoading = false;
+            return temp;
+        }
+
+        function createTempJsonRecursion(key, tempArr, editJson) {
+            if (key == '_text') {
+                key = '_cdata';
+            }
+            if (key == '_attributes' || key == '_cdata') {
+                tempArr = Object.assign(tempArr, {[key]: editJson[key]});
+            } else {
+                if (editJson && _.isArray(editJson[key])) {
+                    for (let i = 0; i < editJson[key].length; i++) {
+                        let x = key + '*' + i;
+                        tempArr = Object.assign(tempArr, {[x]: {}});
+                        if (editJson) {
+                            for (let as in editJson[key][i]) {
+                                createTempJsonRecursion(as, tempArr[x], editJson[key][i]);
+                            }
+                        }
+                    }
+                } else {
+                    tempArr = Object.assign(tempArr, {[key]: {}});
+                    if (editJson) {
+                        for (let x in editJson[key]) {
+                            createTempJsonRecursion(x, tempArr[key], editJson[key]);
+                        }
+                    }
+                }
+            }
+        }
+
+        function createJsonAccToXsd(xmljson, rootNode, mainjson) {
+            mainjson.children = [];
+            if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
+                for (let key in xmljson[rootNode]._attributes) {
+                    if (mainjson && mainjson.attributes) {
+                        for (let i = 0; i < mainjson.attributes.length; i++) {
+                            if (key === mainjson.attributes[i].name) {
+                                let a = xmljson[rootNode]._attributes[key];
+                                mainjson.attributes[i] = Object.assign(mainjson.attributes[i], {data: a});
+                            }
+                        }
+                    }
+                }
+            }
+            if (xmljson[rootNode] && xmljson[rootNode]._cdata !== undefined) {
+                mainjson.values[0] = Object.assign(mainjson.values[0], {data: xmljson[rootNode]._cdata});
+            }
+
+            for (let key in xmljson[rootNode]) {
+                if (key !== '_attributes' && key !== '_cdata') {
+                    addChildForxml(key, rootNode, xmljson, mainjson);
+                }
+            }
+        }
+
+        function addChildForxml(key, rootNode, xmljson, mainjson) {
+            let a;
+            if (key.indexOf('*')) {
+                a = key.split('*')[0];
+            }
+            checkChildNode(mainjson);
+            for (let i = 0; i < vm.childNode.length; i++) {
+                if (a === vm.childNode[i].ref) {
+                    vm.childNode[i].import = key;
+                    addChild(vm.childNode[i], mainjson, false);
+                }
+            }
+            for (let i = 0; i < mainjson.children.length; i++) {
+                if (mainjson.children[i].ref == a && mainjson.children[i].import == key) {
+                    createJsonAccToXsd(xmljson[rootNode], key, mainjson.children[i]);
+                }
+            }
+        }
+
+        // create json if xsd not matched
+        function createNormalTreeJson(xmljson, rootNode, mainjson, parent) {
+            let temp = {};
+            getData(temp);
+            let a = undefined;
+            if (rootNode.indexOf('*')) {
+                a = rootNode.split('*')[0];
+            }
+            if (a == undefined) {
+                mainjson = Object.assign(mainjson, {ref: rootNode, parent: parent});
+            } else {
+                mainjson = Object.assign(mainjson, {ref: a, parent: parent, import: rootNode});
+            }
+            for (let key in xmljson[rootNode]) {
+                if (key === '_attributes') {
+                    mainjson = Object.assign(mainjson, {attributes: []});
+                    for (let x in xmljson[rootNode]._attributes) {
+                        let dat = xmljson[rootNode]._attributes[x];
+                        let temp1 = {};
+                        temp1 = Object.assign(temp1, {name: x, data: dat, parent: rootNode});
+                        mainjson.attributes.push(temp1);
+                    }
+                }
+            }
+            for (let key in xmljson[rootNode]) {
+                if (key !== '_attributes' && key !== '_cdata') {
+                    if (!mainjson.children) {
+                        mainjson = Object.assign(mainjson, {children: []});
+                    }
+                    addChildToNormal(key, rootNode, xmljson, mainjson);
+                }
+            }
+        }
+
+        function addChildToNormal(key, rootNode, xmljson, mainjson) {
+            let temp = {};
+            let a = undefined;
+            if (key.indexOf('*')) {
+                a = key.split('*')[0];
+            }
+            if (a == undefined) {
+                temp = Object.assign(temp, {ref: key, parent: rootNode, import: key});
+            } else {
+                temp = Object.assign(temp, {ref: a, parent: rootNode, import: key});
+            }
+            mainjson.children.push(temp);
+            for (let i = 0; i < mainjson.children.length; i++) {
+                if (mainjson.children[i].ref === a && mainjson.children[i].import == key) {
+                    createNormalTreeJson(xmljson[rootNode], key, mainjson.children[i], rootNode);
+                }
+            }
+        }
+
+        vm.removeTag = function(data) {
+            if (data && data.data && data.data.match(/<[^>]+>/gm)) {
+                let x = data.data.replace(/<[^>]+>/gm, '');
+                x = x.replace('&nbsp;', ' ');
+                return x;
+            } else {
+                return data.data;
+            }
+        }
+
+        function addKeyRefrencing() {
+            let key = {};
+            if (vm.nodes[0] && vm.nodes[0].keyref) {
+                for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                    if (vm.nodes[0].attributes[i].refer) {
+                        key = Object.assign(key, {refe: vm.nodes[0].ref, name: vm.nodes[0].attributes[i].refer});
+                        attachKeyRefrencing(key);
+                        break;
+                    }
+                }
+            } else {
+                if (vm.nodes[0] && vm.nodes[0].children) {
+                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                        addKeyRefrencingRecursion(vm.nodes[0].children[i]);
+                    }
+                }
+            }
+        }
+
+        function addKeyRefrencingRecursion(child) {
+            let key = {};
+            if (child.keyref && child.attributes) {
+                for (let i = 0; i < child.attributes.length; i++) {
+                    if (child.attributes[i].refer) {
+                        key = Object.assign(key, {refe: child.ref, name: child.attributes[i].refer});
+                        attachKeyRefrencing(key);
+                        if (child.children) {
+                            for (let i = 0; i < child.children.length; i++) {
+                                addKeyRefrencingRecursion(child.children[i]);
+                            }
+                        }
+                        break;
+                    }
+                }
+            } else {
+                if (child && child.children) {
+                    for (let i = 0; i < child.children.length; i++) {
+                        addKeyRefrencingRecursion(child.children[i]);
+                    }
+                }
+            }
+        }
+
+        function attachKeyRefrencing(key) {
+            if (key.name) {
+                if (vm.nodes[0].ref === key.name && vm.nodes[0].key) {
+                    for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                        if (vm.nodes[0].attributes[i].name === vm.nodes[0].key) {
+                            vm.nodes[0].attributes[i].refElement = key.refe;
+                            break;
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                        attachKeyRefrencingRecursion(key, vm.nodes[0].children[i]);
+                    }
+                }
+            }
+        }
+
+        function attachKeyRefrencingRecursion(key, child) {
+            if (key.name) {
+                if (child.ref === key.name && child.key && child.attributes) {
+                    for (let i = 0; i < child.attributes.length; i++) {
+                        if (child.attributes[i].name === child.key) {
+                            child.attributes[i].refElement = key.refe;
+                            break;
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < child.children.length; i++) {
+                        attachKeyRefrencingRecursion(key, child.children[i]);
+                    }
+                }
+            }
+        }
 
         function getRootNode(doc, check) {
             let temp, attrs, child;
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let rootElementPath = '//xs:element';
             let root = select(rootElementPath, doc);
+
             if(!root || !root[0]){
                 return;
             }
@@ -65,8 +539,6 @@
             }
             printArray(temp);
         }
-
-        getRootNode(vm.doc);
 
         function checkText(node) {
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -117,8 +589,9 @@
             }
         }
 
-        function _checkAttributes(attrsPath, attribute, node, attrsArr) {
+        function _checkAttributes(attrsPath, attribute, node, attrsArr, select) {
             let attrs = select(attrsPath, vm.doc);
+
             if (attrs.length > 0) {
                 for (let i = 0; i < attrs.length; i++) {
                     attribute = {};
@@ -148,16 +621,18 @@
                 }
             }
         }
+
         function checkAttributes(node) {
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
             let attribute = {};
             let attrsArr = [];
             let element = select(complexTypePath, vm.doc);
-            if (element.length > 0) {
-                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute', attribute, node, attrsArr);
-                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute', attribute, node, attrsArr);
-                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute', attribute, node, attrsArr);
+
+            if (element && element.length > 0) {
+                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:attribute', attribute, node, attrsArr, select);
+                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
+                _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
             }
             console.log(attrsArr, 'attrsArr');
             return attrsArr;
@@ -509,7 +984,8 @@
             setTimeout(() => {
                 calcHeight();
             }, 1);
-            if (event.keyref) {
+            console.log(event, ' getData')
+            if (event && event.keyref) {
                 for (let i = 0; i < event.attributes.length; i++) {
                     if (event.attributes[i].name === event.keyref) {
                         getDataAttr(event.attributes[i].refer);
@@ -519,7 +995,9 @@
             }
             vm.selectedNode = event;
             vm.breadCrumbArray = [];
-            createBreadCrumb(event);
+            if(event) {
+                createBreadCrumb(event);
+            }
             vm.breadCrumbArray.reverse();
         }
 
@@ -1056,6 +1534,139 @@
             }
         }
 
+        // key and Key Ref Implementation code
+        function xpathFunc() {
+            let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+            let a;
+            if (vm.nodes[0]) {
+                a = vm.nodes[0].ref;
+            }
+            let keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
+            let keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
+            let keyattrs = {};
+
+            if (!vm.keyRefNodes || vm.keyRefNodes.length == 0) {
+                vm.keyRefNodes = select(keyRefPath, vm.doc);
+            }
+            if (!vm.keyNodes || vm.keyNodes.length == 0) {
+                vm.keyNodes = select(keyPath, vm.doc);
+            }
+            if (vm.keyNodes.length > 0) {
+                for (let i = 0; i < vm.keyNodes.length; i++) {
+                    let key = vm.keyNodes[i].nodeName;
+                    let value = strReplace(vm.keyNodes[i].nodeValue);
+                    keyattrs = Object.assign(keyattrs, {[key]: value});
+                    for (let j = 0; j < vm.keyNodes[i].ownerElement.childNodes.length; j++) {
+                        if (vm.keyNodes[i].ownerElement.childNodes[j].nodeName === 'xs:field') {
+                            for (let k = 0; k < vm.keyNodes[i].ownerElement.childNodes[j].attributes.length; k++) {
+                                keyattrs.key = strReplace(vm.keyNodes[i].ownerElement.childNodes[j].attributes[k].nodeValue);
+                            }
+                            break;
+                        }
+                    }
+                    attachKey(keyattrs);
+                }
+            }
+            if (vm.keyRefNodes.length > 0) {
+                for (let i = 0; i < vm.keyRefNodes.length; i++) {
+                    getKeyRef(vm.keyRefNodes[i]);
+                }
+            }
+        }
+        function getKeyRef(keyRefNodes) {
+            let attrs = {};
+            for (let i = 0; i < keyRefNodes.attributes.length; i++) {
+                let key = keyRefNodes.attributes[i].nodeName;
+                let value = strReplace(keyRefNodes.attributes[i].nodeValue);
+                attrs = Object.assign(attrs, {[key]: value});
+                for (let j = 0; j < keyRefNodes.attributes[0].ownerElement.childNodes.length; j++) {
+                    if (keyRefNodes.attributes[0].ownerElement.childNodes[j].nodeName === 'xs:field') {
+                        for (let k = 0; k < keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes.length; k++) {
+                            attrs.keyref = strReplace(keyRefNodes.attributes[0].ownerElement.childNodes[j].attributes[k].nodeValue);
+                        }
+                    }
+                }
+            }
+            attachKeyRefNodes(attrs);
+        }
+
+        function strReplace(data) {
+            return data.replace(/(Key|@)/g, '');
+        }
+
+        function attachKey(key) {
+            addKeyAndKeyref(key);
+        }
+
+        function attachKeyRefNodes(keyrefnodes) {
+            addKeyAndKeyref(keyrefnodes);
+        }
+
+        function addKeyAndKeyref(nodes) {
+            let k = false;
+            let keyre = false;
+            for (let key in nodes) {
+                if (key === 'key') {
+                    k = true;
+                    break;
+                } else if (key === 'keyref') {
+                    keyre = true;
+                    break;
+                }
+            }
+            if (vm.nodes[0] && vm.nodes[0].children) {
+                for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                    if (vm.nodes[0].children[i].ref === nodes.name) {
+                        if (k) {
+                            vm.nodes[0].children[i].key = nodes.key;
+                        } else if (keyre) {
+                            vm.nodes[0].children[i].keyref = nodes.keyref;
+                        }
+                    } else {
+                        if (vm.nodes[0].children[i].children) {
+                            recursion(nodes, vm.nodes[0].children[i].children);
+                        }
+                    }
+                }
+            }
+
+
+            function recursion(_nodes, child) {
+                let ke = false;
+                let keyref = false;
+                for (let key in _nodes) {
+                    if (key === 'key') {
+                        ke = true;
+                        break;
+                    } else if (key === 'keyref') {
+                        keyref = true;
+                        break;
+                    }
+                }
+                for (let i = 0; i < child.length; i++) {
+                    if (child[i].ref === _nodes.name) {
+                        if (ke) {
+                            child[i].key = _nodes.key;
+                        } else if (keyref) {
+                            child[i].keyref = _nodes.keyref;
+                            if (child[i].attributes) {
+                                for (let j = 0; j < child[i].attributes.length; j++) {
+                                    if (child[i].attributes[j].name === _nodes.keyref) {
+                                        child[i].attributes[j].refer = _nodes.refer;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (child[i].children) {
+                            recursion(_nodes, child[i].children);
+                        }
+
+                    }
+                }
+            }
+        }
+
         // Expand automatically on add children
         function autoExpand(exNode) {
             console.log(exNode)
@@ -1170,6 +1781,70 @@
                 sessionStorage.setItem('xsd', a);
             } else {
                 sessionStorage.removeItem('xsd');
+            }
+        }
+
+        // autoValidate
+        vm.autoValidate = function() {
+            if (vm.nodes[0] && vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
+                for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                    if (vm.nodes[0].attributes[i].use === 'required') {
+                        if (vm.nodes[0].attributes[i].data === undefined) {
+                            vm.nonValidattribute = vm.nodes[0].attributes[i];
+                            vm.errorLocation = vm.nodes[0];
+                            vm.validConfig = false;
+                            return false;
+                        }
+                    }
+                }
+            }
+            if (vm.nodes[0] && vm.nodes[0].values && vm.nodes[0].values.length > 0) {
+                if (vm.nodes[0].values[0].data === undefined) {
+                    vm.nonValidattribute = vm.nodes[0].values[0];
+                    vm.errorLocation = vm.nodes[0];
+                    vm.validConfig = false;
+                    return false;
+                }
+            }
+            if (vm.nodes[0] && vm.nodes[0].children && vm.nodes[0].children.length > 0) {
+                for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                    let x = autoValidateRecursion(vm.nodes[0].children[i]);
+                    if (x == false) {
+                        return x;
+                    }
+                }
+            }
+            vm.nonValidattribute = {};
+        };
+
+        function autoValidateRecursion (child) {
+            if (child && child.attributes && child.attributes.length > 0) {
+                for (let i = 0; i < child.attributes.length; i++) {
+                    if (child.attributes[i].use === 'required') {
+                        if (child.attributes[i].data === undefined) {
+                            vm.nonValidattribute = child.attributes[i];
+                            vm.errorLocation = child;
+                            vm.validConfig = false;
+                            return false;
+                        }
+                    }
+                }
+            }
+            if (child && child.values && child.values.length > 0) {
+                if (child.values[0].data === undefined) {
+                    vm.nonValidattribute = child.values[0];
+                    vm.errorLocation = child;
+                    vm.validConfig = false;
+                    return false;
+                }
+            }
+            if (child && child.children && child.children.length > 0) {
+                for (let i = 0; i < child.children.length; i++) {
+                    let x = autoValidateRecursion(child.children[i]);
+                    if (x == false) {
+                        return x;
+                    }
+                }
             }
         }
 

@@ -8526,7 +8526,20 @@
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
                 vm.dropTarget = window.selectedJob;
-                createJobNode(vm.dropTarget, event);
+                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                    createJobNode(vm.dropTarget, event, 'job');
+                } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
+                    let type = '', className ='';
+                    if (event.target.className && (event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
+                        className = event.target.className;
+                    } else if (event.target.childElementCount > 0) {
+                        className = event.target.childNodes[0].className;
+                    }
+                    type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : null;
+                    if(type) {
+                        createJobNode(vm.dropTarget, event, type, className);
+                    }
+                }
                 event.preventDefault();
             });
             $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
@@ -8797,29 +8810,75 @@
             }
         }
 
-        function createJobNode(job, event) {
-            const graph = vm.editor.graph;
-            let name = job.substring(job.lastIndexOf('/'));
-            let _node = getCellNode('Job', name, job, '');
-            _node.setAttribute('status', '');
-            let style = 'job', x = 0;
-            let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, event.offsetX * .3, event.offsetY, 180, 50, style);
-
+        function createJobNode(job, event, type, className) {
+            let objJob = {};
             for (let i = 0; i < vm.allJobs.length; i++) {
                 if (vm.allJobs[i].path === job) {
-                    vm.editConditions(vm.allJobs[i], vm._jobStream.name || vm.selectedJobStream, function (res) {
-                        if (res) {
-                            graph.removeCells([v1]);
-                        } else {
-                            recursivelyConnectJobs(true, false, function () {
-                                vm._jobStream = {};
-                                vm.actual();
-                            });
-                        }
-                    });
+                    objJob = vm.allJobs[i];
                     break;
                 }
             }
+            if (!className) {
+                const graph = vm.editor.graph;
+                let name = job.substring(job.lastIndexOf('/'));
+                let _node = getCellNode('Job', name, job, '');
+                _node.setAttribute('status', '');
+                let style = 'job', x = 0;
+                let v1 = graph.insertVertex(graph.getDefaultParent(), null, _node, event.offsetX * .3, event.offsetY, 180, 50, style);
+
+                vm.editConditions(objJob, vm._jobStream.name || vm.selectedJobStream, function (res) {
+                    if (res) {
+                        graph.removeCells([v1]);
+                    } else {
+                        recursivelyConnectJobs(true, false, function () {
+                            vm._jobStream = {};
+                            vm.actual();
+                        });
+                    }
+                });
+
+            } else {
+                if (vm.selectedJobStream !== 'ALL') {
+                    addJobWithIncondition(objJob, type, className);
+                }
+            }
+        }
+
+        function addJobWithIncondition(job, type, className) {
+            const graph = vm.editor.graph;
+            let ids = className.split(' ');
+            let dropTarget, commands;
+            for (let i = 0; i < ids.length; i++) {
+                if (parseInt(ids[i])) {
+                    dropTarget = graph.getModel().getCell(ids[i]);
+                    commands = dropTarget.getAttribute('commands');
+                    break;
+                }
+            }
+            let inObj = [{
+                "conditionExpression": {
+                    "expression": dropTarget.getAttribute('actual')
+                },
+                "inconditionCommands": commands ? JSON.parse(commands) : [
+                    {
+                        "command": "startjob",
+                        "commandParam": "now",
+                        "id": 0
+                    }
+                ],
+                "id": 0,
+                "jobStream": vm.selectedJobStream,
+                "markExpression": true
+            }];
+
+            ConditionService.updateInCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobsInconditions: [{job: job.path, inconditions: inObj}]
+            }).then(function () {
+                recursivelyConnectJobs(true, false, function () {
+                    vm.actual();
+                });
+            });
         }
 
         function createWorkflowDiagram(jobs, reload, scrollValue) {
@@ -9147,7 +9206,7 @@
                     }
                 }
 
-                job.inconditions[n].vertexId = conditionVertex.id;
+
                 graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
                 if (inEdges.length > 0) {
                     for (let i = 0; i < inEdges.length; i++) {
@@ -9182,7 +9241,7 @@
                         break;
                     }
                 }
-                job.outconditions[x].vertexId = conditionVertex.id;
+
                 if (job.jId) {
                     graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
                 }
@@ -10214,9 +10273,9 @@
                 if (cell.value.tagName === 'Job') {
                     className = 'vertex-text job';
                 } else if (cell.value.tagName === 'Event') {
-                    className = 'vertex-text event1';
+                    className = 'vertex-text event1 '+cell.id;
                 } else if (cell.value.tagName === 'InCondition') {
-                    className = 'vertex-text in-condition';
+                    className = 'vertex-text in-condition '+cell.id;
                 } else {
                     className = 'vertex-text out-condition';
                 }

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="Inventory">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JobSchedulerLicenses"/>
+        <xs:element ref="JobSchedulerAccounts"/>
+        <xs:element ref="JobSchedulerSetupClient" minOccurs="0"/>
+        <xs:element ref="JobSchedulerLogPatterns"/>
+        <xs:element ref="JobSchedulerTimeouts"/>
+        <xs:element ref="JobSchedulerReleases"/>
+        <xs:element ref="JavaReleases"/>
+        <xs:element ref="DBMSReleases"/>
+        <xs:element ref="JDBCDriverReleases"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:key name="JDBCDriverKey">
+      <xs:selector xpath=".//JDBCDriver"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:keyref name="JDBCDriverKeyRef" refer="JDBCDriverKey">
+      <xs:selector xpath=".//JDBCDriverRef"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+    <xs:keyref name="JDBCDriverIncludedKeyRef" refer="JDBCDriverKey">
+      <xs:selector xpath=".//JDBCDriverIncludedRef"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+    <xs:key name="JavaKey">
+      <xs:selector xpath=".//Java"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:keyref name="JavaKeyRef" refer="JavaKey">
+      <xs:selector xpath=".//JavaRef"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+  </xs:element>
+  <xs:element name="JobSchedulerLicenses">
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element ref="JobSchedulerLicense"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerLicense">
+    <xs:complexType>
+      <xs:attribute name="key" use="required" type="xs:NCName"/>
+      <xs:attribute name="value" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerAccounts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Services"/>
+        <xs:element ref="Interfaces"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Services">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JobSchedulerMasterServiceAccount"/>
+        <xs:element ref="JobSchedulerAgentServiceAccount"/>
+        <xs:element ref="JOCCockpitServiceAccount"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerMasterServiceAccount">
+    <xs:complexType>
+      <xs:attribute name="account" use="required" type="xs:NCName"/>
+      <xs:attribute name="password" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo><XmlEditor type="password"/></xs:appinfo>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerAgentServiceAccount">
+    <xs:complexType>
+      <xs:attribute name="account" use="required" type="xs:NCName"/>
+      <xs:attribute name="password" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo><XmlEditor type="password"/></xs:appinfo>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JOCCockpitServiceAccount">
+    <xs:complexType>
+      <xs:attribute name="account" use="required" type="xs:NCName"/>
+      <xs:attribute name="password" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo><XmlEditor type="password"/></xs:appinfo>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Interfaces">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JOCCockpitInterfaceAccount"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JOCCockpitInterfaceAccount">
+    <xs:complexType>
+      <xs:attribute name="account" use="required" type="xs:NCName"/>
+      <xs:attribute name="password" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo><XmlEditor type="password"/></xs:appinfo>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerSetupClient">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="SetupClient"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetupClient">
+    <xs:complexType>
+      <xs:attribute name="account" use="required" type="xs:NCName"/>
+      <xs:attribute name="increment" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerLogPatterns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JobSchedulerMaster"/>
+        <xs:element ref="JobSchedulerAgent"/>
+        <xs:element ref="JOCCockpit"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ErrorPatterns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ErrorPattern"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ErrorPattern" type="xs:string"/>
+  <xs:element name="WarningPatterns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="WarningPattern"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WarningPattern" type="xs:string"/>
+  <xs:element name="SuccessPatterns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="SuccessPattern"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SuccessPattern" type="xs:string"/>
+  <xs:element name="Installation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="entry"/>
+      </xs:sequence>
+      <xs:attribute name="maxError" use="required" type="xs:integer"/>
+      <xs:attribute name="maxWarning" use="required" type="xs:integer"/>
+      <xs:attribute name="minSuccess" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entry">
+    <xs:complexType>
+      <xs:attribute name="content_unix"/>
+      <xs:attribute name="content_windows"/>
+      <xs:attribute name="incrementable" type="xs:boolean"/>
+      <xs:attribute name="path" use="required"/>
+      <xs:attribute name="value"/>
+      <xs:attribute name="value_primary" type="xs:NMTOKEN"/>
+      <xs:attribute name="value_secondary"/>
+      <xs:attribute name="value_unix"/>
+      <xs:attribute name="value_windows"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerTimeouts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JobSchedulerMasterTimeout"/>
+        <xs:element ref="JobSchedulerAgentTimeout"/>
+        <xs:element ref="JOCCockpitTimeout"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerMasterTimeout">
+    <xs:complexType>
+      <xs:attribute name="uninstall_timeout" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_unix" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_windows" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerAgentTimeout">
+    <xs:complexType>
+      <xs:attribute name="uninstall_timeout" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_unix" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_windows" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JOCCockpitTimeout">
+    <xs:complexType>
+      <xs:attribute name="uninstall_timeout" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_unix" use="required" type="xs:integer"/>
+      <xs:attribute name="wait_timeout_windows" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerReleases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="JobScheduler"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobScheduler">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JobSchedulerMaster"/>
+        <xs:element ref="JobSchedulerAgent"/>
+        <xs:element ref="JOCCockpit"/>
+        <xs:element ref="JDBCDrivers"/>
+      </xs:sequence>
+      <xs:attribute name="install" use="required" type="xs:boolean"/>
+      <xs:attribute name="release" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerMaster">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Installation"/>
+        <xs:sequence>
+          <xs:element ref="ErrorPatterns"/>
+          <xs:element ref="WarningPatterns"/>
+          <xs:element ref="SuccessPatterns"/>
+        </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="location_unix" type="xs:anyURI"/>
+      <xs:attribute name="location_windows" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JobSchedulerAgent">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Installation"/>
+        <xs:sequence>
+          <xs:element ref="ErrorPatterns"/>
+          <xs:element ref="WarningPatterns"/>
+          <xs:element ref="SuccessPatterns"/>
+        </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="location_unix" type="xs:anyURI"/>
+      <xs:attribute name="location_windows" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JOCCockpit">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Installation"/>
+        <xs:sequence>
+          <xs:element ref="ErrorPatterns"/>
+          <xs:element ref="WarningPatterns"/>
+          <xs:element ref="SuccessPatterns"/>
+        </xs:sequence>
+      </xs:choice>
+      <xs:attribute name="location_unix" type="xs:anyURI"/>
+      <xs:attribute name="location_windows" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JDBCDrivers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="JDBCDriverIncludedRef"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JDBCDriverIncludedRef">
+    <xs:complexType>
+      <xs:attribute name="ref" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JavaReleases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="Java"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Java">
+    <xs:complexType>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="product" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="release" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="location_unix" use="required" type="xs:string"/>
+      <xs:attribute name="location_windows" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DBMSReleases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="DBMS"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DBMS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="JDBCDriverRef"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="product" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="release" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JavaRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required"/>
+      <xs:attribute name="ignore" type="xs:boolean"/>
+      <xs:attribute name="message"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JDBCDriverRef">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JavaRef" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="ref" type="xs:string" use="required"/>
+      <xs:attribute name="hibernate_jobscheduler" type="xs:string" use="required"/>
+      <xs:attribute name="hibernate_reporting" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JDBCDriverReleases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="JDBCDriver" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="JDBCDriver">
+    <xs:complexType>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="product" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="release" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="location" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

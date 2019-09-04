@@ -1,43 +1,21 @@
-<div class="white box-shadow sub-header">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="padding">
-                <div class="text-right ">
-                    <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
-                    </div>
-                    <div class="inline">
-
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="white box-shadow sub-header" style="display: flex">
+    <div class="text-center">
+        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border4 b-orange">
+            <li class="nav-item">
+                <a class="nav-link z-index" ui-sref-active="active" ui-sref="app.configuration.joe">
+                    <span class="nav-text" translate>tab.joeEditor</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link z-index" ui-sref-active="active" ui-sref="app.configuration.xml">
+                    <span class="nav-text" translate>tab.xmlEditor</span>
+                </a>
+            </li>
+        </ul>
     </div>
+    <div class="separator"></div>
 </div>
-<div class="padding sub-header-2" ng-show="schedulerIds.selected">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="custom-nav-bar">
-                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item">
-                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.joe">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>JOE Editor</span></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown-separator">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" ui-sref-active="active" ui-sref="app.configuration.xml">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>XML Editor</span></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="scroll-y max-ht2">
+<div class="scroll-y">
     <div class="padding p-b-0 p-t-0" ng-if="schedulerIds.selected">
         <div ui-view></div>
     </div>

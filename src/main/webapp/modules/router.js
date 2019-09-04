@@ -459,7 +459,7 @@
         }).state("app.configuration", {
             url: "/configuration",
             templateUrl: "modules/configuration/views/main.html",
-            controller: "ConfigurationCtrl",
+            controller: "EditorConfigurationCtrl",
             resolve: {
                 permission: function (authorizationService) {
                     return authorizationService.permissionCheck('JobStream');
@@ -474,10 +474,12 @@
             ncyBreadcrumb: {label: "{{ 'Configuration' | translate}}"}
         }).state("app.configuration.joe", {
             url: "/joe",
+            controller: "JOEEditorCtrl",
             templateUrl: "modules/configuration/views/joe-editor.html",
             ncyBreadcrumb: {label: "{{ 'JOE Editor' | translate}}"}
         }).state("app.configuration.xml", {
             url: "/xml",
+            controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
             ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}" , parent: "app.configuration"}
         })

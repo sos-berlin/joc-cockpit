@@ -1485,6 +1485,8 @@
   "Event": "Event",
   "breadcrumb.jobStream" : "Job Streams",
   "message.noReferencesFound": "No References found",
+  "tab.joeEditor": "JOE EDITOR",
+  "tab.xmlEditor": "XML EDITOR",
   "xml.button.expand": "Expand",
   "xml.button.collapse": "Collapse",
   "xml.button.cut": "Cut",

@@ -1,0 +1,1897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Andreas Pueschel (APL Software GmbH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+	<!-- root element -->
+	  <xs:element name="SystemMonitorNotification">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_SystemMonitorNotification.html">SystemMonitorNotification</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Interface+-+Configuration+Reference">SystemMonitorNotification</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Configuration for Notifications to a System Monitor.
+		</p>
+               <p>
+			A configuration file is used by the <em>SystemNotifier</em> job chain
+			that reports the notifications as configured to a System Monitor.
+			A number of configurations can be stored with different configuration files
+			that are specified as a parameter to the <em>SystemNotifier</em> order.
+		</p>
+               <p>
+			As an identification of the configuration from an individual file the attribute <em>system_id</em>
+			should be used to specify a unique identifier.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:sequence>
+				        <xs:element ref="Notification" maxOccurs="unbounded"/>
+				        <xs:element ref="Timer" minOccurs="0" maxOccurs="unbounded"/>
+			      </xs:sequence>
+			      <xs:attribute name="system_id" type="xs:NMTOKEN" use="required">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>Identifier for the system monitor that is used with this configuration.</p>
+                     <p/>
+                     <p>The identifier is a unique name that is required if you use multiple configuration files for a number of system monitors.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+			      </xs:attribute>
+		    </xs:complexType>
+		    <xs:key name="TimerKey">
+			      <xs:selector xpath="./SystemMonitorNotification/Timer"/>
+			      <xs:field xpath="@name"/>
+		    </xs:key>
+		    <xs:keyref name="TimerKeyRef" refer="TimerKey">
+			      <xs:selector xpath="./NotificationObjects/TimerRef"/>
+			      <xs:field xpath="@ref"/>
+		    </xs:keyref>
+	  </xs:element>
+	  <xs:simpleType name="NotEmptyType">
+		    <xs:restriction base="xs:string">
+			      <xs:minLength value="1"/>
+		    </xs:restriction>
+	  </xs:simpleType>
+	  <xs:complexType name="NotificationObjectsType">
+		    <xs:sequence>
+			      <xs:element ref="Job" minOccurs="0" maxOccurs="unbounded"/>
+	        <xs:element ref="JobChain" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="TimerRef" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="MasterMessage" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskWarning" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskIfLongerThan" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="TaskIfShorterThan" minOccurs="0" maxOccurs="1"/>
+    	</xs:sequence>
+	  </xs:complexType>
+	  <xs:element name="Timer">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Timer">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Timer.html">Timer</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Timer">Timer</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			A timer implements a performance check that validates if the execution of a job chain took longer or shorter than expected.
+			Each timer is assigned a unique identification with its <em>name</em> attribute.
+			The timer contains &lt;Minimum&gt; and &lt;Maximum&gt; child elements that implement scripts to return the required and allowed value.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:sequence>
+				        <xs:element ref="TimerJob" minOccurs="0" maxOccurs="unbounded"/>
+		          <xs:element ref="TimerJobChain" minOccurs="0" maxOccurs="unbounded"/>
+				        <xs:choice>
+					          <xs:sequence>
+						            <xs:element ref="Minimum"/>
+						            <xs:element ref="Maximum" minOccurs="0"/>
+					          </xs:sequence>
+					          <xs:sequence>
+						            <xs:element ref="Maximum"/>
+					          </xs:sequence>
+				        </xs:choice>
+			      </xs:sequence>
+			      <xs:attribute name="name" type="xs:NMTOKEN" use="required">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Corresponds to Timer used in the 
+SystemMonitorNotification / Notification / NotificationObjects / Timer element.
+The name must be unique across all timers definitions.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="TimerJobChain">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerJobChain">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TimerJobChain.html">TimerJobChain</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerJobChain">TimerJobChain</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Specifies the job chains for which notifications are being sent to a system monitor.<br/>
+The element can be repeatedly used to specifiy a number of job chains.<br/>
+                  <br/>
+Attributes:
+			<ul>
+                     <li>
+                        <em>name</em> - accepts a regular expression to specify a number of job chains that match the given pattern, e.g. job chains that are located in the same root folder.</li>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>step_from</em> - restricts notifications for job chains to a sequence of job nodes that are specified with the <em>step_from</em> and <em>step_to</em> attributes.</li>
+                     <li>
+                        <em>step_to</em> - restricts notifications for job chains to a sequence of job nodes that are specified with the <em>step_from</em> and <em>step_to</em> attributes.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="name" type="xs:string" use="required">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Job chain name including possible folder names.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="step_from" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains to a sequence of job nodes that are specified with the step_from and step_to attributes.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="step_to" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains to a sequence of job nodes that are specified with the step_from and step_to attributes.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="TimerJob">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.11.5" issue="JITL-401"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerJob">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TimerJob.html">TimerJob</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerJob">TimerJob</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.11.5: <a href="https://change.sos-berlin.com/browse/JITL-401">JITL-401</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Specifies the jobs for which notifications are being sent to a system monitor.<br/>
+The element can be repeatedly used to specifiy a number of jobs.<br/>
+                  <br/>
+Attributes:
+			<ul>
+                     <li>
+                        <em>name</em> - accepts a regular expression to specify a number of jobs that match the given pattern, e.g. jobs that are located in the same root folder.</li>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="name" type="xs:string" use="required">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Job name including possible folder names.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:complexType name="ScriptTypeMinimum">
+		    <xs:simpleContent>
+			      <xs:extension base="NotEmptyType">
+				        <xs:attribute name="language" use="required">
+					          <xs:simpleType>
+						            <xs:restriction base="xs:string">
+							              <xs:enumeration value="javascript"/>
+							              <xs:enumeration value="ECMAScript"/>
+						            </xs:restriction>
+					          </xs:simpleType>
+				        </xs:attribute>
+			      </xs:extension>
+		    </xs:simpleContent>
+	  </xs:complexType>
+	  <xs:complexType name="ScriptTypeMaximum">
+		    <xs:simpleContent>
+			      <xs:extension base="NotEmptyType">
+				        <xs:attribute name="language" use="required">
+					          <xs:simpleType>
+						            <xs:restriction base="xs:string">
+							              <xs:enumeration value="javascript"/>
+							              <xs:enumeration value="ECMAScript"/>
+						            </xs:restriction>
+					          </xs:simpleType>
+				        </xs:attribute>
+			      </xs:extension>
+		    </xs:simpleContent>
+	  </xs:complexType>
+	  <xs:element name="Notification">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Notification">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Notification.html">Notification</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Notification">Notification</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Specifies a System Monitor notification that includes 
+			<ul>
+                     <li>
+                        <em>NotificationInterface</em> - use of the built-in interface for Nagios (and clones) with a 
+					<a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationInterface"
+                           shape="rect">NotificationInterface</a>
+					element. This interface does not require external components such as the System Monitor Client, e.g.
+					the <em>nsca_send</em> utility.</li>
+                     <li>
+                        <em>NotificationCommand</em> - use of a System Monitor command line client that is invoked by JobScheduler.
+					For Nagios (and clones) this could be e.g. the <em>nsca_send</em> utility.</li>
+                     <li>
+                        <em>NotificationMail</em> - use of a System Monitor mail client that is invoked by JobScheduler.</li>
+                  </ul>
+		             </p>
+               <p/>
+               <p>
+			The JobScheduler Monitoring Interface will use the interfaces or command line tool
+			to report messages to the respective System Monitor.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:sequence>
+				        <xs:element ref="NotificationMonitor"/>
+				        <xs:element ref="NotificationObjects"/>
+			      </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notification description name</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="NotificationMonitor">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationMonitor">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationMonitor.html">NotificationMonitor</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationMonitor">NotificationMonitor</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Specifies the System Monitor that is being used for notification: 
+			either by a Plugin Interface or by command line invocation.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:choice>
+				        <xs:element ref="NotificationInterface"/>
+				        <xs:element ref="NotificationCommand"/>
+                <xs:element ref="NotificationMail"/>
+                <xs:element ref="NotificationJMS"/>
+			      </xs:choice>
+			      <xs:attribute name="service_name_on_error" type="xs:string" use="optional">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>This setting is used for Nagios or derivative software and specifies the service status code for error messages.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+			      </xs:attribute>
+			      <xs:attribute name="service_name_on_success" type="xs:string" use="optional">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>This setting is used for Nagios or derivative software and specifies the service that is configured in the Service Monitor for receiving informational messages on successful job runs.</p>
+                     <p/>
+                     <p>The service name must match the corresponding setting in the System Monitor.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+			      </xs:attribute>
+			      <xs:attribute name="service_status_on_error" type="xs:string" use="optional">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>This setting is used for Nagios or derivative software and specifies the service that is configured in the Service Monitor for messages of job runs with errors and for job recovery messages.</p>
+                     <p/>
+                     <p>The service name must match the corresponding setting in the System Monitor.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+			      </xs:attribute>
+			      <xs:attribute name="service_status_on_success" type="xs:string" use="optional">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>This setting is used for Nagios or derivative software and specifies the service status code for success messages.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="NotificationObjects" type="NotificationObjectsType">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationObjects">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationObjects.html">NotificationObjects</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationObjects">NotificationObjects</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Specifies the objects that are being used for messages: Job, JobChains, Timers, MasterMessage, TaskWarning, TaskIfLongerThan, TaskIfShorterThan.
+			<ul>
+                     <li>Notifications can be restricted to certain <em>jobs</em> or <em>job chains</em> for which messages
+					are forwarded to a specific System Monitor or System Monitor service.</li>
+                     <li>
+                        <em>TimerRef</em> includes checks that verify if a certain threshold has been exceeded
+					by a minimum or maximum value. Such checks can include to verify the
+					duration of a job chain or specific values that are reported by jobs.</li>
+                     <li>
+                        <em>MasterMessage</em> includes problems detected by a JobScheduler Master, e.g. database connection lost.</li>
+                     <li>
+                        <em>TaskWarning</em> includes job execution warning messages.</li>
+                     <li>
+                        <em>TaskIfLongerThan</em> includes the feature to send notification in case that the execution of job requires a longer duration than expected.</li>
+                     <li>
+                        <em>TaskIfShorterThan</em> includes the feature to send notification in case that the execution of job requires a shorter duration than expected.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+	  </xs:element>
+	  <xs:element name="JobChain">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+JobChain">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_JobChain.html">JobChain</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+JobChain">JobChain</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Specifies the job chains for which notifications are being sent to a system monitor.<br/>
+The element can be repeatedly used to specifiy a number of job chains.<br/>
+                  <br/>
+Attributes:
+			<ul>
+                     <li>
+                        <em>name</em> - accepts a regular expression to specify a number of job chains that match the given pattern, e.g. job chains that are located in the same root folder.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor.</li>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>return_code_from</em> - restricts notifications for jobs for a particular return code range.</li>
+                     <li>
+                        <em>return_code_to</em> - restricts notifications for jobs for a particular return code range.</li>
+                     <li>
+                        <em>step_from</em> - restricts notifications for job chains to a sequence of job nodes that are specified with the <em>step_from</em> and <em>step_to</em> attributes.</li>
+                     <li>
+                        <em>step_to</em> - restricts notifications for job chains to a sequence of job nodes that are specified with the <em>step_from</em> and <em>step_to</em> attributes.</li>
+                     <li>
+                        <em>excluded_steps</em> - specifies the steps which will be excluded from notifications. Multiple entries are separated by semicolon.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="name" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Job chain name including possible folder names.               
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+            <xs:attribute name="return_code_from" type="xs:integer" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains  for a particular return code range.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="return_code_to" type="xs:integer" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains  for a particular return code range.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="step_from" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains to a sequence of job nodes that are specified with the step_from and step_to attributes.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="step_to" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for job chains to a sequence of job nodes that are specified with the step_from and step_to attributes.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="excluded_steps" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the steps which will be excluded from the analyzing (separated by semicolon).</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="Job">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Job">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Job.html">Job</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Job">Job</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Specifies the order-controlled or standalone jobs for which notifications are being sent to a system monitor.<br/>
+The element can be repeatedly used to specifiy a number of job.<br/>
+Support for <strong>standalone</strong> jobs starting with the <strong>release 1.11.5</strong>.<br/>
+                  <br/>
+Attributes:
+			<ul>
+                     <li>
+                        <em>name</em> - accepts a regular expression to specify a number of jobs that match the given pattern, e.g. jobs that are located in the same root folder.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>return_code_from</em> - restricts notifications for jobs for a particular return code range.</li>
+                     <li>
+                        <em>return_code_to</em> - restricts notifications for jobs for a particular return code range.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="name" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Job name including possible folder names.               
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+            <xs:attribute name="return_code_from" type="xs:integer" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for jobs  for a particular return code range.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="return_code_to" type="xs:integer" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Restricts notifications for jobs  for a particular return code range.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="TimerRef">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerRef">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TimerRef.html">TimerRef</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TimerRef">TimerRef</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Corresponds with Timer setting defined in the <em>SystemMonitorNotification / Timer</em> element.<br/>
+The element can be repeatedly used to specifiy a number of timers.<br/>
+                  <br/>
+Attributes:
+			<ul>
+                     <li>
+                        <em>ref</em> - corresponds with Timer name setting defined in the <em>SystemMonitorNotification / Timer</em> element.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor.</li>
+                     <li>
+                        <em>notify_on_error</em> - send timer check notification when the configured job chain contains the error notifications.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="ref" type="xs:NMTOKEN" use="required">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Corresponds with Timer name setting defined in the SystemMonitorNotification / Timer element.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+			      <xs:attribute name="notify_on_error"
+                       type="xs:boolean"
+                       use="optional"
+                       default="false">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Send timer check notification when the configured job chain contains the error notifications.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>    
+    <xs:element name="MasterMessage">
+	    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JS-1837"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+MasterMessage">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_MasterMessage.html">MasterMessage</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+MasterMessage">MasterMessage</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JS-1837">JS-1837</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+            MasterMessage includes problems detected by a JobScheduler Master, e.g. database connection lost.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                           <li>
+                              <em>mail_on_error=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>    
+    <xs:element name="TaskWarning">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JS-1837"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskWarning">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskWarning.html">TaskWarning</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskWarning">TaskWarning</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JS-1837">JS-1837</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>TaskWarning includes job execution warning messages.            
+        <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>    
+    <xs:element name="TaskIfLongerThan">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JITL-522"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfLongerThan">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskIfLongerThan.html">TaskIfLongerThan</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfLongerThan">TaskIfLongerThan</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JITL-522">JITL-522</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+            TaskIfLongerThan includes the feature to send notification in case that the execution of job requires a longer duration than expected.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>The Job configuration contains the <em>warn_if_longer_than</em> setting.</li>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+		       <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+            <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>
+    <xs:element name="TaskIfShorterThan">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12.9" issue="JITL-522"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfShorterThan">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_TaskIfShorterThan.html">TaskIfShorterThan</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+TaskIfShorterThan">TaskIfShorterThan</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12.9: <a href="https://change.sos-berlin.com/browse/JITL-522">JITL-522</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>            
+        TaskIfShorterThan includes the feature to send notification in case that the execution of job requires a shorter duration than expected.
+            <br/>
+                  <br/>
+                  <b>Requirements:</b>
+                  <ul>
+                     <li>The Job configuration contains the <em>warn_if_shorter_than</em> setting.</li>
+                     <li>
+                        <em>./config/factory.ini</em> configuration file:
+                    <ul>
+                           <li>
+                              <em>mail_queue_only=true</em>
+                           </li>
+                           <li>
+                              <em>mail_queue_dir</em> setting specifies a directory to store the JobScheduler mails</li>
+                           <li>
+                              <em>mail_on_warning=true</em>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+Attributes:
+			<ul>
+                     <li>
+                        <em>scheduler_id</em> - restricts notifications to the JobScheduler instance with the given identification. By default notifications will be sent for all JobScheduler instances that log into the same database.</li>
+                     <li>
+                        <em>notifications</em> - specifies the number of transfers the same notification to a System Monitor. By default one notification only will be sent.</li>
+                  </ul>
+
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:attribute name="scheduler_id" type="xs:string" use="optional">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Notifications are restricted to the JobScheduler instance with the given identification. 
+By default notifications will be sent for all JobScheduler instances that would log into the same database.
+Java regular expression can be used.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+		       <xs:attribute name="notifications"
+                       type="xs:positiveInteger"
+                       use="optional"
+                       default="1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Specifies the number of transfers the same notification to a System Monitor. 
+By default one notification only will be sent.</xs:documentation>
+				        </xs:annotation>
+			      </xs:attribute>
+    	</xs:complexType>
+	  </xs:element>
+   <xs:element name="Script" type="ScriptTypeMinimum">
+      <xs:annotation>
+         <xs:documentation>
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <p>
+			Script code in one of the supported languages.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+   </xs:element>
+	  <xs:element name="NotificationInterface">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationInterface">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationInterface.html">NotificationInterface</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationInterface">NotificationInterface</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+            NSCA Plugin Interface to be executed for System Monitor notification.
+            <br/>
+     	         </p>
+               <p>
+            All variables (except OS environment variables) must be defined by using of the <strong>${&lt;variable name&gt;}</strong> syntax.
+            <ul>
+                     <li>Syntax for the JobScheduler version <strong>1.10.6 and higher</strong>. Syntax for the JobScheduler version 1.10.4, 1.10.5 (see below) is still supported.</li>
+                     <li>Syntax for the JobScheduler version <strong>1.10.4, 1.10.5:</strong>
+                        <ul>
+                           <li>
+                              <strong>{&lt;variable name&gt;}</strong>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>Syntax for the JobScheduler <strong>previous versions:</strong>
+                        <ul>
+                           <li>
+                              <strong>%&lt;variable name&gt;%</strong>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </p>
+               <p>
+                  <br/>Examples
+        <ul>
+                     <li>Message on error       
+                <pre xml:space="preserve">scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), step =${MON_N_ORDER_STEP_STATE}, error=${MON_N_ERROR_TEXT}</pre>
+	                    </li>
+                     <li>Message on success       
+                <pre xml:space="preserve">scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), steps(${MON_SN_STEP_FROM} to ${MON_SN_STEP_TO}), order time elapsed = ${MON_N_ORDER_TIME_ELAPSED}s</pre>
+	                    </li>
+                     <li>Message on timer       
+                <pre xml:space="preserve">name = ${MON_C_NAME}, scheduler id=${MON_N_SCHEDULER_ID}, history id=${MON_N_ORDER_HISTORY_ID}, job_chain=${MON_N_JOB_CHAIN_NAME}(${MON_N_ORDER_ID}), steps(${MON_C_STEP_FROM} to ${MON_C_STEP_TO}), check = ${MON_C_CHECK_TEXT}</pre>
+	                    </li>
+                  </ul>
+               </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:simpleContent>
+				        <xs:extension base="NotEmptyType">
+					          <xs:attribute name="service_host" type="xs:string" use="required">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the name of the host that executes the passive check. 
+The name must match the corresponding setting in the System Monitor.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_host" type="xs:string" use="required">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the hostname or ip address of System Monitor host.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_port" type="xs:positiveInteger" use="required">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the TCP port that the System Monitor would listen to.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_password" type="xs:string" use="optional">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the password of System Monitor host.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_connection_timeout"
+                             type="xs:integer"
+                             use="optional"
+                             default="5000">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the connection timeout in ms.
+By default 5000ms will be used.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_response_timeout" type="xs:integer" use="optional">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies the response timeout in ms.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+					          <xs:attribute name="monitor_encryption" use="optional">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting is used for Nagios or derivative software and specifies that the communication with the System Monitor is encrypted. 
+By default no encryption is used:
+    * NONE: no encryption
+    * XOR: 
+    * TRIPLE_DES: use of triple des algorhythm for encryption</xs:documentation>
+						            </xs:annotation>
+						            <xs:simpleType>
+							              <xs:restriction base="xs:string">
+								                <xs:enumeration value="NONE"/>
+								                <xs:enumeration value="XOR"/>
+								                <xs:enumeration value="TRIPLE_DES"/>
+							              </xs:restriction>
+						            </xs:simpleType>
+					          </xs:attribute>
+					          <xs:attribute name="plugin" type="xs:string" use="optional">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting specifies the package and class name of the java plugin that executes the passive check. 
+By default SystemNotifierSendNscaPlugin will be used.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+				        </xs:extension>
+			      </xs:simpleContent>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="NotificationCommand">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationCommand">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationCommand.html">NotificationCommand</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationCommand">NotificationCommand</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Command line to be executed for System Monitor notification.
+		</p>
+               <p/>
+               <p>
+        Command examples:
+        <ul>
+                     <li>
+                        <a href="https://kb.sos-berlin.com/x/foEm" shape="rect">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                     </li>
+                     <li>
+                        <em>./config/notification/SystemMonitorNotification_MonitorSystem.xml-example</em>
+                     </li>
+                  </ul>
+               </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:simpleContent>
+				        <xs:extension base="NotEmptyType">
+					          <xs:attribute name="plugin" type="xs:string" use="optional">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en">This setting specifies the package and class name of the java plugin that executes the command. 
+By default SystemNotifierProcessBuilderPlugin will be used.</xs:documentation>
+						            </xs:annotation>
+					          </xs:attribute>
+				        </xs:extension>
+			      </xs:simpleContent>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="NotificationMail">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12" issue="JS-1388"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationMail">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationMail.html">NotificationMail</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationMail">NotificationMail</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12: <a href="https://change.sos-berlin.com/browse/JS-1388">JS-1388</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Mail Interface to be executed for System Monitor notification.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+            <xs:sequence>
+				        <xs:element ref="From" minOccurs="0" maxOccurs="1"/>
+				        <xs:element ref="To" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="CC" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="BCC" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="Subject" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="Body" minOccurs="1" maxOccurs="1"/>
+        	</xs:sequence>
+			      <xs:attribute name="content_type" default="text/html">
+				        <xs:annotation>
+			            <xs:documentation xml:lang="en">Content type of the e-mail. Possible values are "text/plain" and "text/html".</xs:documentation>
+				        </xs:annotation>
+                <xs:simpleType>
+					          <xs:restriction base="xs:string">
+						            <xs:enumeration value="text/html"/>
+			               <xs:enumeration value="text/plain"/>
+					          </xs:restriction>
+				        </xs:simpleType>
+			      </xs:attribute>
+			      <xs:attribute name="charset" type="xs:string" default="ISO-8859-1">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Charset of the e-mail.</xs:documentation>
+				        </xs:annotation>
+         	</xs:attribute>
+			      <xs:attribute name="encoding" default="7bit">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Encoding of the e-mail. Possible values are 7bit, Quoted-Printable, Base64.</xs:documentation>
+				        </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:enumeration value="7bit"/>
+                        <xs:enumeration value="Quoted-Printable"/>
+                        <xs:enumeration value="Base64"/>
+                    </xs:restriction>
+                </xs:simpleType>
+			      </xs:attribute>
+			      <xs:attribute name="priority" default="Normal">
+				        <xs:annotation>
+					          <xs:documentation xml:lang="en">Priority of the e-mail.</xs:documentation>
+				        </xs:annotation>
+				        <xs:simpleType>
+					          <xs:restriction base="xs:string">
+						            <xs:enumeration value="Highest"/>
+						            <xs:enumeration value="High"/>
+						            <xs:enumeration value="Normal"/>
+                        <xs:enumeration value="Low"/>
+                        <xs:enumeration value="Lowest"/>
+                   	</xs:restriction>
+				        </xs:simpleType>
+			      </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="From">
+        <xs:annotation>
+         <xs:appinfo>
+		    </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+From">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_From.html">From</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+From">From</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			E-mail address of the account that sends e-mail.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="To">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+To">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_To.html">To</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+To">To</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			E-mail address of the recipient(s) of a notification e-mail.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="CC">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+CC">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_CC.html">CC</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+CC">CC</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			E-mail address of the recipient(s) of a carbon copy notification e-mail.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="BCC">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+BCC">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_BCC.html">BCC</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+BCC">BCC</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			E-mail address of recipient(s) of a blind carbon copy notification e-mail.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="Subject">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600" fontSize="11"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Subject">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Subject.html">Subject</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Subject">Subject</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Subject of an e-mail notification.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="Body">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600" minHeight="150" fontSize="11" type="html"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Body">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Body.html">Body</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Body">Body</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Body of an e-mail notification.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="NotificationJMS">
+		    <xs:annotation>
+         <xs:appinfo>
+		          <Release starting="1.12" issue="JITL-280"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationJMS">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_NotificationJMS.html">NotificationJMS</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+NotificationJMS">NotificationJMS</a>
+                  </li>
+                  <li>Release:
+            <ul>
+                        <li>Availability starting with 1.12: <a href="https://change.sos-berlin.com/browse/JITL-280">JITL-280</a>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			JMS Interface to be executed for System Monitor notification.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+            <xs:sequence>
+				        <xs:choice minOccurs="1" maxOccurs="1">
+			            <xs:element ref="ConnectionFactory" maxOccurs="1"/>
+                    <xs:element ref="ConnectionJNDI" maxOccurs="1"/>
+                </xs:choice>
+            	<xs:element ref="Message" minOccurs="1" maxOccurs="1"/>
+        	</xs:sequence>
+			      <xs:attribute name="client_id">
+				        <xs:annotation>
+			            <xs:documentation xml:lang="en">The client identifier for this connection.</xs:documentation>
+				        </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="destination" default="Queue">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <ul>
+                        <li>
+                           <em>Queue</em> - creates a <em>Queue</em> object which encapsulates a specified provider-specific queue name.</li>
+                        <li>
+                           <em>Topic</em> - creates a <em>Topic</em> object which encapsulates a specified provider-specific topic name.</li>
+                     </ul>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:enumeration value="Queue"/>
+                        <xs:enumeration value="Topic"/>
+                    </xs:restriction>
+                </xs:simpleType>
+         	</xs:attribute>
+			      <xs:attribute name="acknowledge_mode" default="Session.CLIENT_ACKNOWLEDGE">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>
+			                     <ul>
+                           <li>
+                              <em>Session.AUTO_ACKNOWLEDGE</em> - with this acknowledgment mode, the session automatically acknowledges a client's receipt of a message either when the session has successfully returned from a call to receive or when the message listener the session has called to process the message successfully returns.</li>
+                           <li>
+                              <em>Session.CLIENT_ACKNOWLEDGE</em> - with this acknowledgment mode, the client acknowledges a consumed message by calling the message's acknowledge method.</li>
+                           <li>
+                              <em>Session.AUTO_ACKNOWLEDGE</em> - this acknowledgment mode instructs the session to lazily acknowledge the delivery of messages.</li>
+                        </ul>
+		                   </p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:enumeration value="Session.AUTO_ACKNOWLEDGE"/>
+                        <xs:enumeration value="Session.CLIENT_ACKNOWLEDGE"/>
+                        <xs:enumeration value="Session.DUPS_OK_ACKNOWLEDGE"/>
+                    </xs:restriction>
+                </xs:simpleType>
+         	</xs:attribute>
+			      <xs:attribute name="delivery_mode" default="DeliveryMode.PERSISTENT">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>The delivery modes supported by the JMS API are <em>PERSISTENT</em> and <em>NON_PERSISTENT</em>.</p>
+                     <p>        
+                        <ul>
+                           <li>
+                              <em>DeliveryMode.NON_PERSISTENT</em> - this is the lowest-overhead delivery mode because it does not require that the message be logged to stable storage.</li>
+                           <li>
+                              <em>DeliveryMode.PERSISTENT</em> - this delivery mode instructs the JMS provider to log the message to stable storage as part of the client's send operation.</li>
+                        </ul>
+		                   </p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                        <xs:enumeration value="DeliveryMode.NON_PERSISTENT"/>
+                        <xs:enumeration value="DeliveryMode.PERSISTENT"/>
+                    </xs:restriction>
+                </xs:simpleType>
+			      </xs:attribute>
+			      <xs:attribute name="priority" default="4">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>The JMS API defines ten levels of priority value, with 0 as the lowest priority and 9 as the highest.</p>
+                     <p/>
+                     <p>Clients should consider priorities 0-4 as gradations of normal priority and priorities 5-9 as gradations of expedited priority.</p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+				        <xs:simpleType>
+					          <xs:restriction base="xs:integer">
+						            <xs:enumeration value="0"/>
+						            <xs:enumeration value="1"/>
+						            <xs:enumeration value="2"/>
+                        <xs:enumeration value="3"/>
+                        <xs:enumeration value="4"/>
+                        <xs:enumeration value="5"/>
+                        <xs:enumeration value="6"/>
+                        <xs:enumeration value="7"/>
+                        <xs:enumeration value="8"/>
+                        <xs:enumeration value="9"/>
+                   	</xs:restriction>
+				        </xs:simpleType>
+			      </xs:attribute>
+            <xs:attribute name="time_to_live" type="xs:NMTOKEN" default="0">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>
+			Sets the default length of time in milliseconds from its dispatch time that a produced message should be retained by the message system. 
+        </p>
+                     <p/>
+                     <p>Time to live is set to zero by default.</p>
+                     <p/>
+                     <p>        
+            Possible values:
+            <ul>
+                           <li>
+                              <em>&lt;n&gt;</em> - duration in milliseconds, e.g.: <em>60000</em>
+                           </li>
+                           <li>
+                              <em>&lt;n&gt;s</em> - duration in seconds, e.g.: <em>30s</em>
+                           </li>
+                           <li>
+                              <em>&lt;n&gt;m</em> - duration in minutes, e.g.: <em>30m</em>
+                           </li>
+                           <li>
+                              <em>&lt;n&gt;h</em> - duration in hours, e.g.: <em>24h</em>
+                           </li>
+                           <li>
+                              <em>&lt;n&gt;d</em> - duration in days, e.g.: <em>30d</em>
+                           </li>
+                           <li>
+                              <em>&lt;n&gt;w</em> - duration in weeks, e.g.: <em>4w</em>
+                           </li>
+                        </ul>
+                     </p>
+                     <p/>
+                     <p>Combined values (with blank as separator):
+            <ul>
+                           <li>e.g.: <em>1w 1d 1h</em>
+                           </li>
+                        </ul>
+                     </p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+            </xs:attribute>
+            <xs:attribute name="plugin" type="xs:string" use="optional">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>Java class of the plugin implementation.</p>Extends <em>com.sos.jitl.notification.plugins.notifier.SystemNotifierCustomPlugin</em>
+                     <p/>
+                     <p>Default: <em>com.sos.jitl.notification.plugins.notifier.SystemNotifierSendJMSPlugin</em>
+                     </p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+            </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="ConnectionFactory">
+		    <xs:annotation>
+         <xs:appinfo>
+		    </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConnectionFactory">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_ConnectionFactory.html">ConnectionFactory</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConnectionFactory">ConnectionFactory</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Using of a JMS ConnectionFactory implementation.</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+            <xs:sequence>
+		    	     <xs:element ref="ConstructorArguments" minOccurs="0" maxOccurs="1"/>
+        	</xs:sequence>
+            <xs:attribute name="java_class" use="required">
+            <xs:annotation>
+               <xs:documentation>
+                  <div xmlns="http://www.w3.org/1999/xhtml">
+                     <p>Java class of the JMS ConnectionFactory.</p>
+                     <p/>
+                     <p>e.g.: <em>org.apache.activemq.ActiveMQConnectionFactory</em>
+                     </p>
+                  </div>
+               </xs:documentation>
+            </xs:annotation>
+				
+            </xs:attribute>
+			      <xs:attribute name="user_name">
+				        <xs:annotation>
+			            <xs:documentation xml:lang="en">The caller's user name.</xs:documentation>
+				        </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="password">
+				        <xs:annotation>
+			            <xs:appinfo>
+                        <XmlEditor type="password"/>
+                    </xs:appinfo>
+                    <xs:documentation xml:lang="en">The caller's password.</xs:documentation>
+				        </xs:annotation>
+            </xs:attribute>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="ConstructorArguments">
+		    <xs:annotation>
+         <xs:appinfo>
+		    </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConstructorArguments">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_ConstructorArguments.html">ConstructorArguments</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConstructorArguments">ConstructorArguments</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>JMS ConnectionFactory constructor arguments.</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+            <xs:sequence>
+		    	     <xs:element ref="Argument" minOccurs="1" maxOccurs="unbounded"/>
+        	</xs:sequence>
+     	</xs:complexType>
+	  </xs:element>
+    <xs:element name="Argument">
+		    <xs:annotation>
+         <xs:appinfo>
+		    </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Argument">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Argument.html">Argument</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Argument">Argument</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>JMS ConnectionFactory constructor argument.</p>
+               <p/>
+               <p>e.g.: 
+            <ul>
+                     <li>java.lang.String</li>
+                     <li>tcp://host:61616</li>
+                  </ul>
+               </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:simpleContent>
+				        <xs:extension base="NotEmptyType">
+					          <xs:attribute name="type" default="java.lang.String">
+						            <xs:annotation>
+							              <xs:documentation xml:lang="en"/>
+						            </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:minLength value="1"/>
+                                <xs:enumeration value="boolean"/>
+                                <xs:enumeration value="double"/>
+                                <xs:enumeration value="float"/>
+                                <xs:enumeration value="int"/>
+                                <xs:enumeration value="long"/>
+                                <xs:enumeration value="short"/>
+                                <xs:enumeration value="java.lang.Boolean"/>
+                                <xs:enumeration value="java.lang.Double"/>
+                                <xs:enumeration value="java.lang.Float"/>
+                                <xs:enumeration value="java.lang.Integer"/>
+                                <xs:enumeration value="java.lang.Long"/>
+                                <xs:enumeration value="java.lang.Short"/>
+                                <xs:enumeration value="java.lang.String"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+					          </xs:attribute>
+				        </xs:extension>
+			      </xs:simpleContent>
+		    </xs:complexType>
+	  </xs:element>
+    <xs:element name="ConnectionJNDI">
+		    <xs:annotation>
+         <xs:appinfo>
+		    </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConnectionJNDI">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_ConnectionJNDI.html">ConnectionJNDI</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+ConnectionJNDI">ConnectionJNDI</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>Using of a JNDI properties file to create a JNDI IntialContextFactory.</p>
+               <p>
+            Sample content of the JDNI properties file for ActiveMQ:
+            <ul>
+                     <li>
+                        <em>java.naming.factory.initial=org.apache.activemq.jndi.ActiveMQInitialContextFactory</em>
+                     </li>
+                     <li>
+                        <em>java.naming.provider.url=tcp://host:61616</em>
+                     </li>
+                  </ul>    
+		             </p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+            <xs:attribute name="file" type="xs:NMTOKEN" use="required">
+				        <xs:annotation>
+			            <xs:documentation xml:lang="en">Path to the JNDI properties file.</xs:documentation>
+				        </xs:annotation>
+            </xs:attribute>
+			      <xs:attribute name="lookup_name" default="ConnectionFactory">
+				        <xs:annotation>
+			            <xs:documentation xml:lang="en">Name to lookup JMS connection factory objects.</xs:documentation>
+				        </xs:annotation>
+            </xs:attribute>
+       </xs:complexType>
+	  </xs:element>
+    <xs:element name="Message">
+        <xs:annotation>
+         <xs:appinfo>
+		          <XmlEditor minWidth="600" minHeight="150" fontSize="11"/>
+            </xs:appinfo>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Message">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Message.html">Message</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Message">Message</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Body of an JMS notification.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:simpleType>
+			      <xs:restriction base="xs:string">
+				        <xs:minLength value="1"/>
+			      </xs:restriction>
+		    </xs:simpleType>
+	  </xs:element>
+    <xs:element name="Minimum">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Minimum">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Minimum.html">Minimum</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Minimum">Minimum</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Minimum required time consumption for job or job chain execution. Allows script code to be executed that returns the minimum execution time required in seconds.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:sequence>
+				        <xs:element ref="Script"/>
+			      </xs:sequence>
+		    </xs:complexType>
+	  </xs:element>
+	  <xs:element name="Maximum">
+		    <xs:annotation>
+         <xs:documentation source="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Maximum">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+               <strong>References</strong>
+               <ul>
+                  <li>
+                     <a href="https://kb.sos-berlin.com/x/foEm">JobScheduler Monitoring Interface - Configuration &amp; Use Cases</a>
+                  </li>
+                  <li>Schema: <a target="_blank"
+                        href="https://www.sos-berlin.com/schema/jobscheduler/SystemMonitorNotification_v1.0/SystemMonitorNotification_v1_0_xsd_Element_Maximum.html">Maximum</a>
+                  </li>
+                  <li>Parameter: <a href="https://kb.sos-berlin.com/display/PKB/JobScheduler+Monitoring+Configuration+Reference+-+Maximum">Maximum</a>
+                  </li>
+               </ul>
+               <strong>Notes</strong>
+               <p>
+			Maximum allowed time consumption for job or job chain execution. Allows script code to be executed that returns the maximum execution time required in seconds.
+		</p>
+            </div>
+         </xs:documentation>
+      </xs:annotation>
+		    <xs:complexType>
+			      <xs:sequence>
+				        <xs:element ref="Script"/>
+			      </xs:sequence>
+		    </xs:complexType>
+	  </xs:element>
+</xs:schema>

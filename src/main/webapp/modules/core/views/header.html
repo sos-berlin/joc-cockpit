@@ -185,8 +185,8 @@
         <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
             <li class="nav-item" ng-if="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true">
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
-                    <span class="nav-text" id="dashboard_id">
-                         <i class="fa fa-dashboard text-white" ></i>
+                    <span class="nav-text icon" id="dashboard_id">
+                         <i class="icon-dashboard-icon text-white" ></i>
                         <span  class="font11 text-white text-u-c _600" translate>label.dashboard</span>
                     </span>
                 </a>
@@ -225,9 +225,8 @@
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.jobStreams != undefined) ? showViews.jobStreams : permission.JobStream.view.status">
                 <a class="nav-link" ui-sref="app.jobstreams" ui-sref-active="active">
-                    <span class="nav-text">
-                        <img ng-if="userPreferences.theme !== 'lighter'" ng-hide="userPreferences.theme === 'light' && userPreferences.headerColor === 'header-yellow'" src="images/conditions-lt.svg" width="17.5px"/>
-                        <img ng-if="userPreferences.theme === '' || userPreferences.theme === 'lighter' ||  (userPreferences.theme === 'light' && userPreferences.headerColor === 'header-yellow') " src="images/conditions.svg" width="17.5px"/>
+                    <span class="nav-text icon">
+                        <i class="icon2-conditions text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.jobStreams</span>
                     </span>
                 </a>
@@ -244,7 +243,7 @@
                 <a class="nav-link" ui-sref="app.resources" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
                 permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status || permission.Event.view.status">
                     <span class="nav-text icon">
-                        <i class="icon-share-resource text-white"></i>
+                        <i class="icon-resources-icon text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
                     <span class="hide" ui-sref="app.resources.agentClusters"></span>
@@ -266,14 +265,14 @@
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.auditLog != undefined) ? showViews.auditLog : permission.AuditLog.view.status">
                 <a class="nav-link" ui-sref="app.auditLog" ui-sref-active="active">
-                    <span class="nav-text">
-                        <i class="fa fa-file-text-o text-white "></i>
+                    <span class="nav-text icon">
+                        <i class="icon-audit-log-icon text-white "></i>
                         <span class="font11 text-white text-u-c _600" translate>label.auditLog</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ui-sref="app.configuration" ui-sref-active="active">
+                <a class="nav-link" ui-sref="app.configuration.joe" ui-sref-active="active">
                     <span class="nav-text icon" >
                         <i class="icon-configuration-icon text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>Configuration</span>

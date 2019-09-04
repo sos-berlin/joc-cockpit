@@ -1,1 +1,29 @@
-// To be implement
+<div class="inline w-full" ng-hide="isLoading">
+    <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
+        <div class="editor-tree white">
+            <div class="row" ng-if="tree.length > 0">
+                <div class="col-12">
+                    <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="tree-block">
+                <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property"
+                      on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
+                      expand-node="expandNode(branch)" collapse-node="collapseNode(branch)"
+                      template-url="modules/core/template/tree.html">
+                </tree>
+            </div>
+        </div>
+    </div>
+    <div id="centerPanel" class="centerPanel">
+        Todo
+    </div>
+</div>
+

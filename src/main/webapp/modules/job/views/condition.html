@@ -58,7 +58,7 @@
                             <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || totalCount===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         </div>
                         <div class="inline hide" ng-class="{'show-block': pageView == 'in-out-conditions'}">
-                            <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
+                            <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-disabled="allJobs.length ==0" ng-click="createJobStream()"><i class="fa fa-plus-square"></i>
                                 <span class="hidden-sm-down" translate>button.addJobStream</span>
                             </button>
                             <button ng-if="permission.JobStream.change.conditions" class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="importJobStream()">
@@ -1601,12 +1601,23 @@
 <div ng-if="isLoaded" class="loading-img1"></div>
 <script>
     function allowDrop(ev) {
-        if(ev.target.tagName === 'svg'){
+
+        if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
             ev.preventDefault();
-        }else{
+        } else if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'div') {
+            if (ev.target.className && (ev.target.className.match(/event1/) || ev.target.className.match(/in-condition/))) {
+                ev.preventDefault();
+            } else if (ev.target.childElementCount > 0) {
+                let className = ev.target.childNodes[0].className;
+                if ((className.match(/event1/) || className.match(/in-condition/))) {
+                    ev.preventDefault();
+                } else {
+                    return false;
+                }
+            }
+        } else {
             return false;
         }
-
     }
     function drag(ev) {
         ev.dataTransfer.setData("data", ev.target.id);
