@@ -1,0 +1,37 @@
+<div>
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel();uploader.queue[0].remove();" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+    <h4 class="modal-title" translate>xml.label.importXML</h4>
+  </div>
+  <div class="modal-body p-a" style="min-height: 240px">
+    <form name="form1" ng-submit="ok()" novalidate >
+      <div>
+        <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
+          <div><i class="icon-upload-icon"></i></div>
+          <div translate>button.dropFileToUpload</div>
+        </div>
+        <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
+          <button type="button" class="btn btn-grey btn-sm"
+                  onclick="openFileOption()">
+            <span translate="">button.chooseFileToUpload</span>
+          </button>
+        </div>
+        <input type="file" id="file1" nv-file-select="" accept=".json" uploader="uploader" style="display: none;">
+        <div class="row m-t-md" ng-if="uploader.queue.length>0">
+          <div class="b-t"></div>
+        </div>
+        <div class="form-group m-t m-b-xs" ng-if="uploader.queue.length>0">
+          <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importCalendarObj.calendars.length==0 || form1.$invalid" translate> button.import </button>
+          <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  function openFileOption() {
+    document.getElementById("file1").click();
+  }
+</script>

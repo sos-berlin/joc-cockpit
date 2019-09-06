@@ -1,0 +1,51 @@
+{
+  "name": "angular-ui-tree",
+  "version": "2.22.5",
+  "description": "An AngularJS UI component that can sort nested lists, provides drag & drop support and doesn't depend on jQuery",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular-ui-tree/angular-ui-tree"
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "codacy-coverage": "2.0.3",
+    "connect-livereload": "0.6.0",
+    "coveralls": "2.13.2",
+    "del": "3.0.0",
+    "gulp": "3.9.1",
+    "gulp-concat": "2.6.1",
+    "gulp-connect": "5.0.0",
+    "gulp-cssnano": "2.1.2",
+    "gulp-gh-pages": "0.5.4",
+    "gulp-jscs": "4.0.0",
+    "gulp-jshint": "2.0.4",
+    "gulp-load-plugins": "1.5.0",
+    "gulp-rename": "1.2.2",
+    "gulp-symlink": "2.1.4",
+    "gulp-uglify": "2.1.2",
+    "jshint": "2.9.5",
+    "jshint-stylish": "2.2.1",
+    "karma": "1.7.1",
+    "karma-coverage": "1.1.1",
+    "karma-firefox-launcher": "1.0.1",
+    "karma-jasmine": "1.1.0",
+    "karma-ng-html2js-preprocessor": "1.0.0",
+    "karma-phantomjs-launcher": "1.0.4",
+    "load-grunt-tasks": "3.5.2",
+    "open": "0.0.5",
+    "phantomjs-prebuilt": "2.1.16",
+    "protractor": "4.0.14",
+    "require-dir": "0.3.2"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "pretest:e2e": "webdriver-manager update",
+    "test:e2e": "protractor",
+    "test": "gulp build && npm run test:e2e",
+    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls",
+    "codacy": "cat ./coverage/lcov/lcov.info | codacy-coverage --verbose"
+  }
+}

@@ -9,13 +9,19 @@
         .controller('JOEEditorCtrl', JOEEditorCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
-    EditorConfigurationCtrl.$inject = ["$scope"];
-    function EditorConfigurationCtrl($scope) {
+    EditorConfigurationCtrl.$inject = ["$scope", "$rootScope", "$state"];
+    function EditorConfigurationCtrl($scope, $rootScope,$state) {
+        $scope.validConfig =  false;
+
+        $scope.changeValidConfigStatus  = function (status){
+            $scope.validConfig =  status;
+        };
+
         function calcHeight() {
             const dom = $('.scroll-y');
             let count = 0;
             if (dom && dom.position()) {
-                function recursiveCheck (){
+                function recursiveCheck() {
                     ++count;
                     let top = dom.position().top + 19;
                     const flag = top < 78;
@@ -24,32 +30,54 @@
                         top = 96;
                     }
                     $('.sticky').css('top', top);
-                    $('.tree-block').height('calc(100vh - ' + (top + 24) + 'px' + ')');
+                    $('.tree-block').height('calc(100vh - ' + (top + 2) + 'px' + ')');
                     if (count < 5) {
                         if (flag) {
                             recursiveCheck();
                         } else {
-                            let intval = setInterval(function() {
+                            let intval = setInterval(function () {
                                 recursiveCheck();
                                 clearInterval(intval);
                             }, 150);
                         }
                     }
                 }
+
                 recursiveCheck();
             }
         }
 
+        $scope.saveXml = function () {
+            $rootScope.$broadcast('save');
+        };
+
+        $scope.validateXml = function () {
+            $rootScope.$broadcast('validate');
+        };
+
+        $scope.showXml = function () {
+            $rootScope.$broadcast('showXml');
+        };
+
+        $scope.importXML = function () {
+            $rootScope.$broadcast('importXML');
+        };
+
+        $scope.newXmlFile = function () {
+            $rootScope.$broadcast('newFile');
+        };
+
         $scope.$on("$viewContentLoaded", function () {
-            setTimeout(function() {
+            $scope.currentTab = $state.current.url;
+            setTimeout(function () {
                 calcHeight();
-            },100);
+            }, 100);
         });
     }
 
-    JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "$location", "orderByFilter"];
-    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, $location, orderBy) {
-        var vm = $scope;
+    JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "orderByFilter"];
+    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, orderBy) {
+        const vm = $scope;
         vm.tree = [];
         vm.my_tree = {};
         vm.expanding_property = {
@@ -64,16 +92,59 @@
                 types: ["JOB"]
             }).then(function (res) {
                 vm.tree = res.folders;
-                angular.forEach(vm.tree, function (value) {
+                if(vm.tree.length > 0) {
+                    vm.tree[0].expanded = true;
+                    updateObjects(vm.tree[0]);
+                }
+/*                angular.forEach(vm.tree, function (value) {
                     value.expanded = true;
                     if (value.folders) {
                         value.folders = orderBy(value.folders, 'name');
                     }
-                });
+                    updateObjects(value);
+
+                });*/
+
 
             }, function () {
 
             });
+        }
+
+        function updateObjects(data) {
+            if (!data.folders) {
+                data.folders = [];
+            }
+            let arr = [{
+                name: 'Jobs',
+                path: data.path + '/Jobs',
+                object: 'Jobs',
+                children: [{name: 'Job1', type: 'job'}, {name: 'Job2', type: 'job'}]
+            },
+                {name: 'Job Chains', path: data.path + '/Job_Chains', object: 'Job Chains', children: []},
+                {name: 'Orders', path: data.path + '/Orders', object: 'Orders', children: []},
+                {
+                    name: 'Process Classes',
+                    path: data.path + '/Process+Classes',
+                    object: 'Process Classes',
+                    children: []
+                },
+                {name: 'Schedules', path: data.path + '/Schedules', object: 'Schedules', children: []},
+                {name: 'Locks', path: data.path + '/Locks', object: 'Locks', children: []},
+                {
+                    name: 'Pre/Post Processing',
+                    path: data.path + '/Pre/Post_Processing',
+                    object: 'Pre/Post Processing',
+                    children: []
+                }];
+
+            data.folders = arr.concat(data.folders);
+            if (data.folders) {
+                for (let i = 0; i < data.folders.length; i++) {
+                    if (!data.folders[i].object)
+                        updateObjects(data.folders[i]);
+                }
+            }
         }
 
         init();
@@ -105,29 +176,31 @@
             data.selected1 = true;
         };
         vm.treeHandler1 = function (data) {
-            if (data.expanded) {
-                data.folders = orderBy(data.folders, 'name');
-            }
+/*            if (data.expanded) {
+               data.folders = orderBy(data.folders, 'name');
+            }*/
         };
 
     }
 
-    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http"];
-    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http) {
-        var vm = $scope;
-        vm.tree = [];
-        vm.my_tree = {};
-        vm.expanding_property = {
-            field: "name"
-        };
+    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty"];
+    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty) {
+        const vm = $scope;
+
         vm.counting = 0;
         vm.autoAddCount = 0;
         vm.nodes = [];
         vm.childNode = [];
+        vm.showAllChild = [];
         vm.selectedXsd = '';
         vm.submitXsd = false;
         vm.isLoading = true;
-        vm.validConfig = false;
+
+        vm.reassignSchema = function () {
+            vm.nodes = [];
+            vm.isLoading = true;
+            getInitTree(true);
+        };
 
         function ngOnInit() {
             if (sessionStorage.getItem('xsd') !== null) {
@@ -137,7 +210,7 @@
                 }
                 vm.reassignSchema();
                 setTimeout(() => {
-                    createJsonfromXml(sessionStorage.getItem('xsd'));
+                    createJSONFromXML(sessionStorage.getItem('xsd'));
                 }, 600);
             } else {
                 if (sessionStorage.$SOS$XSD) {
@@ -174,22 +247,17 @@
 
         function loadTree(xml, check) {
             vm.doc = new DOMParser().parseFromString(xml, 'application/xml');
-            console.log(vm.doc);
             getRootNode(vm.doc, check);
             vm.xsdXML = xml;
-            console.log('.............stop 0.............')
             xpathFunc();
-            console.log('.............stop 1.............')
-            addKeyRefrencing();
-
+            addKeyReferencing();
             vm.selectedNode = vm.nodes[0];
-            console.log('.............stop 2.............',vm.nodes)
-            getData(vm.nodes[0]);
+            vm.getData(vm.nodes[0]);
             vm.isLoading = !!check;
         }
 
         // submit xsd to open
-        vm.submit = function() {
+        vm.submit = function () {
             if (vm.selectedXsd !== '') {
                 sessionStorage.$SOS$XSD = vm.selectedXsd;
                 vm.submitXsd = true;
@@ -197,15 +265,8 @@
             }
         };
 
-        vm.reassignSchema = function() {
-            vm.nodes = [];
-            vm.isLoading = true;
-            getInitTree(true);
-        };
-
         // create json from xml
-        function createJsonfromXml(data) {
-            console.log('createJsonfromXml')
+        function createJSONFromXML(data) {
             let result1 = xml2json(data, {
                 compact: true,
                 spaces: 4,
@@ -232,7 +293,6 @@
         }
 
         function createTempJson(editJson, rootNode) {
-            console.log('createTempJson')
             let temp = {};
             if (_.isArray(editJson[rootNode])) {
                 for (let i = 0; i < editJson[rootNode].length; i++) {
@@ -357,7 +417,7 @@
         // create json if xsd not matched
         function createNormalTreeJson(xmljson, rootNode, mainjson, parent) {
             let temp = {};
-            getData(temp);
+            vm.getData(temp);
             let a = undefined;
             if (rootNode.indexOf('*')) {
                 a = rootNode.split('*')[0];
@@ -407,7 +467,7 @@
             }
         }
 
-        vm.removeTag = function(data) {
+        vm.removeTag = function (data) {
             if (data && data.data && data.data.match(/<[^>]+>/gm)) {
                 let x = data.data.replace(/<[^>]+>/gm, '');
                 x = x.replace('&nbsp;', ' ');
@@ -415,37 +475,37 @@
             } else {
                 return data.data;
             }
-        }
+        };
 
-        function addKeyRefrencing() {
+        function addKeyReferencing() {
             let key = {};
             if (vm.nodes[0] && vm.nodes[0].keyref) {
                 for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
                     if (vm.nodes[0].attributes[i].refer) {
                         key = Object.assign(key, {refe: vm.nodes[0].ref, name: vm.nodes[0].attributes[i].refer});
-                        attachKeyRefrencing(key);
+                        attachKeyReferencing(key);
                         break;
                     }
                 }
             } else {
                 if (vm.nodes[0] && vm.nodes[0].children) {
                     for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        addKeyRefrencingRecursion(vm.nodes[0].children[i]);
+                        addKeyReferencingRecursion(vm.nodes[0].children[i]);
                     }
                 }
             }
         }
 
-        function addKeyRefrencingRecursion(child) {
+        function addKeyReferencingRecursion(child) {
             let key = {};
             if (child.keyref && child.attributes) {
                 for (let i = 0; i < child.attributes.length; i++) {
                     if (child.attributes[i].refer) {
                         key = Object.assign(key, {refe: child.ref, name: child.attributes[i].refer});
-                        attachKeyRefrencing(key);
+                        attachKeyReferencing(key);
                         if (child.children) {
                             for (let i = 0; i < child.children.length; i++) {
-                                addKeyRefrencingRecursion(child.children[i]);
+                                addKeyReferencingRecursion(child.children[i]);
                             }
                         }
                         break;
@@ -454,13 +514,13 @@
             } else {
                 if (child && child.children) {
                     for (let i = 0; i < child.children.length; i++) {
-                        addKeyRefrencingRecursion(child.children[i]);
+                        addKeyReferencingRecursion(child.children[i]);
                     }
                 }
             }
         }
 
-        function attachKeyRefrencing(key) {
+        function attachKeyReferencing(key) {
             if (key.name) {
                 if (vm.nodes[0].ref === key.name && vm.nodes[0].key) {
                     for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
@@ -471,13 +531,13 @@
                     }
                 } else {
                     for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        attachKeyRefrencingRecursion(key, vm.nodes[0].children[i]);
+                        attachKeyReferencingRecursion(key, vm.nodes[0].children[i]);
                     }
                 }
             }
         }
 
-        function attachKeyRefrencingRecursion(key, child) {
+        function attachKeyReferencingRecursion(key, child) {
             if (key.name) {
                 if (child.ref === key.name && child.key && child.attributes) {
                     for (let i = 0; i < child.attributes.length; i++) {
@@ -488,7 +548,7 @@
                     }
                 } else {
                     for (let i = 0; i < child.children.length; i++) {
-                        attachKeyRefrencingRecursion(key, child.children[i]);
+                        attachKeyReferencingRecursion(key, child.children[i]);
                     }
                 }
             }
@@ -500,9 +560,10 @@
             let rootElementPath = '//xs:element';
             let root = select(rootElementPath, doc);
 
-            if(!root || !root[0]){
+            if (!root || !root[0]) {
                 return;
             }
+
             for (let i = 0; i < root[0].attributes.length; i++) {
                 let b = root[0].attributes[i].nodeValue;
                 temp = Object.assign({}, {ref: b});
@@ -520,6 +581,7 @@
                     temp.attributes.push(attrs[i]);
                 }
             }
+
             let text = checkText(temp.ref);
             if (text) {
                 temp.text = text;
@@ -634,7 +696,6 @@
                 _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
                 _checkAttributes('/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/xs:attribute', attribute, node, attrsArr, select);
             }
-            console.log(attrsArr, 'attrsArr');
             return attrsArr;
         }
 
@@ -823,7 +884,7 @@
         }
 
         function addTypeChildNode(node, parent) {
-            var parentNode;
+            let parentNode;
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
             let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
@@ -974,38 +1035,106 @@
                         }
                     }
                 }
-                getData(child);
+                vm.getData(child);
                 printArraya(false);
             }
         }
 
         // to send data in details component
-        function getData(event) {
+        vm.getData = function (evt) {
             setTimeout(() => {
                 calcHeight();
             }, 1);
-            console.log(event, ' getData')
-            if (event && event.keyref) {
-                for (let i = 0; i < event.attributes.length; i++) {
-                    if (event.attributes[i].name === event.keyref) {
-                        getDataAttr(event.attributes[i].refer);
+            if (evt && evt.keyref) {
+                for (let i = 0; i < evt.attributes.length; i++) {
+                    if (evt.attributes[i].name === evt.keyref) {
+                        getDataAttr(evt.attributes[i].refer);
                         break;
                     }
                 }
             }
-            vm.selectedNode = event;
+            vm.selectedNode = evt;
             vm.breadCrumbArray = [];
-            if(event) {
-                createBreadCrumb(event);
+            if (evt) {
+                createBreadCrumb(evt);
             }
             vm.breadCrumbArray.reverse();
-        }
+        };
 
         function getDataAttr(refer) {
             vm.tempArr = [];
-            let temp;
             getKeyRecursively(refer, vm.nodes[0].children);
         }
+
+        // validation for node value property
+        vm.validValue = function (value, ref, tag) {
+            vm.error = false;
+            if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+                vm.error = false;
+            } else if (ref == 'FileSpec' || ref == 'Directory') {
+                if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
+                    vm.error = false;
+                }
+            } else {
+                vm.error = true;
+                vm.text = 'Required Field';
+                vm.errorName = ref;
+                if (tag.data !== undefined) {
+                    for (let key in tag) {
+                        if (key == 'data') {
+                            delete tag[key];
+                            vm.autoValidate();
+                        }
+                    }
+                }
+            }
+        };
+
+        // details meathod
+        vm.onChange = function (evn, nodes) {
+            if (!(/[a-zA-Z0-9_]+.*$/.test(evn))) {
+                vm.error = true;
+            } else {
+                if (evn.match(/<[^>]+>/gm)) {
+                    let x = evn.replace(/<[^>]+>/gm);
+
+                    if (x !== 'undefined&nbsp;undefined') {
+                        nodes.values[0] = Object.assign(nodes.values[0], {data: evn});
+                        evn = '';
+                        vm.myContent = nodes.values[0].data;
+                        vm.error = false;
+                    } else {
+                        delete nodes.values[0].data;
+                    }
+                }
+            }
+        };
+
+        vm.submitValue = function (value, ref, tag) {
+            if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+                vm.error = false;
+                tag = Object.assign(tag, {data: value});
+                vm.autoValidate();
+            } else if (ref == 'FileSpec' || ref == 'Directory') {
+                if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                }
+            } else {
+                vm.error = true;
+                vm.text = gettextCatalog.getString('xml.message.requiredField');
+                vm.errorName = ref;
+                if (tag.data !== undefined) {
+                    for (let key in tag) {
+                        if (key == 'data') {
+                            vm.autoValidate();
+                            delete tag[key];
+                        }
+                    }
+                }
+            }
+        };
 
         function getKeyRecursively(refer, childNode) {
             let temp;
@@ -1192,7 +1321,6 @@
             let attribute = {};
             if (element.length > 0) {
                 let ele = select(attrTypePath, vm.doc);
-                let x;
                 for (let i = 0; i < ele.length; i++) {
                     let a = ele[i].nodeName;
                     let b = ele[i].nodeValue;
@@ -1534,6 +1662,170 @@
             }
         }
 
+        function getCNodes(node) {
+            let rootChildChilds;
+            if (vm.doc.getElementsByTagName('xs:element') !== undefined) {
+                rootChildChilds = vm.doc.getElementsByTagName('xs:element');
+            }
+            let rootChildChildsarr = [];
+            let childElement;
+            let count = 0;
+            for (let index = 0; index < rootChildChilds.length; index++) {
+                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
+                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
+                    count++;
+                    for (let j = 0; j < rootChildChildsarr.length; j++) {
+                        if (rootChildChildsarr[j].nodeValue === node.ref) {
+                            childElement = rootChildChildsarr[j].ownerElement;
+                        }
+                    }
+                }
+            }
+            getChildNodes(childElement, node.ref, node);
+        }
+
+        function getChildNodes(childElement, tagName, tempNode) {
+            if (childElement && childElement.getElementsByTagName('xs:complexType') !== undefined) {
+                let rootChildChilds = childElement.getElementsByTagName('xs:complexType');
+                if (childElement.getElementsByTagName('xs:sequence').length !== 0) {
+                    rootChildChilds = childElement.getElementsByTagName('xs:sequence');
+                    getNode(rootChildChilds, tagName, tempNode);
+                }
+                if (childElement.getElementsByTagName('xs:choice').length !== 0) {
+                    rootChildChilds = childElement.getElementsByTagName('xs:choice');
+                    getNode(rootChildChilds, tagName, tempNode);
+                }
+                if (childElement.getElementsByTagName('xs:simpleType').length !== 0) {
+                    rootChildChilds = childElement.getElementsByTagName('xs:simpleType');
+                    getNode(rootChildChilds, tagName, tempNode);
+                }
+                if (childElement.getAttributeNode('type') !== undefined) {
+                    rootChildChilds = childElement.getAttributeNode('type');
+                    getTypeNode(rootChildChilds, tagName, tempNode);
+                }
+                if (childElement.getElementsByTagName('xs:extension').length > 0) {
+                    rootChildChilds = childElement.getElementsByTagName('xs:extension');
+                    if (rootChildChilds[0].getAttributeNode('base') !== undefined) {
+                        let x = rootChildChilds[0].getAttributeNode('base');
+                        if (x.nodeValue !== 'NotEmptyType' && x.nodeValue !== 'xs:anyURI') {
+                            getChildFromBase(x, tagName, tempNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getNode(rootChildChilds, tagName, tempNode) {
+            let count = 0;
+            let childs = [];
+            let x;
+            for (let i = 0; i < rootChildChilds.length; i++) {
+                for (let j = 0; j < rootChildChilds[i].childNodes.length; j++) {
+                    if (rootChildChilds[i].childNodes[j].nodeType == 1) {
+                        childs[count] = rootChildChilds[i].childNodes[j];
+                        count = count + 1;
+                    }
+                }
+            }
+            let rootChildrensAttrArr = [];
+            for (let index = 0; index < childs.length; index++) {
+                let rootChildrensAttr = {};
+                for (let j = 0; j < childs[index].attributes.length; j++) {
+                    rootChildrensAttr[childs[index].attributes[j].nodeName] = childs[index].attributes[j].nodeValue;
+                    if (x === tagName || x === undefined) {
+                        rootChildrensAttr = Object.assign(rootChildrensAttr, {
+                            parent: tagName,
+                            grandFather: tempNode.parent
+                        });
+                    } else {
+                        rootChildrensAttr.parent = x;
+                    }
+                }
+
+                rootChildrensAttrArr.push(rootChildrensAttr);
+                if (rootChildrensAttr.ref) {
+                    if (!checkDuplicateEntries(rootChildrensAttr, vm.showAllChild)) {
+                        vm.showAllChild.push(rootChildrensAttr);
+                    }
+                }
+            }
+            for (let i = 0; i < rootChildrensAttrArr.length; i++) {
+                if (rootChildrensAttrArr[i].ref !== undefined) {
+                    getCNodes(rootChildrensAttrArr[i]);
+                }
+            }
+        }
+
+        function checkDuplicateEntries(child, json) {
+            let keys = [];
+            let count = 0;
+            for (let key in child) {
+                keys[count] = key;
+                count++;
+            }
+            for (let i = 0; i < json.length; i++) {
+                let count1 = 0;
+                for (let k = 0; k < keys.length; k++) {
+                    let temp = json[i];
+                    if (temp[keys[k]] === child[keys[k]]) {
+                        count1++;
+                    }
+                    if (count1 == keys.length) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function getChildFromBase(child, tagName, tempNode) {
+            if (vm.doc.getElementsByTagName('xs:complexType') !== undefined) {
+                var rootChildChilds = vm.doc.getElementsByTagName('xs:complexType');
+            }
+            let rootChildChildsarr = [];
+            let childElement;
+            let count = 0;
+            for (let index = 0; index < rootChildChilds.length; index++) {
+                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
+                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
+                    count++;
+                    for (let j = 0; j < rootChildChildsarr.length; j++) {
+                        if (rootChildChildsarr[j].nodeValue === child.nodeValue) {
+                            childElement = rootChildChildsarr[j].ownerElement;
+                        }
+                    }
+                }
+            }
+            getChildNodes(childElement, tagName, tempNode);
+        }
+
+        function getTypeNode(rootChildChilds, tagName, tempNode) {
+            let child = rootChildChilds.nodeValue;
+            child = {type: child};
+            getTChildNode(child.type, tagName, tempNode);
+        }
+
+        function getTChildNode(child, tagName, tempNode) {
+            if (vm.doc.getElementsByTagName('xs:complexType') !== undefined) {
+                var rootChildChilds = vm.doc.getElementsByTagName('xs:complexType');
+            }
+            let rootChildChildsarr = [];
+            let childElement;
+            let count = 0;
+            for (let index = 0; index < rootChildChilds.length; index++) {
+                if (rootChildChilds.item(index).getAttributeNode('name') !== undefined) {
+                    rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
+                    count++;
+                    for (let j = 0; j < rootChildChildsarr.length; j++) {
+                        if (rootChildChildsarr[j].nodeValue === child) {
+                            childElement = rootChildChildsarr[j].ownerElement;
+                        }
+                    }
+                }
+            }
+            getChildNodes(childElement, tagName, tempNode);
+        }
+
         // key and Key Ref Implementation code
         function xpathFunc() {
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
@@ -1573,6 +1865,7 @@
                 }
             }
         }
+
         function getKeyRef(keyRefNodes) {
             let attrs = {};
             for (let i = 0; i < keyRefNodes.attributes.length; i++) {
@@ -1692,7 +1985,6 @@
             let f = $(window).outerHeight(true);
 
             if ((d == null || d === 'null') && (e == null || e === 'null')) {
-
                 let x = f - a - b - c - 160;
                 $('.documents').css({
                     'max-height': x + 'px'
@@ -1785,14 +2077,14 @@
         }
 
         // autoValidate
-        vm.autoValidate = function() {
+        vm.autoValidate = function () {
             if (vm.nodes[0] && vm.nodes[0].attributes && vm.nodes[0].attributes.length > 0) {
                 for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
                     if (vm.nodes[0].attributes[i].use === 'required') {
                         if (vm.nodes[0].attributes[i].data === undefined) {
                             vm.nonValidattribute = vm.nodes[0].attributes[i];
                             vm.errorLocation = vm.nodes[0];
-                            vm.validConfig = false;
+                            $scope.changeValidConfigStatus(false);
                             return false;
                         }
                     }
@@ -1802,7 +2094,7 @@
                 if (vm.nodes[0].values[0].data === undefined) {
                     vm.nonValidattribute = vm.nodes[0].values[0];
                     vm.errorLocation = vm.nodes[0];
-                    vm.validConfig = false;
+                    $scope.changeValidConfigStatus(false);
                     return false;
                 }
             }
@@ -1817,14 +2109,14 @@
             vm.nonValidattribute = {};
         };
 
-        function autoValidateRecursion (child) {
+        function autoValidateRecursion(child) {
             if (child && child.attributes && child.attributes.length > 0) {
                 for (let i = 0; i < child.attributes.length; i++) {
                     if (child.attributes[i].use === 'required') {
                         if (child.attributes[i].data === undefined) {
                             vm.nonValidattribute = child.attributes[i];
                             vm.errorLocation = child;
-                            vm.validConfig = false;
+                            $scope.changeValidConfigStatus(false);
                             return false;
                         }
                     }
@@ -1834,7 +2126,7 @@
                 if (child.values[0].data === undefined) {
                     vm.nonValidattribute = child.values[0];
                     vm.errorLocation = child;
-                    vm.validConfig = false;
+                    $scope.changeValidConfigStatus(false);
                     return false;
                 }
             }
@@ -1847,6 +2139,632 @@
                 }
             }
         }
+
+        // validation for attributes
+        vm.validateAttr = function (value, tag) {
+            if (tag.type === 'xs:NMTOKEN') {
+                if (/\s/.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.spaceNotAllowed');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value == '' && tag.use === 'required') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                }
+            } else if (tag.type === 'xs:NCName') {
+
+                if (/[\i:]|[:]/g.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.colonNotAllowed');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value == '' && tag.use === 'required') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                }
+            } else if (tag.type === 'xs:string') {
+                if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+                    vm.error = false;
+                } else if (tag.use === 'required') {
+
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value.length > 0) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotAddBlankSpace');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                }
+            } else if (tag.type === 'xs:positiveInteger') {
+                if (/[0-9]/.test(value)) {
+                    vm.error = false;
+                    vm.submitData(value, tag);
+                } else if (tag.use === 'required' && value === '') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (/[a-zA-Z_*]/.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                }
+            } else {
+                tag = Object.assign(tag, {data: value});
+                vm.autoValidate();
+            }
+        };
+
+        vm.submitData = function (value, tag) {
+            if (tag.type === 'xs:NMTOKEN') {
+                if (/\s/.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.spaceNotAllowed');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value == '' && tag.use === 'required') {
+                    vm.error = true;
+                    vm.text = tag.name + ':' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                }
+            } else if (tag.type === 'xs:NCName') {
+                if (/[\i:]|[:]/g.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.colonNotAllowed');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value == '' && tag.use === 'required') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                }
+            } else if (tag.type === 'xs:string') {
+                if (/[a-zA-Z0-9_]+.*$/.test(value)) {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                } else if (tag.use === 'required') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value.length > 0) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotAddBlankSpace');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = false;
+                }
+            } else if (tag.type === 'xs:positiveInteger') {
+                if (/[0-9]/.test(value)) {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                } else if (tag.use === 'required' && value === '') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (/[a-zA-Z_*]/.test(value)) {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.onlyPositiveNumbers');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.cannotNegative');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (/[0-9]/.test(value)) {
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (tag.use === 'required' && value === '') {
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
+                    }
+                } else if (value == '') {
+                    tag = Object.assign(tag, {data: tag.defalut});
+                    vm.autoValidate();
+                }
+            }
+        };
+
+        // toaster pop toast
+        function popToast(node) {
+            let msg = '';
+            if (node && node.name) {
+                msg = 'Attribute "' + node.name + '" cannot be empty';
+
+            } else {
+                msg = 'cannot be empty';
+            }
+            toasty.error({
+                title: 'Element : ' + node.parent,
+                message: msg,
+                timeout: 10000
+            });
+        }
+
+        // link gotokey
+        vm.gotoKey = function (node) {
+            if (node !== undefined) {
+                if (node.refer === vm.nodes[0].ref) {
+                    if (vm.nodes[0].key) {
+                        for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                            if (vm.nodes[0].attributes[i].name === vm.nodes[0].key) {
+                                if (node.data === vm.nodes[0].attributes[i].data) {
+                                    vm.getData(vm.nodes[0]);
+                                    vm.selectedNode = vm.nodes[0];
+                                    vm.refElement = node;
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                            vm.gotoKeyRecursion(node, vm.nodes[0].children[i]);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                        vm.gotoKeyRecursion(node, vm.nodes[0].children[i]);
+                    }
+                }
+            }
+        };
+
+        vm.getpos = function (id) {
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger: 'hover focus manual',
+                html: true,
+                delay: {'show': 500, 'hide': 200}
+            });
+            const a = '#' + id;
+            $(a).tooltip('show');
+        };
+
+        vm.gotoKeyRecursion = function (node, child) {
+            if (node !== undefined) {
+                if (node.refer === child.ref) {
+                    if (child.key) {
+                        for (let i = 0; i < child.attributes.length; i++) {
+                            if (child.attributes[i].name === child.key) {
+                                if (node.data === child.attributes[i].data) {
+                                    vm.getData(child);
+                                    vm.selectedNode = child;
+                                    vm.refElement = node;
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < child.children.length; i++) {
+                            vm.gotoKeyRecursion(node, child.children[i]);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < child.children.length; i++) {
+                        vm.gotoKeyRecursion(node, child.children[i]);
+                    }
+                }
+            }
+        };
+
+        vm.gotoKeyref = function (node) {
+            if (node !== undefined) {
+                if (node.refElement === vm.nodes[0].ref) {
+                    if (vm.nodes[0].keyref) {
+                        for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                            if (vm.nodes[0].attributes[i].name === vm.nodes[0].keyref) {
+                                if (node.data === vm.nodes[0].attributes[i].data) {
+                                    vm.getData(vm.nodes[0]);
+                                    vm.selectedNode = vm.nodes[0];
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                            vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                        }
+                    }
+                } else if (vm.refElement && vm.refElement.parent === vm.nodes[0].ref) {
+                    if (vm.nodes[0].keyref) {
+                        for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                            if (vm.nodes[0].attributes[i].name === vm.nodes[0].keyref) {
+                                if (node.data === vm.nodes[0].attributes[i].data) {
+                                    vm.getData(vm.nodes[0]);
+                                    vm.selectedNode = vm.nodes[0];
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                            vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
+                        vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                    }
+                }
+            }
+        };
+
+        vm.gotoKeyrefRecursion = function (node, child) {
+            if (node !== undefined) {
+                if (node.refElement === child.ref) {
+                    if (child.keyref) {
+                        for (let i = 0; i < child.attributes.length; i++) {
+                            if (child.attributes[i].name === child.keyref) {
+                                if (node.data === child.attributes[i].data) {
+                                    vm.selectedNode = child;
+                                    vm.getData(child);
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < child.children.length; i++) {
+                            vm.gotoKeyrefRecursion(node, child.children[i]);
+                        }
+                    }
+                } else if (vm.refElement && vm.refElement.parent === child.ref) {
+                    if (child.keyref) {
+                        for (let i = 0; i < child.attributes.length; i++) {
+                            if (child.attributes[i].name === child.keyref) {
+                                if (node.data === child.attributes[i].data) {
+                                    vm.selectedNode = child;
+                                    vm.getData(child);
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < child.children.length; i++) {
+                            vm.gotoKeyrefRecursion(node, child.children[i]);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < child.children.length; i++) {
+                        vm.gotoKeyrefRecursion(node, child.children[i]);
+                    }
+                }
+            }
+        };
+
+        // validate xml
+        function validate() {
+            vm.autoValidate();
+
+            if (_.isEmpty(vm.nonValidattribute)) {
+                $scope.changeValidConfigStatus(true);
+                toasty.success({
+                    title: 'Element : ' + vm.nodes[0].ref,
+                    message: 'XML is valid'
+                });
+
+            } else {
+                popToast(vm.nonValidattribute);
+                if (vm.nonValidattribute.name) {
+                    vm.validateAttr('', vm.nonValidattribute);
+                }
+            }
+        }
+
+        // import xml model
+        function importXML() {
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/import-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function (res) {
+                if (res) {
+                    vm.selectedXsd = res.xsd;
+                    sessionStorage.setItem('$SOS$XSD', vm.selectedXsd);
+                    vm.reassignSchema();
+                    setTimeout(() => {
+                        createJSONFromXML(res.data);
+                    }, 600);
+                }
+            }, function () {
+
+            });
+        }
+
+        // open new Confimation model
+        function newFile() {
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/confirmation-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function (res) {
+                if (res === 'yes') {
+                    save();
+                } else {
+                    vm.nodes = [];
+                    vm.selectedNode = [];
+                    vm.submitXsd = false;
+                }
+                sessionStorage.removeItem('$SOS$XSD');
+                sessionStorage.removeItem('xsd');
+            }, function () {
+
+            });
+        }
+
+        // save xml
+        function save() {
+            let xml = _showXml();
+            let name = vm.nodes[0].ref + '.xml';
+            let fileType = 'application/xml';
+            let blob = new Blob([xml], {type: fileType});
+            saveAs(blob, name);
+        }
+
+        // create Xml from Json
+        function showXml() {
+            vm._xml = _showXml();
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/show-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+            }, function () {
+
+            });
+        }
+
+        vm.$on('save', function () {
+            save();
+        });
+
+        vm.$on('validate', function () {
+            validate();
+        });
+
+        vm.$on('showXml', function () {
+            showXml();
+        });
+
+        vm.$on('importXML', function () {
+            importXML();
+        });
+
+        vm.$on('newFile', function () {
+            newFile();
+        });
+
+        window.addEventListener("beforeunload", function () {
+            autoSave();
+            return true;
+        });
+
+        vm.$on('$destroy', function () {
+            autoSave();
+        });
+
+
+        // goto error location
+        vm.gotoErrorLocation = function () {
+            if (vm.errorLocation && vm.errorLocation.ref) {
+                vm.getData(vm.errorLocation);
+                vm.selectedNode = vm.errorLocation;
+                vm.errorLocation = {};
+            }
+        };
+
+        /** ---------------------------tree dropdown actions -------------*/
+        vm.addCkCss = function (id) {
+            setTimeout(() => {
+                $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).addClass('invalid');
+            }, 1);
+        };
+
+        vm.removeCkCss = function (id) {
+            setTimeout(() => {
+                $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).removeClass('invalid');
+            }, 1);
+        };
+
+        vm.addContent = function (data) {
+            if (data && data[0] && data[0].data !== undefined) {
+                vm.myContent = data[0].data;
+            } else {
+                vm.myContent = '';
+            }
+        };
+
+        vm.passwordLabel = function (password) {
+            if (password !== undefined) {
+                let x = password.length;
+                let a = '';
+                for (let i = 0; i < x; i++) {
+                    a = a + '*';
+                }
+                return a;
+            }
+        };
 
     }
 })();

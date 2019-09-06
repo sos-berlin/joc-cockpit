@@ -14,6 +14,32 @@
         </ul>
     </div>
     <div class="separator"></div>
+    <div class="inline" ng-if="currentTab === '/xml'" style="width: calc(100% - 285px); margin-top: 10px">
+        <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
+                uib-tooltip="{{'xml.button.export' | translate}}" ng-click="saveXml()">
+            <i class="fa fa-download"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
+                uib-tooltip="{{'xml.button.validate' | translate}}" ng-click="validateXml()">
+            <i class="fa fa-check"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="showXml()"
+                tooltip-placement="bottom" uib-tooltip="{{'xml.button.showXML' | translate}}">
+            <i class="fa fa-television"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm  pull-right" ng-click="importXML()"
+                tooltip-placement="bottom" uib-tooltip="{{'xml.button.importXML' | translate}}">
+            <i class="fa fa-upload"></i>
+        </button>
+        <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="newXmlFile()"
+                tooltip-placement="bottom" uib-tooltip="{{'xml.button.new' | translate}}">
+            <i class="fa fa-file"></i>
+        </button>
+        <div class="badge pull-right" ng-class="validConfig?'badge-success':'badge-danger'" >
+            <span ng-if="validConfig" translate>xml.label.validate</span>
+            <span ng-if="!validConfig" translate>xml.label.nonValidate</span>
+        </div>
+    </div>
 </div>
 <div class="scroll-y">
     <div class="padding p-b-0 p-t-0" ng-if="schedulerIds.selected">

@@ -1,290 +1,312 @@
-<div class="scroll-y">
-    <div class="padding p-b-0" ng-hide="isLoading">
-        <div class="center-block open" ng-class="!submitXsd ? 'show': 'hide'">
-            <div class="col-md-offset-2 col-md-8 m-t-lg">
-                <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
-                <hr>
-            </div>
-            <div class="col-md-offset-2 col-md-8 m-t-md">
-                <span class="form-group">
-                  <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
+<div ng-hide="isLoading">
+    <div class="center-block open" ng-class="!submitXsd ? 'show': 'hide'">
+        <div class="col-md-offset-2 col-md-8 m-t-lg">
+            <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
+            <hr>
+        </div>
+        <div class="col-md-offset-2 col-md-8 m-t-md">
+            <span class="form-group">
+                <select class="form-control" ng-model="selectedXsd" name="schema" ng-change="changeXSD(selectedXsd)">
                     <option value="">{{'xml.label.chooseFile' | translate}}</option>
                     <option value="systemMonitorNotification">{{'xml.label.systemMonitorNotification' | translate}}</option>
                     <option value="yade">{{'xml.label.yade' | translate}}</option>
                     <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
-                  </select>
-                </span>
-            </div>
-            <div class="col-md-offset-2 col-md-8 m-t-md">
-                <span class="form-group">
-                  <a class="btn btn-primary btn-sm" ng-click="submit()" translate>xml.button.assign</a>
-                </span>
-            </div>
+                </select>
+            </span>
         </div>
-        <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
-            <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftSidePanel">
-                <div class="editor-tree white">
-                    <div class="row" ng-if="nodes.length > 0">
-                        <div class="col-12">
-                            <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
-                               uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                                <i class="fa fa-angle-double-down fa-lg"></i>
-                            </a>
-                            <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
-                               uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                                <i class="fa fa-angle-double-up fa-lg"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tree-block">
-                        <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property" on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
-                              expand-node="expandNode(branch)" collapse-node="collapseNode(branch)" template-url="modules/core/template/tree.html">
-                        </tree>
-                    </div>
-                </div>
-                <div class="rg-right bg-white"><span></span></div>
-            </div>
-            <div class="centerPanel" id="centerPanel">
-                <div class="row pos-abt w-full m-t-n-40">
-                    <div class="col-md-12 m-b-sm">
-                        <div class="m-b-sm p-b-sm">
-                            <div class="inline w-full">
-                                <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
-                                        uib-tooltip="{{'xml.button.export' | translate}}" ng-click="save()">
-                                    <i class="fa fa-download"></i>
-                                </button>
-                                <button class="btn btn-sm btn-grey m-l-sm pull-right" tooltip-placement="bottom"
-                                        uib-tooltip="{{'xml.button.validate' | translate}}" ng-click="validate()">
-                                    <i class="fa fa-check"></i>
-                                </button>
-                                <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="showXml()"
-                                        tooltip-placement="bottom" uib-tooltip="{{'xml.button.showXML' | translate}}">
-                                    <i class="fa fa-television"></i>
-                                </button>
-                                <button class="btn btn-sm btn-grey m-l-sm  pull-right" ng-click="importXML()"
-                                        tooltip-placement="bottom" uib-tooltip="{{'xml.button.importXML' | translate}}">
-                                    <i class="fa fa-upload"></i>
-                                </button>
-                                <button class="btn btn-sm btn-grey m-l-sm pull-right" ng-click="newFile()"
-                                        tooltip-placement="bottom" uib-tooltip="{{'xml.button.new' | translate}}">
-                                    <i class="fa fa-file"></i>
-                                </button>
-                                <div class="badge pull-right" ng-class="validConfig?'badge-success':'badge-danger'"
-                                      translate>{{validConfig ? 'xml.label.validate':'xml.label.nonValidate'}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray"
-                                ng-class="$index==breadCrumbArray.length-1? 'text-primary' : ''" aria-current="page"><a
-                                    ng-click="getData(crumb)">{{crumb.ref}}</a></li>
-                        </ol>
-                    </nav>
-                    <div ng-if="selectedNode && selectedNode.ref" class="col-12">
-                        <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
-                    </div>
+        <div class="col-md-offset-2 col-md-8 m-t-md">
+            <span class="form-group">
+                <a class="btn btn-primary btn-sm" ng-click="submit()" translate>xml.button.assign</a>
+            </span>
+        </div>
+    </div>
+    <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
+        <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftSidePanel">
+            <div class="editor-tree white">
+                <div class="row" ng-if="nodes.length > 0">
                     <div class="col-12">
-                        <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
-                            <div class="text _600" translate>xml.label.documentation</div>
-                            <span id="doc">
-                                <ul ng-if="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
-                                  <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
-                                </ul>
-                                <div ng-if="selectedNode && selectedNode.text">
-                                  <div ng-bind-html="selectedNode.text.doc"></div>
-                                </div>
-                              </span>
-                        </div>
+                        <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
+                           uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <i class="fa fa-angle-double-down fa-lg"></i>
+                        </a>
+                        <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
+                           uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                            <i class="fa fa-angle-double-up fa-lg"></i>
+                        </a>
                     </div>
-                    <div class="col-12" id="attr">
-                        <div ng-if="selectedNode">
-                            <div class="box p-a attr"
-                                 ng-if="selectedNode.attributes && selectedNode.attributes.length>0">
-                                <div ng-if="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
-                                     class="_600 text m-b-sm" translate>xml.label.attributes
-                                </div>
-                                <div ng-repeat="node in selectedNode.attributes" class="form-group">
-                                    <label ng-if="node.name && node.id">{{node.name}}<sup
-                                            ng-if="node.use==='required' || !node.use"
-                                            class="text-danger text-sm">*</sup></label>
-                                    <span ng-click="gotoKey(node)" ng-if="node.refer" class="pull-right">&nbsp;<a
-                                            translate>xml.button.gotoKeyElement</a></span>
-                                    <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
-                                          class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
-                                    <span ng-if="node.text" class="float-right" id="{{node.id}}" data-toggle="tooltip"
-                                          data-placement="left" ng-mouseover="getpos(node.id)" title="{{node.text.doc}}">
-                                          <i class="fa fa-info-circle"></i>
-                                      </span>
-<!--                                    <input #localref1 ng-blur="validateAttr(localref1.value, node)"
-                                           ng-change="submitData(localref1.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'"
-                                           class="form-control" id="{{node.name}}" placeholder="Example input"
-                                           type="text"
-                                           value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <input #localref1 ng-blur="validateAttr(localref1.value, node)"
-                                           ng-change="submitData(localref1.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'"
-                                           class="form-control" id="{{node.name}}" placeholder="Example input"
-                                           type="text"
-                                           value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <input #localref9 ng-blur="validateAttr(localref9.value, node)"
-                                           ng-change="submitData(localref9.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" placeholder="Example input" type="text"
-                                           value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <input #localref10 ng-blur="validateAttr(localref10.value, node)"
-                                           ng-change="submitData(localref10.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.type=='password'"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" placeholder="Example input" type="password"
-                                           value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <input #localref2 ng-blur="validateAttr(localref2.value, node)"
-                                           ng-change="submitData(localref2.value, node)"
-                                           ng-if="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" placeholder="Example input"
-                                           title="{{node.name}} should not contain spaces"
-                                           type="text" value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <input #localref2 ng-blur="validateAttr(localref2.value, node)"
-                                           ng-change="submitData(localref2.value, node)"
-                                           ng-if="node.name && node.type === 'xs:anyURI' && !node.refer"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" placeholder="Example input"
-                                           title="{{node.name}} should not contain spaces"
-                                           type="url" value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
-                                    <select #localref6 ng-blur="validateAttr(localref6.value, node)"
-                                            ng-change="submitData(localref6.value, node)"
-                                            ng-focus="getDataAttr(node.refer)"
-                                            ng-if="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
-                                            ng-class="error && errorName === node.name? 'invalid': ''"
-                                            ng-model="node.data" ng-required="node.use ==='required'"
-                                            class="form-control"
-                                            id="{{node.name}}">
-                                        <option value=""></option>
-                                        <option ng-repeat="key in tempArr" value="{{key}}">{{key}}</option>
-                                    </select>
-                                    <input #localref3 ng-blur="validateAttr(localref3.value, node)"
-                                           ng-change="submitData(localref3.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" placeholder="Example input" required
-                                           type="number" value="{{node.data? node.data:node.default}}"
-                                           autofocus="$index ==0">
-                                    <input #localref4 ng-blur="validateAttr(localref4.value, node)"
-                                           ng-change="submitData(localref4.value, node)"
-                                           ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
-                                           ng-class="error && errorName === node.name? 'invalid': ''"
-                                           ng-required="node.use ==='required'" class="form-control"
-                                           id="{{node.name}}" min="0" placeholder="Example input" type="number"
-                                           value="{{node.data?node.data:node.default}}" autofocus="$index ==0">
-                                    <select #localref5 ng-blur="validateAttr(localref5.value, node)"
-                                            ng-change="submitData(localref5.value, node)"
-                                            ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
-                                            ng-class="error && errorName === node.name? 'invalid': ''"
-                                            ng-model="node.data? node.data: node.default"
-                                            ng-required="node.use ==='required'"
-                                            class="form-control" id="{{node.name}}">
-                                        <option>true</option>
-                                        <option>false</option>
-                                    </select>
-                                    <select #localref6 ng-blur="validateAttr(localref6.value, node)"
-                                            ng-change="submitData(localref6.value, node)"
-                                            ng-if="node.values && node.values.length > 0"
-                                            ng-class="error && errorName === node.name? 'invalid': ''"
-                                            ng-model="node.data? node.data: node.default"
-                                            ng-required="node.use ==='required'"
-                                            class="form-control" id="{{node.name}}">
-                                        <option ng-repeat="value in node.values" ng-class="value.base ? 'hide':''">
-                                            {{value.value}}
-                                        </option>
-                                    </select>-->
-                                    <div ng-if="error && errorName === node.name" ng-bind="text"
-                                         class="help-block text-danger"
-                                         id="{{node.name}}Alert" role="alert">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
-                                <div class="text m-b-sm" translate>xml.label.value<sup
-                                        ng-if="!(selectedNode.values && selectedNode.values[0].use)"
-                                        class="text-danger text-sm">*</sup></div>
-                                <div class="form-group">
-<!--                                    <input #localref7
-                                           ng-blur="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                           ng-change="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                           ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
-                                           ng-class="error? 'invalid': ''"
-                                           class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                           type="text"
-                                           value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
-                                           autofocus="!selectedNode.attributes">
-
-                                    <input #localref7
-                                           ng-blur="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                           ng-change="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                           ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
-                                           ng-class="error? 'invalid': ''"
-                                           class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
-                                           type="password"
-                                           value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
-                                           autofocus="!selectedNode.attributes">-->
-
-                                    <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]"
-                                         class="form-group has-feedback">
-<!--                                        <ckeditor #myckeditor="ngModel" id="{{selectedNode.uuid}}" [editor]="Editor"
-                                                  ng-change="onChange(myContent, selectedNode)" ng-model="myContent"
-                                                  debounce="500" name="myckeditor" class="ckEditor"
-                                                  ng-class="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>-->
-                                        <div ng-if="myckeditor.invalid && myckeditor.touched" class="help-block"
-                                             translate>xml.message.requiredField
+                </div>
+                <div class="tree-block">
+                    <div ui-tree>
+                        <ol ui-tree-nodes="" ng-model="nodes">
+                            <li ng-repeat="item in nodes" ui-tree-node>
+                                <div ui-tree-handle>
+                                    <i class="tree-icon fa fa-angle-right fa-lg"></i>
+                                    {{item.ref}}
+                                    <div class="btn-group dropdown">
+                                        <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node.data);checkRules(node.data, copyItem);checkChoice(node.data)" appDropdown>
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                            <a class="dropdown-item" id="addChild" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                                                <div translate>xml.button.addChild</div>
+                                            </a>
+                                            <div ng-if="childNode && childNode.length>0">
+                                                <a class="dropdown-item" ng-class="getCustomCss(child,node.data)" ng-repeat="child in childNode" ng-click="addChild(child, node.data, true); addDefaultValue(child)">
+                                                    <div class="p-l-sm w-full">
+                                                        <a ><i class="fa fa-angle-right"></i>&nbsp;{{child.ref}}</a>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" ng-click="showAllChildNode(node.data)" ng-class="(node.parent == '#' || childNode.length>0) ? '':'disabled'">
+                                                <div translate>xml.button.showAllChildNodes</div>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a ng-click="expandNode(node.data)" ng-class="node.data.children && node.data.children.length>0? '':'disabled'"
+                                               class="dropdown-item">
+                                                <div translate>xml.button.expand</div>
+                                            </a>
+                                            <a ng-click="collapseNode(node.data)" ng-class="node.data.children && node.data.children.length>0? '':'disabled'"
+                                               class="dropdown-item">
+                                                <div translate>xml.button.collapse</div>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a ng-click="cutNode(node.data)" ng-if="node.data && node.data.parent !=='#'" ng-class="cutData? 'disabled' : ''" class="dropdown-item">
+                                                <div translate>xml.button.cut</div>
+                                            </a>
+                                            <a ng-click="copyNode(node.data)" class="dropdown-item">
+                                                <div translate>xml.button.copy</div>
+                                            </a>
+                                            <a ng-click="pasteNode(node.data)" ng-class="checkRule == true? '':'disabled'" class="dropdown-item">
+                                                <div translate>xml.button.paste</div>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a ng-click="removeNode(node.data, treeCtrl)" ng-class="node.data && node.data.parent!=='#'? '':'disabled'"
+                                               class="dropdown-item">
+                                                <div translate>xml.button.remove</div>
+                                            </a>
                                         </div>
                                     </div>
-<!--                                    <select #localref7
-                                            ng-blur="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                            ng-change="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                            ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
-                                            ng-class="error? 'invalid': ''" class="form-control"
-                                            id="{{selectedNode.ref}}"
-                                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
-                                        <option>true</option>
-                                        <option>false</option>
-                                    </select>
-                                    <select #localref7
-                                            ng-blur="validValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                            ng-change="submitValue(localref7.value, selectedNode.ref, selectedNode.values[0])"
-                                            ng-if="selectedNode && selectedNode.values && selectedNode.values[0].values"
-                                            ng-class="error? 'invalid': ''" class="form-control"
-                                            id="{{selectedNode.ref}}"
-                                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
-                                        <option ng-repeat="value in selectedNode.values[0].values">{{value.value}}
-                                        </option>
-                                    </select>
-                                    <textarea #localref8
-                                              ng-blur="validValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
-                                              ng-change="submitValue(localref8.value, selectedNode.ref, selectedNode.values[0])"
-                                              ng-if="selectedNode.ref === 'Message'" ng-class="error? 'invalid': ''"
-                                              class="form-control"
-                                              id="{{selectedNode.ref}}" rows="4"
-                                              value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
-                                              autofocus></textarea>-->
-                                    <div ng-if="error && errorName === selectedNode.ref" ng-bind="text"
-                                         class="help-block text-danger"
-                                         id="{{nodes.ref}}Alert"
-                                         role="alert">
-                                    </div>
+                                </div>
+                                <ol ui-tree-nodes="" ng-model="item.folders">
+                                    <li ng-repeat="subItem in item.folders" ui-tree-node>
+                                        <div ui-tree-handle>
+                                            {{subItem.ref}}
+                                        </div>
+                                    </li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="rg-right bg-white"><span></span></div>
+        </div>
+        <div class="centerPanel" id="centerPanel">
+            <div class="row m-t">
+                <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray" ng-class="$index==breadCrumbArray.length-1? 'text-primary' : ''" aria-current="page">
+                            <a ng-click="getData(crumb)">{{crumb.ref}}</a>
+                        </li>
+                    </ol>
+                </nav>
+                <div ng-if="selectedNode && selectedNode.ref" class="col-12">
+                    <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}</div>
+                </div>
+                <div class="col-12">
+                    <div class="box p-a documentation-height documents" ng-if="selectedNode && selectedNode.text">
+                        <div class="text _600" translate>xml.label.documentation</div>
+                        <span id="doc">
+                            <ul ng-if="selectedNode && selectedNode.text && selectedNode.text.source" class="pl-5">
+                                <li><a class="text-primary" href="{{selectedNode.text.source}}" target="_blank">{{selectedNode.text.source}}</a></li>
+                            </ul>
+                            <div ng-if="selectedNode && selectedNode.text">
+                                <div ng-bind-html="selectedNode.text.doc"></div>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-12" id="attr">
+                    <div ng-if="selectedNode">
+                        <div class="box p-a attr"
+                             ng-if="selectedNode.attributes && selectedNode.attributes.length>0">
+                            <div ng-if="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
+                                 class="_600 text m-b-sm" translate>xml.label.attributes
+                            </div>
+                            <div ng-repeat="node in selectedNode.attributes" class="form-group">
+                                <label ng-if="node.name && node.id">{{node.name}}<sup
+                                        ng-if="node.use==='required' || !node.use"
+                                        class="text-danger text-sm">*</sup></label>
+                                <span ng-click="gotoKey(node)" ng-if="node.refer" class="pull-right">&nbsp;<a
+                                        translate>xml.button.gotoKeyElement</a></span>
+                                <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
+                                      class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
+                                <span ng-if="node.text" class="float-right" id="{{node.id}}" data-toggle="tooltip"
+                                      data-placement="left" ng-mouseove="getpos(node.id)" title="{{node.text.doc}}">
+                                          <i class="fa fa-info-circle"></i>
+                                      </span>
+                                <input ng-model="localref1" ng-blur="validateAttr(localref1, node)"
+                                       ng-change="submitData(localref1, node)"
+                                       ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'"
+                                       class="form-control" id="{{node.name}}" placeholder="Example input"
+                                       type="text"
+                                       value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <input ng-model="localref1" ng-blur="validateAttr(localref1, node)"
+                                       ng-change="submitData(localref1, node)"
+                                       ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'"
+                                       class="form-control" id="{{node.name}}" placeholder="Example input"
+                                       type="text"
+                                       value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <input ng-model="localref9" ng-blur="validateAttr(localref9, node)"
+                                       ng-change="submitData(localref9, node)"
+                                       ng-if="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" placeholder="Example input" type="text"
+                                       value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <input ng-model="localref10" ng-blur="validateAttr(localref10, node)"
+                                       ng-change="submitData(localref10, node)"
+                                       ng-if="node.values && node.values.length==0 && node.type=='password'"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" placeholder="Example input" type="password"
+                                       value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <input ng-model="localref2" ng-blur="validateAttr(localref2, node)"
+                                       ng-change="submitData(localref2, node)"
+                                       ng-if="node.name && node.type === 'xs:NMTOKEN' && !node.refer"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" placeholder="Example input"
+                                       title="{{node.name}} should not contain spaces"
+                                       type="text" value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <input ng-model="localref2" ng-blur="validateAttr(localref2, node)"
+                                       ng-change="submitData(localref2, node)"
+                                       ng-if="node.name && node.type === 'xs:anyURI' && !node.refer"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" placeholder="Example input"
+                                       title="{{node.name}} should not contain spaces"
+                                       type="url" value="{{node.data? node.data:node.default}}" autofocus="$index ==0">
+                                <select ng-model="localref6" ng-blur="validateAttr(localref6, node)"
+                                        ng-change="submitData(localref6, node)"
+                                        ng-focus="getDataAttr(node.refer)"
+                                        ng-if="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer"
+                                        ng-class="error && errorName === node.name? 'invalid': ''"
+                                        ng-model="node.data" ng-required="node.use ==='required'"
+                                        class="form-control"
+                                        id="{{node.name}}">
+                                    <option value=""></option>
+                                    <option ng-repeat="key in tempArr" value="{{key}}">{{key}}</option>
+                                </select>
+                                <input ng-model="localref3" ng-blur="validateAttr(localref3, node)"
+                                       ng-change="submitData(localref3, node)"
+                                       ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" placeholder="Example input" required
+                                       type="number" value="{{node.data? node.data:node.default}}"
+                                       autofocus="$index ==0">
+                                <input ng-model="localref4" ng-blur="validateAttr(localref4, node)"
+                                       ng-change="submitData(localref4, node)"
+                                       ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
+                                       ng-class="error && errorName === node.name? 'invalid': ''"
+                                       ng-required="node.use ==='required'" class="form-control"
+                                       id="{{node.name}}" min="0" placeholder="Example input" type="number"
+                                       value="{{node.data?node.data:node.default}}" autofocus="$index ==0">
+                                <select ng-model="localref5" ng-blur="validateAttr(localref5, node)"
+                                        ng-change="submitData(localref5, node)"
+                                        ng-if="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
+                                        ng-class="error && errorName === node.name? 'invalid': ''"
+                                        ng-model="node.data? node.data: node.default"
+                                        ng-required="node.use ==='required'"
+                                        class="form-control" id="{{node.name}}">
+                                    <option>true</option>
+                                    <option>false</option>
+                                </select>
+                                <select ng-model="localref6" ng-blur="validateAttr(localref6, node)"
+                                        ng-change="submitData(localref6, node)"
+                                        ng-if="node.values && node.values.length > 0"
+                                        ng-class="error && errorName === node.name? 'invalid': ''"
+                                        ng-model="node.data? node.data: node.default"
+                                        ng-required="node.use ==='required'"
+                                        class="form-control" id="{{node.name}}">
+                                    <option ng-repeat="value in node.values" ng-class="value.base ? 'hide':''">
+                                        {{value.value}}
+                                    </option>
+                                </select>
+                                <div ng-if="error && errorName === node.name" ng-bind="text"
+                                     class="help-block text-danger"
+                                     id="{{node.name}}Alert" role="alert">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
+                            <div class="text m-b-sm" translate>xml.label.value<sup
+                                    ng-if="!(selectedNode.values && selectedNode.values[0].use)"
+                                    class="text-danger text-sm">*</sup></div>
+                            <div class="form-group">
+                                <input ng-model="localref7"
+                                       ng-blur="validValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                       ng-change="submitValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                       ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && !selectedNode.values[0].values && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body'"
+                                       ng-class="error? 'invalid': ''"
+                                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                                       type="text"
+                                       value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
+                                       autofocus="!selectedNode.attributes">
+                                <input ng-model="localref7"
+                                       ng-blur="validValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                       ng-change="submitValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                       ng-if="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.ref !== 'Body' && selectedNode.values[0].base == 'password'"
+                                       ng-class="error? 'invalid': ''"
+                                       class="form-control" id="{{selectedNode.ref}}" placeholder="Example input"
+                                       type="password"
+                                       ng-model="selectedNode.values[0].data"
+                                       autofocus="!selectedNode.attributes">
+                                <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]"
+                                     class="form-group has-feedback">
+                                    <!-- <ckeditor #myckeditor="ngModel" id="{{selectedNode.uuid}}" [editor]="Editor"
+                                         ng-change="onChange(myContent, selectedNode)" ng-model="myContent"
+                                         debounce="500" name="myckeditor" class="ckEditor"
+                                         ng-class="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></ckeditor>
+                                         <div ng-if="myckeditor.invalid && myckeditor.touched" class="help-block"
+                                              translate>xml.message.requiredField
+                                         </div>-->
+                                </div>
+                                <select ng-model="localref7"
+                                        ng-blur="validValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                        ng-change="submitValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                        ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
+                                        ng-class="error? 'invalid': ''" class="form-control"
+                                        id="{{selectedNode.ref}}"
+                                        value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                                    <option>true</option>
+                                    <option>false</option>
+                                </select>
+                                <select ng-model="localref7"
+                                        ng-blur="validValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                        ng-change="submitValue(localref7, selectedNode.ref, selectedNode.values[0])"
+                                        ng-if="selectedNode && selectedNode.values && selectedNode.values[0].values"
+                                        ng-class="error? 'invalid': ''" class="form-control"
+                                        id="{{selectedNode.ref}}"
+                                        value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}">
+                                    <option ng-repeat="value in selectedNode.values[0].values">{{value.value}}</option>
+                                </select>
+                                <textarea ng-model="localref8"
+                                          ng-blur="validValue(localref8, selectedNode.ref, selectedNode.values[0])"
+                                          ng-change="submitValue(localref8, selectedNode.ref, selectedNode.values[0])"
+                                          ng-if="selectedNode.ref === 'Message'" ng-class="error? 'invalid': ''"
+                                          class="form-control"
+                                          id="{{selectedNode.ref}}" rows="4"
+                                          value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
+                                          autofocus></textarea>
+                                <div ng-if="error && errorName === selectedNode.ref" ng-bind="text"
+                                     class="help-block text-danger" id="{{nodes.ref}}Alert" role="alert">
                                 </div>
                             </div>
                         </div>

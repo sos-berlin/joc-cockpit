@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+    <h4 class="modal-title" ><span translate>xml.label.saveXml</span> ?</h4>
+</div>
+<div class="modal-body">
+  <div class="p-a text-center">
+    <div class="row">
+      <div class="col-sm-12 text m-b">
+        <span translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer text-left">
+  <button type="button" class="btn btn-primary btn-sm" ng-click="ok('yes')"
+          translate>xml.button.yes
+  </button>
+  <button type="button" class="btn btn-grey btn-sm" ng-click="ok('no')"
+          translate>xml.button.no
+  </button>
+</div>

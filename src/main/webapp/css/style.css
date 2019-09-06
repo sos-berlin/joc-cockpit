@@ -5435,6 +5435,9 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
 .editor .rg-right {
     background-color: #fff !important;
 }
+.editor .rg-right span{
+    top: 42%;
+}
 .editor-tree {
     height: 100%;
     overflow: auto;
@@ -5466,4 +5469,9 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
 }
 .m-t-n-40 {
     right: 20px;
+}
+
+.custom-icon{
+    position: relative;
+    top: 2px;
 }

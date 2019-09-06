@@ -2379,9 +2379,8 @@
     DialogCtrl1.$inject = ['$scope', '$uibModalInstance'];
 
     function DialogCtrl1($scope, $uibModalInstance) {
-
-        $scope.ok = function () {
-            $uibModalInstance.close('ok');
+        $scope.ok = function (res) {
+            $uibModalInstance.close(res || 'ok');
         };
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
@@ -6713,13 +6712,9 @@
         };
 
         vm.addPeriodInFrequency = function (data) {
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
             $('#period-editor').modal('show');
         };
@@ -6789,15 +6784,12 @@
                     }
                 }
             }
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
+
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
                 period: period,
                 periodStr: periodStr,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
             $('#period-editor').modal('show');
 
@@ -7386,14 +7378,9 @@
         }
 
         vm.addNewPeriod = function () {
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
-
             $rootScope.$broadcast('update-period', {
                 period: undefined,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
 
             $('#period-editor').modal('show');
@@ -10270,13 +10257,9 @@
             _tempPeriod = angular.copy(period);
             vm.runTime = {};
             if (vm.editor.update) {
-                var flag = false;
-                if (vm.order && vm.order.isOrderJob) {
-                    flag = true;
-                }
                 $rootScope.$broadcast('update-period', {
                     period: period,
-                    isOrderJob: flag
+                    isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
                 });
                 $('#period-editor').modal('show');
             }
