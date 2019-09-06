@@ -460,13 +460,17 @@
         return {
             restrict: "A", require: "ngModel", link: function (e, t, i, n) {
                 t.bind("blur", function () {
-                    n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(n.$modelValue) || /^\s*(now)\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
+                    n.$modelValue && (!n.$modelValue || /^\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(n.$modelValue)
+                    || /^\s*(now)\s*$/i.test(n.$modelValue) || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9])\s*$/i.test(n.$modelValue)
+                    || /^\s*(now\s*\+)\s*([01][0-9]|2[0-3]):?([0-5][0-9]):?([0-5][0-9])\s*$/i.test(n.$modelValue) ? n.$setValidity("invalid", !0) : n.$setValidity("invalid", !1))
                 }), t.bind("keyup", function () {
                     n.$setValidity("invalid", !0)
                 })
             }
         }
     }
+         
+    
 
     function g() {
         return {
