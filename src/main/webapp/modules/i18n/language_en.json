@@ -1485,6 +1485,7 @@
   "Event": "Event",
   "breadcrumb.jobStream" : "Job Streams",
   "message.noReferencesFound": "No References found",
+  "button.dragAndDropFileToUpload": "Drag And Drop File To Upload",
   "tab.joeEditor": "JOE EDITOR",
   "tab.xmlEditor": "XML EDITOR",
   "xml.button.expand": "Expand",

@@ -5475,3 +5475,25 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
     position: relative;
     top: 2px;
 }
+.center-block.open {
+    width: 650px;
+    margin-top: 8%;
+}
+
+.documentation-height {
+    max-height: 300px;
+    overflow: auto !important;
+}
+.disabled {
+    pointer-events: none !important;
+    cursor: auto !important;
+}
+span ul li a {
+    color: #007da6;
+}
+span ul li a:active, span ul li a:hover {
+    text-decoration: underline;
+}
+span p{
+    padding-left: 32px;
+}

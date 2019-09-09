@@ -15,7 +15,7 @@
                             </label>
                             <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -8px; top: -17px; font-size: 27px; opacity: .5"><i class="fa fa-times-circle"></i></a>
                         </div>
-                        <div class="form-group row" ng-if="period.frequency != 'time_slot'">
+                        <div class="form-group row" ng-if="period.frequency != 'time_slot' || period.isStandaloneJob">
                             <label class="col-sm-4 form-control-label" translate>label.repeatInterval</label>
 
                             <div class="col-sm-8">
@@ -23,6 +23,7 @@
                                     <option value="single_start" translate>label.singleStart</option>
                                     <option value="repeat" translate>label.repeatStartEnd</option>
                                     <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
+                                    <option ng-if="period.isStandaloneJob" value="time_slot" translate>label.timeSlot</option>
                                 </select>
                             </div>
                         </div>

@@ -195,6 +195,62 @@
         vm.selectedXsd = '';
         vm.submitXsd = false;
         vm.isLoading = true;
+        vm.fileLoading = false;
+
+        vm.treeOptions = {
+            beforeDrop : function (e) {
+                var sourceValue = e.source.nodeScope.$modelValue.value,
+                    destValue = e.dest.nodesScope.node ? e.dest.nodesScope.node.value : undefined,
+                    modalInstance;
+
+                // display modal if the node is being dropped into a smaller container
+                if (sourceValue > destValue) {
+                    console.log(sourceValue, destValue);
+                    return false;
+                }
+            }
+        };
+
+        var uploader = $scope.uploader = new FileUploader({
+            url: '',
+            alias: 'file'
+        });
+
+        // CALLBACKS
+        uploader.onAfterAddingFile = function (item) {
+            let fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
+            if (fileExt != 'XML') {
+                toasty.error({
+                    title: gettextCatalog.getString("message.invalidFileExtension"),
+                    timeout: 10000
+                });
+                item.remove();
+            } else {
+                vm.fileLoading = true;
+                let reader = new FileReader();
+                reader.readAsText(item._file, "UTF-8");
+                reader.onload = onLoadFile;
+            }
+        };
+
+        function onLoadFile(event) {
+            vm.uploadData = event.target.result;
+            if (vm.uploadData !== undefined && vm.uploadData !== '') {
+            } else {
+                toasty.error({
+                    title: gettextCatalog.getString('Invalid xml file or file must be empty'),
+                    timeout: 10000
+                });
+            }
+        }
+
+        vm.collapseAll = function () {
+            vm.$broadcast('angular-ui-tree:collapse-all');
+        };
+
+        vm.expandAll = function () {
+            vm.$broadcast('angular-ui-tree:expand-all');
+        };
 
         vm.reassignSchema = function () {
             vm.nodes = [];
@@ -371,7 +427,7 @@
         }
 
         function createJsonAccToXsd(xmljson, rootNode, mainjson) {
-            mainjson.children = [];
+            mainjson.nodes = [];
             if (xmljson[rootNode] && xmljson[rootNode]._attributes !== undefined) {
                 for (let key in xmljson[rootNode]._attributes) {
                     if (mainjson && mainjson.attributes) {
@@ -400,16 +456,16 @@
             if (key.indexOf('*')) {
                 a = key.split('*')[0];
             }
-            checkChildNode(mainjson);
+            vm.checkChildNode(mainjson);
             for (let i = 0; i < vm.childNode.length; i++) {
                 if (a === vm.childNode[i].ref) {
                     vm.childNode[i].import = key;
-                    addChild(vm.childNode[i], mainjson, false);
+                    vm.addChild(vm.childNode[i], mainjson, false);
                 }
             }
-            for (let i = 0; i < mainjson.children.length; i++) {
-                if (mainjson.children[i].ref == a && mainjson.children[i].import == key) {
-                    createJsonAccToXsd(xmljson[rootNode], key, mainjson.children[i]);
+            for (let i = 0; i < mainjson.nodes.length; i++) {
+                if (mainjson.nodes[i].ref == a && mainjson.nodes[i].import == key) {
+                    createJsonAccToXsd(xmljson[rootNode], key, mainjson.nodes[i]);
                 }
             }
         }
@@ -440,8 +496,8 @@
             }
             for (let key in xmljson[rootNode]) {
                 if (key !== '_attributes' && key !== '_cdata') {
-                    if (!mainjson.children) {
-                        mainjson = Object.assign(mainjson, {children: []});
+                    if (!mainjson.nodes) {
+                        mainjson = Object.assign(mainjson, {nodes: []});
                     }
                     addChildToNormal(key, rootNode, xmljson, mainjson);
                 }
@@ -459,10 +515,10 @@
             } else {
                 temp = Object.assign(temp, {ref: a, parent: rootNode, import: key});
             }
-            mainjson.children.push(temp);
-            for (let i = 0; i < mainjson.children.length; i++) {
-                if (mainjson.children[i].ref === a && mainjson.children[i].import == key) {
-                    createNormalTreeJson(xmljson[rootNode], key, mainjson.children[i], rootNode);
+            mainjson.nodes.push(temp);
+            for (let i = 0; i < mainjson.nodes.length; i++) {
+                if (mainjson.nodes[i].ref === a && mainjson.nodes[i].import == key) {
+                    createNormalTreeJson(xmljson[rootNode], key, mainjson.nodes[i], rootNode);
                 }
             }
         }
@@ -488,9 +544,9 @@
                     }
                 }
             } else {
-                if (vm.nodes[0] && vm.nodes[0].children) {
-                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        addKeyReferencingRecursion(vm.nodes[0].children[i]);
+                if (vm.nodes[0] && vm.nodes[0].nodes) {
+                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                        addKeyReferencingRecursion(vm.nodes[0].nodes[i]);
                     }
                 }
             }
@@ -503,18 +559,18 @@
                     if (child.attributes[i].refer) {
                         key = Object.assign(key, {refe: child.ref, name: child.attributes[i].refer});
                         attachKeyReferencing(key);
-                        if (child.children) {
-                            for (let i = 0; i < child.children.length; i++) {
-                                addKeyReferencingRecursion(child.children[i]);
+                        if (child.nodes) {
+                            for (let i = 0; i < child.nodes.length; i++) {
+                                addKeyReferencingRecursion(child.nodes[i]);
                             }
                         }
                         break;
                     }
                 }
             } else {
-                if (child && child.children) {
-                    for (let i = 0; i < child.children.length; i++) {
-                        addKeyReferencingRecursion(child.children[i]);
+                if (child && child.nodes) {
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        addKeyReferencingRecursion(child.nodes[i]);
                     }
                 }
             }
@@ -530,8 +586,8 @@
                         }
                     }
                 } else {
-                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        attachKeyReferencingRecursion(key, vm.nodes[0].children[i]);
+                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                        attachKeyReferencingRecursion(key, vm.nodes[0].nodes[i]);
                     }
                 }
             }
@@ -547,8 +603,8 @@
                         }
                     }
                 } else {
-                    for (let i = 0; i < child.children.length; i++) {
-                        attachKeyReferencingRecursion(key, child.children[i]);
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        attachKeyReferencingRecursion(key, child.nodes[i]);
                     }
                 }
             }
@@ -587,14 +643,14 @@
                 temp.text = text;
             }
             if (!check) {
-                child = checkChildNode(temp);
+                child = vm.checkChildNode(temp);
                 if (child.length > 0) {
                     for (let i = 0; i < child.length; i++) {
                         if (child[i].minOccurs == undefined) {
-                            if (!temp.children) {
-                                temp.children = [];
+                            if (!temp.nodes) {
+                                temp.nodes = [];
                             }
-                            addChild(child[i], temp, true);
+                            vm.addChild(child[i], temp, true);
                         }
                     }
                 }
@@ -699,14 +755,14 @@
             return attrsArr;
         }
 
-        function checkChildNode(nodes) {
-            let node = nodes.ref;
+        vm.checkChildNode = function(_nodes) {
+            let node = _nodes.ref;
             let parentNode;
             vm.childNode = [];
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
             let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
-            let children = {};
+            let nodes = {};
             let childArr = [];
             let element = select(complexTypePath, vm.doc);
             if (element.length > 0) {
@@ -721,14 +777,14 @@
                     let cElement = select(cPath, vm.doc);
                     if (cElement.length > 0) {
                         for (let i = 0; i < cElement.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < cElement[i].attributes.length; j++) {
                                 let a = cElement[i].attributes[j].nodeName;
                                 let b = cElement[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = node;
-                            childArr.push(children);
+                            nodes.parent = node;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                     }
@@ -736,15 +792,15 @@
                     let dElement = select(dPath, vm.doc);
                     if (dElement.length > 0) {
                         for (let i = 0; i < dElement.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < dElement[i].attributes.length; j++) {
                                 let a = dElement[i].attributes[j].nodeName;
                                 let b = dElement[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = node;
-                            children.choice = node;
-                            childArr.push(children);
+                            nodes.parent = node;
+                            nodes.choice = node;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                     }
@@ -752,17 +808,17 @@
                     let eElement = select(ePath, vm.doc);
                     if (eElement.length > 0) {
                         for (let i = 0; i < eElement.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < eElement[i].attributes.length; j++) {
                                 let a = eElement[i].attributes[j].nodeName;
                                 let b = eElement[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = node;
-                            children.choice = node;
-                            if (children.minOccurs && !children.maxOccurs) {
+                            nodes.parent = node;
+                            nodes.choice = node;
+                            if (nodes.minOccurs && !nodes.maxOccurs) {
                             } else {
-                                childArr.push(children);
+                                childArr.push(nodes);
                             }
                             vm.childNode = childArr;
                         }
@@ -774,30 +830,30 @@
                     let childs1 = select(childPath, vm.doc);
                     if (childs1.length > 0) {
                         for (let i = 0; i < childs1.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < childs1[i].attributes.length; j++) {
                                 let a = childs1[i].attributes[j].nodeName;
                                 let b = childs1[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = node;
-                            children.choice = node;
-                            childArr.push(children);
+                            nodes.parent = node;
+                            nodes.choice = node;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                         let childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
                         let child12 = select(childPath2, vm.doc);
                         if (child12.length > 0) {
                             for (let i = 0; i < child12.length; i++) {
-                                children = {};
+                                nodes = {};
                                 for (let j = 0; j < child12[i].attributes.length; j++) {
                                     let a = child12[i].attributes[j].nodeName;
                                     let b = child12[i].attributes[j].nodeValue;
-                                    children = Object.assign(children, {[a]: b});
+                                    nodes = Object.assign(nodes, {[a]: b});
                                 }
-                                children.parent = node;
-                                children.choice = node;
-                                childArr.push(children);
+                                nodes.parent = node;
+                                nodes.choice = node;
+                                childArr.push(nodes);
                                 vm.childNode = childArr;
                             }
                         }
@@ -810,14 +866,14 @@
                         let sElement = select(childrenPath, vm.doc);
                         if (sElement.length > 0) {
                             for (let i = 0; i < sElement.length; i++) {
-                                children = {};
+                                nodes = {};
                                 for (let j = 0; j < sElement[i].attributes.length; j++) {
                                     let a = sElement[i].attributes[j].nodeName;
                                     let b = sElement[i].attributes[j].nodeValue;
-                                    children = Object.assign(children, {[a]: b});
+                                    nodes = Object.assign(nodes, {[a]: b});
                                 }
-                                children.parent = node;
-                                childArr.push(children);
+                                nodes.parent = node;
+                                childArr.push(nodes);
                                 vm.childNode = childArr;
                             }
                         } else if ((select(complexContentWithElementPath, vm.doc)).length > 0) {
@@ -825,27 +881,27 @@
                             let elementx = select(childrenPath1, vm.doc);
                             if (elementx.length > 0) {
                                 for (let i = 0; i < elementx.length; i++) {
-                                    children = {};
+                                    nodes = {};
                                     for (let j = 0; j < elementx[i].attributes.length; j++) {
                                         let a = elementx[i].attributes[j].nodeName;
                                         let b = elementx[i].attributes[j].nodeValue;
-                                        children = Object.assign(children, {[a]: b});
+                                        nodes = Object.assign(nodes, {[a]: b});
                                     }
-                                    children.parent = node;
-                                    children.choice = node;
-                                    childArr.push(children);
+                                    nodes.parent = node;
+                                    nodes.choice = node;
+                                    childArr.push(nodes);
                                     vm.childNode = childArr;
                                 }
                                 let ele = select(complexContentWithElementPath, vm.doc);
                                 for (let i = 0; i < ele.length; i++) {
-                                    children = {};
+                                    nodes = {};
                                     for (let j = 0; j < ele[i].attributes.length; j++) {
                                         let a = ele[i].attributes[j].nodeName;
                                         let b = ele[i].attributes[j].nodeValue;
-                                        children = Object.assign(children, {[a]: b});
+                                        nodes = Object.assign(nodes, {[a]: b});
                                     }
-                                    children.parent = node;
-                                    childArr.push(children);
+                                    nodes.parent = node;
+                                    childArr.push(nodes);
                                     vm.childNode = childArr;
                                 }
                                 return childArr;
@@ -862,7 +918,7 @@
                             addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode);
                         }
                         if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
-                            nodes = Object.assign(nodes, {values: []});
+                            _nodes = Object.assign(_nodes, {values: []});
                             let temp = {};
                             for (let j = 0; j < typeElement[0].attributes.length; j++) {
                                 let a = typeElement[0].attributes[j].nodeName;
@@ -876,19 +932,19 @@
                                 temp = Object.assign(temp, {[a]: b});
                             }
                             temp.parent = node;
-                            nodes.values.push(temp);
+                            _nodes.values.push(temp);
                         }
                     }
                 }
             }
-        }
+        };
 
         function addTypeChildNode(node, parent) {
             let parentNode;
             let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
             let complexTypePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']';
             let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
-            let children = {};
+            let nodes = {};
             let childArr = [];
             let element = select(complexTypePath, vm.doc);
             if (element.length > 0) {
@@ -899,14 +955,14 @@
                     let childs = select(childPath, vm.doc);
                     if (childs.length > 0) {
                         for (let i = 0; i < childs.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < childs[i].attributes.length; j++) {
                                 let a = childs[i].attributes[j].nodeName;
                                 let b = childs[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = parent;
-                            childArr.push(children);
+                            nodes.parent = parent;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                     }
@@ -914,15 +970,15 @@
                     let getChildChoice = select(seqChoicePath, vm.doc);
                     if (getChildChoice.length > 0) {
                         for (let i = 0; i < getChildChoice.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < getChildChoice[i].attributes.length; j++) {
                                 let a = getChildChoice[i].attributes[j].nodeName;
                                 let b = getChildChoice[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = parent;
-                            children.choice = parent;
-                            childArr.push(children);
+                            nodes.parent = parent;
+                            nodes.choice = parent;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                     }
@@ -930,15 +986,15 @@
                     let getChildChoiceSeq = select(seqChoiceSeqPath, vm.doc);
                     if (getChildChoiceSeq.length > 0) {
                         for (let i = 0; i < getChildChoiceSeq.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < getChildChoiceSeq[i].attributes.length; j++) {
                                 let a = getChildChoiceSeq[i].attributes[j].nodeName;
                                 let b = getChildChoiceSeq[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = parent;
-                            children.choice1 = parent;
-                            childArr.push(children);
+                            nodes.parent = parent;
+                            nodes.choice1 = parent;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                     }
@@ -950,15 +1006,15 @@
                     let childs = select(childPath, vm.doc);
                     if (childs.length > 0) {
                         for (let i = 0; i < childs.length; i++) {
-                            children = {};
+                            nodes = {};
                             for (let j = 0; j < childs[i].attributes.length; j++) {
                                 let a = childs[i].attributes[j].nodeName;
                                 let b = childs[i].attributes[j].nodeValue;
-                                children = Object.assign(children, {[a]: b});
+                                nodes = Object.assign(nodes, {[a]: b});
                             }
-                            children.parent = parent;
-                            children.choice = parent;
-                            childArr.push(children);
+                            nodes.parent = parent;
+                            nodes.choice = parent;
+                            childArr.push(nodes);
                             vm.childNode = childArr;
                         }
                         return childArr;
@@ -977,7 +1033,7 @@
             }
         }
 
-        function addChild(child, nodeArr, check) {
+        vm.addChild = function(child, nodeArr, check) {
             let attrs = checkAttributes(child.ref);
             let text = checkText(child.ref);
             let value = getValues(child.ref);
@@ -987,50 +1043,49 @@
             if ((_.isEmpty(val)) && (_.isEmpty(value)) && (_.isEmpty(valueType))) {
                 val = getValFromDefault(child);
             }
-            child.children = [];
+            child.nodes = [];
             child.uuid = vm.counting;
             child.parentId = nodeArr.uuid;
             vm.counting++;
             if (!(_.isEmpty(attrs))) {
                 attachAttrs(attrs, child);
             }
-            nodeArr.children.push(child);
+            nodeArr.nodes.push(child);
             if (check) {
                 autoAddChild(child);
             }
             if (!(_.isEmpty(text))) {
-                addText(text, nodeArr.children);
+                addText(text, nodeArr.nodes);
             }
             if (!(_.isEmpty(val))) {
-                attachValue(val, nodeArr.children);
+                attachValue(val, nodeArr.nodes);
             }
             if (!(_.isEmpty(value))) {
-                attachValue(value, nodeArr.children);
+                attachValue(value, nodeArr.nodes);
             }
             if (valueType !== undefined) {
-                attachValue(valueType, nodeArr.children);
+                attachValue(valueType, nodeArr.nodes);
             }
             if (attrsType !== undefined) {
-                attachTypeAttrs(attrsType, nodeArr.children);
+                attachTypeAttrs(attrsType, nodeArr.nodes);
             }
             if (nodeArr.ref === 'NotificationMail' || nodeArr.ref === 'Header') {
                 arrangeArr(nodeArr);
             }
 
-            autoExpand(nodeArr);
             printArraya(false);
         }
 
         function autoAddChild(child) {
             if (vm.autoAddCount === 0) {
-                let getCh = checkChildNode(child);
+                let getCh = vm.checkChildNode(child);
                 if (getCh) {
                     for (let i = 0; i < getCh.length; i++) {
                         if (getCh[i].minOccurs == undefined || getCh[i].minOccurs == 1) {
                             if (!getCh[i].choice) {
-                                getCh[i].children = [];
+                                getCh[i].nodes = [];
                                 vm.autoAddCount++;
-                                addChild(getCh[i], child, true);
+                                vm.addChild(getCh[i], child, true);
                             }
                         }
                     }
@@ -1042,6 +1097,7 @@
 
         // to send data in details component
         vm.getData = function (evt) {
+            console.log('click....',evt)
             setTimeout(() => {
                 calcHeight();
             }, 1);
@@ -1063,7 +1119,7 @@
 
         function getDataAttr(refer) {
             vm.tempArr = [];
-            getKeyRecursively(refer, vm.nodes[0].children);
+            getKeyRecursively(refer, vm.nodes[0].nodes);
         }
 
         // validation for node value property
@@ -1113,12 +1169,12 @@
         vm.submitValue = function (value, ref, tag) {
             if (/[a-zA-Z0-9_]+.*$/.test(value)) {
                 vm.error = false;
-                tag = Object.assign(tag, {data: value});
+                tag.data =  value;
                 vm.autoValidate();
             } else if (ref == 'FileSpec' || ref == 'Directory') {
                 if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
                     vm.error = false;
-                    tag = Object.assign(tag, {data: value});
+                    tag.data =  value;
                     vm.autoValidate();
                 }
             } else {
@@ -1151,8 +1207,8 @@
                         }
                     }
                 } else {
-                    if (vm.nodes[0].children[i] && vm.nodes[0].children[i].children) {
-                        getKeyRecursively(refer, childNode[i].children);
+                    if (vm.nodes[0].nodes[i] && vm.nodes[0].nodes[i].nodes) {
+                        getKeyRecursively(refer, childNode[i].nodes);
                     }
                 }
             }
@@ -1163,9 +1219,9 @@
             if (vm.nodes[0] && vm.nodes[0].ref === node.parent && vm.nodes[0].uuid === node.parentId) {
                 vm.breadCrumbArray.push(vm.nodes[0]);
             } else {
-                if (vm.nodes[0] && vm.nodes[0].children && vm.nodes[0].children.length > 0) {
-                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        createBreadCrumbRecursively(node, vm.nodes[0].children[i]);
+                if (vm.nodes[0] && vm.nodes[0].nodes && vm.nodes[0].nodes.length > 0) {
+                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                        createBreadCrumbRecursively(node, vm.nodes[0].nodes[i]);
                     }
                 }
             }
@@ -1176,9 +1232,9 @@
                 vm.breadCrumbArray.push(nodes);
                 createBreadCrumb(nodes);
             } else {
-                if (nodes.children && nodes.children.length > 0) {
-                    for (let i = 0; i < nodes.children.length; i++) {
-                        createBreadCrumbRecursively(node, nodes.children[i]);
+                if (nodes.nodes && nodes.nodes.length > 0) {
+                    for (let i = 0; i < nodes.nodes.length; i++) {
+                        createBreadCrumbRecursively(node, nodes.nodes[i]);
                     }
                 }
             }
@@ -1574,46 +1630,46 @@
         }
 
         function arrangeArr(node) {
-            let arr = _.clone(node.children);
+            let arr = _.clone(node.nodes);
             for (let j = 0; j < arr.length; j++) {
-                if (node.children[j].ref === 'From') {
+                if (node.nodes[j].ref === 'From') {
                     let temp;
-                    if (node && node.children[0] !== undefined) {
-                        temp = node.children[0];
-                        node.children[0] = node.children[j];
-                        node.children[j] = temp;
+                    if (node && node.nodes[0] !== undefined) {
+                        temp = node.nodes[0];
+                        node.nodes[0] = node.nodes[j];
+                        node.nodes[j] = temp;
                     }
                 }
-                if (node.children[j].ref === 'To') {
+                if (node.nodes[j].ref === 'To') {
                     let temp;
-                    if (node && node.children[1] !== undefined) {
-                        temp = node.children[1];
-                        node.children[1] = node.children[j];
-                        node.children[j] = temp;
+                    if (node && node.nodes[1] !== undefined) {
+                        temp = node.nodes[1];
+                        node.nodes[1] = node.nodes[j];
+                        node.nodes[j] = temp;
                     }
                 }
-                if (node.children[j].ref === 'CC') {
+                if (node.nodes[j].ref === 'CC') {
                     let temp;
-                    if (node && node.children[2] !== undefined) {
-                        temp = node.children[2];
-                        node.children[2] = node.children[j];
-                        node.children[j] = temp;
+                    if (node && node.nodes[2] !== undefined) {
+                        temp = node.nodes[2];
+                        node.nodes[2] = node.nodes[j];
+                        node.nodes[j] = temp;
                     }
                 }
-                if (node.children[j].ref === 'BCC') {
+                if (node.nodes[j].ref === 'BCC') {
                     let temp;
-                    if (node && node.children[3] !== undefined) {
-                        temp = node.children[3];
-                        node.children[3] = node.children[j];
-                        node.children[j] = temp;
+                    if (node && node.nodes[3] !== undefined) {
+                        temp = node.nodes[3];
+                        node.nodes[3] = node.nodes[j];
+                        node.nodes[j] = temp;
                     }
                 }
-                if (node.children[j].ref === 'Subject' && j < node.children[j].length) {
+                if (node.nodes[j].ref === 'Subject' && j < node.nodes[j].length) {
                     let temp;
-                    if (node && node.children[4] !== undefined) {
-                        temp = node.children[4];
-                        node.children[4] = node.children[j];
-                        node.children[j] = temp;
+                    if (node && node.nodes[4] !== undefined) {
+                        temp = node.nodes[4];
+                        node.nodes[4] = node.nodes[j];
+                        node.nodes[j] = temp;
                     }
                 }
             }
@@ -1675,7 +1731,7 @@
                     rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
                     count++;
                     for (let j = 0; j < rootChildChildsarr.length; j++) {
-                        if (rootChildChildsarr[j].nodeValue === node.ref) {
+                        if (rootChildChildsarr[j] && rootChildChildsarr[j].nodeValue === node.ref) {
                             childElement = rootChildChildsarr[j].ownerElement;
                         }
                     }
@@ -1689,23 +1745,31 @@
                 let rootChildChilds = childElement.getElementsByTagName('xs:complexType');
                 if (childElement.getElementsByTagName('xs:sequence').length !== 0) {
                     rootChildChilds = childElement.getElementsByTagName('xs:sequence');
-                    getNode(rootChildChilds, tagName, tempNode);
+                    if (rootChildChilds) {
+                        getNode(rootChildChilds, tagName, tempNode);
+                    }
                 }
                 if (childElement.getElementsByTagName('xs:choice').length !== 0) {
                     rootChildChilds = childElement.getElementsByTagName('xs:choice');
-                    getNode(rootChildChilds, tagName, tempNode);
+                    if (rootChildChilds) {
+                        getNode(rootChildChilds, tagName, tempNode);
+                    }
                 }
                 if (childElement.getElementsByTagName('xs:simpleType').length !== 0) {
                     rootChildChilds = childElement.getElementsByTagName('xs:simpleType');
-                    getNode(rootChildChilds, tagName, tempNode);
+                    if (rootChildChilds) {
+                        getNode(rootChildChilds, tagName, tempNode);
+                    }
                 }
                 if (childElement.getAttributeNode('type') !== undefined) {
                     rootChildChilds = childElement.getAttributeNode('type');
-                    getTypeNode(rootChildChilds, tagName, tempNode);
+                    if (rootChildChilds) {
+                        getTypeNode(rootChildChilds, tagName, tempNode);
+                    }
                 }
                 if (childElement.getElementsByTagName('xs:extension').length > 0) {
                     rootChildChilds = childElement.getElementsByTagName('xs:extension');
-                    if (rootChildChilds[0].getAttributeNode('base') !== undefined) {
+                    if (rootChildChilds && rootChildChilds[0].getAttributeNode('base') !== undefined) {
                         let x = rootChildChilds[0].getAttributeNode('base');
                         if (x.nodeValue !== 'NotEmptyType' && x.nodeValue !== 'xs:anyURI') {
                             getChildFromBase(x, tagName, tempNode);
@@ -1800,6 +1864,7 @@
         }
 
         function getTypeNode(rootChildChilds, tagName, tempNode) {
+            console.log(rootChildChilds, ' >>>')
             let child = rootChildChilds.nodeValue;
             child = {type: child};
             getTChildNode(child.type, tagName, tempNode);
@@ -1817,7 +1882,7 @@
                     rootChildChildsarr[count] = rootChildChilds.item(index).getAttributeNode('name');
                     count++;
                     for (let j = 0; j < rootChildChildsarr.length; j++) {
-                        if (rootChildChildsarr[j].nodeValue === child) {
+                        if (rootChildChildsarr[j] && rootChildChildsarr[j].nodeValue === child) {
                             childElement = rootChildChildsarr[j].ownerElement;
                         }
                     }
@@ -1907,17 +1972,17 @@
                     break;
                 }
             }
-            if (vm.nodes[0] && vm.nodes[0].children) {
-                for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                    if (vm.nodes[0].children[i].ref === nodes.name) {
+            if (vm.nodes[0] && vm.nodes[0].nodes) {
+                for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                    if (vm.nodes[0].nodes[i].ref === nodes.name) {
                         if (k) {
-                            vm.nodes[0].children[i].key = nodes.key;
+                            vm.nodes[0].nodes[i].key = nodes.key;
                         } else if (keyre) {
-                            vm.nodes[0].children[i].keyref = nodes.keyref;
+                            vm.nodes[0].nodes[i].keyref = nodes.keyref;
                         }
                     } else {
-                        if (vm.nodes[0].children[i].children) {
-                            recursion(nodes, vm.nodes[0].children[i].children);
+                        if (vm.nodes[0].nodes[i].nodes) {
+                            recursion(nodes, vm.nodes[0].nodes[i].nodes);
                         }
                     }
                 }
@@ -1951,8 +2016,8 @@
                             }
                         }
                     } else {
-                        if (child[i].children) {
-                            recursion(_nodes, child[i].children);
+                        if (child[i].nodes) {
+                            recursion(_nodes, child[i].nodes);
                         }
 
                     }
@@ -1960,9 +2025,223 @@
             }
         }
 
-        // Expand automatically on add children
-        function autoExpand(exNode) {
-            console.log(exNode)
+        // expand particular node
+        vm.expandNode = function(node) {
+            console.log(node)
+        };
+        // collapse particular node
+        vm.collapseNode = function(node) {
+            console.log(node)
+        };
+
+        // Remove Node
+        vm.removeNode = function(node, tree) {
+            if (node.parent === '#') {
+                console.log('Cannot Delete Root Node');
+            } else {
+                vm.isNext = false;
+                getParent(node, tree, vm.nodes[0]);
+            }
+        };
+
+        function getParent(node, tree, list) {
+            if (node.parentId === list.uuid && list.parent == '#') {
+                deleteData(list.nodes, tree, node, list);
+            } else {
+                if (list.nodes) {
+                    for (let i = 0; i < list.nodes.length; i++) {
+                        if (node.parentId === list.nodes[i].uuid) {
+                            deleteData(list.nodes[i].nodes, tree, node, list.nodes[i]);
+                        } else {
+                            getParent(node, tree, list.nodes[i]);
+                        }
+                    }
+                }
+            }
+        }
+
+        function deleteData(parentNode, tree, node, parent) {
+            if (parentNode) {
+                for (let i = 0; i < parentNode.length; i++) {
+                    if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
+                        parentNode.splice(i, 1);
+                        tree.treeModel.update();
+                        printArraya(false);
+                        vm.getData(parent);
+                        vm.isNext = false;
+                    }
+                }
+                if (node.key) {
+                    if (vm.nodes[0].keyref) {
+                        if (vm.nodes[0].attributes.length > 0) {
+                            for (let i = 0; i < vm.nodes[0].attributes.length; i++) {
+                                if (vm.nodes[0].keyref === vm.nodes[0].attributes[i].name) {
+                                    for (let j = 0; j < node.attributes.length; j++) {
+                                        if (node.attributes[j].name == node.key) {
+                                            if (vm.nodes[0].attributes[i].data == node.attributes[j].data) {
+                                                for (let key in vm.nodes[0].attributes[i]) {
+                                                    if (key == 'data') {
+                                                        delete vm.nodes[0].attributes[i][key];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (vm.nodes[0].nodes) {
+                            for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                                deleteKeyRefData(vm.nodes[0].nodes[i], node);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function deleteKeyRefData(child, node) {
+            if (child.keyref) {
+                if (child.attributes.length > 0) {
+                    for (let i = 0; i < child.attributes.length; i++) {
+                        if (child.keyref === child.attributes[i].name) {
+                            for (let j = 0; j < node.attributes.length; j++) {
+                                if (node.attributes[j].name == node.key) {
+                                    if (child.attributes[i].data == node.attributes[j].data) {
+                                        for (let key in child.attributes[i]) {
+                                            if (key == 'data') {
+                                                delete child.attributes[i][key];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (child.nodes) {
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        deleteKeyRefData(child.nodes[i], node);
+                    }
+                }
+            }
+        }
+
+        // Cut Node
+        vm.cutNode = function(node) {
+            vm.copyItem = {};
+            vm.copyItem = Object.assign(vm.copyItem, node);
+            searchAndRemoveNode(node);
+            vm.cutData = true;
+        };
+
+        // searchNode
+        function searchAndRemoveNode(node) {
+            if (node.parent === vm.nodes[0].ref && node.parentId == vm.nodes[0].uuid) {
+                for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                    if (node.uuid == vm.nodes[0].nodes[i].uuid) {
+                        vm.nodes[0].nodes.splice(i, 1);
+                    }
+                }
+            } else {
+                for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                    searchAndRemoveNodeRecursion(node, vm.nodes[0].nodes[i]);
+                }
+            }
+        }
+
+        // searchNodeRecursion
+        function searchAndRemoveNodeRecursion(node, child) {
+            if (node.parent === child.ref && node.parentId == child.uuid) {
+                for (let i = 0; i < child.nodes.length; i++) {
+                    if (node.uuid == child.nodes[i].uuid) {
+                        child.nodes.splice(i, 1);
+                    }
+                }
+            } else {
+                for (let i = 0; i < child.nodes.length; i++) {
+                    searchAndRemoveNodeRecursion(node, child.nodes[i]);
+                }
+            }
+        }
+
+        // Copy Node
+        vm.copyNode = function(node) {
+            for (let key in node) {
+                if (typeof (node[key]) == 'object') {
+                    vm.copyItem = Object.assign({}, vm.copyItem, {[key]: []});
+                    if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
+                        for (let i = 0; i < node[key].length; i++) {
+                            let temp = {};
+                            for (let a in node[key][i]) {
+                                if (a == 'id') {
+                                    temp = Object.assign(temp, {[a]: vm.counting});
+                                    vm.counting++;
+                                } else {
+                                    temp = Object.assign(temp, {[a]: node[key][i][a]});
+                                }
+                            }
+                            vm.copyItem[key].push(Object.assign({}, temp));
+                        }
+                    } else if (key === 'nodes' && node[key].length > 0) {
+                        for (let i = 0; i < node[key].length; i++) {
+                            let a = copyNodeRecursion(node[key][i]);
+                            vm.copyItem[key].push(a);
+                        }
+                    } else if (key === 'text') {
+                        vm.copyItem = Object.assign({}, vm.copyItem, {[key]: node[key]});
+                    }
+                } else {
+                    if (key === 'uuid') {
+                        vm.copyItem = Object.assign({}, vm.copyItem, {[key]: vm.counting});
+                        vm.counting++;
+                    } else {
+                        vm.copyItem = Object.assign({}, vm.copyItem, {[key]: node[key]});
+                    }
+                }
+            }
+        }
+
+        function copyNodeRecursion(node) {
+            let tempa = {};
+            for (let key in node) {
+                if (typeof (node[key]) == 'object') {
+                    tempa = Object.assign({}, tempa, {[key]: []});
+                    if ((key === 'attributes' || key === 'values') && node[key].length > 0) {
+                        for (let i = 0; i < node[key].length; i++) {
+                            let temp = {};
+                            for (let a in node[key][i]) {
+                                if (a == 'id') {
+                                    temp = Object.assign(temp, {[a]: vm.counting});
+                                    vm.counting++;
+                                } else {
+                                    temp = Object.assign(temp, {[a]: node[key][i][a]});
+                                }
+                            }
+                            tempa[key].push(Object.assign({}, temp));
+                        }
+                    } else if (key === 'nodes' && node[key].length > 0) {
+                        for (let i = 0; i < node[key].length; i++) {
+                            let a = copyNodeRecursion(node[key][i]);
+                            tempa[key].push(a);
+                        }
+                    } else if (key === 'text') {
+                        tempa = Object.assign({}, tempa, {[key]: node[key]});
+                    }
+                } else {
+                    if (key === 'uuid') {
+                        tempa = Object.assign({}, tempa, {[key]: vm.counting});
+                        vm.counting++;
+                    } else {
+                        tempa = Object.assign({}, tempa, {[key]: node[key]});
+                    }
+                }
+            }
+            return tempa;
         }
 
         function printArray(rootchildrensattrArr) {
@@ -1983,6 +2262,9 @@
             let d = $('.attr').outerHeight(true);
             let e = $('.val').outerHeight(true);
             let f = $(window).outerHeight(true);
+
+            let top = $('#centerPanel').position().top - 4;
+            $('.scroll-y').css({'height' : 'calc(100vh - '+top + 'px'})
 
             if ((d == null || d === 'null') && (e == null || e === 'null')) {
                 let x = f - a - b - c - 160;
@@ -2025,9 +2307,9 @@
                     }
                 }
             }
-            if (vm.nodes[0].children && vm.nodes[0].children.length > 0) {
-                for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                    createChildJson(peopleElem, vm.nodes[0].children[i], doc.createElement(vm.nodes[0].children[i].ref), doc);
+            if (vm.nodes[0].nodes && vm.nodes[0].nodes.length > 0) {
+                for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                    createChildJson(peopleElem, vm.nodes[0].nodes[i], doc.createElement(vm.nodes[0].nodes[i].ref), doc);
                 }
             }
             return peopleElem;
@@ -2051,9 +2333,9 @@
                     }
                 }
             }
-            if (childrenNode.children && childrenNode.children.length > 0) {
-                for (let i = 0; i < childrenNode.children.length; i++) {
-                    createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref), doc);
+            if (childrenNode.nodes && childrenNode.nodes.length > 0) {
+                for (let i = 0; i < childrenNode.nodes.length; i++) {
+                    createChildJson(curentNode, childrenNode.nodes[i], doc.createElement(childrenNode.nodes[i].ref), doc);
                 }
             }
             node.appendChild(curentNode);
@@ -2098,9 +2380,9 @@
                     return false;
                 }
             }
-            if (vm.nodes[0] && vm.nodes[0].children && vm.nodes[0].children.length > 0) {
-                for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                    let x = autoValidateRecursion(vm.nodes[0].children[i]);
+            if (vm.nodes[0] && vm.nodes[0].nodes && vm.nodes[0].nodes.length > 0) {
+                for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                    let x = autoValidateRecursion(vm.nodes[0].nodes[i]);
                     if (x == false) {
                         return x;
                     }
@@ -2130,9 +2412,9 @@
                     return false;
                 }
             }
-            if (child && child.children && child.children.length > 0) {
-                for (let i = 0; i < child.children.length; i++) {
-                    let x = autoValidateRecursion(child.children[i]);
+            if (child && child.nodes && child.nodes.length > 0) {
+                for (let i = 0; i < child.nodes.length; i++) {
+                    let x = autoValidateRecursion(child.nodes[i]);
                     if (x == false) {
                         return x;
                     }
@@ -2438,7 +2720,7 @@
                         }
                     }
                 } else if (value == '') {
-                    tag = Object.assign(tag, {data: tag.defalut});
+                    tag.data = tag.default;
                     vm.autoValidate();
                 }
             }
@@ -2475,26 +2757,146 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                            vm.gotoKeyRecursion(node, vm.nodes[0].children[i]);
+                        for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                            vm.gotoKeyRecursion(node, vm.nodes[0].nodes[i]);
                         }
                     }
                 } else {
-                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        vm.gotoKeyRecursion(node, vm.nodes[0].children[i]);
+                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                        vm.gotoKeyRecursion(node, vm.nodes[0].nodes[i]);
                     }
                 }
             }
         };
 
-        vm.getpos = function (id) {
-            $('[data-toggle="tooltip"]').tooltip({
-                trigger: 'hover focus manual',
-                html: true,
-                delay: {'show': 500, 'hide': 200}
-            });
-            const a = '#' + id;
-            $(a).tooltip('show');
+        vm.getpos = function (node) {
+            node.str = (node.text.doc && node.text.doc[0]) ? $sce.trustAsHtml(node.text.doc[0].innerHTML) : '';
+        };
+
+        // check rules before paste
+        vm.checkRules = function(pasteNode, copyNode) {
+            console.log('checkRules')
+            if (copyNode !== undefined) {
+                if (pasteNode.ref === copyNode.parent) {
+                    let count = 0;
+                    if (copyNode.maxOccurs === 'unbounded') {
+                        vm.checkRule = true;
+                    } else if (copyNode.maxOccurs !== 'unbounded' && copyNode.maxOccurs !== undefined) {
+                        if (pasteNode.nodes.length > 0) {
+                            for (let i = 0; i < pasteNode.nodes.length; i++) {
+                                if (copyNode.ref === pasteNode.nodes[i].ref) {
+                                    count++;
+                                }
+                            }
+                            vm.checkRule = copyNode.maxOccurs != count;
+                        } else if (pasteNode.nodes.length === 0) {
+                            vm.checkRule = true;
+                        }
+                    } else if (copyNode.maxOccurs === undefined) {
+                        if (pasteNode.nodes.length > 0) {
+                            for (let i = 0; i < pasteNode.nodes.length; i++) {
+                                vm.checkRule = (copyNode.ref !== pasteNode.nodes[i].ref);
+                            }
+                        } else if (pasteNode.nodes.length === 0) {
+                            vm.checkRule = true;
+                        }
+                    }
+                } else {
+                    vm.checkRule = false;
+                }
+            }
+        };
+
+        // Paste Node
+        vm.pasteNode = function (node) {
+            node.nodes.push(vm.copyItem);
+            vm.cutData = false;
+            vm.checkRule = true;
+            printArraya(false);
+        };
+
+        vm.checkChoice = function(node) {
+            if (vm.childNode && vm.childNode.length > 0) {
+                let flg = true;
+                for (let i = 0; i < vm.childNode.length; i++) {
+                    if (vm.childNode[i] && vm.childNode[i].choice) {
+                        if (node.nodes && node.nodes.length > 0) {
+                            for (let j = 0; j < node.nodes.length; j++) {
+                                if (node.nodes[j].choice && node.nodes[j].ref === vm.childNode[i].ref) {
+                                    vm.choice = true;
+                                    flg = false;
+                                    break;
+                                }
+                            }
+                            if (flg) {
+                                vm.choice = false;
+                            }
+                        } else {
+                            vm.choice = false;
+                        }
+                    }
+                }
+            }
+        };
+
+        vm.addDefaultValue = function(node) {
+            if (node.values && (node.values[0].base === 'xs:string' && (node.values[0] && node.values[0].values && node.values[0].values.length > 0) && node.values[0].default === undefined)) {
+                node.values[0].default = node.values[0].values[0].value;
+                node.values[0].data = node.values[0].values[0].value;
+            } else if (node.values && (node.values[0].base === 'xs:boolean') && node.values[0].default === undefined) {
+                node.values[0].default = true;
+                node.values[0].data = true;
+            }
+        };
+
+        vm.getCustomCss = function(node, parentNode) {
+            let count = 0;
+            if (vm.choice) {
+                return node.choice ? 'disabled disable-link' : '';
+            }
+            if (node.maxOccurs === 'unbounded') {
+                return '';
+            } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
+                if (parentNode.nodes && parentNode.nodes.length > 0) {
+                    for (let i = 0; i < parentNode.nodes.length; i++) {
+                        if (node.ref === parentNode.nodes[i].ref) {
+                            count++;
+                        }
+                    }
+                    if (node.maxOccurs == count) {
+                        return 'disabled disable-link';
+                    }
+                }
+            } else if (node.maxOccurs === undefined) {
+                if (parentNode.nodes && parentNode.nodes.length > 0) {
+                    for (let i = 0; i < parentNode.nodes.length; i++) {
+                        if (node.ref === parentNode.nodes[i].ref) {
+                            return 'disabled disable-link';
+                        }
+                    }
+                }
+            }
+        };
+
+        // attibutes popover
+        vm.tooltip  = function(node) {
+            let count = 0;
+            vm.tooltipAttrData = '';
+            if (node.attributes) {
+                for (let i = 0; i < node.attributes.length; i++) {
+                    if (node.attributes[i].data) {
+                        count++;
+                        let temp = node.attributes[i].name;
+                        temp = temp + ' = ';
+                        temp = temp + node.attributes[i].data;
+                        if (node.attributes.length === count) {
+                            vm.tooltipAttrData = vm.tooltipAttrData + temp;
+                        } else {
+                            vm.tooltipAttrData = vm.tooltipAttrData + temp + ' | ';
+                        }
+                    }
+                }
+            }
         };
 
         vm.gotoKeyRecursion = function (node, child) {
@@ -2511,13 +2913,13 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < child.children.length; i++) {
-                            vm.gotoKeyRecursion(node, child.children[i]);
+                        for (let i = 0; i < child.nodes.length; i++) {
+                            vm.gotoKeyRecursion(node, child.nodes[i]);
                         }
                     }
                 } else {
-                    for (let i = 0; i < child.children.length; i++) {
-                        vm.gotoKeyRecursion(node, child.children[i]);
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        vm.gotoKeyRecursion(node, child.nodes[i]);
                     }
                 }
             }
@@ -2536,8 +2938,8 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                            vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                        for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                            vm.gotoKeyrefRecursion(node, vm.nodes[0].nodes[i]);
                         }
                     }
                 } else if (vm.refElement && vm.refElement.parent === vm.nodes[0].ref) {
@@ -2551,13 +2953,13 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                            vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                        for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                            vm.gotoKeyrefRecursion(node, vm.nodes[0].nodes[i]);
                         }
                     }
                 } else {
-                    for (let i = 0; i < vm.nodes[0].children.length; i++) {
-                        vm.gotoKeyrefRecursion(node, vm.nodes[0].children[i]);
+                    for (let i = 0; i < vm.nodes[0].nodes.length; i++) {
+                        vm.gotoKeyrefRecursion(node, vm.nodes[0].nodes[i]);
                     }
                 }
             }
@@ -2576,8 +2978,8 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < child.children.length; i++) {
-                            vm.gotoKeyrefRecursion(node, child.children[i]);
+                        for (let i = 0; i < child.nodes.length; i++) {
+                            vm.gotoKeyrefRecursion(node, child.nodes[i]);
                         }
                     }
                 } else if (vm.refElement && vm.refElement.parent === child.ref) {
@@ -2591,13 +2993,13 @@
                             }
                         }
                     } else {
-                        for (let i = 0; i < child.children.length; i++) {
-                            vm.gotoKeyrefRecursion(node, child.children[i]);
+                        for (let i = 0; i < child.nodes.length; i++) {
+                            vm.gotoKeyrefRecursion(node, child.nodes[i]);
                         }
                     }
                 } else {
-                    for (let i = 0; i < child.children.length; i++) {
-                        vm.gotoKeyrefRecursion(node, child.children[i]);
+                    for (let i = 0; i < child.nodes.length; i++) {
+                        vm.gotoKeyrefRecursion(node, child.nodes[i]);
                     }
                 }
             }
@@ -2660,8 +3062,8 @@
                 } else {
                     vm.nodes = [];
                     vm.selectedNode = [];
-                    vm.submitXsd = false;
                 }
+                vm.submitXsd = false;
                 sessionStorage.removeItem('$SOS$XSD');
                 sessionStorage.removeItem('xsd');
             }, function () {
@@ -2694,6 +3096,130 @@
 
             });
         }
+
+        function createTJson(json) {
+            let arr = [];
+            for (let i = 0; i < json.length; i++) {
+                if (json[i].parent === '#') {
+                    if (!json[i].nodes) {
+                        json[i].nodes = [];
+                    }
+                    arr.push(json[i]);
+                } else if (json[i].parent !== '#') {
+                    recur(json[i], arr[0]);
+                }
+            }
+            printTreeArray(arr);
+        }
+
+        function recur(node, list) {
+            if ((node.parent === list.ref || node.parent === list.rootNode) && node.grandFather === list.parent) {
+                if (!node.nodes) {
+                    node.nodes = [];
+                }
+                list.nodes.push(node);
+            } else {
+                for (let j = 0; j < list.nodes.length; j++) {
+                    recur(node, list.nodes[j]);
+                }
+            }
+        }
+
+        function printTreeArray(rootChildrArr) {
+            vm.displayNodes = rootChildrArr;
+            vm.options = {
+                displayField: 'ref',
+                isExpandedField: 'expanded',
+            };
+            vm.innerTreeStruct = '';
+            innerH();
+        }
+
+        function innerH() {
+            vm.innerTreeStruct = '';
+            vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\'>' + vm.nodes[0].ref + '</div>';
+            let temp = vm.displayNodes[0].nodes;
+            let temp2;
+            for (let i = 0; i < temp.length; i++) {
+                vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'ml-1 keysearch\'>' + temp[i].ref + '</div>';
+                if (temp[i].nodes && temp[i].nodes.length > 0) {
+                    temp2 = temp[i].nodes;
+                    printCN(temp2);
+                }
+            }
+        }
+
+        function printCN(node) {
+            let temp;
+            let count = 1;
+            for (let i = 0; i < node.length; i++) {
+                vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\' style="margin-left: ' + (10 * count) + 'px">'
+                    + node[i].ref + '</div>';
+                if (node[i].nodes && node[i].nodes.length > 0) {
+                    temp = node[i].nodes;
+                    count++;
+                    printChNode(temp);
+                }
+            }
+
+            function printChNode(_node) {
+                for (let i = 0; i < _node.length; i++) {
+                    vm.innerTreeStruct = vm.innerTreeStruct + '<div class=\'keysearch\' style="margin-left: ' + (10 * count) + 'px">'
+                        + _node[i].ref + '</div>';
+                    if (_node[i].nodes && _node[i].nodes.length > 0) {
+                        count++;
+                        printChNode(_node[i].nodes);
+                    }
+                }
+            }
+        }
+
+        // Search in show all child nodes.
+        vm.search = function(sData) {
+            vm.counter = 0;
+            document.getElementById('innertext').innerHTML = '';
+            innerH();
+            setTimeout(() => {
+                document.getElementById('innertext').innerHTML = vm.innerTreeStruct;
+                let inputText = document.getElementsByClassName('keysearch');
+                for (let i = 0; i < inputText.length; i++) {
+                    let innerHTML = inputText[i].innerHTML;
+                    let pattern = new RegExp('(' + sData + ')', 'gi');
+                    let searchPara = innerHTML.toString();
+                    if (pattern.test(searchPara)) {
+                        innerHTML = searchPara.replace(pattern, function (str) {
+                            return '<span class=\'highlight\'>' + str + '</span>';
+                        });
+                        inputText[i].innerHTML = innerHTML;
+                    }
+                    if (searchPara.match(pattern)) {
+                        let c = searchPara.match(pattern).length;
+                        vm.counter = vm.counter + c;
+                    }
+                }
+            }, 0);
+        };
+
+        // Show all Child Nodes and search functionalities.
+        vm.showAllChildNode = function(node) {
+            vm.showAllChild = [];
+            let _node = {ref: node.ref, parent: '#'};
+            vm.showAllChild.push(_node);
+            getCNodes(_node);
+            createTJson(this.showAllChild);
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views//show-childs-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+            }, function () {
+
+            });
+        };
 
         vm.$on('save', function () {
             save();

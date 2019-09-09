@@ -486,10 +486,13 @@
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
                         insertBefore: '#load_styles_before',
-                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.min.css"]
-                    },{
+                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css"]
+                    }, {
                         name: 'ui.tree',
                         files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.js"]
+                    }, {
+                        name: 'angularFileUpload',
+                        files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]
                     }])
 
                 }]

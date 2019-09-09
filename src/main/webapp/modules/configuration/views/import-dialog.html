@@ -7,10 +7,10 @@
   </div>
   <div class="modal-body p-a" style="min-height: 240px">
     <form name="form1" ng-submit="ok()" novalidate >
-      <div>
+      <div ng-if="uploader.queue.length === 0">
         <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
           <div><i class="icon-upload-icon"></i></div>
-          <div translate>button.dropFileToUpload</div>
+          <div translate>button.dragAndDropFileToUpload</div>
         </div>
         <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
           <button type="button" class="btn btn-grey btn-sm"
@@ -18,16 +18,64 @@
             <span translate="">button.chooseFileToUpload</span>
           </button>
         </div>
-        <input type="file" id="file1" nv-file-select="" accept=".json" uploader="uploader" style="display: none;">
-        <div class="row m-t-md" ng-if="uploader.queue.length>0">
-          <div class="b-t"></div>
-        </div>
-        <div class="form-group m-t m-b-xs" ng-if="uploader.queue.length>0">
-          <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importCalendarObj.calendars.length==0 || form1.$invalid" translate> button.import </button>
-          <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>button.cancel</button>
+        <input type="file" id="file1" nv-file-select="" accept=".xml" uploader="uploader" style="display: none;">
+      </div>
+      <div class="col-md-12">
+        <div class="table-responsive" ng-if="uploader.queue.length>0" ng-show="fileLoading"
+             style="min-height: 250px; max-height: 600px; overflow: auto">
+          <table class="table table-hover table-bordered  ">
+            <thead>
+            <tr>
+              <th><span translate>label.name</span></th>
+              <th><span translate>label.size</span></th>
+              <th><span class="text-capitalize" translate>label.progress</span></th>
+              <th><span translate>label.status</span></th>
+              <th ng-if="uploader.queue[0].isError"><span translate>label.action</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="item in uploader.queue">
+              <td><strong>{{item.file.name }}</strong></td>
+              <td nowrap>{{ item.file.size / 1024 / 1024 | number:'.2' }} MB</td>
+              <td nowrap>
+                <div class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+              </td>
+              <td>
+                <span class="text-success" ng-if="item.isSuccess"><i class="fa fa-check"></i></span>
+                <span class="text-warn" ng-if="item.isCancel"><i class="fa fa-ban"></i></span>
+                <span class="text-danger" ng-if="item.isError"><i class="fa fa-exclamation-triangle"></i></span>
+              </td>
+              <td ng-if="item.isError">
+                <a href="" class="text-hover-color" ng-click="item.remove();"><i class="fa fa-remove"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div>
+            <label for="exampleFormControlSelect1"><span translate>xml.label.assignXSDSchema</span> <sup class="text-danger text-sm">*</sup></label>
+            <span class="form-group" >
+              <select class="form-control" ng-model="selectedXsd" name="schema"
+                      ng-change="reassignxsd(selectedXsd)" id="exampleFormControlSelect1">
+                <option value="">{{'xml.label.chooseFile' | translate}}</option>
+                <option value="systemMonitorNotification">{{'xml.label.systemMonitorNotification' | translate}}</option>
+                <option value="yade">{{'xml.label.yade' | translate}}</option>
+                <option value="JSSuiteInventory">{{'xml.label.jsSuiteInventory' | translate}}</option>
+              </select>
+            </span>
+          </div>
         </div>
       </div>
     </form>
+  </div>
+  <div class="modal-footer text-left" ng-if="uploader.queue.length>0">
+    <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !assignXsd" translate>
+      button.import
+    </button>
+    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="uploader.queue[0].remove();cancel()" translate>
+      button.cancel
+    </button>
   </div>
 </div>
 <script>

@@ -218,5 +218,15 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"]
+    function x($sce) {
+        return function (text) {
+            if(text && angular.isArray(text)) {
+                return text[0].innerHTML;
+            } else {
+                return $sce.trustAsHtml(text);
+            }
+        }
+    }
+
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c).filter("timeformatFilter",tf).filter("highlight",hl).filter("safeHtml",x), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"],n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"],tf.$inject = ["$window"], hl.$inject = ["$sce"], x.$inject = ["$sce"]
 }();
