@@ -4674,7 +4674,7 @@
         };
 
         vm.changeFrequency = function () {
-            var temp = angular.copy(vm.runTime.period);
+            var temp = angular.copy(vm.runTime.period) || {};
             vm.runTime.period = {};
             vm.runTime.period._when_holiday = temp._when_holiday;
             if (vm.runTime.frequency == 'single_start') {

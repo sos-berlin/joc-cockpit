@@ -183,8 +183,9 @@
 
     }
 
-    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty"];
-    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty) {
+    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty", "FileUploader", "$sce"];
+
+    function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, $sce) {
         const vm = $scope;
 
         vm.counting = 0;
@@ -1097,7 +1098,7 @@
 
         // to send data in details component
         vm.getData = function (evt) {
-            console.log('click....',evt)
+           
             setTimeout(() => {
                 calcHeight();
             }, 1);
@@ -2025,15 +2026,6 @@
             }
         }
 
-        // expand particular node
-        vm.expandNode = function(node) {
-            console.log(node)
-        };
-        // collapse particular node
-        vm.collapseNode = function(node) {
-            console.log(node)
-        };
-
         // Remove Node
         vm.removeNode = function(node, tree) {
             if (node.parent === '#') {
@@ -2879,17 +2871,15 @@
         };
 
         // attibutes popover
-        vm.tooltip  = function(node) {
-            let count = 0;
+        vm.tooltip = function (node) {
             vm.tooltipAttrData = '';
             if (node.attributes) {
                 for (let i = 0; i < node.attributes.length; i++) {
                     if (node.attributes[i].data) {
-                        count++;
                         let temp = node.attributes[i].name;
                         temp = temp + ' = ';
                         temp = temp + node.attributes[i].data;
-                        if (node.attributes.length === count) {
+                        if (node.attributes.length - 1 === i) {
                             vm.tooltipAttrData = vm.tooltipAttrData + temp;
                         } else {
                             vm.tooltipAttrData = vm.tooltipAttrData + temp + ' | ';
@@ -3026,6 +3016,7 @@
 
         // import xml model
         function importXML() {
+            vm.importObj = {assignXsd: ''};
             let modalInstance = $uibModal.open({
                 templateUrl: 'modules/configuration/views/import-dialog.html',
                 controller: 'DialogCtrl',
@@ -3033,17 +3024,23 @@
                 size: 'lg',
                 backdrop: 'static'
             });
-            modalInstance.result.then(function (res) {
-                if (res) {
-                    vm.selectedXsd = res.xsd;
+            modalInstance.result.then(function () {
+                if (vm.importObj.assignXsd) {
+                    vm.selectedXsd = vm.importObj.assignXsd;
                     sessionStorage.setItem('$SOS$XSD', vm.selectedXsd);
                     vm.reassignSchema();
                     setTimeout(() => {
-                        createJSONFromXML(res.data);
+                        createJSONFromXML(vm.uploadData);
                     }, 600);
+                    if (uploader.queue && uploader.queue.length > 0) {
+                        uploader.queue[0].remove();
+                    }
                 }
             }, function () {
-
+                vm.importObj = {};
+                if (uploader.queue && uploader.queue.length > 0) {
+                    uploader.queue[0].remove();
+                }
             });
         }
 
@@ -3222,15 +3219,18 @@
         };
 
         vm.$on('save', function () {
-            save();
+            if (vm.nodes && vm.nodes.length > 0)
+                save();
         });
 
         vm.$on('validate', function () {
-            validate();
+            if (vm.nodes && vm.nodes.length > 0)
+                validate();
         });
 
         vm.$on('showXml', function () {
-            showXml();
+            if (vm.nodes && vm.nodes.length > 0)
+                showXml();
         });
 
         vm.$on('importXML', function () {
