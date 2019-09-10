@@ -3997,6 +3997,9 @@
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
                 }
+                if (data.isOrderJob === false){
+                    vm.period.isStandaloneJob = 'yes';
+                }
                 vm.period.period._when_holiday = 'suppress';
                 vm.editor.editPeriod = false;
                 vm.editor.createPeriod = true;
@@ -4022,7 +4025,9 @@
                 }
 
                 vm.period.period._when_holiday = data.period._when_holiday || 'suppress';
-
+                if (data.isOrderJob === false){
+                    vm.period.isStandaloneJob = 'yes';
+                }
                 vm.editor.createPeriod = false;
                 vm.editor.editPeriod = true;
                 vm.strPeriod = data.periodStr;
@@ -4042,6 +4047,9 @@
                 } else {
                     vm.period.frequency = 'single_start';
                     vm.period.period._single_start = '00:00';
+                }
+                if (data.isOrderJob === false){
+                    vm.period.isStandaloneJob = 'yes';
                 }
                 vm.period.period._when_holiday = 'suppress';
                 vm.editor.editPeriod = false;
@@ -4071,6 +4079,9 @@
                     str = str + ' every ' + vm.getTimeInString(data.period.period._repeat);
                 } else {
                     vm.period.frequency = 'time_slot';
+                }
+                if (data.isOrderJob === false){
+                    vm.period.isStandaloneJob = 'yes';
                 }
                 vm.strPeriod = str;
                 vm.period.period._when_holiday = data.period.period._when_holiday || 'suppress';
@@ -4322,6 +4333,9 @@
         } else {
             vm.runTime.frequency = 'single_start';
             vm.runTime.period._single_start = '00:00';
+        }
+        if (vm.order && vm.order.isOrderJob === false){
+            vm.runTime.isStandaloneJob = 'yes';
         }
         vm.tempRunTime = {};
         vm.runTime1 = {};
@@ -4661,7 +4675,8 @@
         };
 
         vm.changeFrequency = function () {
-            var temp = angular.copy(vm.runTime.period);
+            var temp = angular.copy(vm.runTime.period) || {};
+       
             vm.runTime.period = {};
             vm.runTime.period._when_holiday = temp._when_holiday;
             if (vm.runTime.frequency == 'single_start') {
@@ -6713,13 +6728,9 @@
         };
 
         vm.addPeriodInFrequency = function (data) {
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
             $('#period-editor').modal('show');
         };
@@ -6789,15 +6800,12 @@
                     }
                 }
             }
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
+
             $rootScope.$broadcast('period-editor', {
                 frequency: data,
                 period: period,
                 periodStr: periodStr,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
             $('#period-editor').modal('show');
 
@@ -7386,14 +7394,9 @@
         }
 
         vm.addNewPeriod = function () {
-            var flag = false;
-            if (vm.order && vm.order.isOrderJob) {
-                flag = true;
-            }
-
             $rootScope.$broadcast('update-period', {
                 period: undefined,
-                isOrderJob: flag
+                isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
             });
 
             $('#period-editor').modal('show');
@@ -8679,6 +8682,9 @@
             } else {
                 vm.runTime.frequency = 'single_start';
             }
+            if(vm.order && vm.order.isOrderJob === false){
+                vm.runTime.isStandaloneJob = 'yes';
+            }
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = temp.tab;
             vm.runTime.all = temp.all;
@@ -9931,6 +9937,9 @@
                     vm.runTime.frequency = 'single_start';
                     vm.runTime.period._single_start = '00:00';
                 }
+                if(vm.order && vm.order.isOrderJob === false){
+                    vm.runTime.isStandaloneJob = 'yes';
+                }
                 vm.runTime.period._when_holiday = 'suppress';
                 vm.runTime.tab = temp.tab;
                 vm.runTime.isUltimos = temp.isUltimos;
@@ -10270,13 +10279,9 @@
             _tempPeriod = angular.copy(period);
             vm.runTime = {};
             if (vm.editor.update) {
-                var flag = false;
-                if (vm.order && vm.order.isOrderJob) {
-                    flag = true;
-                }
                 $rootScope.$broadcast('update-period', {
                     period: period,
-                    isOrderJob: flag
+                    isOrderJob: (vm.order && vm.order.isOrderJob != undefined) ? vm.order.isOrderJob : null
                 });
                 $('#period-editor').modal('show');
             }
@@ -11051,6 +11056,7 @@
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = 'weekDays';
             vm.runTime.isUltimos = 'months';
+
             if (vm.order && vm.order.isOrderJob) {
                 vm.runTime.frequency = 'time_slot';
                 vm.runTime.period._begin = '00:00';
@@ -11058,6 +11064,9 @@
             } else {
                 vm.runTime.frequency = 'single_start';
                 vm.runTime.period._single_start = '00:00';
+            }
+            if(vm.order && vm.order.isOrderJob === false){
+                vm.runTime.isStandaloneJob = 'yes';
             }
         };
 

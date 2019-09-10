@@ -608,14 +608,14 @@
                     </div>
                 </div>
                 <div ng-hide="editor.update">
-                    <div class="form-group row" ng-if="runTime.frequency && runTime.frequency != 'time_slot'">
+                    <div class="form-group row" ng-if="runTime.frequency && (runTime.frequency != 'time_slot' || runTime.isStandaloneJob)">
                         <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
-
                         <div class="col-sm-6" >
                             <select class="form-control" ng-model="runTime.frequency" ng-change="changeFrequency()">
                                 <option value="single_start" translate>label.singleStart</option>
                                 <option value="repeat" translate>label.repeatStartEnd</option>
                                 <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
+                                <option ng-if="runTime.isStandaloneJob" value="time_slot" translate>label.timeSlot</option>
                             </select>
                         </div>
                     </div>
