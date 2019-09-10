@@ -10,52 +10,56 @@
   <div class="p-a">
     <div class="row">
       <div class="col-md-6">
-        <div class="col-md-12">
-          <a ng-click="expandAll()" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-            <i  class="fa fa-angle-double-down fa-lg" ></i>
-          </a>
-          <a class="m-l-xs" ng-click="collapseAll()" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </div>
-        <div class="col-md-12">
-          <script type="text/ng-template" id="nodes_renderer.html">
-            <div ui-tree-handle class="tree-node tree-node-content">
-              <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)">
-                <i class="fa fa-lg" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
-              </a>
-              <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg"></i>
-              <span class="p-l-sm">{{node.ref}}</span>
+        <div class="row">
+          <div class="col-md-12">
+            <a ng-click="expandAll()" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+              <i  class="fa fa-angle-double-down fa-lg" ></i>
+            </a>
+            <a class="m-l-xs" ng-click="collapseAll()" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+          <div class="col-md-12">
+            <script type="text/ng-template" id="nodes_renderer.html">
+              <div ui-tree-handle class="tree-node tree-node-content">
+                <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)">
+                  <i class="fa fa-lg" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
+                </a>
+                <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg"></i>
+                <span class="p-l-sm">{{node.ref}}</span>
+                </div>
               </div>
+              <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{'hide': collapsed}">
+                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+              </ol>
+            </script>
+            <div ui-tree="treeOptions" id="tree-root">
+              <ol ui-tree-nodes ng-model="nodes">
+                <li ng-repeat="node in nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+              </ol>
             </div>
-            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{'hide': collapsed}">
-              <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-            </ol>
-          </script>
-          <div ui-tree="treeOptions" id="tree-root">
-            <ol ui-tree-nodes ng-model="nodes">
-              <li ng-repeat="node in nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-            </ol>
           </div>
         </div>
       </div>
       <div class="col-md-6 b-l">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-6">
-              <input type="search" name="search" ng-model="data" placeholder="Search">
-            </div>
-            <div class="col-2 p-l-0">
-              <button class="btn btn-sm" ng-click="search(data)" translate>button.search</button>
-            </div>
-            <div class="col-4 p-t-xs">
-              <span class="text-success text-sm" ng-if="counter>0 && data !== ''">
-                <span translate>xml.label.matchFound</span> {{counter}}</span>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                <input type="search" name="search" ng-model="data" placeholder="Search">
+              </div>
+              <div class="col-md-2 p-l-0">
+                <button class="btn btn-sm" ng-click="search(data)" translate>button.search</button>
+              </div>
+              <div class="col-md-4 p-t-xs">
+                <span class="text-success text-sm" ng-if="counter>0 && data !== ''">
+                  <span translate>xml.label.matchFound</span> {{counter}}</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-12">
-          <div ng-bind-html="innerTreeStruct" id="innertext" class="m-t"></div>
+          <div class="col-md-12 height-constraint">
+            <div ng-bind-html="innerTreeStruct" id="innertext" class="m-t"></div>
+          </div>
         </div>
       </div>
     </div>

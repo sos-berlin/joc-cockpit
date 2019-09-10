@@ -981,6 +981,15 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
     z-index: 1020
 }
 
+#innertext span.highlight, #innertext .highlight {
+    color: #ffc300 !important;
+}
+
+.height-constraint {
+    max-height: 600px;
+    overflow-y: scroll;
+}
+
 .app-body {
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;

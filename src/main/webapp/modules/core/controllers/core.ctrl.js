@@ -4695,10 +4695,6 @@
                 vm.runTime.period._absolute_repeat = '00:00';
                 vm.runTime.period._begin = '00:00';
                 vm.runTime.period._end = '24:00';
-            } else{
-                if (vm.runTime.isStandaloneJob == 'yes'){
-                    console.log('do something..............')
-                }
             }
         };
 

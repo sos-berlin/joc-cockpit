@@ -78,11 +78,11 @@
                                         <div translate>xml.button.showAllChildNodes</div>
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a ng-click="expandNode(node)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="expand(this)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.expand</div>
                                     </a>
-                                    <a ng-click="collapseNode(node)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
+                                    <a ng-click="collapse(this)" ng-class="node.nodes && node.nodes.length>0? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.collapse</div>
                                     </a>
@@ -97,7 +97,7 @@
                                         <div translate>xml.button.paste</div>
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a ng-click="removeNode(node, treeCtrl)" ng-class="node && node.parent!=='#'? '':'disabled'"
+                                    <a ng-click="deleteNode(node)" ng-class="node && node.parent!=='#'? '':'disabled'"
                                        class="dropdown-item">
                                         <div translate>xml.button.remove</div>
                                     </a>
@@ -158,7 +158,7 @@
                                 <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
                                       class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
                                 <span ng-if="node.text" class="pull-right" id="{{node.id}}"
-                                      tooltip-placement="left" ng-mouseover="getpos(node)" uib-tooltip-html="{{node.str}}">
+                                      tooltip-placement="left" ng-mouseover="getpos(node)" uib-tooltip-html="node.str">
                                           <i class="fa fa-info-circle"></i>
                                       </span>
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-blur="validateAttr(node.data, node)"
@@ -259,7 +259,7 @@
                             </div>
                         </div>
                         <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
-                            <div class="text m-b-sm" translate>xml.label.value<sup
+                            <div class="text m-b-sm" ><span translate>xml.label.value</span><sup
                                     ng-if="!(selectedNode.values && selectedNode.values[0].use)"
                                     class="text-danger text-sm">*</sup></div>
                             <div class="form-group">
@@ -290,8 +290,9 @@
                                               translate>xml.message.requiredField
                                          </div>-->
                                     <textarea id="{{selectedNode.uuid}}" ng-change="onChange(myContent, selectedNode)" ng-model="myContent"
-                                              name="myckeditor" class="ckEditor"
-                                              ng-class="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)"></textarea>
+                                    name="{{selectedNode.uuid}}" class="ckEditor"
+                                    ng-class="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)" data-sample-short></textarea>
+
                                     <div ng-if="myckeditor.invalid && myckeditor.touched" class="help-block"
                                          translate>xml.message.requiredField
                                     </div>

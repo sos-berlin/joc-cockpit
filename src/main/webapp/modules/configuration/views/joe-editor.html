@@ -13,9 +13,26 @@
     <div id="centerPanel" class="centerPanel">
         <div class="row m-t">
             <div class="col-md-12">
-                Todo
+                <div ng-if="type == 'JOB'" >
+                    <div ui-include="'modules/configuration/views/job-template.html'"></div>
+                </div>
+                <div ng-if="type == 'JOBCHAIN'" >
+                    <div ui-include="'modules/configuration/views/job-chain-template.html'"></div>
+                </div>
+                <div ng-if="type == 'ORDER'">
+                    <div ui-include="'modules/configuration/views/order-template.html'"></div>
+                </div>
+                <div ng-if="type == 'LOCK'">
+                    <div ui-include="'modules/configuration/views/lock-template.html'"></div>
+                </div>
+                <div ng-if="type == 'PROCESSCLASS'">
+                    <div ui-include="'modules/configuration/views/process-class-template.html'"></div>
+                </div>
+                <div ng-if="type == 'SCHEDULE'">
+                    <div ui-include="'modules/configuration/views/schedule-template.html'"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
+<div ng-if="isLoading" class="loading-img1"></div>

@@ -4,80 +4,80 @@
       <div class="b-b p-b m-b">
         <span translate>label.processClass</span>
       </div>
-      <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <form name="form" ng-submit="onSubmit()">
         <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
+             ng-class="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>Process Class Name</label>
           <div class="col-md-8 col-lg-6">
             <input type="text" required class="form-control" placeholder="Enter process class name" autocomplete="false"
-                   name="name" [(ngModel)]="processClass.name" #name="ngModel">
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.required">
+                   name="name" ng-model="processClass.name">
+            <div ng-if="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+              <div ng-if="name.errors.required">
                 <div translate>message.requiredError</div>
               </div>
             </div>
           </div>
         </div>
        <div class="form-group row"
-             [ngClass]="{ 'has-error' : (((url.dirty || url.touched) && url.invalid))}">
+             ng-class="{ 'has-error' : (((url.dirty || url.touched) && url.invalid))}">
           <label class="col-md-4 col-lg-3 form-control-label" translate>Host Url</label>
           <div class="col-md-8 col-lg-6">
             <input type="url" class="form-control" placeholder="Enter host url"
-                   name="url" [(ngModel)]="processClass.url" #url="ngModel">
+                   name="url" ng-model="processClass.url">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>Max Processes</label>
           <div class="col-md-8 col-lg-6">
             <input type="number" class="form-control" placeholder="Enter number of Maximum processes"
-                   name="max" [(ngModel)]="processClass.maxProcess">
+                   name="max" ng-model="processClass.maxProcess">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>Agent Timeout</label>
           <div class="col-md-8 col-lg-6">
             <input type="number" class="form-control" placeholder="Enter agent timeout"
-                   name="timeout" [(ngModel)]="processClass.timeout">
+                   name="timeout" ng-model="processClass.timeout">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label" translate>Select</label>
           <div class="col-md-8 col-lg-6">
-            <select class="form-control" name="select" [(ngModel)]="processClass.select">
-              <option [value]="'first'">First</option>
-              <option [value]="'next'">Next</option>
+            <select class="form-control" name="select" ng-model="processClass.select">
+              <option value="first">First</option>
+              <option value="next">Next</option>
             </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-md-8" translate>Hosts</label>
         </div>
-        <div class="form-group row m-b-0" *ngFor="let host of object.hosts; let i = index">
-          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>label.url</div>
-          <div class="col-md-4 col-lg-3 m-b-sm" *ngIf="i==0" translate>Heartbeat Timeout</div>
-          <div class="col-md-4 col-lg-6 m-b-sm" *ngIf="i==0" translate>Heartbeat Period</div>
+        <div class="form-group row m-b-0" ng-repeat="host in object.hosts">
+          <div class="col-md-4 col-lg-3 m-b-sm" ng-if="$index==0" translate>label.url</div>
+          <div class="col-md-4 col-lg-3 m-b-sm" ng-if="$index==0" translate>Heartbeat Timeout</div>
+          <div class="col-md-4 col-lg-6 m-b-sm" ng-if="$index==0" translate>Heartbeat Period</div>
           <div class="col-md-4 col-lg-3 m-b-sm">
-            <input type="url" class="form-control" name="url" [(ngModel)]="host.url">
+            <input type="url" class="form-control" name="url" ng-model="host.url">
           </div>
           <div class="col-md-4 col-lg-3 m-b-sm">
-            <input type="number" class="form-control" name="timeout" [(ngModel)]="host.timeout">
+            <input type="number" class="form-control" name="timeout" ng-model="host.timeout">
           </div>
           <div class="col-md-3 col-lg-3 m-b-sm">
-            <input type="number" class="form-control" name="period" [(ngModel)]="host.period">
+            <input type="number" class="form-control" name="period" ng-model="host.period">
           </div>
           <div class="col-md-1 p-l-0">
-            <a><i (click)="removeCriteria(i)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+            <a><i ng-click="removeCriteria($index)" class="fa fa-times m-t-sm text-hover-color"></i></a>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a class="text-u-l" *ngIf="object.hosts.length>0" (click)="addCriteria()" translate>Add Another Host</a>
-            <a class="text-u-l" *ngIf="object.hosts.length==0" (click)="addCriteria()" translate>Add Host</a>
+            <a class="text-u-l" ng-if="object.hosts.length>0" ng-click="addCriteria()" translate>Add Another Host</a>
+            <a class="text-u-l" ng-if="object.hosts.length==0" ng-click="addCriteria()" translate>Add Host</a>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-sm-12 text-left m-t">
-            <button type="submit" class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid" translate>button.submit</button>
+            <button type="submit" class="btn btn-sm btn-primary" ng-disabled="form.$invalid" translate>button.submit</button>
             <button type="button" class="btn btn-sm btn-grey m-l-sm" translate>button.clear</button>
           </div>
         </div>
