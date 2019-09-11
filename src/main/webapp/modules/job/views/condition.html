@@ -1605,11 +1605,11 @@
         if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
             ev.preventDefault();
         } else if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'div') {
-            if (ev.target.className && (ev.target.className.match(/event1/) || ev.target.className.match(/in-condition/))) {
+            if (ev.target.className && (ev.target.className.match(/job/) || ev.target.className.match(/event1/) || ev.target.className.match(/in-condition/))) {
                 ev.preventDefault();
             } else if (ev.target.childElementCount > 0) {
                 let className = ev.target.childNodes[0].className;
-                if ((className.match(/event1/) || className.match(/in-condition/))) {
+                if (className.match(/job/) || className.match(/event1/) || className.match(/in-condition/)) {
                     ev.preventDefault();
                 } else {
                     return false;

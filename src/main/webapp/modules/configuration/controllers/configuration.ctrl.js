@@ -210,15 +210,9 @@
 
         vm.treeOptions = {
             beforeDrop : function (e) {
-                var sourceValue = e.source.nodeScope.$modelValue.value,
-                    destValue = e.dest.nodesScope.node ? e.dest.nodesScope.node.value : undefined,
-                    modalInstance;
-
-                // display modal if the node is being dropped into a smaller container
-                if (sourceValue > destValue) {
-                    console.log(sourceValue, destValue);
-                    return false;
-                }
+                let sourceValue = e.source.nodeScope.$modelValue,
+                    destValue = e.dest.nodesScope.node ? e.dest.nodesScope.node : undefined;
+                return dragAnddropRules(sourceValue, destValue);
             }
         };
 
@@ -534,6 +528,18 @@
                 }
             }
         }
+
+        vm.addCkCss = function (id) {
+            setTimeout(() => {
+                $('#' + id).addClass('invalid');
+            }, 1);
+        };
+
+        vm.removeCkCss = function(id) {
+            setTimeout(() => {
+                $('#' + id).removeClass('invalid');
+            }, 1);
+        };
 
         vm.removeTag = function (data) {
             if (data && data.data && data.data.match(/<[^>]+>/gm)) {
@@ -1086,7 +1092,7 @@
             }
 
             printArraya(false);
-        }
+        };
 
         function autoAddChild(child) {
             if (vm.autoAddCount === 0) {
@@ -1107,9 +1113,40 @@
             }
         }
 
+        // drag and drop check
+        function dragAnddropRules(dragNode, dropNode) {
+            if (dragNode && dropNode) {
+                if (dropNode.ref === dragNode.parent) {
+                    let count = 0;
+                    if (dragNode.maxOccurs === 'unbounded') {
+                        return true;
+                    } else if (dragNode.maxOccurs !== 'unbounded' && dragNode.maxOccurs !== undefined) {
+                        if (dropNode.nodes.length > 0) {
+                            for (let i = 0; i < dropNode.nodes.length; i++) {
+                                if (dragNode.ref === dropNode.nodes[i].ref) {
+                                    count++;
+                                }
+                            }
+                            return dragNode.maxOccurs != count;
+                        } else if (dropNode.nodes.length === 0) {
+                            return true;
+                        }
+                    } else if (dragNode.maxOccurs === undefined) {
+                        if (dropNode.nodes.length > 0) {
+                            if (dropNode.nodes.length > 0) {
+                                return (dragNode.ref !== dropNode.nodes[0].ref);
+                            }
+                        } else if (dropNode.nodes.length === 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         // to send data in details component
         vm.getData = function (evt) {
-           
             setTimeout(() => {
                 calcHeight();
             }, 1);
@@ -1121,9 +1158,11 @@
                     }
                 }
             }
-            
+
             if(evt.ref === 'Body') {
-                initEditor(evt.uuid.toString());            
+                setTimeout(function () {
+                    initEditor(evt);
+                }, 10);
             }
             vm.selectedNode = evt;
             vm.breadCrumbArray = [];
@@ -1162,35 +1201,15 @@
             }
         };
 
-        // details meathod
-        vm.onChange = function (evn, nodes) {
-            if (!(/[a-zA-Z0-9_]+.*$/.test(evn))) {
-                vm.error = true;
-            } else {
-                if (evn.match(/<[^>]+>/gm)) {
-                    let x = evn.replace(/<[^>]+>/gm);
-
-                    if (x !== 'undefined&nbsp;undefined') {
-                        nodes.values[0] = Object.assign(nodes.values[0], {data: evn});
-                        evn = '';
-                        vm.myContent = nodes.values[0].data;
-                        vm.error = false;
-                    } else {
-                        delete nodes.values[0].data;
-                    }
-                }
-            }
-        };
-
         vm.submitValue = function (value, ref, tag) {
             if (/[a-zA-Z0-9_]+.*$/.test(value)) {
                 vm.error = false;
-                tag.data =  value;
+                tag.data = value;
                 vm.autoValidate();
             } else if (ref == 'FileSpec' || ref == 'Directory') {
                 if (/[(a-zA-Z0-9_*./)]+.*$/.test(value)) {
                     vm.error = false;
-                    tag.data =  value;
+                    tag.data = value;
                     vm.autoValidate();
                 }
             } else {
@@ -1880,7 +1899,6 @@
         }
 
         function getTypeNode(rootChildChilds, tagName, tempNode) {
-            console.log(rootChildChilds, ' >>>')
             let child = rootChildChilds.nodeValue;
             child = {type: child};
             getTChildNode(child.type, tagName, tempNode);
@@ -2068,7 +2086,6 @@
         }
 
         function deleteData(parentNode, node, parent) {
-            console.log('deleteData')
             if (parentNode) {
                 for (let i = 0; i < parentNode.length; i++) {
                     if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
@@ -2808,17 +2825,17 @@
                     }
                   }
                 } else if (tag.use === 'required' && value === '') {
-                    vm.error = true;
-                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                    vm.errorName = tag.name;
-                    if (tag.data !== undefined) {
-                        for (let key in tag) {
-                            if (key == 'data') {
-                                delete tag[key];
-                                vm.autoValidate();
-                            }
-                        }
+                  vm.error = true;
+                  vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                  vm.errorName = tag.name;
+                  if (tag.data !== undefined) {
+                    for (let key in tag) {
+                      if (key == 'data') {
+                        delete tag[key];
+                        vm.autoValidate();
+                      }
                     }
+                  }
                 } else if (value == '') {
                   tag = Object.assign(tag, {data: tag.defalut});
                   vm.autoValidate();
@@ -2874,8 +2891,7 @@
         };
 
         // check rules before paste
-        vm.checkRules = function(pasteNode, copyNode) {
-            console.log('checkRules')
+        vm.checkRules = function (pasteNode, copyNode) {
             if (copyNode !== undefined) {
                 if (pasteNode.ref === copyNode.parent) {
                     let count = 0;
@@ -2915,7 +2931,7 @@
             printArraya(false);
         };
 
-        vm.checkChoice = function(node) {
+        vm.checkChoice = function (node) {
             if (vm.childNode && vm.childNode.length > 0) {
                 let flg = true;
                 for (let i = 0; i < vm.childNode.length; i++) {
@@ -2939,7 +2955,7 @@
             }
         };
 
-        vm.addDefaultValue = function(node) {
+        vm.addDefaultValue = function (node) {
             if (node.values && (node.values[0].base === 'xs:string' && (node.values[0] && node.values[0].values && node.values[0].values.length > 0) && node.values[0].default === undefined)) {
                 node.values[0].default = node.values[0].values[0].value;
                 node.values[0].data = node.values[0].values[0].value;
@@ -2949,7 +2965,7 @@
             }
         };
 
-        vm.getCustomCss = function(node, parentNode) {
+        vm.getCustomCss = function (node, parentNode) {
             let count = 0;
             if (vm.choice) {
                 return node.choice ? 'disabled disable-link' : '';
@@ -3143,6 +3159,7 @@
                     if (uploader.queue && uploader.queue.length > 0) {
                         uploader.queue[0].remove();
                     }
+                    vm.submitXsd = true;
                 }
             }, function () {
                 vm.importObj = {};
@@ -3280,7 +3297,7 @@
         }
 
         // Search in show all child nodes.
-        vm.search = function(sData) {
+        vm.search = function (sData) {
             vm.counter = 0;
             document.getElementById('innertext').innerHTML = '';
             innerH();
@@ -3305,25 +3322,50 @@
             }, 0);
         };
 
-        function initEditor(id) {
-            if (!vm.ckEditor) {
-                CKEDITOR.replace(id, {
-                    toolbar: [
-                        { name: 'document', items : [ 'Source' ] },
-                        { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-                        { name: 'editing', items : [ 'Find','Replace','-' ] },
-                        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-                        '/',
-                        { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Blockquote','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
-                        { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-                        { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
-                        { name: 'colors', items : [ 'TextColor','BGColor' ] },
-                    ],
-                    bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
-                });
-                vm.ckEditor = CKEDITOR.instances[id];
-            } else{
-                vm.ckEditor.setData(vm.expression.expression)
+        function initEditor(data) {
+            if (vm.ckEditor) {
+                vm.ckEditor.destroy();
+            }
+            vm.ckEditor = CKEDITOR.replace(data.uuid.toString(), {
+                toolbar: [
+                    {name: 'document', items: ['Source']},
+                    {
+                        name: 'clipboard',
+                        items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']
+                    },
+                    {name: 'editing', items: ['Find', 'Replace', '-']},
+                    {
+                        name: 'basicstyles',
+                        items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']
+                    },
+                    '/',
+                    {
+                        name: 'paragraph',
+                        items: ['NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl']
+                    },
+                    {name: 'links', items: ['Link', 'Unlink', 'Anchor']},
+                    {name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize']},
+                    {name: 'colors', items: ['TextColor', 'BGColor']},
+                ],
+                bodyClass: vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
+            });
+
+            vm.ckEditor.on('change', function() {
+                vm.myContent = vm.ckEditor.getData();
+                parseEditorText(vm.myContent, vm.selectedNode);
+            });
+        }
+
+        function parseEditorText (evn, nodes) {
+            if (evn.match(/<[^>]+>/gm)) {
+                let x = evn.replace(/<[^>]+>/gm);
+                if (x !== 'undefined&nbsp;undefined') {
+                    nodes.values[0] = Object.assign(nodes.values[0], {data: evn});
+                    vm.myContent = nodes.values[0].data;
+                    vm.error = false;
+                } else {
+                    delete nodes.values[0].data;
+                }
             }
         }
 
@@ -3346,6 +3388,10 @@
             }, function () {
 
             });
+            setTimeout(function () {
+                if (document.getElementById('innertext'))
+                    document.getElementById('innertext').innerHTML = vm.innerTreeStruct;
+            }, 100)
         };
 
         vm.$on('save', function () {
@@ -3391,17 +3437,6 @@
         };
 
         /** ---------------------------tree dropdown actions -------------*/
-        vm.addCkCss = function (id) {
-            setTimeout(() => {
-                $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).addClass('invalid');
-            }, 1);
-        };
-
-        vm.removeCkCss = function (id) {
-            setTimeout(() => {
-                $(('#') + id + (' .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused)')).removeClass('invalid');
-            }, 1);
-        };
 
         vm.addContent = function (data) {
             if (data && data[0] && data[0].data !== undefined) {
@@ -3429,7 +3464,13 @@
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobs = [];
         vm.languages = ['shell', 'java', 'dotnet', 'java:javascript', "perlScript", "powershell", "VBScript", "scriptcontrol:vbscript", "javax.script:rhino", "javax.script:ecmascript", "javascript"];
-
+        vm.logLevelValue = ['info', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
+        vm.stdErrLogLevelValue = ['info', 'Error'];
+        vm.histroyOnProcessValue = [0,1,2,3,4];
+        vm.histroyWithLogValue = ['yes', 'no', 'gzip'];
+        vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
+        vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
+        vm.visibleValue = ['yes', 'no', 'never'];
         vm.createStandaloneJob = function () {
             vm.job = {
                 name: 'Job1',
@@ -3469,6 +3510,20 @@
 
     LockEditorCtrl.$inject = ["$scope", "$rootScope"];
     function LockEditorCtrl($scope, $rootScope) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.locks = [];
 
+        vm.createLock = function () {
+            vm.lock = {
+                name: 'Lock1',
+                maxNonExclusive: true,
+                nonExclusive: 0
+            };
+        };
+
+        vm.cancel = function(){
+            vm.lock = undefined;
+        };
     }
 })();

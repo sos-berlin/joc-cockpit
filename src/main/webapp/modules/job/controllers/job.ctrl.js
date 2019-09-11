@@ -8530,12 +8530,12 @@
                     createJobNode(vm.dropTarget, event, 'job');
                 } else if (event.target.tagName && event.target.tagName.toLowerCase() === 'div') {
                     let type = '', className ='';
-                    if (event.target.className && (event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
+                    if (event.target.className && (event.target.className.match(/job/) || event.target.className.match(/event1/) || event.target.className.match(/in-condition/))) {
                         className = event.target.className;
                     } else if (event.target.childElementCount > 0) {
                         className = event.target.childNodes[0].className;
                     }
-                    type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : null;
+                    type = className.match(/event1/) ? 'event' : className.match(/in-condition/) ? 'in-condition' : className.match(/job/) ? 'job' : null;
                     if(type) {
                         createJobNode(vm.dropTarget, event, type, className);
                     }
@@ -8839,25 +8839,70 @@
 
             } else {
                 if (vm.selectedJobStream !== 'ALL') {
-                    addJobWithIncondition(objJob, type, className);
+                    if (type === 'job') {
+                        addJobToAnotherJob(objJob, className);
+                    } else{
+                        addJobWithIncondition(objJob, className);
+                    }
                 }
             }
         }
 
-        function addJobWithIncondition(job, type, className) {
+        function addJobToAnotherJob(job, className) {
             const graph = vm.editor.graph;
-            let ids = className.split(' ');
-            let dropTarget, commands;
+            let ids = className.split(' '), dropTarget = null;
             for (let i = 0; i < ids.length; i++) {
                 if (parseInt(ids[i])) {
-                    dropTarget = graph.getModel().getCell(ids[i]);
-                    commands = dropTarget.getAttribute('commands');
+                    let cell = graph.getModel().getCell(ids[i]);
+                    let path = cell.getAttribute('actual');
+                    for (let i = 0; i < vm.allJobs.length; i++) {
+                        if (vm.allJobs[i].path === path) {
+                            dropTarget = vm.allJobs[i];
+                            break;
+                        }
+                    }
                     break;
+                }
+            }
+            if(dropTarget){
+                for (let i = 0; i < dropTarget.outconditions.length; i++) {
+                    console.log('>> ',dropTarget.outconditions[i])
+                    if(dropTarget.outconditions[i].conditionExpression.expression.match(/rc:0/)){
+                        let str = '';
+                        if(dropTarget.outconditions[i].outconditionEvents.length > 0){
+                            for (let j = 0; j < dropTarget.outconditions[i].outconditionEvents.length; j++) {
+                                str = str + dropTarget.outconditions[i].outconditionEvents[j].event;
+                                if(dropTarget.outconditions[i].outconditionEvents.length-1 !== j){
+                                    str = str + ' or '
+                                }
+                            }
+                        }
+                        if(str) {
+                            console.log(str)
+                            addJobWithIncondition(job, className, str);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        function addJobWithIncondition(job, className, str) {
+            let dropTarget, commands;
+            if(!str) {
+                const graph = vm.editor.graph;
+                let ids = className.split(' ');
+                for (let i = 0; i < ids.length; i++) {
+                    if (parseInt(ids[i])) {
+                        dropTarget = graph.getModel().getCell(ids[i]);
+                        commands = dropTarget.getAttribute('commands');
+                        break;
+                    }
                 }
             }
             let inObj = [{
                 "conditionExpression": {
-                    "expression": dropTarget.getAttribute('actual')
+                    "expression": dropTarget ? dropTarget.getAttribute('actual') : str
                 },
                 "inconditionCommands": commands ? JSON.parse(commands) : [
                     {
@@ -8871,13 +8916,49 @@
                 "markExpression": true
             }];
 
+            let outObj = [{
+                "conditionExpression": {
+                    "expression": 'rc:0'
+                },
+                "outconditionEvents":  [
+                    {
+                        "event": job.name,
+                        "command": 'create',
+                        "id": 0
+                    }
+                ],
+                "id": 0,
+                "jobStream": vm.selectedJobStream,
+                "markExpression": true
+            }];
+
+            let flag = false;
             ConditionService.updateInCondition({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobsInconditions: [{job: job.path, inconditions: inObj}]
             }).then(function () {
-                recursivelyConnectJobs(true, false, function () {
-                    vm.actual();
-                });
+                if(flag) {
+                    flag = false;
+                    recursivelyConnectJobs(true, false, function () {
+                        vm.actual();
+                    });
+                } else{
+                    flag = true;
+                }
+            });
+
+            ConditionService.updateOutCondition({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobsOutconditions: [{job: job.path, outconditions: outObj}]
+            }).then(function () {
+                if(flag) {
+                    flag = false;
+                    recursivelyConnectJobs(true, false, function () {
+                        vm.actual();
+                    });
+                } else{
+                    flag = true;
+                }
             });
         }
 
@@ -8911,9 +8992,7 @@
                         v1 = graph.getModel().getCell(jobs[i].jId)
                     }
 
-
                     for (let m = 0; m < jobs.length; m++) {
-
                         if (jobs[i].path !== jobs[m].path) {
                             for (let n = 0; n < jobs[m].inconditions.length; n++) {
                                 for (let x = 0; x < jobs[i].outconditions.length; x++) {
@@ -10271,7 +10350,7 @@
                 }
                 let className = '';
                 if (cell.value.tagName === 'Job') {
-                    className = 'vertex-text job';
+                    className = 'vertex-text job '+cell.id;
                 } else if (cell.value.tagName === 'Event') {
                     className = 'vertex-text event1 '+cell.id;
                 } else if (cell.value.tagName === 'InCondition') {

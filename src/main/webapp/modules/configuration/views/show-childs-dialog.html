@@ -48,17 +48,15 @@
               <div class="col-md-6">
                 <input type="search" name="search" ng-model="data" placeholder="Search">
               </div>
-              <div class="col-md-2 p-l-0">
+              <div class="col-md-6 p-l-0">
                 <button class="btn btn-sm" ng-click="search(data)" translate>button.search</button>
-              </div>
-              <div class="col-md-4 p-t-xs">
-                <span class="text-success text-sm" ng-if="counter>0 && data !== ''">
+                <span class="text-success text-sm m-l-sm" ng-if="counter>0 && data !== ''">
                   <span translate>xml.label.matchFound</span> {{counter}}</span>
               </div>
             </div>
           </div>
           <div class="col-md-12 height-constraint">
-            <div ng-bind-html="innerTreeStruct" id="innertext" class="m-t"></div>
+            <div id="innertext" class="m-t"></div>
           </div>
         </div>
       </div>

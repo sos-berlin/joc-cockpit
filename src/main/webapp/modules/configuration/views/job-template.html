@@ -190,10 +190,196 @@
                   </div>
                 </div>
                 <div class="tab-pane animated fadeIn" id="tab2" >
-                  //todo2
+                  <div class="b-a p-a-sm bg-transparent">
+                    <div class="row">
+                      <div class="col-md-12 m-b-sm">
+                        <div class="pull-right">
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-click="addFile()">
+                                <i class="fa fa-plus"></i>
+                                <span translate>joe.includes.button.addFile</span>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-click="new()">
+                              <i class="fa fa-plus"></i>
+                              <span translate>joe.includes.button.new</span>
+                            </button>
+                            <button class="btn btn-sm btn-grey m-l-sm" ng-click="removeFile()">
+                              <i class="fa fa-trash"></i>
+                              <span translate>joe.includes.button.removeFile</span>
+                            </button>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-4 col-lg-2">
+                            <div class="row">
+                              <div class="col-md-4 col-lg-2 p-t-sm">
+                                <input type="checkbox" class="form-control text-left" name="jobIncludeFilePosition" ng-model="job.includes.filePosition">
+                              </div>
+                              <div class="col-md-8 col-lg-10">
+                                <label class="form-control-label" translate>joe.includes.label.fromHotFolder</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-8 col-lg-10">
+                            <input type="text" class="form-control" name="jobIncludeFilePath" ng-model="job.includes.filePath">
+                          </div>
+                          <div class="col-md-12">
+                            <hr class="m-t-0 m-b-sm">
+                          </div>
+                          <div class="col-12">
+                            <table class="table table-hover table-bordered " id="joeIncludeFile">
+                              <thead>
+                                <th class="tableexport-ignore menu">
+                                  <input type="checkbox">
+                                </th>
+                                <th class="tableexport-ignore menu">
+                                    <span translate>joe.includes.label.name</span>
+                                </th>
+                                <th class="tableexport-ignore menu">
+                                  <span translate>joe.includes.label.filetype</span>
+                                </th>
+                              </thead>
+                              <tbody>
+                               <tr>
+                                <td>
+                                  <input type="checkbox">
+                                </td>
+                                <td class="p-l-0">
+                                  <span class="show-in-single-line">
+                                    <span class="text-dark">createDailyPlan</span>
+                                  </span>
+                                </td>
+                                <td class="p-l-0">
+                                  <span class="show-in-single-line">
+                                    <span class="text-dark">createDailyPlan</span>
+                                  </span>
+                                </td>
+                               </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="tab-pane animated fadeIn" id="tab3">
-                  //todo3
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.logLevel</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsLogLevel" ng-model="job.options.logLevel">
+                        <option ng-repeat="log in logLevelValue" value="{{log}}">{{log}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.stdErrlogLevel</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsStdErrLogLevel" ng-model="job.options.stdErrLogLevel">
+                        <option ng-repeat="std in stdErrLogLevelValue" value="{{std}}">{{std}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroy</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsHistroy" ng-model="job.options.histroy">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroyOnProcess</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsHistroyOnProcess" ng-model="job.options.histroyOnProcess">
+                        <option ng-repeat="hpv in histroyOnProcessValue" value="{{hpv}}">{{hpv}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroyWithLog</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsHistroyWithLog" ng-model="job.options.histroyWithLog">
+                        <option ng-repeat="hwl in histroyWithLogValue" value="{{hwl}}">{{hwl}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.credetialKey</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" placeholder="file Path" name="jobOptionsCredetialKey" ng-model="job.options.credetialKey">
+                    </div>
+                  </div>
+                  <div class="form-group row" ng-class="{ 'has-error' : form.role.$invalid && form.role.$dirty}">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.ignoreSignals</label>
+                    <div class="col-md-8 col-lg-6">
+                        <ui-select class="form-control" multiple ng-model="job.options.ignoreSignals" name="jobOptionsIgnoreSignals" required on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
+                          <ui-select-match>{{$item}}</ui-select-match>
+                          <ui-select-choices repeat="signal as signal in ignoreSignalsValue">
+                            <div ng-bind-html="signal | highlight: $select.search"></div>
+                          </ui-select-choices>
+                        </ui-select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.priority</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsPriority" ng-model="job.options.priority">
+                        <option ng-repeat="priority in priorityValue" value="{{priority}}">{{priority}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.visible</label>
+                    <div class="col-md-8 col-lg-6">
+                      <select class="form-control" name="jobOptionsVisible" ng-model="job.options.visible">
+                        <option ng-repeat="visible in visibleValue" value="{{visible}}">{{visible}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.minTask</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" name="jobOptionsMinTask" ng-model="job.options.minTask">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.task</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" name="jobOptionsTask" ng-model="job.options.task">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.timeout</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" placeholder="{{'joe.options.placeholder.timeout' | translate}}" name="jobOptionsTimeout" ng-model="job.options.timeout">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.idleTimeout</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" placeholder="{{'joe.options.placeholder.idleTimeout' | translate}}"  name="jobOptionsIdleTimeout" ng-model="job.options.idleTimeout">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.warnIfLongerThan</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" placeholder="{{'joe.options.placeholder.warnIfLongerThan' | translate}}" name="jobOptionsWarnIfLongerThan" ng-model="job.options.warnIfLongerThan">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.warnIfShorterThan</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="text" class="form-control text-left" placeholder="{{'joe.options.placeholder.warnIfShorterThan' | translate}}" name="jobOptionsWarnIfShorterThan" ng-model="job.options.warnIfShorterThan">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.forceIdleTimeout</label>
+                    <div class="col-md-8 col-lg-6">
+                      <input type="checkbox" class="form-control text-left w-auto" name="jobOptionsForceIdleTimeout" ng-model="job.options.forceIdleTimeout">
+                    </div>
+                  </div>
                 </div>
                 <div class="tab-pane animated fadeIn" id="tab4">
                   //todo4
