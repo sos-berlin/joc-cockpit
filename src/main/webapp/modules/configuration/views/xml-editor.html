@@ -23,27 +23,28 @@
     <div class="inline w-full" ng-class="submitXsd ? 'show': 'hide'">
         <div resizable r-directions="['right']" class="sticky leftPanel editor" id="leftSidePanel">
             <div class="editor-tree white">
-                <div class="row" ng-if="nodes.length > 0">
-                    <div class="col-12">
-                        <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
-                           uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                            <i class="fa fa-angle-double-down fa-lg"></i>
-                        </a>
-                        <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
-                           uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                            <i class="fa fa-angle-double-up fa-lg"></i>
-                        </a>
+
+                <div class="tree-block"  style="overflow: auto">
+                    <div class="row m-b-xs" ng-if="nodes.length > 0">
+                        <div class="col-12">
+                            <a class="text" ng-click="expandAll();" tooltip-placement="bottom"
+                               uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                                <i class="fa fa-angle-double-down fa-lg"></i>
+                            </a>
+                            <a class="text m-l-xs" ng-click="collapseAll();" tooltip-placement="bottom"
+                               uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                                <i class="fa fa-angle-double-up fa-lg"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="tree-block">
                     <!-- Nested node template -->
                     <script type="text/ng-template" id="nodes_renderer.html">
                         <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary' : selectedNode && selectedNode.ref === node.ref && selectedNode.uuid === node.uuid}">
                             <a ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)">
-                                <i class="fa fa-lg" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
+                                <i class="fa fa-lg w-15" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
                             </a>
-                            <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg"></i>
-                            <span class="p-l-sm" ng-click="getData(node);addContent(node.values);"
+                            <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg w-15"></i>
+                            <span class="p-l-xs" ng-click="getData(node);addContent(node.values);"
                                   ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
                                   ng-mouseover="tooltip(node)" tooltip-placement="bottom"
                                   uib-tooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.ref}}
@@ -115,13 +116,12 @@
                     </div>
                 </div>
             </div>
-            <div class="rg-right bg-white"><span></span></div>
         </div>
         <div class="centerPanel" id="centerPanel">
             <div class="row m-t">
                 <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray" ng-class="$index==breadCrumbArray.length-1? 'text-primary' : ''" aria-current="page">
+                        <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray" ng-class="$index==breadCrumbArray.length-1 ? 'text-primary' : ''" aria-current="page">
                             <a ng-click="getData(crumb)">{{crumb.ref}}</a>
                         </li>
                     </ol>

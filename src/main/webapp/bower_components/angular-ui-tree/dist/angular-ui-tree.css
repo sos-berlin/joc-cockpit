@@ -1,14 +1,12 @@
 .angular-ui-tree {
-    margin-top: 8px;
     white-space: nowrap;
 }
 
 .angular-ui-tree-empty, .angular-ui-tree-dropzone {
-    border: 1px dashed #ccc;
-    min-height: 40px;
-    background-color: #e5e5e5;
-    background-size: 60px 60px;
-    background-position: 0 0, 30px 30px;
+    min-height: 50px;
+    background: url(../../../images/loader.gif) 50% 50% no-repeat transparent;
+    background-size: 26px;
+    margin-top: 12px;
 }
 
 .angular-ui-tree-empty {

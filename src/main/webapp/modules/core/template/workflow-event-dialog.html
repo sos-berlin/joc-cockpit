@@ -22,10 +22,19 @@
             </div>
             <div ng-if="_expression.label == 'InCondition'">
                 <div class="form-group row">
-                    <label class="col-sm-3" translate>label.markExpression</label>
-                    <div class="col-sm-8">
+                    <label class="col-sm-5" translate>label.markExpression</label>
+                    <div class="col-sm-5">
                         <label class="md-check">
                             <input type="checkbox" ng-model="_expression.markExpression">
+                            <i class="primary"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-5" translate>label.skipOutCondition</label>
+                    <div class="col-sm-5">
+                        <label class="md-check">
+                            <input type="checkbox" ng-model="_expression.skipOutCondition">
                             <i class="primary"></i>
                         </label>
                     </div>

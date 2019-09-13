@@ -204,7 +204,7 @@
                         vm.treeAgent = angular.copy(res.folders);
                         filteredTreeDataA(type);
                     } else {
-                        if (vm.isEmpty(vm.agentsFilters.expand_to)) {
+                        if (_.isEmpty(vm.agentsFilters.expand_to)) {
                             vm.treeAgent = angular.copy(res.folders);
                             filteredTreeDataA(type);
                         } else {
@@ -2202,7 +2202,7 @@
                 types: ['LOCK']
             }).then(function (res) {
 
-                if (vm.isEmpty(vm.locksFilters.expand_to)) {
+                if (_.isEmpty(vm.locksFilters.expand_to)) {
                     vm.treeLock = res.folders;
                     filteredTreeDataL();
                 } else {
@@ -2540,7 +2540,7 @@
                     vm.treeProcess = angular.copy(res.folders);
                     filteredTreeDataP();
                 } else {
-                    if (vm.isEmpty(vm.processFilters.expand_to)) {
+                    if (_.isEmpty(vm.processFilters.expand_to)) {
                         vm.treeProcess = angular.copy(res.folders);
                         filteredTreeDataP();
                     } else {
@@ -3082,7 +3082,7 @@
                     vm.treeSchedule = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.scheduleFilters.expand_to)) {
+                    if (_.isEmpty(vm.scheduleFilters.expand_to)) {
                         vm.treeSchedule = angular.copy(res.folders);
                         filteredTreeData();
                     } else {
@@ -3773,7 +3773,7 @@
                     vm.treeCalendar = angular.copy(res.folders);
                     filteredTreeDataC();
                 } else {
-                    if (vm.isEmpty(vm.calendarFilters.expand_to)) {
+                    if (_.isEmpty(vm.calendarFilters.expand_to)) {
                         vm.treeCalendar = angular.copy(res.folders);
                         filteredTreeDataC();
                     } else {
@@ -4651,7 +4651,7 @@
                     vm.treeDocument = res.folders;
                     filteredTreeDataD();
                 } else {
-                    if (vm.isEmpty(vm.documentFilters.expand_to)) {
+                    if (_.isEmpty(vm.documentFilters.expand_to)) {
                         vm.treeDocument = res.folders;
                         filteredTreeDataD();
                     } else {
@@ -7659,7 +7659,7 @@
             }
         }
 
-        if (!vm.isEmpty(vm.userPreferences)) {
+        if (!_.isEmpty(vm.userPreferences)) {
             initWidgets();
             if (vm.userPreferences && !vm.userPreferences.dashboard)
                 setWidgetPreference();

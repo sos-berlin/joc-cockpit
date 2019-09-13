@@ -1,12 +1,78 @@
-<div class="inline w-full" ng-hide="isLoading">
+<div class="inline w-full">
     <div resizable r-directions="['right']" id="leftSidePanel" class="sticky leftPanel editor">
         <div class="editor-tree white">
-            <div class="tree-block">
-                <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property"
-                      on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
-                      expand-node="expandNode(branch)" collapse-node="collapseNode(branch)"
-                      template-url="modules/core/template/editor-tree.html">
-                </tree>
+            <div class="tree-block" style="overflow: auto">
+                <!-- Nested node template -->
+                <script type="text/ng-template" id="nodes_renderer.html">
+                    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary' : node.selected1, '_600' : node.selected1 && node.type}">
+                        <a class="text-dark"><i ng-if="!node.expanded && node.folders.length>0 && !node.object"
+                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-right fa-lg p-r-sm w-15"></i>
+                        <i ng-if="node.expanded && node.folders.length>0 && !node.object"
+                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-15"></i>
+                        <i ng-if="!node.expanded && node.children.length>0 && node.object"
+                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-right fa-lg p-r-sm w-15"></i>
+                        <i ng-if="node.expanded && node.children.length>0 && node.object"
+                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-15"></i>
+                        <i ng-if="node.children.length==0 && node.object"
+                           class="fa fa-caret-right fa-lg p-r-sm w-15"></i>
+                        </a>
+                        <i ng-if="!node.expanded && !node.object && !node.type" class="fa fa-folder w-15 noExl"></i>
+                        <i ng-if="node.type" class="fa fa-circle-o noExl text-xs"></i>
+                        <i ng-if="node.expanded && node.folders.length>0 && !node.object" class="fa fa-folder-open w-15 noExl"></i>
+                        <i ng-if="node.expanded && node.folders.length==0 && !node.object" class="fa fa-folder w-15 noExl"></i>
+                        <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon"></i>
+                        <i ng-if="node.object == 'JOBCHAIN'" class="fa fa-chain noExl"></i>
+                        <i ng-if="node.object == 'ORDER'" class="icon-orders-icon custom-icon"></i>
+                        <i ng-if="node.object == 'LOCK'" class="icon-lock-icon custom-icon"></i>
+                        <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon"></i>
+                        <i ng-if="node.object == 'SCHEDULE'" class="icon-daily-plan-icon custom-icon"></i>
+                        <i ng-if="node.object == 'PREPOSTPROCESSING'" class="icon-calendar-icon custom-icon"></i>
+                        <span ng-click="treeHandler(node)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" class="p-l-xs">
+                            {{node.name || node.path}}
+                            <i ng-if="node.title"> - </i>
+                            <span class="text-muted">{{node.title}}</span>
+                        </span>
+                        <div class="btn-group dropdown text-dark" ng-if="node.object || node.type">
+                            <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
+                                <a class="dropdown-item">
+                                    <div translate>button.copy</div>
+                                </a>
+                                <a class="dropdown-item">
+                                    <div translate>xml.button.paste</div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item">
+                                    <div translate>xml.button.new</div>
+                                </a>
+                                <a class="dropdown-item">
+                                    <div translate>button.delete</div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item">
+                                    <div translate>button.editXml</div>
+                                </a>
+                                <a class="dropdown-item">
+                                    <div translate>button.showXml</div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <ol ui-tree-nodes ng-model="node.folders" ng-class="{'hide': !node.expanded}">
+                        <li ng-repeat="node in node.folders" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                    </ol>
+                    <ol ui-tree-nodes ng-model="node.children" ng-class="{'hide': !node.expanded}">
+                        <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                    </ol>
+                </script>
+                <div ui-tree id="tree-root" data-drop-enabled="false" data-drag-enabled="false">
+                    <ol ui-tree-nodes ng-model="tree">
+                        <li ng-repeat="node in tree" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>

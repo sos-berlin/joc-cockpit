@@ -1842,7 +1842,7 @@
             obj.orders = [{
                 jobChain: nestedJobChain ? nestedJobChain.path : vm.jobChain.path
             }];
-            if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
+            if (skip && !_.isEmpty(vm.taskHistoryRequestObj)) {
                 obj = vm.taskHistoryRequestObj;
             }
             if (node) {
@@ -3727,7 +3727,7 @@
                     vm.tree = res.folders;
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.orderFilters.expand_to)) {
+                    if (_.isEmpty(vm.orderFilters.expand_to)) {
                         vm.tree = res.folders;
                         filteredTreeData();
                     } else {
@@ -3849,7 +3849,7 @@
         function expandFolderData(data) {
             let obj = {jobschedulerId: vm.schedulerIds.selected, compact: true};
             obj.folders = [{folder: data.path, recursive: false}];
-            if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
+            if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
                 firstVolatileCall(obj, null, data);
                 return
             } else {
@@ -4158,7 +4158,7 @@
         function firstVolatileCall(obj, expandNode, data) {
             if(data)
                 vm.folderPath = data.name || '/';
-            if (vm.selectedFiltered && !vm.isEmpty(vm.selectedFiltered)) {
+            if (vm.selectedFiltered && !_.isEmpty(vm.selectedFiltered)) {
                 obj.regex = vm.selectedFiltered.regex;
                 obj = parseDate(obj);
             }else {

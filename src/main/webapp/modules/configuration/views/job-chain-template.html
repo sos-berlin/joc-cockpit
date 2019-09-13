@@ -1,12 +1,146 @@
-<div class="row">
+<div class="row" ng-controller="JobChainEditorCtrl">
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
         <span translate>label.jobChain</span>
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+            <i class="fa fa-plus"></i>
+            <span translate>joe.button.newJobChain</span>
+          </button>
+        </div>
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+            <i class="fa fa-plus"></i>
+            <span translate>joe.button.parameter</span>
+          </button>
+        </div>
       </div>
-      <form name="form" ng-submit="onSubmit()">
-
-      </form>
+      <div ng-if="!jobChain">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered " id="job">
+            <thead>
+            <tr>
+              <th class="tableexport-ignore chk">
+                <label class="md-check lg-check">
+                  <input type="checkbox" ng-model="jobsCheckAll.checkbox" ng-change="" class="ng-pristine ng-untouched ng-valid ng-empty">
+                  <i class="primary"></i>
+                </label>
+              </th>
+              <th><a><span translate>label.action</span>
+              </th>
+              <th ng-click="sortBy1('name')"><a><span translate>label.name</span>
+                <i ng-show="filter.sortBy == 'name' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('title')"><a><span translate>label.ordersRecoverable</span>
+                <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('jobschedulerId')"><a><span translate>label.visible</span>
+                <i ng-show="filter.sortBy == 'jobschedulerId' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'jobschedulerId' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+            </tr>
+            </thead>
+            <tbody >
+            <tr ng-repeat="job in jobs | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+              <td class="tableexport-ignore ">
+                <label class="md-check">
+                  <input type="checkbox" data-checklist-value="job" ng-model="checked" class="ng-pristine ng-valid ng-empty ng-touched" data-checklist-model="object.job">
+                  <i class="primary"></i>
+                </label>
+              </td>
+              <td class="tableexport-ignore">
+                <div class="btn-group dropdown">
+                  <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                      <a ng-click="" class="dropdown-item " translate="">Remove</a>
+                  </div>
+                </div>
+              </td>
+              <td ng-bind="jobchain.name"></td>
+              <td ng-bind="jobchain.ordersRecoverable"></td>
+              <td ng-bind="jobchain.visible"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div ng-if="jobChain">
+        <form name="form" role="form" ng-submit="onSubmit()" novalidate>
+          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainName</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.label.addJobChainName' | translate}}" autofocus
+                     name="jobChainName" ng-model="jobChain.name">
+              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                <div ng-message="required" translate>message.requiredError</div>
+                <div ng-message="maxlength" translate>message.tooLongError</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.title</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" required ng-maxlength="255" class="form-control" name="jobChainTitle" ng-model="jobChain.title">
+              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                <div ng-message="required" translate>message.requiredError</div>
+                <div ng-message="maxlength" translate>message.tooLongError</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.maxOrders</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="number" min="0" class="form-control" name="jobChainMaxOrders" ng-model="jobChain.maxOrders" required>
+              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                <div ng-message="required" translate>message.requiredError</div>
+                <div ng-message="maxlength" translate>message.tooLongError</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassJobChain</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" class="form-control" name="jobChainProcessClassJobChain" ng-model="jobChain.processClassJobChain">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassFilewatcher</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" class="form-control" name="jobChainProcessClassFilewatcher" ng-model="jobChain.processClassFilewatcher">
+              
+              <ub-autocomplete ng-model="result"  source="demo.someSource($keyword)"></ub-autocomplete>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
+            <div class="col-md-8 col-lg-6  p-t-sm">
+                <label class="md-check w">
+                  <input type="checkbox" name="jobChainOrdersRecoverable" ng-model="jobChain.ordersRecoverable" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                  <i class="primary"></i> <span translate="">OrdersRecoverable</span>
+                </label> 
+                <label class="md-check w">
+                  <input type="checkbox" name="jobChainDistributed" ng-model="jobChain.distributed" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                  <i class="primary"></i> <span translate="">Distributed</span>
+                </label>
+                <label class="md-check w">
+                  <input type="checkbox" name="jobChainVisible" ng-model="jobChain.visible" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                  <i class="primary"></i> <span translate="">Visible</span>
+                </label>           
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

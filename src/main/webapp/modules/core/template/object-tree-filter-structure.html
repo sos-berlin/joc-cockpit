@@ -16,10 +16,10 @@
                         <td style="white-space: nowrap">
                             <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
                                 <span>
-                                    <i ng-if="!row.branch.expanded && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
-                                    <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open"></i>
-                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0 && row.branch.type != 'WORKFLOW'" class="fa fa-folder"></i>
-                                    <i ng-if="row.branch.type == 'WORKFLOW'" class="fa fa-sitemap"></i>
+                                    <i ng-if="!row.branch.expanded && row.branch.type != 'WORKFLOW'" class="fa fa-folder w-15"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open w-15"></i>
+                                    <i ng-if="row.branch.expanded && row.branch.folders.length==0 && row.branch.type != 'WORKFLOW'" class="fa fa-folder w-15"></i>
+                                    <i ng-if="row.branch.type == 'WORKFLOW'" class="fa fa-sitemap w-15"></i>
                                     {{row.branch[expandingProperty.field] || '/' }}
                                 </span>
                             </span>

@@ -466,8 +466,11 @@
                 },
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     $ocLazyLoad.load([{
-                        files: ["js/xml-js.min.js", "js/xmldom.js"],
-                        serie: true
+                        insertBefore: '#load_styles_before',
+                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css"]
+                    }, {
+                        name: 'ui.tree',
+                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.js"]
                     }]);
                 }]
             },
@@ -481,15 +484,12 @@
             url: "/xml",
             controller: "XMLEditorCtrl",
             templateUrl: "modules/configuration/views/xml-editor.html",
-            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}" , parent: "app.configuration"},
+            ncyBreadcrumb: {label: "{{ 'XML Editor' | translate}}", parent: "app.configuration"},
             resolve: {
                 loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([{
-                        insertBefore: '#load_styles_before',
-                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.css"]
-                    }, {
-                        name: 'ui.tree',
-                        files: ["bower_components/angular-ui-tree/dist/angular-ui-tree.js"]
+                        files: ["js/xml-js.min.js", "js/xmldom.js"],
+                        serie: true
                     }, {
                         name: 'angularFileUpload',
                         files: ["js/angular-file-upload.min.js", "bower_components/ckeditor/ckeditor.js"]

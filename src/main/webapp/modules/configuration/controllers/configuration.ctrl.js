@@ -7,13 +7,13 @@
         .module('app')
         .controller('EditorConfigurationCtrl', EditorConfigurationCtrl)
         .controller('JOEEditorCtrl', JOEEditorCtrl)
-        .controller('XMLEditorCtrl', XMLEditorCtrl)
         .controller('JobEditorCtrl', JobEditorCtrl)
         .controller('JobChainEditorCtrl', JobChainEditorCtrl)
         .controller('OrderEditorCtrl', OrderEditorCtrl)
         .controller('ScheduleEditorCtrl', ScheduleEditorCtrl)
         .controller('ProcessClassEditorCtrl', ProcessClassEditorCtrl)
-        .controller('LockEditorCtrl', LockEditorCtrl);
+        .controller('LockEditorCtrl', LockEditorCtrl)
+        .controller('XMLEditorCtrl', XMLEditorCtrl);
 
     EditorConfigurationCtrl.$inject = ["$scope", "$rootScope", "$state"];
     function EditorConfigurationCtrl($scope, $rootScope, $state) {
@@ -32,12 +32,12 @@
                     let top = dom.position().top + 19;
                     const flag = top < 78;
                     top = top - $(window).scrollTop();
-                    $('.scroll-y').css({'height': 'calc(100vh - ' + top + 'px'})
+                    $('.scroll-y').css({'height': 'calc(100vh - ' + top + 'px'});
                     if (top < 96) {
                         top = 96;
                     }
                     $('.sticky').css('top', top);
-                    $('.tree-block').height('calc(100vh - ' + (top + 2) + 'px' + ')');
+                    $('.tree-block').height('calc(100vh - ' + top + 'px' + ')');
                     if (count < 5) {
                         if (flag) {
                             recursiveCheck();
@@ -85,34 +85,20 @@
     JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService"];
     function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService) {
         const vm = $scope;
-
         vm.tree = [];
-        vm.my_tree = {};
-        vm.expanding_property = {
-            field: "name"
-        };
-
-        vm.type = 'JOB';
 
         function init() {
             EditorService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ["JOB"]
+                types: ["LOCK"]
             }).then(function (res) {
                 vm.tree = res.folders;
                 if (vm.tree.length > 0) {
                     vm.tree[0].expanded = true;
                     updateObjects(vm.tree[0]);
                 }
-                /* angular.forEach(vm.tree, function (value) {
-                     value.expanded = true;
-                     if (value.folders) {
-                         value.folders = orderBy(value.folders, 'name');
-                     }
-                     updateObjects(value);
 
-               });*/
             }, function () {
 
             });
@@ -123,27 +109,17 @@
                 data.folders = [];
             }
             let arr = [{
-                name: 'Jobs',
-                path: data.path + '/Jobs',
-                object: 'Jobs',
-                children: [{name: 'Job1', type: 'job'}, {name: 'Job2', type: 'job'}]
+                name: 'Jobs', object: 'JOB',
+                children: [
+                    {name: 'Job1', type: 'JOB', isOrderJob: 'Yes', language: 'shell',}
+                ]
             },
-                {name: 'Job Chains', path: data.path + '/Job_Chains', object: 'Job Chains', children: []},
-                {name: 'Orders', path: data.path + '/Orders', object: 'Orders', children: []},
-                {
-                    name: 'Process Classes',
-                    path: data.path + '/Process+Classes',
-                    object: 'Process Classes',
-                    children: []
-                },
-                {name: 'Schedules', path: data.path + '/Schedules', object: 'Schedules', children: []},
-                {name: 'Locks', path: data.path + '/Locks', object: 'Locks', children: []},
-                {
-                    name: 'Pre/Post Processing',
-                    path: data.path + '/Pre/Post_Processing',
-                    object: 'Pre/Post Processing',
-                    children: []
-                }];
+                {name: 'Job Chains', object: 'JOBCHAIN', children: [{name: 'Job chain1', type: 'JOBCHAIN'}]},
+                {name: 'Orders', object: 'ORDER', children: []},
+                {name: 'Process Classes', object: 'PROCESSCLASS', children: []},
+                {name: 'Schedules', object: 'SCHEDULE', children: []},
+                {name: 'Locks', object: 'LOCK', children: []},
+                {name: 'Pre/Post Processing', object: 'PREPOSTPROCESSING', children: []}];
 
             data.folders = arr.concat(data.folders);
             if (data.folders) {
@@ -152,6 +128,7 @@
                         updateObjects(data.folders[i]);
                 }
             }
+
         }
 
         init();
@@ -159,7 +136,6 @@
         function navFullTree() {
             for (let i = 0; i < vm.tree.length; i++) {
                 vm.tree[i].selected1 = false;
-                vm.tree[i].jobChains = [];
                 if (vm.tree[i].expanded) {
                     traverseTree1(vm.tree[i]);
                 }
@@ -167,34 +143,283 @@
         }
 
         function traverseTree1(data) {
-            for (let i = 0; i < data.folders.length; i++) {
-                data.folders[i].selected1 = false;
-                data.folders[i].jobChains = [];
-                if (data.folders[i].expanded) {
-                    traverseTree1(data.folders[i]);
+            if(data.folders) {
+                for (let i = 0; i < data.folders.length; i++) {
+                    data.folders[i].selected1 = false;
+                    if (data.folders[i].expanded) {
+                        traverseTree1(data.folders[i]);
+                    }
+                }
+            } else{
+                if(data.children) {
+                    for (let i = 0; i < data.children.length; i++) {
+                        data.children[i].selected1 = false;
+                        if (data.children[i].expanded) {
+                            traverseTree1(data.children[i]);
+                        }
+                    }
                 }
             }
         }
 
         vm.treeHandler = function (data) {
-            if (vm.userPreferences.expandOption === 'both')
+            if (data.path) {
+                return;
+            }
+            if (vm.userPreferences.expandOption === 'both' && !data.type)
                 data.expanded = true;
             navFullTree();
             data.selected1 = true;
-            vm.type = data.object === 'Jobs' ? 'JOB' : data.object === 'Job Chains' ? 'JOBCHAIN' : data.object === 'Orders' ? 'ORDER' :
-                data.object === 'Schedules' ? 'SCHEDULE' : data.object === 'Process Classes' ? 'PROCESSCLASS' : 'LOCK';
-            
+
+            vm.type = data.object || data.type;
+            setTimeout(function () {
+                vm.$broadcast('NEW_OBJECT', data)
+            }, 70);
+
         };
-        vm.treeHandler1 = function (data) {
-/*            if (data.expanded) {
-               data.folders = orderBy(data.folders, 'name');
-            }*/
+
+        vm.toggleTree = function (data) {
+            data.expanded = !data.expanded;
         };
 
     }
 
-    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty", "FileUploader", "$sce"];
+    JobEditorCtrl.$inject = ["$scope", "$window"];
+    function JobEditorCtrl($scope, $window) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.jobs = [];
+        vm.languages = ['shell', 'java', 'dotnet', 'java:javascript', "perlScript", "powershell", "VBScript", "scriptcontrol:vbscript", "javax.script:rhino", "javax.script:ecmascript", "javascript"];
+        vm.logLevelValue = ['info', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
+        vm.stdErrLogLevelValue = ['info', 'Error'];
+        vm.histroyOnProcessValue = [0, 1, 2, 3, 4];
+        vm.functionalCodeValue = ['spooler_init','spooler_open','spooler_process','spooler_close','spooler_exit','spooler_on_error','spooler_on_success'];
+        vm.histroyWithLogValue = ['yes', 'no', 'gzip'];
+        vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
+        vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
+        vm.visibleValue = ['yes', 'no', 'never'];
+        vm.mailOnDelayAfterErrorValue = ['all', 'first_only', 'last_only', 'first_and_last_only'];
+        vm.paramObject = {params : []};
+        vm.lockObject = {params : []};
+        vm.monitorObject = {params : []};
+        vm.processingObject = {params : []};
+        vm.commandObject = {commands : []};
 
+        vm.sortBy1 = function(data){
+            vm.filter.sortBy = data;
+            vm.filter.sortReverse = !vm.filter.sortReverse;
+        };
+
+        function getName(list, name){
+            if(list.length === 0){
+                return name;
+            } else{
+                let flag = false;
+                for(let i =0; i < list.length; i++){
+                    if(list[i].name === name){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    return name;
+                }else{
+                    let _temp = list[list.length -1].name;
+                    let num = _temp.match(/\d+/g)[0];
+                    if(!num){
+                        num = 1;
+                    }else{
+                        num = (parseInt(num, 10) + 1)
+                    }
+
+                    return  _temp.replace(/[0-9]/g, '')+  num;
+                }
+            }
+        }
+
+        vm.createStandaloneJob = function () {
+            vm.job = {
+                name: getName(vm.jobs, 'Job1'),
+                isOrderJob: 'No',
+                language: 'shell',
+                type: 'JOB'
+            };
+            vm.jobs.push(vm.job);
+        };
+
+        vm.createJob = function (job) {
+            vm.job = job;
+        };
+
+        vm.createOrderJob = function () {
+
+            vm.job = {
+                name: getName(vm.jobs, 'Job1'),
+                isOrderJob: 'Yes',
+                language: 'shell',
+                type: 'JOB'
+            };
+            vm.jobs.push(vm.job);
+        };
+
+        vm.$on('NEW_OBJECT', function (evt, job) {
+            vm.jobs = job.children;
+            if (job.type) {
+                vm.job = job;
+            } else {
+                vm.job = undefined;
+            }
+        });
+
+        vm.openSidePanel = function (title) {
+            vm.obj = {type: title, title : 'joe.button.'+title};
+            if(title === 'parameter'){
+                vm.addParameter();
+            } else if(title === 'prePostProcessing'){
+                vm.addProcessing();
+            }else if(title === 'locksUsed'){
+                vm.addLock();
+            }else if(title === 'monitorsUsed'){
+                vm.addMonitor();
+            }else if(title === 'commands'){
+                vm.addCommand();
+            }else if(title === 'runTime') {
+                vm.order = vm.job;
+                vm.xml = '';
+            }
+        };
+
+        vm.closeSidePanel = function () {
+            vm.obj = {};
+        };
+
+        vm.addParameter = function () {
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (vm.paramObject.params) {
+                vm.paramObject.params.push(param);
+            }
+        };
+
+        vm.removeParams = function (index) {
+            vm.paramObject.params.splice(index, 1);
+        };
+
+        vm.addLock = function () {
+            let param = {
+                name: '',
+                exclusive: 'yes'
+            };
+            if (vm.lockObject.params) {
+                vm.lockObject.params.push(param);
+            }
+        };
+
+        vm.removeLock = function (index) {
+            vm.lockObject.params.splice(index, 1);
+        };
+
+        vm.addMonitor = function () {
+            let param = {
+                name: '',
+                ordering: 0
+            };
+            if (vm.monitorObject.params) {
+                vm.monitorObject.params.push(param);
+            }
+        };
+
+        vm.removeMonitor = function (index) {
+            vm.monitorObject.params.splice(index, 1);
+        };
+
+        vm.addProcessing = function () {
+            let param = {
+                name: '',
+                ordering: 0
+            };
+            if (vm.processingObject.params) {
+                vm.processingObject.params.push(param);
+            }
+        };
+
+        vm.removeProcessing = function (index) {
+            vm.processingObject.params.splice(index, 1);
+        };
+
+        vm.addCommand = function () {
+            let param = {
+                name: ''
+            };
+            if (vm.commandObject.commands) {
+                vm.commandObject.commands.push(param);
+            }
+        };
+
+        vm.removeCommand = function (index) {
+            vm.commandObject.commands.splice(index, 1);
+        };
+
+/*        $window.onclick = function($event) {
+            if(vm.obj.title) {
+                console.log($event)
+            }
+        }*/
+    }
+
+    JobChainEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function JobChainEditorCtrl($scope, $rootScope) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.jobChains = [];
+        vm.createNewJobChain = function () {
+            vm.jobChain = {
+                name : 'job_chain1',
+                ordersRecoverable: true,
+                visible: true
+            };
+        };
+
+    }
+
+    OrderEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function OrderEditorCtrl($scope, $rootScope) {
+
+    }
+
+    ScheduleEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function ScheduleEditorCtrl($scope, $rootScope) {
+
+    }
+
+    ProcessClassEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function ProcessClassEditorCtrl($scope, $rootScope) {
+
+    }
+
+    LockEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function LockEditorCtrl($scope, $rootScope) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.locks = [];
+
+        vm.createLock = function () {
+            vm.lock = {
+                name: 'Lock1',
+                maxNonExclusive: true,
+                nonExclusive: 0
+            };
+        };
+
+        vm.cancel = function(){
+            vm.lock = undefined;
+        };
+    }
+
+
+    XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty", "FileUploader", "$sce"];
     function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, $sce) {
         const vm = $scope;
 
@@ -773,7 +998,7 @@
             return attrsArr;
         }
 
-        vm.checkChildNode = function(_nodes) {
+        vm.checkChildNode = function (_nodes) {
             let node = _nodes.ref;
             let parentNode;
             vm.childNode = [];
@@ -1051,7 +1276,7 @@
             }
         }
 
-        vm.addChild = function(child, nodeArr, check) {
+        vm.addChild = function (child, nodeArr, check) {
             let attrs = checkAttributes(child.ref);
             let text = checkText(child.ref);
             let value = getValues(child.ref);
@@ -1090,7 +1315,6 @@
             if (nodeArr.ref === 'NotificationMail' || nodeArr.ref === 'Header') {
                 arrangeArr(nodeArr);
             }
-
             printArraya(false);
         };
 
@@ -2574,7 +2798,7 @@
                         }
                     }
                 }
-            } else if(tag.type === 'xs:integer'){                
+            } else if(tag.type === 'xs:integer'){
                 if (/[0-9]/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
@@ -2769,7 +2993,7 @@
                         }
                     }
                 }
-            } else if(tag.type === 'xs:integer'){                
+            } else if(tag.type === 'xs:integer'){
                 if (/[0-9]/.test(value)) {
                     vm.error = false;
                     tag = Object.assign(tag, {data: value});
@@ -2813,32 +3037,32 @@
                 }
             } else {
                 if (/[0-9]/.test(value)) {
-                  vm.error = false;
-                  tag = Object.assign(tag, {data: value});
-                  vm.autoValidate();
-                  if (tag.data !== undefined) {
-                    for (let key in tag) {
-                      if (key == 'data') {
-                        delete tag[key];
-                        vm.autoValidate();
-                      }
+                    vm.error = false;
+                    tag = Object.assign(tag, {data: value});
+                    vm.autoValidate();
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
                     }
-                  }
                 } else if (tag.use === 'required' && value === '') {
-                  vm.error = true;
-                  vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
-                  vm.errorName = tag.name;
-                  if (tag.data !== undefined) {
-                    for (let key in tag) {
-                      if (key == 'data') {
-                        delete tag[key];
-                        vm.autoValidate();
-                      }
+                    vm.error = true;
+                    vm.text = tag.name + ': ' + gettextCatalog.getString('xml.message.requiredField');
+                    vm.errorName = tag.name;
+                    if (tag.data !== undefined) {
+                        for (let key in tag) {
+                            if (key == 'data') {
+                                delete tag[key];
+                                vm.autoValidate();
+                            }
+                        }
                     }
-                  }
                 } else if (value == '') {
-                  tag = Object.assign(tag, {data: tag.defalut});
-                  vm.autoValidate();
+                    tag = Object.assign(tag, {data: tag.defalut});
+                    vm.autoValidate();
                 }
             }
         };
@@ -3370,7 +3594,7 @@
         }
 
         // Show all Child Nodes and search functionalities.
-        vm.showAllChildNode = function(node) {
+        vm.showAllChildNode = function (node) {
             vm.showAllChild = [];
             let _node = {ref: node.ref, parent: '#'};
             vm.showAllChild.push(_node);
@@ -3458,72 +3682,4 @@
         };
     }
 
-    JobEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function JobEditorCtrl($scope, $rootScope) {
-        const vm = $scope;
-        vm.filter = {'sortBy': 'name', sortReverse: false};
-        vm.jobs = [];
-        vm.languages = ['shell', 'java', 'dotnet', 'java:javascript', "perlScript", "powershell", "VBScript", "scriptcontrol:vbscript", "javax.script:rhino", "javax.script:ecmascript", "javascript"];
-        vm.logLevelValue = ['info', 'debug1', 'debug2', 'debug3', 'debug4', 'debug5', 'debug6', 'debug7', 'debug8', 'debug9'];
-        vm.stdErrLogLevelValue = ['info', 'Error'];
-        vm.histroyOnProcessValue = [0,1,2,3,4];
-        vm.histroyWithLogValue = ['yes', 'no', 'gzip'];
-        vm.ignoreSignalsValue = ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGHTRAP', 'SIGABRT', 'SIGIOT', 'SIGBUS', 'SIGFPE', 'SIGKILL', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGALRM', 'SIGTERM', 'SIGSTKFLT', 'SIGCHLD', 'SIGCONT', 'SIGSTOP', 'SIGTSTP', 'SIGTTIN', 'SIGTTOU', 'SIGURG', 'SIGXCPU', 'SIGXFSZ', 'SIGVTALRM', 'SIGPROF', 'SIGWINCH', 'SIGPOLL', 'SIGIO', 'SIGPWR', 'SIGSYS']
-        vm.priorityValue = ['idle', 'below normal', 'normal', 'above normal', 'high'];
-        vm.visibleValue = ['yes', 'no', 'never'];
-        vm.createStandaloneJob = function () {
-            vm.job = {
-                name: 'Job1',
-                order: 'No',
-                language: 'shell'
-            };
-        };
-
-        vm.createOrderJob = function () {
-            vm.job = {
-                name: 'Job1',
-                order: 'Yes',
-                language: 'shell'
-            };
-        };
-    }
-
-    JobChainEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function JobChainEditorCtrl($scope, $rootScope) {
-
-    }
-
-    OrderEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function OrderEditorCtrl($scope, $rootScope) {
-
-    }
-
-    ScheduleEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function ScheduleEditorCtrl($scope, $rootScope) {
-
-    }
-
-    ProcessClassEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function ProcessClassEditorCtrl($scope, $rootScope) {
-
-    }
-
-    LockEditorCtrl.$inject = ["$scope", "$rootScope"];
-    function LockEditorCtrl($scope, $rootScope) {
-        const vm = $scope;
-        vm.filter = {'sortBy': 'name', sortReverse: false};
-        vm.locks = [];
-
-        vm.createLock = function () {
-            vm.lock = {
-                name: 'Lock1',
-                maxNonExclusive: true,
-                nonExclusive: 0
-            };
-        };
-
-        vm.cancel = function(){
-            vm.lock = undefined;
-        };
-    }
 })();

@@ -325,7 +325,7 @@
                     vm.tree = res.folders;
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.jobChainFilters.expand_to)) {
+                    if (_.isEmpty(vm.jobChainFilters.expand_to)) {
                         vm.tree = res.folders;
                         filteredTreeData();
                     } else {
@@ -2908,7 +2908,7 @@
                 jobChain: jobChain.path
             }];
 
-            if (skip && !vm.isEmpty(vm.taskHistoryRequestObj)) {
+            if (skip && !_.isEmpty(vm.taskHistoryRequestObj)) {
 
                 obj = vm.taskHistoryRequestObj;
             } else {
@@ -3554,7 +3554,7 @@
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                    if (_.isEmpty(vm.jobFilters.expand_to)) {
                         vm.tree = angular.copy(res.folders);
                         filteredTreeData();
                     } else {
@@ -3600,7 +3600,7 @@
                         }
                         let folders = filterTreeData(jobStreamFolders);
 
-                        if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                        if (_.isEmpty(vm.jobFilters.expand_to)) {
                             vm.tree = angular.copy(folders);
 
                             filteredTreeData();
@@ -3613,7 +3613,7 @@
                         }
                         vm._tempTree = angular.copy(res.folders);
                     } else {
-                        if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                        if (_.isEmpty(vm.jobFilters.expand_to)) {
                             vm.tree = angular.copy(res.folders);
                             vm._tempTree = angular.copy(res.folders);
                             filteredTreeData();
@@ -3772,7 +3772,7 @@
                     }
                     let folders = filterTreeData(jobStreamFolders);
 
-                    if (vm.isEmpty(vm.jobFilters.expand_to)) {
+                    if (_.isEmpty(vm.jobFilters.expand_to)) {
                         vm.tree = angular.copy(folders);
                     } else {
                         vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(folders), vm.jobFilters.expand_to);
@@ -5974,7 +5974,6 @@
                 }, function () {
 
                 });
-
             });
         }
 
@@ -8913,7 +8912,8 @@
                 ],
                 "id": 0,
                 "jobStream": vm.selectedJobStream,
-                "markExpression": true
+                "markExpression": true,
+                "skipOutCondition": false
             }];
 
             let outObj = [{
@@ -8929,7 +8929,8 @@
                 ],
                 "id": 0,
                 "jobStream": vm.selectedJobStream,
-                "markExpression": true
+                "markExpression": true,
+                "skipOutCondition": false
             }];
 
             let flag = false;
@@ -9100,7 +9101,6 @@
                         }
                     }
                 }
-
             }
         }
 
@@ -9265,6 +9265,7 @@
                 _node.setAttribute('job', job.path);
                 _node.setAttribute('outconditions', JSON.stringify(job.inconditions[n].outconditions));
                 _node.setAttribute('markExpression', job.inconditions[n].markExpression);
+                _node.setAttribute('skipOutCondition', job.inconditions[n].skipOutCondition);
                 if (job.inconditions[n].inconditionCommands) {
                     _node.setAttribute('commands', JSON.stringify(job.inconditions[n].inconditionCommands));
                 }
@@ -9734,6 +9735,7 @@
                 let commands = cell.getAttribute('commands');
                 vm._expression.commands = JSON.parse(commands) || [];
                 vm._expression.markExpression = cell.getAttribute('markExpression') == 'true';
+                vm._expression.skipOutCondition = cell.getAttribute('skipOutCondition') == 'true';
             } else if (vm._expression.label === 'OutCondition') {
                 let events = cell.getAttribute('events');
                 vm._expression.events = JSON.parse(events) || [];
@@ -10005,6 +10007,7 @@
                                 }
                                 vm.jobs[i].inconditions[j].inconditionCommands = vm._expression.commands;
                                 vm.jobs[i].inconditions[j].markExpression = vm._expression.markExpression;
+                                vm.jobs[i].inconditions[j].skipOutCondition = vm._expression.skipOutCondition;
                                 ConditionService.updateInCondition({
                                     jobschedulerId: $scope.schedulerIds.selected,
                                     jobsInconditions: [{job: vm.jobs[i].path, inconditions: vm.jobs[i].inconditions}]

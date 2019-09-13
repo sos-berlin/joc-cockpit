@@ -3720,12 +3720,8 @@ input[type=search]:focus {
     border-bottom: 1px solid #007da6
 }
 
-.abc, .noExl {
+.noExl {
     cursor: default
-}
-
-.abc {
-    color: #000
 }
 
 .loading-img1 {
@@ -5443,6 +5439,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
 }
 .editor .rg-right {
     background-color: #fff !important;
+    width: 16px;
 }
 .editor .rg-right span{
     top: 42%;
@@ -5483,6 +5480,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
 .custom-icon{
     position: relative;
     top: 2px;
+    cursor: default;
 }
 .center-block.open {
     width: 650px;
@@ -5505,4 +5503,65 @@ span ul li a:active, span ul li a:hover {
 }
 span p{
     padding-left: 32px;
+}
+.w-15{
+    width: 15px;
+}
+#rightSideBar {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 582px;
+    overflow-y: auto;
+    margin: auto 0;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+}
+
+#rightSideBar .close-btn {
+    text-align: left;
+    position: relative;
+    left: 12px;
+    top: 12px;
+    margin-bottom: 32px;
+    font-size: 22px;
+    opacity: 0.3;
+    cursor: pointer;
+}
+#rightSideBar .close-btn:hover {
+    opacity: 1;
+}
+
+@-webkit-keyframes slideInRight {
+    0% {
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+        visibility: visible
+    }
+    100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0)
+    }
+}
+
+@keyframes slideInRight {
+    0% {
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+        visibility: visible
+    }
+    100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0)
+    }
+}
+
+.slideInRight {
+    -webkit-animation-name: slideInRight;
+    animation-name: slideInRight
 }
