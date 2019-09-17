@@ -6686,27 +6686,42 @@
             }
         };
 
+        vm.selectAll = function(){
+            if(vm.importJobstreamObj.all) {
+                for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
+                    for (let x = 0; x < vm.fileContentJobStreams[i].jobs.length; x++) {
+                        vm.importJobstreamObj.jobs.push(vm.fileContentJobStreams[i].jobs[x]);
+                    }
+                    $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', true);
+                }
+            }else{
+               for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
+                    $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', false);
+                }
+                vm.importJobstreamObj.jobs = [];
+            }
+        };
+
         vm.checkImportJobstreamFn = function(key, data) {
             if ($("#" + key) && $("#" + key).prop('checked')) {
                 for(let i=0; i < data.jobs.length; i++) {
                     vm.importJobstreamObj.jobs.push(data.jobs[i])
                 }
             } else {
-                let _temp = angular.copy(vm.importJobstreamObj.jobs);
-                angular.forEach(_temp, function (job, index) {
-                    for (var x = 0; x < vm.importJobstreamObj.jobs.length; x++) {
+                let len = angular.copy(vm.importJobstreamObj.jobs.length);
+                for (let i = 0; i < len; i++) {
+                    for (let x = 0; x < vm.importJobstreamObj.jobs.length; x++) {
                         if (key == vm.importJobstreamObj.jobs[x].jobStream) {
                             vm.importJobstreamObj.jobs.splice(x, 1);
                             break;
                         }
                     }
-                });
+                }
             }
         };
 
         var watcher8 = $scope.$watchCollection('importJobstreamObj.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-
                 for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
                     let count = 0;
                     for (let i = 0; i < newNames.length; i++) {
@@ -10873,7 +10888,39 @@
                     jobs: []
                 };
                 for(let j =0; j < vm.workflows[i].jobs.length; j++){
-                    obj.jobs.push({job:vm.workflows[i].jobs[j].path, inconditions : vm.workflows[i].jobs[j].inconditions, outconditions : vm.workflows[i].jobs[j].outconditions})
+                    let _job = vm.workflows[i].jobs[j];
+                    let in_conditions =[], out_conditions =[] ;
+                    for(let x =0 ; x < _job.inconditions.length;x++ ){
+                        let obj = {id:0};
+                        obj.conditionExpression = { expression :_job.inconditions[x].conditionExpression.expression};
+                        obj.inconditionCommands = [];
+                        obj.jobStream = _job.inconditions[x].jobStream;
+                        for(let y =0 ; y < _job.inconditions[x].inconditionCommands.length;y++ ){
+                            obj.inconditionCommands.push({
+                                "command": _job.inconditions[x].inconditionCommands[y].command,
+                                "commandParam":  _job.inconditions[x].inconditionCommands[y].commandParam,
+                                "id": 0
+                            });
+                        }
+                        in_conditions.push(obj);
+                    }
+
+                    for(let x =0 ; x < _job.outconditions.length;x++ ){
+                        let obj = {id:0};
+                        obj.conditionExpression = { expression :_job.outconditions[x].conditionExpression.expression};
+                        obj.outconditionEvents = [];
+                        obj.jobStream = _job.outconditions[x].jobStream;
+                        for(let y =0 ; y < _job.outconditions[x].outconditionEvents.length;y++ ){
+                            obj.outconditionEvents.push({
+                                "command": _job.outconditions[x].outconditionEvents[y].command,
+                                "event": _job.outconditions[x].outconditionEvents[y].event,
+                                "id": 0
+                            });
+                        }
+                        out_conditions.push(obj);
+                    }
+
+                    obj.jobs.push({job: _job.path, inconditions : in_conditions, outconditions : out_conditions})
                 }
                 jobStreams.push(obj);
             }

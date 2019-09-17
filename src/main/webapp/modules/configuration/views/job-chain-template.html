@@ -11,8 +11,13 @@
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
           <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
-            <i class="fa fa-plus"></i>
             <span translate>joe.button.parameter</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+            <span translate>joe.button.orders</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+            <span translate>joe.button.stepsAndNodes</span>
           </button>
         </div>
       </div>
@@ -21,14 +26,7 @@
           <table class="table table-hover table-bordered " id="job">
             <thead>
             <tr>
-              <th class="tableexport-ignore chk">
-                <label class="md-check lg-check">
-                  <input type="checkbox" ng-model="jobsCheckAll.checkbox" ng-change="" class="ng-pristine ng-untouched ng-valid ng-empty">
-                  <i class="primary"></i>
-                </label>
-              </th>
-              <th><a><span translate>label.action</span>
-              </th>
+              <th class="menu"><span translate>label.action</span></th>
               <th ng-click="sortBy1('name')"><a><span translate>label.name</span>
                 <i ng-show="filter.sortBy == 'name' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
@@ -50,24 +48,18 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="job in jobs | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
-              <td class="tableexport-ignore ">
-                <label class="md-check">
-                  <input type="checkbox" data-checklist-value="job" ng-model="checked" class="ng-pristine ng-valid ng-empty ng-touched" data-checklist-model="object.job">
-                  <i class="primary"></i>
-                </label>
-              </td>
-              <td class="tableexport-ignore">
+            <tr ng-repeat="jobchain in jobChains | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+              <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                      <a ng-click="" class="dropdown-item " translate="">Remove</a>
+                      <a ng-click="removeJobChain(jobchain)" class="dropdown-item " translate="">label.remove</a>
                   </div>
                 </div>
               </td>
-              <td ng-bind="jobchain.name"></td>
+              <td class="cursor text-primary-hover" ng-click="createJobChain(jobchain)" ng-bind="jobchain.name"></td>
               <td ng-bind="jobchain.ordersRecoverable"></td>
               <td ng-bind="jobchain.visible"></td>
             </tr>
@@ -111,15 +103,33 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassJobChain</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" class="form-control" name="jobChainProcessClassJobChain" ng-model="jobChain.processClassJobChain">
+              <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <input type="text" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox()" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
+                    <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-12 col-lg-12 autocomplete-col">
+                  <ul class="autocomplete-ul" ng-show="isShowPCJobChain">
+                    <li class="autocomplete-menu" ng-repeat="hpv in processClasses" ng-click="selectProcessClass('jobChain.processClassJobChain', hpv.name)">{{hpv.name}}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.processClassFilewatcher</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" class="form-control" name="jobChainProcessClassFilewatcher" ng-model="jobChain.processClassFilewatcher">
-              
-              <ub-autocomplete ng-model="result"  source="demo.someSource($keyword)"></ub-autocomplete>
+              <div class="row">
+                  <div class="col-md-12 col-lg-12">
+                      <input type="text" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox()" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
+                      <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
+                  </div>
+                  <div class="col-md-12 col-lg-12 autocomplete-col">
+                    <ul class="autocomplete-ul" ng-show="isShowPCFileWatcher">
+                      <li class="autocomplete-menu" ng-repeat="hpv in processClasses" ng-click="selectProcessClass('jobChain.processClassFilewatcher', hpv.name)">{{hpv.name}}</li>
+                    </ul>
+                  </div>
+                </div>
             </div>
           </div>
           <div class="form-group row">

@@ -15,6 +15,7 @@
           <table class="table table-hover table-bordered ">
             <thead>
             <tr>
+              <th class="menu"><span translate>label.action</span></th>
               <th ng-click="sortBy1('lock')" width="50%"><a><span translate>label.lock</span>
                 <i ng-show="filter.sortBy == 'lock' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
@@ -31,6 +32,16 @@
             </thead>
             <tbody >
             <tr ng-repeat="lock in locks | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+              <td class="menu">
+                <div class="btn-group dropdown">
+                  <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                    <a ng-click="removeLock(lock)" class="dropdown-item " translate="">label.remove</a>
+                  </div>
+                </div>
+              </td>
               <td ng-bind="lock.name"></td>
               <td ng-bind="lock.maxNonExclusive"></td>
             </tr>
@@ -73,3 +84,4 @@
     </div>
   </div>
 </div>
+9522267655

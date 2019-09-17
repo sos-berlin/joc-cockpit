@@ -252,7 +252,7 @@
                         <div ng-if="editor.eventType=='create'">
                             <div ng-repeat="outconditionEvent in condition.outconditionEvents;" ng-if="outconditionEvent.command == 'create'">
                                 <div class="col-sm-10 m-b-sm">
-                                    <input type="text" class="form-control" autofocus name="event{{$index}}" ng-model="outconditionEvent.event">
+                                    <input type="text" class="form-control" focus="{{$last && $index > 0}}" name="event{{$index}}" ng-model="outconditionEvent.event">
                                 </div>
                                 <div class="col-sm-1 p-l-0">
                                     <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>
@@ -262,7 +262,7 @@
                         <div ng-if="editor.eventType=='delete'">
                             <div ng-repeat="outconditionEvent in condition.outconditionEvents;"  ng-if="outconditionEvent.command == 'delete'">
                                 <div class="col-sm-10 m-b-sm">
-                                    <input type="text" class="form-control" autofocus name="event{{$index}}" ng-model="outconditionEvent.event">
+                                    <input type="text" class="form-control" focus="{{$last && $index > 0}}" name="event{{$index}}" ng-model="outconditionEvent.event">
                                 </div>
                                 <div class="col-sm-1 p-l-0">
                                     <a><i ng-click="removeOutconditionEvents(outconditionEvent)" class="fa fa-times m-t-sm text-hover-color"></i></a>

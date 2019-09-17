@@ -27,8 +27,9 @@
                         <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon"></i>
                         <i ng-if="node.object == 'SCHEDULE'" class="icon-daily-plan-icon custom-icon"></i>
                         <i ng-if="node.object == 'PREPOSTPROCESSING'" class="icon-calendar-icon custom-icon"></i>
-                        <span ng-click="treeHandler(node)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" class="p-l-xs">
+                        <span ng-click="treeHandler(node)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : !node.isOrderJob && node.type === 'JOB'}" class="p-l-xs">
                             {{node.name || node.path}}
+                            <i ng-if="node.disabled">({{'DISABLED' | translate}})</i>
                             <i ng-if="node.title"> - </i>
                             <span class="text-muted">{{node.title}}</span>
                         </span>
@@ -44,10 +45,10 @@
                                     <div translate>xml.button.paste</div>
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item">
+                                <a class="dropdown-item" ng-if="node.object">
                                     <div translate>xml.button.new</div>
                                 </a>
-                                <a class="dropdown-item">
+                                <a class="dropdown-item" ng-if="!node.object">
                                     <div translate>button.delete</div>
                                 </a>
                                 <div class="dropdown-divider"></div>
