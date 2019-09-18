@@ -6,11 +6,11 @@
         background: transparent !important;
     }
 </style>
-<div ng-click="refreshSession()">
+<div ng-click="refreshSession()" class="run-time-model">
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
-            <button ng-if="!editor.hidePervious && !editor.showCalendarTab" type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"
-                                                                                             class="fa fa-times-circle"></span>
+            <button ng-if="!editor.hidePervious && !editor.showCalendarTab" type="button" class="close" ng-click="cancel()" aria-label="Close">
+                <span aria-hidden="true" class="fa fa-times-circle"></span>
             </button>
             <h4 class="modal-title">
                 <span translate>label.setRunTimeOf</span>
@@ -20,9 +20,9 @@
             </h4>
         </div>
         <div class="modal-body p-a" style="min-height: 390px;">
-            <div ng-hide="editor.hidePervious || editor.showHolidayTab || editor.showCalendarTab">
+            <div ng-hide="editor.hidePervious || editor.showHolidayTab || editor.showCalendarTab || editor.showPlanned">
                 <div class="row">
-                    <div class="col-md-12" ng-if="display">
+                    <div class="col-md-12 extra-btn" ng-if="display">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
 
@@ -88,28 +88,28 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
-                        <button ng-if="permission.Calendar.edit.assign.nonworking && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.nonworking && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-sm" id="nonWorkingDays" ng-mouseover="changeText()"
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm" id="nonWorkingDays" ng-mouseover="changeText()"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey"
-                                ng-click="planFromRuntime()" translate>button.showPlanned
+                        <button type="button" class="btn btn-sm btn-grey m-t-sm"
+                                ng-click="planFromRuntime()"  translate>button.showPlanned
                         </button>
                     </div>
                     <div class="row col-md-12 m-t m-b-sm" ng-hide="order.at == 'later'">
@@ -218,7 +218,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center" ng-if="(!runtimeList || runtimeList.length==0) && holidayCalendar.length==0">
+                                <div class="text-center" ng-if="runtimeList.length==0 && holidayCalendar.length==0">
                                     <span translate>message.noFrequencyCalendarFound</span>
                                 </div>
                             </div>
@@ -229,7 +229,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="!editor.showHolidayTab && !editor.showCalendarTab && editor.hidePervious">
+            <div ng-if="!editor.showHolidayTab && !editor.showCalendarTab && editor.hidePervious && !editor.showPlanned">
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
@@ -273,17 +273,17 @@
                                                    data-checklist-value="'1'">
                                             <i class="primary"></i> <span translate>label.monday</span>
                                         </label>
-                                        <label class="md-check w">
+                                        <label class="md-check m-t-sm w">
                                             <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'2'">
                                             <i class="primary"></i> <span translate>label.tuesday</span>
                                         </label>
-                                        <label class="md-check w">
+                                        <label class="md-check m-t-sm w">
                                             <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'3'">
                                             <i class="primary"></i> <span translate>label.wednesday</span>
                                         </label>
-                                        <label class="md-check w">
+                                        <label class="md-check m-t-sm w">
                                             <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'4'">
                                             <i class="primary"></i> <span translate>label.thursday</span>
@@ -807,7 +807,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3" translate>label.weekDays</label>
+                        <label class="col-sm-3 m-t-sm" translate>label.weekDays</label>
 
                         <div class="col-sm-9">
                             <label class="md-check w">
@@ -815,17 +815,17 @@
                                        data-checklist-value="'1'">
                                 <i class="primary"></i> <span translate>label.monday</span>
                             </label>
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'2'">
                                 <i class="primary"></i> <span translate>label.tuesday</span>
                             </label>
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'3'">
                                 <i class="primary"></i> <span translate>label.wednesday</span>
                             </label>
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'4'">
                                 <i class="primary"></i> <span translate>label.thursday</span>
@@ -835,12 +835,12 @@
                                        data-checklist-value="'5'">
                                 <i class="primary"></i> <span translate>label.friday</span>
                             </label>
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'6'">
                                 <i class="primary"></i> <span translate>label.saturday</span>
                             </label>
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'7'">
                                 <i class="primary"></i> <span translate>label.sunday</span>
@@ -909,8 +909,53 @@
                     </mwl-calendar>
                 </div>
             </div>
+            <div ng-if="editor.showPlanned">
+                <div class="text-md text-center">
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView2" ng-click="getPlan(calendarView2,viewDate)">
+                        <i class="fa fa-angle-left fa-lg"></i>
+                    </a>
+                    {{ calendarTitle }}
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView2" ng-click="getPlan(calendarView2,viewDate)">
+                        <i class="fa fa-angle-right fa-lg"></i>
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
+                            <li class="nav-item">
+                                <a class="nav-link" ng-class="{'active' : calendarView2=='month'}" ng-model="calendarView2"
+                                   uib-btn-radio="'month'" ng-click="getPlan(calendarView2,viewDate)">
+                            <span class="nav-text text-dark p-b-sm">
+                                <span class="" translate>label.monthly</span>
+                            </span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown-separator">
+                                <span class="separator"></span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" ng-class="{'active' : calendarView2=='year'}" ng-model="calendarView2"
+                                   uib-btn-radio="'year'" ng-click="getPlan(calendarView2,viewDate)">
+                                    <span class="nav-text text-dark p-b-sm"><span class="" translate>label.yearly</span></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center" ng-show="isCaledarLoading" style="position: absolute; top:50%; left: 50%; transform: translate(-50%, -50%)" > <i class="fa fa-spin fa-spinner fa-lg m-t-lg"></i></div>
+                <div class="calendar-body">
+                    <mwl-calendar
+                            events="events"
+                            plan-items="planItems"
+                            view="calendarView2"
+                            view-date="viewDate"
+                            view-title="calendarTitle"
+                            cell-is-open="true">
+                    </mwl-calendar>
+                </div>
+            </div>
         </div>
-        <div class="modal-footer text-left" ng-if="!editor.showHolidayTab && !editor.showCalendarTab">
+        <div class="modal-footer text-left" ng-if="!editor.showHolidayTab && !editor.showCalendarTab && !editor.showPlanned">
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm extra-btn"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
@@ -930,12 +975,13 @@
                     class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
-        <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab">
-            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
+        <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab || editor.showPlanned" ng-hide="isCaledarLoading">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab && !editor.showPlanned">
                 <span translate>button.save</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab" translate>button.cancel</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="!editor.showHolidayTab"  translate>button.close</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab && !editor.showPlanned" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="back1()" ng-if="!editor.showHolidayTab && !editor.showPlanned"  translate>button.close</button>
+            <button type="button" class="btn btn-grey btn-sm" ng-click="editor.showPlanned = false;" ng-if="editor.showPlanned && !editor.showHolidayTab" translate>button.close</button>
         </div>
     </form>
 </div>

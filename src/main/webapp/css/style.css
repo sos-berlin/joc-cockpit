@@ -5054,14 +5054,6 @@ i.fa-hand-o-up:hover {
     content: "\e003";
 }
 
-.icon-bell-icon:before {
-    content: "\e004";
-}
-
-.icon-merge-icon:before {
-    content: "\e005";
-}
-
 .icon-orders-icon:before {
     content: "\e006";
 }
@@ -5098,10 +5090,6 @@ i.fa-hand-o-up:hover {
     content: "\e00e";
 }
 
-.icon-end-start-icon:before {
-    content: "\e00f";
-}
-
 .icon-export-icon:before {
     content: "\e010";
 }
@@ -5112,10 +5100,6 @@ i.fa-hand-o-up:hover {
 
 .icon-file-transfers-icon:before {
     content: "\e012";
-}
-
-.icon-fork-icon:before {
-    content: "\e013";
 }
 
 .icon-help-icon:before {
@@ -5587,21 +5571,27 @@ span p{
     animation-name: slideInRight
 }
 
-.joe-run-time .modal-header, .joe-run-time .extra-btn {
+.joe-run-time .run-time-model .modal-header, .joe-run-time .run-time-model .extra-btn {
     display: none;
 }
 
 .joe-run-time {
     margin-left: -15px;
     margin-right: -15px;
+    margin-top: -12px;
 }
 
-.joe-run-time .modal-body {
+.joe-run-time .run-time-model .modal-body {
     padding: 0 !important;
     min-height: 100% !important;
 }
 
-.joe-run-time .modal-footer {
+.joe-run-time .modal-dialog .modal-content {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.joe-run-time .run-time-model .modal-footer {
     padding-left: 0 !important;
     padding-right: 0 !important;
     border-top: none !important;

@@ -1540,11 +1540,13 @@
   "joe.button.standaloneJob": "Standalone Job",
   "joe.button.orderJob": "Order Job",
   "joe.button.prePostProcessing": "Pre/Post-Processing",
+  "joe.button.createProcesses": "Create Pre/Post-Processing",
   "joe.button.locksUsed": "Locks Used",
   "joe.button.monitorsUsed": "Monitors Used",
   "joe.button.runTime": "Run Time",
   "joe.button.commands": "Commands",
   "joe.button.newJobChain": "New Job Chain",
+  "joe.button.createOrder": "Create Order",
   "joe.button.createLock": "Create Lock",
   "joe.button.createProcessClass": "Create Process Class",
   "joe.button.createSchedule": "Create Schedule",
@@ -1567,6 +1569,7 @@
   "joe.label.exclusive": "Exclusive",
   "joe.label.monitor": "Monitor",
   "joe.label.ordering": "Ordering",
+  "joe.label.unlimited": "Unlimited",
   "joe.includes.button.addFile": "Add File",
   "joe.includes.button.new": "New",
   "joe.includes.button.removeFile": "Remove File",
@@ -1628,5 +1631,7 @@
   "joe.label.maxOrders": "MaxOrders",
   "joe.label.processClassJobChain": "Process Class Job Chain",
   "joe.label.processClassFilewatcher": "Process Class FileWatcher",
-  "joe.label.setBackCount" : "Set Back Count"
+  "joe.label.setBackCount": "Set Back Count",
+  "joe.label.prePostProcessing": "Pre/Post-Processing",
+  "joe.label.favourites": "Favourites"
 }

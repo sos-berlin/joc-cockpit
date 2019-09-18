@@ -27,6 +27,30 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
+              <th ng-click="sortBy1('title')"><a><span translate>label.title</span>
+              <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
+                 class="fa fa-caret-up "></i>
+              <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
+                 class="fa fa-caret-down "></i></a>
+            </th>
+              <th ng-click="sortBy1('substitute')"><a><span translate>label.substitute</span>
+                <i ng-show="filter.sortBy == 'substitute' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'substitute' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('validityFrom')"><a><span translate>label.validityFrom</span>
+                <i ng-show="filter.sortBy == 'validityFrom' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'validityFrom' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('validityTo')"><a><span translate>label.validityTo</span>
+                <i ng-show="filter.sortBy == 'validityTo' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'validityTo' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
             </tr>
             </thead>
             <tbody >
@@ -42,6 +66,10 @@
                 </div>
               </td>
               <td class="cursor text-primary-hover" ng-click="createSchedule(schedule)" ng-bind="schedule.name"></td>
+              <td ng-bind="schedule.title"></td>
+              <td ng-bind="schedule.substitute"></td>
+              <td ng-bind="schedule.fromDate"></td>
+              <td ng-bind="schedule.toDate"></td>
             </tr>
             </tbody>
           </table>

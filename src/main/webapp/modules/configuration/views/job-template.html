@@ -57,12 +57,6 @@
                 <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                <i ng-show="filter.sortBy == 'jobschedulerId' && !filter.sortReverse"
-                   class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'jobschedulerId' && filter.sortReverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
               <th ng-click="sortBy1('processClass')"><a><span translate>label.processClass</span>
                 <i ng-show="filter.sortBy == 'processClass' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
@@ -99,7 +93,6 @@
               </td>
               <td class="cursor text-primary-hover" ng-click="createJob(job)" ng-bind="job.name"></td>
               <td ng-bind="job.title"></td>
-              <td ng-bind="job.schedulerId"></td>
               <td ng-bind="job.processClass"></td>
               <td>{{job.isOrderJob ? 'Yes' : 'No'}}</td>
             </tr>

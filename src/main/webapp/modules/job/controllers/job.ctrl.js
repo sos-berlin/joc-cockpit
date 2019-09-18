@@ -5968,11 +5968,14 @@
                     backdrop: 'static',
                     windowClass: 'fade-modal'
                 });
-                modalInstance.result.then(function () {
+                modalInstance.result.then(function (res) {
                     setRunTime(job);
                     vm.reset();
-                }, function () {
-
+                }, function (res) {
+                    if(res === 'ok'){
+                        setRunTime(job);
+                        vm.reset();
+                    }
                 });
             });
         }
@@ -7951,8 +7954,11 @@
                 modalInstance.result.then(function () {
                     setRunTime(job);
                     vm.reset();
-                }, function () {
-
+                }, function (res) {
+                    if(res === 'ok'){
+                        setRunTime(job);
+                        vm.reset();
+                    }
                 });
             });
         }
@@ -8921,11 +8927,9 @@
                 "inconditionCommands": commands ? JSON.parse(commands) : [
                     {
                         "command": "startjob",
-                        "commandParam": "now",
-                        "id": 0
+                        "commandParam": "now"
                     }
                 ],
-                "id": 0,
                 "jobStream": vm.selectedJobStream,
                 "markExpression": true,
                 "skipOutCondition": false
@@ -8938,11 +8942,9 @@
                 "outconditionEvents":  [
                     {
                         "event": job.name,
-                        "command": 'create',
-                        "id": 0
+                        "command": 'create'
                     }
                 ],
-                "id": 0,
                 "jobStream": vm.selectedJobStream,
                 "markExpression": true,
                 "skipOutCondition": false
@@ -10891,30 +10893,28 @@
                     let _job = vm.workflows[i].jobs[j];
                     let in_conditions =[], out_conditions =[] ;
                     for(let x =0 ; x < _job.inconditions.length;x++ ){
-                        let obj = {id:0};
+                        let obj = {};
                         obj.conditionExpression = { expression :_job.inconditions[x].conditionExpression.expression};
                         obj.inconditionCommands = [];
                         obj.jobStream = _job.inconditions[x].jobStream;
                         for(let y =0 ; y < _job.inconditions[x].inconditionCommands.length;y++ ){
                             obj.inconditionCommands.push({
                                 "command": _job.inconditions[x].inconditionCommands[y].command,
-                                "commandParam":  _job.inconditions[x].inconditionCommands[y].commandParam,
-                                "id": 0
+                                "commandParam":  _job.inconditions[x].inconditionCommands[y].commandParam
                             });
                         }
                         in_conditions.push(obj);
                     }
 
                     for(let x =0 ; x < _job.outconditions.length;x++ ){
-                        let obj = {id:0};
+                        let obj = {};
                         obj.conditionExpression = { expression :_job.outconditions[x].conditionExpression.expression};
                         obj.outconditionEvents = [];
                         obj.jobStream = _job.outconditions[x].jobStream;
                         for(let y =0 ; y < _job.outconditions[x].outconditionEvents.length;y++ ){
                             obj.outconditionEvents.push({
                                 "command": _job.outconditions[x].outconditionEvents[y].command,
-                                "event": _job.outconditions[x].outconditionEvents[y].event,
-                                "id": 0
+                                "event": _job.outconditions[x].outconditionEvents[y].event
                             });
                         }
                         out_conditions.push(obj);

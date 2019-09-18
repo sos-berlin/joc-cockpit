@@ -1,35 +1,185 @@
-<div class="row">
+<div class="row" ng-controller="OrderEditorCtrl">
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>label.order</span>
+        <span class="text text-dark" translate>label.orders</span>
+        <div class="inline pull-right" style="margin-top: -2px">
+          <div ng-if="!order">
+            <button class="btn btn-sm btn-grey m-l-sm" ng-click="createOrder()">
+              <i class="fa fa-plus"></i>
+              <span translate>joe.button.createOrder</span>
+            </button>
+          </div>
+          <div ng-if="order">
+            <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+              <span translate>joe.button.parameter</span>
+            </button>
+            <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('runTime')">
+              <span translate>joe.button.runTime</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <form name="form" ng-submit="onSubmit()">
-        <div class="form-group row"
-             ng-class="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderName</label>
-          <div class="col-md-8 col-lg-6">
-            <input required class="form-control" placeholder="{{'placeholder.orderName' | translate}}"
-                   name="name" ng-model="order.name">
-            <div ng-if="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div ng-if="name.errors.required">
-                <div translate>message.requiredError</div>
+      <div ng-if="!order">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered " id="order">
+            <thead>
+            <tr>
+              <th class="menu"><span translate>label.action</span></th>
+              <th ng-click="sortBy1('name')"><a><span translate>label.orderId</span>
+                <i ng-show="filter.sortBy == 'name' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('title')"><a><span translate>label.title</span>
+                <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('jobChain')"><a><span translate>label.jobChain</span>
+                <i ng-show="filter.sortBy == 'jobChain' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'jobChain' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('priority')"><a><span translate>label.priority</span>
+                <i ng-show="filter.sortBy == 'priority' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'priority' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('state')"><a><span translate>label.state</span>
+                <i ng-show="filter.sortBy == 'state' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'state' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="order in orders | orderBy:filter.sortBy:filter.sortReverse">
+              <td>
+                <div class="btn-group dropdown">
+                  <button type="button" class="btn-drop more-option-h" dropdown=""
+                          data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                    <a ng-click="removeOrder(order)" class="dropdown-item "
+                       translate="">button.remove</a>
+                  </div>
+                </div>
+              </td>
+              <td class="cursor text-primary-hover" ng-click="createOrder(order)" ng-bind="order.orderId"></td>
+              <td ng-bind="order.title"></td>
+              <td ng-bind="order.jobChain"></td>
+              <td ng-bind="order.priority"></td>
+              <td ng-bind="order.state"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div ng-if="order">
+        <form name="form" role="form" ng-submit="onSubmit()" novalidate>
+          <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" required ng-maxlength="255" class="form-control"
+                     placeholder="Enter Order Id" autofocus
+                     name="name" ng-model="order.orderId">
+              <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
+                <div ng-message="required" translate>message.requiredError</div>
+                <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12 text-left m-t">
-            <button type="submit" class="btn btn-sm btn-primary" ng-disabled="form.$invalid" translate>button.submit</button>
-            <button type="button" class="btn btn-sm btn-grey m-l-sm" translate>button.clear</button>
+          <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" ng-maxlength="255" class="form-control" placeholder="Enter Order title"
+                     name="title" ng-model="order.title">
+              <div class="text-danger help-block" ng-if="form.title.$dirty"
+                   ng-messages="form.title.$error">
+                <div ng-message="maxlength" translate>message.tooLongError</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </form>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="text" class="form-control"
+                     name="jobChain" ng-model="order.jobChain">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.priority</label>
+            <div class="col-md-8 col-lg-6">
+              <input type="number" class="form-control" min="0"
+                     name="priority" ng-model="order.priority">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.state</label>
+            <div class="col-md-8 col-lg-6">
+              <select class="form-control" name="state" ng-model="order.state">
+                <option>Choose state</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.endState</label>
+            <div class="col-md-8 col-lg-6">
+              <select class="form-control" name="endState" ng-model="order.endState">
+                <option>Choose end state</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-<div id="rightSideBar" ng-if="previewCalendarView" class="slideInRight">
-    <div class="close-btn" ng-click="closeCalendarView()"></div>
-    <div class="text-center m-b text" ><i class="fa fa-calendar text-danger" ng-class="{'text-primary' : previewCalendarView.type == 'WORKING_DAYS'}"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm">{{previewCalendarView.name}} <i ng-if="previewCalendarView.title" class="m-l-sm"> - {{previewCalendarView.title}}</i></span></div>
-    <!--<app-preview-calendar-template [schedulerId]="schedulerId"></app-preview-calendar-template>-->
+  <div id="rightSideBar" ng-if="obj.title" class="slideInRight">
+    <div class="close-btn" ng-click="closeSidePanel()">
+      <i class="fa fa-times"></i>
+    </div>
+    <div class="text-center m-b text">
+      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+    </div>
+    <div class="p-a">
+      <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
+        <div class="form-group row m-b-0" ng-repeat="param in order.paramObject.params track by $index">
+          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+          <div class="col-sm-5 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.name"
+                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+          </div>
+
+          <div class="col-sm-6 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.value"
+                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+          </div>
+          <div class="col-sm-1 p-l-0">
+            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <a href class="text-u-l" ng-if="order.paramObject.params.length>0" ng-click="addParameter()"
+               translate>button.addAnotherParameter</a>
+            <a href class="text-u-l" ng-if="order.paramObject.params.length==0" ng-click="addParameter()"
+               translate>button.addParameter</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
+        <div class="joe-run-time" ng-controller="RuntimeEditorDialogCtrl">
+          <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

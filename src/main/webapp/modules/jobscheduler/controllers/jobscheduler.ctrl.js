@@ -3578,9 +3578,13 @@
             });
             modalInstance.result.then(function () {
                 createSchedule(schedule);
-            }, function () {
-                vm.substituteCalendars = [];
-                vm.runTimes = {};
+            }, function (res) {
+                if(res === 'ok') {
+                    createSchedule(schedule);
+                }else {
+                    vm.substituteCalendars = [];
+                    vm.runTimes = {};
+                }
             });
 
 
@@ -3676,9 +3680,15 @@
                     setRunTime(schedule);
                     vm.xml = undefined;
                     vm.calendars = [];
-                }, function () {
-                    vm.object.schedules = [];
-                    vm.calendars = [];
+                }, function (res) {
+                    if(res === 'ok') {
+                        setRunTime(schedule);
+                        vm.xml = undefined;
+                        vm.calendars = [];
+                    }else {
+                        vm.object.schedules = [];
+                        vm.calendars = [];
+                    }
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -5771,8 +5781,10 @@
             });
             modalInstance.result.then(function () {
                 createSchedule(schedule);
-            }, function () {
-
+            }, function (res) {
+                if(res === 'ok'){
+                    createSchedule(schedule);
+                }
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -5838,9 +5850,14 @@
                     setRunTime(schedule);
                     vm.xml = undefined;
                     vm.calendars = [];
-                }, function () {
-                    vm.xml = undefined;
-                    vm.calendars = [];
+                }, function (res) {
+                    if(res === 'ok'){
+                        setRunTime(schedule);
+                     
+                    }
+                        vm.xml = undefined;
+                        vm.calendars = [];
+                    
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

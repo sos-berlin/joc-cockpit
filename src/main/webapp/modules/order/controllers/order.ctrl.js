@@ -2332,8 +2332,10 @@
 
                     modalInstance.result.then(function () {
                         setRunTime(order);
-                    }, function () {
-
+                    }, function (res) {
+                        if(res === 'ok'){
+                            setRunTime(order);
+                        }
                     });
                 });
             } else if (action == 'suspend order') {
@@ -6612,8 +6614,10 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(order);
-                }, function () {
-
+                }, function (res) {
+                    if(res === 'ok'){
+                        setRunTime(order);
+                    }
                 });
             });
         }

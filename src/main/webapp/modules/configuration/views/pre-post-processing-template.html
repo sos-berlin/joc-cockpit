@@ -1,12 +1,259 @@
-<div class="row">
+<div class="row" ng-controller="ProcessingEditorCtrl">
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>label.prePostProcessing</span>
+        <span class="text text-dark" translate>joe.label.prePostProcessing</span>
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="!process">
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createProcess()" >
+            <i class="fa fa-plus"></i>
+            <span translate>joe.button.createProcesses</span>
+          </button>
+        </div>
       </div>
-      <form name="form" ng-submit="onSubmit()">
+      <div ng-if="!process">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered ">
+            <thead>
+            <tr>
+              <th class="menu"><span translate>label.action</span></th>
+              <th ng-click="sortBy1('name')" width="50%"><a><span translate>label.name</span>
+                <i ng-show="filter.sortBy == 'name' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+              <th ng-click="sortBy1('ordering')" width="50%"><a><span translate>joe.label.ordering</span>
+                <i ng-show="filter.sortBy == 'ordering' && !filter.sortReverse"
+                   class="fa fa-caret-up "></i>
+                <i ng-show="filter.sortBy == 'ordering' && filter.sortReverse"
+                   class="fa fa-caret-down "></i></a>
+              </th>
+            </tr>
+            </thead>
+            <tbody >
+            <tr ng-repeat="process in processes | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+              <td class="menu">
+                <div class="btn-group dropdown">
+                  <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                    <a ng-click="removeProcess(process)" class="dropdown-item " translate="">label.remove</a>
+                  </div>
+                </div>
+              </td>
+              <td ng-bind="process.name"></td>
+              <td ng-bind="process.maxNonExclusive"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div ng-if="process">
+        <form name="form">
+          <div class="form-group row"
+               ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
+            <label class="col-md-2 col-lg-3 form-control-label" translate>label.name</label>
+            <div class="col-md-6 col-lg-6">
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Process name"
+                     name="name" ng-model="process.name" autocomplete="false">
+              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                <div ng-message="required" translate>message.requiredError</div>
+                <div ng-message="maxlength" translate>message.tooLongError</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row m-b-sm m-t">
+            <label class="col-md-2 col-lg-3" translate>joe.label.ordering</label>
+            <div class="col-md-6 col-lg-6">
+                <input type="number" class="form-control" ng-model="process.ordering" name="ordering" min="0">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.favourites</label>
+            <div class="col-md-6 col-lg-6">
+              <select class="form-control" name="favourites" ng-model="process.favourites">
+                <option ng-repeat="fav in favourites" value="{{fav}}">{{fav}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.language</label>
+            <div class="col-md-8 col-lg-6">
+              <select class="form-control" name="language" ng-model="process.language">
 
-      </form>
+                <option ng-repeat="lang in languages" value="{{lang}}">{{lang}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="p-a-sm m-l-xs m-r-xs p-t-0">
+              <div class="b-b">
+                <ul class="nav nav-tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>joe.tab.script</a>
+                  </li>
+                  <li class="nav-item"
+                      ng-if="process.language == 'java' || process.language == 'dotnet' || process.language == 'java:javascript' || process.language == 'javax.script:rhino' || process.language == 'javax.script:ecmascript'">
+                    <a class="nav-link" href data-toggle="tab" data-target="#dynamic" translate>{{process.language
+                      == 'dotnet' ? 'DotNet' : 'Java'}}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>joe.tab.includes</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-content p-t-sm">
+                <div class="tab-pane animated fadeIn active" id="tab1">
+                  <div class="b-a p-a-sm bg-transparent">
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
+                      <div class="col-md-8 col-lg-10">
+                        <select class="form-control"
+                                ng-disabled="process.language=='shell' || process.language=='java' || process.language=='dotnet'"
+                                name="functionCodeSnippets" ng-model="process.functionCodeSnippets">
+                          <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
+                            {{fcv}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <textarea rows="10" class="form-control"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane animated fadeIn" id="dynamic">
+                  <div class="b-a p-a-sm bg-transparent">
+                    <div ng-if="process.language !== 'dotnet'">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
+                        <div class="col-md-8 col-lg-10">
+                          <input type="text" class="form-control" name="classname"
+                                 ng-model="process.classname">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
+                        <div class="col-md-8 col-lg-10">
+                          <input type="text" class="form-control" name="classpath"
+                                 ng-model="process.classpath">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
+                        <div class="col-md-8 col-lg-10">
+                          <input type="text" class="form-control" name="javaOptions"
+                                 ng-model="process.javaOptions">
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-if="process.language === 'dotnet'">
+                      <div class="form-group row">
+                        <label class="col-md-4 col-lg-2 form-control-label"
+                               translate>Dll</label>
+                        <div class="col-md-8 col-lg-10">
+                          <input type="text" class="form-control" name="dll"
+                                 ng-model="process.dll">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-lg-2 form-control-label"
+                               translate>Class</label>
+                        <div class="col-md-8 col-lg-10">
+                          <input type="text" class="form-control" name="class"
+                                 ng-model="process.class">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane animated fadeIn" id="tab2">
+                  <div class="b-a p-a-sm bg-transparent">
+                    <div class="row">
+                      <div class="col-md-12 m-b-sm">
+                        <div class="pull-right">
+                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="addFile()">
+                            <i class="fa fa-plus"></i>
+                            <span translate>joe.includes.button.addFile</span>
+                          </button>
+                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="new()">
+                            <i class="fa fa-plus"></i>
+                            <span translate>joe.includes.button.new</span>
+                          </button>
+                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="removeFile()">
+                            <i class="fa fa-trash"></i>
+                            <span translate>joe.includes.button.removeFile</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-4 col-lg-2">
+                            <div class="row">
+                              <div class="col-md-4 col-lg-2 p-t-sm">
+                                <input type="checkbox" class="form-control text-left"
+                                       name="processIncludeFilePosition"
+                                       ng-model="process.includes.filePosition">
+                              </div>
+                              <div class="col-md-8 col-lg-10">
+                                <label class="form-control-label" translate>joe.includes.label.fromHotFolder</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-8 col-lg-10">
+                            <input type="text" class="form-control"
+                                   name="processIncludeFilePath"
+                                   ng-model="process.includes.filePath">
+                          </div>
+                          <div class="col-md-12">
+                            <hr class="m-t-0 m-b-sm">
+                          </div>
+                          <div class="col-12">
+                            <table class="table table-hover table-bordered "
+                                   id="joeIncludeFile">
+                              <thead>
+                              <th class="tableexport-ignore menu">
+                                <input type="checkbox">
+                              </th>
+                              <th class="tableexport-ignore menu">
+                                <span translate>joe.includes.label.name</span>
+                              </th>
+                              <th class="tableexport-ignore menu">
+                                <span translate>joe.includes.label.filetype</span>
+                              </th>
+                              </thead>
+                              <tbody>
+                              <tr ng-repeat="file in process.includeFiles | orderBy:filter.sortBy:filter.sortReverse">
+                                <td>
+                                  <input type="checkbox">
+                                </td>
+                                <td class="p-l-0">
+                                  <span class="show-in-single-line">
+                                    <span class="text-dark">file.name</span>
+                                  </span>
+                                </td>
+                                <td class="p-l-0">
+                                  <span class="show-in-single-line">
+                                    <span class="text-dark">file.type</span>
+                                  </span>
+                                </td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

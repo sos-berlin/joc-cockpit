@@ -1845,6 +1845,10 @@
                 $timeout.cancel(eventTimeOut);
             $('.cluster-rect').popover('dispose');
         });
+
+        vm.$on('Close-Model', function (evt, arg) {
+            $uibModalStack.dismissAll(arg);
+        });
     }
 
     ConfigurationCtrl.$inject = ['$scope', 'JobService', 'JobChainService', 'OrderService', 'ScheduleService', 'ResourceService', '$uibModalInstance', '$sce'];
@@ -4126,6 +4130,7 @@
     function RuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService, $uibModal, RuntimeService) {
         const vm = $scope;
         vm.calendarView = 'year';
+        vm.calendarView2 = 'month';
         var dom_parser = new DOMParser();
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
@@ -4299,13 +4304,15 @@
                     if (vm.required) {
                         if (vm.comments.comment) {
                             setCalendarToRuntime();
-                            $uibModalInstance.close('ok');
+                          //  $uibModalInstance.close('ok');
+                            $rootScope.$broadcast('Close-Model','ok')
                         } else {
                             vm.logError = true;
                         }
                     } else {
                         setCalendarToRuntime();
-                        $uibModalInstance.close('ok');
+                       // $uibModalInstance.close('ok');
+                        $rootScope.$broadcast('Close-Model','ok')
                     }
                 }
             } catch (e) {
@@ -4318,7 +4325,8 @@
         };
 
         vm.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+           // $uibModalInstance.dismiss('cancel');
+            $rootScope.$broadcast('Close-Model','cancel')
         };
 
         var selectedMonths = [];
@@ -4426,9 +4434,12 @@
         });
         var watcher4 = vm.$watchCollection('runTime.nationalHoliday', function (newNames) {
             if (newNames) {
-                vm.holidayDates = [];
-                if (vm._tempHoliday)
+
+                if (vm._tempHoliday) {
                     vm.holidayDates = angular.copy(vm._tempHoliday);
+                } else{
+                    vm.holidayDates = [];
+                }
                 if (newNames.length > 0) {
                     for (let i = 0; i < newNames.length; i++) {
                         var x = new Date(newNames[i]);
@@ -6234,8 +6245,6 @@
                     }
                 });
             }
-
-
             if (vm.calPeriod && vm.calPeriod.length) {
                 vm.calPeriod = [];
                 resetPeriodObj(run_time);
@@ -9423,6 +9432,7 @@
             vm.editor.showHolidayTab = true;
             vm.editor.showCalendarTab = false;
             vm._tempHoliday = angular.copy(vm.holidayDates);
+            vm.runTime.year = vm.runTime.year ? vm.runTime.year : vm.calendarTitle;
         };
 
         vm.showScheduleTab = function () {
@@ -10748,8 +10758,13 @@
             });
         }
 
+
+        vm.calendarTitle = new Date().getFullYear();
         vm.planFromRuntime = function () {
+            vm.calendarTitle = new Date().getFullYear();
+            vm.viewDate = new Date();
             vm.isCaledarLoading = true;
+            vm.editor.showPlanned = true;
             if (vm.order) {
                 vm._job = vm.order;
             } else {
@@ -10769,13 +10784,6 @@
                 vm.isCaledarLoading = false;
             }, function () {
                 vm.isCaledarLoading = false;
-            });
-            $uibModal.open({
-                templateUrl: 'modules/core/template/calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
             });
         };
 
@@ -11295,9 +11303,9 @@
         });
     }
 
-    JobRuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', 'toasty', '$timeout', 'gettextCatalog', '$window', 'RuntimeService', '$filter'];
+    JobRuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', 'toasty', '$timeout', 'gettextCatalog', '$window', 'RuntimeService'];
 
-    function JobRuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, RuntimeService, $filter) {
+    function JobRuntimeEditorDialogCtrl($scope, $rootScope, toasty, $timeout, gettextCatalog, $window, RuntimeService) {
         const vm = $scope;
         vm.calendarView = 'year';
         var dom_parser = new DOMParser();
@@ -11305,6 +11313,7 @@
         vm.minDate.setDate(vm.minDate.getDate() - 1);
         vm.logError = false;
         vm.Math = Math;
+        vm.calendarTitle = new Date().getFullYear();
 
         vm.editor = {};
         vm.editor.hidePervious = false;
@@ -14956,6 +14965,7 @@
             vm.editor.showHolidayTab = true;
             vm.editor.showCalendarTab = false;
             vm._tempHoliday = angular.copy(vm.holidayDates);
+            vm.runTime.year = vm.runTime.year ? vm.runTime.year : vm.calendarTitle;
         };
 
         vm.holidayDates = [];
@@ -15450,11 +15460,10 @@
         });
     }
 
-
     CalendarEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', '$window', '$filter', 'CalendarService', '$uibModal', 'gettextCatalog', 'toasty', 'RuntimeService'];
 
     function CalendarEditorDialogCtrl($scope, $rootScope, $uibModalInstance, $window, $filter, CalendarService, $uibModal, gettextCatalog, toasty, RuntimeService) {
-        var vm = $scope;
+        const vm = $scope;
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
         vm.logError = false;
@@ -16578,7 +16587,7 @@
     ClientLogCtrl.$inject = ['$scope', '$window', '$interval'];
 
     function ClientLogCtrl($scope, $window, $interval) {
-        var interval = $interval(function () {
+        const interval = $interval(function () {
             $scope.clientLogs = JSON.parse($window.localStorage.clientLogs);
         }, 500);
         $scope.$on('$destroy', function () {

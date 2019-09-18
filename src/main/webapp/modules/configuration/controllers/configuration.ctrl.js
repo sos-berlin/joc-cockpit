@@ -13,6 +13,7 @@
         .controller('ScheduleEditorCtrl', ScheduleEditorCtrl)
         .controller('ProcessClassEditorCtrl', ProcessClassEditorCtrl)
         .controller('LockEditorCtrl', LockEditorCtrl)
+        .controller('ProcessingEditorCtrl', ProcessingEditorCtrl)
         .controller('XMLEditorCtrl', XMLEditorCtrl);
 
     EditorConfigurationCtrl.$inject = ["$scope", "$rootScope", "$state"];
@@ -93,7 +94,7 @@
             EditorService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ["LOCK"]
+                types: ["JOB"]
             }).then(function (res) {
                 vm.tree = res.folders;
                 if (vm.tree.length > 0) {
@@ -113,10 +114,14 @@
             let arr = [{
                 name: 'Jobs', object: 'JOB',
                 children: [
-                    {name: 'job1', type: 'JOB', isOrderJob: true, language: 'shell',}
+                    {name: 'job1', type: 'JOB', isOrderJob: true, language: 'shell', at: 'now'}
                 ]
             },
-                {name: 'Job Chains', object: 'JOBCHAIN', children: [{name: 'job_chain1', type: 'JOBCHAIN'}]},
+                {
+                    name: 'Job Chains', object: 'JOBCHAIN', children: [
+                        {name: 'job_chain1', type: 'JOBCHAIN', ordersRecoverable: true, visible: true}
+                    ]
+                },
                 {name: 'Orders', object: 'ORDER', children: []},
                 {name: 'Process Classes', object: 'PROCESSCLASS', children: []},
                 {name: 'Schedules', object: 'SCHEDULE', children: []},
@@ -130,7 +135,6 @@
                         updateObjects(data.folders[i]);
                 }
             }
-
         }
 
         init();
@@ -184,13 +188,13 @@
             data.expanded = !data.expanded;
         };
 
-        vm.getName = function (list, name) {
+        vm.getName = function (list, name, key) {
             if (list.length === 0) {
                 return name;
             } else {
                 let flag = false;
                 for (let i = 0; i < list.length; i++) {
-                    if (list[i].name === name) {
+                    if (list[i][key] === name) {
                         flag = true;
                         break;
                     }
@@ -198,7 +202,7 @@
                 if (!flag) {
                     return name;
                 } else {
-                    let _temp = list[list.length - 1].name;
+                    let _temp = list[list.length - 1][key];
                     let num = _temp.match(/\d+/g)[0];
                     if (!num) {
                         num = 1;
@@ -209,13 +213,19 @@
                     return _temp.replace(/[0-9]/g, '') + num;
                 }
             }
-        }
+        };
 
+        vm.addObject = function (object) {
+            console.log(object);
+        };
+        vm.removeObject = function (object) {
+            console.log(object);
+        };
     }
 
-    JobEditorCtrl.$inject = ["$scope", "$window"];
+    JobEditorCtrl.$inject = ["$scope"];
 
-    function JobEditorCtrl($scope, $window) {
+    function JobEditorCtrl($scope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobs = [];
@@ -237,9 +247,10 @@
 
         vm.createStandaloneJob = function () {
             vm.job = {
-                name: vm.getName(vm.jobs, 'job1'),
+                name: vm.getName(vm.jobs, 'job1', 'name'),
                 isOrderJob: false,
                 language: 'shell',
+                at: 'now',
                 type: 'JOB'
             };
             vm.jobs.push(vm.job);
@@ -250,13 +261,8 @@
         };
 
         vm.createOrderJob = function () {
-            vm.job = {
-                name: vm.getName(vm.jobs, 'job1'),
-                isOrderJob: true,
-                language: 'shell',
-                type: 'JOB'
-            };
-            vm.jobs.push(vm.job);
+            vm.createStandaloneJob();
+            vm.job.isOrderJob = true;
         };
 
         vm.removeJob = function (job) {
@@ -398,13 +404,7 @@
         vm.filter = {'sortBy': 'name', sortReverse: false};
         vm.jobChains = [];
         vm.processClass = [];
-        vm.createNewJobChain = function () {
-            vm.jobChain = {
-                name : 'job_chain1',
-                ordersRecoverable: true,
-                visible: true
-            };
-        };
+
         var timeout= null;
         vm.getData = function(data, tag) {
             clearTimeout(timeout);
@@ -421,7 +421,7 @@
                         vm.isShowPCFileWatcher = true;
                     }
                     vm.processClasses = result.processClasses;
-                    console.log(result.processClasses, vm.processClasses);
+                   // console.log(result.processClasses, vm.processClasses);
                 }, function () {
                     vm.loading = false;
                 });
@@ -431,7 +431,7 @@
         vm.closeSearchBox = function(){
             vm.isShowPCJobChain = false;
             vm.isShowPCFileWatcher = false;
-        }
+        };
 
         vm.selectProcessClass = function(tag, data) {
             if(tag == 'jobChain.processClassJobChain') {
@@ -445,12 +445,26 @@
 
         vm.createNewJobChain = function () {
             vm.jobChain = {
-                name: vm.getName(vm.jobChains, 'job_chain1'),
+                name: vm.getName(vm.jobChains, 'job_chain1', 'name'),
                 ordersRecoverable: true,
                 visible: true,
                 type: 'JOBCHAIN'
             };
             vm.jobChains.push(vm.jobChain);
+        };
+
+        vm.createOrder= function () {
+            vm.order = {
+                name : '1',
+            };
+        };
+
+        vm.createNode = function () {
+            vm.jobChain = {
+                name : 'job_chain1',
+                ordersRecoverable: true,
+                visible: true
+            };
         };
 
         vm.removeJobChain = function (jobChain) {
@@ -476,6 +490,76 @@
     OrderEditorCtrl.$inject = ["$scope", "$rootScope"];
 
     function OrderEditorCtrl($scope, $rootScope) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.orders = [];
+
+        vm.sortBy1 = function (data) {
+            vm.filter.sortBy = data;
+            vm.filter.sortReverse = !vm.filter.sortReverse;
+        };
+
+        vm.createOrder = function (order) {
+            if(order) {
+                vm.order = order;
+            }else{
+                vm.order = {
+                    orderId: vm.getName(vm.orders, '1', 'orderId'),
+                    at: 'now',
+                    type: 'ORDER'
+                };
+                vm.orders.push(vm.order);
+            }
+        };
+
+
+        vm.removeOrder = function (order) {
+            for (let i = 0; i < vm.orders.length; i++) {
+                if (vm.orders[i].orderId === order.orderId) {
+                    vm.orders.splice(i, 1);
+                    break;
+                }
+            }
+        };
+
+        vm.$on('NEW_OBJECT', function (evt, order) {
+            vm.orders = order.children || [];
+            if (order.type) {
+                vm.order = order;
+            } else {
+                vm.order = undefined;
+            }
+        });
+
+        vm.openSidePanel = function (title) {
+            vm.obj = {type: title, title: 'joe.button.' + title};
+            if (title === 'parameter') {
+                if (!vm.order.paramObject || vm.order.paramObject.params.length === 0) {
+                    vm.addParameter();
+                }
+            } else if (title === 'runTime') {
+                vm.xml = vm.order.runTime;
+            }
+        };
+
+        vm.closeSidePanel = function () {
+            vm.obj = {};
+        };
+
+        vm.addParameter = function () {
+            let param = {
+                name: '',
+                value: ''
+            };
+            if (!vm.order.paramObject) {
+                vm.order.paramObject = {params: []}
+            }
+            vm.order.paramObject.params.push(param);
+        };
+
+        vm.removeParams = function (index) {
+            vm.order.paramObject.params.splice(index, 1);
+        };
 
     }
 
@@ -488,7 +572,7 @@
 
         vm.createSchedule = function () {
             vm.schedule = {
-                name: vm.getName(vm.schedules, 'schedule1'),
+                name: vm.getName(vm.schedules, 'schedule1','name'),
                 maxProcess: 0,
                 type: 'SCHEDULE'
             };
@@ -533,7 +617,7 @@
 
         vm.createProcessClass = function () {
             vm.processClass = {
-                name: vm.getName(vm.processClasses, 'process_class1'),
+                name: vm.getName(vm.processClasses, 'process_class1', 'name'),
                 maxProcess: 0,
                 type: 'PROCESSCLASS'
             };
@@ -568,7 +652,7 @@
 
         vm.createLock = function () {
             vm.lock = {
-                name: vm.getName(vm.locks, 'lock1'),
+                name: vm.getName(vm.locks, 'lock1', 'name'),
                 maxNonExclusive: true,
                 nonExclusive: 0,
                 type: 'LOCK'
@@ -596,6 +680,44 @@
         });
     }
 
+    ProcessingEditorCtrl.$inject = ["$scope", "$rootScope"];
+
+    function ProcessingEditorCtrl($scope, $rootScope) {
+        const vm = $scope;
+        vm.filter = {'sortBy': 'name', sortReverse: false};
+        vm.processes = [];
+        vm.languages = ['java', 'dotnet', 'java:javascript', "perlScript", "powershell", "VBScript", "scriptcontrol:vbscript", "javax.script:rhino", "javax.script:ecmascript", "javascript"];
+        vm.favourites = ['configuration_monitor', 'create_event_monitor'];
+
+        vm.createProcess = function () {
+            vm.process = {
+                name: vm.getName(vm.processes, 'process1', 'name'),
+                language: 'java',
+                ordering: 0,
+                type: 'PREPOSTPROCESSING'
+            };
+
+            vm.processes.push(vm.process);
+        };
+
+        vm.removeProcess = function (process) {
+            for (let i = 0; i < vm.processes.length; i++) {
+                if (vm.processes[i].name === process.name) {
+                    vm.processes.splice(i, 1);
+                    break;
+                }
+            }
+        };
+
+        vm.$on('NEW_OBJECT', function (evt, process) {
+            vm.processes = process.children || [];
+            if (process.type) {
+                vm.process = process;
+            } else {
+                vm.process = undefined;
+            }
+        });
+    }
 
     XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty", "FileUploader", "$sce"];
 
