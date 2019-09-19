@@ -1,8 +1,9 @@
-<div class="row" ng-controller="ProcessClassEditorCtrl">
+<div class="row">
     <div class="col-md-12">
         <div class="box p-a">
             <div class="b-b p-b m-b">
-                <span translate>label.processClass</span>
+                <span class="text text-dark" ng-if="!processClass.name" translate>label.processClasses</span>
+                <span class="text" ng-if="processClass.name">{{processClass.name}}</span>
                 <div class="inline pull-right" style="margin-top: -2px" ng-if="!processClass">
                     <button class="btn btn-sm btn-grey m-l-sm" ng-click="createProcessClass()">
                         <i class="fa fa-plus"></i>
@@ -51,17 +52,14 @@
             </div>
             <div ng-if="processClass">
                 <form name="form">
-                    <div class="form-group row"
-                         ng-class="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.processClass</label>
                         <div class="col-md-8 col-lg-6">
-                            <input type="text" required class="form-control" placeholder="Enter process class name"
-                                   autocomplete="false"
+                            <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter process class name"
                                    name="name" ng-model="processClass.name">
-                            <div ng-if="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-                                <div ng-if="name.errors.required">
-                                    <div translate>message.requiredError</div>
-                                </div>
+                            <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                                <div ng-message="required" translate>message.requiredError</div>
+                                <div ng-message="maxlength" translate>message.tooLongError</div>
                             </div>
                         </div>
                     </div>
@@ -69,7 +67,7 @@
                         <label class="col-md-4 col-lg-3 form-control-label" translate>label.maxProcesses</label>
                         <div class="col-md-8 col-lg-6">
                             <input type="number" class="form-control" placeholder="Enter number of Maximum processes"
-                                   name="max" ng-model="processClass.maxProcess">
+                                   name="max" min="0" ng-model="processClass.maxProcess">
                         </div>
                     </div>
                 </form>

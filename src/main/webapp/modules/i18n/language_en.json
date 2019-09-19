@@ -1550,10 +1550,13 @@
   "joe.button.createLock": "Create Lock",
   "joe.button.createProcessClass": "Create Process Class",
   "joe.button.createSchedule": "Create Schedule",
+  "joe.button.createCommand": "Create Command",
   "joe.button.parameter": "Parameter",
   "joe.button.orders": "Orders",
   "joe.button.stepsAndNodes": "Steps/Nodes",
   "joe.button.deploy": "Deploy",
+  "joe.button.addJob": "Add Job",
+  "joe.button.addOrder": "Add Order",
   "joe.tab.script": "Script",
   "joe.tab.includes": "Includes",
   "joe.tab.options": "Options",
@@ -1570,6 +1573,7 @@
   "joe.label.monitor": "Monitor",
   "joe.label.ordering": "Ordering",
   "joe.label.unlimited": "Unlimited",
+  "joe.label.commands": "Commands",
   "joe.includes.button.addFile": "Add File",
   "joe.includes.button.new": "New",
   "joe.includes.button.removeFile": "Remove File",
@@ -1633,5 +1637,6 @@
   "joe.label.processClassFilewatcher": "Process Class FileWatcher",
   "joe.label.setBackCount": "Set Back Count",
   "joe.label.prePostProcessing": "Pre/Post-Processing",
-  "joe.label.favourites": "Favourites"
+  "joe.label.favourites": "Favourites",
+  "joe.label.startAt": "Start At"
 }

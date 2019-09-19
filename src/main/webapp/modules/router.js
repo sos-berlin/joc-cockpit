@@ -479,7 +479,19 @@
             url: "/joe",
             controller: "JOEEditorCtrl",
             templateUrl: "modules/configuration/views/joe-editor.html",
-            ncyBreadcrumb: {label: "{{ 'JOE Editor' | translate}}"}
+            ncyBreadcrumb: {label: "{{ 'JOE Editor' | translate}}"},
+            resolve: {
+                loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([{
+                        insertBefore: '#load_styles_before',
+                        files: ["css/highlight.css"]
+                    },{
+                        files: ["js/highlight.pack.js"],
+                        serie: true
+                    }])
+
+                }]
+            }
         }).state("app.configuration.xml", {
             url: "/xml",
             controller: "XMLEditorCtrl",

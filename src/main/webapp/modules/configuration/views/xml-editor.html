@@ -44,7 +44,7 @@
                                 <i class="fa fa-lg w-15" ng-class="{'fa-angle-right': collapsed, 'fa-angle-down': !collapsed}"></i>
                             </a>
                             <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg w-15"></i>
-                            <span class="p-l-xs" ng-click="getData(node);addContent(node.values);"
+                            <span ng-click="getData(node);addContent(node.values);"
                                   ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
                                   ng-mouseover="tooltip(node)" tooltip-placement="bottom"
                                   uib-tooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.ref}}

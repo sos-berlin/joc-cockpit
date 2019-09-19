@@ -1,23 +1,19 @@
-<div class="row" ng-controller="JobChainEditorCtrl">
+<div class="row">
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>label.jobChain</span>
+        <span class="text text-dark" ng-if="!jobChain.name" translate>label.jobChains</span>
+        <span class="text" ng-if="jobChain.name">{{jobChain.name}}</span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!jobChain">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createJobChain()" >
             <i class="fa fa-plus"></i>
             <span translate>joe.button.newJobChain</span>
           </button>
         </div>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="jobChain">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNewJobChain()" >
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')" >
+            <i class="fa fa-tasks"></i>
             <span translate>joe.button.parameter</span>
-          </button>
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createOrder()" >
-            <span translate>joe.button.orders</span>
-          </button>
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createNode()" >
-            <span translate>joe.button.stepsAndNodes</span>
           </button>
         </div>
       </div>
@@ -33,22 +29,22 @@
                 <i ng-show="filter.sortBy == 'name' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('title')"><a><span translate>label.ordersRecoverable</span>
-                <i ng-show="filter.sortBy == 'title' && !filter.sortReverse"
+              <th ng-click="sortBy1('ordersRecoverable')"><a><span translate>label.ordersRecoverable</span>
+                <i ng-show="filter.sortBy == 'ordersRecoverable' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'title' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'ordersRecoverable' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
-              <th ng-click="sortBy1('jobschedulerId')"><a><span translate>label.visible</span>
-                <i ng-show="filter.sortBy == 'jobschedulerId' && !filter.sortReverse"
+              <th ng-click="sortBy1('visible')"><a><span translate>label.visible</span>
+                <i ng-show="filter.sortBy == 'visible' && !filter.sortReverse"
                    class="fa fa-caret-up "></i>
-                <i ng-show="filter.sortBy == 'jobschedulerId' && filter.sortReverse"
+                <i ng-show="filter.sortBy == 'visible' && filter.sortReverse"
                    class="fa fa-caret-down "></i></a>
               </th>
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="jobchain in jobChains | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+            <tr ng-repeat="jobchain in jobChains | orderBy:filter.sortBy:filter.sortReverse">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -59,9 +55,9 @@
                   </div>
                 </div>
               </td>
-              <td class="cursor text-primary-hover" ng-click="createJobChain(jobchain)" ng-bind="jobchain.name"></td>
-              <td ng-bind="jobchain.ordersRecoverable"></td>
-              <td ng-bind="jobchain.visible"></td>
+              <td class="cursor" ng-click="createJobChain(jobchain)" ng-bind="jobchain.name"></td>
+              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.ordersRecoverable ? 'Yes' : 'No'}}</td>
+              <td class="cursor" ng-click="createJobChain(jobchain)">{{jobchain.visible ? 'Yes' : 'No'}}</td>
             </tr>
             </tbody>
           </table>
@@ -105,12 +101,12 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                 <div class="col-md-12 col-lg-12">
-                    <input type="text" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox()" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
+                    <input type="text" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
                     <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
                 </div>
                 <div class="col-md-12 col-lg-12 autocomplete-col">
                   <ul class="autocomplete-ul" ng-show="isShowPCJobChain">
-                    <li class="autocomplete-menu" ng-repeat="hpv in processClasses" ng-click="selectProcessClass('jobChain.processClassJobChain', hpv.name)">{{hpv.name}}</li>
+                    <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.processClassJobChain', pc.name)">{{pc.name}}</li>
                   </ul>
                 </div>
               </div>
@@ -121,12 +117,12 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                   <div class="col-md-12 col-lg-12">
-                      <input type="text" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox()" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
+                      <input type="text" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
                       <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
                   </div>
                   <div class="col-md-12 col-lg-12 autocomplete-col">
                     <ul class="autocomplete-ul" ng-show="isShowPCFileWatcher">
-                      <li class="autocomplete-menu" ng-repeat="hpv in processClasses" ng-click="selectProcessClass('jobChain.processClassFilewatcher', hpv.name)">{{hpv.name}}</li>
+                      <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.processClassFilewatcher', pc.name)">{{pc.name}}</li>
                     </ul>
                   </div>
                 </div>
@@ -150,6 +146,42 @@
             </div>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+  <div id="rightSideBar" ng-if="obj.title" class="slideInRight">
+    <div class="close-btn" ng-click="closeSidePanel()">
+      <i class="fa fa-times"></i>
+    </div>
+    <div class="text-center m-b text">
+      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+    </div>
+    <div class="p-a">
+      <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
+        <div class="form-group row m-b-0" ng-repeat="param in jobChain.paramObject.params track by $index">
+          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+          <div class="col-sm-5 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.name"
+                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+          </div>
+
+          <div class="col-sm-6 m-b-sm">
+            <input type="text" class="form-control" ng-model="param.value"
+                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+          </div>
+          <div class="col-sm-1 p-l-0">
+            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <a href class="text-u-l" ng-if="jobChain.paramObject.params.length>0" ng-click="addParameter()"
+               translate>button.addAnotherParameter</a>
+            <a href class="text-u-l" ng-if="jobChain.paramObject.params.length==0" ng-click="addParameter()"
+               translate>button.addParameter</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

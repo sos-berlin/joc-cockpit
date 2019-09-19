@@ -1,8 +1,9 @@
-<div class="row" ng-controller="ScheduleEditorCtrl">
+<div class="row">
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span translate>label.schedule</span>
+        <span class="text text-dark" ng-if="!schedule.name" translate>label.schedules</span>
+        <span class="text" ng-if="schedule.name">{{schedule.name}}</span>
         <div class="inline pull-right" style="margin-top: -2px" ng-if="!schedule">
           <button class="btn btn-sm btn-grey m-l-sm" ng-click="createSchedule()" >
             <i class="fa fa-plus"></i>
@@ -54,7 +55,7 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="schedule in schedules | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+            <tr ng-repeat="schedule in schedules | orderBy:filter.sortBy:filter.sortReverse">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -65,11 +66,11 @@
                   </div>
                 </div>
               </td>
-              <td class="cursor text-primary-hover" ng-click="createSchedule(schedule)" ng-bind="schedule.name"></td>
-              <td ng-bind="schedule.title"></td>
-              <td ng-bind="schedule.substitute"></td>
-              <td ng-bind="schedule.fromDate"></td>
-              <td ng-bind="schedule.toDate"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.name"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.title"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.substitute"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.fromDate"></td>
+              <td class="cursor" ng-click="createSchedule(schedule)" ng-bind="schedule.toDate"></td>
             </tr>
             </tbody>
           </table>

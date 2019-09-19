@@ -5493,6 +5493,10 @@ span p{
     list-style-type: none;
     cursor: pointer;
 }
+.autocomplete-menu:hover {
+    background: #007da6;
+    color: #fff;
+}
 .inside-textBox {
     position: absolute;
     right: 22px;
@@ -5504,7 +5508,7 @@ span p{
     width: 97%;
     z-index: 9999;
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
     border: 1px solid #8080802b;
     background-color: #fff;
     padding-left: 5px;
@@ -5595,4 +5599,15 @@ span p{
     padding-left: 0 !important;
     padding-right: 0 !important;
     border-top: none !important;
+}
+
+.editor-script {
+    max-height: 400px;
+    width: 100%;
+    background-color: #fff;
+    overflow-y: auto;
+    min-height: 250px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    padding: 10px;
+    white-space: pre;
 }
