@@ -1494,6 +1494,7 @@
   "button.addLock": "Add Lock",
   "button.addProcessing": "Add Processing",
   "label.skipOutCondition": "Skip Out Conditions when not in period",
+  "label.configuration": "Configuration",
   "tab.joeEditor": "JOE EDITOR",
   "tab.xmlEditor": "XML EDITOR",
   "xml.button.expand": "Expand",
@@ -1631,12 +1632,17 @@
   "joe.label.jobChainName": "Chain Name",
   "joe.label.disabled": "Disabled",
   "joe.placeholder.label.addJobChainName": "Add Job Chain Name",
-  "joe.label.title": "Title",
   "joe.label.maxOrders": "MaxOrders",
   "joe.label.processClassJobChain": "Process Class Job Chain",
   "joe.label.processClassFilewatcher": "Process Class FileWatcher",
   "joe.label.setBackCount": "Set Back Count",
+  "joe.label.delay" : "Delay",
+  "joe.label.isMaximum": "Max",
+  "joe.setback.table.label.isMaximum" : "Maximum",
+  "joe.setback.table.label.delay" : "Delay [hh:mm:]ss",
+  "joe.documentation.label.jobDescription": "Job Description",
   "joe.label.prePostProcessing": "Pre/Post-Processing",
   "joe.label.favourites": "Favourites",
-  "joe.label.startAt": "Start At"
+  "joe.label.startAt": "Start At",
+  "joe.label.jobOrderId": "Job / Order ID"
 }

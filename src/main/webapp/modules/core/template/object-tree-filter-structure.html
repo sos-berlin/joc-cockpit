@@ -26,7 +26,7 @@
                         </td>
                     </tr>
                     <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) ||
-                    (row.branch.calendars && row.branch.calendars.length>0) || (row.branch.documents && row.branch.documents.length>0)">
+                    (row.branch.calendars && row.branch.calendars.length>0) || (row.branch.documents && row.branch.documents.length>0) || (row.branch.processClasses && row.branch.processClasses.length>0)">
 
                         <td></td>
                         <td>
@@ -72,6 +72,12 @@
                                 <span class="cursor" ng-click="on_user_click({document:document.path})">
                                     <i class="fa fa-file text-sm" style="margin-top: -2px"></i>
                                     <span>{{document.name}}</span>  <span ng-if="document.title" class="text-sm text-muted">&nbsp;-&nbsp;{{document.title}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="process in row.branch.processClasses | orderBy: 'name'">
+                                <span class="cursor" ng-click="on_user_click({process:process.path})">
+                                    <i class="icon-process-class-icon" style="position:relative;top: 2px"></i>
+                                    <span>{{process.name}}</span>  <span ng-if="process.title" class="text-sm text-muted">&nbsp;-&nbsp;{{process.title}}</span>
                                  </span>
                             </div>
                         </td>

@@ -5,19 +5,19 @@
                 <!-- Nested node template -->
                 <script type="text/ng-template" id="nodes_renderer.html">
                     <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'text-primary' : node.selected1, '_600' : node.selected1 && node.type}">
-                        <a class="text-dark"><i ng-if="!node.expanded && (node.folders.length>0 || node.children.length>0)"
-                           ng-click="node.expanded = !node.expanded" class="fa fa-angle-right fa-lg p-r-sm w-15"></i>
+                        <a class="text-dark"><i ng-if="!node.expanded && (node.folders.length>0 || node.children.length>0) || (!node.folders && !node.children && !node.param && !node.type)"
+                           ng-click="node.expanded = !node.expanded;expandNode(node)" class="fa fa-angle-right fa-lg p-r-sm w-15"></i>
                         <i ng-if="node.expanded && (node.folders.length>0 || node.children.length>0)"
                            ng-click="node.expanded = !node.expanded" class="fa fa-angle-down fa-lg p-r-sm w-15"></i>
-                        <i ng-if="node.children.length==0 && (node.object || node.param)"
-                           class="fa fa-caret-right fa-lg p-r-sm w-15"></i>
+                         <i ng-if="(node.children.length==0 && (node.object || node.param))"
+                               class="fa fa-caret-right fa-lg p-r-sm w-15"></i>
                         </a>
                         <i ng-if="!node.expanded && !node.object && !node.type && !node.param" class="fa fa-folder w-15 noExl"></i>
                         <i ng-if="node.type" class="fa fa-circle-o noExl text-xs"></i>
                         <i ng-if="node.param == 'PROCESSING'" class="fa fa-file-text-o noExl text-xs"></i>
                         <i ng-if="node.param == 'COMMAND'" class="fa fa-terminal noExl text-xs"></i>
                         <i ng-if="node.param == 'ORDER'" class="icon-orders-icon custom-icon text-xs"></i>
-                        <i ng-if="node.param == 'NODES'" class="fa fa-step-forward noExl text-xs"></i>
+                        <i ng-if="node.param == 'STEPSNODES'" class="fa fa-step-forward noExl text-xs"></i>
                         <i ng-if="node.expanded && node.folders.length>0 && !node.object && !node.param" class="fa fa-folder-open w-15 noExl"></i>
                         <i ng-if="node.expanded && node.folders.length==0 && !node.object && !node.param" class="fa fa-folder w-15 noExl"></i>
                         <i ng-if="node.object == 'JOB'" class="icon-jobs-icon custom-icon"></i>
@@ -83,11 +83,11 @@
                 <div ng-if="type == 'JOB'" >
                     <div ng-controller="JobEditorCtrl" ui-include="'modules/configuration/views/job-template.html'"></div>
                 </div>
-                <div ng-controller="JobChainEditorCtrl" ng-if="type == 'JOBCHAIN'" >
-                    <div ui-include="'modules/configuration/views/job-chain-template.html'"></div>
+                <div ng-if="type == 'JOBCHAIN'" >
+                    <div ng-controller="JobChainEditorCtrl" ui-include="'modules/configuration/views/job-chain-template.html'"></div>
                 </div>
-                <div ng-controller="OrderEditorCtrl" ng-if="type == 'ORDER' || param == 'ORDER'">
-                    <div ui-include="'modules/configuration/views/order-template.html'"></div>
+                <div ng-if="type == 'ORDER' || param == 'ORDER'">
+                    <div ng-controller="OrderEditorCtrl" ui-include="'modules/configuration/views/order-template.html'"></div>
                 </div>
                 <div ng-if="type == 'LOCK'">
                     <div ng-controller="LockEditorCtrl" ui-include="'modules/configuration/views/lock-template.html'"></div>
@@ -104,6 +104,44 @@
                 <div ng-if="type == 'COMMAND' || param == 'COMMAND'">
                     <div ng-controller="CommandEditorCtrl" ui-include="'modules/configuration/views/command-template.html'"></div>
                 </div>
+                <div ng-if="type == 'STEPSNODES' || param == 'STEPSNODES'">
+                    <div ng-controller="StepNodeCtrl" ui-include="'modules/configuration/views/step-node-template.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
+                <div ng-show="filterTree1 && filterTree1.length>0">
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            object="object"
+                            tree-control="filter_tree"
+                            on-select="treeExpand1(branch)"
+                            expand-on="expanding_property"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/object-tree-filter-structure.html">
+                    </tree>
+                </div>
+                <div class="text-center m-t-lg" ng-if="!filterTree1 || filterTree1.length==0">
+                    <span translate>message.noCalendarFound</span>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-grey btn-sm pull-left" ng-click="closeModal()" translate>
+                    button.cancel
+                </button>
             </div>
         </div>
     </div>

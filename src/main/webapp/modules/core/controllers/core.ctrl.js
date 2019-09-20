@@ -1128,6 +1128,15 @@
             }
         };
 
+        vm.navigateToConfiguration = function() {
+            vm.configFilters = CoreService.getConfigurationTab();
+            if (vm.configFilters.state === 'joe') {
+                $state.go('app.configuration.joe');
+            } else {
+                $state.go('app.configuration.xml');
+            }
+        };
+
         vm.isIE = function () {
             return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
         };
@@ -1450,6 +1459,7 @@
             vm.checkNavHeader();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
+            $uibModalStack.dismissAll();
         });
 
         vm.eventId = '';

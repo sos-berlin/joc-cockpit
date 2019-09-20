@@ -223,6 +223,9 @@
         tabs._resource.documents.selectedView = true;
         tabs._resource.state = 'agent';
 
+        tabs._configuration = {};
+        tabs._configuration.state = 'joe';
+
         tempTabs._jobChain = {};
         tempTabs._jobChain.filter = {};
         tempTabs._jobChain.filter.state = 'ALL';
@@ -434,6 +437,9 @@
         tempTabs._resource.documents.selectedView = true;
         tempTabs._resource.state = 'agent';
 
+        tempTabs._configuration = {};
+        tempTabs._configuration.state = 'joe';
+
         dashboard._dashboard = {};
         dashboard._dashboard.filter = {};
         dashboard._dashboard.filter.range = "today";
@@ -554,6 +560,8 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            }, getConfigurationTab: function () {
+                return tabs._configuration;
             }
         }
     }

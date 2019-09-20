@@ -5539,10 +5539,14 @@ span p{
     top: 12px;
     margin-bottom: 32px;
     font-size: 22px;
+
+}
+#rightSideBar .close-btn i{
     opacity: 0.3;
     cursor: pointer;
 }
-#rightSideBar .close-btn:hover {
+
+#rightSideBar .close-btn i:hover {
     opacity: 1;
 }
 

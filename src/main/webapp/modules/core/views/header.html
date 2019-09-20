@@ -241,7 +241,7 @@
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.resources != undefined) ? showViews.resources :  true">
                 <a class="nav-link" ui-sref="app.resources" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status ||
-                permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status || permission.Event.view.status">
+                permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status || permission.Event.view.status || permission.Documentation.view">
                     <span class="nav-text icon">
                         <i class="icon-resources-icon text-white"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
@@ -253,6 +253,7 @@
                     <span class="hide" ui-sref="app.resources.schedules"></span>
                     <span class="hide" ui-sref="app.resources.calendars"></span>
                     <span class="hide" ui-sref="app.resources.events"></span>
+                    <span class="hide" ui-sref="app.resources.documentations"></span>
                 </a>
             </li>
             <li class="nav-item" ng-if="(showViews && showViews.history != undefined) ? showViews.history : (permission.History.view.status || permission.YADE.view.status)">
@@ -272,10 +273,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ui-sref="app.configuration.joe" ui-sref-active="active">
+                <a class="nav-link" ui-sref="app.configuration" ui-sref-active="active" ng-click="navigateToConfiguration()">
                     <span class="nav-text icon" >
                         <i class="icon-configuration-icon text-white"></i>
-                        <span class="font11 text-white text-u-c _600" translate>Configuration</span>
+                        <span class="font11 text-white text-u-c _600" translate>label.configuration</span>
                     </span>
                 </a>
             </li>

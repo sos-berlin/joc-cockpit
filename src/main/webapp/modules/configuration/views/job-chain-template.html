@@ -77,9 +77,9 @@
             </div>
           </div>
           <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.title</label>
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" name="jobChainTitle" ng-model="jobChain.title">
+              <input type="text" required ng-maxlength="255" class="form-control" name="jobChainTitle" placeholder="{{'placeholder.title' | translate}}" ng-model="jobChain.title">
               <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -101,8 +101,8 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                 <div class="col-md-12 col-lg-12">
-                    <input type="text" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
-                    <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
+                    <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
+                    <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
                 </div>
                 <div class="col-md-12 col-lg-12 autocomplete-col">
                   <ul class="autocomplete-ul" ng-show="isShowPCJobChain">
@@ -117,8 +117,8 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                   <div class="col-md-12 col-lg-12">
-                      <input type="text" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
-                      <i class="fa fa-folder-o inside-textBox" ng-click="openModel(jobChain.processClassJobChain)" aria-hidden="true"></i>
+                      <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
+                      <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
                   </div>
                   <div class="col-md-12 col-lg-12 autocomplete-col">
                     <ul class="autocomplete-ul" ng-show="isShowPCFileWatcher">
@@ -149,9 +149,9 @@
       </div>
     </div>
   </div>
-  <div id="rightSideBar" ng-if="obj.title" class="slideInRight">
-    <div class="close-btn" ng-click="closeSidePanel()">
-      <i class="fa fa-times"></i>
+  <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+    <div class="close-btn" >
+      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
     <div class="text-center m-b text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>

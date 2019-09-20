@@ -114,9 +114,9 @@
             </div>
           </div>
           <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>Job Title</label>
+            <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" ng-maxlength="255" class="form-control" placeholder="Enter Job title"
+              <input type="text" ng-maxlength="255" class="form-control" placeholder="{{'placeholder.title' | translate}}"
                      name="title" ng-model="job.title">
               <div class="text-danger help-block" ng-if="form.title.$dirty"
                    ng-messages="form.title.$error">
@@ -129,8 +129,8 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                   <div class="col-md-12 col-lg-12">
-                      <input type="text" class="form-control" placeholder="Enter Job processClass" name="processClass" ng-focus="closeSearchBox($event)" ng-change="getData(job.processClass)" ng-model="job.processClass">
-                      <i class="fa fa-folder-o inside-textBox" ng-click="getTreeStructure(job.processClass)" aria-hidden="true"></i>
+                      <input type="text" class="form-control" placeholder="Search Process Class or Choose from folder" name="processClass" ng-focus="closeSearchBox($event)" ng-change="getData(job.processClass)" ng-model="job.processClass">
+                      <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(job)" aria-hidden="true"></i>
                   </div>
                   <div class="col-md-12 col-lg-12 autocomplete-col">
                     <ul class="autocomplete-ul" ng-show="isShow">
@@ -187,12 +187,6 @@
               <div class="tab-content p-t-sm">
                 <div class="tab-pane animated fadeIn active" id="tab1">
                   <div class="b-a p-a-sm bg-transparent">
-                    <!-- <div class="form-group row">
-                      <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
-                      <div class="col-md-8 col-lg-10">
-                        <input type="text" class="form-control" name="functionCodeSnippets" ng-model="job.functionCodeSnippets">
-                      </div>
-                    </div> -->
                     <div class="form-group row">
                       <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                       <div class="col-md-8 col-lg-10">
@@ -207,7 +201,7 @@
                     </div>
                     <div class="row">
                       <div class="col-md-12">
-                        <div  ng-bind-html="job.script | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
+                        <div ng-bind-html="job.script | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
                       </div>
                     </div>
                   </div>
@@ -920,9 +914,9 @@
       </div>
     </div>
   </div>
-  <div id="rightSideBar" ng-if="obj.title" class="slideInRight">
-    <div class="close-btn" ng-click="closeSidePanel()">
-      <i class="fa fa-times"></i>
+  <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+    <div class="close-btn" >
+      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
     <div class="text-center m-b text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>

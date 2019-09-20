@@ -8611,7 +8611,7 @@
 
             $(window).resize(function () {
                 checkToolbarWidth();
-                maxScrollHt = $('.graph-container')[0].scrollHeight;
+                maxScrollHt = $('.graph-container')[0] ? $('.graph-container')[0].scrollHeight : 0;
             });
 
             setTimeout(function () {

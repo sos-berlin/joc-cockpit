@@ -130,9 +130,9 @@
       </div>
     </div>
   </div>
-  <div id="rightSideBar" ng-if="obj.title" class="slideInRight">
-    <div class="close-btn" ng-click="closeSidePanel()">
-      <i class="fa fa-times"></i>
+  <div id="rightSideBar" ng-if="obj.title" class="slideInRight" ng-click="isSideBarClicked($event)">
+    <div class="close-btn" >
+      <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
     <div class="text-center m-b text">
       <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
