@@ -396,7 +396,7 @@
                     });
                 }
             }else{
-                vm.$broadcast('PROCESS_CLASS_OBJECT', data)
+                vm.$broadcast('PROCESS_CLASS_OBJECT', data);
                 vm.closeModal();
             }
         };
@@ -805,20 +805,22 @@
                 vm.order = order;
             } else {
                 vm.createNewOrder(vm.orders, vm.jobChain);
-                for (let i = 0; i < vm.orders.length; i++) {
-                    if(vm.allOrders.children.length === 0){
-                        vm.allOrders.expanded = true;
-                        vm.allOrders.children.push(vm.orders[i]);
-                    } else {
-                        let flag = true;
-                        for (let j = 0; j < vm.allOrders.children.length; j++) {
-                            if(vm.allOrders.children[j].orderId === vm.orders[i].orderId && vm.allOrders.children[j].jobChain === vm.orders[i].jobChain){
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if(flag){
+                if(vm.allOrders && vm.allOrders.children) {
+                    for (let i = 0; i < vm.orders.length; i++) {
+                        if (vm.allOrders.children.length === 0) {
+                            vm.allOrders.expanded = true;
                             vm.allOrders.children.push(vm.orders[i]);
+                        } else {
+                            let flag = true;
+                            for (let j = 0; j < vm.allOrders.children.length; j++) {
+                                if (vm.allOrders.children[j].orderId === vm.orders[i].orderId && vm.allOrders.children[j].jobChain === vm.orders[i].jobChain) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag) {
+                                vm.allOrders.children.push(vm.orders[i]);
+                            }
                         }
                     }
                 }
@@ -919,8 +921,7 @@
 
         vm.openSidePanel = function () {
             vm.openSidePanelG('runTime');
-            vm.order = vm.schedule;
-            vm.xml = vm.schedule.runTime;
+            vm.substituteObj = {};
         };
 
         vm.$on('NEW_OBJECT', function (evt, schedule) {

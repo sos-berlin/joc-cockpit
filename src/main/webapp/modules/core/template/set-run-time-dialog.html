@@ -87,7 +87,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="margin-top: -8px">
                         <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm m-t-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
@@ -548,17 +548,17 @@
                                            data-checklist-value="'1'">
                                     <i class="primary"></i> <span translate>label.january</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'2'">
                                     <i class="primary"></i> <span translate>label.february</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'3'">
                                     <i class="primary"></i> <span translate>label.march</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'4'">
                                     <i class="primary"></i> <span translate>label.april</span>
@@ -568,17 +568,17 @@
                                            data-checklist-value="'5'">
                                     <i class="primary"></i> <span translate>label.may</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'6'">
                                     <i class="primary"></i> <span translate>label.june</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'7'">
                                     <i class="primary"></i> <span translate>label.july</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'8'">
                                     <i class="primary"></i> <span translate>label.august</span>
@@ -588,17 +588,17 @@
                                            data-checklist-value="'9'">
                                     <i class="primary"></i> <span translate>label.september</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'10'">
                                     <i class="primary"></i> <span translate>label.october</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check v w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'11'">
                                     <i class="primary"></i> <span translate>label.november</span>
                                 </label>
-                                <label class="md-check w">
+                                <label class="md-check m-t-sm w">
                                     <input type="checkbox" data-checklist-model="runTime.months"
                                            data-checklist-value="'12'">
                                     <i class="primary"></i> <span translate>label.december</span>
@@ -810,7 +810,7 @@
                         <label class="col-sm-3 m-t-sm" translate>label.weekDays</label>
 
                         <div class="col-sm-9">
-                            <label class="md-check w">
+                            <label class="md-check m-t-sm w">
                                 <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
                                        data-checklist-value="'1'">
                                 <i class="primary"></i> <span translate>label.monday</span>
@@ -909,7 +909,7 @@
                     </mwl-calendar>
                 </div>
             </div>
-            <div ng-if="editor.showPlanned">
+            <div ng-if="editor.showPlanned" class="min-ht-500">
                 <div class="text-md text-center">
                     <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView2" ng-click="getPlan(calendarView2,viewDate)">
                         <i class="fa fa-angle-left fa-lg"></i>

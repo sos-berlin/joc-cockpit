@@ -772,7 +772,33 @@
         };
     }
 
-    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validStartCommandRegex", x).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).directive("focus", fc).constant("defaultAvatarSettings", {
+    function un() {
+        return {
+            restrict: "A", require: "ngModel", link: function (e, t, i, n) {
+                t.bind("blur", function () {
+                    if (n.$modelValue) {
+                        let list = JSON.parse(i.data);
+
+                        if(list.length > 1) {
+                            for(let m=0;m < list.length;m++) {
+                                console.log(n.$modelValue, list[m].name)
+                                if(list[m].name === n.$modelValue) {
+                                    n.$setValidity("invalid", !1);
+                                    console.log('if....')
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }), t.bind("keyup", function () {
+                    n.$setValidity("invalid", !0)
+                })
+            }
+        }
+    }
+
+
+    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validStartCommandRegex", x).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).directive("dropdown", dd).directive("focus", fc).directive("uniqueName", un).constant("defaultAvatarSettings", {
         alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
         textColor: "#ffffff",
         defaultBorder: "border:5px solid white",

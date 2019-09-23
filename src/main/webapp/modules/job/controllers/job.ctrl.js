@@ -8886,7 +8886,6 @@
             }
             if(dropTarget){
                 for (let i = 0; i < dropTarget.outconditions.length; i++) {
-                    console.log('>> ',dropTarget.outconditions[i])
                     if(dropTarget.outconditions[i].conditionExpression.expression.match(/rc:0/)){
                         let str = '';
                         if(dropTarget.outconditions[i].outconditionEvents.length > 0){
@@ -8898,7 +8897,6 @@
                             }
                         }
                         if(str) {
-                            console.log(str)
                             addJobWithIncondition(job, className, str);
                         }
                         break;
@@ -8980,6 +8978,115 @@
             });
         }
 
+
+        function createInCond(job, cond, graph, v1){
+            let _label = parseExpression(cond.conditionExpression);
+            let _node = getCellNode('InCondition', _label, cond.conditionExpression.expression, cond.jobStream);
+            _node.setAttribute('isConsumed', cond.consumed);
+            _node.setAttribute('_id', cond.id);
+            _node.setAttribute('job', job.path);
+            _node.setAttribute('outconditions', JSON.stringify(cond.outconditions));
+            _node.setAttribute('markExpression', cond.markExpression);
+            _node.setAttribute('skipOutCondition', cond.skipOutCondition);
+            if (cond.inconditionCommands) {
+                _node.setAttribute('commands', JSON.stringify(cond.inconditionCommands));
+            }
+            let style = 'condition';
+            if (cond.consumed) {
+                style += ';fillColor=none';
+            }
+            if (cond.conditionExpression.value) {
+                style += ';strokeColor=green;';
+            }
+
+            let conditionVertex = createVertex(graph.getDefaultParent(), _node, cond.conditionExpression.expression, style);
+            addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
+            for(let m = 0; m < cond.outconditions.length; m++) {
+                if (cond.outconditions[m].jobStream !== cond.jobStream) {
+                    addReferenceIcon(graph, conditionVertex);
+                    break;
+                }
+            }
+            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
+            return conditionVertex;
+        }
+
+        function createOutCond(job, cond, graph, v1, out, mapObj){
+            let expand = job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && job.isExpanded === undefined);
+            let events = [], conditionVertex = null;
+            if(expand) {
+                let _label = parseExpression(cond.conditionExpression);
+                let _node = getCellNode('OutCondition', _label, cond.conditionExpression.expression, cond.jobStream);
+                _node.setAttribute('_id', cond.id);
+                _node.setAttribute('job', job.path);
+                _node.setAttribute('events', JSON.stringify(cond.outconditionEvents));
+                _node.setAttribute('inconditions', JSON.stringify(cond.inconditions));
+                let style = 'condition2';
+                if (cond.conditionExpression.value) {
+                    style += ';strokeColor=green;';
+                }
+                conditionVertex = createVertex(graph.getDefaultParent(), _node, cond.conditionExpression.expression, style);
+                addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
+
+                if (v1) {
+                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
+                }
+
+
+                if (cond.outconditionEvents.length > 0) {
+                    for (let z = 0; z < cond.outconditionEvents.length; z++) {
+                        if (cond.outconditionEvents[z].command === 'create') {
+                            let _node = getCellNode('Event', cond.outconditionEvents[z].event, cond.outconditionEvents[z].event, cond.jobStream);
+                            let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;
+                            _node.setAttribute('isExist', flg);
+                            _node.setAttribute('job', job.path);
+                            _node.setAttribute('outconditionId', cond.id);
+                            let style = 'event';
+                            if (!cond.outconditionEvents[z].existsInJobStream && cond.outconditionEvents[z].exists) {
+                                style += ';dashed=1';
+                            }
+                            if (!cond.outconditionEvents[z].exists && !cond.outconditionEvents[z].existsInJobStream) {
+                                style += ';fillColor=none';
+                            }
+                            let e1 = createVertex(graph.getDefaultParent(), _node, cond.outconditionEvents[z].event, style);
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
+                            events.push(e1);
+                        }
+                    }
+                }
+            }
+
+            for (let n = 0; n < cond.inconditions.length; n++) {
+                if(cond.jobStream !== cond.inconditions[n].jobStream){
+                    if(conditionVertex)
+                    addReferenceIcon(graph, conditionVertex);
+                } else{
+
+                    for (let p = 0; p < cond.inconditions[n].jobs.length; p++) {
+                        let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
+                        for (let z = 0; z < _job.inconditions.length; z++) {
+                            if (expand) {
+                                let vert = createInCond(_job, _job.inconditions[z], graph, graph.getModel().getCell(_job.jId));
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, vert);
+                            } else{
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(_job.jId));
+                            }
+
+                            for (let b = 0; b < events.length; b++) {
+                                if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
+                                    if(graph.getEdgesBetween(events[b], out).length === 0){
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+
         function createWorkflowDiagram(jobs, reload, scrollValue) {
             const graph = vm.editor.graph;
             let parent = graph.getDefaultParent();
@@ -8988,84 +9095,40 @@
             if (!jobs) {
                 return;
             }
-            for (let i = 0; i < jobs.length; i++) {
-                jobs[i].jId = undefined;
-            }
 
+            let mapObj =  new Map();
             try {
                 for (let i = 0; i < jobs.length; i++) {
                     if (!jobs[i].state) {
                         jobs[i].state = {};
                     }
-                    let v1;
-                    if (!jobs[i].jId) {
-                        let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
-                        _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
-                        let style = 'job';
-                        style += ';strokeColor=' + (vm.colorFunction(jobs[i].state.severity) || '#999');
-                        v1 = createVertex(parent, _node, jobs[i].name, style);
-                        addOverlays(graph, v1, jobs[i].state._text === 'RUNNING' ? 'green' : jobs[i].state._text === 'PENDING' ? 'yellow' : jobs[i].state._text === undefined ? 'grey' : 'red');
-                        jobs[i].jId = v1.id;
-                    } else {
-                        v1 = graph.getModel().getCell(jobs[i].jId)
+                    let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
+                    _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
+                    let style = 'job';
+                    style += ';strokeColor=' + (vm.colorFunction(jobs[i].state.severity) || '#999');
+                    let v1 = createVertex(parent, _node, jobs[i].name, style);
+                    addOverlays(graph, v1, jobs[i].state._text === 'RUNNING' ? 'green' : jobs[i].state._text === 'PENDING' ? 'yellow' : jobs[i].state._text === undefined ? 'grey' : 'red');
+                    jobs[i].jId = v1.id;
+                    mapObj.set(jobs[i].path, jobs[i]);
+                }
+
+                for (let i = 0; i < jobs.length; i++) {
+                    let v1 = graph.getModel().getCell(mapObj.get(jobs[i].path).jId);
+                    let out = null, len = jobs[i].outconditions.length;
+                    if (len > 0) {
+                        out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
                     }
-
-                    for (let m = 0; m < jobs.length; m++) {
-                        if (jobs[i].path !== jobs[m].path) {
-                            for (let n = 0; n < jobs[m].inconditions.length; n++) {
-                                for (let x = 0; x < jobs[i].outconditions.length; x++) {
-                                    if (jobs[i].outconditions[x].outconditionEvents.length > 0) {
-                                        for (let z = 0; z < jobs[i].outconditions[x].outconditionEvents.length; z++) {
-                                            if (matchExpression(jobs[m].inconditions[n].conditionExpression.jobStreamEvents, jobs[i].outconditions[x].outconditionEvents[z].event)) {
-                                                if (!jobs[i].connections) {
-                                                    jobs[i].connections = [];
-                                                }
-                                                if (jobs[i].connections.indexOf(jobs[m].path) === -1) {
-                                                    jobs[i].connections.push(jobs[m].path);
-                                                }
-                                                if (!jobs[m].jId) {
-                                                    if (!jobs[m].state) {
-                                                        jobs[m].state = {};
-                                                    }
-                                                    let _node = getCellNode('Job', jobs[m].name, jobs[m].path, '');
-                                                    _node.setAttribute('status', gettextCatalog.getString(jobs[m].state._text));
-                                                    let style = 'job';
-                                                    style += ';strokeColor=' + (vm.colorFunction(jobs[m].state.severity) || '#999');
-
-                                                    let v2 = createVertex(parent, _node, jobs[i].name, style);
-                                                    addOverlays(graph, v2, jobs[m].state._text === 'RUNNING' ? 'green' : jobs[m].state._text === 'PENDING' ? 'yellow' : 'red');
-                                                    jobs[m].jId = v2.id;
-                                                    graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, v2);
-                                                } else {
-                                                    let isConnected = false;
-                                                    if (v1.edges) {
-                                                        for (let y = 0; y < v1.edges.length; y++) {
-                                                            if (v1.edges[y].target.id === graph.getModel().getCell(jobs[m].jId).id) {
-                                                                isConnected = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    if (!isConnected) {
-                                                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(jobs[m].jId));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                    for (let n = 0; n < len; n++) {
+                        createOutCond(jobs[i], jobs[i].outconditions[n], graph, v1, out, mapObj);
+                    }
+                    if(out){
+                        if (graph.getOutgoingEdges(out) && graph.getOutgoingEdges(out).length === 0) {
+                            graph.removeCells([out], true);
                         }
                     }
                 }
 
                 vm.jobs = jobs;
-                for (let i = 0; i < jobs.length; i++) {
-                    if (jobs[i].isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && jobs[i].isExpanded === undefined)) {
-                        expandJobNode(graph, jobs[i], true);
-                    }
-                }
-
                 if (reload) {
                     makeCenter(graph);
                 }
@@ -9074,28 +9137,6 @@
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
-
-                let xmlStr = sortXML(graph);
-                if (xmlStr) {
-                    let bounds = vm.editor.graph.getGraphBounds();
-                    graph.getModel().beginUpdate();
-                    try {
-                        graph.removeCells(graph.getChildCells(graph.getDefaultParent()), true);
-                        const _doc = mxUtils.parseXml(xmlStr);
-                        const dec = new mxCodec(_doc);
-                        const model = dec.decode(_doc.documentElement);
-                        // Merges the response model with the client model
-                        graph.getModel().mergeChildren(model.getRoot().getChildAt(0), graph.getDefaultParent(), false);
-                    } finally {
-                        // Updates the display
-                        graph.getModel().endUpdate();
-                    }
-                    let bounds2 = vm.editor.graph.getGraphBounds();
-                    if ((bounds.x - bounds2.x) !== 0) {
-                        vm.editor.graph.view.setTranslate(bounds.x + (bounds.x - bounds2.x), bounds.y + (bounds.y - bounds2.y));
-                    }
-                }
-
                 executeLayout(graph);
             }
             vm.jobs = jobs;
@@ -9121,294 +9162,11 @@
             }
         }
 
-        function recursiveCheck(i, j, _str, connection, job, inCond, count) {
-            let flag = true;
-            if (inCond[j].getAttribute('job') === job[count].getAttribute('actual')) {
-                for (let a = 0; a < inCond.length; a++) {
-                    if (a >= j) {
-                        for (let x = 0; x < connection.length; x++) {
-                            if (_str.indexOf(connection[x].outerHTML) === -1 && job[i].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')) {
-                                if (inCond[a].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
-                                    if (inCond[a].getAttribute('job') === job[count].getAttribute('actual')) {
-                                        _str = checkXMLString(_str, connection[x].outerHTML);
-                                        flag = false;
-                                        break;
-                                    } else {
-                                        if ((count + 1) < job.length) {
-                                            if (inCond[a].getAttribute('job') === job[count + 1].getAttribute('actual')) {
-                                                _str = checkXMLString(_str, connection[x].outerHTML);
-                                                flag = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (flag) {
-                for (let x = 0; x < connection.length; x++) {
-                    if (_str.indexOf(connection[x].outerHTML) === -1 && job[i].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')
-                        && job[count].getAttribute('id') === connection[x].childNodes[0].getAttribute('target')) {
-                        _str = _str + connection[x].outerHTML;
-                    }
-                }
-            }
-            if ((count + 1) < job.length - 1) {
-                _str = recursiveCheck(i, j, _str, connection, job, inCond, (count + 1));
-            }
-
-            return _str;
-        }
-
-        function recursiveCheck2(i, j, _str, connection, job, inCond, box) {
-            let _sources = [], count = i + 1, flag = true;
-            for (let x = 0; x < connection.length; x++) {
-                if (box[j].getAttribute('id') === connection[x].childNodes[0].getAttribute('source')) {
-                    _sources.push(connection[x]);
-                }
-            }
-            for (let x = 0; x < _sources.length; x++) {
-                if (count < job.length) {
-                    for (let k = 0; k < inCond.length; k++) {
-                        if (_sources[x].childNodes[0].getAttribute('target') === inCond[k].getAttribute('id')) {
-                            if (inCond[k].getAttribute('job') === job[count].getAttribute('actual')) {
-                                _str = checkXMLString(_str, _sources[x].outerHTML);
-                                flag = false;
-                                break;
-                            } else {
-                                if ((count + 1) < job.length) {
-                                    if (inCond[k].getAttribute('job') === job[count + 1].getAttribute('actual')) {
-                                        flag = false;
-                                        _str = checkXMLString(_str, _sources[x].outerHTML);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (flag) {
-                        if (job[count].getAttribute('id') === _sources[x].childNodes[0].getAttribute('target')) {
-                            _str = checkXMLString(_str, _sources[x].outerHTML);
-                        }
-                    }
-                }
-            }
-            return _str;
-        }
-
-        function sortXML(graph) {
-            let encoder = new mxCodec();
-            let result = encoder.encode(graph.getModel());
-            let xml = mxUtils.getXml(result);
-            let dom_parser = new DOMParser();
-            var dom_document = dom_parser.parseFromString(xml, 'text/xml');
-            let inCond = dom_document.getElementsByTagName("InCondition");
-            let outCond = dom_document.getElementsByTagName("OutCondition");
-            let box = dom_document.getElementsByTagName("Box");
-            let eventTag = dom_document.getElementsByTagName("Event");
-            let connection = dom_document.getElementsByTagName("Connection");
-
-            let _str = '<mxGraphModel><root><mxCell id="0" /><mxCell id="1" parent="0" />';
-            if (inCond.length > 0 || outCond.length > 0) {
-                let job = dom_document.getElementsByTagName("Job");
-                for (let i = 0; i < job.length; i++) {
-                    for (let j = 0; j < inCond.length; j++) {
-                        if (inCond[j].getAttribute('job') === job[i].getAttribute('actual')) {
-                            _str = _str + inCond[j].outerHTML;
-                        } else {
-                            if (i + 1 < job.length) {
-                                _str = recursiveCheck(i, j, _str, connection, job, inCond, (i + 1));
-                            }
-                        }
-                    }
-                    _str = checkXMLString(_str, job[i].outerHTML);
-
-                    for (let j = 0; j < box.length; j++) {
-                        if (box[j].getAttribute('actual') === job[i].getAttribute('actual')) {
-                            _str = _str + box[j].outerHTML;
-                            if (i + 1 < job.length) {
-                                _str = recursiveCheck2(i, j, _str, connection, job, inCond, box);
-                            }
-                            break;
-                        }
-                    }
-
-                    for (let j = 0; j < connection.length; j++) {
-                        if (connection[j].childNodes[0].getAttribute('source') === job[i].getAttribute('id')) {
-                            _str = checkXMLString(_str, connection[j].outerHTML);
-                        }
-                    }
-                }
-                for (let j = 0; j < outCond.length; j++) {
-                    _str = _str + outCond[j].outerHTML;
-                }
-                for (let j = 0; j < eventTag.length; j++) {
-                    _str = _str + eventTag[j].outerHTML;
-                }
-                for (let j = 0; j < connection.length; j++) {
-                    _str = checkXMLString(_str, connection[j].outerHTML);
-                }
-                _str = _str + '</root></mxGraphModel>';
-                return _str;
-            }
-            return '';
-        }
-
-        function checkXMLString(str, text) {
-            if (str.indexOf(text) === -1) {
-                str = str + text;
-            }
-            return str;
-        }
-
+        
         function matchExpression(jobStreamEvents, event) {
             return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
         }
 
-        function expandJobNode(graph, job, flag) {
-            let parent = graph.getDefaultParent();
-            let v1 = graph.getModel().getCell(job.jId);
-            let inEdges = graph.getIncomingEdges(v1);
-            let outEdges = graph.getOutgoingEdges(v1);
-            let events = [], matchedEvents = [];
-            for (let n = 0; n < job.inconditions.length; n++) {
-                let _label = parseExpression(job.inconditions[n].conditionExpression);
-                let _node = getCellNode('InCondition', _label, job.inconditions[n].conditionExpression.expression, job.inconditions[n].jobStream);
-                _node.setAttribute('isConsumed', job.inconditions[n].consumed);
-                _node.setAttribute('_id', job.inconditions[n].id);
-                _node.setAttribute('job', job.path);
-                _node.setAttribute('outconditions', JSON.stringify(job.inconditions[n].outconditions));
-                _node.setAttribute('markExpression', job.inconditions[n].markExpression);
-                _node.setAttribute('skipOutCondition', job.inconditions[n].skipOutCondition);
-                if (job.inconditions[n].inconditionCommands) {
-                    _node.setAttribute('commands', JSON.stringify(job.inconditions[n].inconditionCommands));
-                }
-                let style = 'condition';
-                if (job.inconditions[n].consumed) {
-                    style += ';fillColor=none';
-                }
-                if (job.inconditions[n].conditionExpression.value) {
-                    style += ';strokeColor=green;';
-                }
-
-                let conditionVertex = createVertex(parent, _node, job.inconditions[n].conditionExpression.expression, style);
-                addOverlays(graph, conditionVertex, job.inconditions[n].conditionExpression.value ? 'green' : '');
-                for(let i = 0; i < job.inconditions[n].outconditions.length; i++){
-                    if(job.inconditions[n].outconditions[i].jobStream !== job.inconditions[n].jobStream) {
-                        addReferenceIcon(graph, conditionVertex);
-                        break;
-                    }
-                }
-
-
-                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, v1);
-                if (inEdges.length > 0) {
-                    for (let i = 0; i < inEdges.length; i++) {
-                        graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), inEdges[i].source, conditionVertex);
-                        graph.getModel().remove(inEdges[i]);
-                    }
-                }
-            }
-            let out = null;
-            if (job.outconditions.length > 0) {
-                out = createVertex(parent, getCellNode('Box', job.name, job.path, ''), '', 'circle');
-            }
-            for (let x = 0; x < job.outconditions.length; x++) {
-                let _label = parseExpression(job.outconditions[x].conditionExpression);
-                let _node = getCellNode('OutCondition', _label, job.outconditions[x].conditionExpression.expression, job.outconditions[x].jobStream);
-                _node.setAttribute('_id', job.outconditions[x].id);
-                _node.setAttribute('job', job.path);
-                _node.setAttribute('events', JSON.stringify(job.outconditions[x].outconditionEvents));
-                _node.setAttribute('inconditions', JSON.stringify(job.outconditions[x].inconditions));
-                let style = 'condition2';
-                if (job.outconditions[x].conditionExpression.value) {
-                    style += ';strokeColor=green;';
-                }
-                let conditionVertex = createVertex(parent, _node, job.outconditions[x].conditionExpression.expression, style);
-                addOverlays(graph, conditionVertex, job.outconditions[x].conditionExpression.value ? 'green' : '');
-                if (job.outconditions[x].inconditions.length > 1) {
-                    addReferenceIcon(graph, conditionVertex);
-                }
-                for(let i = 0; i < job.outconditions[x].inconditions.length; i++){
-                    if(job.outconditions[x].inconditions[i].jobStream !== job.outconditions[x].jobStream) {
-                        addReferenceIcon(graph, conditionVertex);
-                        break;
-                    }
-                }
-
-                if (job.jId) {
-                    graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
-                }
-                if (job.outconditions[x].outconditionEvents.length > 0) {
-                    for (let z = 0; z < job.outconditions[x].outconditionEvents.length; z++) {
-                        if (job.outconditions[x].outconditionEvents[z].command === 'create') {
-                            let _node = getCellNode('Event', job.outconditions[x].outconditionEvents[z].event, job.outconditions[x].outconditionEvents[z].event, job.outconditions[x].jobStream);
-                            let flg = job.outconditions[x].outconditionEvents[z].exists ? true : job.outconditions[x].outconditionEvents[z].existsInJobStream;
-                            _node.setAttribute('isExist', flg);
-                            _node.setAttribute('job', job.path);
-                            _node.setAttribute('outconditionId', job.outconditions[x].id);
-                            let style = 'event';
-                            if (!job.outconditions[x].outconditionEvents[z].existsInJobStream && job.outconditions[x].outconditionEvents[z].exists) {
-                                style += ';dashed=1';
-                            }
-                            if (!job.outconditions[x].outconditionEvents[z].exists && !job.outconditions[x].outconditionEvents[z].existsInJobStream) {
-                                style += ';fillColor=none';
-                            }
-                            let e1 = createVertex(parent, _node, job.outconditions[x].outconditionEvents[z].event, style);
-                            events.push(e1);
-                            graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
-                        }
-                    }
-                }
-            }
-            if (out) {
-                for (let m = 0; m < events.length; m++) {
-                    graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), events[m], out);
-                }
-            }
-
-            for (let j = 0; j < outEdges.length; j++) {
-                graph.insertEdge(parent, null, getCellNode('Connection', '', '', ''), out, outEdges[j].target);
-                graph.getModel().remove(outEdges[j]);
-            }
-            if (job.connections) {
-                if (vm.jobs && vm.jobs.length) {
-                    for (let m = 0; m < vm.jobs.length; m++) {
-                        for (let j = 0; j < job.connections.length; j++) {
-                            if (vm.jobs[m].path == job.connections[j]) {
-                                for (let b = 0; b < events.length; b++) {
-                                    for (let x = 0; x < vm.jobs[m].inconditions.length; x++) {
-                                        if (matchExpression(vm.jobs[m].inconditions[x].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
-                                            if (matchedEvents.indexOf(events[b].id) === -1) {
-                                                matchedEvents.push(events[b].id);
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-                let inComingEdges = graph.getIncomingEdges(out);
-                for (let j = 0; j < inComingEdges.length; j++) {
-                    if (matchedEvents.indexOf(inComingEdges[j].source.id) === -1) {
-                        graph.getModel().remove(inComingEdges[j]);
-                    }
-                }
-            }
-
-            if (graph.getOutgoingEdges(out) && graph.getOutgoingEdges(out).length === 0) {
-                graph.removeCells([out], true);
-            }
-
-            if (!flag) {
-                executeLayout(graph);
-            }
-        }
 
         function updateWorkflowDiagram(jobs) {
             if (!jobs || !vm.editor) return;

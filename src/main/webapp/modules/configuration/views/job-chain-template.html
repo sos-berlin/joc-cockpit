@@ -65,35 +65,31 @@
       </div>
       <div ng-if="jobChain">
         <form name="form" role="form" ng-submit="onSubmit()" novalidate>
-          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+          <div class="form-group row" ng-class="{ 'has-error' : form.jobChainName.$invalid && form.jobChainName.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.jobChainName</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.label.addJobChainName' | translate}}" autofocus
-                     name="jobChainName" ng-model="jobChain.name">
-              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+                     name="jobChainName" ng-model="jobChain.name" unique-name data="{{jobChains}}">
+              <div class="text-danger help-block" ng-if="form.jobChainName.$dirty" ng-messages="form.jobChainName.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
             </div>
           </div>
-          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+          <div class="form-group row" ng-class="{ 'has-error' : form.title.$invalid && form.title.$dirty }">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.title</label>
             <div class="col-md-8 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" name="jobChainTitle" placeholder="{{'placeholder.title' | translate}}" ng-model="jobChain.title">
-              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
+              <input type="text" required ng-maxlength="255" class="form-control" name="title" placeholder="{{'placeholder.title' | translate}}" ng-model="jobChain.title">
+              <div class="text-danger help-block" ng-if="form.title.$dirty" ng-messages="form.title.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
             </div>
           </div>
-          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+          <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.maxOrders</label>
             <div class="col-md-8 col-lg-6">
-              <input type="number" min="0" class="form-control" name="jobChainMaxOrders" ng-model="jobChain.maxOrders" required>
-              <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
-                <div ng-message="required" translate>message.requiredError</div>
-                <div ng-message="maxlength" translate>message.tooLongError</div>
-              </div>
+              <input type="number" min="0" class="form-control" name="jobChainMaxOrders" ng-model="jobChain.maxOrders">
             </div>
           </div>
           <div class="form-group row">
