@@ -681,7 +681,7 @@
                                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>
                                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
-                                            {{job.name}}
+                                            <span uib-tooltip="{{job.name}}" tooltip-placement="bottom">{{job.name}}</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -767,7 +767,7 @@
                                     </div>
                                     <div id="outlineContainer"></div>
                                     <div id="actionMenu" class="dropdown-menu dropdown-ac dropdown-more hide"
-                                         style="position: absolute" ng-class="{'show':selectedNode}">
+                                         style="position: absolute" ng-class="{'show':selectedNode, 'list-dropdown':openToRight}">
                                         <a class="dropdown-item {{selectedNode.job.state._text == 'RUNNING' ? 'disable-link' :''}}"
                                            ng-click="start(selectedNode.job);closeMenu()"
                                            ng-if="permission.Job.execute.start && selectedNode.type === 'Job'"
@@ -1123,7 +1123,7 @@
                             <div class="sidebar-close">
                                 <i class="fa fa-caret-right"></i>
                             </div>
-                            <div class="sidebar bg-white">
+                            <div class="sidebar bg-white" resizable r-directions="['left']" r-width="300">
                                 <div>
                                     <div class="box-body p-a p-t-md p-r-0" >
                                         <div class="b-b">
@@ -1197,7 +1197,7 @@
                                                                  <span class="text-muted" translate>label.path</span>:
                                                                  <label>{{evt.path}}</label>
                                                              </div>
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"><span>{{evt.event}}</span></a>
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" uib-tooltip="{{evt.event}}" ><span>{{evt.event}}</span></a>
                                                          </div>
                                                          <div ng-if="!eventList || eventList.length ==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                                              message.noEventsFound

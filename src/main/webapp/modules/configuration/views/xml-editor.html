@@ -46,21 +46,21 @@
                             <i ng-if="node.nodes.length === 0" data-nodrag class="fa fa-caret-right fa-lg w-15"></i>
                             <span ng-click="getData(node);addContent(node.values);"
                                   ng-class="cutData && node.uuid === copyItem.uuid? 'disabled' : ''"
-                                  ng-mouseover="tooltip(node)" tooltip-placement="bottom"
-                                  uib-tooltip="{{tooltipAttrData? tooltipAttrData: ''}}">{{node.ref}}
-                              </span>
+                                  ng-mouseover="tooltip(node)" ng-mouseleave="tooltipLeave()" tooltip-placement="bottom"
+                                  uib-tooltip="{{(tooltipAttrData != undefined) ? tooltipAttrData: ''}}">{{node.ref}}
+                            </span>
                             <span class="text-sm pl-2" ng-click="getData(node)"
                                   ng-if="node.attributes && node.attributes.length>0 && node.attributes[0].data">
                                 {{node.attributes[0].name}}={{node.attributes[0].data}}
-                              </span>
+                            </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base !== 'password'">
                                 {{removeTag(node.values[0])}}
-                              </span>
+                            </span>
                             <span class="text-sm pl-2" ng-click="getData(node);addContent(node.values)"
                                   ng-if="!node.attributes && (node.values && node.values.length>0) && node.values[0].base == 'password'">
                                 {{passwordLabel(node.values[0].data)}}
-                              </span>
+                            </span>
                             <div class="btn-group dropdown">
                                 <button class="btn-drop more-option-h" data-toggle="dropdown" dropdown type="button" ng-click="checkChildNode(node);checkRules(node, copyItem);checkChoice(node)">
                                     <i class="fa fa-ellipsis-h"></i>
@@ -106,12 +106,12 @@
                             </div>
                         </div>
                         <ol ui-tree-nodes ng-model="node.nodes" ng-class="{'hide': collapsed}">
-                            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                            <li ng-repeat="node in node.nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>
                     </script>
                     <div ui-tree="treeOptions" id="tree-root" data-drag-delay="500">
                         <ol ui-tree-nodes ng-model="nodes">
-                            <li ng-repeat="node in nodes" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                            <li ng-repeat="node in nodes track by $index" ui-tree-node ng-include="'nodes_renderer.html'"></li>
                         </ol>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
             <div class="row m-t-md">
                 <nav class="col-12" aria-label="breadcrumb" ng-if="breadCrumbArray.length>0">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray" ng-class="$index==breadCrumbArray.length-1 ? 'text-primary' : ''" aria-current="page">
+                        <li class="breadcrumb-item" ng-repeat="crumb in breadCrumbArray track by $index" ng-class="$index==breadCrumbArray.length-1 ? 'text-primary' : ''" aria-current="page">
                             <a ng-click="getData(crumb)">{{crumb.ref}}</a>
                         </li>
                     </ol>
@@ -157,8 +157,7 @@
                                         translate>xml.button.gotoKeyElement</a></span>
                                 <span ng-click="gotoKeyref(node)" ng-if="node.refElement"
                                       class="pull-right">&nbsp;<a translate>xml.button.gotoRefElement</a></span>
-                                <span ng-if="node.text" class="pull-right" id="{{node.id}}"
-                                      tooltip-placement="left" ng-mouseover="getpos(node)" uib-tooltip-html="node.str">
+                                <span ng-if="node.text" class="pull-right" id="{{node.id}}" ng-mouseover="getpos(node)" data-toggle="tooltip" data-placement="left" title="{{node.text.doc[0].innerHTML}}">
                                           <i class="fa fa-info-circle"></i>
                                       </span>
                                 <input ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default" ng-blur="validateAttr(node.data, node)"

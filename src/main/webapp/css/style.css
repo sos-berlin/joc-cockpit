@@ -2840,7 +2840,7 @@ div.order-panel div {
     border-left-color: #557fc9
 }
 
-.dark-mangenta, .order-panel .blacklist {
+.dark-magenta, .order-panel .blacklist {
     color: #8b008b;
     border-left-color: #8b008b
 }
@@ -2892,7 +2892,7 @@ div.order-panel div {
     background: #99b2df
 }
 
-._7, .bg-dark-mangenta {
+._7, .bg-dark-magenta {
     background: #b966b9
 }
 
@@ -3158,6 +3158,9 @@ input.input-time {
 
 .rg-right {
     margin-right: 0 !important
+}
+.rg-left {
+    margin-left: 0 !important
 }
 
 .loader1:before {
@@ -4822,8 +4825,7 @@ i.fa-hand-o-up:hover {
 
 #graph {
     position: relative;
-    overflow: hidden;
-    overflow-y: auto;
+    overflow-x: auto !important;
     cursor: default;
     background: #fff;
     height: 100%;
@@ -4940,8 +4942,8 @@ i.fa-hand-o-up:hover {
 
 @font-face {
     font-family: "joc-font2";
-    src:url("fonts/joc-font2.eot");
-    src:url("fonts/joc-font2.eot?#iefix") format("embedded-opentype"),
+    src: url("fonts/joc-font2.eot");
+    src: url("fonts/joc-font2.eot?#iefix") format("embedded-opentype"),
     url("fonts/joc-font2.woff") format("woff"),
     url("fonts/joc-font2.ttf") format("truetype"),
     url("fonts/joc-font2.svg#joc-font2") format("svg");
@@ -5182,7 +5184,8 @@ div.mxTooltip .text-check {
     right: 0;
     overflow-x: hidden;
     transition: .3s;
-    box-shadow: 0 0 15px 0 rgba(0, 0, 0, .15)
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, .15);
+    max-width: 500px;
 }
 
 .view-all-agent span {
@@ -5354,7 +5357,8 @@ input:-webkit-autofill {
 }
 
 .graph-container {
-    overflow: auto
+    overflow: auto;
+    
 }
 
 .scrolltop-btn, .scrollBottom-btn {
@@ -5421,11 +5425,14 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
     height: 100%;
     width: 265px;
 }
-.editor .rg-right {
+
+.editor .rg-right, #property-panel .rg-left {
     background-color: #fff !important;
     width: 16px;
 }
-.editor .rg-right span{
+
+
+.editor .rg-right span {
     top: 42%;
 }
 .editor-tree {

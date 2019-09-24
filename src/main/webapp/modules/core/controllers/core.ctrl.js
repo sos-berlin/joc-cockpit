@@ -52,6 +52,9 @@
             }
         });
 
+        vm.gotoErrorLocation = function () {
+            $rootScope.$broadcast('gotoErrorLocation');
+        };
 
         if ($window.sessionStorage.clientLogFilter) {
             $rootScope.clientLogFilter = JSON.parse($window.sessionStorage.clientLogFilter);

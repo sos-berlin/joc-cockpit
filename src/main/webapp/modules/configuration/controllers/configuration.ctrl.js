@@ -1173,7 +1173,9 @@
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
         vm.commands = [];
-
+        vm._errorState = ['success', 'error'];
+        vm._nextState = ['success', 'error'];
+        vm._onError = ['setback', 'suspend'];
         vm.sortBy1 = function (data) {
             vm.filter.sortBy = data;
             vm.filter.sortReverse = !vm.filter.sortReverse;
@@ -3970,7 +3972,17 @@
         };
 
         vm.getpos = function (node) {
-            node.str = (node.text.doc && node.text.doc[0]) ? $sce.trustAsHtml(node.text.doc[0].innerHTML) : '';
+            // node.str = (node.text.doc && node.text.doc[0]) ? $sce.trustAsHtml(node.text.doc[0].innerHTML) : '';
+            console.log(node.text.doc[0].innerHTML);
+            if(node && node.text) {
+                $('[data-toggle="tooltip"]').tooltip({
+                    trigger: 'hover focus manual',       
+                    html: true,
+                    delay: {'show': 500, 'hide': 200}
+                  });
+                  let a = '#' + node.id;
+                  $(a).tooltip("show");
+            }
         };
 
         // check rules before paste
@@ -4076,7 +4088,9 @@
                 }
             }
         };
-
+        vm.tooltipLeave = function() {
+            vm.tooltipAttrData = '.';
+        }
         // attibutes popover
         vm.tooltip = function (node) {
             vm.tooltipAttrData = '';
@@ -4283,6 +4297,7 @@
             let fileType = 'application/xml';
             let blob = new Blob([xml], {type: fileType});
             saveAs(blob, name);
+            vm.nodes = [];
         }
 
         // create Xml from Json
@@ -4498,6 +4513,10 @@
 
         vm.$on('newFile', function () {
             newFile();
+        });
+
+        vm.$on('gotoErrorLocation', function() {
+            vm.gotoErrorLocation();
         });
 
         window.addEventListener("beforeunload", function () {

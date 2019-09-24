@@ -8640,7 +8640,7 @@
                     } else {
                         const bounds = vm.editor.graph.getGraphBounds();
                         if (bounds.y < -0.05 && bounds.height > dom.height()) {
-                            vm.editor.graph.center(true, true, 0.5, -0.02);
+                            vm.editor.graph.center(true, true, 0, -0.02);
                         }
                     }
                 }
@@ -8767,17 +8767,18 @@
 
                         vm.isJobStreamLoaded = true;
                         vm.isUpdated = true;
-                        let scrollTop = 0;
+                        let scrollValue = {scrollTop: 0, scrollLeft:0};
                         if (checkScroll) {
                             let element = document.getElementById("graph");
-                            scrollTop = element.scrollTop;
+                            scrollValue.scrollTop = element.scrollTop;
+                            scrollValue.scrollLeft = element.scrollLeft;
                         }
                         if (reload) {
                             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
                         }
                         if (!vm.selectedJobStream) {
                             vm.selectedJobStream = vm.workflows[0].name;
-                            createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
+                            createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue);
                         } else {
                             let _jobs = [];
                             let _findWF = false;
@@ -8786,17 +8787,17 @@
                                     _jobs = _jobs.concat(vm.workflows[x].jobs);
                                     _findWF = true;
                                 } else if (vm.selectedJobStream === vm.workflows[x].name) {
-                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollTop);
+                                    createWorkflowDiagram(vm.workflows[x].jobs, !reload, scrollValue);
                                     _findWF = true;
                                     break;
                                 }
                             }
                             if (!_findWF && vm.workflows.length > 0) {
                                 vm.selectedJobStream = vm.workflows[0].name;
-                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollTop);
+                                createWorkflowDiagram(vm.workflows[0].jobs, !reload, scrollValue);
                             }
                             if (_jobs.length > 0) {
-                                createWorkflowDiagram(_jobs, !reload, scrollTop);
+                                createWorkflowDiagram(_jobs, !reload, scrollValue);
                             }
                         }
                         if (vm.selectedJobStream && vm.workflows.length === 0) {
@@ -9057,34 +9058,60 @@
             }
 
             for (let n = 0; n < cond.inconditions.length; n++) {
-                if(cond.jobStream !== cond.inconditions[n].jobStream){
-                    if(conditionVertex)
-                    addReferenceIcon(graph, conditionVertex);
-                } else{
-
+                if (cond.jobStream !== cond.inconditions[n].jobStream) {
+                    if (conditionVertex)
+                        addReferenceIcon(graph, conditionVertex);
+                } else {
                     for (let p = 0; p < cond.inconditions[n].jobs.length; p++) {
-                        let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
-                        for (let z = 0; z < _job.inconditions.length; z++) {
-                            if (expand) {
-                                let vert = createInCond(_job, _job.inconditions[z], graph, graph.getModel().getCell(_job.jId));
-                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, vert);
-                            } else{
-                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, graph.getModel().getCell(_job.jId));
-                            }
+                        if (cond.inconditions[n].jobs[p].job !== job.path) {
+                            let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
+                            for (let z = 0; z < _job.inconditions.length; z++) {
+                                let v2 = graph.getModel().getCell(_job.jId);
+                                if (expand) {
+                                    let vert = createInCond(_job, _job.inconditions[z], graph, v2);
+                                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, vert);
+                                } else {
 
-                            for (let b = 0; b < events.length; b++) {
-                                if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
-                                    if(graph.getEdgesBetween(events[b], out).length === 0){
-                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
+                                    if (graph.getEdgesBetween(v1, v2).length === 0) {
+                                        graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, v2);
                                     }
                                 }
-                            }
 
+                                for (let b = 0; b < events.length; b++) {
+                                    if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
+                                        if (graph.getEdgesBetween(events[b], out).length === 0) {
+                                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), events[b], out);
+                                        }
+                                    }
+                                }
+
+                            }
                         }
                     }
                 }
             }
+        }
 
+        function colorFunction(d) {
+            if (d == 0) {
+                return '#228b22';
+            } else if (d == 1) {
+                return '#ffc300';
+            } else if (d == 2) {
+                return '#dc143c';
+            } else if (d == 3) {
+                return '#696969';
+            } else if (d == 4) {
+                return '#2e3e4e';
+            } else if (d == 5) {
+                return '#f60';
+            } else if (d == 6) {
+                return '#557fc9';
+            } else if (d == 7) {
+                return '#8b008b';
+            } else if (d == 8) {
+                return '#d2691e';
+            }
         }
 
         function createWorkflowDiagram(jobs, reload, scrollValue) {
@@ -9105,7 +9132,7 @@
                     let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
                     _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
                     let style = 'job';
-                    style += ';strokeColor=' + (vm.colorFunction(jobs[i].state.severity) || '#999');
+                    style += ';strokeColor=' + (colorFunction(jobs[i].state.severity) || '#999');
                     let v1 = createVertex(parent, _node, jobs[i].name, style);
                     addOverlays(graph, v1, jobs[i].state._text === 'RUNNING' ? 'green' : jobs[i].state._text === 'PENDING' ? 'yellow' : jobs[i].state._text === undefined ? 'grey' : 'red');
                     jobs[i].jId = v1.id;
@@ -9129,9 +9156,7 @@
                 }
 
                 vm.jobs = jobs;
-                if (reload) {
-                    makeCenter(graph);
-                }
+
             } catch (e) {
                 console.error(e)
             } finally {
@@ -9139,13 +9164,19 @@
                 graph.getModel().endUpdate();
                 executeLayout(graph);
             }
+            if (reload) {
+
+                makeCenter(graph);
+            }
             vm.jobs = jobs;
             setTimeout(function () {
                 updateWorkflowDiagram(vm.jobs);
             }, 100);
-            if (scrollValue) {
+            if (scrollValue && scrollValue.scrollTop) {
+              
                 let element = document.getElementById("graph");
-                element.scrollTop = scrollValue;
+                element.scrollTop = scrollValue.scrollTop;
+                element.scrollLeft = scrollValue.scrollLeft;
             }
 
             if (vm.workflows && vm.workflows.length) {
@@ -9166,7 +9197,6 @@
         function matchExpression(jobStreamEvents, event) {
             return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
         }
-
 
         function updateWorkflowDiagram(jobs) {
             if (!jobs || !vm.editor) return;
@@ -9255,7 +9285,7 @@
                 if (vm.selectedJobStream !== jobStream.name) {
                     vm.selectedJobStream = jobStream.name;
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(jobStream.jobs, false, 0);
+                    createWorkflowDiagram(jobStream.jobs, false, {});
                     vm.getEvents(null);
                 }
             } else {
@@ -9265,7 +9295,7 @@
                     jobs = jobs.concat(vm.workflows[x].jobs)
                 }
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(jobs, false, 0);
+                createWorkflowDiagram(jobs, false, {});
             }
 
         };
@@ -9286,13 +9316,13 @@
                         vm.workflows[x].jobs[i].isExpanded = flag;
                     }
                     vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(vm.workflows[x].jobs, true, 0);
+                    createWorkflowDiagram(vm.workflows[x].jobs, true, {});
                     break;
                 }
             }
             if (_jobs.length > 0) {
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(_jobs, true, 0);
+                createWorkflowDiagram(_jobs, true, {});
             }
         };
 
@@ -9820,9 +9850,9 @@
 
         function updateJobs(flag) {
             let element = document.getElementById("graph");
-            let scrollTop = element.scrollTop;
+            let scrollValue = {scrollTop: element.scrollTop, scrollLeft: element.scrollLeft};
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-            createWorkflowDiagram(vm.jobs, false, scrollTop);
+            createWorkflowDiagram(vm.jobs, false, scrollValue);
             if (!flag)
                 vm.getEvents(null);
         }
@@ -9908,8 +9938,8 @@
          */
         function makeCenter(graph) {
             t1 = $timeout(function () {
-                graph.zoomActual();
-                graph.center(true, true, 0.5, 0.05);
+              //  graph.zoomActual();
+                graph.center();
             }, 0);
         }
 
@@ -10098,7 +10128,7 @@
             mxUtils.extend(SumEllipseShape, mxEllipse);
             SumEllipseShape.prototype.paintVertexShape = function (c, x, y, w, h) {
                 mxEllipse.prototype.paintVertexShape.apply(this, arguments);
-                var s2 = 0.145;
+                let s2 = 0.145;
 
                 c.setShadow(false);
                 c.begin();
@@ -10271,22 +10301,29 @@
                     img.style.top = y + 'px';
                     mxEvent.addListener(img, 'click',
                         mxUtils.bind(this, function (evt) {
-                            let _x = x - 120;
-                            if (state.cell.value.tagName === 'Job') {
-                                _x -= 28;
-                                if(vm.userPreferences.locale === 'de'){
-                                    _x -= 40;
-                                } else if(vm.userPreferences.locale === 'fr'){
-                                    _x -= 75;
+                            let _x = x;
+                            if(evt.clientX > 240) {
+                                _x = _x - 120;
+                                if (state.cell.value.tagName === 'Job') {
+                                    _x -= 28;
+                                    if (vm.userPreferences.locale === 'de') {
+                                        _x -= 40;
+                                    } else if (vm.userPreferences.locale === 'fr') {
+                                        _x -= 75;
+                                    }
                                 }
+                                vm.openToRight = false;
+                            }else{
+                                vm.openToRight = true;
                             }
+
                             let _y = y + 60 - $('#graph').scrollTop() - $('.graph-container').scrollTop();
                             vm.selectedNode = {type: state.cell.value.tagName, cell: state.cell};
                             if (vm.selectedNode.type === 'Event') {
                                 vm.selectedNode.isExist = state.cell.getAttribute('isExist');
                             } else if (vm.selectedNode.type === 'Job') {
                                 for (let i = 0; i < vm.jobs.length; i++) {
-                                    if (vm.jobs[i].path == state.cell.getAttribute('actual')) {
+                                    if (vm.jobs[i].path === state.cell.getAttribute('actual')) {
                                         vm.selectedNode.job = vm.jobs[i];
                                         break;
                                     }
@@ -10299,6 +10336,7 @@
                             }
                             $menu.style.left = _x + "px";
                             $menu.style.top = _y + "px";
+
                             this.destroy();
                         })
                     );
@@ -10445,9 +10483,9 @@
                         // Removes relative edge labels with selected terminals
                         var checked = [];
 
-                        for (var i = 0; i < cells.length; i++) {
-                            var geo = this.getCellGeometry(cells[i]);
-                            var parent = this.model.getParent(cells[i]);
+                        for (let i = 0; i < cells.length; i++) {
+                            let geo = this.getCellGeometry(cells[i]);
+                            let parent = this.model.getParent(cells[i]);
 
                             if ((geo == null || !geo.relative) || !this.model.isEdge(parent) ||
                                 (!isSelected(this.model.getTerminal(parent, true)) &&
@@ -10482,7 +10520,7 @@
                         this.setAllowNegativeCoordinates(previous);
 
                         if (target != null) {
-                            var index = this.model.getChildCount(target);
+                            let index = this.model.getChildCount(target);
                             this.cellsAdded(cells, target, index, null, null, true);
                         }
 
@@ -10495,7 +10533,6 @@
                 }
                 return cells;
             };
-
         }
 
         function detachedJob(target, job) {
@@ -10625,14 +10662,13 @@
         vm.actual = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomActual();
-                vm.editor.graph.center(true, true, 0.5, 0);
+                vm.editor.graph.center();
             }
         };
 
         vm.fit = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.fit();
-                vm.editor.graph.center(true, true, 0.5, 0);
             }
         };
 

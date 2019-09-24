@@ -88,12 +88,14 @@
 <!-- BEGIN ACTUAL CONTENT -->
 <div class="app" ui-view></div>
 <!-- END ACTUAL CONTENT -->
-<toasty></toasty>
+<toasty ng-click="gotoErrorLocation()"></toasty>
 <iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>
 <!-- jQuery -->
 
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="bower_components/tether/dist/js/tether.min.js?v=1.13.1-SNAPSHOT"></script>
+<script type="text/javascript" src="js/jquery-ui.js?v=1.13.1-SNAPSHOT"></script>
+
 <!-- Bootstrap -->
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js?v=1.13.1-SNAPSHOT"></script>
 <!-- Angular -->
@@ -150,7 +152,6 @@
 <script type="text/javascript" src="js/xml2json.min.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="js/vkbeautify.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="js/bundle.js?v=1.13.1-SNAPSHOT"></script>
-<script type="text/javascript" src="js/jquery-ui.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="js/lodash.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="js/gridstack.js?v=1.13.1-SNAPSHOT"></script>
 <script type="text/javascript" src="js/slimscroll.js?v=1.13.1-SNAPSHOT"></script>
@@ -196,7 +197,6 @@
 
 <!-- endbuild -->
 <script>
-    mxBasePath = 'mxgraph';
     $(window).on('popstate', function () {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();

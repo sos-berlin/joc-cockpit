@@ -781,10 +781,8 @@
 
                         if(list.length > 1) {
                             for(let m=0;m < list.length;m++) {
-                                console.log(n.$modelValue, list[m].name)
                                 if(list[m].name === n.$modelValue) {
                                     n.$setValidity("invalid", !1);
-                                    console.log('if....')
                                     break;
                                 }
                             }
