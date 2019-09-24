@@ -68,7 +68,8 @@
                             <button class="btn btn-sm btn-grey m-l-sm button-group-ellipsis" ng-click="resetWorkflow()"><i class="fa fa-refresh"></i>
                                 <span class="hidden-sm-down" translate>button.reset</span>
                             </button>
-                            <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="startConditionResolver()"><i class="fa fa-refresh"></i>
+                            <button class="btn btn-grey btn-sm m-l-sm button-group-ellipsis" ng-click="startConditionResolver()">
+                                <i class="fa fa-refresh" ng-class="{'fa-spin' : resolvingCondition}"></i>
                                 <span class="hidden-sm-down" translate>button.resolveConditions</span>
                             </button>
                         </div>
@@ -1197,7 +1198,7 @@
                                                                  <span class="text-muted" translate>label.path</span>:
                                                                  <label>{{evt.path}}</label>
                                                              </div>
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" uib-tooltip="{{evt.event}}" ><span>{{evt.event}}</span></a>
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" data-toggle="tooltip" data-placement="left" title="{{evt.event}}" ><span>{{evt.event}}</span></a>
                                                          </div>
                                                          <div ng-if="!eventList || eventList.length ==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                                              message.noEventsFound
@@ -1247,7 +1248,7 @@
                             <span translate>message.noJobStreamsFound</span>.
                             <a class="text-hover-primary text-u-l" ng-click="createJobStream()" translate>message.clickHereToADD</a>
                         </div>
-                        <div ng-if="!isJobStreamLoaded || !isUpdated" class="loading-img1"></div>
+                        <div ng-if="!isJobStreamLoaded || !isUpdated || isExpanding" class="loading-img1"></div>
                     </div>
                 </div>
             </div>

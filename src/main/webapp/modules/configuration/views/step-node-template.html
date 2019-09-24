@@ -2,7 +2,110 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        //todo
+        <span class="text text-dark" translate="">Step Nodes</span>
+        <div class="inline pull-right" style="margin-top: -2px">
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyChainNode()">
+            <i class="fa fa-check"></i>
+            <span translate>joe.button.applyChainNode</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
+            <i class="fa fa-upload"></i>
+            <span translate>joe.button.inportJob</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="newChainNode()">
+            <i class="fa fa-plus"></i>
+            <span translate>joe.button.newChainNode</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="insertChainNode()">
+            <i class="fa fa-download"></i>
+            <span translate>joe.button.insertChainNode</span>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+            <i class="fa fa-tasks"></i>
+            <span translate>joe.button.parameter</span>
+          </button>
+        </div>
+      </div>
+      <div>
+        <form  name="form" role="form" ng-submit="onSubmit()" novalidate>
+          <div class="form-group row">
+              <div class="p-a-sm m-l-xs m-r-xs p-t-0">
+                <div class="b-b">
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>joe.stepsNodes.tab.nodes</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>joe.stepsNodes.tab.fileOrderSource</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>joe.stepsNodes.tab.diagram</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-content p-t-md">
+                  <div class="tab-pane animated fadeIn active" id="tab1">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.orderId.$invalid && form.orderId.$dirty }">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.state</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" required ng-maxlength="255" class="form-control"
+                              placeholder="Enter State" autofocus name="stateName" ng-model="stepNode.state">
+                        <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
+                          <div ng-message="required" translate>message.requiredError</div>
+                          <div ng-message="maxlength" translate>message.tooLongError</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row m-t">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" name="nextState" ng-model="jobchain.stepnodes.nextState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="next for next in _nextState">
+                          <option value="?" selected="selected"></option>
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -25px">
+                          <input name="nextState" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="jobchain.stepnodes.nextState" required="" type="text" ng-blur="saveScheduleDetail('check');">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row m-t">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" name="errorState" ng-model="jobchain.stepnodes.errorState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="err for err in _errorState">
+                          <option value="?" selected="selected"></option>
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -25px">
+                          <input name="errorState" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="jobchain.stepnodes.errorState" required="" type="text" ng-blur="saveScheduleDetail('check');">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delay</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="classpath"
+                               ng-model="jobChain.stepNodes.delay">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.onError</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control" name="err" ng-model="jobChain.stepNodes.onError" ng-disabled="!jobchain.stepnodes.errorState">
+                          <option ng-repeat="err in _onError" value="{{err}}">{{err}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane animated fadeIn" id="tab2">
+                    <div class="b-a p-a-sm bg-transparent">
+                      //todo
+                    </div>
+                  </div>
+                  <div class="tab-pane animated fadeIn" id="tab3">
+                    //todo
+                  </div>
+                </div>
+              </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

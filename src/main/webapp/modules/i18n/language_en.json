@@ -1644,5 +1644,16 @@
   "joe.label.prePostProcessing": "Pre/Post-Processing",
   "joe.label.favourites": "Favourites",
   "joe.label.startAt": "Start At",
-  "joe.label.jobOrderId": "Job / Order ID"
+  "joe.label.jobOrderId": "Job / Order ID",
+  "joe.stepsNodes.tab.nodes": "Nodes",
+  "joe.stepsNodes.tab.fileOrderSource":"File Order Source",
+  "joe.stepsNodes.tab.diagram": "Diagram",
+  "joe.button.applyChainNode": "Apply Chain Node",
+  "joe.button.inportJob": "Import Job",
+  "joe.button.newChainNode": "New Chain Node",
+  "joe.button.insertChainNode": "Insert Chain Node",
+  "joe.label.state": "State",
+  "joe.label.nextState": "Next State",
+  "joe.label.errorState": "Error State",
+  "joe.label.onError": "On Error"
 }

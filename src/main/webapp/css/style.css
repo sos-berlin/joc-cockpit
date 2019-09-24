@@ -5176,13 +5176,12 @@ div.mxTooltip .text-check {
 
 .sidebar {
     height: calc(100vh - 130px);
-    overflow-y: auto;
+    overflow: auto;
     width: 0;
     position: fixed;
     z-index: 1;
     top: 134px;
     right: 0;
-    overflow-x: hidden;
     transition: .3s;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, .15);
     max-width: 500px;
@@ -5426,7 +5425,7 @@ label.col-sm-6, label.col-sm-8, label.col-md-6, label.col-md-8{
     width: 265px;
 }
 
-.editor .rg-right, #property-panel .rg-left {
+.editor .rg-right, .property-panel .rg-left {
     background-color: #fff !important;
     width: 16px;
 }
