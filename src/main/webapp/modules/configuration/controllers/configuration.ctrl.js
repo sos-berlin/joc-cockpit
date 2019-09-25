@@ -95,9 +95,9 @@
         })
     }
 
-    JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "ResourceService","orderByFilter"];
+    JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "ResourceService","orderByFilter", "$uibModal"];
 
-    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, ResourceService, orderBy) {
+    function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, ResourceService, orderBy, $uibModal) {
         const vm = $scope;
         vm.tree = [];
         vm.filter_tree = {};
@@ -405,6 +405,15 @@
             if (data.expanded) {
                 data.folders = orderBy(data.folders, 'name');
             }
+        };
+
+        vm.showXml = function (isEditable) {
+            $uibModal.open({
+                templateUrl: 'modules/configuration/views/object-xml-dialog.html',
+                controller: 'DialogCtrl1',
+                scope: vm,
+                size: 'lg'
+            });
         };
 
         vm.openSidePanelG = function (title) {

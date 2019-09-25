@@ -8986,8 +8986,40 @@
             });
         }
 
+        function getColorBySeverity(d) {
+            if (d == 0) {
+                return '#228b22';
+            } else if (d == 1) {
+                return '#ffc300';
+            } else if (d == 2) {
+                return '#dc143c';
+            } else if (d == 3) {
+                return '#696969';
+            } else if (d == 4) {
+                return '#2e3e4e';
+            } else if (d == 5) {
+                return '#f60';
+            } else if (d == 6) {
+                return '#557fc9';
+            } else if (d == 7) {
+                return '#8b008b';
+            } else if (d == 8) {
+                return '#d2691e';
+            }
+        }
 
-        function createInCond(job, cond, graph, v1, mapObj){
+        function createJobVertex(job, graph) {
+            let _node = getCellNode('Job', job.name, job.path, '');
+            _node.setAttribute('status', gettextCatalog.getString(job.state._text));
+            let style = 'job';
+            style += ';strokeColor=' + (getColorBySeverity(job.state.severity) || '#999');
+            let v1 = createVertex(graph.getDefaultParent(), _node, job.name, style);
+            addOverlays(graph, v1, job.state._text === 'RUNNING' ? 'green' : job.state._text === 'PENDING' ? 'yellow' : job.state._text === undefined ? 'grey' : 'red');
+            job.jId = v1.id;
+            return v1;
+        }
+
+        function createInCond(job, cond, graph, v1, mapObj) {
             let _label = parseExpression(cond.conditionExpression);
             let _node = getCellNode('InCondition', _label, cond.conditionExpression.expression, cond.jobStream);
             _node.setAttribute('isConsumed', cond.consumed);
@@ -9008,20 +9040,27 @@
             }
 
             let conditionVertex = createVertex(graph.getDefaultParent(), _node, cond.conditionExpression.expression, style);
+
             addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
-            for(let m = 0; m < cond.outconditions.length; m++) {
+            for (let m = 0; m < cond.outconditions.length; m++) {
                 if (cond.outconditions[m].jobStream !== cond.jobStream) {
                     addReferenceIcon(graph, conditionVertex);
                 } else {
                     for (let z = 0; z < cond.outconditions[m].jobs.length; z++) {
                         if (cond.outconditions[m].jobs[z].job !== job.path) {
                             let _job = mapObj.get(cond.outconditions[m].jobs[z].job);
-                            let v2 = graph.getModel().getCell(_job.jId);
+                            let v2 = null;
+                            if (_job.jId) {
+                                v2 = graph.getModel().getCell(_job.jId);
+                            } else {
+                                v2 = createJobVertex(_job, graph);
+                                createConnection(_job, graph, v2, mapObj);
+                            }
                             if (_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined)) {
+
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(_job.boxId), conditionVertex);
                             } else {
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v2, conditionVertex);
-
                             }
                         }
                     }
@@ -9034,7 +9073,7 @@
             let expand = job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && job.isExpanded === undefined);
             let events = [], conditionVertex = null;
             if (expand) {
-                if(!job.inConditionProceed) {
+                if (!job.inConditionProceed) {
                     for (let x = 0; x < job.inconditions.length; x++) {
                         createInCond(job, job.inconditions[x], graph, v1, mapObj);
                     }
@@ -9085,17 +9124,23 @@
                     for (let p = 0; p < cond.inconditions[n].jobs.length; p++) {
                         if (cond.inconditions[n].jobs[p].job !== job.path) {
                             let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
-                            let v2 = graph.getModel().getCell(_job.jId);
+                            let v2 = null;
+                            if (_job.jId) {
+                                v2 = graph.getModel().getCell(_job.jId);
+                            } else {
+                                v2 = createJobVertex(_job, graph);
+                                createConnection(_job, graph, v2, mapObj);
+                            }
                             if (!expand && graph.getEdgesBetween(v1, v2).length === 0) {
                                 if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, v2);
                                 }
-                            } else{
-                                if(!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
+                            } else {
+                                if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, v2);
                                 }
                             }
-                            if (expand) {
+                            if (expand && out) {
                                 for (let z = 0; z < _job.inconditions.length; z++) {
                                     for (let b = 0; b < events.length; b++) {
                                         if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
@@ -9112,91 +9157,74 @@
             }
         }
 
-        function colorFunction(d) {
-            if (d == 0) {
-                return '#228b22';
-            } else if (d == 1) {
-                return '#ffc300';
-            } else if (d == 2) {
-                return '#dc143c';
-            } else if (d == 3) {
-                return '#696969';
-            } else if (d == 4) {
-                return '#2e3e4e';
-            } else if (d == 5) {
-                return '#f60';
-            } else if (d == 6) {
-                return '#557fc9';
-            } else if (d == 7) {
-                return '#8b008b';
-            } else if (d == 8) {
-                return '#d2691e';
+        function createConnection(job, graph, v1, mapObj) {
+            let out = null, len = job.outconditions.length;
+            if (job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && job.isExpanded === undefined)) {
+                if (len > 0) {
+                    out = createVertex(graph.getDefaultParent(), getCellNode('Box', job.name, job.path, ''), '', 'circle');
+                    job.boxId = out.id;
+                } else {
+                    for (let x = 0; x < job.inconditions.length; x++) {
+                        createInCond(job, job.inconditions[x], graph, v1, mapObj);
+                    }
+                }
+            }
+
+            let flag = true;
+            for (let n = 0; n < len; n++) {
+                createOutCond(job, job.outconditions[n], graph, v1, out, mapObj);
+                job.inConditionProceed = true;
+                if (out) {
+                    if (job.outconditions[n].inconditions.length > 0) {
+                        flag = false;
+                        for (let x = 0; x < job.outconditions[n].inconditions.length; x++) {
+                            if (job.outconditions[n].jobStream === job.outconditions[n].inconditions[x].jobStream) {
+                                if (job.outconditions[n].inconditions[x].jobs.length === 1 && job.path === job.outconditions[n].inconditions[x].jobs[0].job) {
+                                    graph.removeCells([out], true);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (flag) {
+                graph.removeCells([out], true);
             }
         }
 
         function createWorkflowDiagram(jobs, reload, scrollValue) {
-            vm.isExpanding = true;
             const graph = vm.editor.graph;
-            let parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
-
             if (!jobs) {
                 return;
             }
-
             let mapObj = new Map();
             try {
                 for (let i = 0; i < jobs.length; i++) {
                     if (!jobs[i].state) {
                         jobs[i].state = {};
                     }
-                    let _node = getCellNode('Job', jobs[i].name, jobs[i].path, '');
-                    _node.setAttribute('status', gettextCatalog.getString(jobs[i].state._text));
-                    let style = 'job';
-                    style += ';strokeColor=' + (colorFunction(jobs[i].state.severity) || '#999');
-                    let v1 = createVertex(parent, _node, jobs[i].name, style);
-                    addOverlays(graph, v1, jobs[i].state._text === 'RUNNING' ? 'green' : jobs[i].state._text === 'PENDING' ? 'yellow' : jobs[i].state._text === undefined ? 'grey' : 'red');
-                    jobs[i].jId = v1.id;
+                    delete jobs[i]['jId'];
                     delete jobs[i]['boxId'];
                     delete jobs[i]['inConditionProceed'];
                     mapObj.set(jobs[i].path, jobs[i]);
                 }
-                let outVertexs = [];
-
                 for (let i = 0; i < jobs.length; i++) {
-                    let v1 = graph.getModel().getCell(mapObj.get(jobs[i].path).jId);
-                    let out = null, len = jobs[i].outconditions.length;
-                    if (jobs[i].isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && jobs[i].isExpanded === undefined)) {
-                        if (len > 0) {
-                            out = createVertex(parent, getCellNode('Box', jobs[i].name, jobs[i].path, ''), '', 'circle');
-                            jobs[i].boxId = out.id;
-                            outVertexs.push(out);
-                        } else {
-                            for (let x = 0; x < jobs[i].inconditions.length; x++) {
-                                createInCond(jobs[i], jobs[i].inconditions[x], graph, v1, mapObj);
-                            }
-                        }
-                    }
-                    for (let n = 0; n < len; n++) {
-                        createOutCond(jobs[i], jobs[i].outconditions[n], graph, v1, out, mapObj);
-                        jobs[i].inConditionProceed = true;
-                    }
-                }
-                for (let i = 0; i < outVertexs.length; i++) {
-                    if (graph.getOutgoingEdges(outVertexs[i]) && graph.getOutgoingEdges(outVertexs[i]).length === 0) {
-                        graph.removeCells([outVertexs[i]], true);
+                    let v1 = null;
+                    if (!jobs[i].jId) {
+                        v1 = createJobVertex(jobs[i], graph);
+                        createConnection(jobs[i], graph, v1, mapObj);
                     }
                 }
 
                 vm.jobs = jobs;
-
             } catch (e) {
                 console.error(e)
             } finally {
                 // Updates the display
                 graph.getModel().endUpdate();
                 executeLayout(graph);
-                vm.isExpanding = false;
             }
             if (reload) {
                 makeCenter(graph);
@@ -9220,11 +9248,14 @@
                 }
             }
 
+            vm.expandingInProgress = false;
             setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip();
                 updateWorkflowDiagram(vm.jobs);
             }, 100);
         }
-        
+
+
         function matchExpression(jobStreamEvents, event) {
             return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
         }
@@ -9331,30 +9362,16 @@
 
         };
 
-        vm.compactView = function (jobStream, flag) {
-            vm.jobFilters.graphViewDetail.isWorkflowCompact = !vm.jobFilters.graphViewDetail.isWorkflowCompact;
-            let _jobs = [];
-            for (let x = 0; x < vm.workflows.length; x++) {
-                if (jobStream === 'ALL') {
-                    for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
-                        delete vm.workflows[x].jobs[i]['jId'];
-                        vm.workflows[x].jobs[i].isExpanded = flag;
-                    }
-                    _jobs = _jobs.concat(vm.workflows[x].jobs)
-                } else if (jobStream === vm.workflows[x].name) {
-                    for (let i = 0; i < vm.workflows[x].jobs.length; i++) {
-                        delete vm.workflows[x].jobs[i]['jId'];
-                        vm.workflows[x].jobs[i].isExpanded = flag;
-                    }
-                    vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                    createWorkflowDiagram(vm.workflows[x].jobs, true, {});
-                    break;
+        vm.compactView = function (flag) {
+            vm.jobFilters.graphViewDetail.isWorkflowCompact = !flag;
+            if (vm.jobs.length > 0) {
+                for (let i = 0; i < vm.jobs.length; i++) {
+                    vm.jobs[i].isExpanded = flag;
                 }
-            }
-            if (_jobs.length > 0) {
                 vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
-                createWorkflowDiagram(_jobs, true, {});
+                createWorkflowDiagram(vm.jobs, true, {});
             }
+
         };
 
         vm.resetWorkflow = function (jobStream) {
@@ -10184,11 +10201,11 @@
                 }
                 let className = '';
                 if (cell.value.tagName === 'Job') {
-                    className = 'vertex-text job '+cell.id;
+                    className = 'vertex-text job ' + cell.id;
                 } else if (cell.value.tagName === 'Event') {
-                    className = 'vertex-text event1 '+cell.id;
+                    className = 'vertex-text event1 ' + cell.id;
                 } else if (cell.value.tagName === 'InCondition') {
-                    className = 'vertex-text in-condition '+cell.id;
+                    className = 'vertex-text in-condition ' + cell.id;
                 } else {
                     className = 'vertex-text out-condition';
                 }

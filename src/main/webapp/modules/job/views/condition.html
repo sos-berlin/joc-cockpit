@@ -678,11 +678,11 @@
                             <div class="col-md-1 col-sm-12" id="toolbarContainer">
                                 <ul ng-repeat="(key, value) in _allJobs  | groupBy: 'path1' track by $index">
                                     <li>
-                                        <p class="p-l m-l-xs" uib-tooltip="{{key}}" tooltip-placement="bottom">
+                                        <p class="p-l m-l-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="{{key}}" tooltip-placement="bottom">
                                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{key}}</p>
                                         <div class="draggable" draggable="true" ondragstart="drag(event)"
                                              id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
-                                            <span uib-tooltip="{{job.name}}" tooltip-placement="bottom">{{job.name}}</span>
+                                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -700,12 +700,12 @@
                                 <div id="toolbar">
                                     <div class="m-b-sm b-b p-b-sm">
                                         <button class="btn btn-sm btn btn-grey"
-                                                ng-click="compactView(selectedJobStream, true)">
+                                                ng-click="expandingInProgress = true;compactView(true)">
                                             <i class="fa fa-angle-double-down"></i>
                                             <span class="toolBtn" translate>button.expandDetails</span>
                                         </button>
                                         <button class="btn btn-sm btn-grey  m-l-sm"
-                                                ng-click="compactView(selectedJobStream, false)">
+                                                ng-click="compactView(false)">
                                             <i class="fa fa-angle-double-up"></i>
                                             <span class="toolBtn" translate>button.collapseDetails</span>
                                         </button>
@@ -1148,8 +1148,8 @@
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis" style="width: 100%">
-                                                         <a class="text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
+                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis " style="width: 100%">
+                                                         <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
                                                              <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
                                                              <span>{{jobStream.name}}</span>
                                                          </a>
@@ -1198,7 +1198,7 @@
                                                                  <span class="text-muted" translate>label.path</span>:
                                                                  <label>{{evt.path}}</label>
                                                              </div>
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" data-toggle="tooltip" data-placement="left" title="{{evt.event}}" ><span>{{evt.event}}</span></a>
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" onmouseenter="setUpTooltip()" data-placement="bottom" data-toggle="tooltip" data-original-title="{{evt.event}}" ><span>{{evt.event}}</span></a>
                                                          </div>
                                                          <div ng-if="!eventList || eventList.length ==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                                              message.noEventsFound
@@ -1248,7 +1248,7 @@
                             <span translate>message.noJobStreamsFound</span>.
                             <a class="text-hover-primary text-u-l" ng-click="createJobStream()" translate>message.clickHereToADD</a>
                         </div>
-                        <div ng-if="!isJobStreamLoaded || !isUpdated || isExpanding" class="loading-img1"></div>
+                        <div ng-if="!isJobStreamLoaded || !isUpdated || expandingInProgress" class="loading-img1"></div>
                     </div>
                 </div>
             </div>
@@ -1624,5 +1624,7 @@
         ev.dataTransfer.setData("data", ev.target.id);
         window.selectedJob = ev.target.id;
     }
-
+    function setUpTooltip(){
+        $('[data-toggle="tooltip"]').tooltip();
+    }
 </script>
