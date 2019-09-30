@@ -1486,6 +1486,7 @@
   "breadcrumb.jobStream": "Job Streams",
   "message.noReferencesFound": "No References found",
   "label.selectAllJobStream": "Select All Job Streams",
+  "label.showJobStreamEvents": "Show Job Stream Events",
   "button.dragAndDropFileToUpload": "Drag And Drop File To Upload",
   "button.addCommand": "Add Command",
   "button.addAnotherMonitor": "Add Another Monitor",
@@ -1655,5 +1656,19 @@
   "joe.label.state": "State",
   "joe.label.nextState": "Next State",
   "joe.label.errorState": "Error State",
-  "joe.label.onError": "On Error"
+  "joe.label.onError": "On Error",
+  "joe.label.removeFile": "Remove File",
+  "joe.label.moveTo": "Move To",
+  "joe.label.jobDirectory": "Job Directory",
+  "joe.button.returnCodes": "Return Codes",
+  "joe.button.ApplyFileOrderSource": "Apply File Order Source",
+  "joe.button.newFileOrderSource": "New File Order Source",
+  "joe.label.directory": "Directory",
+  "joe.label.regex": "Regex",
+  "joe.label.delayAfterError": "Delay After Error",
+  "joe.label.alertWhenDirectoryMissing": "Alert When Directory Missing",
+  "joe.label.repeat": "Repeat",
+  "joe.button.enviroment": "enviroment",
+  "button.addAnotherEnviroment": "Add another Enviroment",
+  "button.addEnviroment": "Add Enviroment"
 }

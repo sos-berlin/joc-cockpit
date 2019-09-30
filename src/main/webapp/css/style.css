@@ -3199,7 +3199,12 @@ input.input-time {
 
 .tooltip {
     font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, serif;
-    font-size: 12px
+    font-size: 12px;
+}
+div.tooltip-inner {
+    max-width: 300px;
+    height: auto;
+    word-break: break-all;
 }
 
 .block-ellipsis, .block-ellipsis-cluster, .block-ellipsis-job, .form-control-label, .nowrap, .text-ellipsis1, .w, .w-half {
@@ -4829,7 +4834,6 @@ i.fa-hand-o-up:hover {
     cursor: default;
     background: #fff;
     height: 100%;
-    padding-top: 10px;
     opacity: 0
 }
 
@@ -5357,7 +5361,6 @@ input:-webkit-autofill {
 
 .graph-container {
     overflow: auto;
-    
 }
 
 .scrolltop-btn, .scrollBottom-btn {

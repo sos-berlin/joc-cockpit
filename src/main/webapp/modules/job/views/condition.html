@@ -688,7 +688,7 @@
                                 </ul>
                                 <ul ng-if="_allJobs.length == 0">
                                     <li>
-                                        <p class="p-l m-l-xs" uib-tooltip="{{jobs[0].path1}}" tooltip-placement="bottom">
+                                        <p class="p-l m-l-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="{{jobs[0].path1}}" tooltip-placement="bottom">
                                             <i class="fa fa-folder-o pos-abt" style="margin-top: 3px; margin-left: -16px"></i> {{jobs[0].path1}}</p>
                                         <div class="text-center"  translate>
                                             message.noJobsWithoutStream
@@ -1148,13 +1148,15 @@
                                                              <a class="text-hover-primary " ng-click="changeGraph()"><span translate>label.allJobStreams</span></a>
                                                          </div>
                                                      </div>
-                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis " style="width: 100%">
+                                                     <div ng-repeat="jobStream in workflows | orderBy: 'name' track by $index" class="block-ellipsis " style="width: 90%" data-placement="bottom" data-toggle="tooltip" title="{{jobStream.name}}">
                                                          <a class=" text-hover-primary m-r-sm" ng-class="{'text-primary _600' : selectedJobStream == jobStream.name}" ng-click="changeGraph(jobStream)">
-                                                             <i class="fa fa-sitemap p-r-xs p-t-sm p-b-sm"></i>
+                                                             <i class="icon2-conditions p-r-xs p-t-sm p-b-sm"></i>
                                                              <span>{{jobStream.name}}</span>
                                                          </a>
-                                                         <a class="text-hover-primary" ng-click="updateWorkflow(jobStream)"><i class="fa fa-pencil m-r-sm"></i></a>
-                                                         <a class="text-hover-color"><i ng-click="removeWorkflow(jobStream, $index)" class="fa fa-times "></i></a>
+                                                         <div class="pos-abt show-inline" style="right: 10px">
+                                                             <a class="text-hover-primary" ng-click="updateWorkflow(jobStream)"><i class="fa fa-pencil m-r-sm"></i></a>
+                                                             <a class="text-hover-color"><i ng-click="removeWorkflow(jobStream, $index)" class="fa fa-times "></i></a>
+                                                         </div>
                                                     </div>
 
                                                      <div ng-if="!workflows || workflows.length ==0" class="text-center m-t m-b h6 text-uppercase" translate>
@@ -1193,12 +1195,12 @@
                                                                  </a>
                                                              </div>
                                                          </div>
-                                                         <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%">
-                                                             <div ng-if="$index == 0" class="m-b-xs">
-                                                                 <span class="text-muted" translate>label.path</span>:
-                                                                 <label>{{evt.path}}</label>
-                                                             </div>
-                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)" onmouseenter="setUpTooltip()" data-placement="bottom" data-toggle="tooltip" data-original-title="{{evt.event}}" ><span>{{evt.event}}</span></a>
+                                                         <div ng-if="eventList.length > 0" class="m-b-xs block-ellipsis" style="width: 100%" data-placement="bottom" data-toggle="tooltip" title="{{eventList[0].path}}">
+                                                             <span class="text-muted" translate>label.path</span>:
+                                                             <a class="text-dark">{{eventList[0].path}}</a>
+                                                         </div>
+                                                         <div ng-repeat="evt in eventList | orderBy: 'event' track by $index" class="block-ellipsis" style="width: 100%" data-placement="bottom" data-toggle="tooltip" title="{{evt.event}}">
+                                                             <a class="text-hover-primary" ng-click="navigateToEvent(evt.event)"  ><span>{{evt.event}}</span></a>
                                                          </div>
                                                          <div ng-if="!eventList || eventList.length ==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                                              message.noEventsFound
@@ -1624,7 +1626,5 @@
         ev.dataTransfer.setData("data", ev.target.id);
         window.selectedJob = ev.target.id;
     }
-    function setUpTooltip(){
-        $('[data-toggle="tooltip"]').tooltip();
-    }
+
 </script>

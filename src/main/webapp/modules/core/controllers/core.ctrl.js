@@ -1324,7 +1324,7 @@
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
                 if (timeout) {
-                    $window.localStorage.setItem('clientLogs', {});
+                    $window.localStorage.setItem('clientLogs', '');
                     $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
                     $window.sessionStorage.setItem('$SOS$ALLEVENT', null);
                     $rootScope.$broadcast('reloadUser');
@@ -1335,7 +1335,7 @@
                     angular.forEach($window.sessionStorage, function (item, key) {
                         $window.sessionStorage.removeItem(key);
                     });
-                    $window.localStorage.setItem('$SOS$URLRESET', true);
+                    $window.localStorage.setItem('$SOS$URLRESET', 'true');
                     window.location.reload();
                 }
             });
@@ -1627,19 +1627,13 @@
                                                         }
                                                     }
                                                     flag = false;
-
                                                 }
-
                                             }
 
                                         if (flag) {
-
                                             eventByPath.readCount = 1;
                                             vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
-
                                             vm.allSessionEvent.group.push(eventByPath);
-
-
                                         }
                                     }
                                 } else if (evnType == 'JobStateChanged') {
@@ -2154,7 +2148,7 @@
             if (vm.paramObject) {
                 var indexArr = [];
                 angular.forEach(vm.paramObject.params, function (value, index) {
-                    if ((value.name == '' || value.name == null || value.name == undefined) && (value.value == '' || value.value == null || value.value == undefined)) {
+                    if ((value.name == '' || value.name == null) && (value.value == '' || value.value == null)) {
                         indexArr.push(index)
                     }
                 });
@@ -2225,6 +2219,7 @@
     }
 
     DialogCtrl1.$inject = ['$scope', '$uibModalInstance'];
+
     function DialogCtrl1($scope, $uibModalInstance) {
         $scope.ok = function (res) {
             $uibModalInstance.close(res || 'ok');
@@ -2235,6 +2230,7 @@
     }
 
     TreeDialogCtrl.$inject = ['$scope', '$rootScope', 'ResourceService', 'orderByFilter'];
+
     function TreeDialogCtrl($scope, $rootScope, ResourceService, orderBy) {
         var vm = $scope;
         vm.filterTree1 = [];
@@ -4055,7 +4051,7 @@
             vm.to.time = '00:00';
         });
 
-        vm.cancel = function(form2) {
+        vm.cancel = function (form2) {
             if (form2) {
                 form2.$setPristine();
                 form2.$setUntouched();
@@ -4080,7 +4076,6 @@
         };
 
         vm.save = function (form2) {
-            console.log('save,.............')
             vm.sch._valid_from = undefined;
             if (!vm.from.time) {
                 vm.from.time = '00:00';
@@ -4134,7 +4129,7 @@
                 from: vm.from,
                 to: vm.to
             });
-            vm.cancelModal(form2);
+            vm.cancel(form2);
 
         };
     }
@@ -4257,7 +4252,7 @@
             vm.holidayList = [];
             if (vm.runTime.country && vm.runTime.year) {
                 hd.init(vm.runTime.country);
-                var holidays = hd.getHolidays(vm.runTime.year);
+                let holidays = hd.getHolidays(vm.runTime.year);
                 angular.forEach(holidays, function (holiday) {
                     if (holiday.type == 'public' && holiday.date && holiday.name)
                         vm.holidayList.push(holiday);
@@ -4339,8 +4334,7 @@
         };
 
         vm.cancel = function () {
-           // $uibModalInstance.dismiss('cancel');
-            $rootScope.$broadcast('Close-Model','cancel')
+            $rootScope.$broadcast('Close-Model', 'cancel')
         };
 
         var selectedMonths = [];
@@ -4456,8 +4450,8 @@
                 }
                 if (newNames.length > 0) {
                     for (let i = 0; i < newNames.length; i++) {
-                        var x = new Date(newNames[i]);
-                        var flag = false;
+                        let x = new Date(newNames[i]);
+                        let flag = false;
                         for (let j = 0; j < vm.holidayDates.length; j++) {
                             if (angular.equals(vm.holidayDates[j], x)) {
                                 flag = true;
@@ -4488,7 +4482,7 @@
         };
 
         vm.changeFrequency = function () {
-            var temp = angular.copy(vm.runTime.period) || {};
+            let temp = angular.copy(vm.runTime.period) || {};
             vm.runTime.period = {};
             vm.runTime.period._when_holiday = temp._when_holiday;
             if (vm.runTime.frequency == 'single_start') {
@@ -6480,7 +6474,7 @@
             } else if (data.tab == 'every') {
                 if (!obj.includes.repetitions)
                     obj.includes.repetitions = [];
-                var obj1 = {};
+                let obj1 = {};
                 obj1.repetition = data.dateEntity;
                 obj1.step = data.interval || 1;
                 if (data.startingWith)
@@ -6489,12 +6483,10 @@
                     obj1.to = moment(data.endOn).format('YYYY-MM-DD')
                 }
                 obj.includes.repetitions.push(obj1);
-
             }
 
             return obj;
         }
-
 
         vm.removeSchedule = function () {
             vm._xmlTemp = {run_time: {}};
@@ -6551,7 +6543,6 @@
 
         vm.$on('save-restriction-frequency', function (event, data) {
             angular.forEach(vm.runtimeList, function (value) {
-
                 if (value.type == 'calendar' && data.path == value.calendar.path) {
                     value.calendar.frequencyList = data.frequencyList;
                 }
@@ -6609,7 +6600,6 @@
                         vm.runTime.str = frequencyToString(vm.runTime);
                         vm.periodList.push(angular.copy(vm.runTime));
                     }
-
                     vm.runTime.frequency = undefined;
                     vm.runTime.period = {};
                 }
@@ -8039,7 +8029,7 @@
                                 }
 
                             } else {
-                                var x;
+                                let x;
                                 if (!run_time.month.monthdays)
                                     x = {_month: vm.runTime.months, monthdays: {weekday: []}};
                                 else {
@@ -13035,7 +13025,7 @@
                         return RuntimeService.getSpecificDay(period.which) + ' ' + period.specificWeekDay + ' of month';
                     }
                 } else {
-                    var str1 = '';
+                    let str1 = '';
                     angular.forEach(period.which, function (value, index) {
                         str1 = str1 + RuntimeService.getSpecificDay(value);
                         if (period.which.length - 1 != index) {
@@ -13082,7 +13072,7 @@
                 } else {
                     str = period.interval + 'th ';
                 }
-                var repetitions = period.dateEntity == 'DAILY' ? 'day' : period.dateEntity == 'WEEKLY' ? 'week' : period.dateEntity == 'MONTHLY' ? 'month' : 'year';
+                let repetitions = period.dateEntity == 'DAILY' ? 'day' : period.dateEntity == 'WEEKLY' ? 'week' : period.dateEntity == 'MONTHLY' ? 'month' : 'year';
 
                 return 'Every ' + str + repetitions;
             }
@@ -13092,23 +13082,21 @@
             if (data.day && data.day.inMonth && vm.frequency) {
                 data.month = data.month > 9 ? data.month : '0' + data.month;
                 data.day.label = data.day.label > 9 ? data.day.label : '0' + data.day.label;
-                var date = data.year + '-' + data.month + '-' + data.day.label;
-
+                let date = data.year + '-' + data.month + '-' + data.day.label;
                 if (vm.frequency.tab == 'specificDays') {
-                    var planData = {
+                    let planData = {
                         plannedStartTime: date
                     };
-                    var flag = false;
-                    for (var i = 0; i < vm.tempItems.length; i++) {
+                    let flag = false;
+                    for (let i = 0; i < vm.tempItems.length; i++) {
                         if ((new Date(vm.tempItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                            vm.tempItems.splice(i, 1);
                             flag = true;
                             break;
                         }
                     }
                     if (!flag) {
                         vm.tempItems.push(planData);
-                    } else {
-                        vm.tempItems.splice(i, 1);
                     }
                     vm.editor.isEnable = vm.tempItems.length > 0;
                 }
@@ -13135,7 +13123,8 @@
         });
     }
 
-    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobService', 'ConditionService', 'JobChainService', 'orderByFilter','gettextCatalog', 'toasty'];
+    EditConditionDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'JobService', 'ConditionService', 'JobChainService', 'orderByFilter', 'gettextCatalog', 'toasty'];
+
     function EditConditionDialogCtrl($scope, $uibModalInstance, JobService, ConditionService, JobChainService, orderBy, gettextCatalog, toasty) {
         const vm = $scope;
         vm.editor = {
@@ -13157,7 +13146,7 @@
                     break;
                 }
             }
-            if(vm.editor.jobStream){
+            if (vm.editor.jobStream) {
                 vm.edit = true;
             }
 
@@ -13173,40 +13162,40 @@
                         }
                     }
                 }
-            })
+            });
 
             if (vm._jobStreamName) {
                 vm.editor.jobStream = vm._jobStreamName;
             }
         }
 
-        if(vm._job) {
+        if (vm._job) {
             init();
         }
 
-        function checkFileNameWithSpace(exp){
-            if(exp.match(/fileexist/)){
+        function checkFileNameWithSpace(exp) {
+            if (exp.match(/fileexist/)) {
                 let arr = exp.split(' ');
                 let _str = '';
-                for(let i=0; i <arr.length ;i++) {
-                    if(arr[i].match(/fileexist:/)) {
-                        if(i+1 < arr.length && !arr[i].match(/\.[0-9a-z]+$/i) && arr[i + 1].match(/\.[0-9a-z]+$/i)) {
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].match(/fileexist:/)) {
+                        if (i + 1 < arr.length && !arr[i].match(/\.[0-9a-z]+$/i) && arr[i + 1].match(/\.[0-9a-z]+$/i)) {
                             _str = _str + arr[i] + '%20';
-                        } else{
+                        } else {
                             _str = _str + arr[i] + ' ';
                         }
-                    } else{
+                    } else {
                         _str = _str + arr[i] + ' ';
                     }
                 }
                 return _str.trim();
-            }else{
+            } else {
                 return exp.trim();
             }
         }
 
         $scope.ok = function () {
-            if(vm._job) {
+            if (vm._job) {
                 for (let i = 0; i < vm._job.inconditions.length; i++) {
                     vm._job.inconditions[i].conditionExpression.expression = checkFileNameWithSpace(vm._job.inconditions[i].conditionExpression.expression);
                     vm._job.inconditions[i].jobStream = vm.editor.jobStream;
@@ -13240,7 +13229,7 @@
                         return;
                     }
                 }
-            }else if(vm._expression && vm._expression.expression){
+            } else if (vm._expression && vm._expression.expression) {
                 vm._expression.expression = checkFileNameWithSpace(vm._expression.expression);
             }
 
@@ -13280,10 +13269,14 @@
             if (!vm.condition) {
                 vm.strCondition = 'create';
                 if (vm.editor.type === 'Incondition') {
-                    vm.condition = {inconditionCommands: [], markExpression: true, skipOutCondition : false};
+                    vm.condition = {inconditionCommands: [], markExpression: true, skipOutCondition: false};
                     vm.addInconditionCommands(true);
                 } else {
-                    vm.condition = {outconditionEvents: [], outconditionDeleteEvents: [], conditionExpression : {expression : 'rc:0'}};
+                    vm.condition = {
+                        outconditionEvents: [],
+                        outconditionDeleteEvents: [],
+                        conditionExpression: {expression: 'rc:0'}
+                    };
                     vm.addOutconditionEvents('create', vm._job.name);
                 }
             } else {
@@ -13298,9 +13291,9 @@
                 vm.condition.outconditionDeleteEvents = arr;
 
             }
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#expression-id').focus();
-            },0)
+            }, 0)
         };
 
         vm.removeInCondition = function (index) {
@@ -13317,9 +13310,9 @@
                 commandParam: flag ? 'now' : '',
                 id: 0
             };
-            if(vm.condition) {
+            if (vm.condition) {
                 vm.condition.inconditionCommands.push(param);
-            }else if(vm._expression){
+            } else if (vm._expression) {
                 vm._expression.commands.push(param);
             }
         };
@@ -13359,9 +13352,9 @@
                 command: type,
                 id: 0
             };
-            if(vm.condition) {
+            if (vm.condition) {
                 vm.condition.outconditionEvents.push(param);
-            }else if(vm._expression){
+            } else if (vm._expression) {
                 vm._expression.events.push(param);
             }
         };
@@ -13374,7 +13367,7 @@
                         break;
                     }
                 }
-            }else if(vm._expression && vm._expression.events){
+            } else if (vm._expression && vm._expression.events) {
                 for (let i = 0; vm._expression.events.length; i++) {
                     if (angular.equals(vm._expression.events[i], condition)) {
                         vm._expression.events.splice(i, 1);
@@ -13477,7 +13470,7 @@
 
         vm.expressionEditor = function () {
 
-            vm.expression = {type: vm.editor.type === 'Incondition' ? 'fileexist' : 'rc' };
+            vm.expression = {type: vm.editor.type === 'Incondition' ? 'fileexist' : 'rc'};
             if (vm.condition) {
                 if (!vm.condition.conditionExpression) {
                     vm.condition.conditionExpression = {expression: ''};
@@ -13494,16 +13487,16 @@
 
 
         vm.save3 = function (form) {
-            if(vm.condition) {
+            if (vm.condition) {
                 vm.condition.conditionExpression.expression = angular.copy(vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim() || '');
-            } else if(vm._expression){
+            } else if (vm._expression) {
                 vm._expression.expression = angular.copy(vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim() || '');
             }
             let isValid = true;
-            if(form){
+            if (form) {
                 isValid = vm.validateExpression(form);
             }
-            if(isValid) {
+            if (isValid) {
                 $('#expression-editor').modal('hide');
                 if (form) {
                     form.$setPristine();
@@ -13523,11 +13516,14 @@
         };
         let isFunction = false;
 
-        vm.functions = [{id: 1, name: '*'}, {id: 2, name: 'today'}, {id: 3, name: 'yesterday'}, {id: 4, name: 'yesterday - 2'},
+        vm.functions = [{id: 1, name: '*'}, {id: 2, name: 'today'}, {id: 3, name: 'yesterday'}, {
+            id: 4,
+            name: 'yesterday - 2'
+        },
             {id: 5, name: 'prev'}, {id: 6, name: 'prevSuccessful'}, {id: 7, name: 'prevError'}];
         let d = new Date();
         vm.functions.push({id: 8, name: (d.getMonth() + 1) + '.' + d.getDate()});
-        vm.jobFunctions =  vm.jobChainFunctions = ['rc',
+        vm.jobFunctions = vm.jobChainFunctions = ['rc',
             'lastCompletedRunEndedSuccessful',
             'lastCompletedRunEndedWithError',
             'lastCompletedRunEndedTodaySuccessful',
@@ -13560,14 +13556,10 @@
             let setText = '';
             if (func && !operator) {
                 vm.expression.type = func;
-                if (vm.expression.type === 'event' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist') {
-                    vm.expression.showIcon = false;
-                } else {
-                    vm.expression.showIcon = true;
-                }
+                vm.expression.showIcon = !(vm.expression.type === 'event' || vm.expression.type === 'rc' || vm.expression.type === 'fileexist');
             }
             if (operator && !operator.match('function')) {
-                setText = operator +' ';
+                setText = operator + ' ';
                 vm.expression.showIcon = false;
             } else if (func) {
                 if (operator && !operator.match('function')) {
@@ -13594,10 +13586,10 @@
                     }
                 }
             }
-            if(vm.ckEditor) {
+            if (vm.ckEditor) {
                 vm.ckEditor.insertText(setText);
                 vm.expression.expression = vm.ckEditor.getData().replace(/<[^>]+>/gm, '').replace(/&nbsp;/gm, ' ').trim();
-                if(form){
+                if (form) {
                     vm.validateExpression(form);
                 }
             }
@@ -13638,7 +13630,7 @@
             if (arr.length > 0) {
                 if (arr[arr.length - 1] === 'and' || arr[arr.length - 1] === 'or' || arr[arr.length - 1] === 'not') {
                     form.$invalid = true;
-                    if(form.expression) {
+                    if (form.expression) {
                         form.expression.$invalid = true;
                     }
                     return false;
@@ -13804,11 +13796,11 @@
                     bodyClass : vm.userPreferences.theme !== 'light' && vm.userPreferences.theme !== 'lighter' || !vm.userPreferences.theme ? 'white_text' : 'dark_text',
                     on: {
                         instanceReady: function (evt) {
-                            var itemTemplate = '<li data-id="{id}">' +
+                            let itemTemplate = '<li data-id="{id}">' +
                                 '<div><strong class="item-title">{name}</strong></div>' +
                                 '</li>',
                                 outputTemplate = '[{name}] ';
-                            var autocomplete = new CKEDITOR.plugins.autocomplete(evt.editor, {
+                            let autocomplete = new CKEDITOR.plugins.autocomplete(evt.editor, {
                                 textTestCallback: textTestCallback,
                                 dataCallback: dataCallback,
                                 itemTemplate: itemTemplate,
@@ -13837,7 +13829,7 @@
         }
 
         function matchCallback(text, offset) {
-            var pattern = /\[{1}([A-z]|\])*$/,
+            let pattern = /\[{1}([A-z]|\])*$/,
                 match = text.slice(0, offset)
                     .match(pattern);
             if (!match) {
@@ -13850,8 +13842,8 @@
         }
 
         function dataCallback(matchInfo, callback) {
-            var data = vm.functions.filter(function(item) {
-                var itemName = '[' + item.name + ']';
+            let data = vm.functions.filter(function (item) {
+                let itemName = '[' + item.name + ']';
                 return itemName.indexOf(matchInfo.query.toLowerCase()) == 0;
             });
             callback(data);

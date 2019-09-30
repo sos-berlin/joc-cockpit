@@ -6,8 +6,8 @@
 
     angular.module('app')
         .service('EditorService', EditorService);
-    EditorService.$inject = ["$resource", "$q"];
-    function EditorService($resource, $q) {
+    EditorService.$inject = ["$resource", "$q", "$http"];
+    function EditorService($resource, $q, $http) {
         return {
             tree: function (filter) {
                 let deferred = $q.defer();
@@ -80,24 +80,10 @@
                 return deferred.promise;
             },
             toXML: function (filter, objectType) {
-                let deferred = $q.defer();
-                let XML = $resource('joe/' + objectType + '/toxml');
-                XML.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
+                return $http.post('joe/' + objectType + '/toxml',filter );
             },
             toJSON: function (filter) {
-                let deferred = $q.defer();
-                let JSON = $resource('joe/tojson');
-                JSON.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
+                return $http.post('joe/tojson',filter );
             }
         }
     }

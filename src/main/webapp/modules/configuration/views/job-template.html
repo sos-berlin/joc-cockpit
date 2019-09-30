@@ -465,7 +465,7 @@
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.timeout</label>
                     <div class="col-md-8 col-lg-6">
-                      <input type="text" class="form-control text-left"
+                      <input valid-time1 type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.timeout' | translate}}"
                              name="jobOptionsTimeout" ng-model="job.options.timeout">
                     </div>
@@ -473,7 +473,7 @@
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.idleTimeout</label>
                     <div class="col-md-8 col-lg-6">
-                      <input type="text" class="form-control text-left"
+                      <input valid-time2 type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.idleTimeout' | translate}}"
                              name="jobOptionsIdleTimeout" ng-model="job.options.idleTimeout">
                     </div>
@@ -918,34 +918,72 @@
     <div class="close-btn" >
       <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
-    <div class="text-center m-b text">
-      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
-    </div>
-    <div class="p-a">
       <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
-        <div class="form-group row m-b-0" ng-repeat="param in job.paramObject.params track by $index">
-          <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
-          <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
-          <div class="col-sm-5 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.name"
-                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
-          </div>
+        <div class="text-center m-b text">
+          <ul class="nav navbar-nav navbar-nav-inline nav-active-border w-50 nav-active-border4 b-orange">
+            <li class="nav-item">
+              <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''" ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+                <span class="nav-text" translate>joe.button.parameter</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''" ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+                <span class="nav-text" translate>joe.button.enviroment</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
+          <div class="form-group row m-b-0" ng-repeat="param in job.paramObject.params track by $index">
+            <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+            <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+            <div class="col-sm-5 m-b-sm">
+              <input type="text" class="form-control" ng-model="param.name"
+                     placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+            </div>
 
-          <div class="col-sm-6 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.value"
-                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+            <div class="col-sm-6 m-b-sm">
+              <input type="text" class="form-control" ng-model="param.value"
+                     placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+            </div>
+            <div class="col-sm-1 p-l-0">
+              <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+            </div>
           </div>
-          <div class="col-sm-1 p-l-0">
-            <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <a href class="text-u-l" ng-if="job.paramObject.params.length>0" ng-click="addParameter()"
+                 translate>button.addAnotherParameter</a>
+              <a href class="text-u-l" ng-if="job.paramObject.params.length==0" ng-click="addParameter()"
+                 translate>button.addParameter</a>
+            </div>
           </div>
         </div>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="job.paramObject.params.length>0" ng-click="addParameter()"
-               translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="job.paramObject.params.length==0" ng-click="addParameter()"
-               translate>button.addParameter</a>
-          </div>
+        <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
+            <div class="form-group row m-b-0" ng-repeat="envParam in job.envObject.envParams track by $index">
+              <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
+              <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
+              <div class="col-sm-5 m-b-sm">
+                <input type="text" class="form-control" ng-model="envParam.name"
+                       placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+              </div>
+
+              <div class="col-sm-6 m-b-sm">
+                <input type="text" class="form-control" ng-model="envParam.value"
+                       placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+              </div>
+              <div class="col-sm-1 p-l-0">
+                <a><i ng-click="removeEnviromentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a href class="text-u-l" ng-if="job.envObject.envParams.length>0" ng-click="addEnviromentParams()"
+                   translate>button.addAnotherEnviroment</a>
+                <a href class="text-u-l" ng-if="job.envObject.envParams.length==0" ng-click="addEnviromentParams()"
+                   translate>button.addEnviroment</a>
+              </div>
+            </div>
         </div>
       </div>
       <div class="col-md-12 text-left" ng-if="obj.type == 'locksUsed'">
@@ -1060,7 +1098,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </div>
 

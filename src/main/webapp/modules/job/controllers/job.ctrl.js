@@ -6693,22 +6693,41 @@
             if(vm.importJobstreamObj.all) {
                 for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
                     for (let x = 0; x < vm.fileContentJobStreams[i].jobs.length; x++) {
-                        vm.importJobstreamObj.jobs.push(vm.fileContentJobStreams[i].jobs[x]);
+                        let flag = true;
+                        for (let y = 0; y < vm.importJobstreamObj.jobs.length; y++) {
+                            if (vm.fileContentJobStreams[i].jobs[x].job === vm.importJobstreamObj.jobs[y].job) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            vm.importJobstreamObj.jobs.push(vm.fileContentJobStreams[i].jobs[x]);
+                        }
                     }
+
                     $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', true);
                 }
-            }else{
-               for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
+            } else {
+                for (let i = 0; i < vm.fileContentJobStreams.length; i++) {
                     $("#" + vm.fileContentJobStreams[i].jobStream).prop('checked', false);
                 }
                 vm.importJobstreamObj.jobs = [];
             }
         };
 
-        vm.checkImportJobstreamFn = function(key, data) {
+        vm.checkImportJobstreamFn = function (key, data) {
             if ($("#" + key) && $("#" + key).prop('checked')) {
-                for(let i=0; i < data.jobs.length; i++) {
-                    vm.importJobstreamObj.jobs.push(data.jobs[i])
+                for (let i = 0; i < data.jobs.length; i++) {
+                    let flag = true;
+                    for (let x = 0; x < vm.importJobstreamObj.jobs.length; x++) {
+                        if(data.jobs[i].job === vm.importJobstreamObj.jobs[x].job ) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag){
+                        vm.importJobstreamObj.jobs.push(data.jobs[i]);
+                    }
                 }
             } else {
                 let len = angular.copy(vm.importJobstreamObj.jobs.length);
@@ -6724,7 +6743,9 @@
         };
 
         var watcher8 = $scope.$watchCollection('importJobstreamObj.jobs', function (newNames) {
+
             if (newNames && newNames.length > 0) {
+                let totalCount = 0;
                 for (let j = 0; j < vm.fileContentJobStreams.length; j++) {
                     let count = 0;
                     for (let i = 0; i < newNames.length; i++) {
@@ -6732,11 +6753,17 @@
                             ++count;
                         }
                     }
-                    if(count === vm.fileContentJobStreams[j].jobs.length){
+                    if (count === vm.fileContentJobStreams[j].jobs.length) {
                         $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', true);
-                    }else{
+                        ++totalCount;
+                    } else {
                         $("#" + vm.fileContentJobStreams[j].jobStream).prop('checked', false);
                     }
+                }
+                if(vm.fileContentJobStreams.length === totalCount){
+                    vm.importJobstreamObj.all =true;
+                }else{
+                    vm.importJobstreamObj.all =false;
                 }
             } else {
                 vm.checkImportJobstream.checkbox = false;
@@ -6749,7 +6776,7 @@
                 for (let i = 0; i < data.length; i++) {
                     if (data[i].jobStream && data[i].jobs) {
                         for (let j = 0; j < data[i].jobs.length; j++) {
-                            data[i].jobs[j].jobStream =  data[i].jobStream;
+                            data[i].jobs[j].jobStream = data[i].jobStream;
                         }
                         vm.fileContentJobStreams.push(data[i]);
                     }
@@ -8707,6 +8734,7 @@
                             vm._allJobs[i].path1 = vm._allJobs[i].path.substring(0, vm._allJobs[i].path.lastIndexOf('/')) || '/';
                         }
                         vm._allJobs = orderBy(vm._allJobs, 'path1', false);
+                        $('[data-toggle="tooltip"]').tooltip();
                         let mergeData = _.merge(res.jobsInconditions, result.jobsOutconditions);
                         let len = mergeData.length;
 
@@ -9093,26 +9121,30 @@
 
                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
 
-                if (cond.outconditionEvents.length > 0) {
-                    for (let z = 0; z < cond.outconditionEvents.length; z++) {
-                        if (cond.outconditionEvents[z].command === 'create') {
-                            let _node = getCellNode('Event', cond.outconditionEvents[z].event, cond.outconditionEvents[z].event, cond.jobStream);
-                            let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;
-                            _node.setAttribute('isExist', flg);
-                            _node.setAttribute('job', job.path);
-                            _node.setAttribute('outconditionId', cond.id);
-                            let style = 'event';
-                            if (!cond.outconditionEvents[z].existsInJobStream && cond.outconditionEvents[z].exists) {
-                                style += ';dashed=1';
+                if (vm.preferences.jobStreamEvents) {
+                    if (cond.outconditionEvents.length > 0) {
+                        for (let z = 0; z < cond.outconditionEvents.length; z++) {
+                            if (cond.outconditionEvents[z].command === 'create') {
+                                let _node = getCellNode('Event', cond.outconditionEvents[z].event, cond.outconditionEvents[z].event, cond.jobStream);
+                                let flg = cond.outconditionEvents[z].exists ? true : cond.outconditionEvents[z].existsInJobStream;
+                                _node.setAttribute('isExist', flg);
+                                _node.setAttribute('job', job.path);
+                                _node.setAttribute('outconditionId', cond.id);
+                                let style = 'event';
+                                if (!cond.outconditionEvents[z].existsInJobStream && cond.outconditionEvents[z].exists) {
+                                    style += ';dashed=1';
+                                }
+                                if (!cond.outconditionEvents[z].exists && !cond.outconditionEvents[z].existsInJobStream) {
+                                    style += ';fillColor=none';
+                                }
+                                let e1 = createVertex(graph.getDefaultParent(), _node, cond.outconditionEvents[z].event, style);
+                                graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
+                                events.push(e1);
                             }
-                            if (!cond.outconditionEvents[z].exists && !cond.outconditionEvents[z].existsInJobStream) {
-                                style += ';fillColor=none';
-                            }
-                            let e1 = createVertex(graph.getDefaultParent(), _node, cond.outconditionEvents[z].event, style);
-                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), conditionVertex, e1);
-                            events.push(e1);
                         }
                     }
+                } else {
+                    graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), conditionVertex, out);
                 }
             }
 
@@ -9124,12 +9156,12 @@
                     for (let p = 0; p < cond.inconditions[n].jobs.length; p++) {
                         if (cond.inconditions[n].jobs[p].job !== job.path) {
                             let _job = mapObj.get(cond.inconditions[n].jobs[p].job);
-                            let v2 = null;
+                            let v2 = null, flag = false;
                             if (_job.jId) {
                                 v2 = graph.getModel().getCell(_job.jId);
                             } else {
                                 v2 = createJobVertex(_job, graph);
-                                createConnection(_job, graph, v2, mapObj);
+                                flag = true;
                             }
                             if (!expand && graph.getEdgesBetween(v1, v2).length === 0) {
                                 if (!(_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined))) {
@@ -9140,7 +9172,10 @@
                                     graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), out, v2);
                                 }
                             }
-                            if (expand && out) {
+                            if (flag) {
+                                createConnection(_job, graph, v2, mapObj);
+                            }
+                            if (expand && out && vm.preferences.jobStreamEvents) {
                                 for (let z = 0; z < _job.inconditions.length; z++) {
                                     for (let b = 0; b < events.length; b++) {
                                         if (matchExpression(_job.inconditions[z].conditionExpression.jobStreamEvents, events[b].getAttribute('label'))) {
@@ -9177,13 +9212,18 @@
                 if (out) {
                     if (job.outconditions[n].inconditions.length > 0) {
                         flag = false;
+                        let flg = false;
                         for (let x = 0; x < job.outconditions[n].inconditions.length; x++) {
                             if (job.outconditions[n].jobStream === job.outconditions[n].inconditions[x].jobStream) {
                                 if (job.outconditions[n].inconditions[x].jobs.length === 1 && job.path === job.outconditions[n].inconditions[x].jobs[0].job) {
                                     graph.removeCells([out], true);
                                 }
+                                flg = true;
                                 break;
                             }
+                        }
+                        if (!flg) {
+                            flag = true;
                         }
                     }
                 }
@@ -9227,7 +9267,7 @@
                 executeLayout(graph);
             }
             if (reload) {
-                makeCenter(graph);
+                makeCenter();
             }
             if (scrollValue && scrollValue.scrollTop) {
                 let element = document.getElementById("graph");
@@ -9255,7 +9295,6 @@
             }, 100);
         }
 
-
         function matchExpression(jobStreamEvents, event) {
             return (jobStreamEvents && jobStreamEvents.indexOf(event) > -1)
         }
@@ -9267,13 +9306,13 @@
             vm.taskQueue = [];
             for (let j = 0; j < jobs.length; j++) {
                 if (jobs[j].runningTasks && jobs[j].runningTasks.length > 0) {
-                    angular.forEach(jobs[j].runningTasks, function(value, index){
+                    angular.forEach(jobs[j].runningTasks, function (value, index) {
                         jobs[j].runningTasks[index].path = jobs[j].path;
                     });
                     vm.runningTasks = vm.runningTasks.concat(jobs[j].runningTasks)
                 }
                 if (jobs[j].taskQueue && jobs[j].taskQueue.length > 0) {
-                    angular.forEach(jobs[j].taskQueue, function(value, index){
+                    angular.forEach(jobs[j].taskQueue, function (value, index) {
                         jobs[j].taskQueue[index].path = jobs[j].path;
                     });
                     vm.taskQueue = vm.taskQueue.concat(jobs[j].taskQueue)
@@ -9980,7 +10019,7 @@
         /**
          * Function to centered the flow diagram
          */
-        function makeCenter(graph) {
+        function makeCenter() {
             t1 = $timeout(function () {
                 vm.actual();
             }, 0);
@@ -10334,18 +10373,19 @@
                 let img;
                 if (state.cell && state.cell.value.tagName === 'Job' || (state.cell.value.tagName === 'Event' && (vm.permission.JobStream.change.events.add || vm.permission.JobStream.change.events.remove)) || (state.cell.value.tagName === 'InCondition' || state.cell.value.tagName === 'OutCondition' && vm.permission.JobStream.change.conditions)) {
                     img = mxUtils.createImage('images/menu.svg');
-                    let x = state.x - 20, y = state.y + 2;
+                    let x = state.x - (20 * state.shape.scale), y = state.y - (8 * state.shape.scale);
                     if (state.cell.value.tagName === 'Event') {
                         x += (state.width * .222);
                     } else if (state.cell.value.tagName === 'OutCondition') {
                         x += (state.width * .167);
                     }
+
                     img.style.left = x + 'px';
                     img.style.top = y + 'px';
                     mxEvent.addListener(img, 'click',
                         mxUtils.bind(this, function (evt) {
                             let _x = x;
-                            if(evt.clientX > 240) {
+                            if (evt.clientX > 240) {
                                 _x = _x - 120;
                                 if (state.cell.value.tagName === 'Job') {
                                     _x -= 28;
@@ -10356,7 +10396,7 @@
                                     }
                                 }
                                 vm.openToRight = false;
-                            }else{
+                            } else {
                                 vm.openToRight = true;
                             }
 
@@ -10372,7 +10412,6 @@
                                     }
                                 }
                             }
-
                             let $menu = document.getElementById('actionMenu');
                             if ((window.innerHeight - evt.clientY) < 320 && state.cell.value.tagName === 'Job') {
                                 _y = _y - 328;
@@ -10616,7 +10655,7 @@
         }
 
         vm.loadHistory = function (jobstream) {
-            let obj = {jobschedulerId : vm.schedulerIds.selected};
+            let obj = {jobschedulerId: vm.schedulerIds.selected};
             obj.jobStream = jobstream;
             obj.limit = vm.userPreferences.maxHistoryPerJobchain;
             ConditionService.history(obj).then(function (res) {
@@ -10628,8 +10667,8 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
-            for(let i =0; i < vm.jobs.length; i++) {
-                obj.jobs.push({job:  vm.jobs[i].path});
+            for (let i = 0; i < vm.jobs.length; i++) {
+                obj.jobs.push({job: vm.jobs[i].path});
             }
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords) < parseInt(vm.userPreferences.maxAuditLogPerObject) ? parseInt(vm.userPreferences.maxAuditLogRecords) : parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
@@ -10646,9 +10685,10 @@
                         recursivelyConnectJobs(true, true);
                         break;
                     } else if (vm.events[0].eventSnapshots[m].eventType === "JobStateChanged" && !vm.events[0].eventSnapshots[m].eventId) {
+
                         let flag = false;
-                        for (let i = 0; i < vm.allJobs.length; i++) {
-                            if (vm.allJobs[i].path === vm.events[0].eventSnapshots[m].path) {
+                        for (let i = 0; i < vm.jobs.length; i++) {
+                            if (vm.jobs[i].path === vm.events[0].eventSnapshots[m].path) {
                                 flag = true;
                                 break;
                             }
@@ -10660,10 +10700,10 @@
                             break;
                         }
                     } else if (vm.events[0].eventSnapshots[m].eventType === "ReportingChangedJob" && !vm.events[0].eventSnapshots[m].eventId) {
-                        if(vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
+                        if (vm.selectedJobStream && vm.selectedJobStream !== 'ALL') {
                             vm.loadHistory(vm.selectedJobStream);
                         }
-                    }  else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
+                    } else if (vm.events[0].eventSnapshots[m].eventType === "AuditLogChanged" && vm.events[0].eventSnapshots[m].objectType === "JOB" && !vm.events[0].eventSnapshots[m].eventId) {
                         if (vm.permission.AuditLog.view.status && vm.auditLogs) {
                             vm.loadAuditLogs();
                         }
@@ -10701,51 +10741,63 @@
         vm.actual = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.zoomActual();
-                vm.editor.graph.center(true, true, 0.5, 0);
+                center();
             }
         };
 
         vm.fit = function () {
             if (vm.editor && vm.editor.graph) {
                 vm.editor.graph.fit();
-                vm.editor.graph.center(true, true, 0.5, 0);
+                center();
             }
         };
+
+        function center(){
+            let dom = document.getElementById("graph");
+            let x = 0.5, y = 0.2;
+            if(dom.clientWidth !== dom.scrollWidth){
+                x = 0;
+            }
+            if(dom.clientHeight !== dom.scrollHeight){
+                y = 0;
+            }
+            vm.editor.graph.center(true, true, x, y);
+        }
 
         $scope.$on('importJobStream', function () {
             recursivelyConnectJobs(true, true);
         });
 
-        vm.exportJobStream = function() {
+        vm.exportJobStream = function () {
             let jobStreams = [];
-            for(let i =0; i < vm.workflows.length; i++){
+            for (let i = 0; i < vm.workflows.length; i++) {
                 let obj = {
-                    jobStream : vm.workflows[i].name,
+                    jobStream: vm.workflows[i].name,
                     jobs: []
                 };
-                for(let j =0; j < vm.workflows[i].jobs.length; j++){
+                for (let j = 0; j < vm.workflows[i].jobs.length; j++) {
                     let _job = vm.workflows[i].jobs[j];
-                    let in_conditions =[], out_conditions =[] ;
-                    for(let x =0 ; x < _job.inconditions.length;x++ ){
+                    let in_conditions = [], out_conditions = [];
+                    for (let x = 0; x < _job.inconditions.length; x++) {
                         let obj = {};
-                        obj.conditionExpression = { expression :_job.inconditions[x].conditionExpression.expression};
+                        obj.conditionExpression = {expression: _job.inconditions[x].conditionExpression.expression};
                         obj.inconditionCommands = [];
                         obj.jobStream = _job.inconditions[x].jobStream;
-                        for(let y =0 ; y < _job.inconditions[x].inconditionCommands.length;y++ ){
+                        for (let y = 0; y < _job.inconditions[x].inconditionCommands.length; y++) {
                             obj.inconditionCommands.push({
                                 "command": _job.inconditions[x].inconditionCommands[y].command,
-                                "commandParam":  _job.inconditions[x].inconditionCommands[y].commandParam
+                                "commandParam": _job.inconditions[x].inconditionCommands[y].commandParam
                             });
                         }
                         in_conditions.push(obj);
                     }
 
-                    for(let x =0 ; x < _job.outconditions.length;x++ ){
+                    for (let x = 0; x < _job.outconditions.length; x++) {
                         let obj = {};
-                        obj.conditionExpression = { expression :_job.outconditions[x].conditionExpression.expression};
+                        obj.conditionExpression = {expression: _job.outconditions[x].conditionExpression.expression};
                         obj.outconditionEvents = [];
                         obj.jobStream = _job.outconditions[x].jobStream;
-                        for(let y =0 ; y < _job.outconditions[x].outconditionEvents.length;y++ ){
+                        for (let y = 0; y < _job.outconditions[x].outconditionEvents.length; y++) {
                             obj.outconditionEvents.push({
                                 "command": _job.outconditions[x].outconditionEvents[y].command,
                                 "event": _job.outconditions[x].outconditionEvents[y].event
@@ -10754,7 +10806,7 @@
                         out_conditions.push(obj);
                     }
 
-                    obj.jobs.push({job: _job.path, inconditions : in_conditions, outconditions : out_conditions})
+                    obj.jobs.push({job: _job.path, inconditions: in_conditions, outconditions: out_conditions})
                 }
                 jobStreams.push(obj);
             }
@@ -10773,7 +10825,7 @@
             if (t1) {
                 $timeout.cancel(t1);
             }
-            if(timer){
+            if (timer) {
                 $timeout.cancel(timer);
             }
             try {

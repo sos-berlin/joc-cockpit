@@ -32,7 +32,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="processClass in processClasses | orderBy:filter.sortBy:filter.sortReverse" class="cursor">
+                        <tr ng-repeat="processClass in processClasses | orderBy:filter.sortBy:filter.sortReverse">
                             <td class="menu">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -43,8 +43,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-bind="processClass.name"></td>
-                            <td ng-bind="processClass.maxProcesses"></td>
+                            <td class="cursor" ng-click="createProcessClass(processClass)" ng-bind="processClass.name"></td>
+                            <td class="cursor" ng-click="createProcessClass(processClass)" ng-bind="processClass.maxProcesses"></td>
                         </tr>
                         </tbody>
                     </table>
