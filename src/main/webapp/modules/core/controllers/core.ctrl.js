@@ -1466,11 +1466,13 @@
         vm.refreshSession();
 
         $scope.$on('reloadDate', function () {
-            var date = new Date(vm.selectedJobScheduler.startedAt);
-            date.setMilliseconds(date.getMilliseconds() + 1);
-            vm.selectedJobScheduler.startedAt = date;
-            if (vm.userPreferences)
-                getDateFormat();
+            if (vm.selectedJobScheduler) {
+                var date = new Date(vm.selectedJobScheduler.startedAt);
+                date.setMilliseconds(date.getMilliseconds() + 1);
+                vm.selectedJobScheduler.startedAt = date;
+                if (vm.userPreferences)
+                    getDateFormat();
+            }
         });
 
         var logout = false;
@@ -1619,6 +1621,7 @@
             vm.checkNavHeader();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
+            $uibModalStack.dismissAll();
         });
 
         vm.eventId = '';
