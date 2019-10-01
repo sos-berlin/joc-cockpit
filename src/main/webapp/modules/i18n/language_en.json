@@ -1594,9 +1594,9 @@
   "joe.options.label.priority": "Priority",
   "joe.options.label.ignoreSignals": "Ignore Signals",
   "joe.options.label.credetialKey": "Credential Key",
-  "joe.options.label.histroyWithLog": "Histroy With Log",
-  "joe.options.label.histroyOnProcess": "Histroy on Process",
-  "joe.options.label.histroy": "Histroy",
+  "joe.options.label.historyWithLog": "History With Log",
+  "joe.options.label.historyOnProcess": "History on Process",
+  "joe.options.label.history": "History",
   "joe.options.label.stdErrlogLevel": "StdErr Log Level",
   "joe.options.label.forceIdleTimeout": "Force Idle Timeout",
   "joe.options.placeholder.timeout": "hh:mm:ss",
@@ -1668,7 +1668,7 @@
   "joe.label.delayAfterError": "Delay After Error",
   "joe.label.alertWhenDirectoryMissing": "Alert When Directory Missing",
   "joe.label.repeat": "Repeat",
-  "joe.button.enviroment": "enviroment",
-  "button.addAnotherEnviroment": "Add another Enviroment",
-  "button.addEnviroment": "Add Enviroment"
+  "joe.button.environment": "Environment",
+  "button.addAnotherVariable": "Add another Variable",
+  "button.addVariable": "Add Variable"
 }

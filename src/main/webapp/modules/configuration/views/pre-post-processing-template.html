@@ -121,7 +121,7 @@
                     </div>
                     <div class="row">
                       <div class="col-md-12">
-                        <textarea rows="10" class="form-control"></textarea>
+                        <textarea rows="10" class="form-control" ng-model="process.content"></textarea>
                       </div>
                     </div>
                   </div>
@@ -132,15 +132,15 @@
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="classname"
-                                 ng-model="process.classname">
+                          <input type="text" class="form-control" name="javaClass"
+                                 ng-model="process.javaClass">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="classpath"
-                                 ng-model="process.classpath">
+                          <input type="text" class="form-control" name="javaClassPath"
+                                 ng-model="process.javaClassPath">
                         </div>
                       </div>
                       <div class="form-group row">
@@ -154,7 +154,7 @@
                     <div ng-if="process.language === 'dotnet'">
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
-                               translate>Dll</label>
+                               translate>joe.label.dll</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="dll"
                                  ng-model="process.dll">
@@ -162,10 +162,10 @@
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
-                               translate>Class</label>
+                               translate>joe.label.class</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="class"
-                                 ng-model="process.class">
+                          <input type="text" class="form-control" name="dotnetClass"
+                                 ng-model="process.dotnetClass">
                         </div>
                       </div>
                     </div>
@@ -196,8 +196,8 @@
                             <div class="row">
                               <div class="col-md-4 col-lg-2 p-t-sm">
                                 <input type="checkbox" class="form-control text-left"
-                                       name="processIncludeFilePosition"
-                                       ng-model="process.includes.filePosition">
+                                       name="processIncludeFile"
+                                       ng-model="process.includes.file">
                               </div>
                               <div class="col-md-8 col-lg-10">
                                 <label class="form-control-label" translate>joe.includes.label.fromHotFolder</label>
@@ -206,8 +206,8 @@
                           </div>
                           <div class="col-md-8 col-lg-10">
                             <input type="text" class="form-control"
-                                   name="processIncludeFilePath"
-                                   ng-model="process.includes.filePath">
+                                   name="processIncludeLiveFile"
+                                   ng-model="process.includes.liveFile">
                           </div>
                           <div class="col-md-12">
                             <hr class="m-t-0 m-b-sm">
@@ -233,12 +233,12 @@
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">file.name</span>
+                                    <span class="text-dark">{{file}}</span>
                                   </span>
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">file.type</span>
+                                    <span class="text-dark">{{file}}</span>
                                   </span>
                                 </td>
                               </tr>

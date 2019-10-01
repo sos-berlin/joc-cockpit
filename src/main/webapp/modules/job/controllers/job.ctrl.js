@@ -8557,7 +8557,6 @@
                     $('.toolBtn').show();
                     $('#outlineContainer').css({'width': '170px', 'height': '150px'});
                 }
-                vm.actual();
             } else{
                 timer = $timeout(function () {
                     checkToolbarWidth();
@@ -8807,6 +8806,7 @@
                             let element = document.getElementById("graph");
                             scrollValue.scrollTop = element.scrollTop;
                             scrollValue.scrollLeft = element.scrollLeft;
+                            scrollValue.scale = vm.editor.graph.getView().getScale();
                         }
                         if (reload) {
                             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
@@ -8886,9 +8886,8 @@
                     if (res) {
                         graph.removeCells([v1]);
                     } else {
-                        recursivelyConnectJobs(true, false, function () {
+                        recursivelyConnectJobs(true, true, function () {
                             vm._jobStream = {};
-                            vm.actual();
                         });
                     }
                 });
@@ -8973,7 +8972,7 @@
                 "conditionExpression": {
                     "expression": 'rc:0'
                 },
-                "outconditionEvents":  [
+                "outconditionEvents": [
                     {
                         "event": job.name,
                         "command": 'create'
@@ -8989,12 +8988,10 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobsInconditions: [{job: job.path, inconditions: inObj}]
             }).then(function () {
-                if(flag) {
+                if (flag) {
                     flag = false;
-                    recursivelyConnectJobs(true, false, function () {
-                        vm.actual();
-                    });
-                } else{
+                    recursivelyConnectJobs(true, true);
+                } else {
                     flag = true;
                 }
             });
@@ -9003,12 +9000,10 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobsOutconditions: [{job: job.path, outconditions: outObj}]
             }).then(function () {
-                if(flag) {
+                if (flag) {
                     flag = false;
-                    recursivelyConnectJobs(true, false, function () {
-                        vm.actual();
-                    });
-                } else{
+                    recursivelyConnectJobs(true, true);
+                } else {
                     flag = true;
                 }
             });
@@ -9085,7 +9080,6 @@
                                 createConnection(_job, graph, v2, mapObj);
                             }
                             if (_job.isExpanded || (!vm.jobFilters.graphViewDetail.isWorkflowCompact && _job.isExpanded === undefined)) {
-
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), graph.getModel().getCell(_job.boxId), conditionVertex);
                             } else {
                                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v2, conditionVertex);
@@ -9118,7 +9112,6 @@
                 }
                 conditionVertex = createVertex(graph.getDefaultParent(), _node, cond.conditionExpression.expression, style);
                 addOverlays(graph, conditionVertex, cond.conditionExpression.value ? 'green' : '');
-
                 graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', '', ''), v1, conditionVertex, '');
 
                 if (vm.preferences.jobStreamEvents) {
@@ -9273,6 +9266,9 @@
                 let element = document.getElementById("graph");
                 element.scrollTop = scrollValue.scrollTop;
                 element.scrollLeft = scrollValue.scrollLeft;
+                if (scrollValue.scale) {
+                    vm.editor.graph.getView().setScale(scrollValue.scale);
+                }
             }
 
             if (vm.workflows && vm.workflows.length) {
@@ -9933,7 +9929,7 @@
 
         function updateJobs(flag) {
             let element = document.getElementById("graph");
-            let scrollValue = {scrollTop: element.scrollTop, scrollLeft: element.scrollLeft};
+            let scrollValue = {scrollTop: element.scrollTop, scrollLeft: element.scrollLeft, scale : vm.editor.graph.getView().getScale()};
             vm.editor.graph.removeCells(vm.editor.graph.getChildVertices(vm.editor.graph.getDefaultParent()));
             createWorkflowDiagram(vm.jobs, false, scrollValue);
             if (!flag)
@@ -9972,9 +9968,8 @@
         vm.editConditions1 = function (job) {
             vm.editConditions(job, null, function (res) {
                 if (!res) {
-                    recursivelyConnectJobs(true, false, function () {
+                    recursivelyConnectJobs(true, true, function () {
                         vm._jobStream = {};
-                        vm.actual();
                     });
                 }
             });
@@ -10474,7 +10469,7 @@
                     }
                 },
                 mouseMove: function (sender, me) {
-                    if (me.consumed) {
+                    if (me.consumed && !me.getCell()) {
                         isJobDraging = true;
                         movedJob = null;
                         setTimeout(function () {
@@ -10615,6 +10610,10 @@
                 }
                 return cells;
             };
+
+            graph.isValidDropTarget = function (cell, cells, evt) {
+               return false;
+            }
         }
 
         function detachedJob(target, job) {

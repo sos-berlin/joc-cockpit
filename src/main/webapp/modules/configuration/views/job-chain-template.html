@@ -97,12 +97,12 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                 <div class="col-md-12 col-lg-12">
-                    <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassJobChain" name="jobChainProcessClassJobChain" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
+                    <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassJobChain" name="processClass" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassJobChain, 'pcjobchain')" ng-model="jobChain.processClassJobChain">
                     <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
                 </div>
                 <div class="col-md-12 col-lg-12 autocomplete-col">
                   <ul class="autocomplete-ul" ng-show="isShowPCJobChain">
-                    <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.processClassJobChain', pc.name)">{{pc.name}}</li>
+                    <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.processClass', pc.name)">{{pc.name}}</li>
                   </ul>
                 </div>
               </div>
@@ -113,12 +113,12 @@
             <div class="col-md-8 col-lg-6">
               <div class="row">
                   <div class="col-md-12 col-lg-12">
-                      <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassFilewatcher" name="jobChainProcessClassFilewatcher" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
+                      <input type="text" placeholder="Search Process Class or Choose from folder" class="form-control" id="jobChainProcessClassFilewatcher" name="fileWatchingProcessClass" ng-blur="closeSearchBox($event)" ng-change="getData(jobChain.processClassFilewatcher, 'pcfilewatcher')" ng-model="jobChain.processClassFilewatcher">
                       <i class="fa fa-folder-o inside-textBox" ng-click="getProcessClassTreeStructure(jobChain)" aria-hidden="true"></i>
                   </div>
                   <div class="col-md-12 col-lg-12 autocomplete-col">
                     <ul class="autocomplete-ul" ng-show="isShowPCFileWatcher">
-                      <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.processClassFilewatcher', pc.name)">{{pc.name}}</li>
+                      <li class="autocomplete-menu" ng-repeat="pc in processClasses" ng-click="selectProcessClass('jobChain.fileWatchingProcessClass', pc.name)">{{pc.name}}</li>
                     </ul>
                   </div>
                 </div>

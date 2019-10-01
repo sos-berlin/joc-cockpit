@@ -96,8 +96,8 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.orderId</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" required ng-maxlength="255" class="form-control" unique-name data="{{orders}}"
-                     placeholder="Enter Order Id" autofocus
-                     name="name" ng-model="order.orderId">
+                     placeholder="{{'placeHolder.orderId' | translate}}" autofocus
+                     name="orderId" ng-model="order.orderId">
               <div class="text-danger help-block" ng-if="form.orderId.$dirty" ng-messages="form.orderId.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -119,7 +119,7 @@
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.jobChain</label>
             <div class="col-md-8 col-lg-6">
               <input type="text" class="form-control"
-                     name="jobChain" ng-model="order.jobChain">
+                     name="jobChain" ng-model="order.webService">
             </div>
           </div>
           <div class="form-group row">

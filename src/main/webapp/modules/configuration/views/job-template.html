@@ -143,7 +143,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.language</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="language" ng-model="job.language">
+              <select class="form-control" name="language" ng-model="job.script.language">
 
                 <option ng-repeat="lang in languages" value="{{lang}}">{{lang}}</option>
               </select>
@@ -157,8 +157,8 @@
                     <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>joe.tab.script</a>
                   </li>
                   <li class="nav-item"
-                      ng-if="job.language == 'java' || job.language == 'dotnet' || job.language == 'java:javascript' || job.language == 'javax.script:rhino' || job.language == 'javax.script:ecmascript'">
-                    <a class="nav-link" href data-toggle="tab" data-target="#dynamic" translate>{{job.language
+                      ng-if="job.script.language == 'java' || job.script.language == 'dotnet' || job.script.language == 'java:javascript' || job.script.language == 'javax.script:rhino' || job.script.language == 'javax.script:ecmascript'">
+                    <a class="nav-link" href data-toggle="tab" data-target="#dynamic" translate>{{job.script.language
                       == 'dotnet' ? 'DotNet' : 'Java'}}</a>
                   </li>
                   <li class="nav-item">
@@ -191,7 +191,7 @@
                       <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                       <div class="col-md-8 col-lg-10">
                         <select class="form-control"
-                                ng-disabled="job.language=='shell' || job.language=='java' || job.language=='dotnet'"
+                                ng-disabled="job.script.language=='shell' || job.script.language=='java' || job.script.language=='dotnet'"
                                 name="functionCodeSnippets" ng-model="job.functionCodeSnippets">
                           <option ng-repeat="fcv in functionalCodeValue" ng-click="addLangParameter(fcv)" value="{{fcv}}">
                             {{fcv}}
@@ -201,51 +201,51 @@
                     </div>
                     <div class="row">
                       <div class="col-md-12">
-                        <div ng-bind-html="job.script | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
+                        <div ng-bind-html="job.script.content | safeHtml" ng-blur="applyHighlight()" contenteditable="true" id="editor-script" class="editor-script code"></div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="tab-pane animated fadeIn" id="dynamic">
                   <div class="b-a p-a-sm bg-transparent">
-                    <div ng-if="job.language !== 'dotnet'">
+                    <div ng-if="job.script.language !== 'dotnet'">
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="classname"
-                                 ng-model="job.classname">
+                          <input type="text" class="form-control" name="javaClass"
+                                 ng-model="job.script.javaClass">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="classpath"
-                                 ng-model="job.classpath">
+                          <input type="text" class="form-control" name="javaClassPath"
+                                 ng-model="job.script.javaClassPath">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaOptions"
-                                 ng-model="job.javaOptions">
+                                 ng-model="job.script.javaOptions">
                         </div>
                       </div>
                     </div>
-                    <div ng-if="job.language === 'dotnet'">
+                    <div ng-if="job.script.language === 'dotnet'">
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
-                               translate>Dll</label>
+                               translate>>joe.label.dll</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="dll"
-                                 ng-model="job.dll">
+                                 ng-model="job.script.dll">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
-                               translate>Class</label>
+                               translate>joe.label.class</label>
                         <div class="col-md-8 col-lg-10">
-                          <input type="text" class="form-control" name="class"
-                                 ng-model="job.class">
+                          <input type="text" class="form-control" name="dotnetClass"
+                                 ng-model="job.script.dotnetClass">
                         </div>
                       </div>
                     </div>
@@ -276,7 +276,7 @@
                             <div class="row">
                               <div class="col-md-4 col-lg-2 p-t-xs">
                                 <label class="md-check lg-check">
-                                  <input type="checkbox" ng-model="job.includes.filePosition" name="jobIncludeFilePosition" class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
+                                  <input type="checkbox" ng-model="job.script.includes.liveFile" name="jobIncludeFilePosition" class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
                                   <i class="primary"></i>
                                 </label>
                               </div>
@@ -288,7 +288,7 @@
                           <div class="col-md-8 col-lg-10">
                             <input type="text" class="form-control"
                                    name="jobIncludeFilePath"
-                                   ng-model="job.includes.filePath">
+                                   ng-model="job.script.includes.file">
                           </div>
                           <div class="col-md-12">
                             <hr class="m-t-0 m-b-sm">
@@ -311,7 +311,7 @@
                               </th>
                               </thead>
                               <tbody>
-                              <tr ng-repeat="file in job.includeFiles | orderBy:filter.sortBy:filter.sortReverse">
+                              <tr ng-repeat="file in job.script.includes.items | orderBy:filter.sortBy:filter.sortReverse">
                                 <td>
                                   <label class="md-check">
                                     <input type="checkbox" ng-model="" class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
@@ -320,12 +320,12 @@
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">file.name</span>
+                                    <span class="text-dark">{{file}}</span>
                                   </span>
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">file.type</span>
+                                    <span class="text-dark">{{file}}</span>
                                   </span>
                                 </td>
                               </tr>
@@ -342,7 +342,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.logLevel</label>
                     <div class="col-md-8 col-lg-6">
                       <select class="form-control" name="jobOptionsLogLevel"
-                              ng-model="job.options.logLevel">
+                              ng-model="job.settings.logLevel">
                         <option ng-repeat="log in logLevelValue" value="{{log}}">{{log}}
                         </option>
                       </select>
@@ -353,52 +353,52 @@
                     <div class="col-md-8 col-lg-6">
                         <label class="md-check w">
                           <input type="radio" name="jobOptionsStdErrLogLevel"
-                                 ng-model="job.options.stdErrLogLevel" value="info"
+                                 ng-model="job.settings.stdErrLogLevel" value="info"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">info</span>
                         </label>
                         <label class="md-check w">
                           <input type="radio" name="jobOptionsStdErrLogLevel"
-                                 ng-model="job.options.stdErrLogLevel" value="error"
+                                 ng-model="job.settings.stdErrLogLevel" value="error"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">error</span>
                         </label>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroy</label>
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.history</label>
                     <div class="col-md-8 col-lg-6">
                         <label class="md-check w">
-                          <input type="radio" name="jobOptionsHistroy"
-                                 ng-model="job.options.histroy" value="yes"
+                          <input type="radio" name="jobOptionsHistory"
+                                 ng-model="job.settings.history" value="yes"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">Yes</span>
                         </label>
                         <label class="md-check w">
-                          <input type="radio" name="jobOptionsHistroy"
-                                 ng-model="job.options.histroy" value="no"
+                          <input type="radio" name="jobOptionsHistory"
+                                 ng-model="job.settings.history" value="no"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">No</span>
                         </label>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroyOnProcess</label>
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.historyOnProcess</label>
                     <div class="col-md-8 col-lg-6">
-                      <select class="form-control" name="jobOptionsHistroyOnProcess"
-                              ng-model="job.options.histroyOnProcess">
-                        <option ng-repeat="hpv in histroyOnProcessValue" value="{{hpv}}">
+                      <select class="form-control" name="jobOptionsHistoryOnProcess"
+                              ng-model="job.settings.historyOnProcess">
+                        <option ng-repeat="hpv in historyOnProcessValue" value="{{hpv}}">
                           {{hpv}}
                         </option>
                       </select>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.histroyWithLog</label>
+                    <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.historyWithLog</label>
                     <div class="col-md-8 col-lg-6">
-                      <select class="form-control" name="jobOptionsHistroyWithLog"
-                              ng-model="job.options.histroyWithLog">
-                        <option ng-repeat="hwl in histroyWithLogValue" value="{{hwl}}">{{hwl}}
+                      <select class="form-control" name="jobOptionsHistoryWithLog"
+                              ng-model="job.settings.historyWithLog">
+                        <option ng-repeat="hwl in historyWithLogValue" value="{{hwl}}">{{hwl}}
                         </option>
                       </select>
                     </div>
@@ -407,7 +407,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.credetialKey</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" placeholder="file Path"
-                             name="jobOptionsCredetialKey" ng-model="job.options.credetialKey">
+                             name="jobOptionsCredetialKey" ng-model="job.settings.credetialKey">
                     </div>
                   </div>
                   <div class="form-group row"
@@ -415,7 +415,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.ignoreSignals</label>
                     <div class="col-md-8 col-lg-6">
                       <ui-select class="form-control" multiple
-                                 ng-model="job.options.ignoreSignals"
+                                 ng-model="job.settings.ignoreSignals"
                                  name="jobOptionsIgnoreSignals" required
                                  on-remove="removed($item, $model)" theme="bootstrap"
                                  close-on-select="false">
@@ -430,7 +430,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.priority</label>
                     <div class="col-md-8 col-lg-6">
                       <select class="form-control" name="jobOptionsPriority"
-                              ng-model="job.options.priority">
+                              ng-model="job.settings.priority">
                         <option ng-repeat="priority in priorityValue" value="{{priority}}">
                           {{priority}}
                         </option>
@@ -441,7 +441,7 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.visible</label>
                     <div class="col-md-8 col-lg-6">
                       <select class="form-control" name="jobOptionsVisible"
-                              ng-model="job.options.visible">
+                              ng-model="job.settings.visible">
                         <option ng-repeat="visible in visibleValue" value="{{visible}}">
                           {{visible}}
                         </option>
@@ -452,14 +452,14 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.minTask</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" name="jobOptionsMinTask"
-                             ng-model="job.options.minTask">
+                             ng-model="job.settings.minTask">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.task</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" name="jobOptionsTask"
-                             ng-model="job.options.task">
+                             ng-model="job.settings.task">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -467,7 +467,7 @@
                     <div class="col-md-8 col-lg-6">
                       <input valid-time1 type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.timeout' | translate}}"
-                             name="jobOptionsTimeout" ng-model="job.options.timeout">
+                             name="jobOptionsTimeout" ng-model="job.settings.timeout">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -475,7 +475,7 @@
                     <div class="col-md-8 col-lg-6">
                       <input valid-time2 type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.idleTimeout' | translate}}"
-                             name="jobOptionsIdleTimeout" ng-model="job.options.idleTimeout">
+                             name="jobOptionsIdleTimeout" ng-model="job.settings.idleTimeout">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -484,7 +484,7 @@
                       <input type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.warnIfLongerThan' | translate}}"
                              name="jobOptionsWarnIfLongerThan"
-                             ng-model="job.options.warnIfLongerThan">
+                             ng-model="job.settings.warnIfLongerThan">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -493,14 +493,14 @@
                       <input type="text" class="form-control text-left"
                              placeholder="{{'joe.options.placeholder.warnIfShorterThan' | translate}}"
                              name="jobOptionsWarnIfShorterThan"
-                             ng-model="job.options.warnIfShorterThan">
+                             ng-model="job.settings.warnIfShorterThan">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.options.label.forceIdleTimeout</label>
                     <div class="col-md-8 col-lg-6 p-t-xs">
                       <label class="md-check lg-check">
-                        <input type="checkbox" name="jobOptionsForceIdleTimeout" ng-model="job.options.forceIdleTimeout">
+                        <input type="checkbox" name="jobOptionsForceIdleTimeout" ng-model="job.settings.forceIdleTimeout">
                         <i class="primary"></i>
                       </label>
                     </div>
@@ -512,13 +512,13 @@
                     <div class="col-md-8 col-lg-6">
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnError"
-                                 ng-model="job.email.mainOnError" value="yes"
+                                 ng-model="job.settings.mailOnError" value="yes"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">Yes</span>
                         </label>
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnError"
-                                 ng-model="job.email.mainOnError" value="no"
+                                 ng-model="job.settings.mailOnError" value="no"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">No</span>
                         </label>
@@ -529,13 +529,13 @@
                     <div class="col-md-8 col-lg-6">
                       <label class="md-check w">
                         <input type="radio" name="jobEmailMailOnWarning"
-                               ng-model="job.email.mainOnWarning" value="yes"
+                               ng-model="job.settings.mailOnWarning" value="yes"
                                class="ng-pristine ng-untouched ng-valid ng-not-empty">
                         <i class="primary"></i> <span translate="">Yes</span>
                       </label>
                       <label class="md-check w">
                         <input type="radio" name="jobEmailMailOnWarning"
-                               ng-model="job.email.mainOnWarning" value="no"
+                               ng-model="job.settings.mailOnWarning" value="no"
                                class="ng-pristine ng-untouched ng-valid ng-not-empty">
                         <i class="primary"></i> <span translate="">No</span>
                       </label>
@@ -546,13 +546,13 @@
                     <div class="col-md-8 col-lg-6">
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnSuccess"
-                                 ng-model="job.email.mainOnSuccess" value="yes"
+                                 ng-model="job.settings.mailOnSuccess" value="yes"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">Yes</span>
                         </label>
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnSuccess"
-                                 ng-model="job.email.mainOnSuccess" value="no"
+                                 ng-model="job.settings.mailOnSuccess" value="no"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">No</span>
                         </label>
@@ -563,13 +563,13 @@
                     <div class="col-md-8 col-lg-6">
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnProcess"
-                                 ng-model="job.email.mainOnProcess" value="yes"
+                                 ng-model="job.settings.mailOnProcess" value="yes"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">Yes</span>
                         </label>
                         <label class="md-check w">
                           <input type="radio" name="jobEmailMailOnProcess"
-                                 ng-model="job.email.mainOnProcess" value="no"
+                                 ng-model="job.settings.mailOnProcess" value="no"
                                  class="ng-pristine ng-untouched ng-valid ng-not-empty">
                           <i class="primary"></i> <span translate="">No</span>
                         </label>
@@ -579,9 +579,9 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.email.label.mailOnDelayAfterError</label>
                     <div class="col-md-8 col-lg-6">
                       <select class="form-control"
-                              ng-disabled="job.email.mainOnError=='no' || job.email.mainOnError==undefined"
+                              ng-disabled="job.settings.mailOnError=='no' || job.settings.mailOnError==undefined"
                               name="jobEmailMainOnDelayAfterError"
-                              ng-model="job.email.mailOnDelayAfterError">
+                              ng-model="job.settings.mailOnDelayAfterError">
                         <option ng-repeat="modae in mailOnDelayAfterErrorValue"
                                 value="{{modae}}">{{modae}}
                         </option>
@@ -593,21 +593,21 @@
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.email.label.mailTo</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" name="jobEmailMailTo"
-                             ng-model="joe.email.mailTo">
+                             ng-model="job.settings.logMailTo">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.email.label.mailCc</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" name="jobEmailMailCc"
-                             ng-model="joe.email.mailCc">
+                             ng-model="job.settings.logMailCc">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-lg-3 form-control-label" translate>joe.email.label.mailBcc</label>
                     <div class="col-md-8 col-lg-6">
                       <input type="text" class="form-control text-left" name="jobEmailMailBcc"
-                             ng-model="joe.email.mailBcc">
+                             ng-model="job.settings.logMailBcc">
                     </div>
                   </div>
                 </div>
@@ -635,7 +635,7 @@
                       <label class="col-md-4 col-lg-3 form-control-label" translate>joe.onError.label.errorCount</label>
                       <div class="col-md-8 col-lg-9">
                         <input type="number" min="0" class="form-control text-left"
-                               name="jobOnErrorErrorCount" ng-model="joe.onError.errorCount">
+                               name="jobOnErrorErrorCount" ng-model="job.delayAfterErrors.errorCount">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -643,27 +643,27 @@
                       <div class="col-md-8 col-lg-6">
                           <label class="md-check w">
                             <input type="radio" name="jobOnErrorDelayInterval" checked
-                                   ng-model="job.onError.delayInterval" value="stop"
+                                   ng-model="job.delayAfterErrors.delay" value="stop"
                                    ng-change="changeJobOnErrorDelayInterval()"
                                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">stop</span>
+                            <i class="primary"></i> <span translate>label.stop</span>
                           </label>
                           <label class="md-check w">
                             <input type="radio" name="jobOnErrorDelayInterval"
-                                   ng-model="job.onError.delayInterval" value="delay"
-                                   ng-change="changeJobOnErrorDelayInterval(job.email.delayInterval)"
+                                   ng-model="job.delayAfterErrors.delay" value="delay"
+                                   ng-change="changeJobOnErrorDelayInterval(job.settings.delayInterval)"
                                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">Delay</span>
+                            <i class="primary"></i> <span translate="">label.delay</span>
                           </label>
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
                       <div class="col-md-8 col-lg-9">
-                        <input type="text" ng-disabled="job.onError.delayInterval=='stop'"
+                        <input type="text" ng-disabled="job.delayAfterErrors.delay=='stop'"
                                placeholder="{{'joe.onError.placeholder.delayInterval' | translate}}"
                                class="form-control text-left" name="jobOnErrorReRunTime"
-                               ng-model="joe.onError.reRunTime">
+                               ng-model="job.delayAfterErrors.reRunTime">
                       </div>
                     </div>
                     <div class="col-md-12">
@@ -734,7 +734,7 @@
                       <div class="col-md-8 col-lg-9">
                         <input type="text" min="0" class="form-control text-left"
                                name="jobFileWatcherErrorCount"
-                               ng-model="joe.fileWatcher.watchDirectory">
+                               ng-model="job.startWhenDirectoriesChanged.directory">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -742,7 +742,7 @@
                       <div class="col-md-8 col-lg-9">
                         <input type="text" class="form-control text-left"
                                name="jobFileWatcherFileRegex"
-                               ng-model="joe.fileWatcher.fileRegEx">
+                               ng-model="job.startWhenDirectoriesChanged.regex">
                       </div>
                     </div>
                     <div class="col-md-12">
@@ -791,7 +791,7 @@
                 <div class="tab-pane animated fadeIn" id="tab7">
                   <div class="form-group row">
                     <div class="col-md-12 col-lg-12">
-                      <textarea rows="10" class="form-control" placeholder="Enter Comment" name="jobDocumentationComment" ng-model="joe.documentation.comment"></textarea>
+                      <textarea rows="10" class="form-control" placeholder="Enter Comment" name="jobDocumentationComment" ng-model="job.documentation.comment"></textarea>
                     </div>
                   </div>
                   <div class="row">
@@ -824,15 +824,15 @@
                     <div class="col-md-3 col-lg-2">
                       <label class="md-check">
                         <input type="checkbox" name="jobDocumentationlivefolder"
-                               ng-model="job.documentation.livefolder"><i class="primary"></i>
+                               ng-model="job.documentation.liveFile"><i class="primary"></i>
                         {{'joe.documentation.label.inLiveFolder' | translate}}
                       </label>
                     </div>
                   </div>
                   <div class="form-group row">
                     <div class="col-md-12 col-lg-12">
-                                            <textarea rows="10" class="form-control" name="jobDocumentationComment"
-                                                      ng-model="joe.documentation.comment"></textarea>
+                        <textarea rows="10" class="form-control" name="jobDocumentationComment"
+                                  ng-model="job.documentation.comment"></textarea>
                     </div>
                   </div>
                 </div>
@@ -861,11 +861,11 @@
                              translate>joe.label.setBackCount</label>
                       <div class="col-md-3">
                         <input type="number" min="0" class="form-control text-left"
-                               name="jobSetBackErrorCount" ng-model="joe.onError.errorCount">
+                               name="jobSetBackErrorCount" ng-model="job.delayOrderAfterSetbacks.setbackCount">
                       </div>
                       <div class="col-md-3 p-t-xs">
                         <span class="md-check lg-check">
-                          <input type="checkbox" name="jobSetBackIsMaximum" ng-model="job.setback.isMaximum">
+                          <input type="checkbox" name="jobSetBackIsMaximum" ng-model="job.delayOrderAfterSetbacks.isMaximum">
                           <i class="primary"></i>
                         </span>
                         <span class="form-control-label v-t" translate>joe.label.isMaximum</span>
@@ -877,7 +877,7 @@
                         <input type="text"
                                placeholder="{{'joe.onError.placeholder.delayInterval' | translate}}"
                                class="form-control text-left" name="jobSetBackDelay"
-                               ng-model="joe.setback.delay">
+                               ng-model="job.delayOrderAfterSetbacks.delay">
                       </div>
                     </div>
                     <div class="col-md-12">
@@ -928,13 +928,13 @@
             </li>
             <li class="nav-item">
               <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''" ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
-                <span class="nav-text" translate>joe.button.enviroment</span>
+                <span class="nav-text" translate>joe.button.environment</span>
               </a>
             </li>
           </ul>
         </div>
         <div class="p-a" id="tab11" ng-if="activeTabInParameter=='tab11'">
-          <div class="form-group row m-b-0" ng-repeat="param in job.paramObject.params track by $index">
+          <div class="form-group row m-b-0" ng-repeat="param in job.params.paramList track by $index">
             <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
             <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
             <div class="col-sm-5 m-b-sm">
@@ -952,51 +952,51 @@
           </div>
           <div class="form-group row">
             <div class="col-sm-12">
-              <a href class="text-u-l" ng-if="job.paramObject.params.length>0" ng-click="addParameter()"
+              <a href class="text-u-l" ng-if="job.params.paramList.length>0" ng-click="addParameter()"
                  translate>button.addAnotherParameter</a>
-              <a href class="text-u-l" ng-if="job.paramObject.params.length==0" ng-click="addParameter()"
+              <a href class="text-u-l" ng-if="job.params.paramList.length==0" ng-click="addParameter()"
                  translate>button.addParameter</a>
             </div>
           </div>
         </div>
         <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
-            <div class="form-group row m-b-0" ng-repeat="envParam in job.envObject.envParams track by $index">
+            <div class="form-group row m-b-0" ng-repeat="variable in job.environment.variables track by $index">
               <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
               <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
               <div class="col-sm-5 m-b-sm">
-                <input type="text" class="form-control" ng-model="envParam.name"
+                <input type="text" class="form-control" ng-model="variable.name"
                        placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
               </div>
 
               <div class="col-sm-6 m-b-sm">
-                <input type="text" class="form-control" ng-model="envParam.value"
+                <input type="text" class="form-control" ng-model="variable.value"
                        placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
               </div>
               <div class="col-sm-1 p-l-0">
-                <a><i ng-click="removeEnviromentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                <a><i ng-click="removeEnvironmentParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-sm-12">
-                <a href class="text-u-l" ng-if="job.envObject.envParams.length>0" ng-click="addEnviromentParams()"
-                   translate>button.addAnotherEnviroment</a>
-                <a href class="text-u-l" ng-if="job.envObject.envParams.length==0" ng-click="addEnviromentParams()"
-                   translate>button.addEnviroment</a>
+                <a href class="text-u-l" ng-if="job.environment.variables.length>0" ng-click="addEnvironmentParams()"
+                   translate>button.addAnotherVariable</a>
+                <a href class="text-u-l" ng-if="job.environment.variables.length==0" ng-click="addEnvironmentParams()"
+                   translate>button.addVariable</a>
               </div>
             </div>
         </div>
       </div>
       <div class="col-md-12 text-left" ng-if="obj.type == 'locksUsed'">
-        <div class="form-group row m-b-0" ng-repeat="param in job.lockObject.params track by $index">
+        <div class="form-group row m-b-0" ng-repeat="item in job.lockUses.items track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.lock</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>joe.label.exclusive</div>
           <div class="col-sm-5 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.lock"
-                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+            <input type="text" class="form-control" ng-model="item.lock"
+                   placeholder="{{'placeholder.lock' | translate}} {{$index+1}}">
           </div>
 
           <div class="col-sm-6 m-b-sm">
-            <select class="form-control" ng-model="param.exclusive">
+            <select class="form-control" ng-model="item.exclusive">
               <option selected value="yes">yes</option>
               <option value="yes">no</option>
             </select>
@@ -1007,22 +1007,22 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="job.lockObject.params.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
-            <a href class="text-u-l" ng-if="job.lockObject.params.length==0" ng-click="addLock()" translate>button.addLock</a>
+            <a href class="text-u-l" ng-if="job.lockUses.items.length>0" ng-click="addLock()" translate>button.addAnotherLock</a>
+            <a href class="text-u-l" ng-if="job.lockUses.items.length==0" ng-click="addLock()" translate>button.addLock</a>
           </div>
         </div>
       </div>
       <div class="col-md-12 text-left" ng-if="obj.type == 'monitorsUsed'">
-        <div class="form-group row m-b-0" ng-repeat="param in job.monitorObject.params track by $index">
+        <div class="form-group row m-b-0" ng-repeat="item in job.monitorUses.items track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>joe.label.monitor</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>joe.label.ordering</div>
           <div class="col-sm-5 m-b-sm">
-            <input type="text" class="form-control" ng-model="param.monitor"
-                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+            <input type="text" class="form-control" ng-model="item.monitor"
+                   placeholder="{{'placeholder.monitor' | translate}} {{$index+1}}">
           </div>
 
           <div class="col-sm-6 m-b-sm">
-            <input type="number" class="form-control" ng-model="param.ordering" min="0">
+            <input type="number" class="form-control" ng-model="item.ordering" min="0">
           </div>
           <div class="col-sm-1 p-l-0">
             <a><i ng-click="removeMonitor($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -1030,9 +1030,9 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="job.monitorObject.params.length>0" ng-click="addMonitor()"
+            <a href class="text-u-l" ng-if="job.monitorUses.items.length>0" ng-click="addMonitor()"
                translate>button.addAnotherMonitor</a>
-            <a href class="text-u-l" ng-if="job.monitorObject.params.length==0" ng-click="addMonitor()"
+            <a href class="text-u-l" ng-if="job.monitorUses.items.length==0" ng-click="addMonitor()"
                translate>button.addMonitor</a>
           </div>
         </div>
