@@ -237,17 +237,14 @@
                                         ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default"
                                         ng-required="node.use ==='required'"
                                         class="form-control" id="{{node.name}}">
-                                    <option>true</option>
-                                    <option>false</option>
+                                    <option vlaue="true">true</option>
+                                    <option vlaue="false">false</option>
                                 </select>
-                                <select ng-blur="validateAttr(node.data, node)"
-                                        ng-change="submitData(node.data, node)"
-                                        ng-if="node.values && node.values.length > 0"
-                                        ng-class="error && errorName === node.name? 'invalid': ''"
-                                        ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default"
+                                <select ng-blur="validateAttr(node.data, node)" ng-change="submitData(node.data, node)" ng-if="node.values && node.values.length > 0"
+                                        ng-class="error && errorName === node.name? 'invalid': ''" ng-model="node.data" ng-init="node.data = node.data ? node.data : node.default"
                                         ng-required="node.use ==='required'"
                                         class="form-control" id="{{node.name}}">
-                                    <option ng-repeat="value in node.values" ng-class="value.base ? 'hide':''">
+                                    <option ng-repeat="value in node.values" value="{{value.value}}" ng-class="value.base ? 'hide':''">
                                         {{value.value}}
                                     </option>
                                 </select>
@@ -258,9 +255,7 @@
                             </div>
                         </div>
                         <div class="box p-a val" ng-if="selectedNode.values && selectedNode.values.length>0">
-                            <div class="text m-b-sm" ><span translate>xml.label.value</span><sup
-                                    ng-if="!(selectedNode.values && selectedNode.values[0].use)"
-                                    class="text-danger text-sm">*</sup></div>
+                            <div class="text m-b-sm" ><span translate>xml.label.value</span><sup ng-if="!(selectedNode.values && selectedNode.values[0].use)" class="text-danger text-sm">*</sup></div>
                             <div class="form-group">
                                 <input ng-model="selectedNode.values[0].data"
                                        ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
@@ -281,10 +276,8 @@
                                        autofocus="{{!selectedNode.attributes}}">
                                 <div ng-if="selectedNode.ref === 'Body' && selectedNode.values[0]"
                                      class="form-group has-feedback">
-                                    <textarea id="{{selectedNode.uuid}}" ng-model="myContent"
-                                    name="{{selectedNode.uuid}}" class="ckEditor"
+                                    <textarea id="{{selectedNode.values[0].uuid}}" ng-model="myContent" name="{{selectedNode.uuid}}" class="ckEditor"
                                     ng-class="error ? addCkCss(selectedNode.uuid) : removeCkCss(selectedNode.uuid)" data-sample-short></textarea>
-
                                     <div ng-if="error" class="help-block"
                                          translate>xml.message.requiredField
                                     </div>
@@ -295,8 +288,8 @@
                                         ng-if="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                                         ng-class="error? 'invalid': ''" class="form-control"
                                         id="{{selectedNode.ref}}">
-                                    <option>true</option>
-                                    <option>false</option>
+                                    <option value="true">true</option>
+                                    <option value="false">false</option>
                                 </select>
                                 <select ng-model="selectedNode.values[0].data"
                                         ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
@@ -304,7 +297,7 @@
                                         ng-if="selectedNode && selectedNode.values && selectedNode.values[0].values"
                                         ng-class="error? 'invalid': ''" class="form-control"
                                         id="{{selectedNode.ref}}">
-                                    <option ng-repeat="value in selectedNode.values[0].values">{{value.value}}</option>
+                                    <option ng-repeat="value in selectedNode.values[0].values" value="{{value.value}}">{{value.value}}</option>
                                 </select>
                                 <textarea ng-model="selectedNode.values[0].data"
                                           ng-blur="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"

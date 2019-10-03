@@ -26,7 +26,7 @@
                         <i ng-if="node.object == 'LOCK'" class="fa fa-lock noExl"></i>
                         <i ng-if="node.object == 'PROCESSCLASS'" class="icon-process-class-icon custom-icon"></i>
                         <i ng-if="node.object == 'SCHEDULE'" class="fa fa-calendar noExl"></i>
-                        <i ng-if="node.object == 'PREPOSTPROCESSING'" class="fa fa-file-text-o noExl"></i>
+                        <i ng-if="node.object == 'MONITOR'" class="fa fa-file-text-o noExl"></i>
                         <span ng-click="treeHandler(node, this)" ng-style="{'cursor' : node.path ? 'default' : 'pointer'}" ng-class="{'text-u-l'  : !node.isOrderJob && node.type === 'JOB'}" class="p-l-xs">
                             {{node.name || node.path || node.orderId || node.code}}
                             <i ng-if="node.disabled">({{'DISABLED' | translate}})</i>
@@ -38,12 +38,12 @@
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
                             <div class="dropdown-menu dropdown-ac dropdown-more list-dropdown" role="menu">
-                                <a class="dropdown-item">
+<!--                                <a class="dropdown-item">
                                     <div translate>button.copy</div>
                                 </a>
                                 <a class="dropdown-item">
                                     <div translate>xml.button.paste</div>
-                                </a>
+                                </a>-->
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" ng-if="node.object" ng-click="addObject(node);">
                                     <div translate>xml.button.new</div>
@@ -51,11 +51,11 @@
                                 <a class="dropdown-item" ng-if="!node.object" ng-click="remove(this);">
                                     <div translate>button.delete</div>
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item">
+                                <div class="dropdown-divider" ng-if="!node.object"></div>
+                                <a class="dropdown-item" ng-if="!node.object" ng-click="editXml(node);">
                                     <div translate>button.editXml</div>
                                 </a>
-                                <a class="dropdown-item" ng-click="showXml(node);">
+                                <a class="dropdown-item" ng-if="!node.object" ng-click="showXml(node);">
                                     <div translate>button.showXml</div>
                                 </a>
                             </div>
@@ -98,7 +98,7 @@
                 <div ng-if="type == 'SCHEDULE'">
                     <div ng-controller="ScheduleEditorCtrl" ui-include="'modules/configuration/views/schedule-template.html'"></div>
                 </div>
-                <div ng-if="type == 'PREPOSTPROCESSING' || param == 'PROCESSING'">
+                <div ng-if="type == 'MONITOR' || param == 'PROCESSING'">
                     <div ng-controller="ProcessingEditorCtrl" ui-include="'modules/configuration/views/pre-post-processing-template.html'"></div>
                 </div>
                 <div ng-if="type == 'COMMAND' || param == 'COMMAND'">

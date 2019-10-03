@@ -2,16 +2,16 @@
   <div class="col-md-12">
     <div class="box p-a">
       <div class="b-b p-b m-b">
-        <span class="text text-dark" ng-if="!process.name" translate>joe.label.prePostProcessing</span>
-        <span class="text" ng-if="process.name">{{process.name}}</span>
-        <div class="inline pull-right" style="margin-top: -2px" ng-if="!process">
-          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createProcess()" >
+        <span class="text text-dark" ng-if="!monitor.name" translate>joe.label.prePostProcessing</span>
+        <span class="text" ng-if="monitor.name">{{monitor.name}}</span>
+        <div class="inline pull-right" style="margin-top: -2px" ng-if="!monitor">
+          <button class="btn btn-sm btn-grey m-l-sm" ng-click="createMonitor()" >
             <i class="fa fa-plus"></i>
             <span translate>joe.button.createProcesses</span>
           </button>
         </div>
       </div>
-      <div ng-if="!process">
+      <div ng-if="!monitor">
         <div class="table-responsive">
           <table class="table table-hover table-bordered ">
             <thead>
@@ -32,48 +32,47 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="process in processes | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="monitor in monitors | orderBy:filter.sortBy:filter.sortReverse">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
                   <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                    <a ng-click="removeProcess(process)" class="dropdown-item " translate="">label.remove</a>
+                    <a ng-click="removeMonitor(monitor)" class="dropdown-item " translate="">label.remove</a>
                   </div>
                 </div>
               </td>
-              <td class="cursor" ng-click="createProcess(process)" ng-bind="process.name"></td>
-              <td class="cursor" ng-click="createProcess(process)" ng-bind="process.ordering"></td>
+              <td class="cursor" ng-click="createMonitor(monitor)" ng-bind="monitor.name"></td>
+              <td class="cursor" ng-click="createMonitor(monitor)" ng-bind="monitor.ordering"></td>
             </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div ng-if="process">
+      <div ng-if="monitor">
         <form name="form">
-          <div class="form-group row"
-               ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
+          <div class="form-group row" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty}">
             <label class="col-md-2 col-lg-3 form-control-label" translate>label.name</label>
             <div class="col-md-6 col-lg-6">
-              <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Process name"
-                     name="name" ng-model="process.name" autocomplete="false">
+              <input type="text" required ng-maxlength="255" class="form-control" placeholder="{{'joe.placeholder.monitor' | translate}}"
+                     name="name" ng-model="monitor.name" autocomplete="false">
               <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
               </div>
             </div>
           </div>
-          <div class="form-group row m-b-sm m-t">
+          <div class="form-group row">
             <label class="col-md-2 col-lg-3" translate>joe.label.ordering</label>
             <div class="col-md-6 col-lg-6">
-                <input type="number" class="form-control" ng-model="process.ordering" name="ordering" min="0">
+                <input type="number" class="form-control" ng-model="monitor.ordering" name="ordering" min="0">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-md-2 col-lg-3 form-control-label" translate>joe.label.favourites</label>
             <div class="col-md-6 col-lg-6">
-              <select class="form-control" name="favourites" ng-model="process.favourites">
+              <select class="form-control" name="favourites" ng-model="monitor.favourites">
                 <option ng-repeat="fav in favourites" value="{{fav}}">{{fav}}</option>
               </select>
             </div>
@@ -81,8 +80,7 @@
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label" translate>label.language</label>
             <div class="col-md-8 col-lg-6">
-              <select class="form-control" name="language" ng-model="process.language">
-
+              <select class="form-control" name="language" ng-model="monitor.script.language">
                 <option ng-repeat="lang in languages" value="{{lang}}">{{lang}}</option>
               </select>
             </div>
@@ -95,9 +93,8 @@
                     <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>joe.tab.script</a>
                   </li>
                   <li class="nav-item"
-                      ng-if="process.language == 'java' || process.language == 'dotnet' || process.language == 'java:javascript' || process.language == 'javax.script:rhino' || process.language == 'javax.script:ecmascript'">
-                    <a class="nav-link" href data-toggle="tab" data-target="#dynamic" translate>{{process.language
-                      == 'dotnet' ? 'DotNet' : 'Java'}}</a>
+                      ng-if="monitor.script.language == 'java' || monitor.script.language == 'dotnet' || monitor.script.language == 'java:javascript' || monitor.script.language == 'javax.script:rhino' || monitor.script.language == 'javax.script:ecmascript'">
+                    <a class="nav-link" href data-toggle="tab" data-target="#dynamic" translate>{{monitor.script.language == 'dotnet' ? 'DotNet' : 'Java'}}</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>joe.tab.includes</a>
@@ -111,8 +108,8 @@
                       <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.functionCodeSnippets</label>
                       <div class="col-md-8 col-lg-10">
                         <select class="form-control"
-                                ng-disabled="process.language=='shell' || process.language=='java' || process.language=='dotnet'"
-                                name="functionCodeSnippets" ng-model="process.functionCodeSnippets">
+                                ng-disabled="monitor.script.language=='shell' || monitor.script.language=='java' || monitor.script.language=='dotnet'"
+                                name="functionCodeSnippets" ng-model="monitor.functionCodeSnippets">
                           <option ng-repeat="fcv in functionalCodeValue" value="{{fcv}}">
                             {{fcv}}
                           </option>
@@ -121,43 +118,43 @@
                     </div>
                     <div class="row">
                       <div class="col-md-12">
-                        <textarea rows="10" class="form-control" ng-model="process.content"></textarea>
+                        <textarea rows="10" class="form-control" ng-model="monitor.script.content"></textarea>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="tab-pane animated fadeIn" id="dynamic">
                   <div class="b-a p-a-sm bg-transparent">
-                    <div ng-if="process.language !== 'dotnet'">
+                    <div ng-if="monitor.script.language !== 'dotnet'">
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.classname</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaClass"
-                                 ng-model="process.javaClass">
+                                 ng-model="monitor.script.javaClass">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.Classpath</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaClassPath"
-                                 ng-model="process.javaClassPath">
+                                 ng-model="monitor.script.javaClassPath">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label" translate>joe.label.javaOptions</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="javaOptions"
-                                 ng-model="process.javaOptions">
+                                 ng-model="monitor.script.javaOptions">
                         </div>
                       </div>
                     </div>
-                    <div ng-if="process.language === 'dotnet'">
+                    <div ng-if="monitor.script.language === 'dotnet'">
                       <div class="form-group row">
                         <label class="col-md-4 col-lg-2 form-control-label"
                                translate>joe.label.dll</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="dll"
-                                 ng-model="process.dll">
+                                 ng-model="monitor.script.dll">
                         </div>
                       </div>
                       <div class="form-group row">
@@ -165,7 +162,7 @@
                                translate>joe.label.class</label>
                         <div class="col-md-8 col-lg-10">
                           <input type="text" class="form-control" name="dotnetClass"
-                                 ng-model="process.dotnetClass">
+                                 ng-model="monitor.script.dotnetClass">
                         </div>
                       </div>
                     </div>
@@ -174,71 +171,52 @@
                 <div class="tab-pane animated fadeIn" id="tab2">
                   <div class="b-a p-a-sm bg-transparent">
                     <div class="row">
-                      <div class="col-md-12 m-b-sm">
-                        <div class="pull-right">
-                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="addFile()">
-                            <i class="fa fa-plus"></i>
-                            <span translate>joe.includes.button.addFile</span>
-                          </button>
-                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="new()">
-                            <i class="fa fa-plus"></i>
-                            <span translate>joe.includes.button.new</span>
-                          </button>
-                          <button class="btn btn-sm btn-grey m-l-sm" ng-click="removeFile()">
-                            <i class="fa fa-trash"></i>
-                            <span translate>joe.includes.button.removeFile</span>
-                          </button>
-                        </div>
-                      </div>
                       <div class="col-md-12">
                         <div class="row">
-                          <div class="col-md-4 col-lg-2">
-                            <div class="row">
-                              <div class="col-md-4 col-lg-2 p-t-sm">
-                                <input type="checkbox" class="form-control text-left"
-                                       name="processIncludeFile"
-                                       ng-model="process.includes.file">
-                              </div>
-                              <div class="col-md-8 col-lg-10">
-                                <label class="form-control-label" translate>joe.includes.label.fromHotFolder</label>
-                              </div>
-                            </div>
+                          <div class="col-sm-2">
+                            <select class="form-control" ng-model="items.item.file"
+                                    style="padding-top: 6px ">
+                              <option value="live_file" translate>label.liveFile</option>
+                              <option value="file" translate>label.file</option>
+                            </select>
                           </div>
-                          <div class="col-md-8 col-lg-10">
-                            <input type="text" class="form-control"
-                                   name="processIncludeLiveFile"
-                                   ng-model="process.includes.liveFile">
+                          <div class="col-sm-9 p-l-0">
+                            <input type="text" class="form-control" ng-model="items.item.liveFile">
+                          </div>
+                          <div class="col-sm-1">
+                            <button ng-disabled="!items.item.liveFile" type="button" class="btn btn-xs btn-grey"
+                                    style="margin-left: -10px; margin-top: 2px" ng-click="addFile();"><i class="fa fa-plus"></i></button>
                           </div>
                           <div class="col-md-12">
-                            <hr class="m-t-0 m-b-sm">
+                            <hr class="m-b-sm">
                           </div>
                           <div class="col-12">
-                            <table class="table table-hover table-bordered "
-                                   id="joeIncludeFile">
+                            <table class="table table-hover table-bordered">
                               <thead>
-                              <th class="tableexport-ignore menu">
-                                <input type="checkbox">
-                              </th>
-                              <th class="tableexport-ignore menu">
-                                <span translate>joe.includes.label.name</span>
-                              </th>
-                              <th class="tableexport-ignore menu">
-                                <span translate>joe.includes.label.filetype</span>
-                              </th>
+                              <th class="menu" translate>label.action</th>
+                              <th translate>joe.includes.label.name</th>
+                              <th translate>joe.includes.label.filetype</th>
                               </thead>
                               <tbody>
-                              <tr ng-repeat="file in process.includeFiles | orderBy:filter.sortBy:filter.sortReverse">
-                                <td>
-                                  <input type="checkbox">
+                              <tr ng-repeat="include in monitor.script.includes">
+                                 <td>
+                                  <div class="btn-group dropdown">
+                                    <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
+                                      <i class="fa fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                      <a ng-click="removeFile(include)" class="dropdown-item " translate="">label.remove</a>
+                                    </div>
+                                  </div>
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">{{file}}</span>
+                                    <span class="text-dark">{{include.file}}</span>
                                   </span>
                                 </td>
                                 <td class="p-l-0">
                                   <span class="show-in-single-line">
-                                    <span class="text-dark">{{file}}</span>
+                                    <span class="text-dark">{{include.liveFile}}</span>
                                   </span>
                                 </td>
                               </tr>

@@ -79,6 +79,16 @@
                 });
                 return deferred.promise;
             },
+            deployables: function (filter) {
+                let deferred = $q.defer();
+                let Deploy = $resource('joe/deployables');
+                Deploy.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             toXML: function (filter, objectType) {
                 return $http.post('joe/' + objectType + '/toxml',filter );
             },

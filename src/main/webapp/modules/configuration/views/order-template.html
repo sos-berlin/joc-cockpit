@@ -153,12 +153,24 @@
     <div class="close-btn" >
       <i class="fa fa-times" ng-click="closeSidePanel()"></i>
     </div>
-    <div class="text-center m-b text">
-      <span class="_600 b-b p-b-sm m-l-sm">{{obj.title | translate}}</span>
+    <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
+      <div class="text-center m-b text">
+        <ul class="nav navbar-nav navbar-nav-inline w-50 nav-active-border nav-active-border4 b-orange">
+          <li class="nav-item">
+            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab11' ? 'active': ''" ng-click="changeActiveParameterTab('tab11')" href data-toggle="tab" data-target="#tab11">
+              <span class="nav-text" translate>joe.button.parameter</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link z-index" ng-class="activeTabInParameter=='tab22' ? 'active': ''" ng-click="changeActiveParameterTab('tab22')" href data-toggle="tab" data-target="#tab22">
+              <span class="nav-text" translate>joe.button.includes</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="p-a">
-      <div class="col-md-12 text-left" ng-if="obj.type == 'parameter'">
-        <div class="form-group row m-b-0" ng-repeat="param in order.paramObject.params track by $index">
+    <div class="p-a" ng-if="activeTabInParameter=='tab11'">
+        <div class="form-group row m-b-0" ng-repeat="param in order.params.paramList track by $index">
           <div class="col-sm-5 m-b-sm" ng-if="$index==0" translate>label.name</div>
           <div class="col-sm-6 m-b-sm" ng-if="$index==0" translate>label.value</div>
           <div class="col-sm-5 m-b-sm">
@@ -174,20 +186,51 @@
             <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="form-group row text-left">
           <div class="col-sm-12">
-            <a href class="text-u-l" ng-if="order.paramObject.params.length>0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="order.params.paramList.length>0" ng-click="addParameter()"
                translate>button.addAnotherParameter</a>
-            <a href class="text-u-l" ng-if="order.paramObject.params.length==0" ng-click="addParameter()"
+            <a href class="text-u-l" ng-if="order.params.paramList.length==0" ng-click="addParameter()"
                translate>button.addParameter</a>
           </div>
         </div>
+    </div>
+    <div class="p-a" id="tab22" ng-if="activeTabInParameter=='tab22'">
+      <div class="form-group row m-b-0" ng-repeat="variable in order.params.includes track by $index">
+        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.fromHotFolder</div>
+        <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.file</div>
+        <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.node</div>
+        <div class="col-sm-3 m-b-sm">
+            <select class="form-control" ng-model="variable.items.liveFile">
+              <option selected value="live_file">Live File</option>
+              <option value="file">File</option>
+            </select>
+        </div>
+        <div class="col-sm-4 m-b-sm">
+            <input type="text" class="form-control" ng-model="variable.file"
+                   placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
+        </div>
+        <div class="col-sm-4 m-b-sm">
+            <input type="text" class="form-control" ng-model="variable.node"
+                   placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
+        </div>
+        <div class="col-sm-1 p-l-0">
+            <a><i ng-click="removeIncludes($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+        </div>
       </div>
-      <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
+      <div class="form-group row text-left">
+        <div class="col-sm-12">
+            <a href class="text-u-l" ng-if="order.params.includes.length>0" ng-click="addIncludes()"
+               translate>button.addAnotherFile</a>
+            <a href class="text-u-l" ng-if="order.params.includes.length==0" ng-click="addIncludes()"
+               translate>button.addFile</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 text-left" ng-if="obj.type == 'runTime'">
         <div class="joe-run-time" ng-controller="RuntimeEditorDialogCtrl">
           <div ui-include="'modules/core/template/set-run-time-dialog.html'"></div>
         </div>
-      </div>
     </div>
   </div>
 </div>

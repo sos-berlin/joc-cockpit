@@ -41,7 +41,7 @@
             </tr>
             </thead>
             <tbody >
-            <tr ng-repeat="command in commands | orderBy:filter.sortBy:filter.sortReverse">
+            <tr ng-repeat="command in job.commands | orderBy:filter.sortBy:filter.sortReverse">
               <td class="menu">
                 <div class="btn-group dropdown">
                   <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -52,7 +52,7 @@
                   </div>
                 </div>
               </td>
-              <td class="cursor" ng-click="createCommand(command)" ng-bind="command.code"></td>
+              <td class="cursor" ng-click="createCommand(command)" ng-bind="command.onExitCode"></td>
             </tr>
             </tbody>
           </table>
@@ -65,7 +65,7 @@
             <label class="col-md-2 col-lg-3 form-control-label" translate>label.command</label>
             <div class="col-md-6 col-lg-6">
               <input type="text" required ng-maxlength="255" class="form-control" placeholder="Enter Command name"
-                     name="name" ng-model="command.code" autocomplete="false">
+                     name="name" ng-model="command.onExitCode" autocomplete="false">
               <div class="text-danger help-block" ng-if="form.name.$dirty" ng-messages="form.name.$error">
                 <div ng-message="required" translate>message.requiredError</div>
                 <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -86,7 +86,7 @@
                   </tr>
                   </thead>
                   <tbody >
-                  <tr ng-repeat="code in command.exitCodes">
+                  <tr ng-repeat="code in command.startJobs">
                     <td class="menu">
                       <div class="btn-group dropdown">
                         <button type="button" class="btn-drop more-option-h" dropdown="" data-toggle="dropdown">
@@ -97,10 +97,10 @@
                         </div>
                       </div>
                     </td>
-                    <td class="cursor" ng-click="editCode(code)" ng-bind="code.command"></td>
+                    <td class="cursor" ng-click="editCode(code)">{{code.job ? 'start_job' : 'order'}}</td>
                     <td class="cursor" ng-click="editCode(code)" ng-bind="code.job"></td>
                     <td class="cursor" ng-click="editCode(code)" ng-bind="code.jobChain"></td>
-                    <td class="cursor" ng-click="editCode(code)" ng-bind="code.startAt"></td>
+                    <td class="cursor" ng-click="editCode(code)" ng-bind="code.at"></td>
                   </tr>
                   </tbody>
                 </table>

@@ -1,36 +1,36 @@
 <div class="row">
   <div class="col-md-12">
     <div class="box p-a">
-      <div class="b-b p-b m-b">
-        <span class="text text-dark" translate="">Step Nodes</span>
-        <div class="inline pull-right" style="margin-top: -2px">
-          <span ng-if="tabActive=='tab1'">
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyChainNode()">
-              <i class="fa fa-check"></i>
-              <span translate>joe.button.applyChainNode</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
-              <i class="fa fa-upload"></i>
-              <span translate>joe.button.inportJob</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="newChainNode()">
-              <i class="fa fa-plus"></i>
-              <span translate>joe.button.newChainNode</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="insertChainNode()">
-              <i class="fa fa-download"></i>
-              <span translate>joe.button.insertChainNode</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
-              <i class="fa fa-tasks"></i>
-              <span translate>joe.button.parameter</span>
-            </button>
-            <button class="btn btn-sm btn-grey m-l-sm" ng-click="returnCode()">
-              <i class="fa fa-retweet"></i>
-              <span translate>joe.button.returnCodes</span>
-            </button>
-          </span>
-          <span  ng-if="tabActive=='tab2'">
+        <div ng-class="pageView=='form' ? 'b-b p-b m-b' : ''">
+            <span class="text text-dark" translate>label.stepNodes</span>
+            <div class="inline pull-right" style="margin-top: -2px">
+                  <span ng-if="tabActive=='tab1' && pageView == 'form'">
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyChainNode()">
+                      <i class="fa fa-check"></i>
+                      <span translate>joe.button.applyChainNode</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
+                      <i class="fa fa-upload"></i>
+                      <span translate>joe.button.inportJob</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="newChainNode()">
+                      <i class="fa fa-plus"></i>
+                      <span translate>joe.button.newChainNode</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="insertChainNode()">
+                      <i class="fa fa-download"></i>
+                      <span translate>joe.button.insertChainNode</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+                      <i class="fa fa-tasks"></i>
+                      <span translate>joe.button.parameter</span>
+                    </button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="returnCode()">
+                      <i class="fa fa-retweet"></i>
+                      <span translate>joe.button.returnCodes</span>
+                    </button>
+                  </span>
+                <span ng-if="tabActive=='tab2' && pageView == 'form'">
             <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyFileOrderSource()">
               <i class="fa fa-check-square-o"></i>
               <span translate>joe.button.ApplyFileOrderSource</span>
@@ -40,10 +40,22 @@
               <span translate>joe.button.newFileOrderSource</span>
             </button>
           </span>
+                <span>
+                    <div class="btn-group m-l-sm">
+                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
+                            ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
+                        <i class="fa fa-link"></i>
+                    </button>
+                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
+                            ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                    </div>
+                </span>
+            </div>
         </div>
-      </div>
-      <div *ng-if="stepNodes">
-        <form  name="form" role="form" ng-submit="onSubmit()" novalidate>
+      <div ng-if="stepNodes && pageView == 'form'">
+        <form  name="form">
           <div class="form-group row">
               <div class="p-a-sm m-l-xs m-r-xs p-t-0">
                 <div class="b-b">
@@ -53,9 +65,6 @@
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" ng-click="changeActiveTab('tab2')" href data-toggle="tab" data-target="#tab2" translate>joe.stepsNodes.tab.fileOrderSource</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" ng-click="changeActiveTab('tab3')" href data-toggle="tab" data-target="#tab3" translate>joe.stepsNodes.tab.diagram</a>
                     </li>
                   </ul>
                 </div>
@@ -163,36 +172,20 @@
                       </div>
                     </div>
                     <div class="b-a p-a-sm bg-transparent">
-                      <table class="table table-hover table-bordered " id="job">
+                      <table class="table table-hover table-bordered ">
                         <thead>
                         <tr>
-                          <th class="chk" translate>
-                            <label class="md-check lg-check">
-                              <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"  class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
-                              <i class="primary"></i>
-                            </label>
-                          </th>
                           <th class="menu"><span translate>label.action</span></th>
-                          <th><a><span translate>joe.label.state</span>
-                          </th>
-                          <th><a><span translate>joe.label.jobDirectory</span>
-                          </th>
-                          <th><a><span translate>joe.label.nextState</span>
-                          </th>
-                          <th><a><span translate>joe.label.errorState</span>
-                          </th>
-                          <th><a><span translate>joe.label.onError</span>
-                          </th>
+                          <th><span translate>joe.label.state</span></th>
+                          <th><span translate>joe.label.node</span></th>
+                          <th><span translate>joe.label.jobDirectory</span></th>
+                          <th><span translate>joe.label.nextState</span></th>
+                          <th><span translate>joe.label.errorState</span></th>
+                          <th><span translate>joe.label.onError</span></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="stepNode in jobChain.stepNodes.nodes | orderBy:filter.sortBy:filter.sortReverse">
-                          <td>
-                            <label class="md-check">
-                              <input type="checkbox" ng-model="stepNode.disabled">
-                              <i class="primary"></i>
-                            </label>
-                          </td>
                           <td>
                             <div class="btn-group dropdown">
                               <button type="button" class="btn-drop more-option-h" dropdown=""
@@ -207,6 +200,7 @@
                               </div>
                             </div>
                           </td>
+                          <td class="cursor"></td>
                           <td class="cursor"></td>
                           <td class="cursor"></td>
                           <td class="cursor"></td>
@@ -268,12 +262,9 @@
                             </label>
                           </th>
                           <th class="menu"><span translate>label.action</span></th>
-                          <th><a><span translate>joe.label.directory</span>
-                          </th>
-                          <th><a><span translate>joe.label.regex</span>
-                          </th>
-                          <th><a><span translate>joe.label.nextState</span>
-                          </th>
+                          <th><span translate>joe.label.directory</span></th>
+                          <th><span translate>joe.label.regex</span></th>
+                          <th><span translate>joe.label.nextState</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -303,9 +294,6 @@
                       </table>
                     </div>
                   </div>
-                  <div class="tab-pane animated fadeIn" id="tab3">
-                    //todo
-                  </div>
                 </div>
               </div>
           </div>
@@ -313,4 +301,78 @@
       </div>
     </div>
   </div>
+</div>
+<div ng-show="pageView=='graph'">
+    <div>
+        <div class="row m-l-0">
+            <div class="col-md-1 col-sm-12" id="toolbarContainer">
+                <ul>
+                    <li>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)"
+                             id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
+                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul ng-if="jobs.length == 0">
+                    <li>
+                        <div class="text-center"  translate>
+                            message.noJobsFound
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-11 col-sm-12">
+                <div id="toolbar">
+                    <div class="m-b-sm b-b p-b-sm">
+                        <div class="inline m-l">
+                            <span class="text-muted" translate>label.stepNodes</span>:
+                            <span class="text-primary">{{selectedJobStream}}</span>
+                        </div>
+                        <div id="tools" class="inline pull-right">
+                            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                                <li class="nav-item">
+                                    <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}"
+                                       ng-click="zoomIn()">
+                                        <span class="nav-text"> <i class="icon1-Zoom-In"></i></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                    <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" uib-tooltip="{{'tooltip.zoomOut' | translate}}"
+                                       ng-click="zoomOut()">
+                                        <span class="nav-text"> <i class="icon1-Zoom-Out"></i></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                    <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" uib-tooltip="{{'tooltip.default' | translate}}"
+                                       ng-click="actual()">
+                                        <span class="nav-text"> <i class="icon1-Actual-size"></i></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown-separator">
+                                    <span class="separator"></span>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" uib-tooltip="{{'tooltip.fit' | translate}}"
+                                       ng-click="fit()">
+                                        <span class="nav-text"> <i class="icon1-fit-to-width"></i></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="graph-container">
+                    <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
+                    <div id="outlineContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
