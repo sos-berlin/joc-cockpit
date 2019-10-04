@@ -9,10 +9,10 @@
                       <i class="fa fa-check"></i>
                       <span translate>joe.button.applyChainNode</span>
                     </button>
-                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
+<!--                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="importJob()">
                       <i class="fa fa-upload"></i>
-                      <span translate>joe.button.inportJob</span>
-                    </button>
+                      <span translate>joe.button.importJob</span>
+                    </button>-->
                     <button class="btn btn-sm btn-grey m-l-sm" ng-click="newChainNode()">
                       <i class="fa fa-plus"></i>
                       <span translate>joe.button.newChainNode</span>
@@ -21,14 +21,14 @@
                       <i class="fa fa-download"></i>
                       <span translate>joe.button.insertChainNode</span>
                     </button>
-                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
+<!--                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="openSidePanel('parameter')">
                       <i class="fa fa-tasks"></i>
                       <span translate>joe.button.parameter</span>
-                    </button>
-                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="returnCode()">
+                    </button>-->
+<!--                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="returnCode()">
                       <i class="fa fa-retweet"></i>
                       <span translate>joe.button.returnCodes</span>
-                    </button>
+                    </button>-->
                   </span>
                 <span ng-if="tabActive=='tab2' && pageView == 'form'">
             <button class="btn btn-sm btn-grey m-l-sm" ng-click="applyFileOrderSource()">
@@ -40,296 +40,8 @@
               <span translate>joe.button.newFileOrderSource</span>
             </button>
           </span>
-                <span>
-                    <div class="btn-group m-l-sm">
-                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
-                            ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
-                        <i class="fa fa-link"></i>
-                    </button>
-                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
-                            ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
-                        <i class="fa fa-align-justify"></i>
-                    </button>
-                    </div>
-                </span>
-            </div>
-        </div>
-      <div ng-if="stepNodes && pageView == 'form'">
-        <form  name="form">
-          <div class="form-group row">
-              <div class="p-a-sm m-l-xs m-r-xs p-t-0">
-                <div class="b-b">
-                  <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                      <a class="nav-link active" ng-click="changeActiveTab('tab1')" href data-toggle="tab" data-target="#tab1" translate>joe.stepsNodes.tab.nodes</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" ng-click="changeActiveTab('tab2')" href data-toggle="tab" data-target="#tab2" translate>joe.stepsNodes.tab.fileOrderSource</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="tab-content p-t-md">
-                  <div class="tab-pane animated fadeIn active" id="tab1">
-                    <div class="form-group row" ng-class="{ 'has-error' : form.stepNodeId.$invalid && form.stepNodeId.$dirty }">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.state</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" required ng-maxlength="255" class="form-control"
-                              placeholder="Enter State" autofocus name="stateName" ng-model="stepNodes.nodes.state">
-                        <div class="text-danger help-block" ng-if="form.stepNodeId.$dirty" ng-messages="form.stepNodeId.$error">
-                          <div ng-message="required" translate>message.requiredError</div>
-                          <div ng-message="maxlength" translate>message.tooLongError</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>label.job</label>
-                      <div class="col-md-8 col-lg-6">
-                        <div class="row">
-                            <div class="col-md-12 col-lg-12">
-                                <input type="text" class="form-control" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" placeholder="Search Job or Choose from folder" name="StepNodesJob" ng-focus="closeSearchBox($event)" ng-change="getData(stepNodes.nodes.job)" ng-model="stepNodes.nodes.job">
-                                <i class="fa fa-folder-o inside-textBox" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" ng-click="getJob(job)" aria-hidden="true"></i>
-                            </div>
-                            <div class="col-md-12 col-lg-12 autocomplete-col">
-                              <ul class="autocomplete-ul" ng-show="isShow">
-                                <li class="autocomplete-menu" ng-repeat="job in jobs" ng-click="selectJob(job.name)">{{job.name}}</li>
-                              </ul>
-                            </div>
-                          </div>
-                      </div>
-                    </div>
-                    <div class="form-group row m-t">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
-                      <div class="col-md-8 col-lg-6">
-                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" name="nextState" ng-model="stepNodes.nodes.nextState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="next for next in _nextState">
-                          <option value="?" selected="selected"></option>
-                        </select>
-                        <div class="input-dropdown" style="margin-bottom: -25px">
-                          <input name="nextState" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="stepNodes.nodes.nextState" required="" type="text" ng-blur="saveScheduleDetail('check');">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row m-t">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
-                      <div class="col-md-8 col-lg-6">
-                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" name="errorState" ng-model="stepNodes.nodes.errorState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="err for err in _errorState">
-                          <option value="?" selected="selected"></option>
-                        </select>
-                        <div class="input-dropdown" style="margin-bottom: -25px">
-                          <input name="errorState" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="stepNodes.nodes.errorState" required="" type="text" ng-blur="saveScheduleDetail('check');">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delay</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesDelay" ng-disabled="stepNodes.nodes.nodeType!=='Full Node'" ng-model="stepNodes.nodes.delay">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.onError</label>
-                      <div class="col-md-8 col-lg-6">
-                        <select class="form-control" name="err" ng-disabled="stepNodes.nodes.nodeType!='Full Node' || !stepNodes.nodes.errorState" ng-model="stepNodes.nodes.onError">
-                          <option ng-repeat="err in _onError" value="{{err}}">{{err}}</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
-                      <div class="col-md-8 col-lg-6">
-                          <label class="md-check w">
-                            <input type="radio" name="stepNodesNodeType"
-                                   ng-model="stepNodes.nodes.nodeType" value="Full Node"
-                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">Full Node</span>
-                          </label>
-                          <label class="md-check w">
-                            <input type="radio" name="stepNodesNodeType"
-                                   ng-model="stepNodes.nodes.nodeType" value="End Node"
-                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">End Node</span>
-                          </label>
-                          <label class="md-check w">
-                            <input type="radio" name="stepNodesNodeType"
-                                   ng-model="stepNodes.nodes.nodeType" value="File Sink"
-                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
-                            <i class="primary"></i> <span translate="">File Sink</span>
-                          </label>
-                      </div>
-                    </div>
-                    <div class="form-group row" ng-if="stepNodes.nodes.nodeType == 'File Sink'">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.removeFile</label>
-                      <div class="col-md-8 col-lg-6 p-t-xs">
-                        <label class="md-check lg-check">
-                          <input type="checkbox" name="stepNodesRemoveFile" ng-click="stepNodes.nodes.moveTo = ''" ng-model="stepNodes.nodes.removeFile">
-                          <i class="primary"></i>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="form-group row" ng-if="stepNodes.nodes.nodeType == 'File Sink'">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.moveTo</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="StepNodesMoveTo" ng-disabled="stepNodes.nodes.removeFile" ng-model="stepNodes.nodes.moveTo">
-                      </div>
-                    </div>
-                    <div class="b-a p-a-sm bg-transparent">
-                      <table class="table table-hover table-bordered ">
-                        <thead>
-                        <tr>
-                          <th class="menu"><span translate>label.action</span></th>
-                          <th><span translate>joe.label.state</span></th>
-                          <th><span translate>joe.label.node</span></th>
-                          <th><span translate>joe.label.jobDirectory</span></th>
-                          <th><span translate>joe.label.nextState</span></th>
-                          <th><span translate>joe.label.errorState</span></th>
-                          <th><span translate>joe.label.onError</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="stepNode in jobChain.stepNodes.nodes | orderBy:filter.sortBy:filter.sortReverse">
-                          <td>
-                            <div class="btn-group dropdown">
-                              <button type="button" class="btn-drop more-option-h" dropdown=""
-                                      data-toggle="dropdown">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                <a ng-click="removeNode(stepNode.nodes);" class="dropdown-item"
-                                   translate="">button.remove</a>
-                                <a ng-click="AddMissingNode(stepNode.nodes);" class="dropdown-item"
-                                   translate="">button.addMissingNode</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="cursor"></td>
-                          <td class="cursor"></td>
-                          <td class="cursor"></td>
-                          <td class="cursor"></td>
-                          <td class="cursor" ></td>
-                          <td class="cursor"></td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="tab-pane animated fadeIn" id="tab2">
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesFileOrderSourceDirectory"  ng-model="stepNodes.fileOrderSource.directory">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.regex</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesFileOrderSourceRegex"  ng-model="stepNodes.fileOrderSource.regex">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delayAfterError</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesFileOrderSourceDelayAfterError"  ng-model="stepNodes.fileOrderSource.delayAfterError">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.repeat</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesFileOrderSourceRepeat"  ng-model="stepNodes.fileOrderSource.repeat">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
-                      <div class="col-md-8 col-lg-6">
-                        <input type="text" class="form-control" name="stepNodesFileOrderSourceNextState"  ng-model="stepNodes.fileOrderSource.nextState">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.alertWhenDirectoryMissing</label>
-                      <div class="col-md-8 col-lg-6 p-t-xs">
-                        <label class="md-check lg-check">
-                          <input type="checkbox" name="stepNodesFileOrderSourceAlertWhenDirectoryMissing" ng-model="stepNodes.nodes.alertWhenDirectoryMissing">
-                          <i class="primary"></i>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="b-a p-a-sm bg-transparent">
-                      <table class="table table-hover table-bordered " id="job">
-                        <thead>
-                        <tr>
-                          <th class="chk" translate>
-                            <label class="md-check lg-check">
-                              <input type="checkbox" ng-model="allCheck.checkbox" ng-change="checkAll()"  class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
-                              <i class="primary"></i>
-                            </label>
-                          </th>
-                          <th class="menu"><span translate>label.action</span></th>
-                          <th><span translate>joe.label.directory</span></th>
-                          <th><span translate>joe.label.regex</span></th>
-                          <th><span translate>joe.label.nextState</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="fileorder in stepnodes.fileOrderSource | orderBy:filter.sortBy:filter.sortReverse">
-                          <td>
-                            <label class="md-check">
-                              <input type="checkbox" ng-model="fileorder.disabled">
-                              <i class="primary"></i>
-                            </label>
-                          </td>
-                          <td>
-                            <div class="btn-group dropdown">
-                              <button type="button" class="btn-drop more-option-h" dropdown=""
-                                      data-toggle="dropdown">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
-                                <a ng-click="removeNode(stepNode.fileOrderSource);" class="dropdown-item"
-                                   translate="">button.remove</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="cursor"></td>
-                          <td class="cursor"></td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-<div ng-show="pageView=='graph'">
-    <div>
-        <div class="row m-l-0">
-            <div class="col-md-1 col-sm-12" id="toolbarContainer">
-                <ul>
-                    <li>
-                        <div class="draggable" draggable="true" ondragstart="drag(event)"
-                             id="{{job.path}}" ng-repeat="job in value | orderBy:'name' track by $index">
-                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
-                        </div>
-                    </li>
-                </ul>
-                <ul ng-if="jobs.length == 0">
-                    <li>
-                        <div class="text-center"  translate>
-                            message.noJobsFound
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-11 col-sm-12">
-                <div id="toolbar">
-                    <div class="m-b-sm b-b p-b-sm">
-                        <div class="inline m-l">
-                            <span class="text-muted" translate>label.stepNodes</span>:
-                            <span class="text-primary">{{selectedJobStream}}</span>
-                        </div>
-                        <div id="tools" class="inline pull-right">
+                <span  ng-if="pageView == 'graph'">
+                       <div id="tools" class="inline">
                             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                                 <li class="nav-item">
                                     <a class="nav-link" uib-tooltip="{{'tooltip.zoomIn' | translate}}"
@@ -366,13 +78,298 @@
                                 </li>
                             </ul>
                         </div>
+                </span>
+                <span>
+                    <div class="btn-group m-l-sm">
+                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'graph'"
+                            ng-class="{'btn-primary': pageView=='graph'}" ng-click="setView('graph')">
+                        <i class="fa fa-link"></i>
+                    </button>
+                    <button class="btn btn-sm btn-grey" ng-model="pageView" uib-btn-radio="'form'"
+                            ng-class="{'btn-primary': pageView=='form'}" ng-click="setView('form')">
+                        <i class="fa fa-align-justify"></i>
+                    </button>
                     </div>
+                </span>
+            </div>
+        </div>
+      <div ng-if="stepNodes && pageView == 'form'">
+        <form  name="form">
+          <div class="form-group row">
+              <div class="p-a-sm m-l-xs m-r-xs p-t-0">
+                <div class="b-b">
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active" ng-click="changeActiveTab('tab1')" href data-toggle="tab" data-target="#tab1" translate>joe.stepsNodes.tab.nodes</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" ng-click="changeActiveTab('tab2')" href data-toggle="tab" data-target="#tab2" translate>joe.stepsNodes.tab.fileOrderSource</a>
+                    </li>
+                  </ul>
                 </div>
+                <div class="tab-content p-t-md">
+                  <div class="tab-pane animated fadeIn active" id="tab1">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.stepNodeId.$invalid && form.stepNodeId.$dirty }">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.state</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" required ng-maxlength="255" class="form-control"
+                              placeholder="Enter State" autofocus name="stateName" ng-model="node.state">
+                        <div class="text-danger help-block" ng-if="form.stepNodeId.$dirty" ng-messages="form.stepNodeId.$error">
+                          <div ng-message="required" translate>message.requiredError</div>
+                          <div ng-message="maxlength" translate>message.tooLongError</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>label.job</label>
+                      <div class="col-md-8 col-lg-6">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12">
+                                <input type="text" class="form-control" ng-disabled="node.nodeType!=='Full Node'" placeholder="Search Job or Choose from folder" name="StepNodesJob" ng-focus="closeSearchBox($event)" ng-change="getData(stepNodes.nodes.job)" ng-model="stepNodes.nodes.job">
+                                <i class="fa fa-folder-o inside-textBox" ng-disabled="node.nodeType!=='Full Node'" ng-click="getJob(job)" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-md-12 col-lg-12 autocomplete-col">
+                              <ul class="autocomplete-ul" ng-show="isShow">
+                                <li class="autocomplete-menu" ng-repeat="job in jobs" ng-click="selectJob(job.name)">{{job.name}}</li>
+                              </ul>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="form-group row m-t">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-disabled="node.nodeType!=='Full Node'" name="nextState" ng-model="node.nextState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="next for next in _nextState">
+                          <option value="?" selected="selected"></option>
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -25px">
+                          <input name="nextState" ng-disabled="node.nodeType!=='Full Node'" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="node.nextState" required="" type="text" ng-blur="saveScheduleDetail('check');">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row m-t">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.errorState</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-disabled="node.nodeType!=='Full Node'" name="errorState" ng-model="node.errorState" style="border: none" ng-change="saveScheduleDetail('check','path')" ng-options="err for err in _errorState">
+                          <option value="?" selected="selected"></option>
+                        </select>
+                        <div class="input-dropdown" style="margin-bottom: -25px">
+                          <input name="errorState" ng-disabled="node.nodeType!=='Full Node'" class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched" ng-model="node.errorState" required="" type="text" ng-blur="saveScheduleDetail('check');">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delay</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesDelay" ng-disabled="node.nodeType!=='Full Node'" ng-model="node.delay">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.onError</label>
+                      <div class="col-md-8 col-lg-6">
+                        <select class="form-control" name="err" ng-disabled="node.nodeType!='Full Node' || !node.errorState" ng-model="node.onError">
+                          <option ng-repeat="err in _onError" value="{{err}}">{{err}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate=""></label>
+                      <div class="col-md-8 col-lg-6">
+                          <label class="md-check w">
+                            <input type="radio" name="stepNodesNodeType"
+                                   ng-model="node.nodeType" value="Full Node"
+                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                            <i class="primary"></i> <span translate="">Full Node</span>
+                          </label>
+                          <label class="md-check w">
+                            <input type="radio" name="stepNodesNodeType"
+                                   ng-model="node.nodeType" value="End Node"
+                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                            <i class="primary"></i> <span translate="">End Node</span>
+                          </label>
+                          <label class="md-check w">
+                            <input type="radio" name="stepNodesNodeType"
+                                   ng-model="node.nodeType" value="File Sink"
+                                   class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                            <i class="primary"></i> <span translate="">File Sink</span>
+                          </label>
+                      </div>
+                    </div>
+                    <div class="form-group row" ng-if="node.nodeType == 'File Sink'">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.removeFile</label>
+                      <div class="col-md-8 col-lg-6 p-t-xs">
+                        <label class="md-check lg-check">
+                          <input type="checkbox" name="stepNodesRemoveFile" ng-click="node.moveTo = ''" ng-model="node.removeFile">
+                          <i class="primary"></i>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-group row" ng-if="node.nodeType == 'File Sink'">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.moveTo</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="StepNodesMoveTo" ng-disabled="node.removeFile" ng-model="node.moveTo">
+                      </div>
+                    </div>
+                    <div class="b-a p-a-sm bg-transparent">
+                      <table class="table table-hover table-bordered ">
+                        <thead>
+                        <tr>
+                          <th class="menu"><span translate>label.action</span></th>
+                          <th><span translate>joe.label.state</span></th>
+                          <th><span translate>label.node</span></th>
+                          <th><span translate>joe.label.jobDirectory</span></th>
+                          <th><span translate>joe.label.nextState</span></th>
+                          <th><span translate>joe.label.errorState</span></th>
+                          <th><span translate>joe.label.onError</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="stepNode in jobChain.jobChainNodes | orderBy:filter.sortBy:filter.sortReverse">
+                          <td>
+                            <div class="btn-group dropdown">
+                              <button type="button" class="btn-drop more-option-h" dropdown=""
+                                      data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                <a ng-click="removeNode(stepNode.nodes);" class="dropdown-item"
+                                   translate="">button.remove</a>
+                                <a ng-click="AddMissingNode(stepNode.nodes);" class="dropdown-item"
+                                   translate="">button.addMissingNode</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="cursor">{{stepNode.state}}</td>
+                          <td class="cursor">{{stepNode.job ? 'Job' : 'Endnode'}}</td>
+                          <td class="cursor">{{stepNode.job}}</td>
+                          <td class="cursor">{{stepNode.nextState}}</td>
+                          <td class="cursor">{{stepNode.errorState}}</td>
+                          <td class="cursor">{{stepNode.onError}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="tab-pane animated fadeIn" id="tab2">
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.directory</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesFileOrderSourceDirectory"  ng-model="node.directory">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.regex</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesFileOrderSourceRegex"  ng-model="node.regex">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.delayAfterError</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesFileOrderSourceDelayAfterError"  ng-model="node.delayAfterError">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.repeat</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesFileOrderSourceRepeat"  ng-model="node.repeat">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.nextState</label>
+                      <div class="col-md-8 col-lg-6">
+                        <input type="text" class="form-control" name="stepNodesFileOrderSourceNextState"  ng-model="node.nextState">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label" translate>joe.label.alertWhenDirectoryMissing</label>
+                      <div class="col-md-8 col-lg-6 p-t-xs">
+                        <label class="md-check lg-check">
+                          <input type="checkbox" name="stepNodesFileOrderSourceAlertWhenDirectoryMissing" ng-model="node.alertWhenDirectoryMissing">
+                          <i class="primary"></i>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="b-a p-a-sm bg-transparent">
+                      <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                          <th class="menu"><span translate>label.action</span></th>
+                          <th><span translate>joe.label.directory</span></th>
+                          <th><span translate>joe.label.regex</span></th>
+                          <th><span translate>joe.label.nextState</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="fileorder in jobChain.fileOrderSinks | orderBy:filter.sortBy:filter.sortReverse">
+                          <td>
+                            <div class="btn-group dropdown">
+                              <button type="button" class="btn-drop more-option-h" dropdown data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <div class="dropdown-menu list-dropdown dropdown-ac dropdown-more" role="menu">
+                                <a ng-click="removeNode(stepNode.fileOrderSource);" class="dropdown-item"
+                                   translate="">button.remove</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="cursor">{{fileorder.directory}}</td>
+                          <td class="cursor">{{fileorder.regex}}</td>
+                          <td class="cursor">{{fileorder.nextState}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-show="pageView=='graph'">
+    <div>
+        <div class="row m-l-0">
+            <div class="col-md-1 col-sm-12" id="toolbarContainer">
+                <ul>
+                    <li>
+                        <div class="draggable" draggable="true" ondragstart="drag(event)"
+                             id="{{job.name}}" ng-repeat="job in jobs | orderBy:'name' track by $index">
+                            <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{job.name}}">{{job.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <ul ng-if="jobs.length == 0">
+                    <li>
+                        <div class="text-center"  translate>
+                            message.noJobsFound
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-11 col-sm-12">
                 <div class="graph-container">
                     <div class="box-shadow-z1" id="graph" ondragover="allowDrop(event)"></div>
-                    <div id="outlineContainer"></div>
+                    <div id="outlineContainer2"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function allowDrop(ev) {
+        if (ev.target.tagName && ev.target.tagName.toLowerCase() === 'svg') {
+            ev.preventDefault();
+        }  else {
+            return false;
+        }
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("data", ev.target.id);
+        window.selectedJob = ev.target.id;
+    }
+
+</script>

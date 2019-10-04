@@ -422,6 +422,11 @@ a.list-group-item.hover, a.list-group-item:focus, a.list-group-item:hover {
     border: inherit
 }
 
+#rightSideBar .navbar-nav .nav-item{
+    float: unset;
+    display: inline-block;
+}
+
 .nav-md .nav-link {
     padding: 8px 16px
 }
@@ -4838,7 +4843,7 @@ i.fa-hand-o-up:hover {
     opacity: 0
 }
 
-#dropContainer, #outlineContainer {
+#dropContainer, #outlineContainer, #outlineContainer2 {
     z-index: 99;
     position: absolute;
     overflow: hidden;
@@ -4847,6 +4852,12 @@ i.fa-hand-o-up:hover {
     width: 170px;
     height: 150px;
     opacity: 0
+}
+#outlineContainer2 {
+    opacity: 1;
+    top: 1px;
+    border: 1px solid lightgray;
+    background: #fff;
 }
 
 #dropContainer {

@@ -3,7 +3,7 @@
         <div class="box p-a">
             <div class="b-b p-b m-b">
                 <span class="text text-dark" ng-if="!job.name" translate>label.jobs</span>
-                <span class="text" ng-if="job.name">{{job.name}}</span>
+                <span class="text" ng-if="job.name"><span class="text-primary">{{job.name}}</span> - <span class="text-dark text-sm">{{job.message | translate}}</span></span>
                 <div class="inline pull-right" style="margin-top: -2px">
                     <div ng-if="!job">
                         <button class="btn btn-sm btn-grey m-l-sm" ng-click="createStandaloneJob()">
@@ -88,17 +88,23 @@
                                         <a ng-click="removeJob(job);" class="dropdown-item "
                                            translate="">button.remove</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" ng-click="editXml(node);">
+                                        <a class="dropdown-item" ng-class="{'disable-link' : node.deployed}" ng-click="deployJob(job);">
+                                            <div translate>joe.button.deploy</div>
+                                        </a>
+                                        <a class="dropdown-item" ng-click="editXml(job);">
                                             <div translate>button.editXml</div>
                                         </a>
-                                        <a class="dropdown-item" ng-click="showXml(node);">
+                                        <a class="dropdown-item" ng-click="showXml(job);">
                                             <div translate>button.showXml</div>
                                         </a>
                                     </div>
                                 </div>
                             </td>
-                            <td class="cursor" ng-class="{'text-u-l'  : !job.isOrderJob}" ng-click="createJob(job)"
-                                ng-bind="job.name"></td>
+                            <td class="cursor" ng-class="{'text-u-l'  : !job.isOrderJob}" ng-click="createJob(job)">
+                                <span ng-bind="job.name"></span>
+                                <span class="label bg-green m-l-sm" ng-if="job.deployed" translate>joe.label.deployed</span>
+                                <span class="label bg-gold m-l-sm" ng-if="!job.deployed" translate>joe.label.notDeployed</span>
+                            </td>
                             <td class="cursor" ng-bind="job.title" ng-click="createJob(job)"></td>
                             <td class="cursor" ng-bind="job.processClass" ng-click="createJob(job)"></td>
                             <td class="cursor" ng-click="createJob(job)">{{job.isOrderJob ? 'Yes' : 'No'}}</td>
@@ -140,7 +146,7 @@
                             <div class="row">
                                 <div class="col-md-12 col-lg-12">
                                     <input type="text" class="form-control"
-                                           placeholder="{{'placeholder.searchProcessClassOrChooseFromFolder' | translate}}" name="processClass"
+                                           placeholder="{{'joe.placeholder.searchProcessClassOrChooseFromFolder' | translate}}" name="processClass"
                                            ng-focus="closeSearchBox($event)" ng-change="getData(job.processClass)"
                                            ng-model="job.processClass">
                                     <i class="fa fa-folder-o inside-textBox"

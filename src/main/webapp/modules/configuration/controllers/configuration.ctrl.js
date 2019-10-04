@@ -41,7 +41,7 @@
                     let top = dom.position().top + 19;
                     const flag = top < 78;
                     top = top - $(window).scrollTop();
-                    $('.scroll-y').css({'height': 'calc(100vh - ' + top + 'px'});
+                    dom.css({'height': 'calc(100vh - ' + (top - 10) + 'px'});
                     if (top < 96) {
                         top = 96;
                     }
@@ -104,7 +104,6 @@
     }
 
     JOEEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "EditorService", "ResourceService", "orderByFilter", "$uibModal", "$timeout"];
-
     function JOEEditorCtrl($scope, SOSAuth, CoreService, EditorService, ResourceService, orderBy, $uibModal, $timeout) {
         const vm = $scope;
         vm.tree = [];
@@ -133,22 +132,21 @@
             vm.showDeploy()
         });
         $scope.showDeploy = function () {
-            console.log(vm.schedulerIds.selected);
-            
             $scope.deployTree = _buildDeployTree();
-            // let modalInstance = $uibModal.open({
-            //     templateUrl: 'modules/configuration/views/deployables.html',
-            //     controller: 'DialogCtrl1',
-            //     scope: $scope,
-            //     size: 'lg',
-            //     backdrop: 'static'
-            // });
-            // modalInstance.result.then(function () {
+            let modalInstance = $uibModal.open({
+                templateUrl: 'modules/configuration/views/deployables.html',
+                controller: 'DialogCtrl1',
+                scope: $scope,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
 
-            // }, function () {
+            }, function () {
 
-            // });
-        }
+            });
+        };
+
         function _buildDeployTree() {
             EditorService.deployables({
                 jobschedulerId: vm.schedulerIds.selected
@@ -163,20 +161,12 @@
             }, function () {
 
             });
-        };
+        }
 
         function toXML(json, object) {
-            EditorService.toXML({
-                "weekdays": {
-                    "days": [{
-                        "day": "1 2 3 4 5 6 7",
-                        "periods": [{
-                            "singleStart": "12:00"
-                        }]
-                    }]
-                }
-            }, 'runTime').then(function (res) {
-
+            EditorService.toXML(json, object).then(function (res) {
+                console.log(res)
+                vm.xml = res;
             }, function () {
 
             });
@@ -214,30 +204,30 @@
             }).then(function (res) {
                 for (let i = 0; i < arr.length; i++) {
                     if (res.jobs && arr[i].object === 'JOB') {
-                        arr[i].children = res.jobs;
+                        arr[i].children = orderBy(res.jobs, 'name');
                         angular.forEach(arr[i].children, function (child, index) {
                             arr[i].children[index].type = arr[i].object;
-                            arr[i].children[index].children = [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'PROCESSING'}];
+                            arr[i].children[index].children = [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}];
                         });
                     }
                     if (res.jobChains && arr[i].object === 'JOBCHAIN') {
-                        arr[i].children = res.jobChains;
+                        arr[i].children = orderBy(res.jobChains, 'name');
                         angular.forEach(arr[i].children, function (child, index) {
                             arr[i].children[index].type = arr[i].object;
-                            arr[i].children[index].children = [{name: 'Order', param: 'ORDER'}, {name: 'Steps/Nodes', param: 'STEPSNODES'}];
+                            arr[i].children[index].children = [{name: 'Steps/Nodes', param: 'STEPSNODES'}];
                         });
                     }
                     if (res.orders && arr[i].object === 'ORDER') {
-                        arr[i].children = res.orders;
+                        arr[i].children = orderBy(res.orders, 'name');
                     }
                     if (res.locks && arr[i].object === 'LOCK') {
-                        arr[i].children = res.locks;
+                        arr[i].children = orderBy(res.locks, 'name');
                     }
                     if (res.processClasses && arr[i].object === 'PROCESSCLASS') {
-                        arr[i].children = res.processClasses;
+                        arr[i].children = orderBy(res.processClasses, 'name');
                     }
                     if (res.schedules && arr[i].object === 'SCHEDULE') {
-                        arr[i].children = res.schedules;
+                        arr[i].children = orderBy(res.schedules, 'name');
                     }
                     if(arr[i].object !== 'JOB' && arr[i].object !== 'JOBCHAIN' ) {
                         angular.forEach(arr[i].children, function (child, index) {
@@ -299,6 +289,18 @@
                 objectType: obj.type,
             }).then(function (res) {
                 obj = angular.merge(obj, res.configuration);
+                obj.message = res.objectVersionStatus.message._messageCode;
+                if(obj.type === 'JOBCHAIN') {
+                    if (obj.ordersRecoverable === 'yes') {
+                        obj.ordersRecoverable = true;
+                    }
+                    if (obj.visible === 'yes') {
+                        obj.visible = true;
+                    }
+                    if (obj.distributed === 'yes') {
+                        obj.distributed = true;
+                    }
+                }
             }, function (err) {
                 console.log(err);
             });
@@ -364,6 +366,9 @@
                     }
                 }
                 large++;
+                if(!angular.isNumber(large)){
+                    large = 0;
+                }
                 return (type + large);
             }
         };
@@ -387,6 +392,59 @@
             }
         };
 
+        vm.removeObject = function (object, evt) {
+            console.log(object);
+            if (object.type) {
+                let path = '';
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+                if (path === '/') {
+                    path = path + object.name;
+                } else {
+                    path = path + '/' + object.name;
+                }
+                EditorService.delete({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: object.type,
+                    path: path
+                }).then(function (res) {
+                    console.log(res);
+                    console.log(evt)
+                }, function () {
+
+                });
+            }
+        };
+
+        vm.deployObject = function (object, evt) {
+            console.log(object);
+            if (object.type) {
+                let path = '';
+                if (evt.$parentNodeScope.$modelValue && evt.$parentNodeScope.$modelValue.path) {
+                    path = evt.$parentNodeScope.$modelValue.path;
+                } else if (evt.$parentNodeScope.$parentNodeScope && evt.$parentNodeScope.$parentNodeScope.$modelValue) {
+                    path = evt.$parentNodeScope.$parentNodeScope.$modelValue.path;
+                }
+                if (path === '/') {
+                    path = path + object.name;
+                } else {
+                    path = path + '/' + object.name;
+                }
+                EditorService.deploy({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    objectType: object.type,
+                    path: path
+                }).then(function (res) {
+                    console.log(res)
+                }, function () {
+
+                });
+            }
+        };
+
         vm.createNewJob = function (object, isOrderJob) {
             let obj = {
                 name: vm.getName(object, 'job1', 'name', 'job'),
@@ -394,11 +452,7 @@
                 script: {language: 'shell'},
                 at: 'now',
                 type: 'JOB',
-                children: [{name: 'Commands', param: 'COMMAND', children: []}, {
-                    name: 'Pre/Post Processing',
-                    param: 'PROCESSING',
-                    children: []
-                }]
+                children: [{name: 'Commands', param: 'COMMAND'}, {name: 'Pre/Post Processing', param: 'MONITOR'}]
             };
             object.push(obj);
             let _path = '';
@@ -415,7 +469,8 @@
                 name: vm.getName(object, 'job_chain1', 'name', 'job_chain'),
                 ordersRecoverable: true,
                 visible: true,
-                type: 'JOBCHAIN'
+                type: 'JOBCHAIN',
+                children: [{name: 'Steps/Nodes', param: 'STEPSNODES'}]
             };
             object.push(obj);
             vm.storeObject(obj, {
@@ -528,13 +583,32 @@
             }
         };
 
-        vm.showXml = function (isEditable) {
-            $uibModal.open({
-                templateUrl: 'modules/configuration/views/object-xml-dialog.html',
-                controller: 'DialogCtrl1',
-                scope: vm,
-                size: 'lg'
-            });
+        vm.showXml = function (obj) {
+
+            let _path = '';
+            if (vm.path === '/') {
+                _path = vm.path + obj.name;
+            } else {
+                _path = vm.path + '/' + obj.name;
+            }
+            if(vm.path) {
+                EditorService.getFile({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    path: _path,
+                    objectType: obj.type,
+                }).then(function (res) {
+                    let json = res.configuration;
+                    toXML(json, obj.type);
+                    $uibModal.open({
+                        templateUrl: 'modules/configuration/views/object-xml-dialog.html',
+                        controller: 'DialogCtrl1',
+                        scope: vm,
+                        size: 'lg'
+                    });
+                }, function (err) {
+                    console.log(err);
+                });
+            }
         };
 
         // for tab indentation
@@ -591,7 +665,7 @@
 
         $(document).on("click", function (event) {
             if (vm.obj && event.target.className) {
-                if (!event.target.className.match('btn') || !event.target.className.match('fa')) {
+                if (!event.target.className.match('btn') && !event.target.className.match('fa')) {
                     vm.obj = null;
                 }
             }
@@ -633,7 +707,7 @@
         };
 
         vm.renameObject = function (objectType, path, oldPath) {
-            EditorService.delete({
+            EditorService.rename({
                 jobschedulerId: vm.schedulerIds.selected,
                 objectType: objectType,
                 path: path,
@@ -762,15 +836,12 @@
                 liveFile: '',
                 file: '',
                 node: ''
-            }
-
+            };
             if  (!vm.job.params.includes) {
                 Object.assign(vm.job.params, {includes: []});
-                console.log(vm.jobs.params);
             }
             vm.job.params.includes.push(includesParam);
-            console.log(vm.job.params.includes);
-        }
+        };
 
         vm.removeIncludes = function (index) {
             vm.job.params.includes.splice(index, 1);
@@ -1057,7 +1128,6 @@
     }
 
     JobChainEditorCtrl.$inject = ["$scope", "$rootScope", "ResourceService", "$uibModal"];
-
     function JobChainEditorCtrl($scope, $rootScope, ResourceService, $uibModal) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1070,7 +1140,6 @@
         };
 
         vm.getData = function (data, tag) {
-            vm.processClass = [];
             let obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.regex = data;
@@ -1081,8 +1150,6 @@
                     vm.isShowPCFileWatcher = true;
                 }
                 vm.processClasses = result.processClasses;
-            }, function () {
-                vm.loading = false;
             });
         };
 
@@ -1100,11 +1167,11 @@
         });
 
         vm.selectProcessClass = function (tag, data) {
-            if (tag == 'jobChain.processClassJobChain') {
-                vm.jobChain.processClassJobChain = data;
+            if (tag == 'processClass') {
+                vm.jobChain.processClass = data;
                 vm.isShowPCJobChain = false;
-            } else if (tag == 'jobChain.processClassFilewatcher') {
-                vm.jobChain.processClassFilewatcher = data;
+            } else if (tag == 'fileWatchingProcessClass') {
+                vm.jobChain.fileWatchingProcessClass = data;
                 vm.isShowPCFileWatcher = false;
             }
         };
@@ -1175,12 +1242,11 @@
         });
 
         vm.$on('PROCESS_CLASS_OBJECT', function (evt, data) {
-            vm.jobChain.processClassJobChain = data.process;
+            vm.jobChain.processClass = data.process;
         });
     }
 
     OrderEditorCtrl.$inject = ["$scope", "$rootScope"];
-
     function OrderEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'orderId', sortReverse: false};
@@ -1305,7 +1371,6 @@
     }
 
     ScheduleEditorCtrl.$inject = ["$scope", "$rootScope"];
-
     function ScheduleEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1350,7 +1415,6 @@
     }
 
     ProcessClassEditorCtrl.$inject = ["$scope", "$rootScope"];
-
     function ProcessClassEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1390,7 +1454,6 @@
     }
 
     LockEditorCtrl.$inject = ["$scope", "$rootScope"];
-
     function LockEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1429,7 +1492,6 @@
     }
 
     ProcessingEditorCtrl.$inject = ["$scope", "$rootScope"];
-
     function ProcessingEditorCtrl($scope, $rootScope) {
         const vm = $scope;
         vm.filter = {'sortBy': 'name', sortReverse: false};
@@ -1600,7 +1662,6 @@
     }
 
     StepNodeCtrl.$inject = ["$scope", "$rootScope", "$timeout"];
-
     function StepNodeCtrl($scope, $rootScope, $timeout) {
         const vm = $scope;
         vm.filter = {'sortBy': 'exitCode', sortReverse: false};
@@ -1611,70 +1672,28 @@
         vm.tabActive = 'tab1';
         vm.pageView = 'graph';
 
-        var timer = null, ht = 0, t1 = null;
-
-        function checkToolbarWidth() {
-            let tbWidth = $('#toolbar').width();
-            if (tbWidth > 0) {
-                if (tbWidth < 660) {
-                    $('.toolBtn').hide();
-                    $('#outlineContainer').css({'width': '130px', 'height': '120px'});
-                } else {
-                    $('.toolBtn').show();
-                    $('#outlineContainer').css({'width': '170px', 'height': '150px'});
-                }
-            } else {
-                timer = $timeout(function () {
-                    checkToolbarWidth();
-                }, 100);
-            }
-        }
+        var timer = null, t1 = null;
 
         function init() {
             if (sessionStorage.preferences) {
                 vm.preferences = JSON.parse(sessionStorage.preferences) || {};
             }
-           // createEditor();
-
-            let top = Math.round($('.scroll-y').position().top + 76);
-            ht = 'calc(100vh - ' + top + 'px)';
+            createEditor();
+            let top = Math.round($('.scroll-y').position().top + 110);
+            let ht = 'calc(100vh - ' + top + 'px)';
             $('.graph-container').css({'height': ht, 'scroll-top': '0'});
 
             let dom = $('#graph');
             dom.css({opacity: 1});
             dom.slimscroll({height: ht});
             dom.on('drop', function (event) {
-
+                vm.dropTarget = window.selectedJob;
+                if (event.target.tagName && event.target.tagName.toLowerCase() === 'svg') {
+                    console.log(vm.dropTarget)
+                }
                 event.preventDefault();
             });
             $('#toolbarContainer').css({'max-height': 'calc(100vh - ' + (top - 42) + 'px)'});
-            const panel = $('.property-panel');
-            $('.sidebar-open', panel).click(function () {
-                $('.sidebar').css({'width': '300px', opacity: 1});
-                $('.sidebar-open').css('right', '-20px');
-                if (window.innerWidth > 1024) {
-                    $('#outlineContainer').animate({'right': '309px'}, 'fast', 'linear');
-                    $('.graph-container').animate({'margin-right': '300px'}, 'fast', 'linear');
-                    $('#toolbar').animate({'margin-right': '300px'}, 'fast', 'linear');
-                } else {
-                    $('#outlineContainer').animate({'right': '14px', 'z-index': 0}, 'fast', 'linear');
-                    $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
-                    $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
-                }
-                $('.sidebar-close').animate({right: '300px'}, 'fast', 'linear', function () {
-                    checkToolbarWidth();
-                });
-            });
-
-            $('.sidebar-close', panel).click(function () {
-                $('.sidebar-open').css('right', '0');
-                $('.sidebar').css({'width': '0', opacity: 0});
-                $('#outlineContainer').animate({'right': '14px'}, 'fast', 'linear');
-                $('.graph-container').animate({'margin-right': '0'}, 'fast', 'linear');
-                $('#toolbar').animate({'margin-right': '0'}, 'fast', 'linear');
-                $('.sidebar-close').css('right', '-20px');
-            });
-
 
             /**
              * Changes the zoom on mouseWheel events
@@ -1696,9 +1715,8 @@
                     }
                 }
             });
-        }
 
-        init();
+        }
 
         /**
          * Constructs a new application (returns an mxEditor instance)
@@ -1709,23 +1727,164 @@
                 if (!mxClient.isBrowserSupported()) {
                     mxUtils.error('Browser is not supported!', 200, false);
                 } else {
-
-                    const node = mxUtils.load(vm.configXml).getDocumentElement();
+                    const node = mxUtils.load('./mxgraph/config/diagrameditor.xml').getDocumentElement();
                     editor = new mxEditor(node);
                     vm.editor = editor;
-                    //initEditorConf(editor);
-                    const outln = document.getElementById('outlineContainer');
-                    outln.style['border'] = '1px solid lightgray';
-                    outln.style['background'] = '#FFFFFF';
+                    initEditorConf(editor);
+                    const outln = document.getElementById('outlineContainer2');
                     new mxOutline(editor.graph, outln);
                     editor.graph.allowAutoPanning = true;
-
+                    createWorkflowDiagram(editor.graph);
                 }
             } catch (e) {
                 // Shows an error message if the editor cannot start
                 mxUtils.alert('Cannot start application: ' + e.message);
                 throw e; // for debugging
             }
+        }
+
+        /**
+         * Function to override Mxgraph properties and functions
+         */
+        function initEditorConf(editor) {
+            const graph = editor.graph;
+            // Alt disables guides
+            mxGraphHandler.prototype.guidesEnabled = true;
+            mxGraph.prototype.cellsResizable = false;
+            mxGraph.prototype.multigraph = false;
+            mxGraph.prototype.allowDanglingEdges = false;
+            mxGraph.prototype.cellsLocked = true;
+            mxGraph.prototype.foldingEnabled = true;
+            mxHierarchicalLayout.prototype.interRankCellSpacing = 40;
+            mxTooltipHandler.prototype.delay = 0;
+            mxConstants.VERTEX_SELECTION_COLOR = null;
+            mxConstants.EDGE_SELECTION_COLOR = null;
+            mxConstants.GUIDE_COLOR = null;
+
+            let style = graph.getStylesheet().getDefaultVertexStyle();
+            if (vm.preferences.theme !== 'light' && vm.preferences.theme !== 'lighter' || !vm.userPreferences.theme) {
+                style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
+            }
+            style[mxConstants.STYLE_FILLCOLOR] = vm.preferences.theme === 'dark' ? '#333332' : vm.preferences.theme === 'grey' ? '#535a63' :
+                vm.preferences.theme === 'blue' ? '#344d68' : vm.preferences.theme === 'blue-lt' ? '#4e5c6a' : vm.preferences.theme === 'cyan' ? '#00445a' : '#f5f7fb';
+
+            // Enables snapping waypoints to terminals
+            mxEdgeHandler.prototype.snapToTerminals = true;
+
+            graph.setConnectable(false);
+            graph.setHtmlLabels(true);
+            graph.setDisconnectOnMove(false);
+            graph.collapseToPreferredSize = false;
+            graph.constrainChildren = false;
+            graph.extendParentsOnAdd = false;
+            graph.extendParents = false;
+
+            /**
+             * Overrides method to provide a cell label in the display
+             * @param cell
+             */
+            graph.convertValueToString = function (cell) {
+                if (cell.value.tagName === 'Connection') {
+                    return '';
+                }
+                let className = '';
+                if (cell.value.tagName === 'Job') {
+                    className = 'vertex-text job';
+                } else {
+                    className = 'vertex-text order';
+                }
+                if (cell.getAttribute('job')) {
+                    return '<div class="' + className + '">' + cell.getAttribute('label') + '<br><span class="text-muted text-sm">' + cell.getAttribute('job') + '</span></div>';
+                }
+                return '<div class="' + className + '">' + cell.getAttribute('label') + '</div>';
+            };
+
+            /**
+             * Function: isCellMovable
+             *
+             * Returns true if the given cell is moveable.
+             */
+            graph.isCellMovable = function (cell) {
+                if (cell.value) {
+                    return cell.value.tagName === 'Job';
+                } else {
+                    return false;
+                }
+            };
+
+            /**
+             * Function: getTooltipForCell
+             *
+             * Returns the string or DOM node to be used as the tooltip for the given
+             * cell.
+             */
+            graph.getTooltipForCell = function (cell) {
+                let tip = null;
+                if (cell != null && cell.getTooltip != null) {
+                    tip = cell.getTooltip();
+                } else {
+                    if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Box')) {
+                        tip = "<div class='vertex-text2'>";
+                        if (cell.value.tagName === 'Job') {
+                            tip = tip + cell.getAttribute('label') + ' - ' + cell.getAttribute('job');
+                        } else {
+                            tip = tip + cell.getAttribute('label');
+                        }
+                        tip = tip + '</div>';
+                    }
+                }
+
+                return tip;
+            };
+
+        }
+
+        function createWorkflowDiagram(graph) {
+            graph.getModel().beginUpdate();
+            try {
+                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    if (vm.jobChain.jobChainNodes[i].state) {
+                        let v1 = createJobVertex(vm.jobChain.jobChainNodes[i], graph);
+                        vm.jobChain.jobChainNodes[i].jId = v1.id;
+                    }
+
+                }
+                for (let i = 0; i < vm.jobChain.jobChainNodes.length; i++) {
+                    for (let j = 0; j < vm.jobChain.jobChainNodes.length; j++) {
+                        if (vm.jobChain.jobChainNodes[j].nextState && vm.jobChain.jobChainNodes[i].state === vm.jobChain.jobChainNodes[j].nextState) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId));
+                        }
+                        if (vm.jobChain.jobChainNodes[i].errorState && vm.jobChain.jobChainNodes[i].errorState === vm.jobChain.jobChainNodes[j].state) {
+                            graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                graph.getModel().getCell(vm.jobChain.jobChainNodes[i].jId), graph.getModel().getCell(vm.jobChain.jobChainNodes[j].jId), 'dashed=1;dashPattern=1 2;strokeColor=#dc143c');
+                        }
+                    }
+                }
+                if(vm.orders) {
+                    for (let i = 0; i < vm.orders.length; i++) {
+                        if (vm.orders[i].name) {
+                           let arr = vm.orders[i].name.split(",");
+                           if(vm.jobChain.name === arr[0]){
+                              let o1 = createOrderVertex(arr[1], graph);
+                              graph.insertEdge(graph.getDefaultParent(), null, getCellNode('Connection', '', ''),
+                                o1, graph.getModel().getCell(vm.jobChain.jobChainNodes[0].jId), 'dashed=1;');
+                           }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error(e)
+            } finally {
+                // Updates the display
+                graph.getModel().endUpdate();
+                executeLayout(graph);
+            }
+
+            setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                vm.actual();
+            }, 0);
         }
 
         /**
@@ -1737,26 +1896,91 @@
         }
 
         /**
-         * Function to centered the flow diagram
-         */
-        function makeCenter() {
-            t1 = $timeout(function () {
-                vm.actual();
-            }, 0);
-        }
-
-        /**
          * Function to create dom element
          */
-        function getCellNode(name, label, actual, jobStream) {
+        function getCellNode(name, label, job) {
             const doc = mxUtils.createXmlDocument();
             // Create new node object
             const _node = doc.createElement(name);
-            _node.setAttribute('label', label.trim());
-            _node.setAttribute('actual', actual.trim());
-            _node.setAttribute('jobStream', jobStream);
+            if (label)
+                _node.setAttribute('label', label.trim());
+            if (job)
+                _node.setAttribute('job', job);
             return _node;
         }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createJobVertex(job, graph) {
+            let _node = getCellNode('Job', job.state, job.job);
+            let style = 'job;strokeColor=#999';
+            if (!job.job) {
+                style += ';fillColor=' + (job.state.toLowerCase() === 'error' ? '#fce3e8' : '#e5ffe5')
+            }
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style)
+        }
+
+        /**
+         * Function to create Job vertex
+         */
+        function createOrderVertex(name, graph) {
+            let _node = getCellNode('Order', name);
+            let style = 'order;strokeColor=#999;fillColor=none';
+            return graph.insertVertex(graph.getDefaultParent(), null, _node, 0, 0, 180, 42, style)
+        }
+
+        vm.zoomIn = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomIn();
+            }
+        };
+
+        vm.zoomOut = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomOut();
+            }
+        };
+
+        vm.actual = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.zoomActual();
+                center();
+            }
+        };
+
+        vm.fit = function () {
+            if (vm.editor && vm.editor.graph) {
+                vm.editor.graph.fit();
+                center();
+            }
+        };
+
+        function center() {
+            let dom = document.getElementById("graph");
+            let x = 0.5, y = 0.2;
+            if (dom.clientWidth !== dom.scrollWidth) {
+                x = 0;
+            }
+            if (dom.clientHeight !== dom.scrollHeight) {
+                y = 0;
+            }
+            vm.editor.graph.center(true, true, x, y);
+        }
+
+        vm.$on('NEW_PARAM', function (evt, obj) {
+            vm.jobChain = obj.parent;
+            if (obj.superParent && obj.superParent.folders && obj.superParent.folders.length > 0) {
+                vm.jobs = obj.superParent.folders[0].children;
+                vm.orders = obj.superParent.folders[2].children;
+            }
+            if (!vm.jobChain.jobChainNodes) {
+                vm.jobChain.jobChainNodes = [];
+            }
+            console.log('vm.jobChain >>>>>>>>>>>>>>>>>', obj)
+            init();
+            vm.node = undefined;
+        });
 
         $scope.$on('$destroy', function () {
             if (t1) {
@@ -1777,7 +2001,6 @@
     }
 
     XMLEditorCtrl.$inject = ["$scope", "SOSAuth", "CoreService", "AuditLogService", "$location", "$http", "$uibModal", "gettextCatalog", "toasty", "FileUploader", "$sce"];
-
     function XMLEditorCtrl($scope, SOSAuth, CoreService, AuditLogService, $location, $http, $uibModal, gettextCatalog, toasty, FileUploader, $sce) {
         const vm = $scope;
 
@@ -5059,5 +5282,4 @@
             }
         };
     }
-
 })();

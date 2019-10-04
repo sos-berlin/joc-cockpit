@@ -76,6 +76,11 @@
       <add as="condition2">
         <add as="shape" value="Parallelogram"/>
       </add>
+      <add as="order">
+        <add as="shape" value="ellipse"/>
+        <add as="perimeter" value="ellipsePerimeter"/>
+        <add as="rounded" value="1"/>
+      </add>
     </mxStylesheet>
     <mxGraphModel as="model">
       <root>
